@@ -1,0 +1,60 @@
+CHANGELOG
+=========
+v0.6.00
+-------
+Email uniqueness check on public registration
+
+v0.5.00
+-------
+Pupilsight Core v17 compatibility
+
+v0.4.00
+-------
+Updated default database storage engine to InnoDB
+
+v0.3.08
+-------
+Object oriented rewrite and code cleanup
+
+v0.3.07
+-------
+Pupilsight Core v13 setting compatibility
+
+v0.3.06
+-------
+Fixed indentation in beautified PHP code
+
+v0.3.05
+-------
+Beautified PHP code
+Improved error handling
+Edit link added to add return
+
+v0.3.04
+-------
+Fixed interface string error
+
+v0.3.03
+-------
+Pupilsight Core v12 & PHP 7 Compatibility
+
+v0.3.02
+-------
+Added setting/link to Facebook page. Setting is database only, no interface.
+
+v0.3.01
+-------
+Fixed minor spelling mistake
+
+v0.3.00
+-------
+Added ability to link an alumni profile to an existing user of the system
+Added role (category) to alumni profile
+
+v0.2.00
+-------
+Added action to view and manage alumni data
+
+v0.1.00
+-------
+Added public registration with hook to homepage. No actions yet, but data can be collected

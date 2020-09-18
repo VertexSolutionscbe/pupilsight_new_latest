@@ -1,0 +1,26 @@
+CHANGELOG
+=========
+v1.0.05
+-------
+Refactored breadcrumbs 
+Requires Pupilsight v17.0.00
+
+v1.0.04
+-------
+Code cleanup 
+
+v1.0.03
+-------
+Fixed error log issue
+
+v1.0.02
+-------
+Fixed error log issue
+
+v1.0.01
+-------
+Improved performance in loading multiple files
+
+v1.0.00
+-------
+Ability to view feeds in dashboard
