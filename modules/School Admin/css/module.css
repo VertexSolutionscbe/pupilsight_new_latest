@@ -1,0 +1,57 @@
+/*
+Pupilsight, Flexible & Open School System
+
+*/
+
+
+/* santhrupthi  */
+
+.fa-times {
+    color: red;
+}
+
+.rotate {
+    -moz-transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    transition: all .5s linear;
+}
+
+.rotate.down {
+    -moz-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+tr.col_header {
+    cursor: pointer;
+}
+
+.padding {
+    padding: 5px;
+}
+
+.tablewidth {
+    width: 100% !important;
+}
+
+.childrow {
+    padding-left: 38px;
+}
+
+.leftpadding {
+    padding-left: 2px
+}
+
+.remak_border {
+    border-left: 1px solid #bab8b8;
+}
+
+.backgrnd_white {
+    width: 100%;
+    border: 1px solid #bab8b8;
+    background: #fff !important;
+}
+
+.widthRadio {
+    width: 100px;
+}

@@ -1,0 +1,32 @@
+{#<!--
+Pupilsight, Flexible & Open School System
+
+
+This is a Pupilsight template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+<?php
+/*
+Pupilsight, Flexible & Open School System
+*/
+
+/**
+ * Sets the database connection information.
+ * You can supply an optional $databasePort if your server requires one.
+ */
+$databaseServer = '{{ databaseServer|raw }}';
+$databaseUsername = '{{ databaseUsername|raw }}';
+$databasePassword = '{{ databasePassword|raw }}';
+$databaseName = '{{ databaseName|raw }}';
+
+/**
+ * Sets a globally unique id, to allow multiple installs on a single server.
+ */
+$guid = '{{ guid|raw }}';
+
+/**
+ * Sets system-wide caching factor, used to balance performance and freshness.
+ * Value represents number of page loads between cache refresh.
+ * Must be positive integer. 1 means no caching.
+ */
+$caching = 10;

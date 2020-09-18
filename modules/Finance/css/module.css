@@ -1,0 +1,14 @@
+/*
+Pupilsight, Flexible & Open School System
+
+*/
+
+.textOverBudget {
+    color: red;
+    font-weight: bold;
+}
+
+.textUnderBudget {
+    color: green;
+    font-weight: bold;
+}

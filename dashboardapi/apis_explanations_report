@@ -1,0 +1,74 @@
+url :http://localhost/pupilsight/dashboardapi/campaign.php?type=workflow_states
+-------------------------------------------------------------------------------
+Campaign :
+===========
+1.campaign list:
+===============
+required parameter:type is campaign_list
+optional parameters : pupilsightSchoolYearID,status(1 - draft | 2 - published | 3 - stoped)
+default current year and active campaign list
+
+2.Campaign count:
+================
+required parameter : type is campaign_count
+
+3.Campaign seat availability: 
+============================
+required parameter : type is campaign_seat_availabity
+optional parameters : pupilsightSchoolYearID,status(1 - draft | 2 - published | 3 - stoped)
+
+4.Workflow State:
+=================
+ 1.Workflow State 1 (Eg- Application Submitted):
+   - type is workflow_state1
+   
+ 2.Workflow State 2 (Eg- Application Shortlisted):
+  - type is workflow_state2
+ 
+ 3.Workflow State 3 (Eg- Application Doc verified):
+  - type is workflow_state3
+  
+ 4.Workflow State 4 (Eg- Called for Interview):
+  - type is workflow_state4
+  
+ 5.Workflow State 5 (Eg- Invoice Generated):
+  - type is workflow_state5
+  
+ 6.Workflow State 6 (Eg- Application Fee Paid):
+  - type is workflow_state6
+  
+ 7.Workflow State 7 (Eg- Admission Accepted):
+  -type is workflow_state7
+  
+ 8.workflow states (all)
+  -type is workflow_states
+  
+  
+5.Fee Collected :
+=================
+  -type is fee_collected
+   optional : pupilsightSchoolYearID
+   default current year
+   
+6. Fee Due (Total):
+===================
+ - type is fee_due
+   default current year
+   
+7.Total Fee to be Collected:
+===========================
+ - type is total_fee_collected
+ - optional : pupilsightSchoolYearID
+ - default current year
+ 
+8.Fee Item wise Distribution:
+=============================
+ - type is item_wise_destribution_fee
+ - optional : pupilsightSchoolYearID
+ - default current year
+ 
+ 9. Payment Mode wise Distribution:
+ ==================================
+ - type is paymode_wise_destribution
+ - optional : pupilsightSchoolYearID
+ - default current year 

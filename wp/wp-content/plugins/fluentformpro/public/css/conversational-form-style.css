@@ -1,0 +1,7 @@
+.ff-active {
+    opacity: 1;
+}
+
+.ff-inactive {
+    opacity: .4;
+}

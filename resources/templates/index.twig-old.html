@@ -1,0 +1,90 @@
+{#
+<!--
+Pupilsight, Flexible & Open School System
+
+
+This is a Pupilsight template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+TODO: add template variable details.
+-->#}
+
+<!DOCTYPE html>
+<html class="no-js" lang="">
+
+<head>
+
+    {% block head %} {{ include('head.twig.html') }} {% endblock head %}
+</head>
+
+<body>
+    <div id="wrapOuter" class="">
+        <div class="text-right text-xs md:text-sm xl:px-0" style='margin:2px 20px 0 0;'>
+            {{ minorLinks|raw }}
+        </div>
+
+        <div id="wrap" class="">
+            {% block header %}
+            <div id="header" class="relative bg-white flex justify-between items-center sm:h-32">
+
+                <a id="header-logo" class="block max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
+                    <img class="block max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default(" /themes/Default/img/logo.png ") }}" width="300" />
+                </a>
+
+                <div class="flex-grow flex justify-end">
+                    {{ fastFinder|raw }}
+                </div>
+            </div>
+
+            <nav id="header-menu" class="w-full bg-gray justify-between">
+                {{ include('menu.twig.html') }}
+            </nav>
+
+            {% endblock %}
+
+            <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} lg:flex-row-reverse bg-transparent-100 clearfix">
+
+                {% if sidebar %}
+                <div id="sidebar" class="w-full lg:w-sidebar px-6 pb-6 lg:border-l">
+                    {% block sidebar %} {{ include('navigation.twig.html') }} {% endblock sidebar %}
+                </div>
+                <br style="clear: both"> {% endif %}
+
+                <div id="content" class="w-full {{ not sidebar ?'pt-0 sm:pt-6' }} lg:flex-1  p-6 lg:pt-0 overflow-x-scroll sm:overflow-x-auto">
+
+                    {% block page %}
+
+                    <button id="sidebarToggle" class="hidden lg:block absolute top-0 right-0 m-1 px-2 pb-1 text-gray text-2xl bg-transparent font-sans rounded hover:bg-gray hover:text-white leading-tight">»</button> {% if content and not sidebar
+                    %} {{ include('navigation.twig.html') }} {% endif %} {% if page.breadcrumbs %}
+                    <div class="sm:pt-10 lg:pt-0">
+                        <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
+                            {% for title, src in page.breadcrumbs %} {% if loop.last %}
+                            <span class="trailEnd">{{ title }}</span> {% elseif loop.revindex > 5 and loop.index != 1 %}
+                            <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > {% else %}
+                            <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > {% endif %} {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %} {% for type, alerts in page.alerts %} {% for text in alerts %}
+                    <div class="{{ type }}">{{ text|raw }}</div>
+                    {% endfor %} {% endfor %} {{ content|join("\n")|raw }} {% endblock %}
+                </div>
+
+
+            </div>
+
+            {% block footer %}
+            <!--
+                <div class="relative text-white text-center text-sm p-6 leading-normal" style='background-color:#777;'>
+                    <span class="inline-block">
+                        {{ __('Powered by') }} <a class="link-white" target='_blank' href='http://pupilsight.in'>Pupilsight</a>
+                    </span>
+                </div>
+                -->
+            {% endblock %}
+        </div>
+    </div>
+
+    {% block foot %} {{ include('foot.twig.html') }} {% endblock foot %}
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+uploads/cache/*
+/uploads/cache/*
+uploads/receipts/*
+public/cancelreceipts/*
+public/cancelreceipts/
+public/receipts/*
+uploads/cache/
+public/receipts/*
+public/receipts/
+
+# Tests Folder
+tests/log/*
+tests/config/supportgit /_generated/*
+
+# Template Cawche
+/resources/templates/cache/*
+/cms/w2f/database.php
+/cms/w2f/*
+/cms/w2f/*
+
+/wp/wp-config.php
+src/Domain/DBQuery.php
+
+# Misc System Temp Files
+Thumb.db
+.DS_Store
+*~
+nbproject/
+/config.php
+akkhor-main/*

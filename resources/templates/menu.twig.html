@@ -1,0 +1,300 @@
+{#
+<!--
+Pupilsight, Flexible & Open School System
+
+
+This is a Pupilsight template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Main Menu: Displays the top-level categories and active modules.
+-->#} {% if isLoggedIn %}
+
+
+<div class="mobile-sidebar-header d-md-none">
+    <div class="">
+        <a href="{{ absoluteURL }}/index.php"><img class="headerlogo" src="{{ absoluteURL }}/{{ organisationLogo|default(" /themes/Default/img/logo.png ") }}" alt="logo"></a>
+        <a id="" class="d-lg-none">
+            <i class="far fa-window-close close_sidebar sidebar-toggle-mobile"></i>
+        </a>
+    </div>
+</div>
+<div class="sidebar-menu-content">
+    <ul class="nav nav-sidebar-menu sidebar-toggle-view">
+        {% if parentrole != '033' %}
+        <li class="nav-item ">
+            <a href="{{ absoluteURL }}/index.php" class="nav-link chkCounter"><i
+                    class="flaticon-dashboard "></i><span>{{ __('Home') }}</span></a>
+
+        </li>
+
+        {% endif %} {% for categoryName, items in menuMain %} {% if categoryName == parentMenuSelect %}
+
+
+
+        <li class="nav-item sidebar-nav-item active">
+
+
+            {% else %}
+            <li class="nav-item sidebar-nav-item ">
+
+                {% endif %}
+
+                <a href="#" class="nav-link">
+                    {% if menuMainIcon[categoryName] %}
+                    <i class="{{ menuMainIcon[categoryName] }}"></i>
+                    {% else %}
+                    <i class="flaticon-more-button-of-three-dots"></i>
+                    {% endif %}
+
+                    <span>{{ __(categoryName) }}</span>
+                </a> {% if categoryName == parentMenuSelect %}
+                <ul class="nav sub-group-menu menu-open" style="display:block;">
+                    {% else %}
+                    <ul class="nav sub-group-menu">
+                        {% endif %} {% if categoryName == 'Finance' %} {% if items[0]["fn"] == 'active' %}
+
+                        <li class="nav-item sidebar-nav-item ">
+                            <a href="#" class="nav-link hidearrow chkCounter"><i class="fas fa-angle-right"></i>Master</a>
+                            <ul class="nav sub-group-menu">
+
+                                <li class="nav-item ">
+                                    <a href="index.php?q=/modules/Finance/fee_series_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Fee Series</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_head_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Fee Head</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_fine_rule_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Fine Rule</a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_item_type_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Fee Item Type</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_receipts_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Receipts Template</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_item_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Fee Item</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/deposit_account_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Deposit Account</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_discount_rule_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Discount Rule</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_counter_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Fee Counter</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a style="font-size: 13px !important;" href="index.php?q=/modules/Finance/fee_master_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Banks & Payment Mode</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_payment_gateway_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Fee Payment Gateway</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="index.php?q=/modules/Finance/fee_structure_manage.php" class="nav-link chkCounter"><i class="fas fa-angle-right"></i>Structure</a>
+                        </li>
+                                                                                    
+                        <li class="nav-item sidebar-nav-item ">
+                            <a href="#" class="nav-link hidearrow chkCounter"><i class="fas fa-angle-right"></i>Payment</a>
+                            <ul class="nav sub-group-menu">
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/invoice_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Manage Invoice</a>
+                                </li>
+                                <li class="nav-item">
+                                    {% if counterid == '' %}
+                                    <a href="fullscreen.php?q=/modules/Finance/fee_counter_check_add.php" class="thickbox nav-link"><i class="fas fa-angle-right"></i>Collection</a> {% else %}
+                                    <a href="index.php?q=/modules/Finance/fee_collection_manage.php" class=" nav-link"><i class="fas fa-angle-right"></i>Collection</a> {% endif %}
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_transaction_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Transaction</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_transaction_cancel_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Cancel Transaction</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Finance/fee_transaction_refund_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Refund Transaction</a>
+                                </li>
+                            </ul>
+                        </li>
+                        {% else %} {% for item in items %}
+                        <li class="nav-item">
+                            {% if item.name == childMenuSelect %}
+                            <a href="{{ item.url }}" class="nav-link menu-active chkCounter"><i class="fas fa-angle-right"></i>View Invoices</a> {% else %}
+                            <a href="{{ item.url }}" class="nav-link chkCounter"><i class="fas fa-angle-right"></i>View Invoices</a> {% endif %}
+                        </li>
+                        {% endfor %} {% endif %} 
+                        
+                        {% elseif categoryName == 'Transport' %} {% if items[0]["tr"] == 'active' %}
+                        <li class="nav-item">
+                            <a href="index.php?q=/modules/Transport/bus_manage.php" class="nav-link chkCounter"><i class="fas fa-angle-right"></i>Bus Details</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link hidearrow chkCounter"><i class="fas fa-angle-right"></i>Routes</a>
+                            <ul class="nav sub-group-menu">
+                                
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Transport/routes.php" class="nav-link "><i class="fas fa-angle-right"></i>Manage Route</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Transport/assign_route.php" class="nav-link "><i class="fas fa-angle-right"></i>Assign to Student</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Transport/assign_staff_route_manage.php" class="nav-link "><i class="fas fa-angle-right"></i>Assign to Staff</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Transport/view_members_in_route.php" class="nav-link"><i class="fas fa-angle-right"></i>View Member in Route</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="index.php?q=/modules/Transport/transport_fee.php" class="nav-link chkCounter"><i class="fas fa-angle-right"></i>Transport Fee</a>
+                        </li>
+
+                        {% endif %} 
+                        {% elseif categoryName == 'Academics' %} {% if items[0]["tr"] == 'active' %}
+
+                        
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link hidearrow chkCounter"><i class="fas fa-angle-right"></i>Curriculum</a>
+                            <ul class="nav sub-group-menu">
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/department_manage.php" class="nav-link "><i class="fas fa-angle-right"></i>Subject Master</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/ac_manage_skill.php" class="nav-link "><i class="fas fa-angle-right"></i>Skill Master</a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/subject_to_class_manage.php" class="nav-link "><i class="fas fa-angle-right"></i>Subject To Class</a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/manage_elective_group.php" class="nav-link"><i class="fas fa-angle-right"></i>Manage Elective Group</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/ac_manage_remarks.php" class="nav-link "><i class="fas fa-angle-right"></i>Remarks Master</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/descriptive_indicator_config.php" class="nav-link " style="line-break: anywhere;"><i class="fas fa-angle-right"></i>DI Mode</a>
+                                </li>
+                                
+                            </ul>
+                        </li>
+                        
+
+                        <li class="nav-item">
+                            <a href="#" class="nav-link hidearrow chkCounter"><i class="fas fa-angle-right"></i>Test</a>
+                            
+                            <ul class="nav sub-group-menu">
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/grade_system_manage.php" class="nav-link " style="line-break: anywhere;"><i class="fas fa-angle-right"></i>Grading System</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/examination_room_manage.php" class="nav-link " style="line-break: anywhere;"><i class="fas fa-angle-right"></i>Manage Test Room</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/examination_report_template_manage.php" class="nav-link " style="line-break: anywhere;"><i class="fas fa-angle-right"></i>Reports Template</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/test_home.php" class="nav-link "><i class="fas fa-angle-right"></i>Test Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/manage_edit_test.php" class="nav-link "><i class="fas fa-angle-right"></i>Edit Test</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/manage_test.php" class="nav-link"><i class="fas fa-angle-right"></i>Manage Test</a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/manage_marks_entry_by_subject.php" class="nav-link "><i class="fas fa-angle-right"></i>Marks Entry by Subject</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/marks_by_student.php" class="nav-link "><i class="fas fa-angle-right"></i>Marks Entry by Student</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/manage_enter_aat.php" class="nav-link"><i class="fas fa-angle-right"></i>Enter A.A.T</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/test_marks_upload.php" class="nav-link "><i class="fas fa-angle-right"></i>Marks Upload</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/marks_not_entered.php" class="nav-link"><i class="fas fa-angle-right"></i>Marks not Entered</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/manage_test_results.php" class="nav-link"><i class="fas fa-angle-right"></i>Test Results</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="index.php?q=/modules/Academics/sketch_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Sketch</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        {% endif %} 
+                        {% elseif categoryName == 'Attendance' %} {% if items[0]["tr"] == 'active' %}
+                        
+                        <li class="nav-item">
+                            <a href="index.php?q=/modules/Attendance/attendance.php" class="nav-link hidearrow chkCounter"><i class="fas fa-angle-right"></i>Attendance</a>
+                        </li> 
+                        
+                        
+
+                        {% else %} {% for item in items %}
+                        <li class="nav-item">
+                            {% if item.name == childMenuSelect %}
+                            <a href="{{ item.url }}" class="nav-link menu-active chkCounter"><i class="fas fa-angle-right"></i>Student Bus Route</a> {% else %}
+                            <a href="{{ item.url }}" class="nav-link chkCounter"><i class="fas fa-angle-right"></i>Student Bus Route</a> {% endif %}
+                        </li>
+                        {% endfor %} {% endif %}
+                        <!-- <li class="nav-item">
+                            <a href="#" class="nav-link hidearrow"><i class="fas fa-angle-right"></i>Assign Routes</a> 
+                            <ul class="nav sub-group-menu">
+                                <li class="nav-item"></li>
+                                    <a href="index.php?q=/modules/Transport/assign_route.php" class="nav-link"><i class="fas fa-angle-right"></i>Assign to Student</a> 
+                                </li>
+                                <li class="nav-item"></li>
+                                    <a href="index.php?q=/modules/Transport/assign_staff_route_manage.php" class="nav-link"><i class="fas fa-angle-right"></i>Assign to Staff</a> 
+                                </li>
+                            </ul>
+                        </li>         -->
+                        {% else %} {% for item in items %}
+                        <li class="nav-item">
+                            {% if item.name == childMenuSelect %}
+                            <a href="{{ item.url }}" class="nav-link menu-active chkCounter"><i class="fas fa-angle-right"></i>{{ __(item.name, item.textDomain) }}</a> {% else %}
+                            <a href="{{ item.url }}" class="nav-link chkCounter"><i class="fas fa-angle-right"></i>{{ __(item.name, item.textDomain) }}</a> {% endif %}
+                        </li>
+                        {% endfor %} {% endif %}
+                    </ul>
+            </li>
+            {% endfor %} {% if parentrole == '001' %}
+
+            <li class="nav-item ">
+                <a href="{{ absoluteURL }}/lms.php" class="nav-link chkCounter"><i
+                    class="flaticon-maths-class-materials-cross-of-a-pencil-and-a-ruler"></i><span>LMS</span></a>
+            </li>
+
+            <li class="nav-item ">
+                <a href="{{ absoluteURL }}/cms.php" class="nav-link chkCounter"><i class="flaticon-script"></i><span>CMS</span></a>
+
+            </li>
+
+            <li class="nav-item ">
+                <a href="{{ absoluteURL }}/forms_reports.php" class="nav-link chkCounter"><i class="flaticon-script"></i><span>Forms & Reports</span></a>
+            </li>
+            <!--
+            <li class="nav-item ">
+                <a href="{{ absoluteURL }}/reports.php" class="nav-link chkCounter"><i class="flaticon-checklist"></i><span>Forms &
+                    Reports</span></a>
+
+            </li>
+            -->
+            {% endif %}
+
+            </ul>
+</div>
+
+{% endif %}
