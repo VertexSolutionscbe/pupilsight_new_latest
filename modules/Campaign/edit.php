@@ -186,7 +186,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
             $row = $form->addRow()->setID('seatdiv');
                     $col = $row->addColumn()->setClass('newdes');
-                    $col->addButton(__('Add More Seat Matrix'))->addData('cid', $kount)->setID('addSeats')->addClass('bttnsubmt');
+                    //$col->addButton(__('Add More Seat Matrix'))->addData('cid', $kount)->setID('addSeats')->addClass('bttnsubmt');
+                    $col->addContent('<a class="btn btn-primary" id="addSeats" data-cid='.$kount.'>Add More Seat Matrix</a>');
         
                     $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('Total Seats : ', __('Total Seats : '.$totalseats.''))->addClass('showSeats');

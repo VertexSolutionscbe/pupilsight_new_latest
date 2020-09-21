@@ -1,21 +1,21 @@
-(function($) {
+(function ($) {
     $.datepicker.setDefaults({
         dateFormat: 'dd/mm/yy'
     });
 
     "use strict";
 
-    $(document).on('click', '.bordercls', function() {
+    $(document).on('click', '.bordercls', function () {
         $(this).children().addClass("borderclass");
         $(".searchhomepagecls").children().children().show();
     });
 
-    $(document).on('click', '.delSeattr', function() {
+    $(document).on('click', '.delSeattr', function () {
         var id = $(this).attr('data-id');
         $(".deltr" + id).remove();
         // $(this).parent().parent().parent().parent().parent().remove();
     });
-    $(document).on('click', '.delseatmatrix', function() {
+    $(document).on('click', '.delseatmatrix', function () {
         var id = $(this).attr('data-id');
         var sid = $(this).attr('data-sid');
         $.ajax({
@@ -23,12 +23,12 @@
             type: 'post',
             data: { sid: sid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $(".deltr" + id).remove();
             }
         });
     });
-    $(document).on('click', '.delTransition', function() {
+    $(document).on('click', '.delTransition', function () {
         var id = $(this).attr('data-id');
         if (confirm("Are you sure want to Delete Transition?")) {
             $.ajax({
@@ -36,7 +36,7 @@
                 type: 'post',
                 data: { id: id },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //$(".seatdiv" + id).remove();
                     window.location.href = response;
                 }
@@ -44,9 +44,9 @@
         }
     });
 
-    $(document).on('change', '.kountseat', function() {
+    $(document).on('change', '.kountseat', function () {
         var tseat = 0;
-        $(".kountseat").each(function() {
+        $(".kountseat").each(function () {
             if ($(this).val() != '') {
                 var seat = $(this).val();
             } else {
@@ -59,16 +59,16 @@
         $(".showSeats").html('Total Seats : ' + tseat);
     });
 
-    $(document).on('click', '#addSeats', function() {
+    $(document).on('click', '#addSeats', function () {
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
-        var design = ' <tr id="seatdiv" class=" flex flex-col sm:flex-row justify-between content-center p-0 deltr' + ncid + '"><td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="seatname" name="seatname[' + ncid + ']" class="w-full txtfield"></div></div></div></td><td class="w-full max-w-full sm:max-w-xs flex justify-end px-2 border-b-0 sm:border-b border-t-0 newdes" colspan="2"><div class="input-group stylish-input-group"><div class="dte mb-1"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative"><input type="number" id="seatallocation" name="seatallocation[' + ncid + ']" class="w-full txtfield kountseat szewdt"></div></div><div class="dte mb-1"  style="font-size: 25px; padding:  6px 0 0px 4px"><i style="cursor:pointer" class="far fa-times-circle delSeattr" data-id="' + ncid + '"></i></div></div></td></tr>';
+        var design = ' <div id="seatdiv" class=" row mb-1 deltr' + ncid + '"><div class="col-sm  newdes " ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="seatname" name="seatname[' + ncid + ']" class="w-full txtfield"></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class="dte mb-1"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><input type="number" id="seatallocation" name="seatallocation[' + ncid + ']" class="w-full txtfield kountseat szewdt"><i style="cursor:pointer;padding: 8px 10px;" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div></div></div></div>';
         $("#lastseatdiv").before(design);
 
     });
 
-    $(document).on('click', '#addTransportStops', function() {
+    $(document).on('click', '#addTransportStops', function () {
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
@@ -77,7 +77,7 @@
 
     });
 
-    $(document).on('click', '#addState', function() {
+    $(document).on('click', '#addState', function () {
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
@@ -86,7 +86,7 @@
 
     });
 
-    $(document).on('click', '#addTransition', function() {
+    $(document).on('click', '#addTransition', function () {
         var cid = $(this).attr('data-cid');
         var wid = $(this).attr('data-wid');
         var ncid = parseInt(cid) + 1;
@@ -96,7 +96,7 @@
             type: 'post',
             data: { ncid: ncid, wid: wid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#lastseatdiv").before(response);
             }
         });
@@ -115,14 +115,14 @@
     /*-------------------------------------
         Sidebar Toggle Menu
       -------------------------------------*/
-    $('.sidebar-toggle-view').on('click', '.sidebar-nav-item .nav-link', function(e) {
+    $('.sidebar-toggle-view').on('click', '.sidebar-nav-item .nav-link', function (e) {
         if (!$(this).parents('#wrapper').hasClass('sidebar-collapsed')) {
             var animationSpeed = 300,
                 subMenuSelector = '.sub-group-menu',
                 $this = $(this),
                 checkElement = $this.next();
             if (checkElement.is(subMenuSelector) && checkElement.is(':visible')) {
-                checkElement.slideUp(animationSpeed, function() {
+                checkElement.slideUp(animationSpeed, function () {
                     checkElement.removeClass('menu-open');
                 });
                 checkElement.parent(".sidebar-nav-item").removeClass("active");
@@ -131,7 +131,7 @@
                 var ul = parent.find('ul:visible').slideUp(animationSpeed);
                 ul.removeClass('menu-open');
                 var parent_li = $this.parent("li");
-                checkElement.slideDown(animationSpeed, function() {
+                checkElement.slideDown(animationSpeed, function () {
                     checkElement.addClass('menu-open');
                     parent.find('.sidebar-nav-item.active').removeClass('active');
                     parent_li.addClass('active');
@@ -150,8 +150,8 @@
     /*-------------------------------------
         Sidebar Menu Control
       -------------------------------------*/
-    $(".sidebar-toggle").on("click", function() {
-        window.setTimeout(function() {
+    $(".sidebar-toggle").on("click", function () {
+        window.setTimeout(function () {
             $("#wrapper").toggleClass("sidebar-collapsed");
         }, 500);
     });
@@ -159,7 +159,7 @@
     /*-------------------------------------
         Sidebar Menu Control Mobile
       -------------------------------------*/
-    $(".sidebar-toggle-mobile").on("click", function() {
+    $(".sidebar-toggle-mobile").on("click", function () {
         $("#wrapper").toggleClass("sidebar-collapsed-mobile");
         if ($("#wrapper").hasClass("sidebar-collapsed")) {
             $("#wrapper").removeClass("sidebar-collapsed");
@@ -179,11 +179,11 @@
     /*-------------------------------------
         jquery Scollup activation code
       -------------------------------------*/
-    $("#preloader").fadeOut("slow", function() {
+    $("#preloader").fadeOut("slow", function () {
         //$(this).remove();
     });
 
-    $(function() {
+    $(function () {
         /*-------------------------------------
               Data Table init
           -------------------------------------*/
@@ -205,7 +205,7 @@
         /*-------------------------------------
               All Checkbox Checked
           -------------------------------------*/
-        $(".checkAll").on("click", function() {
+        $(".checkAll").on("click", function () {
             $(this).parents('.table').find('input:checkbox').prop('checked', this.checked);
         });
 
@@ -294,31 +294,31 @@
             var lineChartData = {
                 labels: ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", ""],
                 datasets: [{
-                        data: [0, 5e4, 1e4, 5e4, 14e3, 7e4, 5e4, 75e3, 5e4],
-                        backgroundColor: '#ff0000',
-                        borderColor: '#ff0000',
-                        borderWidth: 1,
-                        pointRadius: 0,
-                        pointBackgroundColor: '#ff0000',
-                        pointBorderColor: '#ffffff',
-                        pointHoverRadius: 6,
-                        pointHoverBorderWidth: 3,
-                        fill: 'origin',
-                        label: "Total Collection"
-                    },
-                    {
-                        data: [0, 3e4, 2e4, 6e4, 7e4, 5e4, 5e4, 9e4, 8e4],
-                        backgroundColor: '#417dfc',
-                        borderColor: '#417dfc',
-                        borderWidth: 1,
-                        pointRadius: 0,
-                        pointBackgroundColor: '#304ffe',
-                        pointBorderColor: '#ffffff',
-                        pointHoverRadius: 6,
-                        pointHoverBorderWidth: 3,
-                        fill: 'origin',
-                        label: "Fees Collection"
-                    }
+                    data: [0, 5e4, 1e4, 5e4, 14e3, 7e4, 5e4, 75e3, 5e4],
+                    backgroundColor: '#ff0000',
+                    borderColor: '#ff0000',
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    pointBackgroundColor: '#ff0000',
+                    pointBorderColor: '#ffffff',
+                    pointHoverRadius: 6,
+                    pointHoverBorderWidth: 3,
+                    fill: 'origin',
+                    label: "Total Collection"
+                },
+                {
+                    data: [0, 3e4, 2e4, 6e4, 7e4, 5e4, 5e4, 9e4, 8e4],
+                    backgroundColor: '#417dfc',
+                    borderColor: '#417dfc',
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    pointBackgroundColor: '#304ffe',
+                    pointBorderColor: '#ffffff',
+                    pointHoverRadius: 6,
+                    pointHoverBorderWidth: 3,
+                    fill: 'origin',
+                    label: "Fees Collection"
+                }
                 ]
             };
             var lineChartOptions = {
@@ -354,15 +354,15 @@
                             fontSize: 16,
                             stepSize: 25000,
                             padding: 20,
-                            callback: function(value) {
+                            callback: function (value) {
                                 var ranges = [{
-                                        divider: 1e6,
-                                        suffix: 'M'
-                                    },
-                                    {
-                                        divider: 1e3,
-                                        suffix: 'k'
-                                    }
+                                    divider: 1e6,
+                                    suffix: 'M'
+                                },
+                                {
+                                    divider: 1e3,
+                                    suffix: 'k'
+                                }
                                 ];
 
                                 function formatNumber(n) {
@@ -421,7 +421,7 @@
                     backgroundColor: ["#40dfcd", "#417dfc", "#ffaa01"],
                     data: [125000, 100000, 75000, 50000, 150000],
                     label: "Expenses (millions)"
-                }, ]
+                },]
             };
             var barChartOptions = {
                 responsive: true,
@@ -455,15 +455,15 @@
                             stepSize: 25000,
                             padding: 20,
                             beginAtZero: true,
-                            callback: function(value) {
+                            callback: function (value) {
                                 var ranges = [{
-                                        divider: 1e6,
-                                        suffix: 'M'
-                                    },
-                                    {
-                                        divider: 1e3,
-                                        suffix: 'k'
-                                    }
+                                    divider: 1e6,
+                                    suffix: 'M'
+                                },
+                                {
+                                    divider: 1e3,
+                                    suffix: 'k'
+                                }
                                 ];
 
                                 function formatNumber(n) {
@@ -513,7 +513,7 @@
                     backgroundColor: ["#304ffe", "#ffa601"],
                     data: [45000, 105000],
                     label: "Total Students"
-                }, ]
+                },]
             };
             var doughnutChartOptions = {
                 responsive: true,
@@ -554,52 +554,52 @@
                 eventLimit: true, // allow "more" link when too many events
                 aspectRatio: 1.8,
                 events: [{
-                        title: 'All Day Event',
-                        start: '2019-04-01'
-                    },
+                    title: 'All Day Event',
+                    start: '2019-04-01'
+                },
 
-                    {
-                        title: 'Meeting',
-                        start: '2019-04-12T14:30:00'
-                    },
-                    {
-                        title: 'Happy Hour',
-                        start: '2019-04-15T17:30:00'
-                    },
-                    {
-                        title: 'Birthday Party',
-                        start: '2019-04-20T07:00:00'
-                    }
+                {
+                    title: 'Meeting',
+                    start: '2019-04-12T14:30:00'
+                },
+                {
+                    title: 'Happy Hour',
+                    start: '2019-04-15T17:30:00'
+                },
+                {
+                    title: 'Birthday Party',
+                    start: '2019-04-20T07:00:00'
+                }
                 ]
             });
         }
     });
 
-    $(document).on('click', '#saveFormData', function() {
+    $(document).on('click', '#saveFormData', function () {
         var fformid = $(this).parent().children().attr('data-clipboard-text');
         $.ajax({
             url: 'modules/Campaign/addCampaignAjaxForm.php',
             type: 'post',
             data: { formshortcode: fformid },
             async: true,
-            success: function(response) {
+            success: function (response) {
 
             }
         });
 
     });
 
-    $('#wppage').load(function() {
+    $('#wppage').load(function () {
         var iframe = $('#wppage').contents();
         iframe.find("#wpadminbar").hide();
-        iframe.find("#saveFormData").click(function() {
+        iframe.find("#saveFormData").click(function () {
             var fformid = $(this).parent().children().attr('data-clipboard-text');
             $.ajax({
                 url: 'modules/Campaign/addCampaignAjaxForm.php',
                 type: 'post',
                 data: { formshortcode: fformid },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //alertcampaign();
                     var type = '1';
                     $.ajax({
@@ -607,7 +607,7 @@
                         type: 'post',
                         data: { type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             window.location.href = response;
                         }
                     });
@@ -629,50 +629,50 @@
             width: 350,
             modal: true,
             buttons: [{
-                    text: "Public",
-                    "class": 'fw-btn-fill btn-gradient-blue addbtncss fcss bg-dodger-blue',
-                    click: function() {
-                        var type = '1';
-                        $.ajax({
-                            url: 'modules/Campaign/campaignfor.php',
-                            type: 'post',
-                            data: { type: type },
-                            async: true,
-                            success: function(response) {
-                                window.location.href = response;
-                            }
-                        });
-                    }
-                },
-                {
-                    text: "Private",
-                    "class": 'fw-btn-fill btn-gradient-blue addbtncss fcss bg-light-sea-green',
-                    click: function() {
-                        var type = '2';
-                        $.ajax({
-                            url: 'modules/Campaign/campaignfor.php',
-                            type: 'post',
-                            data: { type: type },
-                            async: true,
-                            success: function(response) {
-                                window.location.href = response;
-                            }
-                        });
-                    }
+                text: "Public",
+                "class": 'fw-btn-fill btn-gradient-blue addbtncss fcss bg-dodger-blue',
+                click: function () {
+                    var type = '1';
+                    $.ajax({
+                        url: 'modules/Campaign/campaignfor.php',
+                        type: 'post',
+                        data: { type: type },
+                        async: true,
+                        success: function (response) {
+                            window.location.href = response;
+                        }
+                    });
                 }
+            },
+            {
+                text: "Private",
+                "class": 'fw-btn-fill btn-gradient-blue addbtncss fcss bg-light-sea-green',
+                click: function () {
+                    var type = '2';
+                    $.ajax({
+                        url: 'modules/Campaign/campaignfor.php',
+                        type: 'post',
+                        data: { type: type },
+                        async: true,
+                        success: function (response) {
+                            window.location.href = response;
+                        }
+                    });
+                }
+            }
             ],
 
         });
     }
 
-    $(document).on('change', '#academic_id', function() {
+    $(document).on('change', '#academic_id', function () {
         var val = $(this).find('option:selected').text();
         $("input[name=ayear]").val(val);
     });
 
 
 
-    $(document).on('change', '.tableName', function() {
+    $(document).on('change', '.tableName', function () {
         var tabname = $(this).val();
         var rid = $(this).attr('data-rid');
         if (tabname != '') {
@@ -683,7 +683,7 @@
                 data: { tabname: tabname },
                 dataType: "json",
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //alert(response);
                     $("#columnName" + rid).html(response.col);
                     $("#requireddiv" + rid).html(response.required);
@@ -692,7 +692,7 @@
         }
     });
 
-    $(document).on('change', '.campaignName', function() {
+    $(document).on('change', '.campaignName', function () {
         var campformid = $(this).val();
         var rid = $(this).attr('data-rid');
         if (campformid != '') {
@@ -702,14 +702,14 @@
                 type: 'post',
                 data: { campformid: campformid },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#fluentForm" + rid).html(response);
                 }
             });
         }
     });
 
-    $(document).on('click', '#addMoreTransition', function() {
+    $(document).on('click', '#addMoreTransition', function () {
         var cid = $(this).attr('data-cid');
         var tname = $(this).attr('data-tname');
         var cname = $(this).attr('data-cname');
@@ -720,7 +720,7 @@
             type: 'post',
             data: { ncid: ncid, tname: tname, cname: cname },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#lastseatdiv").before(response);
                 var tabname = tname;
                 var rid = parseInt(cid) + 1;
@@ -735,7 +735,7 @@
                         data: { tabname: tabname },
                         dataType: "json",
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             //alert(response);
                             $("#columnName" + rid).html(response.col);
                             //$("#requireddiv"+rid).html(response.required);
@@ -749,7 +749,7 @@
                         type: 'post',
                         data: { campformid: campformid },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             $("#fluentForm" + rid).html(response);
                         }
                     });
@@ -760,7 +760,7 @@
 
     });
 
-    $(document).on('click', '.statesButton', function() {
+    $(document).on('click', '.statesButton', function () {
         $(".statesButton").removeClass('activestate');
         $(this).addClass('activestate');
 
@@ -769,7 +769,7 @@
         var sname = $(this).attr('data-name');
         var fid = $(this).attr('data-formid');
         var favorite = [];
-        $.each($("input[name='submission_id[]']:checked"), function() {
+        $.each($("input[name='submission_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var subid = favorite.join(", ");
@@ -781,8 +781,8 @@
                 type: 'post',
                 data: { cid: cid, sid: sid, sname: sname, fid: fid, subid: subid },
                 async: true,
-                success: function(response) {
-                    $("#preloader").fadeOut("slow", function() {
+                success: function (response) {
+                    $("#preloader").fadeOut("slow", function () {
                         //$(this).remove();
                         window.location.href = response;
                     });
@@ -819,7 +819,7 @@
 
     });
 
-    $(document).on('click', '#sendState', function() {
+    $(document).on('click', '#sendState', function () {
 
         var cid = $(".activestate").attr('data-cid');
         var sid = $(".activestate").attr('data-sid');
@@ -828,7 +828,7 @@
         var emailquote = $("#emailQuote").val();
         var smsquote = $("#smsQuote").val();
         var favorite = [];
-        $.each($("input[name='submission_id[]']:checked"), function() {
+        $.each($("input[name='submission_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var subid = favorite.join(", ");
@@ -841,9 +841,9 @@
                     type: 'post',
                     data: { cid: cid, sid: sid, sname: sname, fid: fid, subid: subid, emailquote: emailquote, smsquote: smsquote },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
 
-                        $("#preloader").fadeOut("slow", function() {
+                        $("#preloader").fadeOut("slow", function () {
                             //$(this).remove();
                             window.location.href = response;
                         });
@@ -861,18 +861,18 @@
     });
 
 
-    $(document).on('change', '#showfield1', function() {
+    $(document).on('change', '#showfield1', function () {
         $("#showfield2").show();
     });
 
-    $(document).on('change', '#showfield2', function() {
+    $(document).on('change', '#showfield2', function () {
         var val = $(this).val();
         $(".searchby").hide();
         $("." + val + "Open").show();
     });
 
 
-    $(document).on('click', '#filterCampaign', function() {
+    $(document).on('click', '#filterCampaign', function () {
         var field = $("#showfield1").val();
         var searchby = $("#showfield2").val();
         var search = $(".searchOpen").val();
@@ -886,7 +886,7 @@
                 type: 'post',
                 data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#expore_tbl_wrapper").html(response);
                 }
             });
@@ -895,13 +895,13 @@
 
 
     //pdf 
-    $('#btnExport').click(function() {
+    $('#btnExport').click(function () {
         exportPDF();
     });
 
     var specialElementHandlers = {
         // element with id of "bypass" - jQuery style selector
-        '.no-export': function(element, renderer) {
+        '.no-export': function (element, renderer) {
             // true = "handled elsewhere, bypass text extraction"
             return true;
         }
@@ -930,11 +930,11 @@
             source, // HTML string or DOM elem ref.
             margins.left,
             margins.top, {
-                'width': margins.width,
-                'elementHandlers': specialElementHandlers
-            },
+            'width': margins.width,
+            'elementHandlers': specialElementHandlers
+        },
 
-            function(dispose) {
+            function (dispose) {
                 // dispose: object with X, Y of the last line add to the PDF 
                 //          this allow the insertion of new lines after html
                 doc.save('campaign_submitted_form_list.pdf');
@@ -970,7 +970,7 @@
     //     }
     // });
 
-    $("#expore_xl").click(function(e) {
+    $("#expore_xl").click(function (e) {
         $("#expore_tbl").table2excel({
             name: "Worksheet Name",
             filename: "campaign_submitted_form_list.xls",
@@ -985,7 +985,7 @@
     });
 
 
-    $("#expore_student_xl").click(function(e) {
+    $("#expore_student_xl").click(function (e) {
         //alert("Export success");
         $("#expore_tbl").table2excel({
             name: "Worksheet Name",
@@ -1001,7 +1001,7 @@
 
     });
 
-    $("#export_not_marks_xl").click(function(e) {
+    $("#export_not_marks_xl").click(function (e) {
         $("#marksNotEntered_excel").table2excel({
             // $("#mytable").find($("tr")).slice(1).remove();
             name: " Student Marks Not Enter",
@@ -1017,7 +1017,7 @@
     });
 
 
-    $("#expore_marks_xl").click(function(e) {
+    $("#expore_marks_xl").click(function (e) {
         var type = 'studentMarks_excel';
         var section = $('#pupilsightRollGroupIDbyPP').val();
         var cls = $('#pupilsightYearGroupIDbyPP').val();
@@ -1029,7 +1029,7 @@
             type: 'post',
             data: { val: val, type: type, program: program, cls: cls, section: section, testId: testId },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 //alert(response);
                 $("#marks_studentExcel").html(response);
                 $("#excelexport").table2excel({
@@ -1046,7 +1046,7 @@
     });
 
 
-    $("#expore_marks_sub_xl").click(function(e) {
+    $("#expore_marks_sub_xl").click(function (e) {
         var type = 'subjectMarks_excel';
         var section = $('#pupilsightRollGroupIDbyPP').val();
         var cls = $('#pupilsightYearGroupIDbyPP').val();
@@ -1060,7 +1060,7 @@
             type: 'post',
             data: { val: val, type: type, program: program, cls: cls, section: section, testId: testId, sub: sub },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 //console.log(response);
                 $("#marks_subjectExcel").html(response);
                 $("#subexcelexport").table2excel({
@@ -1141,11 +1141,11 @@
             rowDelim = '"\r\n"',
 
             // Grab text from table into CSV formatted string
-            csv = '"' + $rows.map(function(i, row) {
+            csv = '"' + $rows.map(function (i, row) {
                 var $row = jQuery(row),
                     $cols = $row.find('td,th');
 
-                return $cols.map(function(j, col) {
+                return $cols.map(function (j, col) {
                     var $col = jQuery(col),
                         text = $col.text();
 
@@ -1154,8 +1154,8 @@
                 }).get().join(tmpColDelim);
 
             }).get().join(tmpRowDelim)
-            .split(tmpRowDelim).join(rowDelim)
-            .split(tmpColDelim).join(colDelim) + '"',
+                .split(tmpRowDelim).join(rowDelim)
+                .split(tmpColDelim).join(colDelim) + '"',
 
 
 
@@ -1175,7 +1175,7 @@
     }
 
 
-    $('#expore_csv').click(function() {
+    $('#expore_csv').click(function () {
         // var html = document.getElementById('expore_tbl').innerHTML;
         // // var html = document.getElementById('expore_tbl').innerHTML;
         // export_table_to_csv(html, "campaign_submitted_form_list.csv");
@@ -1186,14 +1186,14 @@
 
     $("#start_date").datepicker({
         //minDate: 0,
-        onClose: function(selectedDate) {
+        onClose: function (selectedDate) {
             $("#end_date").datepicker("option", "minDate", selectedDate);
         }
     });
 
 
 
-    $(document).on('change', '#academic_year', function() {
+    $(document).on('change', '#academic_year', function () {
         var val = $(this).val();
         var type = 'getterm';
         if (val != '') {
@@ -1202,14 +1202,14 @@
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#schoolterm").html(response);
                 }
             });
         }
     });
 
-    $(document).on('change', '#schoolterm', function() {
+    $(document).on('change', '#schoolterm', function () {
         var val = $(this).val();
         var type = 'gettermdaterange';
         if (val != '') {
@@ -1219,7 +1219,7 @@
                 data: { val: val, type: type },
                 dataType: "json",
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     var minDate = response.firstDay;
                     var maxDate = response.lastDay;
                     $('#f_date').datepicker('option', 'minDate', new Date(minDate));
@@ -1282,18 +1282,18 @@
     //     }
     // }
 
-    $(document).on('keypress', '#numAllow', function(e) {
+    $(document).on('keypress', '#numAllow', function (e) {
         var keyCode = e.which;
         if ((keyCode != 8 || keyCode == 32) && (keyCode < 48 || keyCode > 57)) {
             return false;
         }
     });
 
-    $(document).on('keydown', '.numfield', function(event) {
+    $(document).on('keydown', '.numfield', function (event) {
         if (event.shiftKey == true) {
             event.preventDefault();
         }
-        
+
         if ((event.keyCode >= 48 && event.keyCode <= 57) ||
             (event.keyCode >= 96 && event.keyCode <= 105) ||
             event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 ||
@@ -1307,8 +1307,8 @@
             event.preventDefault();
     });
 
-    $("#timefield").focusin(function(evt) {
-        $(this).keypress(function() {
+    $("#timefield").focusin(function (evt) {
+        $(this).keypress(function () {
             var content = $(this).val();
             var content1 = content.replace(/\:/g, '');
             var length = content1.length;
@@ -1319,7 +1319,7 @@
     });
 
 
-    $(document).on('click', '#addFixedMultipleFineRule', function() {
+    $(document).on('click', '#addFixedMultipleFineRule', function () {
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
@@ -1328,7 +1328,7 @@
 
     });
 
-    $(document).on('click', '#addDaySlabFineRule', function() {
+    $(document).on('click', '#addDaySlabFineRule', function () {
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
@@ -1338,7 +1338,7 @@
     });
 
 
-    $(document).on('change', '.parentfineType', function() {
+    $(document).on('change', '.parentfineType', function () {
         var cid = $(this).val();
         if ($(this).is(':checked')) {
             $(".hdefield").attr("readonly", true);
@@ -1387,7 +1387,7 @@
 
     });
 
-    $(document).on('change', '.fineType', function() {
+    $(document).on('change', '.fineType', function () {
         var cid = $(this).val();
         if ($(this).is(':checked')) {
             $(".hdefield").attr("readonly", true);
@@ -1419,7 +1419,7 @@
 
     $("#fdate").datepicker({
         //minDate: 0,
-        onClose: function() {
+        onClose: function () {
             var date2 = $(this).datepicker('getDate');
             date2.setDate(date2.getDate() + 1);
 
@@ -1431,18 +1431,18 @@
         //minDate: 0
     });
 
-    $("#tdate").on("change", function() {
+    $("#tdate").on("change", function () {
         var date2 = $(this).datepicker('getDate', '+1d');
         date2.setDate(date2.getDate() + 1);
         var selected = $.datepicker.formatDate('dd/mm/yy', date2);
         $("input[name=lastDate]").val(selected);
     });
 
-    $(".fdate").live('click', function() {
+    $(".fdate").live('click', function () {
         var aid = $(this).attr('data-aid');
         $(this).datepicker({
             minDate: $("input[name=lastDate]").val(),
-            onClose: function() {
+            onClose: function () {
                 var date2 = $(this).datepicker('getDate');
                 date2.setDate(date2.getDate() + 1);
                 var selected = $.datepicker.formatDate('dd/mm/yy', date2);
@@ -1451,11 +1451,11 @@
         }).datepicker("show");
     });
 
-    $(".tdate").live('click', function() {
+    $(".tdate").live('click', function () {
         var aid = $(this).attr('data-aid');
         $(this).datepicker({
             minDate: $("input[name=startDate]").val(),
-            onClose: function() {
+            onClose: function () {
                 var date2 = $(this).datepicker('getDate');
                 date2.setDate(date2.getDate() + 1);
                 var selected = $.datepicker.formatDate('dd/mm/yy', date2);
@@ -1464,7 +1464,7 @@
         }).datepicker("show");
     });
 
-    $(document).on('click', '.delFineRuleType', function() {
+    $(document).on('click', '.delFineRuleType', function () {
         var val = $(this).attr('data-id');
         var type = 'delFineRuleType';
         if (val != '') {
@@ -1474,7 +1474,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $(".deltr" + val).remove();
                     }
                 });
@@ -1482,7 +1482,7 @@
         }
     });
 
-    $(document).on('click', '#addCategoryRule', function() {
+    $(document).on('click', '#addCategoryRule', function () {
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
@@ -1492,13 +1492,13 @@
             type: 'post',
             data: { val: ncid, type: type },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#seatdiv2").before(response);
             }
         });
     });
 
-    $(document).on('click', '#addInvoiceCountRule', function() {
+    $(document).on('click', '#addInvoiceCountRule', function () {
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
@@ -1508,13 +1508,13 @@
             type: 'post',
             data: { val: ncid, type: type },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#lastseatdiv").before(response);
             }
         });
     });
 
-    $(document).on('change', '.discountfineType', function() {
+    $(document).on('change', '.discountfineType', function () {
         var cid = $(this).val();
         if ($(this).is(':checked')) {
             // $(".hdefield").attr("readonly", true); 
@@ -1554,7 +1554,7 @@
     });
 
 
-    $(document).on('click', '.delDiscountRuleType', function() {
+    $(document).on('click', '.delDiscountRuleType', function () {
         var val = $(this).attr('data-id');
         var type = 'delDiscountRuleType';
         if (val != '') {
@@ -1564,7 +1564,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $(".deltr" + val).remove();
                     }
                 });
@@ -1572,7 +1572,7 @@
         }
     });
 
-    $(document).on('click', '#addFeeStructureItem', function() {
+    $(document).on('click', '#addFeeStructureItem', function () {
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
@@ -1583,13 +1583,13 @@
             type: 'post',
             data: { val: ncid, type: type, disid: disid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#lastseatdiv").before(response);
             }
         });
     });
 
-    $(document).on('click', '.delFeeStructureItem', function() {
+    $(document).on('click', '.delFeeStructureItem', function () {
         var val = $(this).attr('data-id');
         var type = 'delFeeStructureItem';
         if (val != '') {
@@ -1599,7 +1599,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $(".deltr" + val).remove();
                     }
                 });
@@ -1608,10 +1608,10 @@
     });
 
 
-    $(document).on('change', '#feeStructureItemDisableId', function(e) {
+    $(document).on('change', '#feeStructureItemDisableId', function (e) {
         e.preventDefault();
         var favorite = [];
-        $(".allFeeItemId").each(function() {
+        $(".allFeeItemId").each(function () {
             favorite.push($(this).val());
         });
         var getid = favorite.join(",");
@@ -1620,10 +1620,10 @@
         $("#addInvoiceItem").attr('data-disid', newdisid);
     });
 
-    $(document).on('click', '#assignStudentPage', function() {
+    $(document).on('click', '#assignStudentPage', function () {
         var url = $(this).attr('data-href');
         var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -1637,7 +1637,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickStudentPage").click();
                     }
                 });
@@ -1649,7 +1649,7 @@
 
 
 
-    $(document).on('change', '#onwardroute', function() {
+    $(document).on('change', '#onwardroute', function () {
         var selected_route = $("#onwardroute").val();
         //alert(selected_route);
         if (selected_route) {
@@ -1661,7 +1661,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#onward_stops").html('');
                         $("#onward_stops").html(response);
 
@@ -1674,7 +1674,7 @@
             alert('You Have to Select route.');
         }
     });
-    $(document).on('change', '#return_rt', function() {
+    $(document).on('change', '#return_rt', function () {
         var selected_route = $("#return_rt").val();
         if (selected_route) {
             var val = selected_route;
@@ -1685,7 +1685,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#toward_stops").html('');
                         $("#toward_stops").html(response);
 
@@ -1699,7 +1699,7 @@
         }
     });
 
-    $(document).on('change', '#onward_rt_new', function() {
+    $(document).on('change', '#onward_rt_new', function () {
         var selected_route = $(this).val();
         if (selected_route) {
             var val = selected_route;
@@ -1710,7 +1710,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#onward_sp_new").html('');
                         $("#onward_sp_new").html(response);
                         if ($("#addReturnRoute").is(':checked')) {
@@ -1727,7 +1727,7 @@
         }
     });
 
-    $(document).on('change', '#return_rt_new', function() {
+    $(document).on('change', '#return_rt_new', function () {
         var selected_route = $("#return_rt_new").val();
         if (selected_route) {
             var val = selected_route;
@@ -1738,7 +1738,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#return_sp_new").html('');
                         $("#return_sp_new").html(response);
 
@@ -1752,11 +1752,11 @@
         }
     });
 
-    $(document).on('click', '#assignStudentroute', function() {
+    $(document).on('click', '#assignStudentroute', function () {
         var atype = $(this).attr('data-type');
         var favorite = [];
         var flag = true;
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             var routeid = $(this).attr("routeid");
             if (routeid != "") {
                 alert("User is allready assigned for the route.");
@@ -1781,7 +1781,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickStudentroute").click();
                     }
                 });
@@ -1796,7 +1796,7 @@
         }
     });
 
-    $(document).on('click', '#btn_transport_assign_route', function() {
+    $(document).on('click', '#btn_transport_assign_route', function () {
         var transFor = $("#transport_for").val();
         if (transFor == "") {
             alert("Select transport oneway or two way.");
@@ -1867,14 +1867,14 @@
         document.getElementById("frm_transport_assign_route").submit();
     });
 
-    $(document).on('click', '#unassignStudentroute', function() {
+    $(document).on('click', '#unassignStudentroute', function () {
         var atype = $(this).attr('data-type');
         if (atype == 'student') {
             var url = $(this).attr('data-href');
             var favorite = [];
             var stuname = [];
             var flag = true;
-            $.each($("input[name='stuid[]']:checked"), function() {
+            $.each($("input[name='stuid[]']:checked"), function () {
                 var routeid = $(this).attr("routeid");
                 var routepaid = $(this).attr("data-chk");
                 var routeretpaid = $(this).attr("data-rtchk");
@@ -1926,7 +1926,7 @@
                             type: 'post',
                             data: { val: val, type: type },
                             async: true,
-                            success: function(response) {
+                            success: function (response) {
                                 location.reload();
                             }
                         });
@@ -1943,7 +1943,7 @@
             var url = $(this).attr('data-href');
             var favorite = [];
             var flag = true;
-            $.each($("input[name='stuid[]']:checked"), function() {
+            $.each($("input[name='stuid[]']:checked"), function () {
                 var routeid = $(this).attr("routeid");
                 if (routeid == "") {
                     if (atype == 'student') {
@@ -1980,7 +1980,7 @@
                             type: 'post',
                             data: { val: val, type: type },
                             async: true,
-                            success: function(response) {
+                            success: function (response) {
                                 location.reload();
                             }
                         });
@@ -1998,7 +1998,7 @@
 
 
 
-    $(document).on('click', '#changeStudentroute', function() {
+    $(document).on('click', '#changeStudentroute', function () {
         var atype = $(this).attr('data-type');
 
         if (atype == 'student') {
@@ -2009,7 +2009,7 @@
             } else {
                 var favorite = [];
                 var stuname = [];
-                $.each($("input[name='stuid[]']:checked"), function() {
+                $.each($("input[name='stuid[]']:checked"), function () {
                     var routepaid = $(this).attr("data-chk");
                     var routeretpaid = $(this).attr("data-rtchk");
                     var name = $(this).attr("data-name");
@@ -2035,7 +2035,7 @@
                                 type: 'post',
                                 data: { val: val, type: type },
                                 async: true,
-                                success: function(response) {
+                                success: function (response) {
                                     $("#changeClickStudentroute").click();
                                 }
                             });
@@ -2057,7 +2057,7 @@
                 return false;
             } else {
                 var favorite = [];
-                $.each($("input[name='stuid[]']:checked"), function() {
+                $.each($("input[name='stuid[]']:checked"), function () {
                     favorite.push($(this).val());
                 });
                 var stuid = favorite.join(",");
@@ -2072,7 +2072,7 @@
                                 type: 'post',
                                 data: { val: val, type: type },
                                 async: true,
-                                success: function(response) {
+                                success: function (response) {
                                     $("#changeClickStudentroute").click();
                                 }
                             });
@@ -2090,10 +2090,10 @@
     });
 
 
-    $(document).on('click', '#deleteStudentPage', function() {
+    $(document).on('click', '#deleteStudentPage', function () {
         var url = $(this).attr('data-href');
         var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -2107,7 +2107,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#deleteStudentFeeStructure").click();
                     }
                 });
@@ -2117,10 +2117,10 @@
         }
     });
 
-    $(document).on('click', '#massDeleteStudentPage', function() {
+    $(document).on('click', '#massDeleteStudentPage', function () {
         var url = $(this).attr('data-href');
         var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -2134,7 +2134,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#massDeleteStudentFeeStructure").click();
                     }
                 });
@@ -2144,7 +2144,7 @@
         }
     });
 
-    $(document).on('click', '#addInvoiceItem', function() {
+    $(document).on('click', '#addInvoiceItem', function () {
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
@@ -2155,13 +2155,13 @@
             type: 'post',
             data: { val: ncid, type: type, disid: disid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#lastseatdiv").before(response);
             }
         });
     });
 
-    $(document).on('click', '.delInvoiceItem', function() {
+    $(document).on('click', '.delInvoiceItem', function () {
         var val = $(this).attr('data-id');
         var type = 'delInvoiceItem';
         if (val != '') {
@@ -2171,14 +2171,14 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $(".deltr" + val).remove();
                     }
                 });
             }
         }
     });
-    $(document).on('change', '.invoice_studentByClass', function() {
+    $(document).on('change', '.invoice_studentByClass', function () {
         var val = $(this).val();
         var pid = $(".program_cls option:selected").val();
         var type = 'filterstudentbyclass';
@@ -2188,7 +2188,7 @@
                 type: 'post',
                 data: { val: val, type: type, pid: pid },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#filterStudentByClass").html('');
                     $("#filterStudentByClass").html(response);
                 }
@@ -2196,7 +2196,7 @@
         }
     });
 
-    $(document).on('change', '#studentByClass', function() {
+    $(document).on('change', '#studentByClass', function () {
         var val = $(this).val();
         var type = 'filterstudentbyclass';
         if (val != '') {
@@ -2205,7 +2205,7 @@
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#filterStudentByClass").html('');
                     $("#filterStudentByClass").html(response);
                 }
@@ -2213,11 +2213,11 @@
         }
     });
 
-    $(document).on('click', '#quickpaymentpage', function() {
+    $(document).on('click', '#quickpaymentpage', function () {
 
         var url = $(this).attr('data-href');
         var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -2231,7 +2231,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickQuickcashpaymentPage").click();
                     }
                 });
@@ -2244,13 +2244,13 @@
     });
     // for quick cash payment 
 
-    $(document).on('keyup', '#program_quick #amount', function() {
+    $(document).on('keyup', '#program_quick #amount', function () {
         var amount = 0;
         var fine = 0;
         var grndtot = 0;
 
         var amount = parseInt($(this).val()) || 0;
-        $(document).on('keyup', '#fine', function() {
+        $(document).on('keyup', '#fine', function () {
             var fine = parseInt($('#fine').val()) || 0;
             var grndtot = (amount + fine);
             $("#grand_total").val(grndtot);
@@ -2261,19 +2261,19 @@
 
     });
 
-    $(document).on('click', '#makePayment', function() {
+    $(document).on('click', '#makePayment', function () {
         $("#collectionForm").show();
         $("#FeeItemManage").show();
         $(".hideFeeItemContent").show();
     });
 
-    $(document).on('click', '#closePayment', function() {
+    $(document).on('click', '#closePayment', function () {
         $(".btn_invoice_link_collection").show();
         $(".addInvoiceLinkCollection").show();
         $(".btn_cancel_invoice_collection").show();
         $(".chkinvoice").show();
         $(".apply_discount_btn").show();
-        $('.chkinvoiceM').each(function() {
+        $('.chkinvoiceM').each(function () {
             this.checked = false;
         });
         $('#chkAllInvoice').removeAttr('checked');
@@ -2285,9 +2285,9 @@
         $('.icon_1').addClass('fa-arrow-down');
         $(".chkinvoice").prop('checked', false);
     });
-    $(document).on('change', '.chkinvoiceM', function() {
+    $(document).on('change', '.chkinvoiceM', function () {
         var favorite = [];
-        $.each($(".chkinvoiceM:checked"), function() {
+        $.each($(".chkinvoiceM:checked"), function () {
             favorite.push($(this).val());
         });
         var l = favorite.length;
@@ -2305,7 +2305,7 @@
             $(".btn_cancel_invoice_collection").hide();
         }
     });
-    $(document).on('change', '#chkAllInvoice', function() {
+    $(document).on('change', '#chkAllInvoice', function () {
         if ($(this).is(':checked')) {
             $(".chkinvoice").show();
             $(".apply_discount_btn").show();
@@ -2356,7 +2356,7 @@
     });
 
 
-    $(document).on('click', '.chkinvoice', function() {
+    $(document).on('click', '.chkinvoice', function () {
         $("#collectionForm")[0].reset();
         $(".ddChequeRow").addClass('hiddencol');
         var favorite = [];
@@ -2364,7 +2364,7 @@
         var series = [];
         var aedt = [];
         var ife = [];
-        $.each($(".chkinvoiceM:checked"), function() {
+        $.each($(".chkinvoiceM:checked"), function () {
             favorite.push($(this).val());
             account_heads.push($(this).attr("data-h"));
             series.push($(this).attr("data-se"));
@@ -2384,8 +2384,8 @@
                     chkStatus = true;
                 } else {
                     chkStatus = false;
-                } 
-            } 
+                }
+            }
 
             //ajax request
             if (chkStatus == true) {
@@ -2396,7 +2396,7 @@
                     type: 'post',
                     data: { val: invids, type: type, sid: sid },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $(".btn_invoice_link_collection").hide();
                         $(".addInvoiceLinkCollection").hide();
                         $(".btn_cancel_invoice_collection").hide();
@@ -2429,7 +2429,7 @@
                             $("#fine").attr("readonly", true);
                         }
 
-                        setTimeout(function() {
+                        setTimeout(function () {
                             $("#chkAllFeeItem").prop("checked", true).trigger("change");
                         }, 1000);
 
@@ -2447,7 +2447,7 @@
     });
 
 
-    $(document).on('change', '#chkAllFeeItem', function() {
+    $(document).on('change', '#chkAllFeeItem', function () {
         if ($(this).is(':checked')) {
             $(".selFeeItem").prop('checked', true);
             addInvoiceFeeAmt();
@@ -2458,7 +2458,7 @@
 
     });
 
-    $(document).on('change', '.selFeeItem', function() {
+    $(document).on('change', '.selFeeItem', function () {
         /*
         if($(this).is(':checked')){
            addInvoiceFeeAmt();
@@ -2472,7 +2472,7 @@
     });
 
     function waitAddInvoiceFeeAmt() {
-        setTimeout(function() {
+        setTimeout(function () {
             addInvoiceFeeAmt();
         }, 100);
     }
@@ -2489,7 +2489,7 @@
 
         //only for number invoice
         var percentageFlag = false;
-        $.each($(".selFeeItem:checked"), function() {
+        $.each($(".selFeeItem:checked"), function () {
 
             var flag = false;
             var invid = $(this).attr('data-invid');
@@ -2528,7 +2528,7 @@
         //only for percentage invoice
         if (percentageFlag) {
             //console.log("cehck perc");
-            $.each($(".selFeeItem:checked"), function() {
+            $.each($(".selFeeItem:checked"), function () {
                 //console.log(this);
                 var flag = false;
                 var invid = $(this).attr('data-invid');
@@ -2582,7 +2582,7 @@
         $("input[name=chkamount]").val(amtpaying);
     }
 
-    $(document).on('click', '#searchInvoice', function() {
+    $(document).on('click', '#searchInvoice', function () {
         var pupilsightProgramID = $("#pupilsightProgramID").val();
         var pupilsightSchoolYearID = $("#pupilsightSchoolYearID").val();
         var pupilsightYearGroupID = $("#pupilsightYearGroupID").val();
@@ -2596,7 +2596,7 @@
                 type: 'post',
                 data: { val: val, type: type, pupilsightProgramID: pupilsightProgramID, pupilsightSchoolYearID: pupilsightSchoolYearID, pupilsightYearGroupID: pupilsightYearGroupID, pupilsightRollGroupID: pupilsightRollGroupID, search: search },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //$("#studentList").html('');
                     $("#studentList").html('');
                     $("#studentList").html(response);
@@ -2611,7 +2611,7 @@
         }
     });
 
-    $('#simplesearch').keydown(function(e) {
+    $('#simplesearch').keydown(function (e) {
         if (e.keyCode == 13) {
             var val = '1';
             var type = 'searchStudent';
@@ -2622,7 +2622,7 @@
                     type: 'post',
                     data: { val: val, type: type, search: search },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         //$("#studentList").html('');
                         $("#studentList").html('');
                         $("#studentList").html(response);
@@ -2637,7 +2637,7 @@
         }
     })
 
-    $(document).on('click', '#searchStudent', function() {
+    $(document).on('click', '#searchStudent', function () {
         var search = $("#simplesearch").val();
         var val = '1';
         var type = 'searchStudent';
@@ -2647,7 +2647,7 @@
                 type: 'post',
                 data: { val: val, type: type, search: search },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //$("#studentList").html('');
                     $("#studentList").html('');
                     $("#studentList").html(response);
@@ -2660,33 +2660,33 @@
         }
     });
 
-    $(document).on('click', '#advanceSearch', function() {
+    $(document).on('click', '#advanceSearch', function () {
         $("#advanceSearchRow").removeClass('hiddencol');
         $("#normalSearchRow").addClass('hiddencol');
     });
 
-    $(document).on('click', '#normalSearch', function() {
+    $(document).on('click', '#normalSearch', function () {
         $("#advanceSearchRow").addClass('hiddencol');
         $("#normalSearchRow").removeClass('hiddencol');
     });
 
-    $(document).on('click', '#selStudent', function() {
+    $(document).on('click', '#selStudent', function () {
         var sid = $(this).val();
         $("input[name=studentId]").val(sid);
         $("input[name=pupilsightPersonID]").val(sid);
         $("#simplesubmitInvoice").click();
     });
 
-    
 
-    $(document).on('click', '#refundTransaction', function() {
+
+    $(document).on('click', '#refundTransaction', function () {
         var checked = $("input[name='collection_id[]']:checked").length;
         if (checked > 1) {
             alert("Please Select One Transaction!");
             return false;
         } else {
-            var favorite = []; 
-            $.each($("input[name='collection_id[]']:checked"), function() {
+            var favorite = [];
+            $.each($("input[name='collection_id[]']:checked"), function () {
                 favorite.push($(this).val());
             });
             var stuid = favorite.join(",");
@@ -2700,7 +2700,7 @@
                         type: 'post',
                         data: { val: val, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             $("#refundTransactionSubmit").click();
                         }
                     });
@@ -2711,17 +2711,17 @@
         }
     });
 
-    $(document).on('click', '#creatNum', function() {
+    $(document).on('click', '#creatNum', function () {
         $(".creatNum").removeClass('hidediv');
         $(".creatChar").addClass('hidediv');
     });
 
-    $(document).on('click', '#creatChar', function() {
+    $(document).on('click', '#creatChar', function () {
         $(".creatNum").addClass('hidediv');
         $(".creatChar").removeClass('hidediv');
     });
 
-    $(document).on('click', '#addNum', function() {
+    $(document).on('click', '#addNum', function () {
         var id = $(this).attr('data-id');
         var format = $("#format").val();
         var format1 = $("#formatval").val();
@@ -2756,7 +2756,7 @@
 
     });
 
-    $(document).on('click', '#addChar', function() {
+    $(document).on('click', '#addChar', function () {
         var format = $("#format").val();
         var format1 = $("#formatval").val();
         var char = $("#start_char").val();
@@ -2778,14 +2778,14 @@
         }
     });
 
-    $(document).on('click', '#delFormatData', function() {
+    $(document).on('click', '#delFormatData', function () {
         $("#format").val('');
         $("#formatval").val('');
         ////$(".numfield").remove();
         $("#addNum").attr('data-id', 1);
     });
 
-    $(document).on('change', '#paymentMode', function() {
+    $(document).on('change', '#paymentMode', function () {
         //var val = $(this).val();
         var val = $("#paymentMode option:selected").text();
         val = val.toUpperCase();
@@ -2813,7 +2813,7 @@
                     type: 'post',
                     data: { val: amount, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#multiplePayment").click();
                     }
                 });
@@ -2831,7 +2831,7 @@
         }
     });
 
-    $(document).on('click', '.chkCounter', function() {
+    $(document).on('click', '.chkCounter', function () {
         var pageURL = $(location).attr("href");
         var n = pageURL.lastIndexOf('/');
         var result = pageURL.substring(n + 1);
@@ -2850,18 +2850,18 @@
                 width: 400,
                 modal: true,
                 buttons: [{
-                        text: "Yes",
-                        click: function() {
-                            div.dialog("close");
-                        }
-                    },
-                    {
-                        text: "No",
-                        click: function() {
-                            div.dialog("close");
-                            window.location = url;
-                        }
+                    text: "Yes",
+                    click: function () {
+                        div.dialog("close");
                     }
+                },
+                {
+                    text: "No",
+                    click: function () {
+                        div.dialog("close");
+                        window.location = url;
+                    }
+                }
                 ]
             });
             return false;
@@ -2874,14 +2874,14 @@
                     var id = chkcounter;
                     var hrf = 'fullscreen.php?q=/modules/Finance/fee_counter_check_add.php';
                     $(".collectionMenu").addClass('thickbox');
-                    $(".collectionMenu").attr('href','');
-                    $(".collectionMenu").attr('href',hrf);
+                    $(".collectionMenu").attr('href', '');
+                    $(".collectionMenu").attr('href', hrf);
                     $.ajax({
                         url: 'ajax_data.php',
                         type: 'post',
                         data: { val: id, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             return true;
                             //$("#chkCounterSession").attr('data-val', '');
                         }
@@ -2897,7 +2897,7 @@
     });
 
 
-    $(document).on('change', '#recptSerId', function() {
+    $(document).on('change', '#recptSerId', function () {
         var val = $(this).val();
         if (val != '') {
             $("#receipt_number").attr('readonly', true);
@@ -2908,7 +2908,7 @@
         }
     });
 
-    $(document).on('change', '.taxOptionSelect', function() {
+    $(document).on('change', '.taxOptionSelect', function () {
         var val = $(this).val();
         var id = $(this).attr('data-id');
         if (val == 'Y') {
@@ -2919,7 +2919,7 @@
         }
     });
 
-    $("#export_transaction").click(function(e) {
+    $("#export_transaction").click(function (e) {
         $('#expore_tbl').find('td,th').first().remove();
         $('#expore_tbl ').find('.bulkCheckbox').remove();
         $("#expore_tbl").table2excel({
@@ -2934,7 +2934,7 @@
 
     });
 
-    $("#export_invoice").click(function(e) {
+    $("#export_invoice").click(function (e) {
         $('#expore_tbl').find('td,th').last().remove();
         $('#expore_tbl ').find('.bulkCheckbox').remove();
         $("#expore_tbl").table2excel({
@@ -2948,9 +2948,9 @@
     });
 
 
-    $(document).on('keyup', '.kountAmt', function() {
+    $(document).on('keyup', '.kountAmt', function () {
         var tamt = 0;
-        $(".kountAmt").each(function() {
+        $(".kountAmt").each(function () {
             if ($(this).val() != '') {
                 var amt = $(this).val();
             } else {
@@ -2970,7 +2970,7 @@
     //     scroller: true
     // });
 
-    $(document).on('change', '#pupilsightProgramID', function() {
+    $(document).on('change', '#pupilsightProgramID', function () {
         var id = $(this).val();
         var type = 'getClass';
         $.ajax({
@@ -2978,7 +2978,7 @@
             type: 'post',
             data: { val: id, type: type },
             async: true,
-            success: function(response) {
+            success: function (response) {
 
                 $("#pupilsightYearGroupID").html();
                 $("#pupilsightYearGroupID").html(response);
@@ -2986,7 +2986,7 @@
         });
     });
 
-    $(document).on('change', '#pupilsightYearGroupID', function() {
+    $(document).on('change', '#pupilsightYearGroupID', function () {
         var id = $(this).val();
         var pid = $('#pupilsightProgramID').val();
         var type = 'getSection';
@@ -2995,7 +2995,7 @@
             type: 'post',
             data: { val: id, type: type, pid: pid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#pupilsightRollGroupID").html();
                 $("#pupilsightRollGroupID").html(response);
             }
@@ -3030,9 +3030,9 @@
     //     }
     // });
 
-    $(document).on('click', '#transactionStatusChange', function() {
+    $(document).on('click', '#transactionStatusChange', function () {
         var transaction = [];
-        $.each($("input[name='collection_id[]']:checked"), function() {
+        $.each($("input[name='collection_id[]']:checked"), function () {
             transaction.push($(this).val());
         });
         var transid = transaction.join(",");
@@ -3043,7 +3043,7 @@
                 type: 'post',
                 data: { val: transid, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#updateTransactionStatus").click();
                 }
             });
@@ -3055,7 +3055,7 @@
     /* Santrupthi Code*/
 
 
-    $(document).on('change', '#transport_for', function() {
+    $(document).on('change', '#transport_for', function () {
         $("#oneway_bl,#oneway_bl1,#oneway_bl2,#twoway_bl1,#twoway_bl2,#twoway_bl3").hide();
         var route = $("#transport_for").val();
         if (route == 'oneway') {
@@ -3067,7 +3067,7 @@
 
         }
     })
-    $(document).on('change', '#select_route', function() {
+    $(document).on('change', '#select_route', function () {
         $("#oneway_bl1,#oneway_bl2").hide();
         var oneway = $("#select_route").val();
         if (oneway == 'onward') {
@@ -3081,7 +3081,7 @@
 
     /* Santrupthi Code*/
 
-    $(document).on('change', '#enableGateway', function() {
+    $(document).on('change', '#enableGateway', function () {
         var val = $(this).val();
         // $('#enableSelectGateway').removeAttr('required')
 
@@ -3096,12 +3096,12 @@
         }
     });
 
-    $(document).on('click', '#alertData', function() {
+    $(document).on('click', '#alertData', function () {
         alert("You Can't Edit or Delete because Invoices are generated for this fee head");
         return false;
     });
 
-    $(document).on('click', '#chkSubmit', function() {
+    $(document).on('click', '#chkSubmit', function () {
         var sname = $("#series_name").val();
         var fmat = $("#format").val();
         var newformat = '{AB}';
@@ -3127,7 +3127,7 @@
         }
     });
 
-    $(document).on('click', '#deactiveCounter', function() {
+    $(document).on('click', '#deactiveCounter', function () {
         if (confirm("Are you sure want to Deactive Counter?")) {
             var type = 'deactiveCounter';
             var val = $(this).attr('data-id');
@@ -3136,17 +3136,17 @@
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     location.reload();
                 }
             });
         }
     });
 
-    
-    $(document).on('click', '.sendButton', function() {
+
+    $(document).on('click', '.sendButton', function () {
         var stuids = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             stuids.push($(this).val());
         });
         var stuid = stuids.join(",");
@@ -3176,7 +3176,7 @@
             }
         } else {
             alert('You Have to Select Route First');
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 $("#large-modal-new").removeClass('show');
                 $("#chkCounterSession").removeClass('modal-open');
                 $(".modal-backdrop").remove();
@@ -3185,12 +3185,12 @@
 
     });
 
-    $(document).on('click', '#sendEmailSms', function() {
+    $(document).on('click', '#sendEmailSms', function () {
 
         var emailquote = $("#emailQuoteRoute").val();
         var smsquote = $("#smsQuoteRoute").val();
         var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(", ");
@@ -3203,7 +3203,7 @@
                     type: 'post',
                     data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         alert("Message Succesfully Sent");
                         location.reload();
                     }
@@ -3235,7 +3235,7 @@
         }
     }
 
-    $(document).on('change', '#feetype', function() {
+    $(document).on('change', '#feetype', function () {
         var val = $(this).val();
         $('#due_day').empty();
         $('#hiderow').show();
@@ -3254,7 +3254,7 @@
     });
 
 
-    $(document).on('change', '#studentByClassTransport', function() {
+    $(document).on('change', '#studentByClassTransport', function () {
         var val = $(this).val();
         var type = 'filterstudentbyclassTransport';
         if (val != '') {
@@ -3263,7 +3263,7 @@
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#filterStudentByClass").html('');
                     $("#filterStudentByClass").html(response);
                 }
@@ -3271,7 +3271,7 @@
         }
     });
 
-    $(document).on('click', '#transportFeeAdd', function() {
+    $(document).on('click', '#transportFeeAdd', function () {
         var val = $(this).attr('data-id');
         var rttype = $(this).attr('data-type');
         var newval = Number(val) + 1;
@@ -3288,14 +3288,14 @@
                 type: 'post',
                 data: { val: newval, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#lastseatdiv").before(response);
                 }
             });
         }
     });
 
-    $(document).on('change', '#trans_type', function() {
+    $(document).on('change', '#trans_type', function () {
         var val = $(this).val();
         $(".submtc").removeClass('hiddencol');
         if (val == 'Route') {
@@ -3310,7 +3310,7 @@
         }
     });
 
-    $(document).on('change', '#stop_route_id', function() {
+    $(document).on('change', '#stop_route_id', function () {
         var val = $(this).val();
         var type = 'getAjaxTransportStopFee';
         if (val != '') {
@@ -3319,7 +3319,7 @@
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $(".stopPrice").remove();
                     $(".showStopData").after(response);
                 }
@@ -3328,9 +3328,9 @@
     });
 
 
-    $(document).on('click', '.sendButton_stud', function() {
+    $(document).on('click', '.sendButton_stud', function () {
         var stuids = [];
-        $.each($("input[name='student_id[]']:checked"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
             stuids.push($(this).val());
         });
         var stuid = stuids.join(",");
@@ -3360,7 +3360,7 @@
             }
         } else {
             alert('You Have to Select Student First');
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 $("#large-modal-new_stud").removeClass('show');
                 $("#chkCounterSession").removeClass('modal-open');
                 $(".modal-backdrop").remove();
@@ -3369,12 +3369,12 @@
 
     });
 
-    $(document).on('click', '#sendEmailSms_stud', function() {
+    $(document).on('click', '#sendEmailSms_stud', function () {
 
         var emailquote = $("#emailQuote_stud").val();
         var smsquote = $("#smsQuote_stud").val();
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(", ");
@@ -3387,7 +3387,7 @@
                     type: 'post',
                     data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         alert('Your Message Sent Successfully! click Ok to continue ');
                         location.reload();
                     }
@@ -3405,9 +3405,9 @@
 
 
 
-    $(document).on('click', '.sendButton_staff', function() {
+    $(document).on('click', '.sendButton_staff', function () {
         var stuids = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             stuids.push($(this).val());
         });
         var stuid = stuids.join(",");
@@ -3437,7 +3437,7 @@
             }
         } else {
             alert('You Have to Select Staff');
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 $("#large-modal-new_staff").removeClass('show');
                 $("#chkCounterSession").removeClass('modal-open');
                 $(".modal-backdrop").remove();
@@ -3446,12 +3446,12 @@
 
     });
 
-    $(document).on('click', '#sendEmailSms_staff', function() {
+    $(document).on('click', '#sendEmailSms_staff', function () {
 
         var emailquote = $("#emailQuote_staff").val();
         var smsquote = $("#smsQuote_staff").val();
         var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(", ");
@@ -3464,7 +3464,7 @@
                     type: 'post',
                     data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         alert('Your Message Sent Successfully! click Ok to continue ');
                         location.reload();
                     }
@@ -3480,12 +3480,12 @@
 
     //assign student to section
 
-    $(document).on('click', '#assignStuSec', function() {
+    $(document).on('click', '#assignStuSec', function () {
 
 
         var atype = $(this).attr('data-type');
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -3501,7 +3501,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
 
                         if (response == 0) {
                             $("#clickStudentsection").click();
@@ -3522,14 +3522,14 @@
 
     //assign_section
 
-    $(document).on('click', '.assign_section', function(e) {
+    $(document).on('click', '.assign_section', function (e) {
 
         e.preventDefault();
         var atype = $(this).attr('data-type');
         var url = $(this).attr('data-href');
         var section = $('#pupilsightRollGroupID_sel').val();
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -3545,7 +3545,7 @@
                         type: 'post',
                         data: { val: val, type: type, section: section },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             location.reload();
                         }
                     });
@@ -3561,14 +3561,14 @@
     //remove_section
 
 
-    $(document).on('click', '.remove_section', function(e) {
+    $(document).on('click', '.remove_section', function (e) {
 
         e.preventDefault();
         var atype = $(this).attr('data-type');
         var url = $(this).attr('data-href');
         // var section = $('select[name="pupilsightRollGroupID"] option:selected').val();
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -3584,7 +3584,7 @@
                         type: 'post',
                         data: { val: val, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             location.reload();
                         }
                     });
@@ -3598,7 +3598,7 @@
     });
 
     //bulk student register,if students are not assigned or registered previously
-    $(document).on('click', '#bulk_student_reg', function() {
+    $(document).on('click', '#bulk_student_reg', function () {
 
 
         $("#click_bulkStudentregister").click();
@@ -3606,7 +3606,7 @@
 
     });
 
-    $(document).on('click', '.bulk_reg_students', function(e) {
+    $(document).on('click', '.bulk_reg_students', function (e) {
 
         e.preventDefault();
         var atype = $(this).attr('data-type');
@@ -3614,7 +3614,7 @@
         var prgm = $('select[name="pupilsightProgramID"] option:selected').val();
         var class_val = $('select[name="pupilsightYearGroupID"] option:selected').val();
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -3630,7 +3630,7 @@
                         type: 'post',
                         data: { val: val, type: type, prgm: prgm, class_val: class_val, stuid: stuid },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             // alert(response);
                             location.reload();
                         }
@@ -3649,7 +3649,7 @@
 
 
     //register-deregister 
-    $(document).on('click', '#register_deregister', function() {
+    $(document).on('click', '#register_deregister', function () {
 
 
         var atype = $(this).attr('data-type');
@@ -3669,7 +3669,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickStudent_reg_dereg").click();
                     }
                 });
@@ -3685,7 +3685,7 @@
 
 
 
-    $(document).on('change', '#reg_dereg_id', function() {
+    $(document).on('change', '#reg_dereg_id', function () {
 
 
         $(".dereg_col").show();
@@ -3701,7 +3701,7 @@
 
     //register-deregister 
     //attendance type 
-    $(document).on('change', '#att_type_id', function() {
+    $(document).on('change', '#att_type_id', function () {
 
         var att_type = $("#att_type_id").val();
         if (att_type == 1) {
@@ -3718,7 +3718,7 @@
     });
     //session_add
 
-    $(document).on('change', '#no_of_session', function() {
+    $(document).on('change', '#no_of_session', function () {
 
         var no_of_sessions = $(this).val();
 
@@ -3735,7 +3735,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         //  alert(response);
                         $("#session_table").show();
 
@@ -3748,12 +3748,12 @@
     });
 
 
-    $(document).on('click', '#assignStusub', function() {
+    $(document).on('click', '#assignStusub', function () {
 
 
         var atype = $(this).attr('data-type');
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -3769,7 +3769,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickStudentsubject").click();
                     }
                 });
@@ -3782,12 +3782,12 @@
         }
     });
 
-    $(document).on('click', '#assignStu_elesub', function() {
+    $(document).on('click', '#assignStu_elesub', function () {
 
 
         var atype = $(this).attr('data-type');
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -3805,7 +3805,7 @@
                         type: 'post',
                         data: { val: val, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             $("#clickStudent_elect_subject").click();
                         }
                     });
@@ -3824,7 +3824,7 @@
         }
     });
 
-    $(document).on('click', '.assign_elective_sub', function(e) {
+    $(document).on('click', '.assign_elective_sub', function (e) {
         e.preventDefault();
 
         //stud_id,pupilsightProgramID,pupilsightYearGroupID,subjects
@@ -3839,7 +3839,7 @@
         var favorite = [];
 
 
-        $.each($("input[name='pupilsightDepartmentIDs[]']:checked"), function() {
+        $.each($("input[name='pupilsightDepartmentIDs[]']:checked"), function () {
             favorite.push($(this).val());
         });
 
@@ -3858,7 +3858,7 @@
                     type: 'post',
                     data: { type: type, val: '', subjects: subjects, stud_id: stud_id, pupilsightProgramID: pupilsightProgramID, pupilsightYearGroupID: pupilsightYearGroupID },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
 
                         // alert(response);
                         location.reload();
@@ -3875,7 +3875,7 @@
 
     //transfer student
 
-    $(document).on('click', '#transfer_student', function() {
+    $(document).on('click', '#transfer_student', function () {
         var atype = $(this).attr('data-type');
         var favorite = [];
         /*  $.each($("input[name='student_id[]']:checked"), function() {
@@ -3893,7 +3893,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickStudent_transfer").click();
                     }
                 });
@@ -3910,7 +3910,7 @@
     //     includeSelectAllOption: true
     // });
 
-    $(document).on('click', '.assign_core_sub', function(e) {
+    $(document).on('click', '.assign_core_sub', function (e) {
         e.preventDefault();
         var pgrm_val = $('select[name="pupilsightProgramID_Mnew"] option:selected').val();
         var class_val = $('#showMultiClassByProg option:selected');
@@ -3921,12 +3921,12 @@
         var favorite = [];
         var clas_ids = [];
 
-        selected.each(function() {
+        selected.each(function () {
             //   message += $(this).text() + '' + $(this).val() + '\n';
             favorite.push($(this).val());
 
         });
-        class_val.each(function() {
+        class_val.each(function () {
             //   message += $(this).text() + '' + $(this).val() + '\n';
             clas_ids.push($(this).val());
 
@@ -3944,7 +3944,7 @@
                     type: 'post',
                     data: { type: type, subjects: subjects, val: val, pgrm_val: pgrm_val, class_val: classes },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         if (response == "success") {
                             alert('Assign subjects to class is successful');
                             window.location.reload();
@@ -3962,7 +3962,7 @@
         }
     });
 
-    $(document).on('click', '.assign_sec_sub', function(e) {
+    $(document).on('click', '.assign_sec_sub', function (e) {
         e.preventDefault();
         var pgrm_val = $('select[name="pupilsightProgramID"] option:selected').val();
         var class_val = $('select[name="pupilsightYearGroupID"] option:selected').val();
@@ -3972,7 +3972,7 @@
         var favorite = [];
 
 
-        selected.each(function() {
+        selected.each(function () {
             //   message += $(this).text() + '' + $(this).val() + '\n';
 
             favorite.push($(this).val());
@@ -3991,7 +3991,7 @@
                     type: 'post',
                     data: { type: type, subjects: subjects, pgrm_val: pgrm_val, class_val: class_val },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
 
                         location.reload();
                     }
@@ -4006,7 +4006,7 @@
     });
 
 
-    $(document).on('click', '.assign_third_sub', function(e) {
+    $(document).on('click', '.assign_third_sub', function (e) {
         e.preventDefault();
         var pgrm_val = $('select[name="pupilsightProgramID"] option:selected').val();
         var class_val = $('select[name="pupilsightYearGroupID"] option:selected').val();
@@ -4016,7 +4016,7 @@
         var favorite = [];
 
 
-        selected.each(function() {
+        selected.each(function () {
             //   message += $(this).text() + '' + $(this).val() + '\n';
 
             favorite.push($(this).val());
@@ -4035,7 +4035,7 @@
                     type: 'post',
                     data: { type: type, subjects: subjects, pgrm_val: pgrm_val, class_val: class_val },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
 
                         location.reload();
                     }
@@ -4049,7 +4049,7 @@
         }
     });
 
-    $(document).on('change', '#staffstatus', function() {
+    $(document).on('change', '#staffstatus', function () {
         $('#reasoninactive').hide();
 
         var status = $(this).val();
@@ -4061,10 +4061,10 @@
 
     });
 
-    $(document).on('change', '.select_sub', function() {
+    $(document).on('change', '.select_sub', function () {
 
         var favorite = [];
-        $.each($("input[name='selected_sub[]']:checked"), function() {
+        $.each($("input[name='selected_sub[]']:checked"), function () {
             favorite.push($(this).attr('id'));
 
         });
@@ -4078,7 +4078,7 @@
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
 
                 }
             });
@@ -4087,10 +4087,10 @@
     });
 
 
-    $(document).on('click', '#assignstaff_st', function() {
+    $(document).on('click', '#assignstaff_st', function () {
 
         var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -4104,7 +4104,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickstaffassign").click();
                     }
                 });
@@ -4119,10 +4119,10 @@
         }
     });
 
-    $(document).on('click', '#unassignStudentstaff', function() {
+    $(document).on('click', '#unassignStudentstaff', function () {
 
         var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
@@ -4137,7 +4137,7 @@
                         type: 'post',
                         data: { val: val, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             location.reload();
                         }
                     });
@@ -4148,7 +4148,7 @@
         }
     });
 
-    $(document).on('click', '#change_status', function() {
+    $(document).on('click', '#change_status', function () {
         // var atype = $(this).attr('data-type');
 
         var checked = $("input[name='stuid[]']:checked").length;
@@ -4159,7 +4159,7 @@
             return false;
         } else {
             var favorite = [];
-            $.each($("input[name='stuid[]']:checked"), function() {
+            $.each($("input[name='stuid[]']:checked"), function () {
                 favorite.push($(this).val());
             });
             var stuid = favorite.join(",");
@@ -4174,7 +4174,7 @@
                         type: 'post',
                         data: { val: val, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             $("#clickchnagestatus").click();
                         }
                     });
@@ -4186,7 +4186,7 @@
         }
     });
 
-    $(document).on('click', '#select_staff', function() {
+    $(document).on('click', '#select_staff', function () {
         // var atype = $(this).attr('data-type');
 
         var checked = $("input[name='staffid[]']:checked").length;
@@ -4197,7 +4197,7 @@
             return false;
         } else {
             var favorite = [];
-            $.each($("input[name='staffid[]']:checked"), function() {
+            $.each($("input[name='staffid[]']:checked"), function () {
                 favorite.push($(this).val());
             });
             var stuid = favorite.join(",");
@@ -4211,7 +4211,7 @@
                         type: 'post',
                         data: { val: val, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             $("#clickselectstaff").click();
                         }
                     });
@@ -4222,10 +4222,10 @@
             }
         }
     });
-    $(document).on('change', '.select_sstaff', function() {
+    $(document).on('change', '.select_sstaff', function () {
 
         var favorite = [];
-        $.each($("input[name='selected_sstaff[]']:checked"), function() {
+        $.each($("input[name='selected_sstaff[]']:checked"), function () {
             favorite.push($(this).attr('id'));
 
         });
@@ -4240,7 +4240,7 @@
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
 
                 }
             });
@@ -4248,10 +4248,10 @@
 
     });
 
-    $(document).on('change', '.select_sstaff', function() {
+    $(document).on('change', '.select_sstaff', function () {
 
         var favorite = [];
-        $.each($("input[name='selected_sstaff[]']:checked"), function() {
+        $.each($("input[name='selected_sstaff[]']:checked"), function () {
             favorite.push($(this).attr('id'));
 
         });
@@ -4266,7 +4266,7 @@
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
 
                 }
             });
@@ -4275,12 +4275,12 @@
     });
 
 
-    $(document).on('click', '#submitMasterDiscount', function() {
+    $(document).on('click', '#submitMasterDiscount', function () {
         var type = $(".discountfineType:checked").val();
 
         if (type == '1') {
             var error = '0';
-            $(".cat_name,.amtPercent").each(function() {
+            $(".cat_name,.amtPercent").each(function () {
                 if ($(this).val() != "") {
                     error = 1;
                     $(this).removeClass('erroralert');
@@ -4297,7 +4297,7 @@
             var error = '0';
             var error1 = '0';
             var error2 = '0';
-            $(".inv_name,.inv_amtPercent").each(function() {
+            $(".inv_name,.inv_amtPercent").each(function () {
                 if ($(this).val() != "") {
                     error = 1;
                     $(this).removeClass('erroralert');
@@ -4308,7 +4308,7 @@
                 }
             });
 
-            $(".min_inv").each(function() {
+            $(".min_inv").each(function () {
                 if ($(this).val() != "") {
                     error1 = 1;
                     $(this).removeClass('erroralert');
@@ -4319,7 +4319,7 @@
                 }
             });
 
-            $(".max_inv").each(function() {
+            $(".max_inv").each(function () {
                 if ($(this).val() != "") {
                     error2 = 1;
                     $(this).removeClass('erroralert');
@@ -4338,7 +4338,7 @@
     });
 
 
-    $(document).on('change', '#filterStructureOnAcademicYr', function() {
+    $(document).on('change', '#filterStructureOnAcademicYr', function () {
         var val = $(this).val();
         if (val != '') {
             $.ajax({
@@ -4346,7 +4346,7 @@
                 type: 'post',
                 data: { val: val },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#assignFeeStructure").html('');
                     $("#assignFeeStructure").html(response);
                 }
@@ -4355,7 +4355,7 @@
     });
 
 
-    $(document).on('click', '#copyFeeStructure', function() {
+    $(document).on('click', '#copyFeeStructure', function () {
         var name = $("#name").val();
         var acyear = $("#pupilsightSchoolYearID").val();
         var type = "chkFeeStructure";
@@ -4365,7 +4365,7 @@
                 type: 'post',
                 data: { val: name, acyear: acyear, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     if (response == 'exist') {
                         alert('This Fee Structure Already Exist');
                     } else {
@@ -4379,7 +4379,7 @@
     });
 
 
-    $(document).on('click', '#submitMasterFine', function() {
+    $(document).on('click', '#submitMasterFine', function () {
         var type = $(".parentfineType:checked").val();
         var childtype = $(".fineType:checked").val();
         if (type == '1') {
@@ -4431,7 +4431,7 @@
                 var error = '0';
                 var error1 = '0';
                 var error2 = '0';
-                $(".chkfrmdate").each(function() {
+                $(".chkfrmdate").each(function () {
                     if (!$(this).hasClass('mb-1')) {
                         if ($(this).val() != "") {
                             error = 1;
@@ -4444,7 +4444,7 @@
                     }
                 });
 
-                $(".chktodate").each(function() {
+                $(".chktodate").each(function () {
                     if (!$(this).hasClass('mb-1')) {
                         if ($(this).val() != "") {
                             error1 = 1;
@@ -4457,7 +4457,7 @@
                     }
                 });
 
-                $(".chkamnt").each(function() {
+                $(".chkamnt").each(function () {
                     if (!$(this).hasClass('mb-1')) {
                         if ($(this).val() != "") {
                             error2 = 1;
@@ -4567,7 +4567,7 @@
                 var error = '0';
                 var error1 = '0';
                 var error2 = '0';
-                $(".chkfrmday").each(function() {
+                $(".chkfrmday").each(function () {
                     if ($(this).val() != "") {
                         error = 1;
                         $(this).removeClass('erroralert');
@@ -4578,7 +4578,7 @@
                     }
                 });
 
-                $(".chktoday").each(function() {
+                $(".chktoday").each(function () {
                     if ($(this).val() != "") {
                         error1 = 1;
                         $(this).removeClass('erroralert');
@@ -4589,7 +4589,7 @@
                     }
                 });
 
-                $(".chkdayamnt").each(function() {
+                $(".chkdayamnt").each(function () {
                     if ($(this).val() != "") {
                         error2 = 1;
                         $(this).removeClass('erroralert');
@@ -4608,7 +4608,7 @@
 
     });
 
-    $(document).on('click', '#simplesubmitInvoice', function() {
+    $(document).on('click', '#simplesubmitInvoice', function () {
         var val = $("#simplesearch").val();
         if (val == '') {
             $("#simplesearch").val('');
@@ -4620,7 +4620,7 @@
 
     });
 
-    $(document).on('change', '.chkfrmday', function(e) {
+    $(document).on('change', '.chkfrmday', function (e) {
         e.preventDefault();
         var tday = $("input[name=lastDay]").val();
         var val = $(this).val();
@@ -4640,7 +4640,7 @@
         }
     });
 
-    $(document).on('change', '.chktoday', function(e) {
+    $(document).on('change', '.chktoday', function (e) {
         e.preventDefault();
         var val = $(this).val();
         var fday = $("input[name=startDay]").val();
@@ -4655,7 +4655,7 @@
 
     });
 
-    $(document).on('change', '.min_inv', function(e) {
+    $(document).on('change', '.min_inv', function (e) {
         e.preventDefault();
         var tday = $("input[name=maxInv]").val();
         var val = $(this).val();
@@ -4675,7 +4675,7 @@
         }
     });
 
-    $(document).on('change', '.max_inv', function(e) {
+    $(document).on('change', '.max_inv', function (e) {
         e.preventDefault();
         var val = $(this).val();
         var fday = $("input[name=minInv]").val();
@@ -4691,7 +4691,7 @@
     });
 
 
-    $(document).on('change', '#amount_paying', function(e) {
+    $(document).on('change', '#amount_paying', function (e) {
         e.preventDefault();
         var val = $(this).val();
         var chkval = $("input[name=chkamount]").val();
@@ -4715,12 +4715,12 @@
         }
     });
 
-    $(document).on('click', '#btnTransportAmountConfig', function(e) {
+    $(document).on('click', '#btnTransportAmountConfig', function (e) {
         var type = $("#trans_type").val();
         var flag = true;
 
         if (type == 'Route') {
-            $(".routeid, .onewayprice, .twowayprice").each(function(i) {
+            $(".routeid, .onewayprice, .twowayprice").each(function (i) {
                 var val = $(this).val();
                 if (val == "") {
                     if (flag) {
@@ -4740,7 +4740,7 @@
                 document.getElementById("frmTransportAmountConfig").submit();
             }
         } else {
-            $(".onewaypricestop, .twowaypricestop").each(function(i) {
+            $(".onewaypricestop, .twowaypricestop").each(function (i) {
                 var val = $(this).val();
                 if (val == "") {
                     if (flag) {
@@ -4763,44 +4763,44 @@
 
     });
 
-    $("#exportCounterDate").click(function(e) {
+    $("#exportCounterDate").click(function (e) {
         $('<table>')
-        
-         .append(
-            $("#expore_tbl").clone()
-         )
-         .append(
-            $("#expore_tbl_2").html()
-         )
-        .table2excel({
-            name: "Worksheet Name",
-            filename: "counter_details.xls",
-            fileext: ".xls",
-        });
+
+            .append(
+                $("#expore_tbl").clone()
+            )
+            .append(
+                $("#expore_tbl_2").html()
+            )
+            .table2excel({
+                name: "Worksheet Name",
+                filename: "counter_details.xls",
+                fileext: ".xls",
+            });
 
     });
 
-    $(document).on('click', '#alertDataDeposit', function() {
+    $(document).on('click', '#alertDataDeposit', function () {
         alert("You Can't Delete because it's Over Payment Default Account");
         return false;
     });
 
-    $(document).on('change', '#onward_sp_new', function() {
+    $(document).on('change', '#onward_sp_new', function () {
         var val = $(this).val();
         if ($("#addReturnRoute").is(':checked')) {
             $("#return_sp_new").val(val);
         }
     });
 
-    $(document).on('change', '#addReturnRoute', function() {
+    $(document).on('change', '#addReturnRoute', function () {
         if ($(this).is(':checked')) {
             //$("#twoway_bl2").hide();
             var onwroute = $("#onward_rt_new option:selected").val();
             var onwroutestp = $("#onward_sp_new option:selected").val();
             $("#return_rt_new").val(onwroute);
-            window.setTimeout(function() {
+            window.setTimeout(function () {
                 $("#return_rt_new").trigger('change');
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                     $("#return_sp_new").val(onwroutestp);
                 }, 100);
             }, 100);
@@ -4813,7 +4813,7 @@
 
     });
 
-    $(document).on('click', '#attnSettingsSubmit', function(e) {
+    $(document).on('click', '#attnSettingsSubmit', function (e) {
         var type = $("#att_type_id").val();
         var flag = true;
         var prg = $("#programId").val();
@@ -4841,7 +4841,7 @@
                     }
                 }
 
-                $(".sessionName").each(function(i) {
+                $(".sessionName").each(function (i) {
                     var val = $(this).val();
                     if (val == "") {
                         $(this).addClass('erroralert');
@@ -4862,7 +4862,7 @@
 
     });
 
-    $(document).on('change', '#pupilsightYearGroupIDTimeTable', function() {
+    $(document).on('change', '#pupilsightYearGroupIDTimeTable', function () {
         var id = $(this).val();
         var type = 'getSectionTimeTableWise';
         $.ajax({
@@ -4870,19 +4870,19 @@
             type: 'post',
             data: { val: id, type: type },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#pupilsightRollGroupID").html();
                 $("#pupilsightRollGroupID").html(response);
             }
         });
     });
 
-    $(document).on('change', '.allskillId', function() {
+    $(document).on('change', '.allskillId', function () {
         if ($(this).is(':checked')) {
             $(".skillId").prop('checked', true);
             var skills = [];
             var sknames = [];
-            $.each($(".skillId:checked"), function() {
+            $.each($(".skillId:checked"), function () {
                 skills.push($(this).attr('data-id'));
                 var sid = $(this).attr('data-id');
                 var skname = $("#sname" + sid).val();
@@ -4892,7 +4892,7 @@
             var skillname = sknames.join(",");
 
             var sub = [];
-            $.each($(".subId:checked"), function() {
+            $.each($(".subId:checked"), function () {
                 sub.push($(this).attr('data-id'));
             });
             var subid = sub.join(",");
@@ -4907,7 +4907,7 @@
                     type: 'post',
                     data: { val: skid, type: type, subid: subid, skillname: skillname, academicId: academicId, programId: programId, classId: classId },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         //$("#clickstaffunassign").click();
                     }
                 });
@@ -4917,10 +4917,10 @@
         }
     });
 
-    $(document).on('change', '.skillId', function() {
+    $(document).on('change', '.skillId', function () {
         var skills = [];
         var sknames = [];
-        $.each($(".skillId:checked"), function() {
+        $.each($(".skillId:checked"), function () {
             skills.push($(this).attr('data-id'));
             var sid = $(this).attr('data-id');
             var skname = $("#sname" + sid).val();
@@ -4930,7 +4930,7 @@
         var skillname = sknames.join(",");
 
         var sub = [];
-        $.each($(".subId:checked"), function() {
+        $.each($(".subId:checked"), function () {
             sub.push($(this).attr('data-id'));
         });
         var subid = sub.join(",");
@@ -4944,14 +4944,14 @@
                 type: 'post',
                 data: { val: skid, type: type, subid: subid, skillname: skillname, academicId: academicId, programId: programId, classId: classId },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //$("#clickstaffunassign").click();
                 }
             });
         }
     });
 
-    $(document).on('change', '.subId', function() {
+    $(document).on('change', '.subId', function () {
         if ($(this).is(':checked')) {
             var chk = 'checked';
         } else {
@@ -4969,7 +4969,7 @@
                 type: 'post',
                 data: { val: subid, type: type, academicId: academicId, programId: programId, classId: classId, chk: chk },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#skillList").html('');
                     $("#skillList").html(response);
                 }
@@ -4978,9 +4978,9 @@
     });
 
 
-    $(document).on('click', '#saveSubjectToClass', function() {
+    $(document).on('click', '#saveSubjectToClass', function () {
         var sub = [];
-        $.each($(".subId:checked"), function() {
+        $.each($(".subId:checked"), function () {
             sub.push($(this).attr('data-id'));
         });
         var subid = sub.join(",");
@@ -4992,9 +4992,9 @@
     });
 
 
-    $(document).on('click', '#copySubjectToClass', function() {
+    $(document).on('click', '#copySubjectToClass', function () {
         var sub = [];
-        $.each($(".subId:checked"), function() {
+        $.each($(".subId:checked"), function () {
             sub.push($(this).attr('data-sid'));
         });
         var subid = sub.join(",");
@@ -5007,7 +5007,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickSubjectToClass").click();
                     }
                 });
@@ -5018,7 +5018,7 @@
         }
     });
 
-    $(document).on('change', '.changeGradeSystemCondition', function() {
+    $(document).on('change', '.changeGradeSystemCondition', function () {
         var val = $(this).val();
         var sid = $(this).attr('data-id');
         if (val != '' && sid != '') {
@@ -5028,7 +5028,7 @@
                 type: 'post',
                 data: { val: val, type: type, sid: sid },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     alert('Your Pass Fail Condition Saved Successfully');
                 }
             });
@@ -5037,9 +5037,9 @@
         }
     });
 
-    $(document).on('click', '#addBulkStudentEnrolment', function() {
+    $(document).on('click', '#addBulkStudentEnrolment', function () {
         var favorite = [];
-        $.each($(".stuid:checked"), function() {
+        $.each($(".stuid:checked"), function () {
             favorite.push($(this).val());
         });
 
@@ -5053,7 +5053,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#submitBulkStudentEnrolment").click();
                     }
                 });
@@ -5063,7 +5063,7 @@
         }
     });
 
-    $(document).on('change', '.enableLinkbychkBox', function() {
+    $(document).on('change', '.enableLinkbychkBox', function () {
         if ($(this).is(':checked')) {
             $("#disableLink").hide();
             $("#enableLink").show();
@@ -5073,9 +5073,9 @@
         }
     });
 
-    $(document).on('click', '#copyElectiveGroup', function() {
+    $(document).on('click', '#copyElectiveGroup', function () {
         var sub = [];
-        $.each($("input[name='id[]']:checked"), function() {
+        $.each($("input[name='id[]']:checked"), function () {
             sub.push($(this).val());
         });
         var subid = sub.join(",");
@@ -5088,7 +5088,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickElectiveGroup").click();
                     }
                 });
@@ -5100,7 +5100,7 @@
     });
 
 
-    $(document).on('change', '.parentChkBox', function() {
+    $(document).on('change', '.parentChkBox', function () {
         var id = $(this).val();
         if ($(this).is(':checked')) {
             $(".chkChild" + id).prop("checked", true);
@@ -5110,7 +5110,7 @@
         chkChildClass();
     });
 
-    $(document).on('change', '.childChkBox', function() {
+    $(document).on('change', '.childChkBox', function () {
         var id = $(this).attr('data-par');
         if ($(this).is(':checked')) {
             //$(".chkChild"+id).prop("checked", true);
@@ -5122,7 +5122,7 @@
 
     function chkChildClass() {
         var sub = [];
-        $.each($(".childChkBox:checked"), function() {
+        $.each($(".childChkBox:checked"), function () {
             sub.push($(this).val());
         });
         var subid = sub.join(",");
@@ -5130,10 +5130,10 @@
     }
 
 
-    $(document).on('click', '#deleteTestAssignClass', function() {
+    $(document).on('click', '#deleteTestAssignClass', function () {
         var sub = [];
         // $.each($(".assignCls:not(:checked)"), function() {
-        $.each($(".assignCls:checked"), function() {
+        $.each($(".assignCls:checked"), function () {
 
             var tid = $(this).attr('data-tid');
             var prg = $(this).attr('data-par');
@@ -5151,7 +5151,7 @@
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         location.reload();
                     }
                 });
@@ -5162,7 +5162,7 @@
         }
     });
 
-    $(document).on('click', '#saveTestCreate', function() {
+    $(document).on('click', '#saveTestCreate', function () {
         var mapid = $("input[name='pupilsightMappingID").val();
 
         if ($('#enable_schedule').attr('checked')) {
@@ -5209,9 +5209,9 @@
         }
     });
 
-    $(document).on('click', '#saveTestSubjectCategory', function() {
+    $(document).on('click', '#saveTestSubjectCategory', function () {
         var sub = [];
-        $.each($(".subject_type_id:checked"), function() {
+        $.each($(".subject_type_id:checked"), function () {
             sub.push($(this).val());
         });
         var subid = sub.join(",");
@@ -5222,7 +5222,7 @@
                 type: 'post',
                 data: $('#testSubjectCategoryForm').serialize(),
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#TB_closeWindowButton").click();
                 }
             });
@@ -5231,7 +5231,7 @@
         }
     });
 
-    $(document).on('change', '#subCatGrade', function() {
+    $(document).on('change', '#subCatGrade', function () {
         var id = $(this).attr('data-id');
         var val = $(this).val();
         if (val == "Grade") {
@@ -5242,7 +5242,7 @@
 
     });
 
-    $(document).on('change', '#changeByMethod', function() {
+    $(document).on('change', '#changeByMethod', function () {
         var val = $(this).val();
         if (val == "Grade") {
             $("#min_marks").prop('disabled', true);
@@ -5255,11 +5255,11 @@
     });
 
 
-    $(document).on('click', '#noAddGeneralTest', function() {
+    $(document).on('click', '#noAddGeneralTest', function () {
         alert('You Have to Save General Before Configure Test!');
     });
 
-    $(document).on('click', '#copyTestMaster', function() {
+    $(document).on('click', '#copyTestMaster', function () {
         if ($("input[name='id[]']").is(':checked')) {
             var checked = $("input[name='id[]']:checked").length;
             if (checked > 1) {
@@ -5281,7 +5281,7 @@
         }
     });
 
-    $(document).on('click', '#copyAllData', function() {
+    $(document).on('click', '#copyAllData', function () {
         if ($(".copyAll").is(':checked')) {
             var checked = $(".copyAll:checked").length;
             if (checked > 1) {
@@ -5322,12 +5322,12 @@
     });
 
 
-    $(document).on('change', '#testMasterId', function() {
+    $(document).on('change', '#testMasterId', function () {
         var tname = $("#testMasterId  option:selected").text();
         $("#testName").val(tname);
     });
 
-    $(document).on('click', '#updateTestClick', function() {
+    $(document).on('click', '#updateTestClick', function () {
         if ($("input[name='id[]']").is(':checked')) {
             var checked = $("input[name='id[]']:checked").length;
             if (checked > 1) {
@@ -5339,7 +5339,7 @@
                 if (id != '') {
                     var newhrf = hrf + '&tid=' + id;
                     $("#updateTest").attr('href', newhrf);
-                    window.setTimeout(function() {
+                    window.setTimeout(function () {
                         $("#updateTest")[0].click();
                     }, 10);
 
@@ -5352,16 +5352,16 @@
         }
     });
 
-    $(document).on('change', '#updateByColumnType', function() {
+    $(document).on('change', '#updateByColumnType', function () {
         $('.hideUpdateOption').hide();
         var val = $(this).val();
         $('#' + val).show();
     });
 
-    $(document).on('click', '#updateTestBulkWise', function() {
+    $(document).on('click', '#updateTestBulkWise', function () {
         var sub = [];
         // $.each($(".assignCls:not(:checked)"), function() {
-        $.each($(".testid:checked"), function() {
+        $.each($(".testid:checked"), function () {
             sub.push($(this).val());
         });
         var subid = sub.join(",");
@@ -5377,7 +5377,7 @@
                     type: 'post',
                     data: { val: val, type: type, testcol: testcol, testdata: testdata },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         location.reload();
                     }
                 });
@@ -5388,10 +5388,10 @@
         }
     });
 
-    $(document).on('click', '#updateTestSettings', function() {
+    $(document).on('click', '#updateTestSettings', function () {
         var sub = [];
         // $.each($(".assignCls:not(:checked)"), function() {
-        $.each($(".testid:checked"), function() {
+        $.each($(".testid:checked"), function () {
             sub.push($(this).val());
         });
         var subid = sub.join(",");
@@ -5407,7 +5407,7 @@
                     type: 'post',
                     data: { val: val, type: type, testcol: testcol, testdata: testdata },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         location.reload();
                     }
                 });
@@ -5423,8 +5423,8 @@
 
 
 
-$(document).ready(function() {
-    $('#expore_tbl').find('.sortable').each(function() {
+$(document).ready(function () {
+    $('#expore_tbl').find('.sortable').each(function () {
         $(this).removeClass("sortable");
     });
 });
@@ -5442,10 +5442,10 @@ function iframeLoaded(id) {
     }
 }
 
-$(document).on('click', '#unassignsubj', function() {
+$(document).on('click', '#unassignsubj', function () {
 
     var favorite = [];
-    $.each($("input[name='st_id[]']:checked"), function() {
+    $.each($("input[name='st_id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var stuid = favorite.join(",");
@@ -5464,7 +5464,7 @@ $(document).on('click', '#unassignsubj', function() {
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         $("#clickstaffunassign").click();
                     }
                 });
@@ -5475,7 +5475,7 @@ $(document).on('click', '#unassignsubj', function() {
     }
 });
 
-$(document).on('click', '.delSeattr_trans', function() {
+$(document).on('click', '.delSeattr_trans', function () {
     var wid = $(this).attr('data-wid');
     var id = $(this).attr('data-id');
     var cid = $(this).attr('data-cid');
@@ -5487,7 +5487,7 @@ $(document).on('click', '.delSeattr_trans', function() {
             type: 'post',
             data: { id: id, wid: wid, cid: cid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 //$(".seatdiv" + id).remove();
                 $(".deltr" + id).remove();
                 // window.location.href = response;
@@ -5498,7 +5498,7 @@ $(document).on('click', '.delSeattr_trans', function() {
 });
 
 //attendance type 
-$(document).on('change', '#att_type_id', function() {
+$(document).on('change', '#att_type_id', function () {
 
     var att_type = $("#att_type_id").val();
     if (att_type == 1) {
@@ -5515,7 +5515,7 @@ $(document).on('change', '#att_type_id', function() {
 });
 //session_add 
 
-$(document).on('click', '#session_add', function() {
+$(document).on('click', '#session_add', function () {
 
     var no_of_sessions = $("#no_of_session").val();
 
@@ -5532,7 +5532,7 @@ $(document).on('click', '#session_add', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //  alert(response);
                     $("#session_table").show();
 
@@ -5544,7 +5544,7 @@ $(document).on('click', '#session_add', function() {
     }
 });
 
-$(document).on('change', '#pupilsightRollGroupID', function() {
+$(document).on('change', '#pupilsightRollGroupID', function () {
     var id = $(this).val();
     var yid = $('#pupilsightSchoolYearID').val();
     var pid = $('#pupilsightProgramID').val();
@@ -5555,13 +5555,13 @@ $(document).on('change', '#pupilsightRollGroupID', function() {
         type: 'post',
         data: { val: id, type: type, yid: yid, pid: pid, cid: cid },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#pupilsightPersonID").html();
             $("#pupilsightPersonID").html(response);
         }
     });
 });
-$(document).on('change', '.getClasses', function() {
+$(document).on('change', '.getClasses', function () {
 
     var id = $(this).val();
     var yid = $('#pupilsightSchoolYearID').val();
@@ -5570,7 +5570,7 @@ $(document).on('change', '.getClasses', function() {
 
     var cid = $('#fetchClassByprogramId').val();
     var favorite = [];
-    $.each($("input[name='pupilsightRollGroupID[]']:checked"), function() {
+    $.each($("input[name='pupilsightRollGroupID[]']:checked"), function () {
         favorite.push($(this).attr('data-section'));
     });
     var sid = favorite.join(",");
@@ -5581,7 +5581,7 @@ $(document).on('change', '.getClasses', function() {
         type: 'post',
         data: { val: id, type: type, yid: yid, pid: pid, cid: cid, sid: sid },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#pupilsightPersonID").html();
             $("#pupilsightPersonID").html(response);
             $("#pupilsightPersonIDs").html();
@@ -5595,10 +5595,10 @@ $(document).on('change', '.getClasses', function() {
 });
 
 
-$(document).on('click', '.periodcss', function() {
+$(document).on('click', '.periodcss', function () {
 
     var favorite = [];
-    $.each($("input[name='pd_id[]']:checked"), function() {
+    $.each($("input[name='pd_id[]']:checked"), function () {
         favorite.push($(this).attr('id'));
     });
     var pdid = favorite.join(",");
@@ -5611,7 +5611,7 @@ $(document).on('click', '.periodcss', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //$("#clickstaffunassign").click();
                 }
             });
@@ -5621,9 +5621,9 @@ $(document).on('click', '.periodcss', function() {
     }
 });
 
-$(document).on('click', '.sendButton_attendance', function() {
+$(document).on('click', '.sendButton_attendance', function () {
     var stuids = [];
-    $.each($("input[name='student_id[]']:checked"), function() {
+    $.each($("input[name='student_id[]']:checked"), function () {
         stuids.push($(this).attr('id'));
     });
     var stuid = stuids.join(",");
@@ -5654,7 +5654,7 @@ $(document).on('click', '.sendButton_attendance', function() {
         }
     } else {
         alert('You Have to Select Applicant');
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             $("#large-modal-new_attendance").removeClass('show');
             $("#chkCounterSession").removeClass('modal-open');
             $(".modal-backdrop").remove();
@@ -5664,11 +5664,11 @@ $(document).on('click', '.sendButton_attendance', function() {
 });
 
 
-$(document).on('click', '#sendEmailSms_attendance', function() {
+$(document).on('click', '#sendEmailSms_attendance', function () {
     var emailquote = $("#emailQuote_att").val();
     var smsquote = $("#smsQuote_att").val();
     var favorite = [];
-    $.each($("input[name='student_id[]']:checked"), function() {
+    $.each($("input[name='student_id[]']:checked"), function () {
         favorite.push($(this).attr('id'));
     });
     var stuid = favorite.join(", ");
@@ -5681,7 +5681,7 @@ $(document).on('click', '#sendEmailSms_attendance', function() {
                 type: 'post',
                 data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     alert('Your Message Sent Successfully! click Ok to continue ');
                     location.reload();
                 }
@@ -5695,7 +5695,7 @@ $(document).on('click', '#sendEmailSms_attendance', function() {
     }
 });
 
-$(document).on('click', '.include_core', function() {
+$(document).on('click', '.include_core', function () {
 
     if ($(this).attr('checked')) {
         $(this).val(1);
@@ -5706,13 +5706,13 @@ $(document).on('click', '.include_core', function() {
 
 });
 
-$(document).on('click', '#add_student_to_subject', function() {
+$(document).on('click', '#add_student_to_subject', function () {
 
 
     var url = $(this).attr('data-href');
 
     var favorite = [];
-    $.each($("input[name='student_id[]']:checked"), function() {
+    $.each($("input[name='student_id[]']:checked"), function () {
 
         favorite.push($(this).val());
     });
@@ -5727,7 +5727,7 @@ $(document).on('click', '#add_student_to_subject', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#clickstudent_to_subject").click();
                 }
             });
@@ -5736,7 +5736,7 @@ $(document).on('click', '#add_student_to_subject', function() {
         alert('You Have to Select Students.');
     }
 });
-$(document).on('click', '.tick_icon', function() {
+$(document).on('click', '.tick_icon', function () {
     var ths = $(this);
     var stid = $(this).attr('data-stid');
     var sid = $(this).attr('data-sid');
@@ -5754,7 +5754,7 @@ $(document).on('click', '.tick_icon', function() {
         }
 
         var kount = 0;
-        $.each($(".chkcls" + eid + '-' + stid), function() {
+        $.each($(".chkcls" + eid + '-' + stid), function () {
             if ($(this).hasClass("greenicon")) {
                 kount = parseInt(kount) + 1;
             }
@@ -5772,7 +5772,7 @@ $(document).on('click', '.tick_icon', function() {
                     type: 'post',
                     data: { val: val, type: type, sid: sid, eid: eid, classId: classId, progId: progId, chktype: 'add' },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         alert('Elective Subject Assign Succesfully');
                     }
                 });
@@ -5788,7 +5788,7 @@ $(document).on('click', '.tick_icon', function() {
                     type: 'post',
                     data: { val: val, type: type, sid: sid, eid: eid, classId: classId, progId: progId, chktype: 'delete' },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         alert('Elective Subject Deleted Succesfully');
                         ths.removeClass("greenicon");
                         ths.addClass("greyicon");
@@ -5805,11 +5805,11 @@ $(document).on('click', '.tick_icon', function() {
 
 
 
-$(document).on('click', '.copy_test_cls', function() {
+$(document).on('click', '.copy_test_cls', function () {
     var next_acyr = $("#next_acyr").val();
 
     var favorite = [];
-    $.each($("input[name='id[]']:checked"), function() {
+    $.each($("input[name='id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var testid = favorite.join(",");
@@ -5825,7 +5825,7 @@ $(document).on('click', '.copy_test_cls', function() {
                     type: 'post',
                     data: { val: val, type: type, next_acyr: next_acyr },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         // alert(response);
                         // parent.history.back();
                         window.location = document.referrer;
@@ -5843,9 +5843,9 @@ $(document).on('click', '.copy_test_cls', function() {
 
 });
 
-$(document).on('click', '#electiveSub', function() {
+$(document).on('click', '#electiveSub', function () {
     var stuids = [];
-    $.each($("input[name='id[]']:checked"), function() {
+    $.each($("input[name='id[]']:checked"), function () {
         stuids.push($(this).val());
     });
     var stuid = stuids.join(",");
@@ -5858,7 +5858,7 @@ $(document).on('click', '#electiveSub', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#TB_closeWindowButton").click();
                 }
             });
@@ -5869,9 +5869,9 @@ $(document).on('click', '#electiveSub', function() {
 });
 
 
-$(document).on('click', '#electiveSection', function() {
+$(document).on('click', '#electiveSection', function () {
     var stuids = [];
-    $.each($("input[name='id[]']:checked"), function() {
+    $.each($("input[name='id[]']:checked"), function () {
         stuids.push($(this).val());
     });
     var stuid = stuids.join(",");
@@ -5885,7 +5885,7 @@ $(document).on('click', '#electiveSection', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#TB_closeWindowButton").click();
                 }
             });
@@ -5896,18 +5896,18 @@ $(document).on('click', '#electiveSection', function() {
 });
 
 
-$(document).on('click', '.col_header', function() {
+$(document).on('click', '.col_header', function () {
     $(this).parent().parent().nextUntil('tr.col_header_new').slideToggle();
 });
 
 
 
-$(document).on('click', '.rotate', function() {
+$(document).on('click', '.rotate', function () {
     $(this).toggleClass("down");
 });
 
 
-$(document).on('change', '#select_sub', function() {
+$(document).on('change', '#select_sub', function () {
     var option = $(this).val();
     if (option == '2') {
         $("#seletcategories").click();
@@ -5917,10 +5917,10 @@ $(document).on('change', '#select_sub', function() {
     }
 });
 
-$(document).on('click', '#modify_test_btn', function() {
+$(document).on('click', '#modify_test_btn', function () {
     var atype = $(this).attr('data-type');
     var favorite = [];
-    $.each($("input[name='id[]']:checked"), function() {
+    $.each($("input[name='id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var testid = favorite.join(",");
@@ -5933,7 +5933,7 @@ $(document).on('click', '#modify_test_btn', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#clickmodify_test").click();
                 }
             });
@@ -5944,7 +5944,7 @@ $(document).on('click', '#modify_test_btn', function() {
     }
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     if ($('#enable_schedule').attr('checked')) {
         $(".show_test_schedule").show();
@@ -5955,7 +5955,7 @@ $(document).ready(function() {
 
 });
 
-$(document).on('click', '#enable_schedule', function() {
+$(document).on('click', '#enable_schedule', function () {
 
     if ($(this).attr('checked')) {
 
@@ -5965,7 +5965,7 @@ $(document).on('click', '#enable_schedule', function() {
     }
 });
 
-$(document).on('change', '#pupilsightProgramID_check', function() {
+$(document).on('change', '#pupilsightProgramID_check', function () {
     var id = $(this).val();
     var type = 'getClass';
     $.ajax({
@@ -5973,14 +5973,14 @@ $(document).on('change', '#pupilsightProgramID_check', function() {
         type: 'post',
         data: { val: id, type: type },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#pupilsightYearGroupID_check").html();
             $("#pupilsightYearGroupID_check").html(response);
         }
     });
 });
 
-$(document).on('change', '#fetchClassByprogramId', function() {
+$(document).on('change', '#fetchClassByprogramId', function () {
     var id = $(this).val();
 
     var pid = $('#filterClassByprogramId').val();
@@ -5991,7 +5991,7 @@ $(document).on('change', '#fetchClassByprogramId', function() {
         type: 'post',
         data: { val: id, type: type, pid: pid },
         async: true,
-        success: function(response) {
+        success: function (response) {
 
             $("#pupilsightRollGroupID_check").html();
             $("#pupilsightRollGroupID_check").html(response);
@@ -5999,10 +5999,10 @@ $(document).on('change', '#fetchClassByprogramId', function() {
     });
 });
 
-$(document).on('click', '#copy_test_class_section_wise', function() {
+$(document).on('click', '#copy_test_class_section_wise', function () {
     var atype = $(this).attr('data-type');
     var favorite = [];
-    $.each($("input[name='id[]']:checked"), function() {
+    $.each($("input[name='id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var testid = favorite.join(",");
@@ -6015,7 +6015,7 @@ $(document).on('click', '#copy_test_class_section_wise', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#clickcopy_test_to_sections").click();
                 }
             });
@@ -6025,7 +6025,7 @@ $(document).on('click', '#copy_test_class_section_wise', function() {
         alert('You Have to Select Test.');
     }
 });
-$(document).on('click', '#modifyMarksEntry', function() {
+$(document).on('click', '#modifyMarksEntry', function () {
 
     var favorite = [];
     var test_id = [];
@@ -6036,7 +6036,7 @@ $(document).on('click', '#modifyMarksEntry', function() {
 
     } else {
         // alert($(this).attr('data_testid'));
-        $.each($("input[name='student_id[]']:checked"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
             favorite.push($(this).val());
             test_id.push($(this).attr('data_testid'));
             test_status.push($(this).attr('data_status'));
@@ -6056,7 +6056,7 @@ $(document).on('click', '#modifyMarksEntry', function() {
                         type: 'post',
                         data: { val: val, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             var val = test_ids;
                             var type = 'storetestId';
                             $.ajax({
@@ -6064,7 +6064,7 @@ $(document).on('click', '#modifyMarksEntry', function() {
                                 type: 'post',
                                 data: { val: val, type: type },
                                 async: true,
-                                success: function(response) {
+                                success: function (response) {
                                     window.location.href = response;
                                     $("#modifyMarks").click();
                                 }
@@ -6081,13 +6081,13 @@ $(document).on('click', '#modifyMarksEntry', function() {
     }
 });
 
-$(document).on('click', '#studentMarksEntry', function() {
+$(document).on('click', '#studentMarksEntry', function () {
     var checked = $("input[name='stuid[]']:checked").length;
     if (checked > 1) {
         alert('You Have to Select only one Student.');
     } else {
         var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function() {
+        $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var test_id = $("#testId").val();
@@ -6102,7 +6102,7 @@ $(document).on('click', '#studentMarksEntry', function() {
                     type: 'post',
                     data: { val: val, type: type, test_id: test_id },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         window.location.href = response;
                         $("#marksentry").click();
                     }
@@ -6116,16 +6116,16 @@ $(document).on('click', '#studentMarksEntry', function() {
 });
 
 
-$(document).on('click', '.previous_std_data', function() {
+$(document).on('click', '.previous_std_data', function () {
     $("#preloader").show();
     var favorite = [];
-    $(".chkData").each(function() {
+    $(".chkData").each(function () {
         favorite.push($(this).val());
     });
     var getdata = favorite.join(",");
     var chkChng = $("#chkMarksSaveData").val();
-    if(chkChng == 1){
-        if(getdata != ''){
+    if (chkChng == 1) {
+        if (getdata != '') {
             if (confirm("Do you want to Save the Data")) {
                 $("#preloader").hide();
                 $("#marksbyStudent").submit();
@@ -6139,7 +6139,7 @@ $(document).on('click', '.previous_std_data', function() {
                             type: 'post',
                             data: { val: val, type: type },
                             async: true,
-                            success: function(response) {
+                            success: function (response) {
                                 location.reload();
                             }
                         });
@@ -6159,7 +6159,7 @@ $(document).on('click', '.previous_std_data', function() {
                             type: 'post',
                             data: { val: val, type: type },
                             async: true,
-                            success: function(response) {
+                            success: function (response) {
                                 location.reload();
                             }
                         });
@@ -6180,7 +6180,7 @@ $(document).on('click', '.previous_std_data', function() {
                         type: 'post',
                         data: { val: val, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             location.reload();
                         }
                     });
@@ -6201,7 +6201,7 @@ $(document).on('click', '.previous_std_data', function() {
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         location.reload();
                     }
                 });
@@ -6211,19 +6211,19 @@ $(document).on('click', '.previous_std_data', function() {
             alert('You Have to Select Student.');
         }
     }
-    
+
 });
 
-$(document).on('click', '.next_std_data', function() {
+$(document).on('click', '.next_std_data', function () {
     $("#preloader").show();
     var favorite = [];
-    $(".chkData").each(function() {
+    $(".chkData").each(function () {
         favorite.push($(this).val());
     });
     var getdata = favorite.join(",");
     var chkChng = $("#chkMarksSaveData").val();
-    if(chkChng == 1){
-        if(getdata != ''){
+    if (chkChng == 1) {
+        if (getdata != '') {
             if (confirm("Do you want to Save the Data")) {
                 $("#preloader").hide();
                 $("#marksbyStudent").submit();
@@ -6237,7 +6237,7 @@ $(document).on('click', '.next_std_data', function() {
                             type: 'post',
                             data: { val: val, type: type },
                             async: true,
-                            success: function(response) {
+                            success: function (response) {
                                 location.reload();
                             }
                         });
@@ -6257,7 +6257,7 @@ $(document).on('click', '.next_std_data', function() {
                             type: 'post',
                             data: { val: val, type: type },
                             async: true,
-                            success: function(response) {
+                            success: function (response) {
                                 location.reload();
                             }
                         });
@@ -6278,7 +6278,7 @@ $(document).on('click', '.next_std_data', function() {
                         type: 'post',
                         data: { val: val, type: type },
                         async: true,
-                        success: function(response) {
+                        success: function (response) {
                             location.reload();
                         }
                     });
@@ -6299,7 +6299,7 @@ $(document).on('click', '.next_std_data', function() {
                     type: 'post',
                     data: { val: val, type: type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         location.reload();
                     }
                 });
@@ -6309,13 +6309,13 @@ $(document).on('click', '.next_std_data', function() {
             alert('You Have to Select Student.');
         }
     }
-    
+
 });
 
 
-$(document).on('click', '.sendButton_test_result', function() {
+$(document).on('click', '.sendButton_test_result', function () {
     var stuids = [];
-    $.each($("input[name='student_id[]']:checked"), function() {
+    $.each($("input[name='student_id[]']:checked"), function () {
         stuids.push($(this).val());
     });
     var stuid = stuids.join(",");
@@ -6345,7 +6345,7 @@ $(document).on('click', '.sendButton_test_result', function() {
         }
     } else {
         alert('You Have to Select Student First');
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             $("#large-modal-stud_test_result").removeClass('show');
             $("#chkCounterSession").removeClass('modal-open');
             $(".modal-backdrop").remove();
@@ -6354,12 +6354,12 @@ $(document).on('click', '.sendButton_test_result', function() {
 
 });
 
-$(document).on('click', '#sendEmailSms_stud_test_result', function() {
+$(document).on('click', '#sendEmailSms_stud_test_result', function () {
 
     var emailquote = $("#emailQuote_stud_result").val();
     var smsquote = $("#smsQuote_stud_result").val();
     var favorite = [];
-    $.each($("input[name='student_id[]']:checked"), function() {
+    $.each($("input[name='student_id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var stuid = favorite.join(", ");
@@ -6372,7 +6372,7 @@ $(document).on('click', '#sendEmailSms_stud_test_result', function() {
                 type: 'post',
                 data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     alert('Your Message Sent Successfully! click Ok to continue ');
                     location.reload();
                 }
@@ -6390,14 +6390,14 @@ $(document).on('click', '#sendEmailSms_stud_test_result', function() {
 
 
 //lock & unlock marks entry
-$(document).on('click', '.lock_me_btn', function(e) {
+$(document).on('click', '.lock_me_btn', function (e) {
 
     e.preventDefault();
     var atype = $(this).attr('data-type');
     var url = $(this).attr('data-href');
     var favorite = [];
     var entry_ids = [];
-    $.each($("input[name='student_id[]']:checked"), function() {
+    $.each($("input[name='student_id[]']:checked"), function () {
         var entryid = $(this).attr('data_tid');
         entry_ids.push(entryid);
         favorite.push($(this).val());
@@ -6425,7 +6425,7 @@ $(document).on('click', '.lock_me_btn', function(e) {
                     type: 'post',
                     data: { val: val, type: type, action_type: action_type },
                     async: true,
-                    success: function(response) {
+                    success: function (response) {
                         //  alert("You Have Locked the Entry Successfully!");
                         location.reload();
                     }
@@ -6439,7 +6439,7 @@ $(document).on('click', '.lock_me_btn', function(e) {
     }
 });
 
-$(document).on('change', '#pupilsightProgramIDbyPP', function() {
+$(document).on('change', '#pupilsightProgramIDbyPP', function () {
     var id = $(this).val();
     var type = 'getClass';
     $.ajax({
@@ -6447,14 +6447,14 @@ $(document).on('change', '#pupilsightProgramIDbyPP', function() {
         type: 'post',
         data: { val: id, type: type },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#pupilsightYearGroupIDbyPP").html();
             $("#pupilsightYearGroupIDbyPP").html(response);
         }
     });
 });
 
-$(document).on('change', '#pupilsightYearGroupIDbyPP', function() {
+$(document).on('change', '#pupilsightYearGroupIDbyPP', function () {
     var id = $(this).val();
     var pid = $('#pupilsightProgramIDbyPP').val();
     var type = 'getSection';
@@ -6463,7 +6463,7 @@ $(document).on('change', '#pupilsightYearGroupIDbyPP', function() {
         type: 'post',
         data: { val: id, type: type, pid: pid },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#pupilsightRollGroupIDbyPP").html();
             $("#pupilsightRollGroupIDbyPP").html(response);
         }
@@ -6472,7 +6472,7 @@ $(document).on('change', '#pupilsightYearGroupIDbyPP', function() {
 
 
 
-$(document).on('change', '.chkAll', function() {
+$(document).on('change', '.chkAll', function () {
     if ($(this).is(':checked')) {
         $(".chkChild").prop("checked", true);
     } else {
@@ -6480,7 +6480,7 @@ $(document).on('change', '.chkAll', function() {
     }
 });
 
-$(document).on('change', '.chkChild', function() {
+$(document).on('change', '.chkChild', function () {
     if ($(this).is(':checked')) {
         //$(".chkChild"+id).prop("checked", true);
     } else {
@@ -6488,14 +6488,14 @@ $(document).on('change', '.chkChild', function() {
     }
 });
 
-$(document).on('change', '#changeFeeStrByProgId', function() {
+$(document).on('change', '#changeFeeStrByProgId', function () {
     var id = $(this).val();
     $.ajax({
         url: 'fullscreen.php?q=/modules/Finance/invoice_assign_manage_ajax_add.php',
         type: 'post',
         data: { id: id },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#changeFeeStructure").html();
             $("#changeFeeStructure").html(response);
         }
@@ -6503,14 +6503,14 @@ $(document).on('change', '#changeFeeStrByProgId', function() {
 });
 
 
-$(document).on('change', '#program_class', function() {
+$(document).on('change', '#program_class', function () {
     var id = $(this).val();
     $.ajax({
         url: 'fullscreen.php?q=/modules/Finance/invoice_generatedBy_class_ajax_add.php',
         type: 'post',
         data: { id: id },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#changeFeeStructure").html();
             $("#changeFeeStructure").html(response);
         }
@@ -6518,9 +6518,9 @@ $(document).on('change', '#program_class', function() {
 });
 
 
-$(document).on('click', '.sendButton_attendance_rprt', function() {
+$(document).on('click', '.sendButton_attendance_rprt', function () {
     var stuids = [];
-    $.each($("input[name='student_id[]']:checked"), function() {
+    $.each($("input[name='student_id[]']:checked"), function () {
         stuids.push($(this).val());
     });
     var stuid = stuids.join(",");
@@ -6550,7 +6550,7 @@ $(document).on('click', '.sendButton_attendance_rprt', function() {
         }
     } else {
         alert('You Have to Select Student First');
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             $("#large-modal-stud_attendance_rprt").removeClass('show');
             $("#chkCounterSession").removeClass('modal-open');
             $(".modal-backdrop").remove();
@@ -6559,12 +6559,12 @@ $(document).on('click', '.sendButton_attendance_rprt', function() {
 
 });
 
-$(document).on('click', '#sendEmailSms_stud_attend_rprt', function() {
+$(document).on('click', '#sendEmailSms_stud_attend_rprt', function () {
 
     var emailquote = $("#emailQuote_stud_result").val();
     var smsquote = $("#smsQuote_stud_rpt").val();
     var favorite = [];
-    $.each($("input[name='student_id[]']:checked"), function() {
+    $.each($("input[name='student_id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var stuid = favorite.join(", ");
@@ -6573,18 +6573,18 @@ $(document).on('click', '#sendEmailSms_stud_attend_rprt', function() {
         if (emailquote != '' || smsquote != '') {
             var r = confirm("Are u sure want to send sms ?");
             if (r == true) {
-            $("#preloader").show();
-            $.ajax({
-                url: 'modules/Attendance/send_attendance_email_sms.php',
-                type: 'post',
-                data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
-                async: true,
-                success: function(response) {
-                    alert('Your Message Sent Successfully! click Ok to continue ');
-                    location.reload();
-                }
-            });
-        }
+                $("#preloader").show();
+                $.ajax({
+                    url: 'modules/Attendance/send_attendance_email_sms.php',
+                    type: 'post',
+                    data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
+                    async: true,
+                    success: function (response) {
+                        alert('Your Message Sent Successfully! click Ok to continue ');
+                        location.reload();
+                    }
+                });
+            }
         } else {
             alert('You Have to Enter Quote.');
         }
@@ -6595,11 +6595,11 @@ $(document).on('click', '#sendEmailSms_stud_attend_rprt', function() {
 
 });
 
-$(document).on('click', '#saveMarksByStudent', function() {
+$(document).on('click', '#saveMarksByStudent', function () {
     $("#marksbyStudent").submit();
 });
 
-$(document).on('change', '#classId', function() {
+$(document).on('change', '#classId', function () {
     var id = $(this).val();
     var pid = $("#programId").val();
     var type = 'getNewSectionByClassProg';
@@ -6609,7 +6609,7 @@ $(document).on('change', '#classId', function() {
             type: 'post',
             data: { val: id, type: type, pid: pid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#sectionId").html();
                 $("#sectionId").html(response);
             }
@@ -6619,7 +6619,7 @@ $(document).on('change', '#classId', function() {
     }
 });
 
-$(document).on('change', '#programId', function() {
+$(document).on('change', '#programId', function () {
     var pid = $(this).val();
     var id = $("#classId").val();
     var type = 'getNewSectionByClassProg';
@@ -6629,7 +6629,7 @@ $(document).on('change', '#programId', function() {
             type: 'post',
             data: { val: id, type: type, pid: pid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#sectionId").html();
                 $("#sectionId").html(response);
             }
@@ -6640,7 +6640,7 @@ $(document).on('change', '#programId', function() {
 
 
 
-$(document).on('change', '#Staff_program', function() {
+$(document).on('change', '#Staff_program', function () {
     var pid = $(this).val();
 
     var id = $("#staff_id").val();
@@ -6652,14 +6652,14 @@ $(document).on('change', '#Staff_program', function() {
             type: 'post',
             data: { val: id, type: type, pid: pid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#Staff_class").html();
                 $("#Staff_class").html(response);
             }
         });
     }
 });
-$(document).on('change', '#Staff_class', function() {
+$(document).on('change', '#Staff_class', function () {
     var cid = $(this).val();
 
     var id = $("#staff_id").val();
@@ -6671,7 +6671,7 @@ $(document).on('change', '#Staff_class', function() {
             type: 'post',
             data: { val: id, type: type, cid: cid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 //  alert(response);
                 $("#Staff_section").html();
                 $("#Staff_section").html(response);
@@ -6681,7 +6681,7 @@ $(document).on('change', '#Staff_class', function() {
 });
 
 /* Custom Field Creation */
-$(function() {
+$(function () {
     var customField = new CustomField();
     customField.load();
 });
@@ -6691,7 +6691,7 @@ var pcdt;
 function CustomField() {
     var _this = this;
 
-    this.load = function() {
+    this.load = function () {
         try {
             var link = "ajax_custom_data.php";
             var val = _this.getPageNames();
@@ -6705,7 +6705,7 @@ function CustomField() {
                         val: val,
                         type: type
                     },
-                }).done(function(msg) {
+                }).done(function (msg) {
                     if (msg) {
                         var obj = jQuery.parseJSON(msg);
                         console.log(obj);
@@ -6718,7 +6718,7 @@ function CustomField() {
         }
     };
 
-    this.loadAction = function(obj) {
+    this.loadAction = function (obj) {
         try {
             //console.log("load action");
             var len = obj["data"].length;
@@ -6800,7 +6800,7 @@ function CustomField() {
         }
     };
 
-    this.editCustomOrderModule = function(tabs) {
+    this.editCustomOrderModule = function (tabs) {
         var st = tabs.split(",");
         var len = st.length;
         var i = 0;
@@ -6837,7 +6837,7 @@ function CustomField() {
         }
     }
 
-    this.viewCustomOrderModule = function(tabs) {
+    this.viewCustomOrderModule = function (tabs) {
         var st = tabs.split(",");
         var len = st.length;
         var i = 0;
@@ -6882,7 +6882,7 @@ function CustomField() {
         }
     }
 
-    this.tagH4Class = function(id) {
+    this.tagH4Class = function (id) {
         var htag = "";
         try {
             if ($("#" + id).prev('h4').text()) {
@@ -6904,7 +6904,7 @@ function CustomField() {
         return htag;
     }
 
-    this.createViewTab = function(obj) {
+    this.createViewTab = function (obj) {
         var str = "<h4>" + obj.field_title + "</h4>";
         str += "<table id='" + obj.field_name + "' class='smallIntBorder' cellspacing='0' style='width: 100%'>";
         str += "<tbody></tbody>";
@@ -6912,7 +6912,7 @@ function CustomField() {
         $("#" + obj.tab).after(str);
     };
 
-    this.createEditTab = function(obj) {
+    this.createEditTab = function (obj) {
         var str = "<tbody id='tbody_" + obj.field_name + "'>";
         str += "<tr id='" + obj.field_name + "' class='break flex flex-col sm:flex-row justify-between content-center p-0'>";
         str += "<td class='flex-grow justify-center px-2 border-b-0 sm:border-b border-t-0 ' colspan='2'>";
@@ -6926,7 +6926,7 @@ function CustomField() {
     };
 
 
-    this.getPageNames = function() {
+    this.getPageNames = function () {
         var tm = _this.getParameterByName("q");
         var st = tm.split("/");
         var len = st.length;
@@ -6945,7 +6945,7 @@ function CustomField() {
         return pageName;
     };
 
-    this.getParameterByName = function(name, url) {
+    this.getParameterByName = function (name, url) {
         if (!url) url = window.location.href;
         name = name.replace(/[\[\]]/g, '\\$&');
         var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
@@ -6955,7 +6955,7 @@ function CustomField() {
         return decodeURIComponent(results[2].replace(/\+/g, ' '));
     };
 
-    this.isEmpty = function(value) {
+    this.isEmpty = function (value) {
         return (
             // null or undefined
             (value == null) ||
@@ -6968,7 +6968,7 @@ function CustomField() {
         )
     }
 
-    this.createView = function(obj) {
+    this.createView = function (obj) {
         var fieldTitle = "";
         var fieldName = "";
         if (obj.field_title) {
@@ -7019,7 +7019,7 @@ function CustomField() {
 
     };
 
-    this.createInput = function(obj) {
+    this.createInput = function (obj) {
         if (obj.field_type) {
             //'varchar','text','date','url','select','checkboxes','radioboxes'
             if (obj.field_type == "varchar") {
@@ -7034,7 +7034,7 @@ function CustomField() {
         }
     };
 
-    this.createTextField = function(obj) {
+    this.createTextField = function (obj) {
         var required = "";
         var requiredStr = "";
         if (obj.required == "Y") {
@@ -7073,7 +7073,7 @@ function CustomField() {
         }
     };
 
-    this.createTextArea = function(obj) {
+    this.createTextArea = function (obj) {
         var required = "";
         var requiredStr = "";
         if (obj.required == "Y") {
@@ -7116,7 +7116,7 @@ function CustomField() {
         }
     };
 
-    this._createDateField = function(obj) {
+    this._createDateField = function (obj) {
         var required = "";
         var requiredStr = "";
         if (obj.required == "Y") {
@@ -7150,11 +7150,11 @@ function CustomField() {
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);
             var dateField = window[obj.field_name];
-            dateField = $("#" + obj.field_name).datepicker({ onSelect: function() { $(this).blur(); }, onClose: function() { $(this).change(); } });
+            dateField = $("#" + obj.field_name).datepicker({ onSelect: function () { $(this).blur(); }, onClose: function () { $(this).change(); } });
         }
     };
 
-    this.createDropDown = function(obj) {
+    this.createDropDown = function (obj) {
         var required = "";
         var requiredStr = "";
         if (obj.required == "Y") {
@@ -7210,7 +7210,7 @@ function CustomField() {
 }
 
 /* Custom Field Creation close */
-$(document).on('change', '#Staff_section', function() {
+$(document).on('change', '#Staff_section', function () {
     var id = $(this).val();
     var yid = $('#pupilsightSchoolYearID').val();
     var pid = $('#Staff_program').val();
@@ -7221,7 +7221,7 @@ $(document).on('change', '#Staff_section', function() {
         type: 'post',
         data: { val: id, type: type, yid: yid, pid: pid, cid: cid },
         async: true,
-        success: function(response) {
+        success: function (response) {
             //  alert(response);
             $("#pupilsightPersonID").html();
             $("#pupilsightPersonID").html(response);
@@ -7230,7 +7230,7 @@ $(document).on('change', '#Staff_section', function() {
 });
 
 //get session based on program
-$(document).on('change', '.program_class', function() {
+$(document).on('change', '.program_class', function () {
     var id = $('.program_class option:selected').val();
     var type = 'getsession';
     $.ajax({
@@ -7238,14 +7238,14 @@ $(document).on('change', '.program_class', function() {
         type: 'post',
         data: { val: id, type: type },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#session").html();
             $("#session").html(response);
         }
     });
 });
 
-$(document).on('click', "input[name='submission_id[]']:checked", function() {
+$(document).on('click', "input[name='submission_id[]']:checked", function () {
     var id = $(this).val();
     var cid = $("#campId").val();
     var fid = $("#formId").val();
@@ -7255,7 +7255,7 @@ $(document).on('click', "input[name='submission_id[]']:checked", function() {
         type: 'post',
         data: { val: id, type: type, cid: cid, fid: fid },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#statusButton").html();
             $("#statusButton").html(response);
         }
@@ -7263,9 +7263,9 @@ $(document).on('click', "input[name='submission_id[]']:checked", function() {
 });
 
 
-$(document).on('click', '.sendButton_campaign_list', function() {
+$(document).on('click', '.sendButton_campaign_list', function () {
     var submit_ids = [];
-    $.each($("input[name='submission_id[]']:checked"), function() {
+    $.each($("input[name='submission_id[]']:checked"), function () {
         submit_ids.push($(this).val());
     });
     var submt_id = submit_ids.join(",");
@@ -7295,7 +7295,7 @@ $(document).on('click', '.sendButton_campaign_list', function() {
         }
     } else {
         alert('You Have to Select Applicants First');
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             $("#large-modal-campaign_list").removeClass('show');
             $("#chkCounterSession").removeClass('modal-open');
             $(".modal-backdrop").remove();
@@ -7303,7 +7303,7 @@ $(document).on('click', '.sendButton_campaign_list', function() {
     }
 
 });
-$('#sendEmailSms_campaignForm').on('submit', (function(e) {
+$('#sendEmailSms_campaignForm').on('submit', (function (e) {
     e.preventDefault();
     var formData = new FormData(this);
     var emailquote = $("#emailQuote_camp").val();
@@ -7313,7 +7313,7 @@ $('#sendEmailSms_campaignForm').on('submit', (function(e) {
     var form_id = $("#form_id").val();
     var camp_id = $("#form_id").attr('data-cid');
     var favorite = [];
-    $.each($("input[name='submission_id[]']:checked"), function() {
+    $.each($("input[name='submission_id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var submit_id = favorite.join(", ");
@@ -7333,7 +7333,7 @@ $('#sendEmailSms_campaignForm').on('submit', (function(e) {
                 cache: false,
                 processData: false,
                 async: false,
-                success: function(data) {
+                success: function (data) {
                     alert("Message Sent.");
                     console.log(data);
                     $("#preloader").hide();
@@ -7347,9 +7347,9 @@ $('#sendEmailSms_campaignForm').on('submit', (function(e) {
 
     }
 }));
-$("#expore_xl_campaign").click(function(e) {
+$("#expore_xl_campaign").click(function (e) {
     var submit_ids = [];
-    $.each($("input[name='submission_id[]']:checked"), function() {
+    $.each($("input[name='submission_id[]']:checked"), function () {
         submit_ids.push($(this).val());
     });
     var submt_id = submit_ids.join(",");
@@ -7371,7 +7371,7 @@ $("#expore_xl_campaign").click(function(e) {
     }
 });
 
-$(document).on('change', '.showFeeSettingButton', function() {
+$(document).on('change', '.showFeeSettingButton', function () {
     var val = $(this).val();
     var id = $(this).attr('data-sfid');
     if (val == '1') {
@@ -7382,9 +7382,9 @@ $(document).on('change', '.showFeeSettingButton', function() {
     }
 });
 
-$(document).on('click', '#saveAdmissionFess', function() {
+$(document).on('click', '#saveAdmissionFess', function () {
     var sub = [];
-    $.each($(".feestrid:checked"), function() {
+    $.each($(".feestrid:checked"), function () {
         sub.push($(this).val());
     });
     var subid = sub.join(",");
@@ -7396,7 +7396,7 @@ $(document).on('click', '#saveAdmissionFess', function() {
             type: 'post',
             data: $('#admissionForm').serialize(),
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#TB_overlay").remove();
                 $("#TB_window").remove();
                 $("#feeSettingId-" + kid).val(response);
@@ -7407,7 +7407,7 @@ $(document).on('click', '#saveAdmissionFess', function() {
     }
 });
 
-$(document).on('click', '#fees_id', function() {
+$(document).on('click', '#fees_id', function () {
     var checked = $("input[name='fees_id[]']:checked").length;
     if (checked > 1) {
         alert("Please Select One Invoice!");
@@ -7417,11 +7417,11 @@ $(document).on('click', '#fees_id', function() {
 
 });
 
-$(document).on('change', '#chkAllInvoiceApplicant', function() {
+$(document).on('change', '#chkAllInvoiceApplicant', function () {
     if ($(this).is(':checked')) {
         $(".chkinvoiceApplicant").prop('checked', true);
         var favorite = [];
-        $.each($(".chkinvoiceApplicant:checked"), function() {
+        $.each($(".chkinvoiceApplicant:checked"), function () {
             if ($(this).val() != '0') {
                 favorite.push($(this).val());
             }
@@ -7437,7 +7437,7 @@ $(document).on('change', '#chkAllInvoiceApplicant', function() {
             type: 'post',
             data: { val: invids, type: type, sid: sid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#getInvoiceFeeItem").html('');
                 $("#getInvoiceFeeItem").append(response);
                 $("input[name=invoice_id]").val(invids);
@@ -7453,9 +7453,9 @@ $(document).on('change', '#chkAllInvoiceApplicant', function() {
         $("input[name=invoice_id]").val('');
     }
 });
-$(document).on('click', '.chkinvoiceApplicant', function() {
+$(document).on('click', '.chkinvoiceApplicant', function () {
     var favorite = [];
-    $.each($(".chkinvoiceApplicant:checked"), function() {
+    $.each($(".chkinvoiceApplicant:checked"), function () {
         favorite.push($(this).val());
     });
     var invids = favorite.join(", ");
@@ -7470,7 +7470,7 @@ $(document).on('click', '.chkinvoiceApplicant', function() {
                 type: 'post',
                 data: { val: invid, type: type, sid: sid },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#getInvoiceFeeItem").append(response);
                     $("input[name=invoice_id]").val(invids);
                     $("#collectionForm").show();
@@ -7488,27 +7488,27 @@ $(document).on('click', '.chkinvoiceApplicant', function() {
 
 });
 
-$(document).on('change', '.showTemplate', function() {
+$(document).on('change', '.showTemplate', function () {
     var val = $(this).val();
     var id = $(this).attr('data-sid');
     if (id != '' && val != '') {
         var hrf = $("#clickTemplate" + id).attr('data-hrf');
         var newhrf = hrf + val + '&width=900';
         $("#clickTemplate" + id).attr('href', newhrf);
-        window.setTimeout(function() {
+        window.setTimeout(function () {
             $("#clickTemplate" + id).click();
         }, 10);
 
     }
 });
 
-$(document).on('click', '#configureTemplate', function() {
+$(document).on('click', '#configureTemplate', function () {
     var id = $(this).attr('data-id');
     var type = $(this).attr('data-type');
     if (type == '3') {
         var flag = true;
         var favorite1 = [];
-        $.each($(".email-pupilsightTemplateID:checked"), function() {
+        $.each($(".email-pupilsightTemplateID:checked"), function () {
             favorite1.push($(this).val());
         });
         var tid = favorite1.join(",");
@@ -7533,7 +7533,7 @@ $(document).on('click', '#configureTemplate', function() {
         }
 
         var favorite2 = [];
-        $.each($(".sms-pupilsightTemplateID:checked"), function() {
+        $.each($(".sms-pupilsightTemplateID:checked"), function () {
             favorite2.push($(this).val());
         });
         var stid = favorite2.join(",");
@@ -7566,7 +7566,7 @@ $(document).on('click', '#configureTemplate', function() {
 
     } else {
         var favorite = [];
-        $.each($(".pupilsightTemplateID:checked"), function() {
+        $.each($(".pupilsightTemplateID:checked"), function () {
             favorite.push($(this).val());
         });
         var tid = favorite.join(",");
@@ -7590,7 +7590,7 @@ $(document).on('click', '#configureTemplate', function() {
 });
 
 
-$(document).on('click', '.clickOnStaffDIv', function() {
+$(document).on('click', '.clickOnStaffDIv', function () {
     var id = $(this).attr('data-id');
     $("#showTypeStaff" + id).show();
 });
@@ -7627,7 +7627,7 @@ $(document).on('click', '.clickOnStaffDIv', function() {
 //     }
 // });
 
-$(document).on('click', '#showManualReceipt', function() {
+$(document).on('click', '#showManualReceipt', function () {
     if ($(this).is(':checked')) {
         $("#divManualReceipt").prop('disabled', false);
     } else {
@@ -7635,7 +7635,7 @@ $(document).on('click', '#showManualReceipt', function() {
     }
 });
 
-$(document).on('change', '#feeItems', function() {
+$(document).on('change', '#feeItems', function () {
     var selected_year = $("#feeItems").val();
     $(".before_academic").hide();
     $(".after_academic").removeClass("hidediv");
@@ -7649,7 +7649,7 @@ $(document).on('change', '#feeItems', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#feeitemType").html('');
                     $("#feeitemType").html(response);
 
@@ -7662,12 +7662,12 @@ $(document).on('change', '#feeItems', function() {
 });
 
 
-window.onload = function() {
+window.onload = function () {
     $(".receipt_none").attr("style", "background-color:#e0e0e0 !important")
 };
 
 
-$(document).on('change', '.disable_Reciept', function() {
+$(document).on('change', '.disable_Reciept', function () {
 
     $('#receipt_number').val("");
 
@@ -7685,10 +7685,10 @@ $(document).on('change', '.disable_Reciept', function() {
     }
 
 });
-$(document).on('click', '#cop_feeitem', function() {
+$(document).on('click', '#cop_feeitem', function () {
     var url = $(this).attr('data-href');
     var favorite = [];
-    $.each($("input[name='id[]']:checked"), function() {
+    $.each($("input[name='id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var feeId = favorite.join(",");
@@ -7702,7 +7702,7 @@ $(document).on('click', '#cop_feeitem', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#feeitem_copy").click();
                 }
             });
@@ -7712,15 +7712,15 @@ $(document).on('click', '#cop_feeitem', function() {
     }
 });
 
-$(document).on('click', '#showfee_assign_class', function() {
+$(document).on('click', '#showfee_assign_class', function () {
     alert('trst')
 });
 
-$(document).on('click', '#fee_assign_class', function() {
+$(document).on('click', '#fee_assign_class', function () {
 
     var url = $(this).attr('data-href');
     var favorite = [];
-    $.each($("input[name='id[]']:checked"), function() {
+    $.each($("input[name='id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var feeId = favorite.join(",");
@@ -7734,7 +7734,7 @@ $(document).on('click', '#fee_assign_class', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //  window.location.href = response.redirecturl;
                     $("#showfee_assign_class").click();
                 }
@@ -7749,7 +7749,7 @@ $(document).on('click', '#fee_assign_class', function() {
 
 
 
-$(document).on('click', '.chkinvoice_parent', function() {
+$(document).on('click', '.chkinvoice_parent', function () {
     var invids = $(this).attr('id');
     //var sid = $(this).attr('name');
 
@@ -7760,7 +7760,7 @@ $(document).on('click', '.chkinvoice_parent', function() {
             type: 'post',
             data: { val: invids, type: type },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $('#chk_feeID').click();
 
             }
@@ -7771,9 +7771,9 @@ $(document).on('click', '.chkinvoice_parent', function() {
 });
 
 
-$(document).on('click', '.cancelReceiptPaymentHistory', function() {
+$(document).on('click', '.cancelReceiptPaymentHistory', function () {
     var submit_ids = [];
-    $.each($("input[name='paymentHistory[]']:checked"), function() {
+    $.each($("input[name='paymentHistory[]']:checked"), function () {
         submit_ids.push($(this).val());
     });
     var submt_id = submit_ids.join(",");
@@ -7786,7 +7786,7 @@ $(document).on('click', '.cancelReceiptPaymentHistory', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //  window.location.href = response.redirecturl;
                     $('#cancelReceiptSubmit').click();
                 }
@@ -7798,7 +7798,7 @@ $(document).on('click', '.cancelReceiptPaymentHistory', function() {
 });
 
 
-$(document).on('change', '#chkAllPaymentHistory', function() {
+$(document).on('change', '#chkAllPaymentHistory', function () {
     if ($(this).is(':checked')) {
         $(".selPayHistory").prop('checked', true);
         addInvoiceFeeAmt();
@@ -7808,9 +7808,9 @@ $(document).on('change', '#chkAllPaymentHistory', function() {
     }
 
 });
-$(document).on('click', '.apply_discount_btn', function() {
+$(document).on('click', '.apply_discount_btn', function () {
     var favorite = [];
-    $.each($(".chkinvoiceM:checked"), function() {
+    $.each($(".chkinvoiceM:checked"), function () {
         favorite.push($(this).val());
     });
     var invoiceids = favorite.join(",");
@@ -7823,7 +7823,7 @@ $(document).on('click', '.apply_discount_btn', function() {
             type: 'post',
             data: { ids: invoiceids, p_stuId: p_stuId, pSyd: pSyd, type: type },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#apply_discount_popup").click();
             }
         });
@@ -7831,7 +7831,7 @@ $(document).on('click', '.apply_discount_btn', function() {
         alert('Please select atleast one invoice');
     }
 });
-$(document).on('change', '#discount_type_change', function() {
+$(document).on('change', '#discount_type_change', function () {
     var d_type = $(this).val();
     var sid = $("input[name=a_stuid]").val();
     var yid = $("input[name=a_yid]").val();
@@ -7842,12 +7842,12 @@ $(document).on('change', '#discount_type_change', function() {
         type: 'post',
         data: { d_type: d_type, sid: sid, yid: yid, ids: ids, type: type },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $(".discount_type_change_results").html(response);
         }
     });
 });
-$(document).on('change', '.chkinvoice_discount', function() {
+$(document).on('change', '.chkinvoice_discount', function () {
     var inv_id = $(this).attr('data-id');
     if ($(this).is(':checked')) {
         $(".inid_" + inv_id).removeAttr('readonly');
@@ -7855,7 +7855,7 @@ $(document).on('change', '.chkinvoice_discount', function() {
         $(".inid_" + inv_id).attr('readonly', 'readonly');
     }
 });
-$(document).on('change', '.a_selFeeItem', function() {
+$(document).on('change', '.a_selFeeItem', function () {
     var it_id = $(this).attr('data-id');
     if ($(this).is(':checked')) {
         $(".itid_" + it_id).removeAttr('readonly');
@@ -7863,11 +7863,11 @@ $(document).on('change', '.a_selFeeItem', function() {
         $(".itid_" + it_id).attr('readonly', 'readonly');
     }
 });
-$(document).on('click', '.btn_invoice_link_collection', function() {
-    
+$(document).on('click', '.btn_invoice_link_collection', function () {
+
     var favorite = [];
     var favorite1 = [];
-    $.each($(".chkinvoiceM:checked"), function() {
+    $.each($(".chkinvoiceM:checked"), function () {
         favorite.push($(this).attr('data-inv'));
         favorite1.push($(this).attr('data-stu'));
     });
@@ -7879,9 +7879,9 @@ $(document).on('click', '.btn_invoice_link_collection', function() {
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
-                data: { val: val, type: type, stu:stu },
+                data: { val: val, type: type, stu: stu },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //alert(response);
                     //  window.location.href = response.redirecturl;
                     $('#edit_invoice_collection_form').click();
@@ -7894,10 +7894,10 @@ $(document).on('click', '.btn_invoice_link_collection', function() {
         alert('You Have to Select atleast one Invoice.');
     }
 });
-$(document).on('click', '.btn_cancel_invoice_collection', function() {
+$(document).on('click', '.btn_cancel_invoice_collection', function () {
     var favorite = [];
     var favorite1 = [];
-    $.each($(".chkinvoiceM:checked"), function() {
+    $.each($(".chkinvoiceM:checked"), function () {
         favorite.push($(this).attr('data-inv'));
         favorite1.push($(this).attr('data-stu'));
     });
@@ -7910,9 +7910,9 @@ $(document).on('click', '.btn_cancel_invoice_collection', function() {
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
-                data: { val: val, type: type, stu:stu },
+                data: { val: val, type: type, stu: stu },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     //alert(response);
                     //  window.location.href = response.redirecturl;
                     $('#cancel_invoice_collection').click();
@@ -7930,7 +7930,7 @@ function removeDuplicates(data) {
     return [...new Set(data)]
 }
 
-$(document).on('click', '#addMultiPaymentItem', function() {
+$(document).on('click', '#addMultiPaymentItem', function () {
     var cid = $(this).attr('data-cid');
     var ncid = parseInt(cid) + 1;
     $(this).attr('data-cid', ncid);
@@ -7941,49 +7941,49 @@ $(document).on('click', '#addMultiPaymentItem', function() {
         type: 'post',
         data: { val: ncid, type: type, disid: disid },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#lastseatdiv").before(response);
         }
     });
 });
 
-$(document).on('click', '#MultiPayment', function() {
+$(document).on('click', '#MultiPayment', function () {
     var total_amount = $('#fullamount').val();
     var paying_amount = $('#totalAmount').text();
     var chk = 0;
     var formData = $("#multiPaymentForm").serialize();
     if (total_amount == paying_amount) {
-        $.each($(".payment_slt_mode"), function() {
+        $.each($(".payment_slt_mode"), function () {
             var did = '';
             var val = '';
             did = $(this).attr('data-id');
             val = $(this).val();
-            if(val == '3' || val == '2'){
-               //alert($("select.bank_" +did+ " option:selected").val());
-                if($("select.bank_" +did+ " option:selected").val() == ''){
+            if (val == '3' || val == '2') {
+                //alert($("select.bank_" +did+ " option:selected").val());
+                if ($("select.bank_" + did + " option:selected").val() == '') {
                     chk++;
                     alert('You Have to Select Bank');
                 }
 
-                if($(".ref_"+did).val() == ''){
+                if ($(".ref_" + did).val() == '') {
                     chk++;
                     alert('You Have to give Instrument No');
                 }
 
-                if($(".due_"+did).val() == ''){
+                if ($(".due_" + did).val() == '') {
                     chk++;
                     alert('You Have to give Instrument Date');
                 }
             }
         });
-        
-        if(chk == 0){
+
+        if (chk == 0) {
             $.ajax({
                 url: 'ajaxSwitch.php',
                 type: 'post',
                 data: formData,
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#checkmode").val('multiple');
                     $("#TB_closeWindowButton").click();
                     // $("#lastseatdiv").before(response);
@@ -8000,7 +8000,7 @@ $(document).on('click', '#MultiPayment', function() {
 
 
 });
-$(document).on('change', '.payment_slt_mode', function() {
+$(document).on('change', '.payment_slt_mode', function () {
     var id = $(this).attr('data-id');
     var txt = $("#py_mode" + id + " option:selected").text();
     txt = txt.toUpperCase();
@@ -8020,7 +8020,7 @@ $(document).on('change', '.payment_slt_mode', function() {
         $('.due_' + id).prop("readonly", false);
     }
 });
-$(document).on('change', '#pupilsightProgramID_MC', function() {
+$(document).on('change', '#pupilsightProgramID_MC', function () {
     var id = $(this).val();
     var pid = $('#pupilsightProgramID_MC').val();
     var type = 'getClass_new';
@@ -8029,7 +8029,7 @@ $(document).on('change', '#pupilsightProgramID_MC', function() {
         type: 'post',
         data: { val: id, type: type, pid: pid },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $('#pupilsightClassID').empty();
             $('#pupilsightClassID').append(response);
             //$('#pupilsightClassID').multiselect('rebuild');
@@ -8037,12 +8037,12 @@ $(document).on('change', '#pupilsightProgramID_MC', function() {
     });
 });
 
-$(document).on('click', '.show_div_marks', function() {
+$(document).on('click', '.show_div_marks', function () {
     var id = $(this).attr('data-id');
     $(".t_doby_" + id).slideToggle();
 });
 
-$(document).on('change', '#pupilsightDepartmentIDbyPP', function() {
+$(document).on('change', '#pupilsightDepartmentIDbyPP', function () {
     var id = $(this).val();
     var pid = $('#pupilsightProgramIDbyPP').val();
     var cid = $('#pupilsightYearGroupIDbyPP').val();
@@ -8053,7 +8053,7 @@ $(document).on('change', '#pupilsightDepartmentIDbyPP', function() {
         type: 'post',
         data: { val: id, type: type, pid: pid, cid: cid, sid: sid },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $('#skill_id').empty();
             $('#skill_id').append(response);
             //$('#pupilsightClassID').multiselect('rebuild');
@@ -8063,7 +8063,7 @@ $(document).on('change', '#pupilsightDepartmentIDbyPP', function() {
                 type: 'post',
                 data: { val: id, type: ntype, pid: pid, cid: cid, sid: sid },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#testId").html();
                     $("#testId").html(response);
                 }
@@ -8074,34 +8074,34 @@ $(document).on('change', '#pupilsightDepartmentIDbyPP', function() {
 });
 
 
-$(document).on('click', '#saveAttrPlugin', function() {
-        var sub = [];
-        $.each($(".pluginId:checked"), function() {
-            sub.push($(this).val());
-        });
-        var subid = sub.join(",");
-        if (subid != '') {
-            $.ajax({
-                url: 'modules/Academics/sketch_manage_attribute_pluginProcess.php',
-                type: 'post',
-                data: $('#sketchPLuginForm').serialize(),
-                async: true,
-                success: function(response) {
-                    $("#TB_overlay").remove();
-                    $("#TB_window").remove();
-                    alert('Plugin Added Successfully');
-                    //location.reload();
-                }
-            });
-        } else {
-            alert('Please Select Checkbox');
-        }
+$(document).on('click', '#saveAttrPlugin', function () {
+    var sub = [];
+    $.each($(".pluginId:checked"), function () {
+        sub.push($(this).val());
     });
+    var subid = sub.join(",");
+    if (subid != '') {
+        $.ajax({
+            url: 'modules/Academics/sketch_manage_attribute_pluginProcess.php',
+            type: 'post',
+            data: $('#sketchPLuginForm').serialize(),
+            async: true,
+            success: function (response) {
+                $("#TB_overlay").remove();
+                $("#TB_window").remove();
+                alert('Plugin Added Successfully');
+                //location.reload();
+            }
+        });
+    } else {
+        alert('Please Select Checkbox');
+    }
+});
 
 
-$(document).on('click', '#cancelTransaction', function() {
+$(document).on('click', '#cancelTransaction', function () {
     var favorite = [];
-    $.each($("input[name='collection_id[]']:checked"), function() {
+    $.each($("input[name='collection_id[]']:checked"), function () {
         favorite.push($(this).val());
     });
     var stuid = favorite.join(",");
@@ -8115,7 +8115,7 @@ $(document).on('click', '#cancelTransaction', function() {
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {
+                success: function (response) {
                     $("#cancelTransactionSubmit").click();
                 }
             });
@@ -8123,17 +8123,17 @@ $(document).on('click', '#cancelTransaction', function() {
     } else {
         alert('You Have to Select Transaction.');
     }
-});    
+});
 
-$(document).on('change', '#attrcat', function() {
+$(document).on('change', '#attrcat', function () {
     var id = $(this).val();
     var type = 'getSketchLabel';
     $.ajax({
         url: 'ajax_data.php',
         type: 'post',
-        data: { val: id, type: type},
+        data: { val: id, type: type },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $('#labeldata').empty();
             $('#labeldata').append(response);
             //$('#pupilsightClassID').multiselect('rebuild');
@@ -8141,11 +8141,11 @@ $(document).on('change', '#attrcat', function() {
     });
 });
 
-$(document).on('keydown', '.numMarksfield', function(event) {
+$(document).on('keydown', '.numMarksfield', function (event) {
     if (event.shiftKey == true) {
         event.preventDefault();
     }
-    
+
     if ((event.keyCode >= 48 && event.keyCode <= 57) ||
         (event.keyCode >= 96 && event.keyCode <= 105) ||
         event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 ||
@@ -8159,18 +8159,18 @@ $(document).on('keydown', '.numMarksfield', function(event) {
         event.preventDefault();
 });
 
-$(document).on('click', '#alertInvoiceEditData', function() {
+$(document).on('click', '#alertInvoiceEditData', function () {
     alert("You Can't Edit Invoice because Invoice is already Paid");
     return false;
 });
 
-$(document).on('click', '#alertInvoiceDeleteData', function() {
+$(document).on('click', '#alertInvoiceDeleteData', function () {
     alert("You Can't Delete Invoice because Invoice is already Paid");
     return false;
 });
 
 
-$(document).on('keyup', '#fine', function() {
+$(document).on('keyup', '#fine', function () {
     var transcation_amount = parseInt($("#transcation_amount_old").val());
     var amount_paying = parseInt($("#amount_paying_old").val());
     var fine = parseInt($('#fine').val()) || 0;
@@ -8187,18 +8187,18 @@ $(document).on('keyup', '#fine', function() {
 
 });
 
-$(document).on('keyup','.smsQuote_att',function(){
-    var txt=$(this).val();
-    var count=txt.length;
-    var dis=txt.replace(/\"/g, "");
-    var sms_count=count/160;
-    var sms_count = parseInt(sms_count)+1;
-    $(this).nextAll('span:first').html('Characters : '+count+" (<i class='fa fa-eye' aria-hidden='true'></i>) : "+sms_count+" SMS Count(s)");
-    $(this).nextAll('span:first').attr("title",dis);
+$(document).on('keyup', '.smsQuote_att', function () {
+    var txt = $(this).val();
+    var count = txt.length;
+    var dis = txt.replace(/\"/g, "");
+    var sms_count = count / 160;
+    var sms_count = parseInt(sms_count) + 1;
+    $(this).nextAll('span:first').html('Characters : ' + count + " (<i class='fa fa-eye' aria-hidden='true'></i>) : " + sms_count + " SMS Count(s)");
+    $(this).nextAll('span:first').attr("title", dis);
 });
 
 
-$(document).on('change', '#getMultiClassByProg', function() {
+$(document).on('change', '#getMultiClassByProg', function () {
     var id = $(this).val();
     var type = 'getClass';
     $('#showMultiClassByProg').selectize()[0].selectize.destroy();
@@ -8207,7 +8207,7 @@ $(document).on('change', '#getMultiClassByProg', function() {
         type: 'post',
         data: { val: id, type: type },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#showMultiClassByProg").html();
             $("#showMultiClassByProg").html(response);
             $('#showMultiClassByProg').selectize({
@@ -8218,7 +8218,7 @@ $(document).on('change', '#getMultiClassByProg', function() {
     });
 });
 
-$(document).on('change', '#showMultiClassByProg', function() {
+$(document).on('change', '#showMultiClassByProg', function () {
     var id = $(this).val();
     var pid = $('#getMultiClassByProg').val();
     var type = 'getMultiSection';
@@ -8228,7 +8228,7 @@ $(document).on('change', '#showMultiClassByProg', function() {
         type: 'post',
         data: { val: id, type: type, pid: pid },
         async: true,
-        success: function(response) {
+        success: function (response) {
             $("#showMultiSecByProgCls").html();
             $("#showMultiSecByProgCls").html(response);
             $('#showMultiSecByProgCls').selectize({

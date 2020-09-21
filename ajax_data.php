@@ -2755,13 +2755,26 @@ if ($type == 'getMultiSectionData') {
 if ($type == 'getMultiSection') {
     $cid = implode(',',$val);
     $pid = $_POST['pid'];
-   $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.pupilsightRollGroupID';
+    $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.pupilsightRollGroupID';
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
     if (!empty($sections)) {
         foreach ($sections as $k => $cl) {
             $data .= '<option value="' . $cl['pupilsightRollGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+if ($type == 'getAllSchoolStaff') {
+    $sql = 'SELECT a.type, b.pupilsightPersonID, b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" ';
+    $result = $connection2->query($sql);
+    $staffs = $result->fetchAll();
+    $data = '<option value="">Select Staff</option>';
+    if (!empty($staffs)) {
+        foreach ($staffs as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'].' ('.$cl['type']. ') </option>';
         }
     }
     echo $data;

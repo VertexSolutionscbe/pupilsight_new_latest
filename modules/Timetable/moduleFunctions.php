@@ -1189,13 +1189,19 @@ function renderTTDay($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDa
             //Draw outline of the day
             try {
                 $dataPeriods = array('pupilsightTTDayID' => $rowDay['pupilsightTTDayID'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
-                $sqlPeriods = 'SELECT pupilsightTTColumnRow.name, timeStart, timeEnd, type, date FROM pupilsightTTDay JOIN pupilsightTTDayDate ON (pupilsightTTDay.pupilsightTTDayID=pupilsightTTDayDate.pupilsightTTDayID) JOIN pupilsightTTColumn ON (pupilsightTTDay.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) WHERE pupilsightTTDayDate.pupilsightTTDayID=:pupilsightTTDayID AND date=:date ORDER BY timeStart, timeEnd';
+                $sqlPeriods = 'SELECT pupilsightTTColumnRow.pupilsightTTColumnRowID, pupilsightTTColumnRow.name, timeStart, timeEnd, type, date, pupilsightTTDay.pupilsightTTDayID FROM pupilsightTTDay JOIN pupilsightTTDayDate ON (pupilsightTTDay.pupilsightTTDayID=pupilsightTTDayDate.pupilsightTTDayID) JOIN pupilsightTTColumn ON (pupilsightTTDay.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) WHERE pupilsightTTDayDate.pupilsightTTDayID=:pupilsightTTDayID AND date=:date ORDER BY timeStart, timeEnd';
                 $resultPeriods = $connection2->prepare($sqlPeriods);
                 $resultPeriods->execute($dataPeriods);
             } catch (PDOException $e) {
                 $output .= "<div class='alert alert-danger'>".$e->getMessage().'</div>';
             }
             while ($rowPeriods = $resultPeriods->fetch()) {
+                $sqlcs = 'SELECT c.officialName , d.name FROM pupilsightTTDayRowClass AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightDepartment AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID WHERE a.pupilsightTTColumnRowID = '.$rowPeriods['pupilsightTTColumnRowID'].' AND A.pupilsightTTDayID = '.$rowPeriods['pupilsightTTDayID'].' ';
+                $resultcs = $connection2->query($sqlcs);
+                $staffcs = $resultcs->fetch();
+                $staffName = $staffcs['officialName'];
+                $subjectName = $staffcs['name'];
+
                 $isSlotInTime = false;
                 if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
                     $isSlotInTime = true;
@@ -1243,8 +1249,10 @@ function renderTTDay($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDa
                         $output .= $rowPeriods['name'].'<br/>';
                     } elseif ($height >= 30) {
                         $output .= $rowPeriods['name'].'<br/>';
-                        $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i><br/>';
+                        $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i>';
                     }
+                    $output .= '<div style="margin-top:-8px; display:grid"><span style="color:blue; font-size:14px;">'.$subjectName.'</span><span style="margin-top:-8px;color: #206bc4;
+                    ">'.$staffName.'</span></div>';
                     $output .= '</div>';
                     ++$zCount;
                 }

@@ -135,24 +135,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 $row->addLabel('status', __('New Status'));
                 $row->addSelect('status')->fromArray($statuses)->required()->selected('On Loan')->placeholder();
 
-            // $usertype = array('' => 'Select User Type', '002' => 'Staff', '004' => 'Student');
-            // $row = $form->addRow();
-            //     $row->addLabel('pupilsightRoleIDPrimary', __('User Type'));
-            //     $row->addSelect('pupilsightRoleIDPrimary')->setId('userType')->fromArray($usertype)->required()->selected('On Loan')->required();    
+            $usertype = array('' => 'Select User Type', '002' => 'Staff', '004' => 'Student');
+            $row = $form->addRow();
+                $row->addLabel('pupilsightRoleIDPrimary', __('User Type'));
+                $row->addSelect('pupilsightRoleIDPrimary')->setId('userType')->fromArray($usertype)->required()->selected('On Loan')->required();    
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('studentType hiddencol');
                 $row->addLabel('pupilsightProgramID', __('Program'));
-                $row->addSelect('pupilsightProgramID')->fromArray($program)->placeholder('Select Program')->required();
+                $row->addSelect('pupilsightProgramID')->fromArray($program)->placeholder('Select Program');
         
         
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('studentType hiddencol');
                 $row->addLabel('pupilsightYearGroupID', __('Class'));
-                $row->addSelect('pupilsightYearGroupID')->placeholder('Select Class')->required();
+                $row->addSelect('pupilsightYearGroupID')->placeholder('Select Class');
         
                 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('studentType hiddencol');
                 $row->addLabel('pupilsightRollGroupID', __('Section'));
-                $row->addSelect('pupilsightRollGroupID')->placeholder('Select Section')->required(); 
+                $row->addSelect('pupilsightRollGroupID')->placeholder('Select Section'); 
             
             $row = $form->addRow();
                 $row->addLabel('pupilsightPersonIDStatusResponsible', __('Responsible User'))->description(__('Who is responsible for this new status?'));
@@ -226,3 +226,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
         }
     }
 }
+
+?>
+
+<script>
+    $(document).on('change','#userType', function(){
+        var val = $(this).val();
+        $("#pupilsightPersonID").html('<option value="">Please Select</option>');
+        if(val != ''){
+            if(val == '004'){
+                $(".studentType").removeClass('hiddencol');
+            } else {
+                $(".studentType").addClass('hiddencol');
+                var type = 'getAllSchoolStaff';
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: val, type: type },
+                    async: true,
+                    success: function(response) {
+                        $("#pupilsightPersonID").html();
+                        $("#pupilsightPersonID").html(response);
+                    }
+                });
+            }
+        }
+    });
+</script>    

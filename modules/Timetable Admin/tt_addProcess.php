@@ -8,7 +8,7 @@ include '../../pupilsight.php';
 // echo '<pre>';
 // print_r($_POST);
 // echo '</pre>';
-//die();
+// die();
 
 $name = $_POST['name'];
 $nameShort = $_POST['nameShort'];
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
+                $URL .= '&return=error9';
                 header("Location: {$URL}");
                 exit();
             }

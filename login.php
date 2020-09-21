@@ -165,7 +165,12 @@ else {
                     exit;
                 } else {
                     //Allow for non-current school years to be specified
-                    if ($_POST['pupilsightSchoolYearID'] != $_SESSION[$guid]['pupilsightSchoolYearID']) {
+                    $datas = array('status' => 'Current');
+                    $sqls = "SELECT * FROM pupilsightSchoolYear WHERE status=:status";
+                    $cureentYear = $pdo->selectOne($sqls, $datas);
+                    $currentYearId = $cureentYear['pupilsightSchoolYearID'];
+
+                    if ($currentYearId != $_SESSION[$guid]['pupilsightSchoolYearID']) {
                         if ($row['futureYearsLogin'] != 'Y' and $row['pastYearsLogin'] != 'Y') { //NOT ALLOWED DUE TO CONTROLS ON ROLE, KICK OUT!
                             setLog($connection2, $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'], null, $row['pupilsightPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Not permitted to access non-current school year'), $_SERVER['REMOTE_ADDR']);
                             $URL .= '?loginReturn=fail9';
@@ -174,7 +179,7 @@ else {
                         } else {
                             //Get details on requested school year
                             try {
-                                $dataYear = array('pupilsightSchoolYearID' => $_POST['pupilsightSchoolYearID']);
+                                $dataYear = array('pupilsightSchoolYearID' => $currentYearId);
                                 $sqlYear = 'SELECT * FROM pupilsightSchoolYear WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID';
                                 $resultYear = $connection2->prepare($sqlYear);
                                 $resultYear->execute($dataYear);
