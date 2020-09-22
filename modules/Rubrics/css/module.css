@@ -1,0 +1,49 @@
+/*
+Pupilsight, Flexible & Open School System
+
+*/
+
+.rubricTable {
+    vertical-align: top;
+    border-collapse: collapse;
+    border: 0;
+}
+
+.rubricHeading {
+    border: 1px solid #000 !important;
+    width: 110px;
+}
+
+.rubricRowHeading {
+    color: #fff;
+    background: #666;
+    padding: 5px !important;
+}
+
+.rubricCell {
+    vertical-align: top;
+    border: 1px solid #000 !important;
+    font-size: 90%;
+}
+
+.rubricCellEdit {
+    padding: 0px;
+}
+
+.rubricCellHighlight {
+    background: #79FA74; 
+}
+
+.rubricCell textarea { 
+    background: #fff; 
+    border: 0 !important;
+    margin: 0px; 
+    padding: 5px;
+    width: 100%; 
+    height: 110px;
+}
+
+.rubricCellEmpty {
+    background: inherit;
+    border: 0;
+}

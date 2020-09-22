@@ -1,0 +1,72 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Enhanced Blocks\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-30 09:53+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.2.0; wp-5.0.3"
+
+#: src/blocks/post-grid/index.php:173
+msgid "Different Sized Featured Images"
+msgstr ""
+
+#. Name of the plugin
+#: src/init.php:145
+msgid "Enhanced Blocks"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Enhanced Blocks - Page Builder blocks for Gutenberg Editor | Design "
+"responsive WordPress sites with few clicks | First ever Gutenberg block "
+"editor plugin for site building which is on the constant update."
+msgstr ""
+
+#. Author of the plugin
+msgid "gutendev"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://profiles.wordpress.org/gutendev"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/enhanced-blocks/"
+msgstr ""
+
+#: src/blocks/social-share/index.php:146
+msgid "Share on Email"
+msgstr ""
+
+#: src/blocks/social-share/index.php:104
+msgid "Share on Facebook"
+msgstr ""
+
+#: src/blocks/social-share/index.php:118
+msgid "Share on Google"
+msgstr ""
+
+#: src/blocks/social-share/index.php:125
+msgid "Share on Linkedin"
+msgstr ""
+
+#: src/blocks/social-share/index.php:132
+msgid "Share on Pinterest"
+msgstr ""
+
+#: src/blocks/social-share/index.php:139
+msgid "Share on Reddit"
+msgstr ""
+
+#: src/blocks/social-share/index.php:111
+msgid "Share on Twitter"
+msgstr ""

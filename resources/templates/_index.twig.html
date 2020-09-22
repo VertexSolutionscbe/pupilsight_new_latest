@@ -1,0 +1,410 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    {% block head %} {{ include('head.twig.html') }} {% endblock head %}
+</head>
+
+<body id='chkCounterSession' data-val='{{ counterid }}'>
+    <!-- Preloader Start Here -->
+    <div id="preloader"></div>
+    <!-- Preloader End Here -->
+    <div id="wrapper" class="wrapper bg-ash">
+        <!-- Header Menu Area Start Here -->
+        <div class="navbar navbar-expand-md header-menu-one bg-light">
+            <div class="nav-bar-header-one">
+                <div class="header-logo">
+                    <a href="{{ absoluteURL }}/index.php">
+                        <img src="{{ absoluteURL }}/{{ organisationLogo|default(" /themes/Default/img/logo.png ") }}" alt="logo" width="190">
+                    </a>
+                </div>
+                <div class="toggle-button sidebar-toggle">
+                    <button type="button" class="item-link">
+                        <span class="btn-icon-wrap">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-md-none mobile-nav-bar">
+                <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#mobile-navbar" aria-expanded="false">
+                    <i class="far fa-arrow-alt-circle-down"></i>
+                </button>
+                <button type="button" class="navbar-toggler sidebar-toggle-mobile">
+                    <i class="mdi mdi-view-sequential"></i>
+                </button>
+            </div>
+            <div class="header-main-menu collapse navbar-collapse" id="mobile-navbar">
+                {{ fastFinder|raw }}
+                <!--<ul class="navbar-nav">
+                    <li class="navbar-item header-search-bar">
+                        <div class="input-group stylish-input-group">
+							
+                            <span class="input-group-addon">
+                                <button type="submit">
+                                    <span class="flaticon-search" aria-hidden="true"></span>
+                            </button>
+                            </span>
+                            <input type="text" class="form-control" placeholder="Find Something . . .">
+                        </div>
+                    </li>
+                </ul>-->
+                <ul class="navbar-nav">
+                    {% if parentrole =='002' %}
+                    <li class="navbar-item dropdown header-admin">SMS Credits ({{ smsCredits }})</li>
+                    {% endif %}
+                    <li class="navbar-item dropdown header-admin">
+                        <a class="navbar-nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                            <div class="admin-title">
+
+                                <h5 class="item-title">{{ uname|raw }}</h5>
+                                <span></span>
+                            </div>
+                            <div class="admin-img">
+                                <img src="{{absoluteURL}}/lib/img/figure/admin.jpg" alt="Admin">
+                            </div>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <div class="item-header">
+                                <h6 class="item-title">{{ uname|raw }}</h6>
+                            </div>
+                            <div class="item-content">
+                                <ul class="settings-list">
+
+                                    <li><a href="./index.php?q=preferences.php"><i class="flaticon-gear-loading"></i>Preferences</a></li>
+                                    <li><a href="./logout.php"><i class="flaticon-turn-off"></i>Log Out</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+        <!-- Header Menu Area End Here -->
+        <!-- Page Area Start Here -->
+        <div class="dashboard-page-one">
+            <!-- Sidebar Area Start Here -->
+            <div class="sidebar-main sidebar-menu-one sidebar-expand-md sidebar-color">
+                {{ include('menu.twig.html') }}
+            </div>
+            <!-- Sidebar Area End Here -->
+            <div class="dashboard-content-one">
+                <!-- Breadcubs Area Start Here -->
+                <div class="" style="padding:20px 0;">
+                    {{ include('navigation.twig.html') }}
+                </div>
+                <!-- Breadcubs Area End Here -->
+
+                <!-- Dashboard Content Start Here -->
+                <div class="row gutters-20">
+                    <div id="content" class="col-12 col-xl-12">
+                        <div class="card dashboard-card-one pd-b-20">
+                            <div class="card-body">
+
+                                {% if page.breadcrumbs %}
+                                <div class="sm:pt-10 lg:pt-0">
+                                    <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
+                                        {% for title, src in page.breadcrumbs %} {% if loop.last %}
+                                        <span class="trailEnd">{{ title }}</span> {% elseif loop.revindex > 5 and loop.index != 1 %}
+                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">...</a> > {% else %}
+                                        <a class="text-blue-700 underline" href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > {% endif %} {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %} {% block page %} {% if page.breadcrumbs %} {% endif %} {% for type, alerts in page.alerts %} {% for text in alerts %}
+                                <div class="{{ type }}">{{ text|raw }}</div>
+                                {% endfor %} {% endfor %} {{ content|join("\n")|raw }} {% endblock %}
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- Dashboard Content End Here -->
+
+                <!-- Footer Area Start Here -->
+
+                {% block footer %}
+                <!---
+                <footer class="footer-wrap-layout1">
+                    <div class="copyright">© Copyrights <a href="#">parentof</a> 2019. All rights reserved. Designed by <a href="#">Parentof</a></div>
+                </footer>
+                --->
+                {% endblock %}
+
+                <!-- Footer Area End Here -->
+            </div>
+        </div>
+        <!-- Page Area End Here -->
+    </div>
+    <div class="modal fade" id="large-modal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title emailsmsFieldTitle" style="display:none;">Email & SMS Quotes</h5>
+                    <h5 class="modal-title emailFieldTitle" style="display:none;">Email Quotes</h5>
+                    <h5 class="modal-title smsFieldTitle" style="display:none;">SMS Quotes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body emailField" style="display:none;">
+                    <h3 class="font-semibold">Email Quote</h3>
+                    <textarea name="email_quote" id="emailQuote" rows="5"></textarea>
+                </div>
+                <div class="modal-body smsField" style="display:none;">
+                    <h3 class="font-semibold">SMS Quote</h3>
+                    <textarea name="sms_quote" id="smsQuote"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="button" class="footer-btn bg-linkedin" id="sendState">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="large-modal-new" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title emailsmsFieldTitle" style="display:none;">Email & SMS Quotes</h5>
+                    <h5 class="modal-title emailFieldTitle" style="display:none;">Email Quotes</h5>
+                    <h5 class="modal-title smsFieldTitle" style="display:none;">SMS Quotes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body emailField" style="display:none;">
+                    <h3 class="font-semibold">Email Quote</h3>
+                    <textarea name="email_quote" id="emailQuoteRoute" rows="5"></textarea>
+                </div>
+                <div class="modal-body smsField" style="display:none;">
+                    <h3 class="font-semibold">SMS Quote</h3>
+                    <textarea name="sms_quote" id="smsQuoteRoute"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="button" class="footer-btn bg-linkedin" id="sendEmailSms">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="large-modal-new_stud" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title emailsmsFieldTitle" style="display:none;">Email & SMS Quotes</h5>
+                    <h5 class="modal-title emailFieldTitle" style="display:none;">Email Quotes</h5>
+                    <h5 class="modal-title smsFieldTitle" style="display:none;">SMS Quotes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body emailField" style="display:none;">
+                    <h3 class="font-semibold">Email Quote</h3>
+                    <textarea name="email_quote" id="emailQuote_stud" rows="5"></textarea>
+                </div>
+                <div class="modal-body smsField" style="display:none;">
+                    <h3 class="font-semibold">SMS Quote</h3>
+                    <textarea name="sms_quote" id="smsQuote_stud" class="smsQuote_stud"></textarea>
+                    <span></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="button" class="footer-btn bg-linkedin" id="sendEmailSms_stud">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="large-modal-new_staff" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title emailsmsFieldTitle" style="display:none;">Email & SMS Quotes</h5>
+                    <h5 class="modal-title emailFieldTitle" style="display:none;">Email Quotes</h5>
+                    <h5 class="modal-title smsFieldTitle" style="display:none;">SMS Quotes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body emailField" style="display:none;">
+                    <h3 class="font-semibold">Email Quote</h3>
+                    <textarea name="email_quote" id="emailQuote_staff" rows="5"></textarea>
+                </div>
+                <div class="modal-body smsField" style="display:none;">
+                    <h3 class="font-semibold">SMS Quote</h3>
+                    <textarea name="sms_quote" id="smsQuote_staff"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="button" class="footer-btn bg-linkedin" id="sendEmailSms_staff">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="large-modal-new_attendance" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title emailsmsFieldTitle" style="display:none;">Email & SMS Quotes</h5>
+                    <h5 class="modal-title emailFieldTitle" style="display:none;">Email Quotes</h5>
+                    <h5 class="modal-title smsFieldTitle" style="display:none;">SMS Quotes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body emailField" style="display:none;">
+                    <h3 class="font-semibold">Email Quote</h3>
+                    <textarea name="email_quote" id="emailQuote_att" rows="5"></textarea>
+                </div>
+                <div class="modal-body smsField" style="display:none;">
+                    <h3 class="font-semibold">SMS Quote</h3>
+                    <textarea name="sms_quote" id="smsQuote_att"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="button" class="footer-btn bg-linkedin" id="sendEmailSms_attendance">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="large-modal-stud_test_result" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title emailsmsFieldTitle" style="display:none;">Email & SMS Quotes</h5>
+                    <h5 class="modal-title emailFieldTitle" style="display:none;">Email Quotes</h5>
+                    <h5 class="modal-title smsFieldTitle" style="display:none;">SMS Quotes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body emailField" style="display:none;">
+                    <h3 class="font-semibold">Email Quote</h3>
+                    <textarea name="email_quote" id="emailQuote_stud_result" rows="5"></textarea>
+                </div>
+                <div class="modal-body smsField" style="display:none;">
+                    <h3 class="font-semibold">SMS Quote</h3>
+                    <textarea name="sms_quote" id="smsQuote_stud_result"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="button" class="footer-btn bg-linkedin" id="sendEmailSms_stud_test_result">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="large-modal-stud_attendance_rprt" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title emailsmsFieldTitle" style="display:none;">Email & SMS Quotes</h5>
+                    <h5 class="modal-title emailFieldTitle" style="display:none;">Email Quotes</h5>
+                    <h5 class="modal-title smsFieldTitle" style="display:none;">SMS Quotes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body emailField" style="display:none;">
+                    <h3 class="font-semibold">Email Quote</h3>
+                    <textarea name="email_quote" id="emailQuote_stud_result" rows="5"></textarea>
+                </div>
+                <div class="modal-body smsField" style="display:none;">
+                    <h3 class="font-semibold">SMS Quote</h3>
+                    <textarea name="sms_quote" id="smsQuote_stud_rpt"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="button" class="footer-btn bg-linkedin" id="sendEmailSms_stud_attend_rprt">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div class="modal fade" id="testSMSModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Test SMS</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                     <input type="text" name="testMobileNo" class="testMobileNo w-full" id="testMobileNo" placeholder="Enter mobile no">
+                     <span class="m_err" style="color:red"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="button" class="footer-btn bg-linkedin" id="sendTestSms">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="testEmailModel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Test Email</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                     <input type="text" name="testEmail" class=" w-full testEmail" id="testEmail" placeholder="Enter Email">
+                     <span class="e_err" style="color:red"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="button" class="footer-btn bg-linkedin" id="sendTestEmail">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="large-modal-campaign_list" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+			<form  method="post" id="sendEmailSms_campaignForm" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title emailsmsFieldTitle" style="display:none;">Email & SMS Quotes</h5>
+                    <h5 class="modal-title emailFieldTitle" style="display:none;">Email Quotes</h5>
+                    <h5 class="modal-title smsFieldTitle" style="display:none;">SMS Quotes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body emailField" style="display:none;">
+				
+                    <h3 class="font-semibold">Email Subject</h3>
+                    <input type="text" name="email_sub" id="emailSubjct_camp" style='width: 759px;'>
+                    <h3 class="font-semibold">Email Quote</h3>
+                    <textarea name="email_quote" id="emailQuote_camp" rows="5"></textarea>
+                    <h3 class="font-semibold">Attachments</h3>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="15728640" />
+                    <input type='file' name="email_attach" id="emailattach_camp">
+                </div>
+                <div class="modal-body smsField" style="display:none;">
+                    <h3 class="font-semibold">SMS Quote</h3>
+                    <textarea name="sms_quote" id="smsQuote_camp"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="footer-btn bg-dark-low" data-dismiss="modal">Close</button>
+                    <button type="submit" class="footer-btn bg-linkedin" id="sendEmailSms_campaign">Send</button>
+                </div>
+				</form>
+            </div>
+        </div>
+    </div>
+    <!-- jquery-->
+    {% block foot %} {{ include('foot.twig.html') }} {% endblock foot %}
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="262px" height="59px" viewBox="0 0 262 59" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>Report builder with text</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M11.6424,31.0464 L0,31.0464 L0,4.851 C-3.28099205e-16,2.17186668 2.17186668,3.15668407e-15 4.851,0 L35.8974,0 L46.5696,10.6722 L46.5696,53.361 C46.5696,56.0401333 44.3977333,58.212 41.7186,58.212 L4.851,58.212 C2.17186668,58.212 -5.60079215e-16,56.0401333 0,53.361 L0,45.5994 L11.6424,45.5994 L11.6424,33.957 L23.2848,33.957 L23.2848,22.3146 L11.6424,22.3146 L11.6424,31.0464 Z" id="path-1"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Report-builder-with-text">
+            <text id="Report-Builder" fill="#091D70" font-family="Sansation-Bold, Sansation" font-size="29" font-weight="bold">
+                <tspan x="76" y="40">Report Builder</tspan>
+            </text>
+            <g id="Group-Copy">
+                <g id="Rectangle" transform="translate(11.642400, 0.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <use id="Combined-Shape" fill="#5DD3FF" xlink:href="#path-1"></use>
+                    <path d="M11.6424,11.6424 L46.5696,43.659 L46.5696,65.9736 L11.6424,33.957 L23.2848,33.957 L23.2848,22.3146 L11.6424,22.3146 L11.6424,11.6424 Z" id="Combined-Shape" fill="#00A5FF" mask="url(#mask-2)"></path>
+                </g>
+                <path d="M0,11.6424 L0,19.8441238 C0,21.4696907 1.38783576,22.7997 3.08407947,22.7997 L11.6424,22.7997 L11.6424,31.0014238 C11.6424,32.6269907 13.0302358,33.957 14.7264795,33.957 L23.2848,33.957 L23.2848,11.6424 L0,11.6424 L0,11.6424 Z" id="Path" fill="#008CFF"></path>
+                <path d="M47.5398,0 L58.212,10.6722 L52.3908,10.6722 C49.7116667,10.6722 47.5398,8.50033332 47.5398,5.8212 L47.5398,0 L47.5398,0 Z" id="Rectangle" fill="#00A5FF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

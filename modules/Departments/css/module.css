@@ -1,0 +1,14 @@
+/*
+Pupilsight, Flexible & Open School System
+
+*/
+
+td.current {
+	background-color: #B3EFC2!important ;
+	background: -webkit-gradient(linear, left top, left bottom, from(#B5F1C4), to(#B3EFC2))!important;
+	background: -moz-linear-gradient(top,  #B5F1C4,  #B3EFC2)!important;
+}
+tr.warning {
+	background: none!important ;
+	background-color: #FFD2A9!important ;
+}

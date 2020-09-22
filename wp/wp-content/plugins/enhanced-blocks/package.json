@@ -1,0 +1,31 @@
+{
+  "name": "rowlayout-for-gutenberg-cgb-guten-block",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "cgb-scripts start",
+    "build": "cgb-scripts build",
+    "eject": "cgb-scripts eject"
+  },
+  "dependencies": {
+    "@fonticonpicker/react-fonticonpicker": "^1.2.0",
+    "@wordpress/api-fetch": "^3.1.0",
+    "api-fetch": "0.0.1",
+    "cgb-scripts": "1.13.0",
+    "classnames": "^2.2.6",
+    "lodash": "^4.17.11",
+    "map": "^1.0.1",
+    "memize": "^1.0.5",
+    "moment": "^2.23.0",
+    "prop-types": "^15.7.2",
+    "range": "0.0.3",
+    "re-resizable": "^4.11.0",
+    "react-lazy-load": "^3.0.13",
+    "react-masonry-component": "^6.2.1",
+    "react-select": "^2.4.3",
+    "react-slick": "^0.23.2",
+    "react-transition-group": "^2.6.0",
+    "react-twentytwenty": "^1.2.1",
+    "webfontloader": "^1.6.28"
+  }
+}

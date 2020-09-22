@@ -1,0 +1,61 @@
+{% if menuModule %}
+<div class="navbar-expand-md">
+    <div class="collapse navbar-collapse" id="navbar-menu">
+        <div class="navbar navbar-light">
+            <div class="container-fluid">
+                <!--
+<div class='position-absolute' style='right:0;top:0;'>
+                -->
+                <div>
+                    <ul class="navbar-nav">
+                        {% for categoryName, items in menuModule %} {% if categoryName %}
+                        {% if categoryName == 'Manage' or categoryName == 'Payment' or categoryName == 'Structure' or categoryName == 'Route' or categoryName == 'Bus' or categoryName == 'Manage Curriculum' or categoryName == 'Examination' %}
+                        {% else %}
+
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#navbar-base" data-toggle="dropdown" role="button"
+                                aria-expanded="false">
+                                <span class="nav-link-title">
+                                    {{ __(categoryName, (items|first).textDomain) }}
+                                </span>
+                            </a>
+
+                            <ul class="dropdown-menu">
+                                {% for item in items %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ item.url }}">
+                                        {{ __(item.name, item.textDomain) }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                        </li>
+
+                        {% endif %} {% endif %} {% endfor %}
+                    </ul>
+                    
+                    <!-- Sidebar -->
+                    {% for code in page.extraSidebar if sidebar and sidebarPosition != 'bottom' %} {% if code is not empty %}
+                    <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-6">
+                        {{ code|raw }}
+                    </div>
+                    {% endif %} {% endfor %} {% if sidebar and sidebarContents %}
+                    <div class="md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} ">
+                        {{ sidebarContents|raw }}
+                    </div>
+                
+                    {% endif %}  {% for code in page.extraSidebar if sidebar and sidebarPosition == 'bottom' %}
+                    <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-0">
+                        {{ code|raw }}
+                    </div>
+                    {% endfor %}
+                    <!-- Sidebar -->
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

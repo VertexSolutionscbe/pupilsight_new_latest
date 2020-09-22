@@ -1,0 +1,56 @@
+{#
+<!--
+Pupilsight, Flexible & Open School System
+
+
+This is a Pupilsight template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+TODO: add template variable details.
+-->#}
+
+<!DOCTYPE html>
+<html {{ rightToLeft ? 'dir="rtl"' : '' }}>
+
+<head>
+
+    {% block head %} {{ include('head.twig.html') }} {% endblock head %}
+</head>
+
+<body>
+    <div id="wrapOuter" class="">
+        <div class="text-right text-xs md:text-sm xl:px-0" style='margin:2px 20px 0 0;'>
+            {{ minorLinks|raw }}
+        </div>
+
+        <div id="wrap" class="">
+            {% block header %}
+            <div id="header" class="relative bg-white flex justify-between items-center sm:h-32">
+
+                <a id="header-logo" class="block max-w-xs sm:max-w-full leading-none" href="{{ absoluteURL }}">
+                    <img class="block max-w-full" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default(" /themes/Default/img/logo.png ") }}" width="300" />
+                </a>
+
+                <div class="flex-grow flex justify-end">
+                    {{ fastFinder|raw }}
+                </div>
+            </div>
+
+            <nav id="header-menu" class="w-full bg-gray justify-between">
+                {{ include('menu.twig.html') }}
+            </nav>
+
+            {% endblock %}
+
+            <div id="content-wrap" class="relative w-full min-h-1/2 flex content-start {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} lg:flex-row-reverse bg-transparent-100 clearfix">
+                {% block page %} {% endblock %}
+
+                <iframe src="{{ iframesrc }}" style="width:100%;height:70vh"></iframe>
+            </div>
+        </div>
+    </div>
+
+    {% block foot %} {{ include('foot.twig.html') }} {% endblock foot %}
+</body>
+
+</html>
