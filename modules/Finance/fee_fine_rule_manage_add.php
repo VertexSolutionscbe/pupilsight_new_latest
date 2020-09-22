@@ -104,7 +104,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_fine_rule_mana
         
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('', __(''));
-            $col->addButton(__('Add'))->setID('addFixedMultipleFineRule')->addData('cid', '1')->addClass('bttnsubmt bg-dodger-blue fsize hidediv');
+            //$col->addButton(__('Add'))->setID('addFixedMultipleFineRule')->addData('cid', '1')->addClass('bttnsubmt bg-dodger-blue fsize hidediv');
+            $col->addContent('<a class="btn btn-primary fsize hidediv" id="addFixedMultipleFineRule" data-cid="1">Add</a>');
 
         $col = $row->addColumn()->setClass('hiddencol');
             $col->addLabel('', __(''));
@@ -136,7 +137,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_fine_rule_mana
         
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('', __(''));
-            $col->addButton(__('Add'))->setID('addDaySlabFineRule')->addData('cid', '1')->addClass('bttnsubmt bg-dodger-blue fsize hidediv');
+            //$col->addButton(__('Add'))->setID('addDaySlabFineRule')->addData('cid', '1')->addClass('bttnsubmt bg-dodger-blue fsize hidediv');
+            $col->addContent('<a class="btn btn-primary fsize hidediv" id="addDaySlabFineRule" data-cid="1">Add</a>');
 
         $col = $row->addColumn()->setClass('hiddencol');
             $col->addLabel('', __(''));

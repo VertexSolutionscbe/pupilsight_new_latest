@@ -108,7 +108,12 @@ else {
 
             setLog($connection2, $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'], null, $row['pupilsightPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
             $URL .= '?loginReturn=fail6';
-            header("Location: {$URL}");
+            // header("Location: {$URL}");
+            // exit;
+            echo "<script type='text/javascript'>alert('You Account is Locked, Please Contact to Admin');
+            window.location.href='./index.php';
+
+            </script>";
             exit;
         } else {
             $passwordTest = false;
