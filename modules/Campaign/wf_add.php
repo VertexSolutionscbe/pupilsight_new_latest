@@ -95,7 +95,8 @@ echo '</h2>';
     
     $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes');
-            $col->addButton(__('Add More State'))->addData('cid', '1')->setID('addState')->addClass('bttnsubmt');
+            //$col->addButton(__('Add More State'))->addData('cid', '1')->setID('addState')->addClass('bttnsubmt'); 
+            $col->addContent('<a class="btn btn-primary" id="addState" data-cid="1">Add More State</a>');
 
             $col = $row->addColumn()->setClass('newdes');
             //$col->addLabel('Total Seats : ', __('Total Seats : '))->addClass('showSeats');

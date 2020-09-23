@@ -24,8 +24,9 @@ $validator = new \Pupilsight\Data\Validator();
 $_POST = $validator->sanitize($_POST);
 
 //Get and store POST variables from calling page
-$username = isset($_POST['username'])? $_POST['username'] : '';
-$password = isset($_POST['password'])? $_POST['password'] : '';
+$username = isset($_POST['username']) ? $_POST['username'] : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
+
 
 if (empty($username) or empty($password)) {
     $URL .= '?loginReturn=fail0b';
@@ -35,8 +36,8 @@ if (empty($username) or empty($password)) {
 //VALIDATE LOGIN INFORMATION
 else {
     try {
-        $_SESSION["loginuser"]=$username;
-        $_SESSION["loginpass"]=$password;
+        $_SESSION["loginuser"] = $username;
+        $_SESSION["loginpass"] = $password;
         $data = array('username' => $username);
         $sql = "SELECT pupilsightPerson.*, futureYearsLogin, pastYearsLogin FROM pupilsightPerson LEFT JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
         $result = $connection2->prepare($sql);
@@ -48,20 +49,20 @@ else {
     if ($result->rowCount() != 1) {
         setLog($connection2, $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'], null, null, 'Login - Failed', array('username' => $username, 'reason' => 'Username does not exist'), $_SERVER['REMOTE_ADDR']);
         $URL .= '?loginReturn=fail1';
-       
+
         echo "<script type='text/javascript'>alert('Wrong Username or Password');
         window.location.href='./index.php';
 
         </script>";
-       // header("location:{$URL}");
-      
-       
+        // header("location:{$URL}");
+
+
         exit;
     } else {
         $row = $result->fetch();
 
-        $_SESSION["lmsuser"]=strtolower($row["username"]);
-        $_SESSION["lmspass"]=strtolower($row["username"]);
+        $_SESSION["lmsuser"] = strtolower($row["username"]);
+        $_SESSION["lmspass"] = strtolower($row["username"]);
 
         // Insufficient privileges to login
         if ($row['canLogin'] != 'Y') {
@@ -86,7 +87,8 @@ else {
         $username = $row['username'];
 
         //Check fail count, reject & alert if 3rd time
-        if ($row['failCount'] >= 3) {
+
+        if ($row['failCount'] > 2) {
             try {
                 $dataSecure = array('lastFailIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastFailTimestamp' => date('Y-m-d H:i:s'), 'failCount' => ($row['failCount'] + 1), 'username' => $username);
                 $sqlSecure = 'UPDATE pupilsightPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)';
@@ -101,7 +103,7 @@ else {
 
                 $event->addRecipient($_SESSION[$guid]['organisationAdministrator']);
                 $event->setNotificationText(sprintf(__('Someone failed to login to account "%1$s" 3 times in a row.'), $username));
-                $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search='.$username);
+                $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php&search=' . $username);
 
                 $event->sendNotifications($pdo, $pupilsight->session);
             }
@@ -115,13 +117,15 @@ else {
 
             </script>";
             exit;
+            //header("Location: {$URL}");
+            //exit;
         } else {
             $passwordTest = false;
             //If strong password exists
             $salt = $row['passwordStrongSalt'];
             $passwordStrong = $row['passwordStrong'];
             if ($passwordStrong != '' and $salt != '') {
-                if (hash('sha256', $row['passwordStrongSalt'].$password) == $row['passwordStrong']) {
+                if (hash('sha256', $row['passwordStrongSalt'] . $password) == $row['passwordStrong']) {
                     $passwordTest = true;
                 }
             }
@@ -132,7 +136,7 @@ else {
 
                     //Migrate to strong password
                     $salt = getSalt();
-                    $passwordStrong = hash('sha256', $salt.$password);
+                    $passwordStrong = hash('sha256', $salt . $password);
 
                     try {
                         $dataSecure = array('passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'username' => $username);
@@ -265,21 +269,21 @@ else {
                     } catch (PDOException $e) {
                     }
                     $role = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
-                    if($role == '033'){
-                        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/check_status.php';
+                    if ($role == '033') {
+                        $URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/check_status.php';
                     } else {
                         if (isset($_GET['q'])) {
                             if ($_GET['q'] == '/publicRegistration.php') {
                                 $URL = './index.php';
                             } else {
-                                $URL = './index.php?q='.$_GET['q'];
+                                $URL = './index.php?q=' . $_GET['q'];
                             }
                         } else {
                             $URL = './index.php';
                         }
                     }
                     setLog($connection2, $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'], null, $row['pupilsightPersonID'], 'Login - Success', array('username' => $username), $_SERVER['REMOTE_ADDR']);
-                    $_SESSION["loginstatus"]='1';
+                    $_SESSION["loginstatus"] = '1';
                     header("Location: {$URL}");
                     exit;
                 }

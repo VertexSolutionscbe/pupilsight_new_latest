@@ -35,6 +35,54 @@ $session = $container->get('session');
         return false;
     });
 
+    // $(document).on('click', '#saveFormData', function () {
+    //     alert('1');
+    //     var fformid = $(this).parent().children().attr('data-clipboard-text');
+    //     $.ajax({
+    //         url: 'modules/Campaign/addCampaignAjaxForm.php',
+    //         type: 'post',
+    //         data: { formshortcode: fformid },
+    //         async: true,
+    //         success: function (response) {
+
+    //         }
+    //     });
+
+    // });
+
+    $('#wppage').load(function () {
+        var iframe = $('#wppage').contents();
+        iframe.find("#wpadminbar").hide();
+        iframe.find("#saveFormData").click(function () {
+            var fformid = $(this).parent().children().attr('data-clipboard-text');
+            $.ajax({
+                url: 'modules/Campaign/addCampaignAjaxForm.php',
+                type: 'post',
+                data: { formshortcode: fformid },
+                async: true,
+                success: function (response) {
+                    //alertcampaign();
+                    var type = '1';
+                    $.ajax({
+                        url: 'modules/Campaign/campaignfor.php',
+                        type: 'post',
+                        data: { type: type },
+                        async: true,
+                        success: function (response) {
+                            window.location.href = response;
+                        }
+                    });
+                    //alert(response);
+                    //window.location.href = response;
+
+                    // $("#popUp").removeClass('show');
+                    //setTimeout("alertcampaign()", 100);
+                }
+            });
+
+        });
+    });
+
 
 </script>    
 

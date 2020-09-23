@@ -184,6 +184,6 @@ Fast Finder
         </div>-->
         {% endif %}
     </div>
-</div>", "finder.twig.html", "C:\\xampp\\htdocs\\pupilsightnew\\resources\\templates\\finder.twig.html");
+</div>", "finder.twig.html", "C:\\xampp\\htdocs\\pupilsight\\resources\\templates\\finder.twig.html");
     }
 }
