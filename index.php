@@ -457,16 +457,20 @@ if ($isLoggedIn) {
     $menuMainItems["Other"][2] = $cmsMenu;
     // }
     $menuMainItems["Reports"][0] = array('name' => "Reports", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/reports.php");
-    $menuMainItems["LMS"][0] = array('name' => "LMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/lms.php");
+    //$menuMainItems["LMS"][0] = array('name' => "LMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/lms.php");
 
+
+    if ($_SESSION[$guid]['username'] == "sinuthomas") {
+        $tm1 = $menuMainItems["Reports"];
+        $tm2 = $menuMainItems["Admission"];
+        $menuMainItems = array();
+        $menuMainItems["Admission"] = $tm2;
+        $menuMainItems["Reports"] = $tm1;
+    }
 
     $session->set('menuMainItems', $menuMainItems);
     $session->set('allmenu', $menuMainItems);
-    //}
     $submenu = true;
-
-    //print_r($menuMainItems);
-    //die();
 
     if ($page->getModule()) {
 
