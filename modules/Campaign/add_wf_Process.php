@@ -35,8 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/wf_add.php') != f
     } else {
         //Check unique inputs for uniquness
         try {
-            $data = array('name' => $name, 'code' => $code);
-            $sql = 'SELECT * FROM workflow WHERE name=:name OR code=:code';
+            $data = array('academic_year' => $academic_year, 'name' => $name, 'code' => $code);
+            $sql = 'SELECT * FROM workflow WHERE academic_year=:academic_year AND (name=:name OR code=:code)';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/wf_add.php') != f
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2';
+                    $URL .= '&return=error10';
                     header("Location: {$URL}");
                 }
 

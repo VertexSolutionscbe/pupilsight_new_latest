@@ -557,6 +557,6 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
             </form>
         </div>
     </div>
-</div>", "alert.twig.html", "C:\\xampp\\htdocs\\pupilsightnew\\resources\\templates\\alert.twig.html");
+</div>", "alert.twig.html", "C:\\xampp\\htdocs\\pupilsight\\resources\\templates\\alert.twig.html");
     }
 }

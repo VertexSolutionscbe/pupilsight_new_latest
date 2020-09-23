@@ -12,11 +12,12 @@ $databaseServer = '127.0.0.1';
 $databaseUsername = 'root';
 $databasePassword = '';
 $databaseName = 'pd_demo';
-/*
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}*/
-$_SESSION["databaseName"]=$databaseName;
+
+// if (session_status() == PHP_SESSION_NONE) {
+//     session_start();
+// }
+
+$_SESSION["databaseName"] = $databaseName;
 /**
  * Sets a globally unique id, to allow multiple installs on a single server.
  */

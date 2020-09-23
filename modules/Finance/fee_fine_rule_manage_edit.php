@@ -170,9 +170,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_fine_rule_mana
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('', __(''));
                     if($values['rule_type'] == '3' && !empty($childvalues)){
-                        $col->addButton(__('Add'))->setID('addFixedMultipleFineRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize');
+                        //$col->addButton(__('Add'))->setID('addFixedMultipleFineRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize');
+                        $col->addContent('<a class="btn btn-primary fsize" id="addFixedMultipleFineRule" data-cid='.$lastId.'>Add</a>');
                     } else {
-                        $col->addButton(__('Add'))->setID('addFixedMultipleFineRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize hidediv');
+                        //$col->addButton(__('Add'))->setID('addFixedMultipleFineRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize hidediv');
+                        $col->addContent('<a class="btn btn-primary fsize hidediv" id="addFixedMultipleFineRule" data-cid='.$lastId.'>Add</a>');
                     }
         
                 $col = $row->addColumn()->setClass('hiddencol');
@@ -213,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_fine_rule_mana
                         $col->addLabel('fixed_rule_amt_per', __('Amount / Percent'))->addClass('dte fee_width');
                     }    
                         $col->addTextField('fixed_rule_amt_per['.$cv['id'].']')->addClass('chkamnt txtfield kountseat szewdt numfield')->setValue($amtper); 
-                        $col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="far fa-times-circle delFineRuleType " data-id="'.$cv['id'].'" ></i></div>'); 
+                        $col->addContent('<div class="dte mb-1"  style="float: right; margin: -32px -28px 0px 0px;"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px  delFineRuleType " data-id="'.$cv['id'].'" ></i></div>'); 
                     $i++;    
                 }       
             } else {
@@ -251,9 +253,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_fine_rule_mana
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('', __(''));
                     if($values['rule_type'] == '4' && !empty($childvalues)){
-                        $col->addButton(__('Add'))->setID('addDaySlabFineRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize');
+                        //$col->addButton(__('Add'))->setID('addDaySlabFineRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize');
+                        $col->addContent('<a class="btn btn-primary fsize" id="addDaySlabFineRule" data-cid='.$lastId.'>Add</a>');
                     } else {
-                        $col->addButton(__('Add'))->setID('addDaySlabFineRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize hidediv');
+                        //$col->addButton(__('Add'))->setID('addDaySlabFineRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize hidediv');
+                        $col->addContent('<a class="btn btn-primary fsize hidediv" id="addDaySlabFineRule" data-cid='.$lastId.'>Add</a>');
                     }
                     
         
@@ -294,7 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_fine_rule_mana
                             $col->addLabel('day_slab_amt_per', __('Amount / Percent'))->addClass('dte fee_width');
                         }    
                             $col->addTextField('day_slab_amt_per['.$cv['id'].']')->addClass('chkdayamnt txtfield kountseat szewdt numfield')->setValue($damtper); 
-                            $col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="far fa-times-circle delFineRuleType " data-id="'.$cv['id'].'" ></i></div>');   
+                            $col->addContent('<div class="dte mb-1"  style="float: right; margin: -32px -28px 0px 0px;"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px  delFineRuleType " data-id="'.$cv['id'].'" ></i></div>');   
                     $i++;           
                 }    
             } else {

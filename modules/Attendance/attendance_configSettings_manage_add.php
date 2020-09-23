@@ -273,6 +273,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
     function check() {
         $("#fromDate").prop("disabled", true);
         $("#toDate").prop("disabled", true);
-    }
+    } 
     check();
 </script>

@@ -100,13 +100,13 @@ else {
 		if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE OR isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 			print "<div class='linkTop'>" ;
 				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
-					print "<a style='width: auto!important;' class = 'fw-btn-fill btn-gradient-yellow addbtncss' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_post.php'>" .  __('New Message') . "<i style='margin-left: 5px' class='mdi mdi-plus-circle-outline' title='".__('Add')."' ></i></a>" ;
+					print "<a style='width: auto!important;' class = 'fw-btn-fill btn-gradient-yellow addbtncss' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_post.php'>" .  __('Compose Message') . "<i style='margin-left: 5px' class='mdi mdi-plus-circle-outline' title='".__('Add')."' ></i></a>" ;
 				}
 				if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_postQuickWall.php")==TRUE) {
 					if (isActionAccessible($guid, $connection2,"/modules/Messenger/messenger_post.php")==TRUE) {
 						print "  " ;
 					}
-					print "<a style='width: auto!important;' class = 'fw-btn-fill btn-gradient-yellow addbtncss' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_postQuickWall.php'>" .  __('New Quick Wall Message') . "<i style='margin-left: 5px' class='mdi mdi-plus-circle-outline' title='".__('Add')."' ></i></a>" ;
+					print "<a style='width: auto!important;' class = 'fw-btn-fill btn-gradient-yellow addbtncss' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_postQuickWall.php'>" .  __('Compose Quick Wall Message') . "<i style='margin-left: 5px' class='mdi mdi-plus-circle-outline' title='".__('Add')."' ></i></a>" ;
 				}
 			print "</div>" ;
 		}

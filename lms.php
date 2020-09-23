@@ -33,7 +33,7 @@ $isLoggedIn = $session->has('username') && $session->has('pupilsightRoleIDCurren
  * MODULE BREADCRUMBS
  */
 if ($isLoggedIn && $module = $page->getModule()) {
-    $page->breadcrumbs->setBaseURL('index.php?q=/modules/'.$module->name.'/');
+    $page->breadcrumbs->setBaseURL('index.php?q=/modules/' . $module->name . '/');
     $page->breadcrumbs->add(__($module->name), $module->entryURL);
 }
 
@@ -45,7 +45,7 @@ if ($isLoggedIn && $module = $page->getModule()) {
  *
  * TODO: When we implement routing, these can become part of the HTTP middleware.
  */
-$session->set('pageLoads', !$session->exists('pageLoads') ? 0 : $session->get('pageLoads', -1)+1);
+$session->set('pageLoads', !$session->exists('pageLoads') ? 0 : $session->get('pageLoads', -1) + 1);
 
 $cacheLoad = true;
 $caching = $pupilsight->getConfig('caching');
@@ -79,8 +79,8 @@ if (!$session->has('systemSettingsSet')) {
 // Check for force password reset flag
 if ($session->has('passwordForceReset')) {
     if ($session->get('passwordForceReset') == 'Y' and $session->get('address') != 'preferences.php') {
-        $URL = $session->get('absoluteURL').'/index.php?q=preferences.php';
-        $URL = $URL.'&forceReset=Y';
+        $URL = $session->get('absoluteURL') . '/index.php?q=preferences.php';
+        $URL = $URL . '&forceReset=Y';
         header("Location: {$URL}");
         exit();
     }
@@ -105,10 +105,10 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                 );
                 $realIP = getIPAddress();
                 if ($studentSelfRegistrationIPAddresses != '' && !is_null($studentSelfRegistrationIPAddresses)) {
-                    $inRange = false ;
+                    $inRange = false;
                     foreach (explode(',', $studentSelfRegistrationIPAddresses) as $ipAddress) {
                         if (trim($ipAddress) == $realIP) {
-                            $inRange = true ;
+                            $inRange = true;
                         }
                     }
                     if ($inRange) {
@@ -127,9 +127,9 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                             if ($result->rowCount() == 0) {
                                 // No registration yet
                                 // Redirect!
-                                $URL = $session->get('absoluteURL').
-                                    '/index.php?q=/modules/Attendance'.
-                                    '/attendance_studentSelfRegister.php'.
+                                $URL = $session->get('absoluteURL') .
+                                    '/index.php?q=/modules/Attendance' .
+                                    '/attendance_studentSelfRegister.php' .
                                     '&redirect=true';
                                 $session->set('pageLoads', null);
                                 header("Location: {$URL}");
@@ -157,9 +157,9 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                     $gateway = new DataUpdaterGateway($pdo);
 
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($session->get('pupilsightPersonID'));
-                    
+
                     if ($updatesRequiredCount > 0) {
-                        $URL = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
+                        $URL = $session->get('absoluteURL') . '/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
                         $session->set('pageLoads', null);
                         header("Location: {$URL}");
                         exit;
@@ -210,7 +210,7 @@ if ($isLoggedIn) {
  */
 $localeCode = str_replace('_', '-', $session->get('i18n')['code']);
 $localeCodeShort = substr($session->get('i18n')['code'], 0, 2);
-$localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/jquery.ui.datepicker-%1$s.js';
+$localePath = $session->get('absolutePath') . '/lib/jquery-ui/i18n/jquery.ui.datepicker-%1$s.js';
 
 $datepickerLocale = 'en-GB';
 if ($localeCode === 'en-US' || is_file(sprintf($localePath, $localeCode))) {
@@ -244,7 +244,7 @@ $javascriptConfig = [
             'locale' => $datepickerLocale,
         ],
         'thickbox' => [
-            'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
+            'pathToImage' => $session->get('absoluteURL') . '/lib/thickbox/loadingAnimation.gif',
         ],
         'tinymce' => [
             'valid_elements' => getSettingByScope($connection2, 'System', 'allowableHTML'),
@@ -272,7 +272,7 @@ $page->scripts->addMultiple([
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
     'core'           => 'resources/assets/js/core.min.js',
-	'modernizr'             => 'lib/js/modernizr-3.6.0.min.js',
+    'modernizr'             => 'lib/js/modernizr-3.6.0.min.js',
 ], ['context' => 'head']);
 
 // Set page scripts: foot - jquery
@@ -280,17 +280,17 @@ $page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     //This sets the default for en-US, or changes for none en-US
-    'jquery-date'     => $datepickerLocale === 'en-US' ? '' : 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js',
+    'jquery-date'     => $datepickerLocale === 'en-US' ? '' : 'lib/jquery-ui/i18n/jquery.ui.datepicker-' . $datepickerLocale . '.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
     'jquery-timeout'  => 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
-	'jquery-min'    => 'lib/js/jquery-3.3.1.min.js',
+    'jquery-min'    => 'lib/js/jquery-3.3.1.min.js',
     'plugins'     => 'lib/js/plugins.js',
     'popper'     => 'lib/js/popper.min.js',
     'bootstrap' => 'lib/js/bootstrap.min.js',
     'jquery-counterup'  => 'lib/js/jquery.counterup.min.js',
     'moment'    => 'lib/js/moment.min.js',
-	'jquery-waypoints'     => 'lib/js/jquery.waypoints.min.js',
+    'jquery-waypoints'     => 'lib/js/jquery.waypoints.min.js',
     'jquery-scrollUp'     => 'lib/js/jquery.scrollUp.min.js',
     'fullcalendar' => 'lib/js/fullcalendar.min.js',
     'Chart'  => 'lib/js/Chart.min.js',
@@ -298,7 +298,7 @@ $page->scripts->addMultiple([
 ], ['context' => 'foot']);
 
 // Set page scripts: foot - misc
-$thickboxInline = 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";';
+$thickboxInline = 'var tb_pathToImage="' . $session->get('absoluteURL') . '/lib/thickbox/loadingAnimation.gif";';
 $page->scripts->add('thickboxi', $thickboxInline, ['type' => 'inline']);
 $page->scripts->addMultiple([
     'thickbox' => 'lib/thickbox/thickbox-compressed.js',
@@ -306,7 +306,7 @@ $page->scripts->addMultiple([
 ], ['context' => 'foot']);
 
 // Set page scripts: foot - core
-$page->scripts->add('core-config', 'window.Pupilsight = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
+$page->scripts->add('core-config', 'window.Pupilsight = ' . json_encode($javascriptConfig) . ';', ['type' => 'inline']);
 $page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
 // Register scripts available to the core, but not included by default
@@ -322,19 +322,19 @@ $page->stylesheets->addMultiple([
     'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
     'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
     'thickbox'     => 'lib/thickbox/thickbox.css',
-	'normalize'    => 'lib/css/normalize.css',
+    'normalize'    => 'lib/css/normalize.css',
     'main'  => 'lib/css/main.css',
     'bootstrap'     => 'lib/css/bootstrap.min.css',
-	'all'    => 'lib/css/all.min.css',
+    'all'    => 'lib/css/all.min.css',
     'flaticon'  => 'lib/fonts/flaticon.css',
     'fullcalendar'     => 'lib/css/fullcalendar.min.css',
-	'animate'    => 'lib/css/animate.min.css',
+    'animate'    => 'lib/css/animate.min.css',
     'style'  => 'lib/css/style.css',
 ], ['weight' => -1]);
 
 // Add right-to-left stylesheet
 if ($session->get('i18n')['rtl'] == 'Y') {
-    $page->theme->stylesheets->add('theme-rtl', '/themes/'.$session->get('pupilsightThemeName').'/css/main_rtl.css', ['weight' => 1]);
+    $page->theme->stylesheets->add('theme-rtl', '/themes/' . $session->get('pupilsightThemeName') . '/css/main_rtl.css', ['weight' => 1]);
 }
 
 // Set personal, organisational or theme background     
@@ -342,10 +342,10 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' &
     $backgroundImage = htmlPrep($session->get('personalBackground'));
     $backgroundScroll = 'repeat scroll center top';
 } else if ($session->has('organisationBackground')) {
-    $backgroundImage = $session->get('absoluteURL').'/'.$session->get('organisationBackground');
+    $backgroundImage = $session->get('absoluteURL') . '/' . $session->get('organisationBackground');
     $backgroundScroll = 'repeat fixed center top';
 } else {
-    $backgroundImage = $session->get('absoluteURL').'/themes/'.$session->get('pupilsightThemeName').'/img/backgroundPage.jpg';
+    $backgroundImage = $session->get('absoluteURL') . '/themes/' . $session->get('pupilsightThemeName') . '/img/backgroundPage.jpg';
     $backgroundScroll = 'repeat fixed center top';
 }
 $backgroundImage = "";
@@ -373,7 +373,8 @@ if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAcces
         $service = $container->get('Google_Service_Calendar');
         try {
             $calendar = $service->calendars->get('primary');
-        } catch (\Google_Service_Exception $e) {}
+        } catch (\Google_Service_Exception $e) {
+        }
 
         if (!empty($calendar['id'])) {
             $session->set('calendarFeedPersonal', $calendar['id']);
@@ -401,7 +402,7 @@ if ($session->get('pageLoads') == 0 and $session->has('username') and !$session-
 // TODO: When we implement routing, these can become part of the HTTP middleware.
 if ($isLoggedIn) {
     if ($session->get('pupilsightSchoolYearID') != $session->get('pupilsightSchoolYearIDCurrent')) {
-        $page->addWarning('<b><u>'.sprintf(__('Warning: you are logged into the system in Academic Year %1$s, which is not the current year.'), $session->get('pupilsightSchoolYearName')).'</b></u>'.__('Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year.'));
+        $page->addWarning('<b><u>' . sprintf(__('Warning: you are logged into the system in Academic Year %1$s, which is not the current year.'), $session->get('pupilsightSchoolYearName')) . '</b></u>' . __('Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year.'));
     }
 }
 
@@ -445,12 +446,12 @@ if ($isLoggedIn) {
 
         foreach ($menuMainItems as $category => &$items) {
             foreach ($items as &$item) {
-                $modulePath = '/modules/'.$item['name'];
-                $entryURL = isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL'])
+                $modulePath = '/modules/' . $item['name'];
+                $entryURL = isActionAccessible($guid, $connection2, $modulePath . '/' . $item['entryURL'])
                     ? $item['entryURL']
                     : $item['alternateEntryURL'];
 
-                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
+                $item['url'] = $session->get('absoluteURL') . '/index.php?q=' . $modulePath . '/' . $entryURL;
             }
         }
 
@@ -460,20 +461,20 @@ if ($isLoggedIn) {
     if ($page->getModule()) {
         $currentModule = $page->getModule()->getName();
         $menuModule = $session->get('menuModuleName');
-        
+
         if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
             $menuModuleItems = $moduleGateway->selectModuleActionsByRole($page->getModule()->getID(), $session->get('pupilsightRoleIDCurrent'))->fetchGrouped();
         } else {
             $menuModuleItems = $session->get('menuModuleItems');
         }
-        
+
         // Update the menu items to indicate the current active action
         foreach ($menuModuleItems as $category => &$items) {
             foreach ($items as &$item) {
                 $urlList = array_map('trim', explode(',', $item['URLList']));
                 $item['active'] = in_array($session->get('action'), $urlList);
-                $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
-                        .$item['moduleName'].'/'.$item['entryURL'];
+                $item['url'] = $session->get('absoluteURL') . '/index.php?q=/modules/'
+                    . $item['moduleName'] . '/' . $item['entryURL'];
             }
         }
 
@@ -493,14 +494,14 @@ if ($isLoggedIn) {
  */
 
 $header = $container->get(Pupilsight\UI\Components\Header::class);
-if($_SESSION['loginuser'] == "admin"){
+if ($_SESSION['loginuser'] == "admin") {
     $lmsuser = $_SESSION['loginuser'];
     $lmspass = $_SESSION['loginpass'];
-}else{
+} else {
     $lmsuser = $_SESSION['lmsuser'];
     $lmspass = $_SESSION['lmspass'];
 }
-$lmsparms = "user=".$lmsuser."&pass=".$lmspass;
+$lmsparms = "user=" . $lmsuser . "&pass=" . $lmspass;
 
 $page->addData([
     'isLoggedIn'        => $isLoggedIn,
@@ -508,13 +509,13 @@ $page->addData([
     'pupilsightHouseIDLogo' => $session->get('pupilsightHouseIDLogo'),
     'organisationLogo'  => $session->get('organisationLogo'),
     'minorLinks'        => $header->getMinorLinks($cacheLoad),
-	'uname'				=> $session->get('preferredName').' '.$session->get('surname'),
+    'uname'                => $session->get('preferredName') . ' ' . $session->get('surname'),
     'notificationTray'  => $header->getNotificationTray($cacheLoad),
     'sidebar'           => $showSidebar,
     'version'           => $pupilsight->getVersion(),
-    'versionName'       => 'v'.$pupilsight->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
+    'versionName'       => 'v' . $pupilsight->getVersion() . ($session->get('cuttingEdgeCode') == 'Y' ? 'dev' : ''),
     'rightToLeft'       => $session->get('i18n')['rtl'] == 'Y',
-    'iframesrc' => "http://christacademylms.pupiltalk.in/login/index_auto.php?".$lmsparms
+    'iframesrc' => "http://christacademylms.pupiltalk.in/login/index_auto.php?" . $lmsparms
 ]);
 
 if ($isLoggedIn) {
@@ -526,15 +527,15 @@ if ($isLoggedIn) {
 
     if ($isLoggedIn) {
         $menu_icon = array(
-            "Admin"=>"flaticon-user",
-            "Assess"=>"flaticon-settings",
-            "Learn"=>"flaticon-open-book",
-            "People"=>"flaticon-multiple-users-silhouette",
-            "Admission"=>"mdi mdi-office-building",
-            "Finance"=>"mdi mdi-wallet",
-            "Transport"=>"mdi mdi-bus"
-        ); 
-    
+            "Admin" => "flaticon-user",
+            "Assess" => "flaticon-settings",
+            "Learn" => "flaticon-open-book",
+            "People" => "flaticon-multiple-users-silhouette",
+            "Admission" => "mdi mdi-office-building",
+            "Finance" => "mdi mdi-wallet",
+            "Transport" => "mdi mdi-bus"
+        );
+
         $page->addData([
             'menuMain'   => $session->get('menuMainItems', []),
             'menuMainIcon'   => $menu_icon,

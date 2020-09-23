@@ -104,7 +104,7 @@ $roleid = "";
 
 // Redirects after login
 if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First page load, so proceed
-    
+
     if ($session->has('username')) { // Are we logged in?
         $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
         $roleCategory = getRoleCategory($session->get('pupilsightRoleIDCurrent'), $connection2);
@@ -366,103 +366,105 @@ if ($isLoggedIn) {
     $moduleGateway = $container->get(ModuleGateway::class);
 
     //if ($cacheLoad || !$session->has('menuMainItems')) {
-        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('pupilsightRoleIDCurrent'))->fetchGrouped();
-        foreach ($menuMainItems as $category => &$items) {
-            foreach ($items as &$item) {
-                $modulePath = '/modules/' . $item['name'];
-                $entryURL = isActionAccessible($guid, $connection2, $modulePath . '/' . $item['entryURL'])
-                    ? $item['entryURL']
-                    : $item['alternateEntryURL'];
+    $menuMainItems = $moduleGateway->selectModulesByRole($session->get('pupilsightRoleIDCurrent'))->fetchGrouped();
+    foreach ($menuMainItems as $category => &$items) {
+        foreach ($items as &$item) {
+            $modulePath = '/modules/' . $item['name'];
+            $entryURL = isActionAccessible($guid, $connection2, $modulePath . '/' . $item['entryURL'])
+                ? $item['entryURL']
+                : $item['alternateEntryURL'];
 
-                $item['url'] = $session->get('absoluteURL') . '/index.php?q=' . $modulePath . '/' . $entryURL;
-            }
+            $item['url'] = $session->get('absoluteURL') . '/index.php?q=' . $modulePath . '/' . $entryURL;
         }
+    }
 
-        $masterList[0] = array('name'=>'Fee Series','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_series_manage.php');
-        $masterList[1] = array('name'=>'Fee Head','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_head_manage.php');
-        $masterList[2] = array('name'=>'Fine Rule','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_fine_rule_manage.php');
-        $masterList[3] = array('name'=>'Fee Item Type','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_item_type_manage.php');
-        $masterList[4] = array('name'=>'Receipts Template','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_receipts_manage.php');
-        $masterList[5] = array('name'=>'Fee Item','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_item_manage.php');
-        $masterList[6] = array('name'=>'Deposit Account','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/deposit_account_manage.php');
-        $masterList[7] = array('name'=>'Discount Rule','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_discount_rule_manage.php');
-        $masterList[8] = array('name'=>'Fee Counter','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_counter_manage.php');
-        $masterList[9] = array('name'=>'Banks & Payment Mode','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_master_manage.php');
-        $masterList[10] = array('name'=>'Fee Payment Gateway','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_payment_gateway_manage.php');
-        
-        $paymentList[0] = array('name'=>'Manage Invoice','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/invoice_manage.php');
-        //echo $session->get('counterid');
-        if($session->get('counterid') == ''){
-            $paymentList[1] = array('name'=>'Collection','class'=>'thickbox','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_counter_check_add.php');
-        } else {
-            $paymentList[1] = array('name'=>'Collection','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_collection_manage.php');
-        }
-        $paymentList[2] = array('name'=>'Transaction','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_transaction_manage.php');
-        $paymentList[3] = array('name'=>'Cancel Transaction','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_transaction_cancel_manage.php');
-        $paymentList[4] = array('name'=>'Refund Transaction','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_transaction_refund_manage.php');
+    $masterList[0] = array('name' => 'Fee Series', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_series_manage.php');
+    $masterList[1] = array('name' => 'Fee Head', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_head_manage.php');
+    $masterList[2] = array('name' => 'Fine Rule', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_fine_rule_manage.php');
+    $masterList[3] = array('name' => 'Fee Item Type', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_item_type_manage.php');
+    $masterList[4] = array('name' => 'Receipts Template', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_receipts_manage.php');
+    $masterList[5] = array('name' => 'Fee Item', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_item_manage.php');
+    $masterList[6] = array('name' => 'Deposit Account', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/deposit_account_manage.php');
+    $masterList[7] = array('name' => 'Discount Rule', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_discount_rule_manage.php');
+    $masterList[8] = array('name' => 'Fee Counter', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_manage.php');
+    $masterList[9] = array('name' => 'Banks & Payment Mode', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_master_manage.php');
+    $masterList[10] = array('name' => 'Fee Payment Gateway', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_payment_gateway_manage.php');
 
-        //$structureList[0] = array('name'=>'Structure','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_structure_manage.php');
-        
-        $masterMenu = array('name' => "Master",'list'=>$masterList, 'col'=>'dropdown-menu-columns  dropdown-menu-columns-2');
-        //$structureMenu = array('name' => "Structure",'list'=>$structureList, 'col'=>'dropdown-menu-columns  dropdown-menu-columns-3');
-        $paymentMenu = array('name' => "Payment",'list'=>$paymentList, 'col'=>'dropdown-menu-columns  dropdown-menu-columns-2');
+    $paymentList[0] = array('name' => 'Manage Invoice', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_manage.php');
+    //echo $session->get('counterid');
+    if ($session->get('counterid') == '') {
+        $paymentList[1] = array('name' => 'Collection', 'class' => 'thickbox', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_check_add.php');
+    } else {
+        $paymentList[1] = array('name' => 'Collection', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_collection_manage.php');
+    }
+    $paymentList[2] = array('name' => 'Transaction', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_transaction_manage.php');
+    $paymentList[3] = array('name' => 'Cancel Transaction', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_transaction_cancel_manage.php');
+    $paymentList[4] = array('name' => 'Refund Transaction', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_transaction_refund_manage.php');
 
-        if ($isAllMenu){
-            $menuMainItems["Finance"][0] = array('name'=>'Structure','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_structure_manage.php','col'=>'dropdown-menu-columns  dropdown-menu-columns-2');
-            $menuMainItems["Finance"][1] = $masterMenu;
-            $menuMainItems["Finance"][2] = $paymentMenu;
-        }
+    //$structureList[0] = array('name'=>'Structure','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_structure_manage.php');
 
-        $routeList[0] = array('name'=>'Manage Route','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Transport/routes.php');
-        $routeList[1] = array('name'=>'Assign to Student','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Transport/assign_route.php');
-        $routeList[2] = array('name'=>'Assign to Staff','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Transport/assign_staff_route_manage.php');
-        $routeList[3] = array('name'=>'View Member in Route','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Transport/view_members_in_route.php');
-        $routeMenu = array('name' => "Routes",'list'=>$routeList);   
+    $masterMenu = array('name' => "Master", 'list' => $masterList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
+    //$structureMenu = array('name' => "Structure",'list'=>$structureList, 'col'=>'dropdown-menu-columns  dropdown-menu-columns-3');
+    $paymentMenu = array('name' => "Payment", 'list' => $paymentList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
 
-        //if ($isAllMenu){
-            $menuMainItems["Transport"][0] = array('name'=>'Bus Details','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Transport/bus_manage.php');
-            $menuMainItems["Transport"][1] = array('name'=>'Transport Fee','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Transport/transport_fee.php');
-            $menuMainItems["Transport"][2] = $routeMenu;
-        //}
+    if ($isAllMenu) {
+        $menuMainItems["Finance"][0] = array('name' => 'Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
+        $menuMainItems["Finance"][1] = $masterMenu;
+        $menuMainItems["Finance"][2] = $paymentMenu;
+    }
 
-        
-        $curriculumList[0] = array('name'=>'Subject Master','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/department_manage.php');
-        $curriculumList[1] = array('name'=>'Skill Master','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/ac_manage_skill.php');
-        $curriculumList[2] = array('name'=>'Subject To Class','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/subject_to_class_manage.php');
-        $curriculumList[3] = array('name'=>'Manage Elective Group','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/manage_elective_group.php');
-        $curriculumList[4] = array('name'=>'Remarks Master','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/ac_manage_remarks.php');
-        $curriculumList[5] = array('name'=>'DI Mode','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/descriptive_indicator_config.php');
-        
-        $curriculumMenu = array('name' => "Curriculum",'list'=>$curriculumList,'col'=>'dropdown-menu-columns  dropdown-menu-columns-2','url' => $session->get('absoluteURL') ."/cms.php");
+    $routeList[0] = array('name' => 'Manage Route', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/routes.php');
+    $routeList[1] = array('name' => 'Assign to Student', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/assign_route.php');
+    $routeList[2] = array('name' => 'Assign to Staff', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/assign_staff_route_manage.php');
+    $routeList[3] = array('name' => 'View Member in Route', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/view_members_in_route.php');
+    $routeMenu = array('name' => "Routes", 'list' => $routeList);
 
-        $testList[0] = array('name'=>'Grading System','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/grade_system_manage.php');
-        $testList[1] = array('name'=>'Manage Test Room','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/examination_room_manage.php');
-        $testList[2] = array('name'=>'Reports Template','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/examination_report_template_manage.php');
-        $testList[3] = array('name'=>'Test Home','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/test_home.php');
-        $testList[4] = array('name'=>'Edit Test','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/manage_edit_test.php');
-        $testList[5] = array('name'=>'Marks Entry by Subject','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/manage_marks_entry_by_subject.php');
-        $testList[6] = array('name'=>'Marks Entry by Student','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/marks_by_student.php');
-        $testList[7] = array('name'=>'Enter A.A.T','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/manage_enter_aat.php');
-        $testList[8] = array('name'=>'Marks Upload','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/test_marks_upload.php');
-        $testList[9] = array('name'=>'Marks not Entered','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/marks_not_entered.php');
-        $testList[10] = array('name'=>'Test Results','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/manage_test_results.php');
-        $testList[11] = array('name'=>'Sketch','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Academics/sketch_manage.php');
+    //if ($isAllMenu){
+    $menuMainItems["Transport"][0] = array('name' => 'Bus Details', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/bus_manage.php');
+    $menuMainItems["Transport"][1] = array('name' => 'Transport Fee', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/transport_fee.php');
+    $menuMainItems["Transport"][2] = $routeMenu;
+    //}
 
-        $testMenu = array('name' => "Test",'list'=>$testList, 'col'=>'dropdown-menu-columns  dropdown-menu-columns-2', 'url' => $session->get('absoluteURL') ."/cms.php");
 
-        //if ($isAllMenu){
-            $menuMainItems["Academics"][0] = $curriculumMenu;
-            $menuMainItems["Academics"][1] = $testMenu;
-            $cmsMenu = array('name' => "CMS",'url' => $session->get('absoluteURL') ."/index.php?q=/modules/custom/cms.php");
-            $menuMainItems["Other"][2] = $cmsMenu;
-       // }
-        $menuMainItems["Reports"][0] = array('name' => "Reports",'url' => $session->get('absoluteURL') ."/index.php?q=/modules/custom/reports.php");
-    
-        $session->set('menuMainItems', $menuMainItems);
-        $session->set('allmenu', $menuMainItems);
+    $curriculumList[0] = array('name' => 'Subject Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/department_manage.php');
+    $curriculumList[1] = array('name' => 'Skill Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/ac_manage_skill.php');
+    $curriculumList[2] = array('name' => 'Subject To Class', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/subject_to_class_manage.php');
+    $curriculumList[3] = array('name' => 'Manage Elective Group', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_elective_group.php');
+    $curriculumList[4] = array('name' => 'Remarks Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/ac_manage_remarks.php');
+    $curriculumList[5] = array('name' => 'DI Mode', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/descriptive_indicator_config.php');
+
+    $curriculumMenu = array('name' => "Curriculum", 'list' => $curriculumList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2', 'url' => $session->get('absoluteURL') . "/cms.php");
+
+    $testList[0] = array('name' => 'Grading System', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/grade_system_manage.php');
+    $testList[1] = array('name' => 'Manage Test Room', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/examination_room_manage.php');
+    $testList[2] = array('name' => 'Reports Template', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/examination_report_template_manage.php');
+    $testList[3] = array('name' => 'Test Home', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/test_home.php');
+    $testList[4] = array('name' => 'Edit Test', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_edit_test.php');
+    $testList[5] = array('name' => 'Marks Entry by Subject', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_marks_entry_by_subject.php');
+    $testList[6] = array('name' => 'Marks Entry by Student', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/marks_by_student.php');
+    $testList[7] = array('name' => 'Enter A.A.T', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_enter_aat.php');
+    $testList[8] = array('name' => 'Marks Upload', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/test_marks_upload.php');
+    $testList[9] = array('name' => 'Marks not Entered', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/marks_not_entered.php');
+    $testList[10] = array('name' => 'Test Results', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_test_results.php');
+    $testList[11] = array('name' => 'Sketch', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/sketch_manage.php');
+
+    $testMenu = array('name' => "Test", 'list' => $testList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2', 'url' => $session->get('absoluteURL') . "/cms.php");
+
+    //if ($isAllMenu){
+    $menuMainItems["Academics"][0] = $curriculumMenu;
+    $menuMainItems["Academics"][1] = $testMenu;
+    $cmsMenu = array('name' => "CMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/cms.php");
+    $menuMainItems["Other"][2] = $cmsMenu;
+    // }
+    $menuMainItems["Reports"][0] = array('name' => "Reports", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/reports.php");
+    $menuMainItems["LMS"][0] = array('name' => "LMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/lms.php");
+
+
+    $session->set('menuMainItems', $menuMainItems);
+    $session->set('allmenu', $menuMainItems);
     //}
     $submenu = true;
-    
+
     //print_r($menuMainItems);
     //die();
 
@@ -471,7 +473,7 @@ if ($isLoggedIn) {
         $menuModule = $session->get('menuModuleName');
         $currentModule = $page->getModule()->getName();
         //print_r($currentModule);
-       // die();
+        // die();
 
         if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
             $menuModuleItems = $moduleGateway->selectModuleActionsByRole($page->getModule()->getID(), $session->get('pupilsightRoleIDCurrent'))->fetchGrouped();
@@ -483,7 +485,7 @@ if ($isLoggedIn) {
         $chk = 0;
         $vc_array_name = array();
         foreach ($menuModuleItems as $category => &$items) {
-            if($submenu && empty($category)){
+            if ($submenu && empty($category)) {
                 $submenu = false;
             }
             foreach ($items as $nk => &$item) {
@@ -524,7 +526,6 @@ if ($isLoggedIn) {
     } else {
         $session->forget(['menuModuleItems', 'menuModuleName']);
     }
-    
 }
 //print_r($menuModuleItems);
 /**
@@ -553,50 +554,70 @@ $page->addData([
 ]);
 
 
-$peopleMenu = array("NA","Students","Alumni","Behaviour","Data Updater","Roll Groups","Staff","Students");
-$otherMenu = array("NA","Help Desk","Higher Education","CMS");
-$learnMenu = array("NA","Activities","Departments","Individual Needs","Library","Planner","Timetable");
-$assessMenu = array("NA","Badges","Crowd Assessment","Formal Assessment","Markbook","Rubrics","Tracking");
+$peopleMenu = array("NA", "Students", "Alumni", "Behaviour", "Data Updater", "Roll Groups", "Staff", "Students");
+$otherMenu = array("NA", "Help Desk", "Higher Education", "CMS");
+$learnMenu = array("NA", "Activities", "Departments", "Individual Needs", "Library", "Planner", "Timetable");
+$assessMenu = array("NA", "Badges", "Crowd Assessment", "Formal Assessment", "Markbook", "Rubrics", "Tracking");
 
 
-$framesrc="";
+$framesrc = "";
 
 $customSelect = "";
+if ($_SESSION['loginuser'] == "admin") {
+    $lmsuser = $_SESSION['loginuser'];
+    $lmspass = $_SESSION['loginpass'];
+} else {
+    $lmsuser = $_SESSION['lmsuser'];
+    $lmspass = $_SESSION['lmspass'];
+}
 
-if(isset($_GET["q"])){
-    $gq = explode("/",$_GET["q"]);
+if (isset($_GET["q"])) {
+    $gq = explode("/", $_GET["q"]);
     //print_r($gq);
-    if($gq[2]=="custom"){
-        $isframe="y";
-        if($gq[3]=="reports.php"){
-            $framesrc = $session->get('absoluteURL')."/wp/wp-login.php?user=admin&pass=Admin@123456";
+    if ($gq[2] == "custom") {
+        $isframe = "y";
+        if ($gq[3] == "reports.php") {
+            if (isset($_SESSION['reportaccess'])) {
+                $framesrc = $session->get('absoluteURL') . "/wp/wp-admin/";
+            } else {
+                $_SESSION['reportaccess'] = "1";
+                $framesrc = $session->get('absoluteURL') . "/wp/wp-login.php?user=admin&pass=Admin@123456";
+            }
             $customSelect = "Reports";
-        }else if($gq[3]=="cms.php"){
-            $framesrc = $session->get('absoluteURL')."/cms/admin/index.php";
+        } else if ($gq[3] == "cms.php") {
+            $framesrc = $session->get('absoluteURL') . "/cms/admin/index.php";
             $customSelect = "Other";
+        } else if ($gq[3] == "lms.php") {
+            if (isset($_SESSION['lmsaccess'])) {
+                $framesrc = $session->get('absoluteURL') . "/lms/index.php";
+            } else {
+                $_SESSION['lmsaccess'] = "1";
+                $lmsparms = "user=" . $lmsuser . "&pass=" . $lmspass;
+                $framesrc = $session->get('absoluteURL') . "/lms/login/index_auto.php?" . $lmsparms;
+            }
+            $customSelect = "LMS";
         }
     }
 }
 
-if($currentModule){
-    if(array_search($currentModule,$peopleMenu)){
-        $currentModule="People";
-    }else if(array_search($currentModule,$otherMenu)){
-        $currentModule="Other";
-    }else if(array_search($currentModule,$learnMenu)){
-        $currentModule="Learn";
-    }else if(array_search($currentModule,$assessMenu)){
-        $currentModule="Assess";
-    }else if($currentModule == "Campaign"){
-        $currentModule="Admission";
+if ($currentModule) {
+    if (array_search($currentModule, $peopleMenu)) {
+        $currentModule = "People";
+    } else if (array_search($currentModule, $otherMenu)) {
+        $currentModule = "Other";
+    } else if (array_search($currentModule, $learnMenu)) {
+        $currentModule = "Learn";
+    } else if (array_search($currentModule, $assessMenu)) {
+        $currentModule = "Assess";
+    } else if ($currentModule == "Campaign") {
+        $currentModule = "Admission";
     }
-}else if($currentModule == ""){
-    if($customSelect){
+} else if ($currentModule == "") {
+    if ($customSelect) {
         $currentModule = $customSelect;
-    }else{
-        $currentModule="Dashboard";
+    } else {
+        $currentModule = "Dashboard";
     }
-    
 }
 
 if ($isLoggedIn) {
@@ -614,19 +635,20 @@ if ($isLoggedIn) {
         "Communication" => "mdi mdi-handshake",
         "Other" => "mdi mdi-dots-horizontal-circle-outline",
         "TimeTable" => "mdi mdi-calendar-month",
-        "Reports" => "mdi mdi-file-chart-outline"
+        "Reports" => "mdi mdi-file-chart-outline",
+        "LMS" => "mdi mdi-book-open-page-variant"
     );
 
-    
-    if($currentModule == "Academics" || $currentModule == "Finance" || $currentModule == "Transport" || $currentModule == "Dashboard" || $currentModule == ""){
+
+    if ($currentModule == "Academics" || $currentModule == "Finance" || $currentModule == "Transport" || $currentModule == "Dashboard" || $currentModule == "") {
         $submenu = false;
     }
-    
-    if($currentModule == "School Admin" || $currentModule == "System Admin" || $currentModule == "User Admin"){
+
+    if ($currentModule == "School Admin" || $currentModule == "System Admin" || $currentModule == "User Admin") {
         $currentModule = "Admin";
     }
 
-    
+
     //echo $iframe ." - ".$iframesrc;
     //die();
 
@@ -706,7 +728,7 @@ if (!$session->has('address')) {
 
         // DASHBOARDS!
         $category = getRoleCategory($session->get('pupilsightRoleIDCurrent'), $connection2);
-        
+
         switch ($category) {
             case 'Parent':
                 $page->write($container->get(Pupilsight\UI\Dashboard\ParentDashboard::class)->getOutput());
@@ -723,7 +745,7 @@ if (!$session->has('address')) {
     }
 } else {
     $address = trim($page->getAddress(), ' /');
-    if($framesrc==""){
+    if ($framesrc == "") {
         if ($page->isAddressValid($address) == false) {
             $page->addError(__('Illegal address detected: access denied.'));
         } else {
@@ -776,12 +798,12 @@ if ($showSidebar) {
 
 
 $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
-if ($roleid == '001'){
-    if($framesrc==""){
+if ($roleid == '001') {
+    if ($framesrc == "") {
         echo $page->render('index_admin.twig.html');
-    }else{
+    } else {
         echo $page->render('index_admin_frame.twig.html');
     }
-}else{
+} else {
     echo $page->render('index.twig.html');
 }

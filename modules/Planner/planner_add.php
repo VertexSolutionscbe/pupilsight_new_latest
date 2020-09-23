@@ -139,23 +139,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             //BASIC INFORMATION
             $form->addRow()->addHeading(__('Basic Information'));
 
-            if ($viewBy == 'class') {
-                $form->addHiddenValue('pupilsightCourseClassID', $values['pupilsightCourseClassID']);
-                $row = $form->addRow();
-                    $row->addLabel('schoolYearName', __('Class'));
-                    $row->addTextField('schoolYearName')->setValue($values['course'].'.'.$values['class'])->required()->readonly();
-            } else {
-                if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
-                    $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID']);
-                    $sql = 'SELECT pupilsightCourseClass.pupilsightCourseClassID AS value, CONCAT(pupilsightCourse.nameShort,".", pupilsightCourseClass.nameShort) AS name FROM pupilsightCourseClass JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name';
-                } else {
-                    $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
-                    $sql = 'SELECT pupilsightCourseClass.pupilsightCourseClassID AS value, CONCAT(pupilsightCourse.nameShort,".", pupilsightCourseClass.nameShort) AS name FROM pupilsightCourseClassPerson JOIN pupilsightCourseClass ON (pupilsightCourseClassPerson.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightPersonID=:pupilsightPersonID ORDER BY name';
-                }
-                $row = $form->addRow();
-                    $row->addLabel('pupilsightCourseClassID', __('Class'));
-                    $row->addSelect('pupilsightCourseClassID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
+            // if ($viewBy == 'class') {
+            //     $form->addHiddenValue('pupilsightCourseClassID', $values['pupilsightCourseClassID']);
+            //     $row = $form->addRow();
+            //         $row->addLabel('schoolYearName', __('Class'));
+            //         $row->addTextField('schoolYearName')->setValue($values['course'].'.'.$values['class'])->required()->readonly();
+            // } else {
+            //     if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
+            //         $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID']);
+            //         $sql = 'SELECT pupilsightCourseClass.pupilsightCourseClassID AS value, CONCAT(pupilsightCourse.nameShort,".", pupilsightCourseClass.nameShort) AS name FROM pupilsightCourseClass JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name';
+            //     } else {
+            //         $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
+            //         $sql = 'SELECT pupilsightCourseClass.pupilsightCourseClassID AS value, CONCAT(pupilsightCourse.nameShort,".", pupilsightCourseClass.nameShort) AS name FROM pupilsightCourseClassPerson JOIN pupilsightCourseClass ON (pupilsightCourseClassPerson.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightPersonID=:pupilsightPersonID ORDER BY name';
+            //     }
+            //     $row = $form->addRow();
+            //         $row->addLabel('pupilsightCourseClassID', __('Class'));
+            //         $row->addSelect('pupilsightCourseClassID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
+            // }
+
+            $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
+            $resultp = $connection2->query($sqlp);
+            $rowdataprog = $resultp->fetchAll();
+
+            $program = array();
+            $program2 = array();
+            $program1 = array('' => 'Select Program');
+            foreach ($rowdataprog as $dt) {
+                $program2[$dt['pupilsightProgramID']] = $dt['name'];
             }
+            $program = $program1 + $program2;
+
+            $row = $form->addRow();
+                $row->addLabel('pupilsightProgramID', __('Program'));
+                $row->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->placeholder('Select Program')->required();
+        
+        
+            $row = $form->addRow();
+                $row->addLabel('pupilsightYearGroupID', __('Class'));
+                $row->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->placeholder('Select Class')->required();
+        
+                
+            $row = $form->addRow();
+                $row->addLabel('pupilsightRollGroupID', __('Section'));
+                $row->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->placeholder('Select Section')->required(); 
 
             if ($viewBy == 'class') {
                 $data = array('pupilsightCourseClassID' => $values['pupilsightCourseClassID']);
@@ -170,6 +196,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     $row->addLabel('pupilsightUnitID', __('Unit'));
                     $row->addSelect('pupilsightUnitID')->fromQueryChained($pdo, $sql, [], 'pupilsightCourseClassID')->placeholder();
             }
+
+            
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Lesson Name'));

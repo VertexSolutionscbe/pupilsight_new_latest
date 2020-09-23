@@ -119,15 +119,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add_wf_transition
 
                 $col = $row->addColumn()->setClass('newdes');
                 $col->addLabel('user_permission', __('User Permission'));
-                //$col->addSelect('user_permission[1][]')->setId('selmuluser')->addClass('txtfield')->selectMultiple()->fromArray($staff_list);
+                $col->addSelect('user_permission[1][]')->setId('selmuluser')->addClass('txtfield')->selectMultiple()->fromArray($staff_list);
 
-                $stdata = '';
-                if (!empty($getstaff)) {
-                    $sel = '';
-                    foreach ($getstaff as $cl) {
-                        $stdata .= '<option value="' . $cl['pupilsightStaffID'] . '" >' . $cl['officialName'] . '</option>';
-                    }
-                }
+                // $stdata = '';
+                // if (!empty($getstaff)) {
+                //     $sel = '';
+                //     foreach ($getstaff as $cl) {
+                //         $stdata .= '<option value="' . $cl['pupilsightStaffID'] . '" >' . $cl['officialName'] . '</option>';
+                //     }
+                // }
 
                 $col->addContent('<div class="dropdown-mul-1" ><select style="display:none" name="user_permission[1][]" multiple >'.$stdata.'</select></div>');
 
@@ -135,9 +135,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add_wf_transition
                 $col->addLabel('auto_gen_inv', __('Auto Generate Invoice'));
                 $col->addSelect('auto_gen_inv[1]')->addClass('txtfield showFeeSettingButton')->fromArray($auto_gen_inv)->addData('sfid', '1');
 
-                $col = $row->addColumn()->setClass('newdes feeSetting hiddencol');
+                $col = $row->addColumn()->setClass('newdes feeSetting ');
                 $col->addLabel('feeSetting', __('Fee Setting'));
-                $col->addContent('<a title="Fee Settings" href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/fee_setting.php&cid='.$cid.'&fid='.$formId.'&kid=1&type=1&width=800" class="showFeeSetting thickbox" id="sfid1" style="display:none;"><i class="fas fa-plus " ></i></a><input type="hidden" name="fn_fee_admission_setting_ids[1]" id="feeSettingId-1" value="">');
+                $col->addContent('<a title="Fee Settings" href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/fee_setting.php&cid='.$cid.'&fid='.$formId.'&kid=1&type=1&width=800" class="showFeeSetting thickbox" id="sfid1" style="display:none;"><i class="mdi mdi-plus-circle mdi-24px " ></i></a><input type="hidden" name="fn_fee_admission_setting_ids[1]" id="feeSettingId-1" value="">');
 
     // $row = $form->addRow();
     //         $col = $row->addColumn()->setClass('newdes');
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add_wf_transition
     
         $row = $form->addRow()->setID('lastseatdiv');
         $row->addFooter();
-        $row->addSubmit()->addClass('submit_align submt');
+        $row->addSubmit()->addClass('submit_align submt text-right');
 
     echo $form->getOutput();
   
@@ -180,30 +180,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add_wf_transition
         height:43px;
     }
 
-    .multiselect {
-        width: 120px;
-        height: 35px;
-    }
-    .multiselect-container{
-        height: 300px;
-        overflow: auto;
-    }
-
     .feeSetting{
         width: 15%;
     }
     
 </style>
-
 <script>
-    $('.dropdown-mul-1').dropdown({
-        limitCount: 40,
-        multipleMode: 'label',
-        choice: function () {
-       
-        }
+   $(document).ready(function () {
+      	$('#selmuluser').selectize({
+      		plugins: ['remove_button'],
+      	});
     });
-    
- 
-
 </script>
