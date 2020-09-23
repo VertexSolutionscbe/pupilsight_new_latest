@@ -471,8 +471,31 @@ background-color: rgba(78, 88, 178, 0.75)!important;
         var iframe = $('#application_view').contents();
         iframe.find("#wpadminbar").hide();
         iframe.find(".section-inner").hide();
-
+        iframe.find("input[name=age_value]").prop('readonly',true);
         var pid = iframe.find(".fluentform");
+        iframe.find("input[name=date_of_birth]").change(function(){
+            // var today = new Date();
+            // var birthDate = new Date($(this).val());
+            // var age = today.getFullYear() - birthDate.getFullYear();
+            // var m = today.getMonth() - birthDate.getMonth();
+            // if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            //     age--;
+            // }
+            // alert(age);
+            //return $('#age').html(age+' years old');
+            var From_date = new Date($(this).val());
+            //var To_date = new Date($("#ToDate").val());
+            var To_date = new Date(iframe.find("input[name=as_on_date]").val());
+            var diff_date =  To_date - From_date;
+            
+            var years = Math.floor(diff_date/31536000000);
+            var months = Math.floor((diff_date % 31536000000)/2628000000);
+            var days = Math.floor(((diff_date % 31536000000) % 2628000000)/86400000);
+            var ageval = years+" years "+months+" months and "+days+" days";
+            iframe.find("input[name=age_value]").val(ageval);
+            
+        });
+
         iframe.find("form").submit(function(){
             getPDF(pid);
             setTimeout(function() {
@@ -485,6 +508,8 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                 }
             }, 2000);
         });
+
+        
     });
 
     function getPDF(pid){

@@ -149,23 +149,12 @@ print_r($values);  */
         if($i == '1'){
             $col->addLabel('user_permission', __('User Permission'))->addClass('labelfsize');
         }
-        $seluser = explode(',',$st['user_permission']);
-        $stdata = '';
-        if (!empty($getstaff)) {
-            $sel = '';
-            foreach ($getstaff as $cl) {
-                if(in_array($cl['pupilsightStaffID'], $seluser)){
-                    $sel = 'selected';
-                } else {
-                    $sel = '';
-                }
-                $stdata .= '<option value="' . $cl['pupilsightStaffID'] . '" '.$sel.'>' . $cl['officialName'] . '</option>';
-            }
-        }
         
-        //$col->addSelect('user_permission['.$st['id'].'][]')->setId('selmuluser'.$st['id'].'')->addClass('txtfield selboxusr')->fromArray($staff_list)->selectMultiple()->selected($seluser);
-        $col->addContent('<div class="dropdown-mul-1" ><select style="display:none" name="user_permission['.$st['id'].'][]" multiple >
-        '.$stdata.'</select></div>');
+        $seluser = explode(',',$st['user_permission']);
+        
+        $col->addSelect('user_permission['.$st['id'].'][]')->setId('selmuluser'.$st['id'].'')->addClass('txtfield selboxusr')->fromArray($staff_list)->selectMultiple()->selected($seluser);
+        // $col->addContent('<div class="dropdown-mul-1" ><select style="display:none" name="user_permission['.$st['id'].'][]" multiple >
+        // '.$stdata.'</select></div>');
 
        // $col->addContent('<div class="clickOnStaffDIv getAllStaff" id="AllStaffDiv'.$st['id'].'" data-id="'.$st['id'].'"  style="outline:0px;"></div><input type="text" id="showTypeStaff'.$st['id'].'" class="getAllStaff" data-id="'.$st['id'].'" value="" style="display:none; margin-top: 4px;width: 100%;"><input type="hidden"  id="selmuluser'.$st['id'].'" class="getAllStaff" data-id="'.$st['id'].'" value=""><input type="hidden" name="user_permission['.$st['id'].'][]" id="selmuluser'.$st['id'].'" class="getAllStaff" data-id="'.$st['id'].'" value=""><div class="clsShowStaff showAllStaff-'.$st['id'].'"></div>');
 
@@ -181,19 +170,19 @@ print_r($values);  */
         } else {
             $hidecol = 'style="display:none;"';
         }    
-            $col = $row->addColumn()->setClass('newdes feeSetting  ');
+            $col = $row->addColumn()->setClass('newdes feeSetting  '.$hidecol.' ');
             if($i == '1'){
                 $col->addLabel('feeSetting', __(''));
             }
-            $col->addContent('<a title="Fee Settings" href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/fee_setting.php&cid='.$id.'&fid='.$formId.'&kid='.$st['id'].'&type=2&width=800" class="showFeeSetting thickbox" id="sfid'.$st['id'].'" '.$hidecol.'><i class="fas fa-plus " ></i></a><input type="hidden" name="fn_fee_admission_setting_ids['.$st['id'].']" id="feeSettingId-'.$st['id'].'" value="'.$st['fn_fee_admission_setting_ids'].'">');
+            $col->addContent('<a title="Fee Settings" href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/fee_setting.php&cid='.$id.'&fid='.$formId.'&kid='.$st['id'].'&type=2&width=800" class="showFeeSetting thickbox" id="sfid'.$st['id'].'" '.$hidecol.'><i class="mdi mdi-plus-circle mdi-24px " ></i></a><input type="hidden" name="fn_fee_admission_setting_ids['.$st['id'].']" id="feeSettingId-'.$st['id'].'" value="'.$st['fn_fee_admission_setting_ids'].'">');
         
 
     
         $col = $row->addColumn()->setClass('newdes del_style');
         if($i == '1'){
-            $col->addContent('<div class="dte mb-1"  style="font-size: 25px;  margin-top: 45px; "><i style="cursor:pointer" class="far fa-times-circle delSeattr_trans " data-cid="'.$id.'" data-wid="'.$wid.'" data-id="'.$st['id'].'" data-sid="'.$st['id'].'"></i></div>'); 
+            $col->addContent('<div class="dte mb-1"  style="font-size: 25px;  margin-top: 45px; "><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr_trans " data-cid="'.$id.'" data-wid="'.$wid.'" data-id="'.$st['id'].'" data-sid="'.$st['id'].'"></i></div>'); 
         } else {
-            $col->addContent('<div class="dte mb-1"  style="font-size: 25px; "><i style="cursor:pointer" class="far fa-times-circle delSeattr_trans " data-cid="'.$id.'" data-wid="'.$wid.'" data-id="'.$st['id'].'" data-sid="'.$st['id'].'"></i></div>'); 
+            $col->addContent('<div class="dte mb-1"  style="font-size: 25px; "><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr_trans " data-cid="'.$id.'" data-wid="'.$wid.'" data-id="'.$st['id'].'" data-sid="'.$st['id'].'"></i></div>'); 
         }
         
         
@@ -220,15 +209,7 @@ print_r($values);  */
         height:43px;
     }
 
-    .multiselect {
-        width: 120px;
-        height: 35px;
-    }
-    .multiselect-container{
-        height: 300px;
-        overflow: auto;
-    }
-
+    
     .feeSetting{
         width: 15%;
     }
@@ -237,12 +218,14 @@ print_r($values);  */
 </style>
 
 <script>
-    $('.dropdown-mul-1').dropdown({
-        limitCount: 40,
-        multipleMode: 'label',
-        choice: function () {
-       
-        }
+    
+    $(document).ready(function () {
+        <?php foreach($values as $k=> $st){ ?>
+            var id = <?php echo $st['id'];?>;
+            $('#selmuluser'+id).selectize({
+                plugins: ['remove_button'],
+            });
+        <?php } ?>
     });
-
+    
 </script>

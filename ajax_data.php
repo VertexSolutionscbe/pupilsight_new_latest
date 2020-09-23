@@ -2485,7 +2485,7 @@ if($type== "attendanceConfigCls"){
         }
         echo $data;
     
-
+   
 }
 
 
@@ -2502,7 +2502,7 @@ if ($type == 'getsessionbyclass') {
        foreach ($rowdatasession as $k => $cl) {
            $data .= '<option value="' . $cl['session_no'] . '">' . $cl['session_name'] . '</option>';
        }
-   }
+   }   
    echo $data;
    }
 

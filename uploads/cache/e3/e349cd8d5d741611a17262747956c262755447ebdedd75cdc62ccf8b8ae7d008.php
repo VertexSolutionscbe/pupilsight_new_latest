@@ -199,6 +199,6 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {{ hook.text|raw }}
     </p>
 {% endfor %}
-", "welcome.twig.html", "C:\\xampp\\htdocs\\pupilsightnew\\resources\\templates\\welcome.twig.html");
+", "welcome.twig.html", "C:\\xampp\\htdocs\\pupilsight\\resources\\templates\\welcome.twig.html");
     }
 }

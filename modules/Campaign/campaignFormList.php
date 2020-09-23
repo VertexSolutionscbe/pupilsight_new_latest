@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $field = json_decode($fluent['form_fields']);
         $fields = array();
         
-        $showfields = '<div style="display:inline-flex;"><select class="filterCampaign" id="showfield1"><option>Select Field for Filter</option>';
+        $showfields = '<div style="display:inline-flex;width:50%"><select class="filterCampaign" id="showfield1" style="width:50%"><option>Select Field for Filter</option>';
         foreach($field as $fe){
             foreach($fe as $f){
                 if(!empty($f->fields)){

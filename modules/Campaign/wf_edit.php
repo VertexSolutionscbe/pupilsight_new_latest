@@ -135,7 +135,8 @@ print_r($values);  */
 
         $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes');
-            $col->addButton(__('Add More State'))->addData('cid', $lastid)->setID('addState')->addClass('bttnsubmt');
+            //$col->addButton(__('Add More State'))->addData('cid', $lastid)->setID('addState')->addClass('bttnsubmt');
+            $col->addContent('<a class="btn btn-primary" id="addState" data-cid='.$lastid.'>Add More State</a>');
 
             $col = $row->addColumn()->setClass('newdes');
             //$col->addLabel('Total Seats : ', __('Total Seats : '))->addClass('showSeats');
