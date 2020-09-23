@@ -67,14 +67,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             $getClass = $result->fetchAll();
         }
 ?>
-        <div style="display:inline-flex; font-weight: 700; font-size:15px" class="">
+        <div style="display:inline-flex; font-weight: 700; font-size:15px; width: 50%; margin-bottom:10px;" class="">
             <input type="hidden" id="pid" value="<?php echo $rowdata['pupilsightProgramID']; ?>">
             <input type="hidden" id="fid" value="<?php echo $rowdata['form_id']; ?>">
             <input type="hidden" id="pupilsightPersonID" value="<?php echo $pupilsightPersonID; ?>">
 
-            <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span>Class <span style="color:red;">*</span> : </span>
+            <span style="width: 40%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span style="width: 20%;">Class <span style="color:red;">*</span> : </span>
             <select id="class">
+                <option >Select Class</option>
                 <?php if (!empty($getClass)) {
                     foreach ($getClass as $cls) {
                 ?>
@@ -99,10 +100,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
         }
 
+        
+
         $('#innerForm').load(function() {
             var iframe = $('#innerForm').contents();
             iframe.find("#wpadminbar").hide();
             iframe.find(".section-inner").hide();
+            iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-100px;}  </style>"));
 
             var pid = iframe.find(".fluentform");
             iframe.find("form").submit(function() {

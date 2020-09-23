@@ -244,17 +244,16 @@ background-color: rgba(78, 88, 178, 0.75)!important;
         <div id="main-content">
             <div id="home-main-content" class="home-content home-page container" role="main">
                 
-                
-                <div class="vc_row-full-width vc_clearfix" ></div>
               
                     <div class="mobile-margin-0 wpb_column vc_column_container vc_col-sm-12 bp-background-size-auto">
                         <div class="vc_column-inner vc_custom_1540537006055">
-                            <div class="container">
+                            <div class="container" style="margin-top: -100px;text-align: center;">
                                 <div
                                     class="bp-element bp-element-heading vc_custom_1542033515902  layout-1  mobile-center mobile-line-heading">
-                                   
+                                   <?php /*?>
                                     <span  id="showdiv" class="sub-title"
                                         style=" color:#292929; line-height:1.25; font-size:35px; font-weight:400; text-align:center"><?php echo ucwords($campaign_byid['name']).'  '.ucwords($campaign_byid['academic_year']);?></span>
+                                    <?php */ ?>    
                                    <!-- <div class="line"
                                         style="height:2px; width:300px; background-color:#e1e1e1;  ">
 										
@@ -266,6 +265,7 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                                     <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span>Class <span style="color:red">* </span>: </span>
                                     <select id="class">
+                                    <option >Select Class</option>
                                     <?php if(!empty($getClass)){
                                         foreach($getClass as $cls){    
                                     ?>
@@ -278,7 +278,7 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                                 <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
                                     <div class="wpb_wrapper">
 									
-						 <iframe data-campid="<?php echo $campaign_byid['id'];?>" id="application_view" height="2000px" width="1000"
+						 <iframe style="margin-top:-100px;" data-campid="<?php echo $campaign_byid['id'];?>" id="application_view" height="2000px" width="1000"
     src="<?php echo $campaign_byid['page_link'];?>">
 </iframe>
 
