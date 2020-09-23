@@ -65,7 +65,7 @@ foreach ($getstaff as $dt) {
     $staff_list2[$dt['pupilsightStaffID']] = $dt['name'];
 }
 $staff_list= $staff_list2;  
-    $data = ' <div id="seatdiv" class=" deltr' . $aid . '  row mb-1 "><div class=" col-sm newdes" ><div class=" ">
+    $data = ' <div id="seatdiv" data-id='.$aid.' class=" deltr' . $aid . '  row mb-1 "><div class=" col-sm newdes" ><div class=" ">
         <div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative">
         <select id="from_state" name="from_state['.$aid.']" class="w-full txtfield">';
         foreach($statuses as $st){ 
@@ -105,7 +105,7 @@ $staff_list= $staff_list2;
 
     <div class=" col-sm newdes" >
     <div class=" ">
-        <div class=" mb-1"><div class="dropdown-mul-'.$aid.'"><select class="user_permission" id="user_permission" name="user_permission['.$aid.'][]" class="w-full txtfield " multiple>';
+        <div class=" mb-1"><div class="dropdown-mul-'.$aid.'"><select class="multipleStaff-'.$aid.'" id="user_permission" name="user_permission['.$aid.'][]" class="w-full txtfield " multiple>';
         foreach($staff_list as $s=>$staff){ 
             $data .= '<option value="'.$s.'" >'.$staff.'</option>';
         }
@@ -145,10 +145,11 @@ $staff_list= $staff_list2;
         <script type="text/javascript" src="lib/tinymce/tinymce.min.js?v=18.0.01"></script>
 
         <script type="text/javascript">window.Pupilsight = {"config":{"datepicker":{"locale":"en-GB"},"thickbox":{"pathToImage":"http:\/\/localhost\/pupilsight\/lib\/thickbox\/loadingAnimation.gif"},"tinymce":{"valid_elements":"br[style],strong[style],em[style],span[style],p[style],address[style],pre[style],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[style],sup[style],sub[style]"},"sessionTimeout":{"sessionDuration":6400,"message":"Your session is about to expire: you will be logged out shortly."}}};</script>
-
+<script src="assets/js/selectize.min.js"></script>
 <script>
     $(document).ready(function () {
-      	$('.user_permission').selectize({
+        var id = <?php echo $aid;?>;
+      	$('.multipleStaff-'+id).selectize({
       		plugins: ['remove_button'],
       	});
     });
