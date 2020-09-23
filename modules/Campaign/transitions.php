@@ -31,8 +31,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitions.php')
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    //print_r($_SESSION['databaseName']);
+    include($_SERVER['DOCUMENT_ROOT'] . '/config.php');
 
-    $sqlq = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE  table_schema='" . $_SESSION['databaseName'] . "' ";
+    $sqlq = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE  table_schema='" . $databaseName . "' ";
     $resultval = $connection2->query($sqlq);
     $rowdata = $resultval->fetchAll();
 
@@ -63,7 +65,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitions.php')
 
     $row = $form->addRow();
     $col = $row->addColumn()->setClass('newdes');
-    $col->addButton(__('Add Transition'))->addData('cid', '1')->addData('tname', 'none')->addData('cname', 'none')->setID('addMoreTransition')->addClass('bttnsubmt');
+    $col->addContent();
+    $col->addContent('<a class="btn btn-primary" id="addMoreTransition" data-cid="1" data-tname="none" data-cname="none">Add Transition</a>');
+    //$col->addButton(__('Add Transition'))->addData('cid', '1')->addData('tname', 'none')->addData('cname', 'none')->setID('addMoreTransition')->addClass('btn btn-primary');
 
     $row = $form->addRow()->setClass('requiredcss')->setID('requireddiv1');
     $row = $form->addRow()->setID('seatdiv');
@@ -86,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitions.php')
 
     $row = $form->addRow()->setID('lastseatdiv');
     $row->addFooter();
-    $row->addSubmit()->addClass('sumit_css submt');
+    $row->addSubmit()->addClass('sumit_css text-right submt');
 
     echo $form->getOutput();
 }
