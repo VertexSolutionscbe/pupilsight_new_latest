@@ -107,7 +107,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     //      ->setURL('/modules/Campaign/add.php')
     //      //->addParam('search', $search)
     //      ->displayLabel();
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=%2Fmodules%2FCampaign%2Fadd.php' class='btn btn-primary'>Add Campaign</a>";  
+    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=/modules/Campaign/campaign_series_manage.php' class='btn btn-primary'>Master Campaign Series</a>"; 
+    echo "&nbsp;&nbsp;<a href='index.php?q=%2Fmodules%2FCampaign%2Fadd.php' class='btn btn-primary'>Add Campaign</a>";  
     echo "&nbsp;&nbsp;<a href='index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php' class='btn btn-primary'>Transition</a></div><div class='float-none'></div></div>";     
 	// $table->addHeaderAction('Transition', __('Transition'))
     //      ->setURL('/modules/Campaign/transitions.php')

@@ -37,217 +37,21 @@ $app_links =array();
 // echo '</pre>';
 
 ?>
-<!DOCTYPE html>
-<html itemscope itemtype="http://schema.org/WebPage" lang="en-US"
-    prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta charset="UTF-8">
-    <title><?php echo $data['title']; ?></title>
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel='stylesheet' id='rs-plugin-settings-css' href='assets/revslider/public/assets/css/rs6.css' type='text/css'
-        media='all' />
-
-    <link rel='stylesheet' id='learn-press-pmpro-style-css'
-        href='assets/plugins/learnpress-paid-membership-pro/assets/style.css' type='text/css' media='all' />
-
-    <link rel='stylesheet' id='builder-press-slick-css' href='assets/plugins/builderpress/assets/libs/slick/slick.css'
-        type='text/css' media='all' />
-
-    <link rel='stylesheet' id='js_composer_front-css' href='assets/plugins/js_composer/assets/css/js_composer.min.css'
-        type='text/css' media='all' />
-
-    <link rel='stylesheet' id='dashicons-css' href='assets/css/dashicons.min.css' type='text/css' media='all' />
-    <link rel='stylesheet' id='learn-press-bundle-css' href='assets/plugins/learnpress/assets/css/bundle.min.css'
-        type='text/css' media='all' />
-    <link rel='stylesheet' id='learn-press-css' href='assets/plugins/learnpress/assets/css/learnpress.css'
-        type='text/css' media='all' />
-    <link rel='stylesheet' id='ionicon-css' href='assets/css/ionicons/ionicons.css' type='text/css' media='all' />
-    <link rel='stylesheet' id='select2-style-css' href='assets/css/select2/core.css' type='text/css' media='all' />
-    <link rel='stylesheet' id='builder-press-bootstrap-css' href='assets/css/bootstrap/bootstrap.css' type='text/css'
-        media='all' />
-
-
-    <link rel='stylesheet' id='thim-style-css' href='assets/css/style.css' type='text/css' media='all' />
-
-
-    <link rel='stylesheet' id='thim-style-options-css' href='assets/css/demo.css' type='text/css' media='all' />
-    <script type='text/javascript' src='assets/js/jquery/jquery.js'></script>
-    <script type='text/javascript' src='assets/js/jquery/jquery-migrate.min.js'></script>
-
-
-    <script type="text/javascript"
-        src="../lib/LiveValidation/livevalidation_standalone.compressed.js?v=18.0.01"></script>
-    <script type="text/javascript" src="../lib/jquery/jquery.js?v=18.0.01"></script>
-    <script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js?v=18.0.01"></script>
-    <script type="text/javascript" src="../lib/jquery-ui/js/jquery-ui.min.js?v=18.0.01"></script>
-    <script type="text/javascript"
-        src="../lib/jquery-timepicker/jquery.timepicker.min.js?v=18.0.01"></script>
-    <script type="text/javascript" src="../lib/chained/jquery.chained.min.js?v=18.0.01"></script>
-    <script type="text/javascript" src="../resources/assets/js/core.min.js?v=18.0.01"></script>
-<style>
-@media (min-width: 576px)
-{
-.modal-dialog {
-    max-width: 1010px !important;
-}
-
-}
-.btncss {
-    
-    margin-bottom: 0;
-    font-weight: 400;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    -ms-touch-action: manipulation;
-    touch-action: manipulation;
-    cursor: pointer;
-    background-image: none;
-    border: 1px solid transparent!important;
-    padding: 6px 12px;
-    font-size: 14px!important;
-    line-height: 1.42857143;
-    border-radius: 4px!important;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-.header_colr
-{
-background-color: rgba(78, 88, 178, 0.75)!important;
-}
-.btn_css
-{
-	    background-color: #2b97e4 !important;
-}
-.modal-dialog {
-    -webkit-transform: none;
-    transform: none;
-    margin-top: 150px!important;
-}
-</style>
-
-<script>
-    $(document).ready(function(){
-      
-        var url = window.location.href;
-        var arguments = url.split('status')[1].split('=');
-//alert(arguments);
-     
-  if(arguments==',not')
-        {
-            
-            $("#term_cndn").modal('show');
-
-           
-        } 
-        else{
-           
-             $("#term_cndn").css("display", "none");
-             
-        }  
-
-//arguments.shift();
-        //alert(arguments);
-        
-       
-        
-      
-     
-       // 
-    });
-</script>
-
-    <script>
-	
-    jQuery(document).on('click', '#submitContact', function(e) {
-        e.preventDefault();
-        //alert(1);
-        //$("#ajaxloader").show();
-        var chk = '0';
-        jQuery('.chkempty').each(function() {
-            var val = jQuery(this).val();
-            if (val == '') {
-                jQuery(this).addClass('chkemptycolor');
-                chk = '0';
-            } else {
-                jQuery(this).removeClass('chkemptycolor');
-                chk = '1';
-            }
-        });
-
-        if (chk == '1') {
-            jQuery.ajax({
-                url: "ajax.php",
-                type: 'POST',
-                data: jQuery('#contactForm').serialize(),
-                success: function(data) {
-                    if (data == 'done') {
-                        jQuery("#showmsg").show();
-                        setTimeout(function() {
-                            jQuery("#showmsg").hide();
-                        }, 3000);
-                        jQuery('#contactForm')[0].reset();
-                    }
-                }
-            });
-        }
-    });
-
-    jQuery(document).on('click', '#term_click', function(e) {
-        var url      = window.location.href+'&status=accept'; 
-       // alert(url);
-        $("#term_accepted").val("1");
-        //alert($("#term_accepted").val());
-        window.location.href = url;
-
-    });
-
-    $(document).ready(function() {
-
-    // $("#term_accepted").val("1");
-     // var term_status=  $("#term_accepted").val();
-    //alert(term_status);
-     /* if(term_status =="1")
-      {
-        $("#term_cndn").modal('hide');
-
-      }
-      else
-      {
-        $("#term_cndn").modal('show');
-      }*/
-
-    });
- 
-    </script>
-   
-
-
-</head>
-
+<?php include("index_header.php");?>
 <body
     class="home page-template page-template-templates page-template-home-page page-template-templateshome-page-php page page-id-17 wp-embed-responsive theme-ivy-school pmpro-body-has-access woocommerce-no-js bg-type-color responsive auto-login left_courses wpb-js-composer js-comp-ver-6.0.5 vc_responsive">
    
     <div id="wrapper-container" class="content-pusher creative-right bg-type-color">
         
         
-		  <?php include("index_header.php");?>
         <div id="main-content">
             <div id="home-main-content" class="home-content home-page container" role="main">
                 
               
                     <div class="mobile-margin-0 wpb_column vc_column_container vc_col-sm-12 bp-background-size-auto">
                         <div class="vc_column-inner vc_custom_1540537006055">
-                            <div class="container" style="margin-top: -100px;text-align: center;">
+                            <div class="container" style="margin-top: -100px;text-align:center;">
                                 <div
                                     class="bp-element bp-element-heading vc_custom_1542033515902  layout-1  mobile-center mobile-line-heading">
                                    <?php /*?>
@@ -278,7 +82,7 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                                 <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
                                     <div class="wpb_wrapper">
 									
-						 <iframe style="margin-top:-100px;" data-campid="<?php echo $campaign_byid['id'];?>" id="application_view" height="2000px" width="1000"
+						 <iframe data-campid="<?php echo $campaign_byid['id'];?>" id="application_view" height="2000px" width="1000"
     src="<?php echo $campaign_byid['page_link'];?>">
 </iframe>
 
@@ -342,8 +146,26 @@ background-color: rgba(78, 88, 178, 0.75)!important;
 
   </div>
 </div>
-		
-        
+
+<!-- online Payment By Bikash -->    	
+<?php
+$callbacklink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ?
+"https" : "http") . "://" . $_SERVER['HTTP_HOST'] .
+$_SERVER['REQUEST_URI'];
+
+?>
+<form id="admissionPay" action="../thirdparty/admissionpayment/razorpay/pay.php" method="post">
+    
+    <input type="hidden" name="amount" value="300">
+    <input type="hidden" name="name" value="Bikash">
+    <input type="hidden" name="email" value="bikash0389@gmail.com">
+    <input type="hidden" name="phone" value="9883928942">
+    <input type="hidden" name="payid" value="">
+    <input type="hidden" name="stuid" value="">
+    <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
+    <!-- <button type="submit">Pay</button> -->
+</form>
+<!-- online Payment By Bikash -->
 		
 		<!-- #colophon -->
     </div><!-- wrapper-container -->
@@ -469,24 +291,23 @@ background-color: rgba(78, 88, 178, 0.75)!important;
 
     $('#application_view').load(function(){
         var iframe = $('#application_view').contents();
+        iframe.find("head").append($("<style type='text/css'>  html{margin-top:-100px;}  </style>"));
         iframe.find("#wpadminbar").hide();
         iframe.find(".section-inner").hide();
         iframe.find("input[name=age_value]").prop('readonly',true);
         var pid = iframe.find(".fluentform");
         iframe.find("input[name=date_of_birth]").change(function(){
-            // var today = new Date();
-            // var birthDate = new Date($(this).val());
-            // var age = today.getFullYear() - birthDate.getFullYear();
-            // var m = today.getMonth() - birthDate.getMonth();
-            // if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            //     age--;
-            // }
-            // alert(age);
-            //return $('#age').html(age+' years old');
-            var From_date = new Date($(this).val());
-            //var To_date = new Date($("#ToDate").val());
-            var To_date = new Date(iframe.find("input[name=as_on_date]").val());
+           
+            var userDate = $(this).val();
+            var date_string = moment(userDate, "DD/MM/YYYY").format("MM/DD/YYYY");
+            var From_date = new Date(date_string);
+
+            var userDate2 = iframe.find("input[name=as_on_date]").val();
+            var date_string2 = moment(userDate2, "DD/MM/YYYY").format("MM/DD/YYYY");
+            var To_date = new Date(date_string2);
+
             var diff_date =  To_date - From_date;
+
             
             var years = Math.floor(diff_date/31536000000);
             var months = Math.floor((diff_date % 31536000000)/2628000000);
@@ -576,7 +397,9 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                     data: { val: val, type:type, pid:pid, fid:fid, clid:clid },
                     async: true,
                     success: function(response) {
-                        $('html, body').animate({scrollTop: $("#showdiv").offset().top}, 2000);
+                        //$("'html, body'").animate({scrollTop: $("#showdiv").offset().top}, 2000);
+                        $("#back-to-top").click();
+                        //$("#admissionPay").submit();
                     }
                 });
             }, 500);

@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
         $_SESSION['fn_fees_head_id_search'] = $fn_fees_head_id;
     }
 
-    $sqlah = 'SELECT id, name FROM fn_fees_head ';
+    $sqlah = 'SELECT id, name FROM fn_fees_head WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' ';
     $resultah = $connection2->query($sqlah);
     $rowdataAcctHead = $resultah->fetchAll();
 

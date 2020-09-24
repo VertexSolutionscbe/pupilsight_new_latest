@@ -252,6 +252,7 @@ print_r($rs);
             ->leftJoin('fn_fee_invoice AS a', 'fn_fee_series.id=a.inv_fn_fee_series_id')
             ->leftJoin('fn_fee_invoice AS b', 'fn_fee_series.id=b.rec_fn_fee_series_id')
             ->where('fn_fee_series.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
+            ->where('fn_fee_series.type = "Finance" ')
             ->groupBy(['fn_fee_series.id']);
             
         return $this->runQuery($query, $criteria, TRUE);

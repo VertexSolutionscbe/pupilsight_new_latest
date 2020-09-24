@@ -70,6 +70,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
                 $program2[$dt['pupilsightProgramID']] = $dt['name'];
             }
             $program= $program1 + $program2;
+
+            $sqlcs = 'SELECT id, series_name FROM fn_fee_series WHERE type IN ("Application","Admission")';
+            $resultcs = $connection2->query($sqlcs);
+            $seriesData = $resultcs->fetchAll();
+
+            $campSeries=array();  
+            $campSeries2=array();  
+            $campSeries1=array(''=>'Select Series');
+            foreach ($seriesData as $key => $cst) {
+                $campSeries2[$cst['id']] = $cst['series_name'];
+            }
+            $campSeries = $campSeries1 + $campSeries2; 
             
             $pid = $values['pupilsightProgramID'];
             $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
@@ -170,8 +182,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $col->addLabel('reg_req', __('Registration Required'));
             $col->addSelect('reg_req')->addClass('txtfield')->fromArray($reg_status)->required()->selected($values['page_for']);
                         
-                $col = $row->addColumn()->setClass('newdes');
-                        $col->addLabel('', __(''));
+            $col = $row->addColumn()->setClass('newdes');
+                $col->addLabel('campaign_series_id', __('Application Series'));
+                $col->addSelect('campaign_series_id')->addClass('txtfield')->fromArray($campSeries)->selected($values['campaign_series_id']);
             
                     $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('', __(''));

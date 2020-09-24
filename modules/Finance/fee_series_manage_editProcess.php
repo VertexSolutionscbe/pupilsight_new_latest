@@ -65,8 +65,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_series_manage_
                 } else {
                     //Write to database
                     try {
-                        $data = array('series_name' => $series_name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'format' => $format, 'description' => $description, 'start_number' => $start_number, 'no_of_digit' => $no_of_digit, 'start_char' => $start_char, 'id' => $id);
-                        $sql = 'UPDATE fn_fee_series SET series_name=:series_name, format=:format, pupilsightSchoolYearID=:pupilsightSchoolYearID, description=:description, start_number=:start_number, no_of_digit=:no_of_digit, start_char=:start_char WHERE id=:id';
+                        $data = array('type' => 'Finance', 'series_name' => $series_name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'format' => $format, 'description' => $description, 'start_number' => $start_number, 'no_of_digit' => $no_of_digit, 'start_char' => $start_char, 'id' => $id);
+                        $sql = 'UPDATE fn_fee_series SET type=:type, series_name=:series_name, format=:format, pupilsightSchoolYearID=:pupilsightSchoolYearID, description=:description, start_number=:start_number, no_of_digit=:no_of_digit, start_char=:start_char WHERE id=:id';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

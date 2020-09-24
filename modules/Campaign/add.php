@@ -42,6 +42,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         $program2[$dt['pupilsightProgramID']] = $dt['name'];
     }
     $program= $program1 + $program2; 
+    
+
+    $sqlcs = 'SELECT id, series_name FROM fn_fee_series WHERE type IN ("Application","Admission")';
+    $resultcs = $connection2->query($sqlcs);
+    $seriesData = $resultcs->fetchAll();
+
+    $campSeries=array();  
+    $campSeries2=array();  
+    $campSeries1=array(''=>'Select Series');
+    foreach ($seriesData as $key => $cst) {
+        $campSeries2[$cst['id']] = $cst['series_name'];
+    }
+    $campSeries = $campSeries1 + $campSeries2; 
 
     $form = Form::create('Campaign', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/addProcess.php')->addClass('newform');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -125,9 +138,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('reg_req', __('Registration Required'));
             $col->addSelect('reg_req')->addClass('txtfield')->fromArray($reg_status)->required();
-            
+
     $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
+            $col->addLabel('campaign_series_id', __('Application Series'));
+            $col->addSelect('campaign_series_id')->addClass('txtfield')->fromArray($campSeries);        
+            
+   
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('', __(''));

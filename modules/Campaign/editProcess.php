@@ -53,6 +53,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $alloseatname = $_POST['seatname'];
             $alloseatno = $_POST['seatallocation'];
             $reg_req =  $_POST['reg_req']; //2-reg-yes(private) //1-reg-No(public)
+            $campaign_series_id = $_POST['campaign_series_id'];
+
             if ($name == '' or $status == '' or $start_date == '' or $end_date == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
@@ -82,9 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
                         //Write to database
                         try {
-                            $data = array('name' => $name, 'status' => $status, 'description' => $description, 'start_date' => $start_date, 'end_date' => $end_date, 'academic_id' => $academic_id, 'academic_year' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID, 'classes' => $classes, 'seats' => $seats,'limit_apply_form' => $limitusers,'cuid' => $cuid,'id' => $id,'page_for'=> $reg_req);
+                            $data = array('name' => $name, 'status' => $status, 'description' => $description, 'start_date' => $start_date, 'end_date' => $end_date, 'academic_id' => $academic_id, 'academic_year' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID, 'classes' => $classes, 'seats' => $seats,'limit_apply_form' => $limitusers,'cuid' => $cuid,'id' => $id,'page_for'=> $reg_req, 'campaign_series_id' => $campaign_series_id);
                             
-                            $sql = "UPDATE campaign SET name=:name, description=:description, academic_id=:academic_id, academic_year=:academic_year, pupilsightProgramID=:pupilsightProgramID,classes=:classes, start_date=:start_date, end_date=:end_date, status=:status,seats=:seats, limit_apply_form=:limit_apply_form, cuid=:cuid,page_for=:page_for WHERE id=:id";
+                            $sql = "UPDATE campaign SET name=:name, description=:description, academic_id=:academic_id, academic_year=:academic_year, pupilsightProgramID=:pupilsightProgramID,classes=:classes, start_date=:start_date, end_date=:end_date, status=:status,seats=:seats, limit_apply_form=:limit_apply_form, cuid=:cuid,page_for=:page_for, campaign_series_id=:campaign_series_id WHERE id=:id";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

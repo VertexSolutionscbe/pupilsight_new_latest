@@ -64,17 +64,18 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
     <script type='text/javascript' src='assets/js/jquery/jquery-migrate.min.js'></script>
 
 
-    <script type="text/javascript"
-        src="http://core.pupiltalk.com/lib/LiveValidation/livevalidation_standalone.compressed.js?v=18.0.01"></script>
-    <script type="text/javascript" src="http://core.pupiltalk.com/lib/jquery/jquery.js?v=18.0.01"></script>
-    <script type="text/javascript" src="http://core.pupiltalk.com/lib/jquery/jquery-migrate.min.js?v=18.0.01"></script>
-    <script type="text/javascript" src="http://core.pupiltalk.com/lib/jquery-ui/js/jquery-ui.min.js?v=18.0.01"></script>
-    <script type="text/javascript"
-        src="http://core.pupiltalk.com/lib/jquery-timepicker/jquery.timepicker.min.js?v=18.0.01"></script>
-    <script type="text/javascript" src="http://core.pupiltalk.com/lib/chained/jquery.chained.min.js?v=18.0.01"></script>
-    <script type="text/javascript" src="http://core.pupiltalk.com/resources/assets/js/core.min.js?v=18.0.01"></script>
+    <script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js?v=18.0.01"></script>
+    <script type="text/javascript" src="../lib/jquery/jquery.js?v=18.0.01"></script>
+    <script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js?v=18.0.01"></script>
+    <script type="text/javascript" src="../lib/jquery-ui/js/jquery-ui.min.js?v=18.0.01"></script>
+    <script type="text/javascript" src="../lib/jquery-timepicker/jquery.timepicker.min.js?v=18.0.01"></script>
+    <script type="text/javascript" src="../lib/chained/jquery.chained.min.js?v=18.0.01"></script>
+    <script type='text/javascript' src='assets/js/moment.min.js'></script>
 <style>
 
+#masthead {
+    position : unset !important;
+}
 @media (min-width: 576px)
 {
 .modal-dialog {
@@ -1377,7 +1378,7 @@ function sendOTP() {
 
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title">Campaign List</h4>
+                        <h4 class="modal-title">Application List</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
@@ -1422,7 +1423,12 @@ function sendOTP() {
                             echo date('d M Y', strtotime($row['end_date']));							
 							echo '</td>';
 							echo '<td>';
-							echo ' <a href="application_page.php?url_id='.$row['id'].'&status=not" title="'.$row['id'].'"  class="btnShow btn btn-info btn-lg" type="button" id="btnShow"  style="font-size: 14px;" >Apply Now</a>';
+                            
+                            if ($row['page_for'] == '1') {
+                                echo ' <a href="application_page.php?url_id=' . $row['id'] . '&status=not"   class="btnShow btn btn-info btn-lg" type="button" id="btnShow"  style="font-size: 14px;" >Apply Now</a>';
+                            } else {
+                                echo ' <a href="register.php?url_id=' . $row['id'] . '"   class="btnShow btn btn-info btn-lg" type="button" id="btnShow"  style="font-size: 14px;" >Register & Apply</a>';
+                            }
 							echo '</td>';
                         echo '</tr>';
                     

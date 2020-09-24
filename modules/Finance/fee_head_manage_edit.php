@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_head_manage_ed
                 $academicData[$dt['pupilsightSchoolYearID']] = $dt['name'];
             }
 
-            $sqla = 'SELECT id, series_name FROM fn_fee_series ';
+            $sqla = 'SELECT id, series_name FROM fn_fee_series WHERE type = "Finance" ';
             $resulta = $connection2->query($sqla);
             $series = $resulta->fetchAll();
         

@@ -1876,7 +1876,7 @@ if ($type == 'getCampaignStatusButton') {
         $data ='';
         if(!empty($stats)){
             foreach($stats as $s){
-                $data .= '<button class="btn-fill-md text-light bg-dodger-blue statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
+                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
             }
         }
 
@@ -1899,7 +1899,7 @@ if ($type == 'getCampaignStatusButton') {
         $data ='';
         if(!empty($stats)){
             foreach($stats as $s){
-                $data .= '<button class="btn-fill-md text-light bg-dodger-blue statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
+                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
             }
         }
 
