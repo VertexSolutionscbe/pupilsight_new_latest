@@ -69,7 +69,7 @@ $app_links =array();
                                     <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span>Class <span style="color:red">* </span>: </span>
                                     <select id="class">
-                                    <option >Select Class</option>
+                                    <option value="">Select Class</option>
                                     <?php if(!empty($getClass)){
                                         foreach($getClass as $cls){    
                                     ?>
@@ -252,6 +252,10 @@ $_SERVER['REQUEST_URI'];
     .table-bordered thead th {
         border-bottom-width: 0px;
     }
+    
+    .error {
+        border : 2px solid red;
+    }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
@@ -291,6 +295,7 @@ $_SERVER['REQUEST_URI'];
 
     $('#application_view').load(function(){
         var iframe = $('#application_view').contents();
+        iframe.find(".ff-btn-submit").prop('disabled', true);
         iframe.find("head").append($("<style type='text/css'>  html{margin-top:-100px;}  </style>"));
         iframe.find("#wpadminbar").hide();
         iframe.find(".section-inner").hide();
@@ -317,6 +322,24 @@ $_SERVER['REQUEST_URI'];
             
         });
 
+        var cls = iframe.find("#class").prop('readonly',true);
+
+        iframe.find(".ff-el-form-control").change(function(){
+            $.each($(this), function () {
+                val = $("#class option:selected").val();
+                if(val == ''){
+                    $("#class").addClass('error').focus();
+                    iframe.find(".ff-btn-submit").prop('disabled', true);
+                    alert('You Have to Select Class');
+                    return false;
+                } else {
+                    $("#class").removeClass('error');
+                    iframe.find(".ff-btn-submit").prop('disabled', false);
+                    return true;
+                }
+            });
+        });    
+
         iframe.find("form").submit(function(){
             getPDF(pid);
             setTimeout(function() {
@@ -329,7 +352,6 @@ $_SERVER['REQUEST_URI'];
                 }
             }, 2000);
         });
-
         
     });
 

@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         } else {
             $extra = dateConvertBack($guid, $date);
         }
-
+       
         if ($proceed == false) {
             echo "<div class='alert alert-danger'>";
             echo __('Your request failed because you do not have access to this action.');
@@ -182,6 +182,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $row = $form->addRow();
                 $row->addLabel('pupilsightRollGroupID', __('Section'));
                 $row->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->placeholder('Select Section')->required(); 
+
+            $row = $form->addRow();
+                $row->addLabel('pupilsightDepartmentID', __('Subject'));
+                $row->addSelect('pupilsightDepartmentID')->setId('pupilsightDepartmentIDbyPP')->placeholder('Select Subject')->required(); 
 
             if ($viewBy == 'class') {
                 $data = array('pupilsightCourseClassID' => $values['pupilsightCourseClassID']);
@@ -423,3 +427,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2, $todayStamp, $_SESSION[$guid]['pupilsightPersonID'], $dateStamp, $pupilsightCourseClassID);
     }
 }
+
+?>
+<script>
+$(document).on('change', '#pupilsightYearGroupIDbyPP', function () {
+    var id = $(this).val();
+    var pid = $('#pupilsightProgramIDbyPP').val();
+    var type = 'getSubjectbasedonclassNew';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, pupilsightProgramID: pid },
+        async: true,
+        success: function (response) {
+            $("#pupilsightDepartmentIDbyPP").html();
+            $("#pupilsightDepartmentIDbyPP").html(response);
+        }
+    });
+});
+
+</script>

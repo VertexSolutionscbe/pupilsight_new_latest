@@ -71,17 +71,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             }
             $program= $program1 + $program2;
 
-            $sqlcs = 'SELECT id, series_name FROM fn_fee_series WHERE type IN ("Application","Admission")';
+            $sqlcs = 'SELECT id, series_name, type FROM fn_fee_series WHERE type IN ("Application","Admission")';
             $resultcs = $connection2->query($sqlcs);
             $seriesData = $resultcs->fetchAll();
 
-            $campSeries=array();  
-            $campSeries2=array();  
-            $campSeries1=array(''=>'Select Series');
+            $applicationSeries=array();  
+            $applicationSeries2=array();  
+            $applicationSeries1=array(''=>'Select Series');
+            
+            $admissionSeries=array();  
+            $admissionSeries2=array();  
+            $admissionSeries1=array(''=>'Select Series');
+            
             foreach ($seriesData as $key => $cst) {
-                $campSeries2[$cst['id']] = $cst['series_name'];
+                if($cst['type'] == 'Application'){
+                    $applicationSeries2[$cst['id']] = $cst['series_name'];
+                } else {
+                    $admissionSeries2[$cst['id']] = $cst['series_name'];
+                }
             }
-            $campSeries = $campSeries1 + $campSeries2; 
+            $applicationSeries = $applicationSeries1 + $applicationSeries2; 
+            $admissionSeries = $admissionSeries1 + $admissionSeries2;
             
             $pid = $values['pupilsightProgramID'];
             $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
@@ -183,11 +193,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $col->addSelect('reg_req')->addClass('txtfield')->fromArray($reg_status)->required()->selected($values['page_for']);
                         
             $col = $row->addColumn()->setClass('newdes');
-                $col->addLabel('campaign_series_id', __('Application Series'));
-                $col->addSelect('campaign_series_id')->addClass('txtfield')->fromArray($campSeries)->selected($values['campaign_series_id']);
+                $col->addLabel('application_series_id', __('Application Series'));
+                $col->addSelect('application_series_id')->addClass('txtfield')->fromArray($applicationSeries)->selected($values['application_series_id']);
             
-                    $col = $row->addColumn()->setClass('newdes');
-                    $col->addLabel('', __(''));
+            $col = $row->addColumn()->setClass('newdes');
+                $col->addLabel('admission_series_id', __('Admission Series'));
+                $col->addSelect('admission_series_id')->addClass('txtfield')->fromArray($admissionSeries)->selected($values['admission_series_id']);
             
                     $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('', __(''));

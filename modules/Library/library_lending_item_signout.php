@@ -230,6 +230,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 ?>
 
 <script>
+
+    $(document).ready(function(){
+        $("#pupilsightPersonID").select2();
+    });
+    
     $(document).on('change','#userType', function(){
         var val = $(this).val();
         $("#pupilsightPersonID").html('<option value="">Please Select</option>');
@@ -247,6 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                     success: function(response) {
                         $("#pupilsightPersonID").html();
                         $("#pupilsightPersonID").html(response);
+                        
                     }
                 });
             }

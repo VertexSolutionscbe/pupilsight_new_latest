@@ -473,7 +473,7 @@ function getFastFinder($connection2, $guid)
    
     //     $row->addFinder('fastFinderSearch')
     //         ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
-    //         ->setClass('w-full text-white bordercls')
+    //         ->setClass('w-full text-selected bordercls')
         
     //         ->setParameter('noResultsText', __('No results'))
     //         ->setParameter('searchingText', __('Searching...'))
@@ -1417,7 +1417,7 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
     // if ($totalPages <= 1) {
     //     for ($i = 0;$i <= ($total / $pagination);++$i) {
     //         if ($i == ($page - 1)) {
-    //             echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose bg-blue-500 border-blue-700 text-white relative z-10 ml-1' >".$page.'</a> ';
+    //             echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose bg-blue-500 border-blue-700 text-selected relative z-10 ml-1' >".$page.'</a> ';
     //         } else {
     //             echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose text-gray hover:bg-gray border-gray ml-1' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
     //         }
@@ -1434,7 +1434,7 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
         $spread = 10;
         for ($i = 0;$i <= ($total / $pagination);++$i) {
             if ($i == ($page - 1)) {
-                echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose bg-blue-500 border-blue-700 text-white relative z-10 ml-1' >".$page.'</a> ';
+                echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose bg-blue-500 border-blue-700 text-selected relative z-10 ml-1' >".$page.'</a> ';
             } elseif ($i > ($page - (($spread / 2) + 2)) and $i < ($page + (($spread / 2)))) {
                 echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose text-gray hover:bg-gray border-gray ml-1' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
             }

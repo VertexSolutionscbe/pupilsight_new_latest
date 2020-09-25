@@ -5,6 +5,7 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
+include($_SERVER['DOCUMENT_ROOT'] . '/pupilsight/config.php');
 
 if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionsList.php') == false) {
     //Acess denied
@@ -32,7 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionsList.p
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $sqlq = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE  table_schema='".$_SESSION['databaseName']."'";
+
+    $sqlq = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE  table_schema='".$databaseName."'";
     $resultval = $connection2->query($sqlq);
     $rowdata = $resultval->fetchAll();
 

@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaign_series_m
     
     $table->addColumn('serial_number', __('Sl No'));
     $table->addColumn('series_name', __('Series Name'));
+    $table->addColumn('type', __('Series Type'));
     $table->addColumn('format', __('Format'));
     $table->addColumn('description', __('Description'));
     $table->addColumn('acedemic_year', __('Academic Year'));

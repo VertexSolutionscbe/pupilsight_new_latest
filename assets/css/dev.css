@@ -19,7 +19,7 @@
 
 .numbt {
     background-color: transparent;
-    border: 1px solid #ffae01!important
+    /* border: 1px solid #ffae01!important */
 }
 
 .newform table {
@@ -709,4 +709,9 @@ select[multiple] {
 
 .LV_invalid {
     color: red;
+}
+
+.text-selected {
+    color : black !important;
+
 }

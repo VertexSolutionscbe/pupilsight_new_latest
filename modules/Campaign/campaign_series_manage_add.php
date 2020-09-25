@@ -24,9 +24,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaign_series_m
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
-    echo '<h2>';
-    echo __('Add Fee Series');
-    echo '</h2>';
+    // echo '<h2>';
+    // echo __('Add Campaign Series');
+    // echo '</h2>';
 
     
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];

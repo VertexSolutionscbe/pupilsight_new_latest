@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     }
 
     echo "<div class='linkTop'>";
-    echo "<a  style='width:111px !important' class = 'fw-btn-fill btn-gradient-yellow addbtncss' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_manage_catalog_add.php&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'>".__('Add')."<i style='margin-left: 5px' class='mdi mdi-plus-circle-outline' title='".__('Add')."' ></i></a>";
+    echo "<a  style='width:111px !important' class = 'btn btn-primary addbtncss' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_manage_catalog_add.php&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'>".__('Add')."<i style='margin-left: 5px' class='mdi mdi-plus-circle-outline mdi-24px' title='".__('Add')."' ></i></a>";
 
     
     echo '</div>';
@@ -313,10 +313,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_edit.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><i title='".__('Edit')."' class='mdi mdi-pencil-box-outline mdi-24px'></i></a> ";
             if ($row['borrowable'] == "Y") {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><i title='".__('Lending')."' class='mdi mdi-account-circle-outline px-1'></i></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><i title='".__('Lending')."' class='mdi mdi-account-circle-outline mdi-24px'></i></a> ";
             }
             echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_delete.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."&width=650&height=135'><i title='".__('Delete')."' class='mdi mdi-trash-can-outline mdi-24px'></i></a>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_duplicate.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><i title='".__('Duplicate')."' class='mdi mdi-content-copy px-1'></i></a>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_duplicate.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><i title='".__('Duplicate')."' class='mdi mdi-content-copy mdi-24px'></i></a>";
             echo '</td>';
             echo '</tr>';
 
@@ -330,3 +330,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     }
 }
 ?>
+
+<style>
+    .paginationTop {
+        margin-bottom : 15px;
+    }
+</style>

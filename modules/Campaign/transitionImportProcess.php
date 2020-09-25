@@ -14,7 +14,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
     $subid = explode(',',$_POST['subid']);
     
    
-    $sql = "SELECT a.*, b.form_id, b.academic_id FROM campaign_transitions_form_map AS a LEFT JOIN campaign AS b ON a.campaign_id = b.id GROUP BY table_name";
+    $sql = "SELECT a.*, b.form_id, b.academic_id, b.admission_series_id FROM campaign_transitions_form_map AS a LEFT JOIN campaign AS b ON a.campaign_id = b.id GROUP BY table_name";
     $result = $connection2->query($sql);
     $tablelist = $result->fetchAll();
     // echo '<pre>';
@@ -26,6 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
     }
     $tabledata = array();
     foreach($tablelist as $k=>$tbl){
+        
         $sqlc = "SELECT column_name, fluent_form_column_name FROM campaign_transitions_form_map WHERE table_name = '".$tbl['table_name']."' ";
         $resultc = $connection2->query($sqlc);
         $tablecol = $resultc->fetchAll();
@@ -42,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
         $tabledata[$k]['form_id'] = $tbl['form_id'];
         $tabledata[$k]['tablecol'] = $tablecol;
         $tabledata[$k]['tablesubdata'] = $subid;
+        $tabledata[$k]['admission_series_id'] = $tbl['admission_series_id'];
     }    
     
      
@@ -53,6 +55,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
             $pupilsightSchoolYearID = $td['pupilsightSchoolYearID']; 
             foreach($td['tablesubdata'] as $ts=>$tsub){
                 foreach($td['tablecol'] as $t=>$tcol){
+                   
+                    if(!empty($td['admission_series_id'])){
+                        $seriesId = $td['admission_series_id'];
+                        $sqlrec = 'SELECT id, formatval FROM fn_fee_series WHERE id = "'.$seriesId.'" ';
+                        $resultrec = $connection2->query($sqlrec);
+                        $recptser = $resultrec->fetch();
+                
+                        $invformat = explode('$',$recptser['formatval']);
+                        $iformat = '';
+                        $orderwise = 0;
+                        foreach($invformat as $inv){
+                            if($inv == '{AB}'){
+                                $datafort = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise');
+                                $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND order_wise=:order_wise AND type=:type';
+                                $resultfort = $connection2->prepare($sqlfort);
+                                $resultfort->execute($datafort);
+                                $formatvalues = $resultfort->fetch();
+                                //$iformat .= $formatvalues['last_no'].'/';
+                                $iformat .= $formatvalues['last_no'];
+                                
+                                $str_length = $formatvalues['no_of_digit'];
+                
+                                $lastnoadd = $formatvalues['last_no'] + 1;
+                
+                                $lastno = substr("0000000{$lastnoadd}", -$str_length); 
+                
+                                $datafort1 = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise' , 'last_no' => $lastno);
+                                $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type AND order_wise=:order_wise';
+                                $resultfort1 = $connection2->prepare($sqlfort1);
+                                $resultfort1->execute($datafort1);
+                
+                            } else {
+                                //$iformat .= $inv.'/';
+                                $iformat .= $inv;
+                            }
+                            $orderwise++;
+                        }
+                        $admission_no = $iformat;
+                        
+                    } else {
+                        $admission_no = '';
+                    }
                     
                         $sqlf = "SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = ".$tsub." AND field_name = '".$tcol['fluent_form_column_name']."' AND status = '0' ";
                         $resultf = $connection2->query($sqlf);
@@ -78,6 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                             $tdata[$ts][$colname] = $val;
                             $tdata[$ts]['pupilsightRoleIDPrimary'] = '003';
                             $tdata[$ts]['pupilsightRoleIDAll'] = '003';
+                            $tdata[$ts]['admission_no'] = $admission_no;
                             $tdata[$ts]['sid'] = $tsub;
                             $cname[$t] = $tcol['column_name'].'=:'.$tcol['column_name'];
                             $chk = '1';
@@ -95,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                     // print_r($td);
                     // echo '</pre>';
                     $setdata  = implode(',',$cname);
-                    $setdata  = $setdata.',pupilsightRoleIDPrimary=:pupilsightRoleIDPrimary,pupilsightRoleIDAll=:pupilsightRoleIDAll';
+                    $setdata  = $setdata.',pupilsightRoleIDPrimary=:pupilsightRoleIDPrimary,pupilsightRoleIDAll=:pupilsightRoleIDAll,admission_no=:admission_no';
                     $sqlins = "INSERT INTO ".$tablename." SET ".$setdata." ";
                     $resultins = $connection2->prepare($sqlins);
                     $resultins->execute($td);
