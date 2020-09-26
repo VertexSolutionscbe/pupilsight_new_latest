@@ -3,13 +3,13 @@
 unset($CFG);
 global $CFG;
 $CFG = new stdClass();
-
+include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
 $CFG->dbtype    = 'mariadb';
 $CFG->dblibrary = 'native';
-$CFG->dbhost    = '127.0.0.1';
+$CFG->dbhost    = $databaseServer;
 $CFG->dbname    = 'pd_demo_lms';
-$CFG->dbuser    = 'root';
-$CFG->dbpass    = '';
+$CFG->dbuser    = $databaseUsername;
+$CFG->dbpass    = $databasePassword;
 $CFG->prefix    = 'mdl_';
 $CFG->dboptions = array(
   'dbpersist' => 0,
