@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $feeHeadData = $feeHeadData1 + $feeHeadData2;  
         
         
-        $sqlrc = 'SELECT id, series_name FROM fn_fee_series ';
+        $sqlrc = 'SELECT id, series_name FROM fn_fee_series WHERE type = "Finance" ';
         $resultrc = $connection2->query($sqlrc);
         $rseries = $resultrc->fetchAll();
 

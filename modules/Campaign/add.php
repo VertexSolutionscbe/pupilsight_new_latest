@@ -42,6 +42,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         $program2[$dt['pupilsightProgramID']] = $dt['name'];
     }
     $program= $program1 + $program2; 
+    
+
+    $sqlcs = 'SELECT id, series_name, type FROM fn_fee_series WHERE type IN ("Application","Admission")';
+    $resultcs = $connection2->query($sqlcs);
+    $seriesData = $resultcs->fetchAll();
+
+    $applicationSeries=array();  
+    $applicationSeries2=array();  
+    $applicationSeries1=array(''=>'Select Series');
+    
+    $admissionSeries=array();  
+    $admissionSeries2=array();  
+    $admissionSeries1=array(''=>'Select Series');
+    
+    foreach ($seriesData as $key => $cst) {
+        if($cst['type'] == 'Application'){
+            $applicationSeries2[$cst['id']] = $cst['series_name'];
+        } else {
+            $admissionSeries2[$cst['id']] = $cst['series_name'];
+        }
+    }
+    $applicationSeries = $applicationSeries1 + $applicationSeries2; 
+    $admissionSeries = $admissionSeries1 + $admissionSeries2; 
 
     $form = Form::create('Campaign', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/addProcess.php')->addClass('newform');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -125,12 +148,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('reg_req', __('Registration Required'));
             $col->addSelect('reg_req')->addClass('txtfield')->fromArray($reg_status)->required();
-            
-    $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
 
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('', __(''));
+    $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('application_series_id', __('Application Series'));
+            $col->addSelect('application_series_id')->addClass('txtfield')->fromArray($applicationSeries);        
+    
+    $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('admission_series_id', __('Admission Series'));
+            $col->addSelect('admission_series_id')->addClass('txtfield')->fromArray($admissionSeries); 
+   
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('', __(''));

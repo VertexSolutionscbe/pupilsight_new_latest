@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
  
      // QUERY
      echo '<h2>';
-     echo __('Campaign Submitted Form List');
+     echo __('Online Campaign Submitted Form List');
      echo '</h2>';
 
     // echo $butt = '<i id="btnExport" title="Export PDF" class="far fa-file-pdf download_icon"></i> ';
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     echo "<div style='height:25px; margin-top:5px;'><div class='float-right mb-2'>
     <a style='display:none; ' href='".$_SESSION[$guid]['absoluteURL']."/fullscreen.php?q=/modules/Campaign/fee_make_payment.php&cid=".$id."' class='thickbox btn btn-primary' id='clickAdmissionFeePayment'>Fee Payment</a>
     <a style='display:none; margin-bottom:10px;'  class='btn btn-primary' id='admissionFeePayment'>Fee Payment</a>
-    
+    &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_campaignFormList.php&id=".$id."'   class=' btn btn-primary' >Offline Submitted List</a>
     &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=".$id."'   class=' btn btn-primary' id='sendSMS'>Add</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' id='sendSMS'>Send SMS</a>";  
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' id='sendEmail'>Send Email</a>";
     echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="far fa-file-excel download_icon"></i><i id="pdf_export" title="Export PDF" class="far fa-file-pdf download_icon"></i></div></div> <br>';

@@ -22,18 +22,22 @@
     <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/fullcalendar.min.css?v=1.0" type="text/css" media="all" />
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/jquery.dataTables.min.css?v=1.0" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap-multiselect.css?v=1.0" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap-multiselect.css?v=1.0" type="text/css"
+        media="all" />
     <!--
 <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/jquery-ui/css/blitzer/jquery-ui.css?v=1.0" type="text/css" media="all" />
     -->
 
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/jquery-timepicker/jquery.timepicker.css?v=1.0" type="text/css" media="all" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/thickbox/thickbox.css?v=1.0" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/jquery-timepicker/jquery.timepicker.css?v=1.0"
+        type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/thickbox/thickbox.css?v=1.0" type="text/css"
+        media="all" />
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
 
     <link href="{{ absoluteURL }}/assets/css/selectize.css" rel="stylesheet" />
     <link href="{{ absoluteURL }}/assets/css/tabler.css" rel="stylesheet" />
     <link href="{{ absoluteURL }}/assets/css/dev.css" rel="stylesheet" />
+    <link href="{{ absoluteURL }}/assets/css/select2.min.css" rel="stylesheet" />
 
     <!-- Libs JS -->
     <script src="{{ absoluteURL }}/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -43,22 +47,25 @@
     <script src="{{ absoluteURL }}/assets/js/jquery.dataTables.min.js?v=1.0v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/libs/jquery-timepicker/jquery.timepicker.min.js?v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/libs/livevalidation/livevalidation_standalone.compressed.js"></script>
-    
-    
+
+
     <script src="{{ absoluteURL }}/assets/js/core.js"></script>
     <script src="{{ absoluteURL }}/assets/js/main.js"></script>
     <script src="{{ absoluteURL }}/assets/js/jquery.table2excel.js"></script>
-    <script type="text/javascript">var tb_pathToImage="{{ absoluteURL }}/assets/libs/thickbox/loadingAnimation.gif";</script>
+    <script
+        type="text/javascript">var tb_pathToImage = "{{ absoluteURL }}/assets/libs/thickbox/loadingAnimation.gif";</script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/tinymce/tinymce.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/jquery-tokeninput/src/jquery.tokeninput.js?v=1.0"></script>
+    <script type="text/javascript"
+        src="{{ absoluteURL }}/assets/libs/jquery-tokeninput/src/jquery.tokeninput.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/moment.min.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/fullcalendar.min.js?v=1.0"></script>
-   
+
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/bootstrap-multiselect.js?v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/js/selectize.min.js"></script>
     <script src="{{ absoluteURL }}/assets/js/tabler.min.js"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
-<!--
+    <script src="{{ absoluteURL }}/assets/js/select2.js"></script>
+    <!--
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap.min.css?v=1.0" type="text/css" media="all" />
     
     
@@ -164,7 +171,7 @@
 
                             {% set comActive = "" %}
                             {% if currentModule == 'Dashboard' %}
-                                {% set comActive = "active" %}
+                            {% set comActive = "active" %}
                             {% endif%}
 
                             <li class="nav-item {{comActive}}">
@@ -195,7 +202,7 @@
 
                             {% set comActive = "" %}
                             {% if currentModule == 'Messenger' %}
-                                {% set comActive = "active" %}
+                            {% set comActive = "active" %}
                             {% endif%}
 
                             <li class="nav-item {{ comActive }}">
@@ -218,8 +225,8 @@
                             {% endif%}
 
                             <li class="nav-item dropdown {{comActive}}">
-                                <a class="nav-link dropdown-toggle chkCounter" href="#navbar-base" data-toggle="dropdown"
-                                    role="button" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle chkCounter" href="#navbar-base"
+                                    data-toggle="dropdown" role="button" aria-expanded="false">
                                     <span
                                         class="nav-link-icon d-md-none d-lg-inline-block {{ menuMainIcon[categoryName] }}"></span>
                                     <span class="nav-link-title">
@@ -242,7 +249,8 @@
                             {% endfor %}
 
                             <li class="nav-item">
-                                <a class="nav-link" href="http://pupilsight.pupilpod.in/index.php?r=site%2Flogin" target='_blank'>
+                                <a class="nav-link" href="http://pupilsight.pupilpod.in/index.php?r=site%2Flogin"
+                                    target='_blank'>
                                     <span
                                         class="nav-link-icon d-md-none d-lg-inline-block mdi mdi-chart-bar-stacked"></span>
                                     <span class="nav-link-title">
@@ -304,7 +312,8 @@
                             {% endif %}
 
                             <li class="nav-item {{ dropmenu }} {{menuSelect}}">
-                                <a class="nav-link {{ dropdownToggle }} chkCounter" href="{{ navlink }}" {{ data_toggle }}>
+                                <a class="nav-link {{ dropdownToggle }} chkCounter" href="{{ navlink }}"
+                                    {{ data_toggle }}>
                                     <span
                                         class="nav-link-icon d-md-none d-lg-inline-block {{ menuMainIcon[categoryName] }}"></span>
                                     <span class="nav-link-title">
@@ -421,7 +430,7 @@
                                 {% endfor %} {% endfor %} {{ content|join("\n")|raw }} {% endblock %}
                             </div>
                         </div>
-                                           
+
                     </div>
                 </div>
             </div>

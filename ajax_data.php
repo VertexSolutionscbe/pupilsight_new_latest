@@ -1876,7 +1876,7 @@ if ($type == 'getCampaignStatusButton') {
         $data ='';
         if(!empty($stats)){
             foreach($stats as $s){
-                $data .= '<button class="btn-fill-md text-light bg-dodger-blue statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
+                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
             }
         }
 
@@ -1899,7 +1899,7 @@ if ($type == 'getCampaignStatusButton') {
         $data ='';
         if(!empty($stats)){
             foreach($stats as $s){
-                $data .= '<button class="btn-fill-md text-light bg-dodger-blue statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
+                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
             }
         }
 
@@ -2026,13 +2026,58 @@ if ($type == 'applicantInvoiceFeeItem') {
 }
 
 if($type == 'updateApplicantData'){
+    $campaignid = $_POST['val'];
     $submissionId = $_SESSION['submissionId'];
     $pupilsightProgramID = $_POST['pid'];
     $pupilsightYearGroupID = $_POST['clid'];
     $pupilsightPersonID = $_POST['pupilsightPersonID'];
+    $application_id = '';
+
+    if(!empty($campaignid)){
+        $sqlrec = 'SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = "'.$campaignid.'" ';
+        $resultrec = $connection2->query($sqlrec);
+        $recptser = $resultrec->fetch();
+
+        $seriesId = $recptser['id'];
+
+        if(!empty($seriesId)){
+            $invformat = explode('$',$recptser['formatval']);
+            $iformat = '';
+            $orderwise = 0;
+            foreach($invformat as $inv){
+                if($inv == '{AB}'){
+                    $datafort = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise');
+                    $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND order_wise=:order_wise AND type=:type';
+                    $resultfort = $connection2->prepare($sqlfort);
+                    $resultfort->execute($datafort);
+                    $formatvalues = $resultfort->fetch();
+                    
+                    $iformat .= $formatvalues['last_no'];
+                    
+                    $str_length = $formatvalues['no_of_digit'];
+
+                    $lastnoadd = $formatvalues['last_no'] + 1;
+
+                    $lastno = substr("0000000{$lastnoadd}", -$str_length); 
+
+                    $datafort1 = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise' , 'last_no' => $lastno);
+                    $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type AND order_wise=:order_wise';
+                    $resultfort1 = $connection2->prepare($sqlfort1);
+                    $resultfort1->execute($datafort1);
+
+                } else {
+                    $iformat .= $inv;
+                }
+                $orderwise++;
+            }
+            $application_id = $iformat;
+        } else {
+            $application_id = '';
+        }
+    }
     
-    $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'id' => $submissionId);
-    echo $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID WHERE id=:id';
+    $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
+    $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
     $result = $connection2->prepare($sql);
     $result->execute($data);
 }
@@ -2410,6 +2455,7 @@ if($type == 'Classwisesubject'){
 
 
 if ($type == 'getSubjectbasedonclassNew') {
+    $pupilsightSchoolYearID= $_SESSION[$guid]['pupilsightSchoolYearID'];
     $pupilsightPersonID= $_SESSION[$guid]['pupilsightPersonID'];
     $sqlck = 'SELECT pupilsightRoleIDPrimary FROM pupilsightPerson WHERE pupilsightPersonID = '.$pupilsightPersonID.' ';
     $resultck = $connection2->query($sqlck);
@@ -2419,11 +2465,11 @@ if ($type == 'getSubjectbasedonclassNew') {
     $pupilsightProgramID= $_POST['pupilsightProgramID'];
     if($roleid=='002')//for teacher login
     {
-        $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where pupilsightProgramID = '".$pupilsightProgramID."' AND pupilsightYearGroupID ='".$val."' AND pupilsightStaff.pupilsightPersonID='".$pupilsightPersonID."' order by subject_display_name asc";
+        $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '".$pupilsightSchoolYearID."' AND subjectToClassCurriculum.pupilsightProgramID = '".$pupilsightProgramID."' AND subjectToClassCurriculum.pupilsightYearGroupID ='".$val."' AND pupilsightStaff.pupilsightPersonID='".$pupilsightPersonID."' order by subjectToClassCurriculum.subject_display_name asc";
     }
     else
     {
-        $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightYearGroupID ='".$val."' order by subject_display_name asc";
+        $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightSchoolYearID = '".$pupilsightSchoolYearID."' AND pupilsightProgramID = '".$pupilsightProgramID."' AND pupilsightYearGroupID ='".$val."' order by subject_display_name asc";
     }
    
     $result = $connection2->query($sq);

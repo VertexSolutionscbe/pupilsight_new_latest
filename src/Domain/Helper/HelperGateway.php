@@ -307,4 +307,34 @@ class HelperGateway extends QueryableGateway
         return $sections;
     }    
 
+    public function getSubjectByProgramClass($connection2, $pupilsightYearGroupID, $pupilsightProgramID, $pupilsightSchoolYearID, $pupilsightPersonID) {
+        $sqlck = 'SELECT pupilsightRoleIDPrimary FROM pupilsightPerson WHERE pupilsightPersonID = '.$pupilsightPersonID.' ';
+        $resultck = $connection2->query($sqlck);
+        $ckdata = $resultck->fetch();
+        $roleid= $ckdata['pupilsightRoleIDPrimary'];
+        
+        if($roleid=='002')//for teacher login
+        {
+            $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '".$pupilsightSchoolYearID."' AND subjectToClassCurriculum.pupilsightProgramID = '".$pupilsightProgramID."' AND subjectToClassCurriculum.pupilsightYearGroupID ='".$pupilsightYearGroupID."' AND pupilsightStaff.pupilsightPersonID='".$pupilsightPersonID."' order by subjectToClassCurriculum.subject_display_name asc";
+        }
+        else
+        {
+            $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightSchoolYearID = '".$pupilsightSchoolYearID."' AND pupilsightProgramID = '".$pupilsightProgramID."' AND pupilsightYearGroupID ='".$pupilsightYearGroupID."' order by subject_display_name asc";
+        }
+        //echo $sq;
+    
+        $result = $connection2->query($sq);
+        $rowdata = $result->fetchAll();
+
+        $subjects = array();
+        $subjects2 = array();
+        $subjects1 = array('' => 'Select Subject');
+        foreach ($rowdata as $ct) {
+            $subjects2[$ct['pupilsightDepartmentID']] = $ct['subject_display_name'];
+        }
+        $subjects = $subjects1 + $subjects2;
+        return $subjects;
+
+    }
+
 }

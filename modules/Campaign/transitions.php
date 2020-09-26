@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitions.php')
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     //print_r($_SESSION['databaseName']);
-    include($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+    include($_SERVER['DOCUMENT_ROOT'] . '/pupilsight/config.php');
 
     $sqlq = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE  table_schema='" . $databaseName . "' ";
     $resultval = $connection2->query($sqlq);

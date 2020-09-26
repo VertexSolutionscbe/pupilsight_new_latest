@@ -231,9 +231,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 		var path = '<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';
 
-		$('#detailsRow td').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $_SESSION[$guid]['absoluteURL']; ?>/themes/<?php echo $_SESSION[$guid]['pupilsightThemeName']; ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
+		$('#detailsRow').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $_SESSION[$guid]['absoluteURL']; ?>/themes/<?php echo $_SESSION[$guid]['pupilsightThemeName']; ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
 
-		$('#detailsRow td').load(path, { 'pupilsightLibraryTypeID': '<?php echo $values['pupilsightLibraryTypeID']; ?>', 'pupilsightLibraryItemID': '<?php echo $pupilsightLibraryItemID; ?>' });
+		$('#detailsRow').load(path, { 'pupilsightLibraryTypeID': '<?php echo $values['pupilsightLibraryTypeID']; ?>', 'pupilsightLibraryItemID': '<?php echo $pupilsightLibraryItemID; ?>' });
 
 	});
 </script>

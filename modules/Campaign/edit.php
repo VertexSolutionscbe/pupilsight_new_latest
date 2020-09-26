@@ -70,6 +70,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
                 $program2[$dt['pupilsightProgramID']] = $dt['name'];
             }
             $program= $program1 + $program2;
+
+            $sqlcs = 'SELECT id, series_name, type FROM fn_fee_series WHERE type IN ("Application","Admission")';
+            $resultcs = $connection2->query($sqlcs);
+            $seriesData = $resultcs->fetchAll();
+
+            $applicationSeries=array();  
+            $applicationSeries2=array();  
+            $applicationSeries1=array(''=>'Select Series');
+            
+            $admissionSeries=array();  
+            $admissionSeries2=array();  
+            $admissionSeries1=array(''=>'Select Series');
+            
+            foreach ($seriesData as $key => $cst) {
+                if($cst['type'] == 'Application'){
+                    $applicationSeries2[$cst['id']] = $cst['series_name'];
+                } else {
+                    $admissionSeries2[$cst['id']] = $cst['series_name'];
+                }
+            }
+            $applicationSeries = $applicationSeries1 + $applicationSeries2; 
+            $admissionSeries = $admissionSeries1 + $admissionSeries2;
             
             $pid = $values['pupilsightProgramID'];
             $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
@@ -170,11 +192,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $col->addLabel('reg_req', __('Registration Required'));
             $col->addSelect('reg_req')->addClass('txtfield')->fromArray($reg_status)->required()->selected($values['page_for']);
                         
-                $col = $row->addColumn()->setClass('newdes');
-                        $col->addLabel('', __(''));
+            $col = $row->addColumn()->setClass('newdes');
+                $col->addLabel('application_series_id', __('Application Series'));
+                $col->addSelect('application_series_id')->addClass('txtfield')->fromArray($applicationSeries)->selected($values['application_series_id']);
             
-                    $col = $row->addColumn()->setClass('newdes');
-                    $col->addLabel('', __(''));
+            $col = $row->addColumn()->setClass('newdes');
+                $col->addLabel('admission_series_id', __('Admission Series'));
+                $col->addSelect('admission_series_id')->addClass('txtfield')->fromArray($admissionSeries)->selected($values['admission_series_id']);
             
                     $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('', __(''));
@@ -183,6 +207,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('description', __('Description'));
                     $col->addTextArea('description')->addClass('txtfield')->setRows(4)->setValue($values['description']);   
+
+            $row = $form->addRow();
+                $col = $row->addColumn()->setClass('newdes');
+                    $col->addLabel('', __('Application Forms'));
+                    if(!empty($values['form_id'])) { 
+                        $col->addContent('<b>Online Form : </b><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/view_selected_campaign_form.php&id='.$id.'&width=1100&amp;height=550"><i title="View Online Form" class="mdi mdi-eye-outline mdi-24px  px-1"></i></a><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/edit_selected_campaign_form.php&id='.$id.'&width=1100&amp;height=550"><i title="Edit Online Form" class="mdi mdi-pencil-box-outline mdi-24px"></i></a>'); 
+                    } else {     
+                        $col->addContent('<b>Online Form : </b><a href="index.php?q=/modules/Campaign/online_wplogin.php&id='.$id.'"><i title="Add Online Form" class="mdi mdi-plus-outline mdi-24px"></i></a>'); 
+                    }   
+            
+            //$row = $form->addRow();        
+                $col = $row->addColumn()->setClass('newdes');
+                    $col->addLabel('', __(''));
+                    if(!empty($values['offline_form_id'])) { 
+                        $col->addContent('<b>Offline Form : </b><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/view_offline_campaign_form.php&id='.$id.'&width=1100&amp;height=550"><i title="View Offline Form" class="mdi mdi-eye-outline mdi-24px  px-1"></i></a><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/edit_offline_campaign_form.php&id='.$id.'&width=1100&amp;height=550"><i title="Edit Offline Form" class="mdi mdi-pencil-box-outline mdi-24px"></i></a>');   
+                    } else {     
+                        $col->addContent('<b>Offline Form : </b><a href="index.php?q=/modules/Campaign/offline_wplogin.php&id='.$id.'"><i title="Add Offline Form" class="mdi mdi-plus-outline mdi-24px"></i></a>'); 
+                    }
 
             $row = $form->addRow()->setID('seatdiv');
                     $col = $row->addColumn()->setClass('newdes');

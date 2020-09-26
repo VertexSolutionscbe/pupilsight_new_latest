@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 /* Closed By Bikash */
                 // $sql = "SELECT pupilsightCourse.pupilsightCourseID, pupilsightPlannerEntry.pupilsightPlannerEntryID, pupilsightCourseClass.pupilsightCourseClassID, pupilsightUnitID, pupilsightPlannerEntry.pupilsightCourseClassID, pupilsightPlannerEntry.name, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class, date, timeStart, timeEnd, summary, pupilsightPlannerEntry.description, teachersNotes, homework, homeworkDueDateTime, homeworkDetails, viewableStudents, viewableParents, 'Teacher' AS role, homeworkSubmission, homeworkSubmissionDateOpen, homeworkSubmissionDrafts, homeworkSubmissionType, homeworkSubmissionRequired, pupilsightDepartmentID, pupilsightCourseClass.attendance FROM pupilsightPlannerEntry JOIN pupilsightCourseClass ON (pupilsightPlannerEntry.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID) WHERE pupilsightPlannerEntry.pupilsightPlannerEntryID=$pupilsightPlannerEntryID ORDER BY date, timeStart";
 
-                $sql = "SELECT pupilsightPlannerEntry.pupilsightPlannerEntryID, pupilsightPlannerEntry.pupilsightProgramID, pupilsightPlannerEntry.pupilsightYearGroupID, pupilsightPlannerEntry.pupilsightRollGroupID, pupilsightPlannerEntry.pupilsightCourseClassID, pupilsightUnitID, pupilsightProgram.name AS progName, pupilsightYearGroup.name AS className , pupilsightRollGroup.name AS sectionName, pupilsightPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role, homeworkSubmission, homeworkCrowdAssess, date, pupilsightPlannerEntry.pupilsightCourseClassID, NULL AS myHomeworkDueDateTime FROM pupilsightPlannerEntry JOIN pupilsightProgram ON (pupilsightPlannerEntry.pupilsightProgramID=pupilsightProgram.pupilsightProgramID) JOIN pupilsightYearGroup ON (pupilsightPlannerEntry.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) JOIN pupilsightRollGroup ON (pupilsightPlannerEntry.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightPlannerEntryID=$pupilsightPlannerEntryID";
+                $sql = "SELECT pupilsightPlannerEntry.pupilsightPlannerEntryID, pupilsightPlannerEntry.pupilsightProgramID, pupilsightPlannerEntry.pupilsightYearGroupID, pupilsightPlannerEntry.pupilsightRollGroupID, pupilsightPlannerEntry.pupilsightCourseClassID, pupilsightUnitID, pupilsightProgram.name AS progName, pupilsightYearGroup.name AS className , pupilsightRollGroup.name AS sectionName, pupilsightDepartment.name AS subjectName, pupilsightPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role, homeworkSubmission, homeworkCrowdAssess, date, pupilsightPlannerEntry.pupilsightCourseClassID, NULL AS myHomeworkDueDateTime FROM pupilsightPlannerEntry JOIN pupilsightProgram ON (pupilsightPlannerEntry.pupilsightProgramID=pupilsightProgram.pupilsightProgramID) JOIN pupilsightYearGroup ON (pupilsightPlannerEntry.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) JOIN pupilsightRollGroup ON (pupilsightPlannerEntry.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) JOIN pupilsightDepartment ON (pupilsightPlannerEntry.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) WHERE pupilsightPlannerEntryID=$pupilsightPlannerEntryID";
                 $teacher = false;
                 try {
                     $dataTeacher = array('pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightPlannerEntryID' => $pupilsightPlannerEntryID, 'pupilsightPersonID2' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightPlannerEntryID2' => $pupilsightPlannerEntryID, 'date2' => $date);
@@ -317,17 +317,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%;'>";
                         echo '<tr>';
-                        echo "<td style='width: 20%; vertical-align: top'>";
+                        echo "<td style='width: 15%; vertical-align: top'>";
                         echo "<span class='form-label'>".__('Program').'</span><br/>';
                         echo $row['progName'];
                         echo '</td>';
-                        echo "<td style='width: 20%; vertical-align: top'>";
+                        echo "<td style='width: 15%; vertical-align: top'>";
                         echo "<span class='form-label'>".__('Class').'</span><br/>';
                         echo $row['className'];
                         echo '</td>';
-                        echo "<td style='width: 20%; vertical-align: top'>";
+                        echo "<td style='width: 15%; vertical-align: top'>";
                         echo "<span class='form-label'>".__('Section').'</span><br/>';
                         echo $row['sectionName'];
+                        echo '</td>';
+                        echo "<td style='width: 15%; vertical-align: top'>";
+                        echo "<span class='form-label'>".__('Subject').'</span><br/>';
+                        echo $row['subjectName'];
                         echo '</td>';
                         echo "<td style='width: 20%; vertical-align: top'>";
                         echo "<span class='form-label'>".__('Date').'</span><br/>';

@@ -10,6 +10,9 @@ echo "<style>
     margin:10px;
 }
 
+.error {
+    border : 2px solid red;
+}
 
 
 
@@ -75,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             <span style="width: 40%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <span style="width: 20%;">Class <span style="color:red;">*</span> : </span>
             <select id="class">
-                <option >Select Class</option>
+                <option value="">Select Class</option>
                 <?php if (!empty($getClass)) {
                     foreach ($getClass as $cls) {
                 ?>
@@ -104,9 +107,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
 
         $('#innerForm').load(function() {
             var iframe = $('#innerForm').contents();
+            iframe.find(".ff-btn-submit").prop('disabled', true);
             iframe.find("#wpadminbar").hide();
             iframe.find(".section-inner").hide();
             iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-100px;}  </style>"));
+
+            iframe.find("input[name=date_of_birth]").change(function(){
+           
+                var userDate = $(this).val();
+                var date_string = moment(userDate, "DD/MM/YYYY").format("MM/DD/YYYY");
+                var From_date = new Date(date_string);
+
+                var userDate2 = iframe.find("input[name=as_on_date]").val();
+                var date_string2 = moment(userDate2, "DD/MM/YYYY").format("MM/DD/YYYY");
+                var To_date = new Date(date_string2);
+
+                var diff_date =  To_date - From_date;
+
+                
+                var years = Math.floor(diff_date/31536000000);
+                var months = Math.floor((diff_date % 31536000000)/2628000000);
+                var days = Math.floor(((diff_date % 31536000000) % 2628000000)/86400000);
+                var ageval = years+" years "+months+" months and "+days+" days";
+                iframe.find("input[name=age_value]").val(ageval);
+                
+            });
+
+            iframe.find(".ff-el-form-control").change(function(){
+                $.each($(this), function () {
+                    val = $("#class option:selected").val();
+                    if(val == ''){
+                        $("#class").addClass('error').focus();
+                        iframe.find(".ff-btn-submit").prop('disabled', true);
+                        alert('You Have to Select Class');
+                        return false;
+                    } else {
+                        $("#class").removeClass('error');
+                        iframe.find(".ff-btn-submit").prop('disabled', false);
+                        return true;
+                    }
+                });
+            });    
 
             var pid = iframe.find(".fluentform");
             iframe.find("form").submit(function() {
@@ -119,6 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                     });
                     if (flag) {
                         insertcampaign();
+                        iframe.find(".ff-message-success").focus();
                     }
                 }, 2000);
             });
@@ -202,9 +244,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                         },
                         async: true,
                         success: function(response) {
-                            $('html, body').animate({
-                                scrollTop: $("#showdiv").offset().top
-                            }, 2000);
+                            // $('html, body').animate({
+                            //     scrollTop: $("#showdiv").offset().top
+                            // }, 2000);
+                           
                         }
                     });
                 }, 500);

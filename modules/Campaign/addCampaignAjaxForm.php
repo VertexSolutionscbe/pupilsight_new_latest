@@ -26,7 +26,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/addCampaignAjaxFo
 
     $formshortcode = $_POST['formshortcode'];
     $formid = (int) filter_var($formshortcode, FILTER_SANITIZE_NUMBER_INT);
-    $campaignid = $session->get('campaignid');
+
+    $cidnew = $session->get('campaignid');;
+    if(!empty($cidnew)){
+        $campaignid = $cidnew;
+    } else {
+        $campaignid = $_SESSION['campaignid'];
+    }
+    
    
     $post_author = '1';
     $post_content = $formshortcode;

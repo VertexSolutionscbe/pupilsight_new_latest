@@ -736,6 +736,7 @@
                 data: { cid: cid, sid: sid, sname: sname, fid: fid, subid: subid },
                 async: true,
                 success: function (response) {
+                    location.reload();
                     $("#preloader").fadeOut("slow", function () {
                         //$(this).remove();
                         window.location.href = response;
@@ -841,7 +842,7 @@
                 data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid },
                 async: true,
                 success: function (response) {
-                    $("#expore_tbl_wrapper").html(response);
+                    $("#expore_tbl").parent().html(response);
                 }
             });
         }

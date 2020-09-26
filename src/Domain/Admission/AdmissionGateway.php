@@ -233,5 +233,25 @@ class AdmissionGateway extends QueryableGateway
     }
 
 
+    public function getCampaignSeries(QueryCriteria $criteria, $pupilsightSchoolYearID)
+    {
+        
+        $query = $this
+            ->newQuery()
+            ->from('fn_fee_series')
+            ->cols([
+                'fn_fee_series.*','pupilsightSchoolYear.name AS acedemic_year','COUNT(a.id) as invkount','COUNT(b.id) as reckount'
+            ])
+            ->leftJoin('pupilsightSchoolYear', 'fn_fee_series.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+            ->leftJoin('fn_fee_invoice AS a', 'fn_fee_series.id=a.inv_fn_fee_series_id')
+            ->leftJoin('fn_fee_invoice AS b', 'fn_fee_series.id=b.rec_fn_fee_series_id')
+            ->where('fn_fee_series.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
+            ->where('fn_fee_series.type != "Finance" ')
+            ->groupBy(['fn_fee_series.id']);
+            
+        return $this->runQuery($query, $criteria, TRUE);
+    }
+
+
     
 }

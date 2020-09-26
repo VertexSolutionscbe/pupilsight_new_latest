@@ -273,8 +273,8 @@ class adminlib {
 
 	}
 	
-	function updateApplicantData($submissionId, $pupilsightProgramID, $pupilsightYearGroupID){
-		$sql1 = "UPDATE wp_fluentform_submissions SET pupilsightProgramID=".$pupilsightProgramID.", pupilsightYearGroupID=".$pupilsightYearGroupID." WHERE id= ".$submissionId." ";
+	function updateApplicantData($submissionId, $pupilsightProgramID, $pupilsightYearGroupID, $application_id){
+		$sql1 = "UPDATE wp_fluentform_submissions SET pupilsightProgramID=".$pupilsightProgramID.", pupilsightYearGroupID=".$pupilsightYearGroupID.", application_id = '".$application_id."'  WHERE id= ".$submissionId." ";
 		$result1 = database::doUpdate($sql1);
     }	
 	

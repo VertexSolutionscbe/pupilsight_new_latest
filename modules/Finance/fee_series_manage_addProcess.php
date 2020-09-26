@@ -50,8 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_series_manage_
         } else {
             //Write to database
             try {
-                $data = array('series_name' => $series_name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'format' => $format, 'formatval' => $formatval, 'description' => $description);
-                $sql = 'INSERT INTO fn_fee_series SET series_name=:series_name, format=:format, formatval=:formatval, pupilsightSchoolYearID=:pupilsightSchoolYearID, description=:description';
+                $data = array('type' => 'Finance', 'series_name' => $series_name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'format' => $format, 'formatval' => $formatval, 'description' => $description);
+                $sql = 'INSERT INTO fn_fee_series SET type=:type, series_name=:series_name, format=:format, formatval=:formatval, pupilsightSchoolYearID=:pupilsightSchoolYearID, description=:description';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
                 $seriesId = $connection2->lastInsertID();

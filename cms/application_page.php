@@ -26,11 +26,16 @@ if (!empty($campaign_byid['classes'])) {
     $getClass = $adminlib->getCampaignClass($campaign_byid['classes']);
 }
 //print_r($getClass);die();
+
+
+
 //echo $campaign_byid['page_link'];
+
 $app_links = array();
 // echo '<pre>';
 // print_r($_SESSION['campaignuserdata']);
 // echo '</pre>';
+
 ?>
 
 <?php include("index_header.php"); ?>
@@ -63,7 +68,7 @@ $app_links = array();
                                     <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span>Class <span style="color:red">* </span>: </span>
                                     <select id="class">
-                                        <option>Select Class</option>
+                                        <option value="">Select Class</option>
                                         <?php if (!empty($getClass)) {
                                             foreach ($getClass as $cls) {
                                         ?>
@@ -141,6 +146,26 @@ $app_links = array();
         </div>
     </div>
 
+    <!-- online Payment By Bikash -->
+    <?php
+    $callbacklink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ?
+        "https" : "http") . "://" . $_SERVER['HTTP_HOST'] .
+        $_SERVER['REQUEST_URI'];
+
+    ?>
+    <form id="admissionPay" action="../thirdparty/admissionpayment/razorpay/pay.php" method="post">
+
+        <input type="hidden" name="amount" value="300">
+        <input type="hidden" name="name" value="Bikash">
+        <input type="hidden" name="email" value="bikash0389@gmail.com">
+        <input type="hidden" name="phone" value="9883928942">
+        <input type="hidden" name="payid" value="">
+        <input type="hidden" name="stuid" value="">
+        <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
+        <!-- <button type="submit">Pay</button> -->
+    </form>
+    <!-- online Payment By Bikash -->
+
     <!-- #colophon -->
     </div><!-- wrapper-container -->
     <div id="back-to-top" class="default">
@@ -148,7 +173,9 @@ $app_links = array();
     <!-- Memberships powered by Paid Memberships Pro v2.0.7.
  -->
 
+
     <div id="tp_chameleon_list_google_fonts"></div>
+
 
     <script type='text/javascript'>
         WebFont.load({
@@ -188,6 +215,8 @@ $app_links = array();
             font-weight: bold;
         }
 
+
+
         .mblnum {
             height: 40px;
             border: 1px solid black;
@@ -222,8 +251,11 @@ $app_links = array();
         .table-bordered thead th {
             border-bottom-width: 0px;
         }
-    </style>
 
+        .error {
+            border: 2px solid red;
+        }
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
     <script type='text/javascript'>
@@ -262,6 +294,7 @@ $app_links = array();
 
         $('#application_view').load(function() {
             var iframe = $('#application_view').contents();
+            iframe.find(".ff-btn-submit").prop('disabled', true);
             iframe.find("head").append($("<style type='text/css'>  html{margin-top:-100px;}  </style>"));
             iframe.find("#wpadminbar").hide();
             iframe.find(".section-inner").hide();
@@ -288,6 +321,24 @@ $app_links = array();
 
             });
 
+            var cls = iframe.find("#class").prop('readonly', true);
+
+            iframe.find(".ff-el-form-control").change(function() {
+                $.each($(this), function() {
+                    val = $("#class option:selected").val();
+                    if (val == '') {
+                        $("#class").addClass('error').focus();
+                        iframe.find(".ff-btn-submit").prop('disabled', true);
+                        alert('You Have to Select Class');
+                        return false;
+                    } else {
+                        $("#class").removeClass('error');
+                        iframe.find(".ff-btn-submit").prop('disabled', false);
+                        return true;
+                    }
+                });
+            });
+
             iframe.find("form").submit(function() {
                 getPDF(pid);
                 setTimeout(function() {
@@ -300,7 +351,6 @@ $app_links = array();
                     }
                 }, 2000);
             });
-
 
         });
 
@@ -380,13 +430,15 @@ $app_links = array();
                         },
                         async: true,
                         success: function(response) {
-                            $('html, body').animate({
-                                scrollTop: $("#showdiv").offset().top
-                            }, 2000);
+                            //$("'html, body'").animate({scrollTop: $("#showdiv").offset().top}, 2000);
+                            $("#back-to-top").click();
+                            //$("#admissionPay").submit();
                         }
                     });
                 }, 500);
             }
         }
     </script>
+
+
 </body>

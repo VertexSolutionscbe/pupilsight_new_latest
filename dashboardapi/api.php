@@ -6,6 +6,7 @@ if (isset($_SESSION[$guid]['pupilsightSchoolYearID'])) {
 	if (isset($_REQUEST['type'])) {
 		$type = trim($_REQUEST['type']);
 		$pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
 		if (!empty($type)) {
 			switch ($type) {
 				case "campaign_list":
@@ -31,9 +32,9 @@ if (isset($_SESSION[$guid]['pupilsightSchoolYearID'])) {
 					break;
 				case "campaign_count":
 					$sql = "SELECT 
-		COUNT(id) as total, 
-		SUM(status='1') draft, SUM(status='2') published,SUM(status='3') stoped
-		FROM campaign WHERE id !=''";
+			COUNT(id) as total, 
+			SUM(status='1') draft, SUM(status='2') published,SUM(status='3') stoped
+			FROM campaign WHERE id !=''";
 					if (isset($_REQUEST['pupilsightSchoolYearID'])) {
 						$sql .= " AND academic_id='" . $_REQUEST['pupilsightSchoolYearID'] . "'";
 					} else {
@@ -119,8 +120,8 @@ if (isset($_SESSION[$guid]['pupilsightSchoolYearID'])) {
 					break;
 				case "fee_due":
 					$sql = 'SELECT COUNT(i.id) as total
-		FROM fn_fee_invoice as  i
-		WHERE NOT EXISTS (SELECT c.fn_fees_invoice_id FROM fn_fees_collection as  c WHERE i.id = c.fn_fees_invoice_id';
+			FROM fn_fee_invoice as  i
+			WHERE NOT EXISTS (SELECT c.fn_fees_invoice_id FROM fn_fees_collection as  c WHERE i.id = c.fn_fees_invoice_id';
 					if (isset($_REQUEST['pupilsightSchoolYearID'])) {
 						$sql .= " AND c.pupilsightSchoolYearID='" . $_REQUEST['pupilsightSchoolYearID'] . "'";
 					} else {
@@ -133,8 +134,8 @@ if (isset($_SESSION[$guid]['pupilsightSchoolYearID'])) {
 					break;
 				case "total_fee_collected":
 					$sql = 'SELECT COUNT(i.id) as total
-		FROM fn_fee_invoice as  i
-		WHERE  EXISTS (SELECT c.fn_fees_invoice_id FROM fn_fees_collection as  c WHERE i.id = c.fn_fees_invoice_id';
+			FROM fn_fee_invoice as  i
+			WHERE  EXISTS (SELECT c.fn_fees_invoice_id FROM fn_fees_collection as  c WHERE i.id = c.fn_fees_invoice_id';
 					if (isset($_REQUEST['pupilsightSchoolYearID'])) {
 						$sql .= " AND c.pupilsightSchoolYearID='" . $_REQUEST['pupilsightSchoolYearID'] . "'";
 					} else {
@@ -147,8 +148,8 @@ if (isset($_SESSION[$guid]['pupilsightSchoolYearID'])) {
 					break;
 				case "item_wise_destribution_fee":
 					$sql = 'SELECT count(c.id) as total FROM  fn_fees_collection as c 
-		LEFT JOIN pupilsightStudentEnrolment as enrol ON c.pupilsightPersonID=enrol.pupilsightPersonID
-		LEFT JOIN pupilsightYearGroup as cls ON enrol.pupilsightYearGroupID=cls.pupilsightYearGroupID';
+			LEFT JOIN pupilsightStudentEnrolment as enrol ON c.pupilsightPersonID=enrol.pupilsightPersonID
+			LEFT JOIN pupilsightYearGroup as cls ON enrol.pupilsightYearGroupID=cls.pupilsightYearGroupID';
 					$sql .= ' WHERE c.id!="" ';
 					if (isset($_REQUEST['pupilsightSchoolYearID'])) {
 						$sql .= " AND c.pupilsightSchoolYearID='" . $_REQUEST['pupilsightSchoolYearID'] . "'";
@@ -161,10 +162,10 @@ if (isset($_SESSION[$guid]['pupilsightSchoolYearID'])) {
 					break;
 				case "paymode_wise_destribution":
 					$sql = 'SELECT cls.name as class, COUNT(c.id) as total  FROM  fn_fees_collection as c 
-		LEFT JOIN pupilsightstudentenrolment as enrol ON c.pupilsightPersonID=enrol.pupilsightPersonID
-		LEFT JOIN pupilsightyeargroup as cls ON enrol.pupilsightYearGroupID=cls.pupilsightYearGroupID
-		LEFT JOIN fn_masters as m ON c.payment_mode_id=m.id
-		WHERE m.type="payment_mode" ';
+			LEFT JOIN pupilsightstudentenrolment as enrol ON c.pupilsightPersonID=enrol.pupilsightPersonID
+			LEFT JOIN pupilsightyeargroup as cls ON enrol.pupilsightYearGroupID=cls.pupilsightYearGroupID
+			LEFT JOIN fn_masters as m ON c.payment_mode_id=m.id
+			WHERE m.type="payment_mode" ';
 					if (isset($_REQUEST['pupilsightSchoolYearID'])) {
 						$sql .= " AND c.pupilsightSchoolYearID='" . $_REQUEST['pupilsightSchoolYearID'] . "'";
 					} else {

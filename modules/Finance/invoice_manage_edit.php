@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                 $academicData[$dt['pupilsightSchoolYearID']] = $dt['name'];
             }
         
-            $sqlse = 'SELECT id, series_name FROM fn_fee_series ';
+            $sqlse = 'SELECT id, series_name FROM fn_fee_series WHERE type = "Finance" ';
             $resultse = $connection2->query($sqlse);
             $feeSeries = $resultse->fetchAll();
         

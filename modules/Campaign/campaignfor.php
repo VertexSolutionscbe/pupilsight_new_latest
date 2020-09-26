@@ -17,7 +17,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignfor.php')
 
     
     $page_for = $_POST['type'];
-    $campaignid = $session->get('campaignid');
+
+    $cidnew = $session->get('campaignid');;
+    if(!empty($cidnew)){
+        $campaignid = $cidnew;
+    } else {
+        $campaignid = $_SESSION['campaignid'];
+    }
+    //$campaignid = $session->get('campaignid');
    
     if ($campaignid == '' or $page_for == '') {
         $URL .= '&return=error1';
@@ -40,6 +47,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignfor.php')
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                     $values = $result->fetch();
+
+                    $chksql = 'SELECT id, workflow_id FROM workflow_map WHERE campaign_id = '.$campaignid.' ';
+                    $resultchk = $connection2->query($chksql);
+                    $wfdata = $resultchk->fetch();
+                    
+
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
@@ -52,7 +65,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignfor.php')
                 $ayear = $values['academic_year'];
                 $id = $campaignid;
                 $session->forget(['campaignid']);
-                $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/wf_add.php&id='.$id.'&name='.$name.'&academic_year='.$ayear.'&search=';
+
+                if(!empty($wfdata)){
+                    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/wf_edit.php&id='.$wfdata['workflow_id'].'';
+                } else {
+                    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/wf_add.php&id='.$id.'&name='.$name.'&academic_year='.$ayear.'&search=';
+                }
+                
                 //header("Location: {$URL}");
                 echo $URL;
         

@@ -389,7 +389,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             echo '});';
             echo '</script>';
             if ($row['fields'] != '') {
-                echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'> <i class='fas fa-arrow-circle-down fa-2x' alt='Show Details' onclick='return false;></i><i style='padding-right: 5px'   class='fas fa-arrow-circle-down'></i></a>";
+                echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'> <i class='mdi mdi-arrow-down-circle mdi-24px' alt='Show Details' onclick='return false;></i><i style='padding-right: 5px'   class='mdi mdi-arrow-down-circle'></i></a>";
             }
             echo '</td>';
             echo '</tr>';

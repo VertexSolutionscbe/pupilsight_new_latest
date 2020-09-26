@@ -34,24 +34,27 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
 
 
 
-    <link rel='stylesheet' href='assets/plugins/learnpress-paid-membership-pro/assets/style.css' />
+    <link rel='stylesheet' id='learn-press-pmpro-style-css' href='assets/plugins/learnpress-paid-membership-pro/assets/style.css' type='text/css' media='all' />
 
-    <link rel='stylesheet' href='assets/plugins/builderpress/assets/libs/slick/slick.css' />
+    <link rel='stylesheet' id='builder-press-slick-css' href='assets/plugins/builderpress/assets/libs/slick/slick.css' type='text/css' media='all' />
 
-    <link rel='stylesheet' id='js_composer_front-css' href='assets/plugins/js_composer/assets/css/js_composer.min.css' />
+    <link rel='stylesheet' id='js_composer_front-css' href='assets/plugins/js_composer/assets/css/js_composer.min.css' type='text/css' media='all' />
 
-    <link rel='stylesheet' id='dashicons-css' href='assets/css/dashicons.min.css' />
-    <link rel='stylesheet' id='learn-press-bundle-css' href='assets/plugins/learnpress/assets/css/bundle.min.css' />
-    <link rel='stylesheet' id='learn-press-css' href='assets/plugins/learnpress/assets/css/learnpress.css' />
-    <link rel='stylesheet' id='ionicon-css' href='assets/css/ionicons/ionicons.css' />
-    <link rel='stylesheet' id='select2-style-css' href='assets/css/select2/core.css' />
-    <link rel='stylesheet' id='builder-press-bootstrap-css' href='assets/css/bootstrap/bootstrap.css' />
-    <link rel='stylesheet' id='thim-style-css' href='assets/css/style.css' />
+    <link rel='stylesheet' id='dashicons-css' href='assets/css/dashicons.min.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='learn-press-bundle-css' href='assets/plugins/learnpress/assets/css/bundle.min.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='learn-press-css' href='assets/plugins/learnpress/assets/css/learnpress.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='ionicon-css' href='assets/css/ionicons/ionicons.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='select2-style-css' href='assets/css/select2/core.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='builder-press-bootstrap-css' href='assets/css/bootstrap/bootstrap.css' type='text/css' media='all' />
 
 
-    <link rel='stylesheet' id='thim-style-options-css' href='assets/css/demo.css' />
+    <link rel='stylesheet' id='thim-style-css' href='assets/css/style.css' type='text/css' media='all' />
+
+
+    <link rel='stylesheet' id='thim-style-options-css' href='assets/css/demo.css' type='text/css' media='all' />
     <script type='text/javascript' src='assets/js/jquery/jquery.js'></script>
     <script type='text/javascript' src='assets/js/jquery/jquery-migrate.min.js'></script>
+
 
     <script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js?v=18.0.01"></script>
     <script type="text/javascript" src="../lib/jquery/jquery.js?v=18.0.01"></script>
@@ -61,6 +64,10 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
     <script type="text/javascript" src="../lib/chained/jquery.chained.min.js?v=18.0.01"></script>
     <script type='text/javascript' src='assets/js/moment.min.js'></script>
     <style>
+        #masthead {
+            position: unset !important;
+        }
+
         @media (min-width: 576px) {
             .modal-dialog {
                 max-width: 1010px !important;
@@ -1012,19 +1019,19 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
 <link href="https://fonts.googleapis.com/css?family=Poppins:300%2C200%2C400" rel="stylesheet" property="stylesheet" type="text/css" media="all">
 
 
-<link rel='stylesheet' id='builder-press-magnific-popup-css' href='assets/plugins/builderpress/assets/libs/magnific-popup/magnific-popup.css' />
+<link rel='stylesheet' id='builder-press-magnific-popup-css' href='assets/plugins/builderpress/assets/libs/magnific-popup/magnific-popup.css' type='text/css' media='all' />
 <link rel='stylesheet' id='builderpress-element-login-popup-css' href='assets/plugins/builderpress/inc/elements/general/login-popup/assets/css/login-popup.css' type='text/css' media='all' />
 <link rel='stylesheet' id='builderpress-element-button-css' href='assets/plugins/builderpress/inc/elements/general/button/assets/css/button.css' type='text/css' media='all' />
 <link rel='stylesheet' id='builderpress-element-search-posts-css' href='assets/plugins/builderpress/inc/elements/general/search-posts/assets/css/search-posts.css' type='text/css' media='all' />
 <link rel='stylesheet' id='builderpress-element-image-box-css' href='assets/plugins/builderpress/inc/elements/general/image-box/assets/css/image-box.css' type='text/css' media='all' />
 <link rel='stylesheet' id='builderpress-element-heading-css' href='assets/plugins/builderpress/inc/elements/general/heading/assets/css/heading.css' type='text/css' media='all' />
-<link rel='stylesheet' id='builderpress-element-course-collections-css' href='assets/plugins/builderpress/inc/elements/learnpress-collections/course-collections/assets/css/course-collections.css' />
+<link rel='stylesheet' id='builderpress-element-course-collections-css' href='assets/plugins/builderpress/inc/elements/learnpress-collections/course-collections/assets/css/course-collections.css' type='text/css' media='all' />
 <link rel='stylesheet' id='builderpress-element-counter-box-css' href='assets/plugins/builderpress/inc/elements/general/counter-box/assets/css/counter-box.css' type='text/css' media='all' />
-<link rel='stylesheet' id='builderpress-element-list-courses-css' href='assets/plugins/builderpress/inc/elements/learnpress/list-courses/assets/css/list-courses.css' />
-<link rel='stylesheet' id='builderpress-element-list-events-css' href='assets/plugins/builderpress/inc/elements/wp-events-manager/list-events/assets/css/list-events.css' />
+<link rel='stylesheet' id='builderpress-element-list-courses-css' href='assets/plugins/builderpress/inc/elements/learnpress/list-courses/assets/css/list-courses.css' type='text/css' media='all' />
+<link rel='stylesheet' id='builderpress-element-list-events-css' href='assets/plugins/builderpress/inc/elements/wp-events-manager/list-events/assets/css/list-events.css' type='text/css' media='all' />
 <link rel='stylesheet' id='builderpress-element-testimonials-css' href='assets/plugins/builderpress/inc/elements/general/testimonials/assets/css/testimonials.css' type='text/css' media='all' />
-<link rel='stylesheet' id='builderpress-element-call-to-action-css' href='assets/plugins/builderpress/inc/elements/general/call-to-action/assets/css/call-to-action.css' />
-<link rel='stylesheet' id='builder-press-owl-carousel-css' href='assets/plugins/builderpress/assets/libs/owl-carousel/owl.carousel.min.css' />
+<link rel='stylesheet' id='builderpress-element-call-to-action-css' href='assets/plugins/builderpress/inc/elements/general/call-to-action/assets/css/call-to-action.css' type='text/css' media='all' />
+<link rel='stylesheet' id='builder-press-owl-carousel-css' href='assets/plugins/builderpress/assets/libs/owl-carousel/owl.carousel.min.css' type='text/css' media='all' />
 <link rel='stylesheet' id='builderpress-element-brands-css' href='assets/plugins/builderpress/inc/elements/general/brands/assets/css/brands.css' type='text/css' media='all' />
 <link rel='stylesheet' id='builderpress-element-social-links-css' href='assets/plugins/builderpress/inc/elements/general/social-links/assets/css/social-links.css' type='text/css' media='all' />
 <script type='text/javascript' src='assets/js/jquery/ui/core.min.js'></script>
@@ -1227,7 +1234,7 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Campaign List</h4>
+                    <h4 class="modal-title">Application List</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
@@ -1271,7 +1278,12 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
                             echo date('d M Y', strtotime($row['end_date']));
                             echo '</td>';
                             echo '<td>';
-                            echo ' <a href="application_page.php?url_id=' . $row['id'] . '&status=not" title="' . $row['id'] . '"  class="btnShow btn btn-info btn-lg" type="button" id="btnShow"  style="font-size: 14px;" >Apply Now</a>';
+
+                            if ($row['page_for'] == '1') {
+                                echo ' <a href="application_page.php?url_id=' . $row['id'] . '&status=not"   class="btnShow btn btn-info btn-lg" type="button" id="btnShow"  style="font-size: 14px;" >Apply Now</a>';
+                            } else {
+                                echo ' <a href="register.php?url_id=' . $row['id'] . '"   class="btnShow btn btn-info btn-lg" type="button" id="btnShow"  style="font-size: 14px;" >Register & Apply</a>';
+                            }
                             echo '</td>';
                             echo '</tr>';
 

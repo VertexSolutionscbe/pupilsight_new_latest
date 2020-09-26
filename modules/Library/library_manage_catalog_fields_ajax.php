@@ -9,7 +9,7 @@ use Pupilsight\Forms\FormFactory;
 include '../../pupilsight.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/Library/moduleFunctions.php';
+include '../../modules/Library/moduleFunctions.php';
 
 //Setup variables
 $pupilsightLibraryTypeID = isset($_POST['pupilsightLibraryTypeID'])? $_POST['pupilsightLibraryTypeID'] : '';
@@ -57,9 +57,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $fieldName = 'field'.preg_replace('/ |\(|\)/', '', $field['name']);
             $fieldValue = isset($fieldsValues[$field['name']])? $fieldsValues[$field['name']] : '';
 
-            $row = $table->addRow()->addClass('flex flex-col sm:flex-row justify-between content-center p-0');
-                $row->addLabel($fieldName, __($field['name']))->description(__($field['description']))->addClass('flex-grow sm:mb-0 border-transparent border-t-0 sm:border-gray');
-                $row->addCustomField($fieldName, $field)->setValue($fieldValue)->addClass('w-full max-w-full sm:max-w-xs flex justify-end items-center  sm:border-b');
+            $row = $table->addRow()->addClass('col sm-1');
+                $row->addLabel($fieldName, __($field['name']))->description(__($field['description']))->addClass('');
+                $row->addCustomField($fieldName, $field)->setValue($fieldValue)->addClass('mb-1');
         }
 
         // Add Google Books data grabber

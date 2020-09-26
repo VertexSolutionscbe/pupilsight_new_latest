@@ -15,8 +15,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {{ block('bulkActions') }}
 
 <script>
-     $(function(){
-        $('#{{ table.getID }}').pupilsightDataTable( '{{ path|raw }}', {{ jsonData|raw }}, '{{ identifier }}');
+    $(function () {
+        $('#{{ table.getID }}').pupilsightDataTable('{{ path|raw }}', {{ jsonData| raw }}, '{{ identifier }}');
     });
 </script>
 {% endblock table %} {% block header %}
@@ -57,13 +57,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </div>
     {% endif %} -->
 {% endblock footer %} {% block filters %} {% for name, label in filterCriteria %}
-<a href="javascript:void()" class="filter -mx-px py-2 px-3 border border-blue bg-blue hover:bg-blue z-10 text-white font-bold" data-filter="{{ name }}">
-            {{ label|raw }}
-        </a> {% endfor %}
+<a href="javascript:void()" class="filter -mx-px py-2 px-3 border border-blue bg-blue hover:bg-blue z-10   font-bold"
+    data-filter="{{ name }}">
+    {{ label|raw }}
+</a> {% endfor %}
 
-<a href="javascript:void()" class="filter p-2 rounded-r border border-gray text-white bg-gray font-bold hover:bg-gray clear">
-        {{ __('Clear') }}
-    </a> {% endblock filters %} {% block pageCount %} {% if dataSet.getTotalCount > 0 %}
+<a href="javascript:void()" class="filter p-2 rounded-r border border-gray   bg-gray font-bold hover:bg-gray clear">
+    {{ __('Clear') }}
+</a> {% endblock filters %} {% block pageCount %} {% if dataSet.getTotalCount > 0 %}
 <!-- <div class="text-xs">
         {{ searchText ? __('Search') ~ " " }}
 
@@ -75,22 +76,31 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         
         {{ dataSet.getResultCount|number_format }}
     </div> -->
-{% endif %} {% endblock pageCount %} {% block pagination %} {% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose' %} {% if dataSet.getResultCount > dataSet.getPageSize or filterOptions %}
+{% endif %} {% endblock pageCount %} {% block pagination %}
+{% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose' %}
+{% if dataSet.getResultCount > dataSet.getPageSize or filterOptions %}
 <div class="pagination mb-2">
-    <a href="javascript:void()" class="ml-1 padipag2  prv paginate rounded-l text-white bg-gray border-gray {{ not dataSet.isFirstPage ? 'hover:bg-gray'}} {{ buttonStyle }}" data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ?
+    <a href="javascript:void()"
+        class="ml-1 padipag2  prv paginate rounded-l   bg-gray border-gray {{ not dataSet.isFirstPage ? 'hover:bg-gray'}} {{ buttonStyle }}"
+        data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ?
         'disabled'}}>
-            {{ __('Prev') }}
-        </a> {%- for page in dataSet.getPaginatedRange -%} {%- if page == '...' -%}
+        {{ __('Prev') }}
+    </a> {%- for page in dataSet.getPaginatedRange -%} {%- if page == '...' -%}
     <a href="javascript:void()" class="ml-1 padipag2  prv {{ buttonStyle }}" disabled>...</a> {%- else -%}
-    <a href="javascript:void()" class="ml-1 padipag2  prv paginate {{ buttonStyle }} {{ page == dataSet.getPage ? 'bg-blue border-blue text-white relative z-10' : 'text-gray hover:bg-gray border-gray' }}" data-page="{{ page }}">{{ page }}</a>    {%- endif -%} {%- endfor -%}
+    <a href="javascript:void()"
+        class="ml-1 padipag2  prv paginate {{ buttonStyle }} {{ page == dataSet.getPage ? 'bg-blue border-blue   relative z-10' : 'text-gray hover:bg-gray border-gray' }}"
+        data-page="{{ page }}">{{ page }}</a> {%- endif -%} {%- endfor -%}
 
-    <a href="javascript:void()" class="ml-1 padipag2  prv paginate rounded-r text-gray border-gray {{ not dataSet.isLastPage ? 'hover:bg-gray'}} {{ buttonStyle }}" data-page="{{ dataSet.getNextPageNumber }}" {{ dataSet.isLastPage ? 'disabled'}}>
+    <a href="javascript:void()"
+        class="ml-1 padipag2  prv paginate rounded-r text-gray border-gray {{ not dataSet.isLastPage ? 'hover:bg-gray'}} {{ buttonStyle }}"
+        data-page="{{ dataSet.getNextPageNumber }}" {{ dataSet.isLastPage ? 'disabled'}}>
         {{ __('Next') }}
-        </a>
+    </a>
 </div>
 {% endif %} {% endblock pagination %} {% block bulkActions %} {% if bulkActions %}
-<div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple rounded-t z-20">
-    <div class="bulkActionCount flex-grow text-white text-sm text-right pr-3">
+<div
+    class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple rounded-t z-20">
+    <div class="bulkActionCount flex-grow   text-sm text-right pr-3">
         <span>0</span> {{ __('Selected') }}
     </div>
 

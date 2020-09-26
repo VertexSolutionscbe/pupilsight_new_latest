@@ -41,6 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     $alloseatname = $_POST['seatname'];
     $alloseatno = $_POST['seatallocation'];
     $reg_req =  $_POST['reg_req']; //2-reg-yes(private) //1-reg-No(public)
+    $application_series_id = $_POST['application_series_id'];
+    $admission_series_id = $_POST['admission_series_id'];
+
+
     if ($name == '' or $status == ''  or $start_date == '' or $end_date == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -70,8 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                 $academic_year = $ayrdata['name'];
 
                 try {
-                    $data = array('name' => $name, 'status' => $status, 'description' => $description, 'start_date' => $start_date, 'end_date' => $end_date, 'academic_id' => $academic_id, 'academic_year' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID, 'classes' => $classes, 'seats' => $seats,'limit_apply_form' => $limitusers,'cuid' => $cuid,'page_for'=> $reg_req);
-                    $sql = "INSERT INTO campaign SET name=:name, description=:description, academic_id=:academic_id,academic_year=:academic_year, pupilsightProgramID=:pupilsightProgramID,classes=:classes, start_date=:start_date, end_date=:end_date, status=:status,seats=:seats, limit_apply_form=:limit_apply_form, cuid=:cuid,page_for=:page_for";
+                    $data = array('name' => $name, 'status' => $status, 'description' => $description, 'start_date' => $start_date, 'end_date' => $end_date, 'academic_id' => $academic_id, 'academic_year' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID, 'classes' => $classes, 'seats' => $seats,'limit_apply_form' => $limitusers,'cuid' => $cuid,'page_for'=> $reg_req, 'application_series_id' => $application_series_id, 'admission_series_id' => $admission_series_id);
+                    $sql = "INSERT INTO campaign SET name=:name, description=:description, academic_id=:academic_id,academic_year=:academic_year, pupilsightProgramID=:pupilsightProgramID,classes=:classes, start_date=:start_date, end_date=:end_date, status=:status,seats=:seats, limit_apply_form=:limit_apply_form, cuid=:cuid,page_for=:page_for, application_series_id=:application_series_id, admission_series_id=:admission_series_id";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
