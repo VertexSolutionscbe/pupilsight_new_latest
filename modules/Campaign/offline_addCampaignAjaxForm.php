@@ -22,19 +22,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/addCampaignAjaxFo
     // $conn = new mysqli($servername, $username, $password, $dbname);
     // if ($conn->connect_error) {
     //     die("Connection failed: " . $conn->connect_error);
-    // } 
-
+    // }
+   
     $formshortcode = $_POST['formshortcode'];
     $formid = (int) filter_var($formshortcode, FILTER_SANITIZE_NUMBER_INT);
-
-    $cidnew = $session->get('campaignid');;
-    if(!empty($cidnew)){
-        $campaignid = $cidnew;
-    } else {
-        $campaignid = $_SESSION['campaignid'];
-    }
+    $campaignid = $_SESSION['campaignid']; 
     
-   
     $post_author = '1';
     $post_content = $formshortcode;
     $comment_status = 'closed';
@@ -83,8 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/addCampaignAjaxFo
 
                     $campaign_id = $campaignid;
                     $page_link = $guid;
-                    $data1 = array('form_id'=>$formid, 'page_link' => $page_link, 'id' => $campaign_id);
-                    $sql1 = "UPDATE campaign SET form_id=:form_id, page_link=:page_link WHERE id=:id";
+                    $data1 = array('offline_form_id'=>$formid, 'offline_page_link' => $page_link, 'id' => $campaign_id);
+                    $sql1 = "UPDATE campaign SET offline_form_id=:offline_form_id, offline_page_link=:offline_page_link WHERE id=:id";
                     $result1 = $connection2->prepare($sql1);
                     $result1->execute($data1);
                 }

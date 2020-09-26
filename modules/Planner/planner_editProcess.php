@@ -27,7 +27,7 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_
 if ($viewBy == 'date') {
     $params = "&viewBy=$viewBy&date=$date";
 } else {
-    $params = "&viewBy=$viewBy&pupilsightCourseClassID=$pupilsightCourseClassID&subView=$subView";
+    $params = "&viewBy=$viewBy&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseClassID=$pupilsightCourseClassID&subView=$subView";
 }
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php') == false) {

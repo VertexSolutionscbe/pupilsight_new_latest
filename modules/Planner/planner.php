@@ -682,6 +682,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
+                            
                         } catch (PDOException $e) {
                             echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
                         }
@@ -713,8 +714,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                             echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
                         }
                     }
+                    //print_r($result->rowCount());
 
-                    if ($result->rowCount() != 1) {
+                    // closed by bikash if ($result->rowCount() != 1) {
+                    if ($result->rowCount() <= 1) {
                         echo "<div class='alert alert-danger'>";
                         echo __('The selected record does not exist, or you do not have access to it.');
                         echo '</div>';
@@ -898,7 +901,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         echo '<td>';
                                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&pupilsightPlannerEntryID='.$row['pupilsightPlannerEntryID']."&viewBy=class&pupilsightCourseClassID=$pupilsightCourseClassID&width=1000&height=550'><i title='".__('View')."' class='mdi mdi-eye-outline mdi-24px'></i></a> ";
                                         if ((($highestAction == 'Lesson Planner_viewAllEditMyClasses' and $teacher == true) or $highestAction == 'Lesson Planner_viewEditAllClasses')) {
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&pupilsightPlannerEntryID='.$row['pupilsightPlannerEntryID']."&viewBy=$viewBy&pupilsightCourseClassID=$pupilsightCourseClassID'><i title='".__('Edit')."' class='mdi mdi-pencil-box-outline mdi-24px'></i></a> ";
+                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&pupilsightPlannerEntryID='.$row['pupilsightPlannerEntryID']."&viewBy=$viewBy&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseClassID=$pupilsightCourseClassID'><i title='".__('Edit')."' class='mdi mdi-pencil-box-outline mdi-24px'></i></a> ";
                                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_bump.php&pupilsightPlannerEntryID='.$row['pupilsightPlannerEntryID']."&viewBy=$viewBy&pupilsightCourseClassID=$pupilsightCourseClassID'><i title='".__('Bump')."'  class='mdi mdi-arrow-right-circle-outline mdi-24px'></i></a>";
                                             echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Planner/planner_delete.php&pupilsightPlannerEntryID='.$row['pupilsightPlannerEntryID']."&viewBy=$viewBy&pupilsightCourseClassID=$pupilsightCourseClassID&date=$date&subView=$subView&width=650&height=135'><i title='".__('Delete')."' class='mdi mdi-trash-can-outline mdi-24px'></i></a>";
                                         }

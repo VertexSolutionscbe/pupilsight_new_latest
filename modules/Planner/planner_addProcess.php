@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             if ($viewBy == 'date') {
                 $params = "&viewBy=$viewBy&date=$date";
             } else {
-                $params = "&viewBy=$viewBy&pupilsightCourseClassID=$pupilsightCourseClassID&subView=$subView";
+                $params = "&viewBy=$viewBy&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseClassID=$pupilsightCourseClassID&subView=$subView";
             }
 
             //Lock markbook column table

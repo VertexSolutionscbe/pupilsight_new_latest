@@ -47,12 +47,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
      $formId = '';
      if(isset($_REQUEST['id'])?$id=$_REQUEST['id']:$id="" );
 
-    $sql1 = 'Select form_id FROM campaign WHERE id = '.$id.' ';
+    $sql1 = 'Select offline_form_id FROM campaign WHERE id = '.$id.' ';
     $resultval1 = $connection2->query($sql1);
     $formid = $resultval1->fetch();
     //  echo $formid['form_id'];
     //  die();
-    $formId = $formid['form_id'];
+    $formId = $formid['offline_form_id'];
     
     $search = isset($_GET['search'])? $_GET['search'] : '';
     
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
  
      // QUERY
      echo '<h2>';
-     echo __('Online Campaign Submitted Form List');
+     echo __('Offline Campaign Submitted Form List');
      echo '</h2>';
 
     // echo $butt = '<i id="btnExport" title="Export PDF" class="far fa-file-pdf download_icon"></i> ';
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     echo "<div style='height:25px; margin-top:5px;'><div class='float-right mb-2'>
     <a style='display:none; ' href='".$_SESSION[$guid]['absoluteURL']."/fullscreen.php?q=/modules/Campaign/fee_make_payment.php&cid=".$id."' class='thickbox btn btn-primary' id='clickAdmissionFeePayment'>Fee Payment</a>
     <a style='display:none; margin-bottom:10px;'  class='btn btn-primary' id='admissionFeePayment'>Fee Payment</a>
-    &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_campaignFormList.php&id=".$id."'   class=' btn btn-primary' >Offline Submitted List</a>
+    &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/campaignFormList.php&id=".$id."'   class=' btn btn-primary' >Online Submitted List</a>
     &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=".$id."'   class=' btn btn-primary' id='sendSMS'>Add</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' id='sendSMS'>Send SMS</a>";  
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' id='sendEmail'>Send Email</a>";
     echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="far fa-file-excel download_icon"></i><i id="pdf_export" title="Export PDF" class="far fa-file-pdf download_icon"></i></div></div> <br>';
@@ -415,6 +415,27 @@ $(document).ready(function() {
             alert('You Have to Select Applicant');
         }
         
+    });
+
+    $(document).on('click', '#filterCampaign', function () {
+        var field = $("#showfield1").val();
+        var searchby = $("#showfield2").val();
+        var search = $(".searchOpen").val();
+        var range1 = $("#range1").val();
+        var range2 = $("#range2").val();
+        var cid = $("#campaignId").val();
+        var fid = $("#formId").val();
+        if (field != '' && searchby != '') {
+            $.ajax({
+                url: 'modules/Campaign/offline_campaignFormListSearch.php',
+                type: 'post',
+                data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid },
+                async: true,
+                success: function (response) {
+                    $("#expore_tbl").parent().html(response);
+                }
+            });
+        }
     });
 </script>
 <?php

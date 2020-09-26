@@ -79,6 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         $pupilsightCourseClassID = null;
         if (isset($_GET['pupilsightCourseClassID'])) {
             $pupilsightCourseClassID = $_GET['pupilsightCourseClassID'];
+            $pupilsightProgramID = $_GET['pupilsightProgramID'];
         }
         $pupilsightPlannerEntryID = $_GET['pupilsightPlannerEntryID'];
         if ($pupilsightPlannerEntryID == '' or ($viewBy == 'class' and $pupilsightCourseClassID == 'Y')) {
@@ -102,8 +103,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                     }
                 } else {
                     if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
-                        $data = array('pupilsightCourseClassID' => $pupilsightCourseClassID, 'pupilsightPlannerEntryID' => $pupilsightPlannerEntryID);
-                        $sql = 'SELECT pupilsightCourse.pupilsightCourseID, pupilsightPlannerEntryID, pupilsightUnitID, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class, pupilsightDepartmentID, pupilsightPlannerEntry.*, pupilsightCourse.pupilsightYearGroupIDList FROM pupilsightPlannerEntry JOIN pupilsightCourseClass ON (pupilsightPlannerEntry.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID) WHERE pupilsightPlannerEntry.pupilsightCourseClassID=:pupilsightCourseClassID AND pupilsightPlannerEntryID=:pupilsightPlannerEntryID';
+                        // $data = array('pupilsightCourseClassID' => $pupilsightCourseClassID, 'pupilsightPlannerEntryID' => $pupilsightPlannerEntryID);
+                        // $sql = 'SELECT pupilsightCourse.pupilsightCourseID, pupilsightPlannerEntryID, pupilsightUnitID, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class, pupilsightDepartmentID, pupilsightPlannerEntry.*, pupilsightCourse.pupilsightYearGroupIDList FROM pupilsightPlannerEntry JOIN pupilsightCourseClass ON (pupilsightPlannerEntry.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID) WHERE pupilsightPlannerEntry.pupilsightCourseClassID=:pupilsightCourseClassID AND pupilsightPlannerEntryID=:pupilsightPlannerEntryID';
+
+                        $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightCourseClassID' => $pupilsightCourseClassID,'pupilsightPlannerEntryID' => $pupilsightPlannerEntryID);
+                        
+                        $sql = "SELECT pupilsightPlannerEntry.pupilsightPlannerEntryID, pupilsightPlannerEntry.pupilsightProgramID, pupilsightPlannerEntry.pupilsightYearGroupID, pupilsightPlannerEntry.pupilsightRollGroupID, pupilsightPlannerEntry.pupilsightDepartmentID, pupilsightPlannerEntry.pupilsightCourseClassID, pupilsightUnitID, pupilsightProgram.name AS progName, pupilsightYearGroup.name AS className , pupilsightRollGroup.name AS sectionName, pupilsightPlannerEntry.name, timeStart, timeEnd, viewableStudents, viewableParents, homework, 'Teacher' AS role, homeworkSubmission, homeworkCrowdAssess, date, pupilsightPlannerEntry.pupilsightCourseClassID, NULL AS myHomeworkDueDateTime FROM pupilsightPlannerEntry JOIN pupilsightProgram ON (pupilsightPlannerEntry.pupilsightProgramID=pupilsightProgram.pupilsightProgramID) JOIN pupilsightYearGroup ON (pupilsightPlannerEntry.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) JOIN pupilsightRollGroup ON (pupilsightPlannerEntry.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) JOIN pupilsightDepartment ON (pupilsightPlannerEntry.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) WHERE pupilsightPlannerEntry.pupilsightProgramID=:pupilsightProgramID AND pupilsightPlannerEntry.pupilsightCourseClassID=:pupilsightCourseClassID AND pupilsightPlannerEntryID=:pupilsightPlannerEntryID ORDER BY date, timeStart";
                     } else {
                         $data = array('pupilsightCourseClassID' => $pupilsightCourseClassID, 'pupilsightPlannerEntryID' => $pupilsightPlannerEntryID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
                         $sql = "SELECT pupilsightCourse.pupilsightCourseID, pupilsightPlannerEntryID, pupilsightUnitID, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class, pupilsightDepartmentID, pupilsightPlannerEntry.*, pupilsightCourse.pupilsightYearGroupIDList FROM pupilsightPlannerEntry JOIN pupilsightCourseClass ON (pupilsightPlannerEntry.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClass.pupilsightCourseClassID=pupilsightCourseClassPerson.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID) WHERE pupilsightCourseClassPerson.pupilsightPersonID=:pupilsightPersonID AND role='Teacher' AND pupilsightPlannerEntry.pupilsightCourseClassID=:pupilsightCourseClassID AND pupilsightPlannerEntryID=:pupilsightPlannerEntryID";
@@ -114,6 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
             } catch (PDOException $e) {
                 echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
             }
+            //print_r($result->rowCount());
 
             if ($result->rowCount() != 1) {
                 echo "<div class='alert alert-danger'>";
@@ -467,7 +473,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
     }
 }
 ?>
+<style>
+    #guestsPhoto {
+        margin: 0 0 0 -60px;
+    }
+</style>
 <script>
+
+$(document).ready(function(){
+    $("#guests").select2();
+});
+
 $(document).on('change', '#pupilsightYearGroupIDbyPP', function () {
     var id = $(this).val();
     var pid = $('#pupilsightProgramIDbyPP').val();
