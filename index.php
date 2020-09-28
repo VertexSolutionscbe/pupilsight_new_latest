@@ -463,7 +463,7 @@ if ($isLoggedIn) {
         $cmsMenu = array('name' => "CMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/cms.php");
         $menuMainItems["Other"][2] = $cmsMenu;
         $menuMainItems["Reports"][0] = array('name' => "Reports", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/reports.php");
-        $menuMainItems["LMS"][0] = array('name' => "LMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/lms.php");
+        //$menuMainItems["LMS"][0] = array('name' => "LMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/lms.php");
     }
 
     if ($_SESSION[$guid]['username'] == "sinuthomas") {
