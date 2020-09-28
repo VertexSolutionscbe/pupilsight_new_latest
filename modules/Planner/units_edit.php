@@ -12,6 +12,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 
 // common variables
 $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'] ?? '';
+$pupilsightProgramID = $_GET['pupilsightProgramID'] ?? '';
 $pupilsightCourseID = $_GET['pupilsightCourseID'] ?? '';
 $pupilsightUnitID = $_GET['pupilsightUnitID'] ?? '';
 
@@ -51,21 +52,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             echo '</div>';
         } else {
             try {
-                if ($highestAction == 'Unit Planner_all') {
-                    $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID);
-                    $sql = 'SELECT pupilsightCourse.*, pupilsightSchoolYear.name as schoolYearName
-                            FROM pupilsightCourse
-                            JOIN pupilsightSchoolYear ON (pupilsightSchoolYear.pupilsightSchoolYearID=pupilsightCourse.pupilsightSchoolYearID)
-                            WHERE pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourse.pupilsightCourseID=:pupilsightCourseID';
-                } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                    $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
-                    $sql = "SELECT pupilsightCourseID, pupilsightCourse.name, pupilsightCourse.nameShort, pupilsightYearGroupIDList, pupilsightSchoolYear.name as schoolYearName
-                    FROM pupilsightCourse
-                    JOIN pupilsightSchoolYear ON (pupilsightSchoolYear.pupilsightSchoolYearID=pupilsightCourse.pupilsightSchoolYearID)
-                    JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID)
-                    JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID)
-                    WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourse.pupilsightCourseID=:pupilsightCourseID ORDER BY pupilsightCourse.nameShort";
-                }
+                // if ($highestAction == 'Unit Planner_all') {
+                //     $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID);
+                //     $sql = 'SELECT pupilsightCourse.*, pupilsightSchoolYear.name as schoolYearName
+                //             FROM pupilsightCourse
+                //             JOIN pupilsightSchoolYear ON (pupilsightSchoolYear.pupilsightSchoolYearID=pupilsightCourse.pupilsightSchoolYearID)
+                //             WHERE pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourse.pupilsightCourseID=:pupilsightCourseID';
+                // } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                //     $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
+                //     $sql = "SELECT pupilsightCourseID, pupilsightCourse.name, pupilsightCourse.nameShort, pupilsightYearGroupIDList, pupilsightSchoolYear.name as schoolYearName
+                //     FROM pupilsightCourse
+                //     JOIN pupilsightSchoolYear ON (pupilsightSchoolYear.pupilsightSchoolYearID=pupilsightCourse.pupilsightSchoolYearID)
+                //     JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID)
+                //     JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID)
+                //     WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourse.pupilsightCourseID=:pupilsightCourseID ORDER BY pupilsightCourse.nameShort";
+                // }
+
+                $data = array('pupilsightUnitID' => $pupilsightUnitID);
+                $sql = 'SELECT * FROM pupilsightUnit WHERE pupilsightUnitID=:pupilsightUnitID ';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -78,7 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                 echo '</div>';
             } else {
                 $values = $result->fetch();
-                $yearName = $values['schoolYearName'];
+
+                $datay = array('pupilsightSchoolYearID' => $values['pupilsightSchoolYearID']);
+                $sqly = 'SELECT * FROM pupilsightSchoolYear WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID';
+                $resulty = $connection2->prepare($sqly);
+                $resulty->execute($datay);
+                $valuesy = $resulty->fetch();
+                
+                $yearName = $valuesy['name'];
                 $courseName = $values['name'];
                 $courseNameShort = $values['nameShort'];
                 $pupilsightYearGroupIDList = $values['pupilsightYearGroupIDList'];
@@ -90,8 +101,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                     echo '</div>';
                 } else {
                     try {
-                        $data = array('pupilsightUnitID' => $pupilsightUnitID, 'pupilsightCourseID' => $pupilsightCourseID);
-                        $sql = 'SELECT pupilsightCourse.nameShort AS courseName, pupilsightCourse.pupilsightDepartmentID, pupilsightUnit.* FROM pupilsightUnit JOIN pupilsightCourse ON (pupilsightUnit.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightUnitID=:pupilsightUnitID AND pupilsightUnit.pupilsightCourseID=:pupilsightCourseID';
+                        $data = array('pupilsightUnitID' => $pupilsightUnitID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightCourseID);
+                        $sql = 'SELECT  pupilsightUnit.*, pupilsightProgram.name as progName, pupilsightYearGroup.name as className, pupilsightDepartment.name as subjectName   FROM pupilsightUnit JOIN pupilsightProgram ON pupilsightUnit.pupilsightProgramID=pupilsightProgram.pupilsightProgramID JOIN pupilsightYearGroup ON pupilsightUnit.pupilsightYearGroupID =pupilsightYearGroup.pupilsightYearGroupID JOIN pupilsightDepartment ON pupilsightUnit.pupilsightDepartmentID =pupilsightDepartment.pupilsightDepartmentID WHERE pupilsightUnitID=:pupilsightUnitID AND pupilsightUnit.pupilsightProgramID=:pupilsightProgramID AND pupilsightUnit.pupilsightYearGroupID=:pupilsightYearGroupID';
+
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
@@ -104,9 +116,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                     } else {
                         //Let's go!
                         $values = $result->fetch();
+
+                        $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightSchoolYearID = '".$pupilsightSchoolYearID."' AND pupilsightProgramID = '".$pupilsightProgramID."' AND pupilsightYearGroupID ='".$pupilsightCourseID."' order by subject_display_name asc";
+                        $result = $connection2->query($sq);
+                        $rowdata = $result->fetchAll();
+
+                        $subject=array();  
+                        $subject2=array();  
+                        $subject1=array(''=>'Select Subject');
+                        foreach ($rowdata as $dt) {
+                            $subject2[$dt['pupilsightDepartmentID']] = $dt['subject_display_name'];
+                        }
+                        $subject= $subject1 + $subject2; 
+
                         $pupilsightDepartmentID = $values['pupilsightDepartmentID'];
 
-                        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_editProcess.php?pupilsightSchoolYearID=$pupilsightSchoolYearID&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=$pupilsightUnitID&address=".$_GET['q']);
+                        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_editProcess.php?pupilsightSchoolYearID=$pupilsightSchoolYearID&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=$pupilsightUnitID&address=".$_GET['q']);
                         $form->setFactory(PlannerFormFactory::create($pdo));
 
                         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -118,9 +143,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                             $row->addLabel('yearName', __('School Year'));
                             $row->addTextField('yearName')->readonly()->setValue($yearName)->required();
 
+                        // $row = $form->addRow();
+                        //     $row->addLabel('courseName', __('Course'));
+                        //     $row->addTextField('courseName')->readonly()->setValue($courseName)->required();
+
                         $row = $form->addRow();
-                            $row->addLabel('courseName', __('Course'));
-                            $row->addTextField('courseName')->readonly()->setValue($courseName)->required();
+                            $row->addLabel('pupilsightDepartmentID', __('Subject'));
+                            $row->addSelect('pupilsightDepartmentID')->fromArray($subject)->selected($pupilsightDepartmentID)->required();
 
                         $row = $form->addRow();
                             $row->addLabel('name', __('Name'));
@@ -158,100 +187,100 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                 ->setParameter('allowFreeTagging', true);
 
                         //CLASSES
-                        $form->addRow()->addHeading(__('Classes'))->append(__('Select classes which will have access to this unit.'));
+                        // $form->addRow()->addHeading(__('Classes'))->append(__('Select classes which will have access to this unit.'));
 
-                        if ($_SESSION[$guid]['pupilsightSchoolYearIDCurrent'] == $pupilsightSchoolYearID && $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'] == $_SESSION[$guid]['pupilsightSchoolYearID']) {
+                        // if ($_SESSION[$guid]['pupilsightSchoolYearIDCurrent'] == $pupilsightSchoolYearID && $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'] == $_SESSION[$guid]['pupilsightSchoolYearID']) {
 
-                            $dataClass = array('pupilsightUnitID' => $pupilsightUnitID);
-                            $sqlClass = "SELECT pupilsightCourseClass.pupilsightCourseClassID, pupilsightCourseClass.nameShort, running, pupilsightUnitClassID, pupilsightUnitID
-                                        FROM pupilsightCourseClass
-                                        LEFT JOIN pupilsightUnitClass ON (pupilsightUnitClass.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID AND pupilsightUnitID=:pupilsightUnitID)
-                                        WHERE pupilsightCourseID=$pupilsightCourseID
-                                        ORDER BY name";
-                            $resultClass = $pdo->select($sqlClass, $dataClass)->toDataSet();
+                        //     $dataClass = array('pupilsightUnitID' => $pupilsightUnitID);
+                        //     $sqlClass = "SELECT pupilsightCourseClass.pupilsightCourseClassID, pupilsightCourseClass.nameShort, running, pupilsightUnitClassID, pupilsightUnitID
+                        //                 FROM pupilsightCourseClass
+                        //                 LEFT JOIN pupilsightUnitClass ON (pupilsightUnitClass.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID AND pupilsightUnitID=:pupilsightUnitID)
+                        //                 WHERE pupilsightCourseID=$pupilsightCourseID
+                        //                 ORDER BY name";
+                        //     $resultClass = $pdo->select($sqlClass, $dataClass)->toDataSet();
 
-                            if (count($resultClass) == 0) {
-                                $form->addRow()->addAlert(__('There are no records to display.'), 'error');
-                            } else {
-                                $classCount = 0;
+                        //     if (count($resultClass) == 0) {
+                        //         $form->addRow()->addAlert(__('There are no records to display.'), 'error');
+                        //     } else {
+                        //         $classCount = 0;
 
-                                // Add the firstLesson date to each class, and
-                                $resultClass->transform(function (&$class) use ($pdo, &$classCount, &$form) {
-                                    if ($class['running'] == 'Y') {
-                                        $dataDate = array('pupilsightCourseClassID' => $class['pupilsightCourseClassID'], 'pupilsightUnitID' => $class['pupilsightUnitID']);
-                                        $sqlDate = "SELECT date FROM pupilsightPlannerEntry WHERE pupilsightCourseClassID=:pupilsightCourseClassID AND pupilsightUnitID=:pupilsightUnitID ORDER BY date, timeStart";
-                                        $class['firstLesson'] = $pdo->selectOne($sqlDate, $dataDate);
-                                    }
+                        //         // Add the firstLesson date to each class, and
+                        //         $resultClass->transform(function (&$class) use ($pdo, &$classCount, &$form) {
+                        //             if ($class['running'] == 'Y') {
+                        //                 $dataDate = array('pupilsightCourseClassID' => $class['pupilsightCourseClassID'], 'pupilsightUnitID' => $class['pupilsightUnitID']);
+                        //                 $sqlDate = "SELECT date FROM pupilsightPlannerEntry WHERE pupilsightCourseClassID=:pupilsightCourseClassID AND pupilsightUnitID=:pupilsightUnitID ORDER BY date, timeStart";
+                        //                 $class['firstLesson'] = $pdo->selectOne($sqlDate, $dataDate);
+                        //             }
 
-                                    $form->addHiddenValue("pupilsightCourseClassID{$classCount}", $class['pupilsightCourseClassID']);
-                                    $class['count'] = $classCount;
-                                    $classCount++;
-                                });
+                        //             $form->addHiddenValue("pupilsightCourseClassID{$classCount}", $class['pupilsightCourseClassID']);
+                        //             $class['count'] = $classCount;
+                        //             $classCount++;
+                        //         });
 
-                                // Nested DataTable for course classes
-                                $table = $form->addRow()->addDataTable('classes')->withData($resultClass);
+                        //         // Nested DataTable for course classes
+                        //         $table = $form->addRow()->addDataTable('classes')->withData($resultClass);
 
-                                $table->addColumn('class', __('Class'))
-                                    ->width('20%')
-                                    ->format(Format::using('courseClassName', [$courseNameShort, 'nameShort']));
+                        //         $table->addColumn('class', __('Class'))
+                        //             ->width('20%')
+                        //             ->format(Format::using('courseClassName', [$courseNameShort, 'nameShort']));
 
-                                $table->addColumn('running', __('Running'))
-                                    ->description(__('Is class studying this unit?'))
-                                    ->width('25%')
-                                    ->format(function ($class) use (&$form) {
-                                        return $form->getFactory()
-                                            ->createYesNo('running'.$class['count'])
-                                            ->setClass('w-32 float-none')
-                                            ->selected($class['running'] ?? 'N')
-                                            ->getOutput();
-                                    });
+                        //         $table->addColumn('running', __('Running'))
+                        //             ->description(__('Is class studying this unit?'))
+                        //             ->width('25%')
+                        //             ->format(function ($class) use (&$form) {
+                        //                 return $form->getFactory()
+                        //                     ->createYesNo('running'.$class['count'])
+                        //                     ->setClass('w-32 float-none')
+                        //                     ->selected($class['running'] ?? 'N')
+                        //                     ->getOutput();
+                        //             });
 
-                                $table->addColumn('firstLesson', __('First Lesson'))
-                                    ->description($_SESSION[$guid]['i18n']['dateFormat'] ?? 'dd/mm/yyyy')
-                                    ->width('15%')
-                                    ->format(function ($class) {
-                                        return !empty($class['firstLesson']) ? Format::date($class['firstLesson']) : '';
-                                    });
+                        //         $table->addColumn('firstLesson', __('First Lesson'))
+                        //             ->description($_SESSION[$guid]['i18n']['dateFormat'] ?? 'dd/mm/yyyy')
+                        //             ->width('15%')
+                        //             ->format(function ($class) {
+                        //                 return !empty($class['firstLesson']) ? Format::date($class['firstLesson']) : '';
+                        //             });
 
-                                $table->addActionColumn()
-                                    ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
-                                    ->addParam('pupilsightUnitID', $pupilsightUnitID)
-                                    ->addParam('pupilsightCourseID', $pupilsightCourseID)
-                                    ->addParam('pupilsightCourseClassID')
-                                    ->addParam('pupilsightUnitClassID')
-                                    ->format(function ($class, $actions) {
-                                        if ($class['running'] == 'N' || empty($class['running'])) return;
+                        //         $table->addActionColumn()
+                        //             ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
+                        //             ->addParam('pupilsightUnitID', $pupilsightUnitID)
+                        //             ->addParam('pupilsightCourseID', $pupilsightCourseID)
+                        //             ->addParam('pupilsightCourseClassID')
+                        //             ->addParam('pupilsightUnitClassID')
+                        //             ->format(function ($class, $actions) {
+                        //                 if ($class['running'] == 'N' || empty($class['running'])) return;
 
-                                        $actions->addAction('edit', __('Edit Unit'))
-                                                ->setURL(empty($class['firstLesson'])
-                                                    ? '/modules/Planner/units_edit_deploy.php'
-                                                    : '/modules/Planner/units_edit_working.php');
+                        //                 $actions->addAction('edit', __('Edit Unit'))
+                        //                         ->setURL(empty($class['firstLesson'])
+                        //                             ? '/modules/Planner/units_edit_deploy.php'
+                        //                             : '/modules/Planner/units_edit_working.php');
 
-                                        $actions->addAction('view', __('View Planner'))
-                                                ->addParam('viewBy', 'class')
-                                                ->setIcon('planner')
-                                                ->setURL('/modules/Planner/planner.php');
+                        //                 $actions->addAction('view', __('View Planner'))
+                        //                         ->addParam('viewBy', 'class')
+                        //                         ->setIcon('planner')
+                        //                         ->setURL('/modules/Planner/planner.php');
 
-                                        $actions->addAction('copyBack', __('Copy Back'))
-                                                ->setIcon('copyback')
-                                                ->setURL('/modules/Planner/units_edit_copyBack.php');
+                        //                 $actions->addAction('copyBack', __('Copy Back'))
+                        //                         ->setIcon('copyback')
+                        //                         ->setURL('/modules/Planner/units_edit_copyBack.php');
 
-                                        $actions->addAction('copyForward', __('Copy Forward'))
-                                                ->setIcon('copyforward')
-                                                ->setURL('/modules/Planner/units_edit_copyForward.php');
+                        //                 $actions->addAction('copyForward', __('Copy Forward'))
+                        //                         ->setIcon('copyforward')
+                        //                         ->setURL('/modules/Planner/units_edit_copyForward.php');
 
-                                        $actions->addAction('smartBlockify', __('Smart Blockify'))
-                                                ->setIcon('run')
-                                                ->setURL('/modules/Planner/units_edit_smartBlockify.php');
-                                    });
-                            }
-                        }
-                        else {
-                            $row = $form->addRow();
-                                $row->addAlert(__('You are currently not logged into the current year and/or are looking at units in another year, and so you cannot access your classes. Please log back into the current school year, and look at units in the current year.'), 'warning');
-                        }
+                        //                 $actions->addAction('smartBlockify', __('Smart Blockify'))
+                        //                         ->setIcon('run')
+                        //                         ->setURL('/modules/Planner/units_edit_smartBlockify.php');
+                        //             });
+                        //     }
+                        // }
+                        // else {
+                        //     $row = $form->addRow();
+                        //         $row->addAlert(__('You are currently not logged into the current year and/or are looking at units in another year, and so you cannot access your classes. Please log back into the current school year, and look at units in the current year.'), 'warning');
+                        // }
 
-                        $form->addHiddenValue('classCount', $classCount);
+                        // $form->addHiddenValue('classCount', $classCount);
 
                         //UNIT OUTLINE
                         $form->addRow()->addHeading(__('Unit Outline'));
@@ -365,6 +394,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
         }
     }
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $pupilsightCourseID, $pupilsightSchoolYearID);
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $pupilsightProgramID, $pupilsightCourseID, $pupilsightSchoolYearID);
 }
 ?>

@@ -67,6 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         if ($pupilsightSchoolYearID != '') {
             $pupilsightCourseID = null;
             if (isset($_GET['pupilsightCourseID'])) {
+                $pupilsightProgramID = $_GET['pupilsightProgramID'];
                 $pupilsightCourseID = $_GET['pupilsightCourseID'];
             }
             if ($pupilsightCourseID == '') {
@@ -161,13 +162,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
             }
             else {
                 try {
-                    if ($highestAction == 'Unit Planner_all') {
-                        $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID);
-                        $sql = 'SELECT * FROM pupilsightCourse WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseID=:pupilsightCourseID';
-                    } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
-                        $sql = "SELECT pupilsightCourseID, pupilsightCourse.name, pupilsightCourse.nameShort FROM pupilsightCourse JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseID=:pupilsightCourseID ORDER BY pupilsightCourse.nameShort";
-                    }
+                    // if ($highestAction == 'Unit Planner_all') {
+                        $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightCourseID);
+                        $sql = 'SELECT * FROM pupilsightProgramClassSectionMapping WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID';
+                    // } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                    //     $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
+                    //     $sql = "SELECT pupilsightCourseID, pupilsightCourse.name, pupilsightCourse.nameShort FROM pupilsightCourse JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseID=:pupilsightCourseID ORDER BY pupilsightCourse.nameShort";
+                    // }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -187,8 +188,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 
                     //Fetch units
                     try {
-                        $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID);
-                        $sql = 'SELECT pupilsightUnitID, pupilsightUnit.pupilsightCourseID, nameShort, pupilsightUnit.name, pupilsightUnit.description, active FROM pupilsightUnit JOIN pupilsightCourse ON pupilsightUnit.pupilsightCourseID=pupilsightCourse.pupilsightCourseID WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightUnit.pupilsightCourseID=:pupilsightCourseID ORDER BY ordering, name';
+                        $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightCourseID);
+                        $sql = 'SELECT pupilsightUnitID, pupilsightUnit.pupilsightCourseID, pupilsightUnit.name, pupilsightUnit.description, active, pupilsightProgram.name as progName, pupilsightYearGroup.name as className, pupilsightDepartment.name as subjectName   FROM pupilsightUnit JOIN pupilsightProgram ON pupilsightUnit.pupilsightProgramID=pupilsightProgram.pupilsightProgramID JOIN pupilsightYearGroup ON pupilsightUnit.pupilsightYearGroupID =pupilsightYearGroup.pupilsightYearGroupID JOIN pupilsightDepartment ON pupilsightUnit.pupilsightDepartmentID =pupilsightDepartment.pupilsightDepartmentID WHERE pupilsightUnit.pupilsightProgramID=:pupilsightProgramID AND pupilsightUnit.pupilsightYearGroupID=:pupilsightYearGroupID ORDER BY ordering, name';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
@@ -196,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     }
 
                     echo "<div class='linkTop'>";
-                    echo "<a class='btn btn-primary' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_add.php&pupilsightSchoolYearID=$pupilsightSchoolYearID&pupilsightCourseID=$pupilsightCourseID'>".__('Add')."</a>";
+                    echo "<a class='btn btn-primary' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_add.php&pupilsightSchoolYearID=$pupilsightSchoolYearID&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID'>".__('Add')."</a>";
                     echo '</div>';
 
                     if ($result->rowCount() < 1) {
@@ -276,6 +277,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
+                        echo "<th style='width: 100px'>";
+                        echo __('Program');
+                        echo '</th>';
+                        echo "<th style='width: 100px'>";
+                        echo __('Class');
+                        echo '</th>';
+                        echo "<th style='width: 100px'>";
+                        echo __('Subject');
+                        echo '</th>';
                         echo "<th style='width: 150px'>";
                         echo __('Name');
                         echo '</th>';
@@ -317,6 +327,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                             //COLOR ROW BY STATUS!
                             echo "<tr class=$rowNum>";
                             echo '<td>';
+                            echo $row['progName'];
+                            echo '</td>';
+                            echo '<td>';
+                            echo $row['className'];
+                            echo '</td>';
+                            echo '<td>';
+                            echo $row['subjectName'];
+                            echo '</td>';
+                            echo '<td>';
                             echo $row['name'];
                             echo '</td>';
                             echo "<td style='max-width: 270px'>";
@@ -326,10 +345,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                             echo ynExpander($guid, $row['active']);
                             echo '</td>';
                             echo '<td>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&pupilsightUnitID='.$row['pupilsightUnitID']."&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/config.png'/></a> ";
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_delete.php&pupilsightUnitID='.$row['pupilsightUnitID']."&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/garbage.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=".$row['pupilsightUnitID']."&pupilsightSchoolYearID=$pupilsightSchoolYearID'><img title='".__('Duplicate')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/coaapy.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=".$row['pupilsightUnitID']."&pupilsightSchoolYearID=$pupilsightSchoolYearID&sidebar=false'><img title='".__('Export')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/download.png'/></a>";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&pupilsightUnitID='.$row['pupilsightUnitID']."&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID'><i title='Edit' class='mdi mdi-pencil-box-outline mdi-24px'></i></a> ";
+                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_delete.php&pupilsightUnitID='.$row['pupilsightUnitID']."&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID&width=650&height=135'><i title='Delete' class='mdi mdi-trash-can-outline mdi-24px'></i></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=".$row['pupilsightUnitID']."&pupilsightSchoolYearID=$pupilsightSchoolYearID'><i title='Duplicate' class='mdi mdi-content-copy mdi-24px'></i></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=".$row['pupilsightUnitID']."&pupilsightSchoolYearID=$pupilsightSchoolYearID&sidebar=false'><i title='Export' class='mdi mdi-download-outline mdi-24px'></i></a>";
                             echo '</td>';
                             echo '<td>';
                             echo "<input name='pupilsightUnitID-$count' value='".$row['pupilsightUnitID']."' type='hidden'>";
@@ -353,5 +372,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         }
     }
     //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $pupilsightCourseID, $pupilsightSchoolYearID);
+    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $pupilsightProgramID, $pupilsightCourseID, $pupilsightSchoolYearID);
 }

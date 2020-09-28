@@ -52,14 +52,31 @@ class TimetableDayGateway extends Gateway
     }
     public function selectTTDayRowClassesByID($pupilsightTTDayID, $pupilsightTTColumnRowID) {
         $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID);
-        $sql = "SELECT pupilsightTTDayRowClassID,  pupilsightSpace.pupilsightSpaceID,pupilsightDepartment.name as subname, pupilsightSpace.name as location FROM pupilsightTTDayRowClass 
+       
+        $sql = "SELECT pupilsightTTDayRowClassID,pupilsightStaffID,  pupilsightSpace.pupilsightSpaceID,pupilsightDepartment.name as subname, pupilsightSpace.name as location, pupilsightProgram.name as progName, pupilsightYearGroup.name as className FROM pupilsightTTDayRowClass 
                 
                 LEFT JOIN pupilsightSpace ON (pupilsightTTDayRowClass.pupilsightSpaceID=pupilsightSpace.pupilsightSpaceID)
                 LEFT JOIN pupilsightDepartment ON (pupilsightTTDayRowClass.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID)
-                WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID 
-                AND pupilsightTTDayID=:pupilsightTTDayID 
+                
+                LEFT JOIN pupilsightTTDay ON (pupilsightTTDayRowClass.pupilsightTTDayID=pupilsightTTDay.pupilsightTTDayID)
+                LEFT JOIN pupilsightTT ON (pupilsightTTDay.pupilsightTTID=pupilsightTT.pupilsightTTID)
+
+                LEFT JOIN pupilsightProgram ON (pupilsightTT.pupilsightProgramID=pupilsightProgram.pupilsightProgramID)
+                LEFT JOIN pupilsightYearGroup ON (pupilsightTT.pupilsightYearGroupIDList=pupilsightYearGroup.pupilsightYearGroupID)
+                
+                WHERE pupilsightTTDayRowClass.pupilsightTTColumnRowID=:pupilsightTTColumnRowID 
+                AND pupilsightTTDayRowClass.pupilsightTTDayID=:pupilsightTTDayID 
                ";
 
+        return $this->db()->select($sql, $data);  
+    }
+
+    public function selectTTDayRowClassTeachersByIDNew($pupilsightStaffID) {
+        $data = array('pupilsightStaffID' => $pupilsightStaffID);
+        $sql = "SELECT GROUP_CONCAT(pupilsightPerson.officialName) AS staffName
+                FROM pupilsightStaff 
+                JOIN pupilsightPerson ON (pupilsightStaff.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) 
+                WHERE pupilsightStaff.pupilsightStaffID IN (".$pupilsightStaffID.") ";
         return $this->db()->select($sql, $data);  
     }
 

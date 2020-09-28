@@ -346,14 +346,14 @@ if (!$session->has('address') && !empty($_GET['return'])) {
  *
  * TODO: Move this somewhere more sensible.
  */
-$isAllMenu = TRUE;
+$isAllMenu = FALSE;
 
 if ($isLoggedIn) {
 
     $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
-    /*if($roleid!='001'){
+    if ($roleid == '001') {
         $isAllMenu = TRUE;
-    }*/
+    }
 
     if ($cacheLoad || !$session->has('fastFinder')) {
         $templateData = getFastFinder($connection2, $guid);
@@ -407,7 +407,7 @@ if ($isLoggedIn) {
     //$structureMenu = array('name' => "Structure",'list'=>$structureList, 'col'=>'dropdown-menu-columns  dropdown-menu-columns-3');
     $paymentMenu = array('name' => "Payment", 'list' => $paymentList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
 
-    if ($isAllMenu) {
+    if (isset($menuMainItems["Finance"])) {
         $menuMainItems["Finance"][0] = array('name' => 'Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
         $menuMainItems["Finance"][1] = $masterMenu;
         $menuMainItems["Finance"][2] = $paymentMenu;
@@ -419,11 +419,11 @@ if ($isLoggedIn) {
     $routeList[3] = array('name' => 'View Member in Route', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/view_members_in_route.php');
     $routeMenu = array('name' => "Routes", 'list' => $routeList);
 
-    //if ($isAllMenu){
-    $menuMainItems["Transport"][0] = array('name' => 'Bus Details', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/bus_manage.php');
-    $menuMainItems["Transport"][1] = array('name' => 'Transport Fee', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/transport_fee.php');
-    $menuMainItems["Transport"][2] = $routeMenu;
-    //}
+    if (isset($menuMainItems["Transport"])) {
+        $menuMainItems["Transport"][0] = array('name' => 'Bus Details', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/bus_manage.php');
+        $menuMainItems["Transport"][1] = array('name' => 'Transport Fee', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/transport_fee.php');
+        $menuMainItems["Transport"][2] = $routeMenu;
+    }
 
 
     $curriculumList[0] = array('name' => 'Subject Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/department_manage.php');
@@ -433,7 +433,9 @@ if ($isLoggedIn) {
     $curriculumList[4] = array('name' => 'Remarks Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/ac_manage_remarks.php');
     $curriculumList[5] = array('name' => 'DI Mode', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/descriptive_indicator_config.php');
 
+
     $curriculumMenu = array('name' => "Curriculum", 'list' => $curriculumList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2', 'url' => $session->get('absoluteURL') . "/cms.php");
+
 
     $testList[0] = array('name' => 'Grading System', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/grade_system_manage.php');
     $testList[1] = array('name' => 'Manage Test Room', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/examination_room_manage.php');
@@ -448,24 +450,27 @@ if ($isLoggedIn) {
     $testList[10] = array('name' => 'Test Results', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_test_results.php');
     $testList[11] = array('name' => 'Sketch', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/sketch_manage.php');
 
+
     $testMenu = array('name' => "Test", 'list' => $testList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2', 'url' => $session->get('absoluteURL') . "/cms.php");
 
-    //if ($isAllMenu){
-    $menuMainItems["Academics"][0] = $curriculumMenu;
-    $menuMainItems["Academics"][1] = $testMenu;
-    $cmsMenu = array('name' => "CMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/cms.php");
-    $menuMainItems["Other"][2] = $cmsMenu;
-    // }
-    $menuMainItems["Reports"][0] = array('name' => "Reports", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/reports.php");
-    //$menuMainItems["LMS"][0] = array('name' => "LMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/lms.php");
 
+    if (isset($menuMainItems["Academics"])) {
+        $menuMainItems["Academics"][0] = $curriculumMenu;
+        $menuMainItems["Academics"][1] = $testMenu;
+    }
+
+    if ($isAllMenu) {
+        $cmsMenu = array('name' => "CMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/cms.php");
+        $menuMainItems["Other"][2] = $cmsMenu;
+        $menuMainItems["Reports"][0] = array('name' => "Reports", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/reports.php");
+        $menuMainItems["LMS"][0] = array('name' => "LMS", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/lms.php");
+    }
 
     if ($_SESSION[$guid]['username'] == "sinuthomas") {
-        $tm1 = $menuMainItems["Reports"];
         $tm2 = $menuMainItems["Admission"];
         $menuMainItems = array();
         $menuMainItems["Admission"] = $tm2;
-        $menuMainItems["Reports"] = $tm1;
+        $menuMainItems["Reports"][0] = array('name' => "Reports", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/reports.php");
     }
 
     $session->set('menuMainItems', $menuMainItems);
@@ -797,9 +802,6 @@ if ($showSidebar) {
 /**
  * DONE!!
  */
-
-
-
 
 $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
 if ($roleid == '001') {

@@ -117,12 +117,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaign_series_m
 }
 ?>
 <script>
-$('#start_char').on('keypress', function (event) {
-    var regex = new RegExp("^[0-9]+$");
-    var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
-    if (regex.test(key)) {
-       event.preventDefault();
-       return false;
-    }
-});
+// $('#start_char').on('keypress', function (event) {
+//     var regex = new RegExp("^[0-9]+$");
+//     var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+//     if (regex.test(key)) {
+//        event.preventDefault();
+//        return false;
+//     }
+// });
 </script>

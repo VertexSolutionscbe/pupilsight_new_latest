@@ -6,10 +6,11 @@ Pupilsight, Flexible & Open School System
 include '../../pupilsight.php';
 
 $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
+$pupilsightProgramID = $_GET['pupilsightProgramID'];
 $pupilsightCourseID = $_GET['pupilsightCourseID'];
 $pupilsightUnitID = $_GET['pupilsightUnitID'];
 $classCount = $_POST['classCount'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit.php&pupilsightUnitID=$pupilsightUnitID&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit.php&pupilsightUnitID=$pupilsightUnitID&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') == false) {
     $URL .= '&return=error0';
@@ -27,6 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             //Proceed!
 
             //Validate Inputs
+            $pupilsightDepartmentID = $_POST['pupilsightDepartmentID'];
             $name = $_POST['name'];
             $description = $_POST['description'];
             $tags = $_POST['tags'];
@@ -46,13 +48,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
             } else {
                 //Check access to specified course
                 try {
-                    if ($highestAction == 'Unit Planner_all') {
-                        $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID);
-                        $sql = 'SELECT * FROM pupilsightCourse WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseID=:pupilsightCourseID';
-                    } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                        $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
-                        $sql = "SELECT pupilsightCourseID, pupilsightCourse.name, pupilsightCourse.nameShort FROM pupilsightCourse JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseID=:pupilsightCourseID ORDER BY pupilsightCourse.nameShort";
-                    }
+                    // if ($highestAction == 'Unit Planner_all') {
+                    //     $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID);
+                    //     $sql = 'SELECT * FROM pupilsightCourse WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseID=:pupilsightCourseID';
+                    // } elseif ($highestAction == 'Unit Planner_learningAreas') {
+                    //     $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
+                    //     $sql = "SELECT pupilsightCourseID, pupilsightCourse.name, pupilsightCourse.nameShort FROM pupilsightCourse JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseID=:pupilsightCourseID ORDER BY pupilsightCourse.nameShort";
+                    // }
+
+                    $data = array('pupilsightUnitID' => $pupilsightUnitID);
+                    $sql = 'SELECT * FROM pupilsightUnit WHERE pupilsightUnitID=:pupilsightUnitID ';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -248,8 +255,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
                         //Write to database
                         try {
-                            $data = array('name' => $name, 'attachment' => $attachment, 'description' => $description, 'tags' => $tags, 'active' => $active, 'map' => $map, 'ordering' => $ordering, 'details' => $details, 'license' => $license, 'sharedPublic' => $sharedPublic, 'pupilsightPersonIDLastEdit' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightUnitID' => $pupilsightUnitID);
-                            $sql = 'UPDATE pupilsightUnit SET name=:name, attachment=:attachment, description=:description, tags=:tags, active=:active, map=:map, ordering=:ordering, details=:details, license=:license, sharedPublic=:sharedPublic, pupilsightPersonIDLastEdit=:pupilsightPersonIDLastEdit WHERE pupilsightUnitID=:pupilsightUnitID';
+                            $data = array('pupilsightProgramID' => $pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightCourseID,'pupilsightCourseID' => $pupilsightCourseID,'pupilsightDepartmentID' => $pupilsightDepartmentID,'name' => $name, 'attachment' => $attachment, 'description' => $description, 'tags' => $tags, 'active' => $active, 'map' => $map, 'ordering' => $ordering, 'details' => $details, 'license' => $license, 'sharedPublic' => $sharedPublic, 'pupilsightPersonIDLastEdit' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightUnitID' => $pupilsightUnitID);
+                            $sql = 'UPDATE pupilsightUnit SET pupilsightProgramID=:pupilsightProgramID,pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightCourseID=:pupilsightCourseID,pupilsightDepartmentID=:pupilsightDepartmentID,name=:name, attachment=:attachment, description=:description, tags=:tags, active=:active, map=:map, ordering=:ordering, details=:details, license=:license, sharedPublic=:sharedPublic, pupilsightPersonIDLastEdit=:pupilsightPersonIDLastEdit WHERE pupilsightUnitID=:pupilsightUnitID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

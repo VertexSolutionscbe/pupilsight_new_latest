@@ -544,7 +544,7 @@ function sidebarExtra($guid, $connection2, $todayStamp, $pupilsightPersonID, $da
     return $output;
 }
 
-function sidebarExtraUnits($guid, $connection2, $pupilsightCourseID, $pupilsightSchoolYearID)
+function sidebarExtraUnits($guid, $connection2, $pupilsightProgramID, $pupilsightCourseID, $pupilsightSchoolYearID)
 {
     $output = '';
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -554,8 +554,30 @@ function sidebarExtraUnits($guid, $connection2, $pupilsightCourseID, $pupilsight
         $output .= '</div>';
     } else {
         //Show class picker in sidebar
+
+        $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
+        $resultp = $connection2->query($sqlp);
+        $rowdataprog = $resultp->fetchAll();
+
+        $program=array();  
+        $program2=array();  
+        $program1=array(''=>'Select Program');
+        foreach ($rowdataprog as $dt) {
+            $program2[$dt['pupilsightProgramID']] = $dt['name'];
+        }
+        $program= $program1 + $program2; 
+
+        if(!empty($pupilsightProgramID)){
+            $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
+            $result = $connection2->query($sql);
+            $classesdata = $result->fetchAll();
+
+        } else {
+            $pupilsightProgramID = '';
+        }
+
         $output .= '<h2>';
-        $output .= __('Choose A Course');
+        $output .= __('Choose A Class');
         $output .= '</h2>';
 
         $selectCount = 0;
@@ -565,32 +587,57 @@ function sidebarExtraUnits($guid, $connection2, $pupilsightCourseID, $pupilsight
         $output .= "<td style='width: 190px'>";
         $output .= "<input name='q' id='q' type='hidden' value='/modules/Planner/units.php'>";
         $output .= "<input name='pupilsightSchoolYearID' id='pupilsightSchoolYearID' type='hidden' value='$pupilsightSchoolYearID'>";
-        $output .= "<select name='pupilsightCourseID' id='pupilsightCourseID' style='width:161px'>";
-        $output .= "<option value=''></option>";
-        try {
-            if ($highestAction == 'Unit Planner_all') {
-                $dataSelect = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID);
-                $sqlSelect = 'SELECT pupilsightCourse.nameShort AS course, pupilsightSchoolYear.name AS year, pupilsightCourseID FROM pupilsightCourse JOIN pupilsightSchoolYear ON (pupilsightCourse.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) WHERE pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY nameShort';
-            } elseif ($highestAction == 'Unit Planner_learningAreas') {
-                $dataSelect = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
-                $sqlSelect = "SELECT pupilsightCourse.nameShort AS course, pupilsightSchoolYear.name AS year, pupilsightCourseID FROM pupilsightCourse JOIN pupilsightSchoolYear ON (pupilsightCourse.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY pupilsightCourse.nameShort";
+        $output .= "<select name='pupilsightProgramID' id='pupilsightProgramID' style='width:161px'>";
+        $output .= "<option >Select Program</option>";
+        foreach($rowdataprog as $dt){
+            if($dt['pupilsightProgramID'] == $pupilsightProgramID){
+                $prgSelected = 'selected';
+            } else {
+                $prgSelected = '';
             }
-            $resultSelect = $connection2->prepare($sqlSelect);
-            $resultSelect->execute($dataSelect);
-        } catch (PDOException $e) {
-        }
-        while ($rowSelect = $resultSelect->fetch()) {
-            $selected = '';
-            if ($rowSelect['pupilsightCourseID'] == $pupilsightCourseID) {
-                $selected = 'selected';
-                ++$selectCount;
-            }
-            $output .= "<option $selected value='".$rowSelect['pupilsightCourseID']."'>".htmlPrep($rowSelect['course']).' ('.htmlPrep($rowSelect['year']).')</option>';
+            $output .= "<option $prgSelected value='".$dt['pupilsightProgramID']."'>".$dt['name'].'</option>';
         }
         $output .= '</select>';
         $output .= '</td>';
+
+        $output .= "<td style='width: 190px'>";
+        $output .= "<select name='pupilsightCourseID' id='pupilsightYearGroupID' style='width:161px'>";
+        $output .= "<option >Select Class</option>";
+
+        if(!empty($classesdata)){
+            foreach ($classesdata as $ct) {
+                if($ct['pupilsightYearGroupID'] == $pupilsightCourseID){
+                    $clsSelected = 'selected';
+                } else {
+                    $clsSelected = '';
+                }
+                $output .= "<option $clsSelected value='".$ct['pupilsightYearGroupID']."'>".$ct['name'].'</option>';
+            }
+        }
+        // try {
+        //     if ($highestAction == 'Unit Planner_all') {
+        //         $dataSelect = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID);
+        //         $sqlSelect = 'SELECT pupilsightCourse.nameShort AS course, pupilsightSchoolYear.name AS year, pupilsightCourseID FROM pupilsightCourse JOIN pupilsightSchoolYear ON (pupilsightCourse.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) WHERE pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY nameShort';
+        //     } elseif ($highestAction == 'Unit Planner_learningAreas') {
+        //         $dataSelect = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
+        //         $sqlSelect = "SELECT pupilsightCourse.nameShort AS course, pupilsightSchoolYear.name AS year, pupilsightCourseID FROM pupilsightCourse JOIN pupilsightSchoolYear ON (pupilsightCourse.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY pupilsightCourse.nameShort";
+        //     }
+        //     $resultSelect = $connection2->prepare($sqlSelect);
+        //     $resultSelect->execute($dataSelect);
+        // } catch (PDOException $e) {
+        // }
+        // while ($rowSelect = $resultSelect->fetch()) {
+        //     $selected = '';
+        //     if ($rowSelect['pupilsightCourseID'] == $pupilsightCourseID) {
+        //         $selected = 'selected';
+        //         ++$selectCount;
+        //     }
+        //     $output .= "<option $selected value='".$rowSelect['pupilsightCourseID']."'>".htmlPrep($rowSelect['course']).' ('.htmlPrep($rowSelect['year']).')</option>';
+        // }
+        $output .= '</select>';
+        $output .= '</td>';
         $output .= "<td class='right'>";
-        $output .= "<input type='submit' value='".__('Go')."'>";
+        $output .= "<input type='submit' class='btn btn-primary' value='".__('Go')."'>";
         $output .= '</td>';
         $output .= '</tr>';
         $output .= '</table>';

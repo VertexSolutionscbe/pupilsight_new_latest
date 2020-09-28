@@ -88,7 +88,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </a> {%- for page in dataSet.getPaginatedRange -%} {%- if page == '...' -%}
     <a href="javascript:void()" class="ml-1 padipag2  prv {{ buttonStyle }}" disabled>...</a> {%- else -%}
     <a href="javascript:void()"
-        class="ml-1 padipag2  prv paginate {{ buttonStyle }} {{ page == dataSet.getPage ? 'bg-blue border-blue   relative z-10' : 'text-gray hover:bg-gray border-gray' }}"
+        class="ml-1 padipag2  prv paginate {{ buttonStyle }} {{ page == dataSet.getPage ? 'bg-blue border-blue  text-active relative z-10' : 'text-gray hover:bg-gray border-gray' }}"
         data-page="{{ page }}">{{ page }}</a> {%- endif -%} {%- endfor -%}
 
     <a href="javascript:void()"

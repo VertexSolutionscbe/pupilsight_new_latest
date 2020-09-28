@@ -7,6 +7,7 @@ use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
 use Pupilsight\Domain\Transport\TransportGateway;
 use Pupilsight\Forms\DatabaseFormFactory;
+use Pupilsight\Domain\Helper\HelperGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_route.php') == false) {
     //Acess denied
@@ -15,6 +16,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_route.php
     echo '</div>';
 } else {
     //Proceed!
+    $HelperGateway = $container->get(HelperGateway::class);
     $page->breadcrumbs->add(__('Assign route'));
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -55,6 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_route.php
 
     $searchby = array(''=>'Search By', 'stu_name'=>'Student Name', 'stu_id'=>'Student Id', 'adm_id'=>'Admission Id', 'father_name'=>'Father Name', 'father_email'=>'Father Email', 'mother_name'=>'Mother Name', 'mother_email'=>'Mother Email');
 
+    $classes = array('' => 'Select Class');
+    $sections = array('' => 'Select Section');
     if($_POST){
         if(!empty($_POST['page'])){
             $pupilsightProgramID =  '';
@@ -72,6 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_route.php
             $searchbyPost =  '';
             $search =  $_POST['search'];
             $stuId = $_POST['studentId'];
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
         }
         
     } else {
@@ -98,21 +104,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_route.php
     $searchform->setFactory(DatabaseFormFactory::create($pdo));
     $searchform->addHiddenValue('studentId', '0');
     $row = $searchform->addRow();
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
+    $col->addSelect('pupilsightSchoolYearID')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);  
+
+    
     $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightProgramID', __('Program'));
         $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder();
 
-    $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
-        $col->addSelect('pupilsightSchoolYearID')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);    
+     
         
     $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightYearGroupID', __('Class'));
-        $col->addSelectYearGroup('pupilsightYearGroupID')->selected($pupilsightYearGroupID);
+        $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($pupilsightYearGroupID);
 
     $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightRollGroupID', __('Section'));
-        $col->addSelectRollGroup('pupilsightRollGroupID', $pupilsightSchoolYearID)->selected($pupilsightRollGroupID);
+        $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->selected($pupilsightRollGroupID);
 
     // $col = $row->addColumn()->setClass('newdes');
     //     $col->addLabel('searchby', __('Search By'));

@@ -287,7 +287,7 @@ class __TwigTemplate_36c94239a672a0761b4c21b3a2e34f6d5ba02099663bdd41fc153fd89fa
                     // line 91
                     echo twig_escape_filter($this->env, ($context["buttonStyle"] ?? null), "html", null, true);
                     echo " ";
-                    echo ((($context["page"] == twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getPage", array()))) ? ("bg-blue border-blue   relative z-10") : ("text-gray hover:bg-gray border-gray"));
+                    echo ((($context["page"] == twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getPage", array()))) ? ("bg-blue border-blue  text-active relative z-10") : ("text-gray hover:bg-gray border-gray"));
                     echo "\"
         data-page=\"";
                     // line 92
@@ -467,7 +467,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     </a> {%- for page in dataSet.getPaginatedRange -%} {%- if page == '...' -%}
     <a href=\"javascript:void()\" class=\"ml-1 padipag2  prv {{ buttonStyle }}\" disabled>...</a> {%- else -%}
     <a href=\"javascript:void()\"
-        class=\"ml-1 padipag2  prv paginate {{ buttonStyle }} {{ page == dataSet.getPage ? 'bg-blue border-blue   relative z-10' : 'text-gray hover:bg-gray border-gray' }}\"
+        class=\"ml-1 padipag2  prv paginate {{ buttonStyle }} {{ page == dataSet.getPage ? 'bg-blue border-blue  text-active relative z-10' : 'text-gray hover:bg-gray border-gray' }}\"
         data-page=\"{{ page }}\">{{ page }}</a> {%- endif -%} {%- endfor -%}
 
     <a href=\"javascript:void()\"

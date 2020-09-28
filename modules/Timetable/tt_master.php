@@ -96,7 +96,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
                     echo '</h5>';
 
                     $ttDayRowClasses = $timetableDayGateway->selectTTDayRowClassesByID($ttDay['pupilsightTTDayID'], $ttDayRow['pupilsightTTColumnRowID']);
-
+                    // echo '<pre>';
+                    // print_r($ttDayRowClasses);
+                    // echo '</pre>';
+                    // die();
                     if ($ttDayRowClasses->isEmpty()) {
                         echo '<div class="alert alert-warning">';
                         echo __('There are no classes associated with this period on this day.');
@@ -106,11 +109,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
                         $table->modifyRows(function ($data, $row) {
                             return $row->addClass('compactRow');
                         });
-                        $table->addColumn('class', __('Class'))->format(Format::using('courseClassName', ['courseName', 'className']));
+                        $table->addColumn('progName', __('Program'));
+                        $table->addColumn('className', __('Class'));
+                        $table->addColumn('subname', __('Subject'));
                         $table->addColumn('location', __('Location'));
-                        $table->addColumn('teachers', __('Teachers'))->format(function($class) use ($timetableDayGateway) {
-                            $teachers = $timetableDayGateway->selectTTDayRowClassTeachersByID($class['pupilsightTTDayRowClassID'])->fetchAll();
-                            return Format::nameList($teachers, 'Staff', false, true);
+                        $table->addColumn('teachers', __('Teachers'))->format(function($ttDayRowClasses) use ($timetableDayGateway) {
+                            $teachers = $timetableDayGateway->selectTTDayRowClassTeachersByIDNew($ttDayRowClasses['pupilsightStaffID'])->fetch();
+                            if(!empty($teachers)){
+                                $staffName = $teachers['staffName'];
+                            } else {
+                                $staffName = '';
+                            }
+                            return $staffName;
+                            // print_r($teachers);
+                            // return Format::nameList($teachers, 'officialName', false, true);
                         });
                         echo $table->render($ttDayRowClasses->toDataSet());
                     }
