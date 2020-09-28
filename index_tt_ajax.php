@@ -36,6 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     if ($_POST['ttDate'] != '') {
         $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
     }
+   
 
     if ($_POST['fromTT'] == 'Y') {
         if ($_POST['schoolCalendar'] == 'on' or $_POST['schoolCalendar'] == 'Y') {

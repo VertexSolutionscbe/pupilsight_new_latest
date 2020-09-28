@@ -1196,11 +1196,17 @@ function renderTTDay($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDa
                 $output .= "<div class='alert alert-danger'>".$e->getMessage().'</div>';
             }
             while ($rowPeriods = $resultPeriods->fetch()) {
-                $sqlcs = 'SELECT c.officialName , d.name FROM pupilsightTTDayRowClass AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightDepartment AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID WHERE a.pupilsightTTColumnRowID = '.$rowPeriods['pupilsightTTColumnRowID'].' AND A.pupilsightTTDayID = '.$rowPeriods['pupilsightTTDayID'].' ';
+                $sqlcs = 'SELECT c.officialName , d.name FROM pupilsightTTDayRowClass AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightDepartment AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID WHERE a.pupilsightTTColumnRowID = '.$rowPeriods['pupilsightTTColumnRowID'].' AND a.pupilsightTTDayID = '.$rowPeriods['pupilsightTTDayID'].' ';
                 $resultcs = $connection2->query($sqlcs);
                 $staffcs = $resultcs->fetch();
-                $staffName = $staffcs['officialName'];
-                $subjectName = $staffcs['name'];
+                if(!empty($staffcs)){
+                    $staffName = $staffcs['officialName'];
+                    $subjectName = $staffcs['name'];
+                } else {
+                    $staffName = '';
+                    $subjectName = '';
+                }
+                
 
                 $isSlotInTime = false;
                 if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
@@ -1248,11 +1254,10 @@ function renderTTDay($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDa
                     if ($height > 15 and $height < 30) {
                         $output .= $rowPeriods['name'].'<br/>';
                     } elseif ($height >= 30) {
-                        $output .= $rowPeriods['name'].'<br/>';
-                        $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i>';
+                        //$output .= $rowPeriods['name'].'<br/>';
+                        $output .= $rowPeriods['name'].'<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i>';
                     }
-                    $output .= '<div style="margin-top:-8px; display:grid"><span style="color:blue; font-size:14px;">'.$subjectName.'</span><span style="margin-top:-8px;color: #206bc4;
-                    ">'.$staffName.'</span></div>';
+                    $output .= '<div style="margin-top:-8px; display:grid"><span style="color:blue; font-size:14px;">'.$subjectName.'    '.$staffName.'</span></div>';
                     $output .= '</div>';
                     ++$zCount;
                 }
