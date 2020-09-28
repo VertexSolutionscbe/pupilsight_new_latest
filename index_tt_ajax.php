@@ -9,7 +9,7 @@ include './pupilsight.php';
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]['i18n']['code']) && function_exists('gettext')) {
     if ($_SESSION[$guid]['i18n']['code'] != null) {
-        putenv('LC_ALL='.$_SESSION[$guid]['i18n']['code']);
+        putenv('LC_ALL=' . $_SESSION[$guid]['i18n']['code']);
         setlocale(LC_ALL, $_SESSION[$guid]['i18n']['code']);
         bindtextdomain('pupilsight', './i18n');
         textdomain('pupilsight');
@@ -31,7 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
     $output .= __('Your request failed because you do not have access to this action.');
     $output .= '</div>';
 } else {
+
     include './modules/Timetable/moduleFunctions.php';
+
     $ttDate = '';
     if ($_POST['ttDate'] != '') {
         $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
@@ -57,6 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         }
     }
     $tt = renderTT($guid, $connection2, $_SESSION[$guid]['pupilsightPersonID'], $id, false, $ttDate, '', '', 'trim');
+    print_r($tt);
+    die();
     if ($tt != false) {
         $output .= $tt;
     } else {

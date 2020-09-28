@@ -3,11 +3,16 @@
 unset($CFG);
 global $CFG;
 $CFG = new stdClass();
-include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+//include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+$databaseServer = '127.0.0.1';
+$databaseUsername = 'root';
+$databasePassword = '';
+$databaseName = 'pd_demo';
+
 $CFG->dbtype    = 'mariadb';
 $CFG->dblibrary = 'native';
 $CFG->dbhost    = $databaseServer;
-$CFG->dbname    = 'pd_demo_lms';
+$CFG->dbname    = $databaseName . '_lms';
 $CFG->dbuser    = $databaseUsername;
 $CFG->dbpass    = $databasePassword;
 $CFG->prefix    = 'mdl_';
