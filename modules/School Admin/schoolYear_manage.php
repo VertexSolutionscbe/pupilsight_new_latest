@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
     // DATA TABLE
     $table = DataTable::createPaginated('schoolYearManage', $criteria);
 
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/School Admin/schoolYear_manage_add.php' class=''>Add</a><div class='float-none'></div></div></div>";  
+    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=/modules/School Admin/schoolYear_manage_add.php' class='btn btn-primary '>Add</a><div class='float-none'></div></div></div>";  
     
     // $table->addHeaderAction('add', __('Add'))
     //     ->setURL('/modules/School Admin/schoolYear_manage_add.php')

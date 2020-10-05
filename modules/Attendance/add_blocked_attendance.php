@@ -155,14 +155,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_att
 <script>
     $(document).ready(function () {
       	$('#showMultiClassByProg').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });
     
     $(document).ready(function () {
       	$('#showMultiSecByProgCls').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });

@@ -42,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
             $sd = json_decode($rowdata['response'], TRUE);
             if(!empty($sd)){
                 $names = implode(' ', $sd['names']);
-                $email = $sd['email'];
-                //$number = $sd['phone'];
+                $email = $sd['msg_email'];
+                $number = $sd['msg_phone'];
                 $pupilsightProgramID = $rowdata['pupilsightProgramID'];
                 $pupilsightYearGroupID = $rowdata['pupilsightYearGroupID'];
             }

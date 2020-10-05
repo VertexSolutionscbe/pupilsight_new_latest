@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_campaignFormList.php&id=".$id."'   class=' btn btn-primary' >Offline Submitted List</a>
     &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=".$id."'   class=' btn btn-primary' id='sendSMS'>Add</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' id='sendSMS'>Send SMS</a>";  
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' id='sendEmail'>Send Email</a>";
-    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="far fa-file-excel download_icon"></i><i id="pdf_export" title="Export PDF" class="far fa-file-pdf download_icon"></i></div></div> <br>';
+    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i></div></div> <br>';
 
     //  print_r($criteria);
     //  die();
@@ -216,12 +216,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         
             $jlen = count($field);
             $j = 0;
-            if($dataSet->data[$i]["state"] == ''){
-                $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
-                $resultvals = $connection2->query($sqls);
-                $states = $resultvals->fetch();
-                $statename = $states['name'];
-                $dataSet->data[$i]["state"] = $statename;
+            if($dataSet->data[$i]["workflowstate"] == ''){
+                // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
+                // $resultvals = $connection2->query($sqls);
+                // $states = $resultvals->fetch();
+                // $statename = $states['name'];
+                $dataSet->data[$i]["workflowstate"] = 'Submitted';
             }
 
             echo $dataSet->data[$i]["created_at"];
@@ -260,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         }
 
 
-        $table->addColumn('state', __('Status'))
+        $table->addColumn('workflowstate', __('Status'))
         ->width('10%')
         ->translatable();
         $table->addColumn('created_at', __('Submitted Date and time'))
@@ -294,6 +294,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
    
 }
 ?>
+
+<style>
+    .download_icon {
+        cursor : pointer;
+    }
+</style>
 
 <script>
 $(document).ready(function() {
@@ -346,7 +352,7 @@ $(document).ready(function() {
                 favorite.push($(this).val());
             });
             var id = favorite.join(",");
-            var newhrf = hrf+'&sid='+id+'&width=1100';
+            var newhrf = hrf+'&sid='+id+'&width=1100&height=500';
             $("#clickAdmissionFeePayment").attr('href',newhrf);
             $("#clickAdmissionFeePayment").click();
         }    
@@ -406,7 +412,7 @@ $(document).ready(function() {
                 var id = $(this).val();
                 var nme = $("#"+id+"-subId").val();
                 var link = document.createElement('a');
-                link.href = "public/applicationpdf/"+id+"-application.pdf";
+                link.href = "/public/applicationpdf/"+id+"-application.pdf";
                 link.download = nme+".pdf";
                 link.click();
             });

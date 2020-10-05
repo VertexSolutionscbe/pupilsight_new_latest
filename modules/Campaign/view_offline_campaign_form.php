@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/view_selected_cam
               <div class="wpb_text_column wpb_content_element   mobile-center">
                                     <div class="wpb_wrapper">
 									
-						 <iframe data-campid="<?php echo $id;?>" id="application_view" height="400" width="1000"
+						 <iframe data-campid="<?php echo $id;?>" id="application_view" height="500" width="1000"
     src="<?php echo $viewurl;?>">
 </iframe>
 
@@ -68,9 +68,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/view_selected_cam
     var iframe = document.getElementById("application_view");
     
     // Adjusting the iframe height onload event
-    iframe.onload = function(){
-        iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
-    }
+    // iframe.onload = function(){
+    //     iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
+    // }
 
     $('#application_view').load(function(){
         var iframe = $('#application_view').contents();

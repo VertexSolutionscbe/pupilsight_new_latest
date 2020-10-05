@@ -364,7 +364,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                             <input type="hidden" name="payid" value="<?= $invdata['stu_invoice_no'] ?>">
                             <input type="hidden" name="stuid" value="<?= $campstatus['subid'] ?>">
                             <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
-                            <button type="submit">Pay</button>
+                            <button type="submit" class="btn btn-primary">Pay</button>
                         </form> 
                     </td>
             <?php
@@ -372,7 +372,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 }
                 //echo '<tr><td>'.$ind['officialName'].'</td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['totalamount'].'</td><td>'.$ind['pendingamount'].'</td><td>'.$cls.'</td></tr>';
             } else {
-                $cmstatus="Processing";
+                $cmstatus="Submitted";
                 if($campstatus['state']){
                     $cmstatus=$campstatus['state'];
                 }

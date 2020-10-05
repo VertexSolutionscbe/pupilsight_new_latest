@@ -240,9 +240,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     echo "<th>";
     echo __('Action');
     echo '</th>';
-    echo "<th>";
-    echo __('Download');
-    echo '</th>';
+    // echo "<th>";
+    // echo __('Download');
+    // echo '</th>';
     echo "</thead>";
   //  echo "<tbody id='getInvoiceFeeItem'>";
     if (!empty($invdata)) {
@@ -274,8 +274,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                 $date = date('Y-m-d');
                 $curdate = strtotime($date);
                 $duedate = strtotime($ind['due_date']);
+
+                if ($ind['due_date'] == '1970-01-01') {
+                    $ddate = '';
+                } else {
+                    $dt = date('d/m/Y', strtotime($ind['due_date']));
+                    $ddate = $dt;
+                }
+                
                 $style = $curdate >= $duedate ? '#FAFD94' : '#fff';
-                echo '<tr style="background:'.$style.'"><td><input type="checkbox" class="multiplePayFees" value="'.$ind['id'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . date('d-m-Y', strtotime($ind['due_date'])) . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
+                echo '<tr style="background:'.$style.'"><td><input type="checkbox" class="multiplePayFees" value="'.$ind['id'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
                 
 ?>
                 <td>
@@ -306,7 +314,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                     </form>
                 </td>
     <?php
-                echo "<td>NA</td></tr>";
+                // echo "<td>NA</td></tr>";
+                echo "</tr>";
             }
             //echo '<tr><td>'.$ind['officialName'].'</td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['totalamount'].'</td><td>'.$ind['pendingamount'].'</td><td>'.$cls.'</td></tr>';
         }
@@ -421,7 +430,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     ?>
 
 <form action='thirdparty/multiplepayment/razorpay/multiplepay.php' method='post' > 
-    <input type='text' id='multiplepayData' name='formdata' value='' >
+    <input type='hidden' id='multiplepayData' name='formdata' value='' >
     <button type='submit' id='clickMultiplePay' style='display:none'>Submit</button>
     </form>
     <style>
@@ -470,25 +479,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     $(document).on('click', '#payMultiple', function() {
         var val = '';
         var multipleData = [];
+        var cheked = [];
         $.each($(".multiplePayFees:checked"), function() {
             val = $(this).val();
             var formData = $('#payform-'+val).serializeArray();
             multipleData.push(formData);
+            cheked.push($(this).val());
         });
-        if(multipleData){
-            $.ajax({
-                url: 'modules/Finance/invoice_multiple_pay_data.php',
-                type: 'post',
-                data: { multipleData: multipleData },
-                async: true,
-                success: function(response) {
-                    $("#multiplepayData").val(response);
-                    setTimeout(function(){
-                        $("#clickMultiplePay").click();
-                    },100);
-                }
-            });
+        var chkid = cheked.join(", ");
+        if(chkid){
+            if(multipleData){
+                $.ajax({
+                    url: 'modules/Finance/invoice_multiple_pay_data.php',
+                    type: 'post',
+                    data: { multipleData: multipleData },
+                    async: true,
+                    success: function(response) {
+                        $("#multiplepayData").val(response);
+                        setTimeout(function(){
+                            $("#clickMultiplePay").click();
+                        },100);
+                    }
+                });
+            }
+        } else {
+            alert('You Have to Select Invoice!');
         }
+        
     });
 
     </script>

@@ -353,14 +353,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
    
     $(document).ready(function () {
       	$('#showMultiClassByProg').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });
     
     $(document).ready(function () {
       	$('#showMultiSecByProgCls').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });

@@ -892,17 +892,17 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                                         <span class="loginlable">
                                             <lable>Password:</lable>
                                         </span>
-                                        <input type='password' name='password' class='custom_input form-control' required>
+                                        <input type='password' id="firstpassword" name='password' class='custom_input form-control' required>
                                     </div>
                                     <div class="form-group">
                                         <span class="loginlable">
                                             <lable>Conf Password:</lable>
                                         </span>
-                                        <input type='password' name='confpassword' class='custom_input form-control' required>
+                                        <input type='password' id="confirm_password" name='confpassword' class='custom_input form-control' required>
                                     </div>
                                    <input type="hidden" name="campaign_id" value="<?php echo $campaign_id;?>">
                                     <center>
-                                        <button type="submit" class='loginbtn btn-primary pl-4 pr-4 pt-1 pb-1 ml-1'>Submit</button>
+                                        <button type="submit" id="chkRegister" class='loginbtn btn-primary pl-4 pr-4 pt-1 pb-1 ml-1'>Submit</button>
                                     </center>
                                 </div>
                             </form>
@@ -1222,6 +1222,8 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                     $('#spnPhoneStatus').css('color', 'red');
                 }
             });
+
+            
         });
 
         function validatePhone(txtPhone) {
@@ -1233,7 +1235,35 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                 return false;
             }
         }
-    }); //]]> 
+
+        var password = document.getElementById("firstpassword");
+        var confirm_password = document.getElementById("confirm_password");
+
+        function validatePassword(){
+        if(password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Passwords Don't Match");
+        } else {
+            confirm_password.setCustomValidity('');
+        }
+        }
+
+        password.onchange = validatePassword;
+        confirm_password.onkeyup = validatePassword;
+    }); 
+
+    // $(document).on('click','#chkRegister', function(){
+    //     var p1 = $("#firstpassword").val();
+    //     var p2 = $("#confirm_password").val();
+    //     alert(p1);
+    //     alert(p2);
+    //     if(p1 == p2){
+    //         return true;
+    //     } else {
+    //         alert('Your Confirm Password is not Matched with Password');
+    //         return false;
+    //     }
+    // });
+    
 
    
     </script>

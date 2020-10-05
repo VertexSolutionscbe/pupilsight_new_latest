@@ -110,6 +110,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             iframe.find(".ff-btn-submit").prop('disabled', true);
             iframe.find("#wpadminbar").hide();
             iframe.find(".section-inner").hide();
+            iframe.find("input[name=age_value]").prop('readonly', true);
+            iframe.find("input[name=dob_in_words]").prop('readonly', true);
             iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-100px;}  </style>"));
 
             iframe.find("input[name=date_of_birth]").change(function(){
@@ -130,6 +132,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                 var days = Math.floor(((diff_date % 31536000000) % 2628000000)/86400000);
                 var ageval = years+" years "+months+" months and "+days+" days";
                 iframe.find("input[name=age_value]").val(ageval);
+
+                var dateTime = new Date(From_date);
+                var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                var date = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-First', 'Twenty-Second', 'Twenty-Third', 'Twenty-Fourth', 'Twenty-Fifth', 'Twenty-Sixth', 'Twenty-Seventh', 'Twenty-Eighth', 'Twenty-Ninth', 'Thirtieth', 'Thirty-First'];
+                var strDateTime =  date[dateTime.getDate()-1] + " " + month[dateTime.getMonth()] + " " +  toWords(dateTime.getFullYear());
+                iframe.find("input[name=dob_in_words]").val(strDateTime);
                 
             });
 
@@ -165,6 +173,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                 }, 2000);
             });
         });
+
+        function toWords(s){
+            var th = ['','Thousand','Million', 'Billion','Trillion'];
+            var dg = ['Zero','One','Two','Three','Four', 'Five','Six','Seven','Eight','Nine'];
+            var tn = ['Ten','Eleven','Twelve','Thirteen', 'Fourteen','Fifteen','Sixteen', 'Seventeen','Eighteen','Nineteen'];
+            var tw = ['Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
+            s = s.toString();
+            s = s.replace(/[\, ]/g,'');
+            if (s != parseFloat(s)) {
+                return 'not a number';
+            }
+            var x = s.indexOf('.');
+            if (x == -1) x = s.length;
+            if (x > 15) return 'too big';
+            var n = s.split('');
+            var str = '';
+            var sk = 0;
+            for (var i=0; i < x; i++) {
+                if ((x-i)%3==2) {
+                    if (n[i] == '1') {
+                        str += tn[Number(n[i+1])] + ' ';
+                        i++;
+                        sk=1;
+                    } else if (n[i]!=0) {
+                        str += tw[n[i]-2] + ' ';
+                        sk=1;
+                    }
+                } else if (n[i]!=0) {
+                    str += dg[n[i]] +' ';
+                    if ((x-i)%3==0) str += 'hundred ';
+                    sk=1;
+                }
+                if ((x-i)%3==1) {
+                    if (sk) str += th[(x-i-1)/3] + ' ';
+                    sk=0;
+                }
+            }
+            if (x != s.length) {
+                var y = s.length;
+                str += 'point ';
+                for (var i=x+1;    i<y; i++) str += dg[n[i]] +' ';
+            }
+            return str.replace(/\s+/g,' ');
+        }
 
         function getPDF(pid) {
 

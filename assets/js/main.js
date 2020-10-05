@@ -81,7 +81,7 @@
         var cid = $(this).attr('data-cid');
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
-        var design = '<div id="seatdiv" class=" row mb-1 deltr' + ncid + '""><div class="col-sm  newdes" ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="number" placeholder="Order" id="code" name="serialorder[' + ncid + ']" class="w-full txtfield"></div></div></div></div><div class="col-sm  newdes" ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="name" placeholder="State Name"  name="statename[' + ncid + ']" class="w-full txtfield" value=""></div></div></div></div><div class="col-sm  newdes" ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="code" placeholder="Code"  name="statecode[' + ncid + ']" class="w-full txtfield"></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class=" mb-1 ncls"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><select id="notification" name="notification[' + ncid + ']" class="w-full txtfield kountseat szewdt showTemplate" data-sid="' + ncid + '"><option value >Select Notification</option><option value="1" >Email</option><option value="2" >SMS</option><option value="3" >Both</option></select><i style="cursor:pointer;padding: 8px 10px" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div><div class=" mb-1"><a href="fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid=' + ncid + '&type=" data-hrf="fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid=' + ncid + '&type=" class="thickbox" id="clickTemplate' + ncid + '" style="display:none;">click</a><input type="hidden" name="pupilsightTemplateIDs[' + ncid + ']" id="pupilsightTemplateID-' + ncid + '" value=""></div></div></div></div><script type="text/javascript">var tb_pathToImage="lib/thickbox/loadingAnimation.gif";</script><script type="text/javascript" src="lib/thickbox/thickbox-compressed.js?v=18.0.01"></script><script type="text/javascript" src="lib/tinymce/tinymce.min.js?v=18.0.01"></script><script type="text/javascript">window.Pupilsight = {"config":{"datepicker":{"locale":"en-GB"},"thickbox":{"pathToImage":"http:\/\/localhost\/pupilsight\/lib\/thickbox\/loadingAnimation.gif"},"tinymce":{"valid_elements":"br[style],strong[style],em[style],span[style],p[style],address[style],pre[style],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[style],sup[style],sub[style]"},"sessionTimeout":{"sessionDuration":6400,"message":"Your session is about to expire: you will be logged out shortly."}}};</script>';
+        var design = '<div id="seatdiv" class=" row mb-1 deltr' + ncid + '""><div class="col-sm  newdes" ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="number" placeholder="Order" id="code" name="serialorder[' + ncid + ']" class="w-full txtfield"></div></div></div></div><div class="col-sm  newdes" ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="name" placeholder="State Name"  name="statename[' + ncid + ']" class="w-full txtfield" value=""></div></div></div></div><div class="col-sm  newdes" ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="code" placeholder="Code"  name="statecode[' + ncid + ']" class="w-full txtfield"></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class=" mb-1 ncls"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><select id="notification" name="notification[' + ncid + ']" class="w-full txtfield kountseat szewdt showTemplate" data-sid="' + ncid + '"><option value >Select Notification</option><option value="1" >Email</option><option value="2" >SMS</option><option value="3" >Both</option></select><i style="cursor:pointer;padding: 8px 10px" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div><div class=" mb-1"><a href="fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid=' + ncid + '&type=" data-hrf="fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid=' + ncid + '&type=" class="thickbox" id="clickTemplate' + ncid + '" style="display:none;">click</a><input type="hidden" name="pupilsightTemplateIDs[' + ncid + ']" id="pupilsightTemplateID-' + ncid + '" value=""><div id="showTemplateName' + ncid + '" ></div></div></div></div></div><script type="text/javascript">var tb_pathToImage="lib/thickbox/loadingAnimation.gif";</script><script type="text/javascript" src="lib/thickbox/thickbox-compressed.js?v=18.0.01"></script><script type="text/javascript" src="lib/tinymce/tinymce.min.js?v=18.0.01"></script><script type="text/javascript">window.Pupilsight = {"config":{"datepicker":{"locale":"en-GB"},"thickbox":{"pathToImage":"http:\/\/localhost\/pupilsight\/lib\/thickbox\/loadingAnimation.gif"},"tinymce":{"valid_elements":"br[style],strong[style],em[style],span[style],p[style],address[style],pre[style],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[style],sup[style],sub[style]"},"sessionTimeout":{"sessionDuration":6400,"message":"Your session is about to expire: you will be logged out shortly."}}};</script>';
         $("#lastseatdiv").before(design);
 
     });
@@ -736,11 +736,11 @@
                 data: { cid: cid, sid: sid, sname: sname, fid: fid, subid: subid },
                 async: true,
                 success: function (response) {
-                    location.reload();
-                    $("#preloader").fadeOut("slow", function () {
-                        //$(this).remove();
-                        window.location.href = response;
-                    });
+                    // location.reload();
+                    // $("#preloader").fadeOut("slow", function () {
+                    //     //$(this).remove();
+                    //     window.location.href = response;
+                    // });
                 }
             });
         } else {
@@ -925,7 +925,8 @@
     //     }
     // });
 
-    $("#expore_xl").click(function (e) {
+
+    $(document).on('click', '#expore_xl', function () {
         $("#expore_tbl").table2excel({
             name: "Worksheet Name",
             filename: "campaign_submitted_form_list.xls",
@@ -940,7 +941,7 @@
     });
 
 
-    $("#expore_student_xl").click(function (e) {
+    $(document).on('click', '#expore_student_xl', function () {
         //alert("Export success");
         $("#expore_tbl").table2excel({
             name: "Worksheet Name",
@@ -956,7 +957,7 @@
 
     });
 
-    $("#export_not_marks_xl").click(function (e) {
+    $(document).on('click', '#export_not_marks_xl', function () {
         $("#marksNotEntered_excel").table2excel({
             // $("#mytable").find($("tr")).slice(1).remove();
             name: " Student Marks Not Enter",
@@ -972,7 +973,7 @@
     });
 
 
-    $("#expore_marks_xl").click(function (e) {
+    $(document).on('click', '#expore_marks_xl', function () {
         var type = 'studentMarks_excel';
         var section = $('#pupilsightRollGroupIDbyPP').val();
         var cls = $('#pupilsightYearGroupIDbyPP').val();
@@ -1001,7 +1002,7 @@
     });
 
 
-    $("#expore_marks_sub_xl").click(function (e) {
+    $(document).on('click', '#expore_marks_sub_xl', function () {
         var type = 'subjectMarks_excel';
         var section = $('#pupilsightRollGroupIDbyPP').val();
         var cls = $('#pupilsightYearGroupIDbyPP').val();
@@ -1130,7 +1131,7 @@
     }
 
 
-    $('#expore_csv').click(function () {
+    $(document).on('click', '#expore_csv', function () {
         // var html = document.getElementById('expore_tbl').innerHTML;
         // // var html = document.getElementById('expore_tbl').innerHTML;
         // export_table_to_csv(html, "campaign_submitted_form_list.csv");
@@ -2874,7 +2875,7 @@
         }
     });
 
-    $("#export_transaction").click(function (e) {
+    $(document).on('click', '#export_transaction', function () {
         $('#expore_tbl').find('td,th').first().remove();
         $('#expore_tbl ').find('.bulkCheckbox').remove();
         $("#expore_tbl").table2excel({
@@ -2889,7 +2890,7 @@
 
     });
 
-    $("#export_invoice").click(function (e) {
+    $(document).on('click', '#export_invoice', function () {
         $('#expore_tbl').find('td,th').last().remove();
         $('#expore_tbl ').find('.bulkCheckbox').remove();
         $("#expore_tbl").table2excel({
@@ -4718,7 +4719,7 @@
 
     });
 
-    $("#exportCounterDate").click(function (e) {
+    $(document).on('click', '#exportCounterDate', function () {
         $('<table>')
 
             .append(
@@ -7302,7 +7303,9 @@ $('#sendEmailSms_campaignForm').on('submit', (function (e) {
 
     }
 }));
-$("#expore_xl_campaign").click(function (e) {
+
+// $("#expore_xl_campaign").click(function (e) {
+$(document).on('click', '#expore_xl_campaign', function () {
     var submit_ids = [];
     $.each($("input[name='submission_id[]']:checked"), function () {
         submit_ids.push($(this).val());
@@ -7312,7 +7315,7 @@ $("#expore_xl_campaign").click(function (e) {
     if (submt_id == '') {
         alert('You Have to Select Applicantion.');
     } else {
-
+        $('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
         $("#expore_tbl").table2excel({
             name: "Worksheet Name",
             filename: "campaign_submitted_form_list.xls",
@@ -7323,6 +7326,7 @@ $("#expore_xl_campaign").click(function (e) {
             columns: [0, 1, 2, 3, 4, 5]
 
         });
+        location.reload();
     }
 });
 
@@ -8166,7 +8170,6 @@ $(document).on('change', '#getMultiClassByProg', function () {
             $("#showMultiClassByProg").html();
             $("#showMultiClassByProg").html(response);
             $('#showMultiClassByProg').selectize({
-                maxItems: 15,
                 plugins: ['remove_button'],
             });
         }
@@ -8187,9 +8190,18 @@ $(document).on('change', '#showMultiClassByProg', function () {
             $("#showMultiSecByProgCls").html();
             $("#showMultiSecByProgCls").html(response);
             $('#showMultiSecByProgCls').selectize({
-                maxItems: 15,
                 plugins: ['remove_button'],
             });
         }
     });
+});
+
+$(document).on('change', '.showTemplateName', function () {
+    var checked = [];
+    $.each($(".showTemplateName:checked"), function () {
+        checked.push($(this).attr('data-nme'));
+    });
+    var tname = checked.join(", ");
+    var wid = $(this).attr('data-wid');
+    $("#showTemplateName" + wid).html(tname);
 });

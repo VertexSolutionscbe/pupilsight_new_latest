@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/email_sms_templat
     }
 
     
-    $sql = 'SELECT * FROM pupilsightTemplate WHERE type IN ('.$ntype.')';
+    $sql = 'SELECT * FROM pupilsightTemplate WHERE type IN ('.$ntype.') AND find_in_set("Admission",entities)';
     $result = $connection2->query($sql);
     $template = $result->fetchAll();
 
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/email_sms_templat
                     <td><?php echo $state;?></td>
                     <td><?php echo $fg['description'];?></td>
                     <td><a href="<?php echo $href;?>" target="_blank"><i title="Edit" class="fas fa-edit px-2"></i></a></td>
-                    <td><input type="checkbox" data-nme="<?php echo $fg['name'];?>" class="email-pupilsightTemplateID" value="<?php echo $fg['pupilsightTemplateID'];?>" ></td>
+                    <td><input type="checkbox" data-nme="<?php echo $fg['name'];?>" class="email-pupilsightTemplateID showTemplateName" data-wid="<?php echo $wsid;?>" value="<?php echo $fg['pupilsightTemplateID'];?>" ></td>
                 </tr>    
             <?php $i++; } } } ?>
         </tbody>
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/email_sms_templat
                     <td><?php echo $state;?></td>
                     <td><?php echo $fg['description'];?></td>
                     <td><a href="<?php echo $href;?>" target="_blank"><i title="Edit" class="fas fa-edit px-2"></i></a></td>
-                    <td><input type="checkbox" data-nme="<?php echo $fg['name'];?>" class="sms-pupilsightTemplateID" value="<?php echo $fg['pupilsightTemplateID'];?>" ></td>
+                    <td><input type="checkbox" data-nme="<?php echo $fg['name'];?>" class="sms-pupilsightTemplateID showTemplateName" data-wid="<?php echo $wsid;?>" value="<?php echo $fg['pupilsightTemplateID'];?>" ></td>
                 </tr>    
             <?php $i++; } } } ?>
         </tbody>
@@ -168,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/email_sms_templat
                     <td><?php echo $state;?></td>
                     <td><?php echo $fg['description'];?></td>
                     <td><a href="<?php echo $href;?>" target="_blank"><i title="Edit" class="fas fa-edit px-2"></i></a></td>
-                    <td><input type="checkbox" data-nme="<?php echo $fg['name'];?>" class="pupilsightTemplateID" value="<?php echo $fg['pupilsightTemplateID'];?>" ></td>
+                    <td><input type="checkbox" data-nme="<?php echo $fg['name'];?>" class="pupilsightTemplateID showTemplateName" data-wid="<?php echo $wsid;?>" value="<?php echo $fg['pupilsightTemplateID'];?>" ></td>
                 </tr>    
             <?php $i++; } } ?>
         </tbody>

@@ -22,7 +22,7 @@ $cid = $_SESSION['campaignid'];
     <div class="modal-body">
      <!-- <iframe src="http://wp.pupiltalk.com/wp-admin/admin.php?page=fluent_forms#add=1" style="width:100%;height:93vh"></iframe>-->
        
-        <iframe id="wppage" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/wp/wp-admin/admin.php?page=fluent_forms#add=1" style="width:100%;height:93vh"></iframe>
+        <iframe id="wppage" src="<?php echo $_SESSION[$guid]['absoluteURL'];?>/wp/wp-admin/admin.php?page=fluent_forms#add=1" style="width:100%;height:85vh"></iframe>
     </div>     
     </div>
   </div>

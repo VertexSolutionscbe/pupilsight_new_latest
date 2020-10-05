@@ -182,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             $col->addTextField('search')->setValue($search);
             
             $col = $row->addColumn()->setClass('newdes');
-                
+            $col->addLabel('', __(''));
                 $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
             

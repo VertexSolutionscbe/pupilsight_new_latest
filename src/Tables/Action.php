@@ -263,7 +263,7 @@ class Action extends WebLink
                 ));
             }
             elseif($this->getLabel() == 'Add Multiple'){
-				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-plus-circle-outline"></i>', 
+				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-plus-circle-outline  mdi-24px"></i>', 
                     ($this->displayLabel? $this->getLabel() : ''),
                     $this->getLabel(), 
                     $this->getIcon()
@@ -330,7 +330,7 @@ class Action extends WebLink
                     $this->getIcon()
                 ));
 			} elseif($this->getLabel() == 'Form'){
-				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-clipboard-list-outline"></i>', 
+				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-clipboard-list-outline  mdi-24px"></i>', 
                     ($this->displayLabel? $this->getLabel() : ''),
                     $this->getLabel(), 
                     $this->getIcon()

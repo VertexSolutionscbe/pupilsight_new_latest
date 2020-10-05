@@ -218,15 +218,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/blocked_attenda
 <script>
     $(document).ready(function () {
       	$('#showMultiClassByProg').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });
     
     $(document).ready(function () {
       	$('#showMultiSecByProgCls').selectize({
-      		maxItems: 15,
-            plugins: ['remove_button'],
+      		plugins: ['remove_button'],
         });      
     });
 </script>
