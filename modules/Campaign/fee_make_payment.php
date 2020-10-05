@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
         ->sortBy(['id'])
         ->fromPOST();
 
-    $yearGroups = $FeesGateway->getFeeStructure($criteria, $pupilsightSchoolYearID);
+    //$yearGroups = $FeesGateway->getFeeStructure($criteria, $pupilsightSchoolYearID);
     //print_r($yearGroups);
     $table = DataTable::createPaginated('FeeStructureManage', $criteria);
 

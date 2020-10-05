@@ -16,6 +16,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/wf_edit.php') != 
     // print_r($_POST);
     // echo '</pre>';
     // die(0);
+    $name = $_POST['name'];
+    $code = $_POST['code'];
+    $description = $_POST['description'];
     $statename = $_POST['statename'];
     $statecode = $_POST['statecode'];
     $serialorder = $_POST['serialorder'];
@@ -24,6 +27,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/wf_edit.php') != 
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
 
     if(!empty($statename)){
+        $data = array('name' => $name, 'description' => $description, 'code' => $code, 'id' => $id);
+        $sql = "UPDATE workflow SET name=:name, description=:description, code=:code WHERE id=:id ";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
         foreach($statename as $k=>$s){
             $sname = $s;
             $scode = $statecode[$k];

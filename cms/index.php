@@ -129,10 +129,10 @@ if (isset($_SESSION["loginstatus"])) {
             font-size: 14px;
         }
 
-        #app_lst_tbl tr,
+        /* #app_lst_tbl tr,
         td {
             width: 100% !important;
-        }
+        } */
 
         #app_lst_tbl .head th,
         #app_lst_tbl td {
@@ -189,7 +189,7 @@ if (isset($_SESSION["loginstatus"])) {
                             $(".chkdata").hide();
                             $('#app_lst_tbl tbody').html(response);
                         } else {
-                            $('#app_lst_tbl tbody').html("<tr><td colspan='3'>No Records Found !</td></tr>");
+                            $('#app_lst_tbl tbody').html("<tr><td colspan='4'>No Records Found !</td></tr>");
                         }
                     }
                 });
@@ -1926,7 +1926,7 @@ if (isset($_SESSION["loginstatus"])) {
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="">
-                        <div class="alert alert-danger"></div>
+                        <!-- <div class="alert alert-danger"></div> -->
                         <div class="row">
                             <div class="col-sm-3 col-lg-3">
                             </div>
@@ -1987,23 +1987,23 @@ if (isset($_SESSION["loginstatus"])) {
 
                                     <div class="row" style="">
                                         <div class="col-sm-12 col-lg-12">
-                                            <table id="app_lst_tbl" cellspacing='0' class='table display data-table text-nowrap' style='display:none;'>
+                                            <table id="app_lst_tbl" cellspacing='0' class='table' style='display:none;'>
                                                 <thead>
                                                     <tr class='head'>
-                                                        <th>
+                                                        <th style="width:10%">
                                                             SI No
                                                         </th>
-                                                        <th>
+                                                        <th  style="width:25%">
                                                             Applicant Name
                                                         </th>
-                                                        <th>
+                                                        <th  style="width:25%">
                                                             Campaign Name
                                                         </th>
-                                                        <th>
+                                                        <th style="width:20%">
                                                             Submission Date
                                                         </th>
 
-                                                        <th>
+                                                        <th style="width:20%">
                                                             Status
                                                         </th>
 

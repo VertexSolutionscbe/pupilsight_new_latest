@@ -119,11 +119,11 @@ print_r($values);  */
 		
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('name', __('Work Flow Name'));
-            $col->addTextField('name')->addClass('txtfield')->readonly()->setValue($wf_name);	
+            $col->addTextField('name')->addClass('txtfield')->setValue($wf_name);	
         
             $col = $row->addColumn()->setClass('newdes');     
-            $col->addLabel('wf_code', __('Work Flow Code'));
-            $col->addTextField('code')->addClass('txtfield')->readonly()->setValue($wf_code);
+            $col->addLabel('code', __('Work Flow Code'));
+            $col->addTextField('code')->addClass('txtfield')->setValue($wf_code);
             	        
 				
 	$row = $form->addRow();	   
@@ -146,6 +146,14 @@ print_r($values);  */
         if(!empty($rowdata)){ 
             $i = '1';
             foreach($rowdata as $k=>$st){   
+                $templateNames = '';
+                $templateIds = $st['pupilsightTemplateIDs'];
+                if(!empty($templateIds)){
+                    $sqltname = 'SELECT GROUP_CONCAT(name) as tempname FROM pupilsightTemplate  WHERE pupilsightTemplateID IN ('.$templateIds.') ';
+                    $resulttname = $connection2->query($sqltname);
+                    $getTname = $resulttname->fetch();
+                    $templateNames = $getTname['tempname'];
+                }
                 $row = $form->addRow()->setID('seatdiv');
                 $col = $row->addColumn()->setClass('newdes');
                 if($i == '1'){
@@ -172,7 +180,8 @@ print_r($values);  */
                     $col->addLabel('notification', __('Notification'))->addClass('ncls');
                 }
                 $col->addSelect('notification['.$st['id'].']')->addClass('txtfield kountseat szewdt showTemplate')->fromArray($notification)->selected($st['notification'])->addData('sid', $st['id']);
-                $col->addContent('<a href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" data-hrf="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" class="thickbox" id="clickTemplate'.$st['id'].'" style="display:none;">click</a><input type="hidden" name="pupilsightTemplateIDs['.$st['id'].']" id="pupilsightTemplateID-'.$st['id'].'" value="">');
+
+                $col->addContent('<a href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" data-hrf="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" class="thickbox" id="clickTemplate'.$st['id'].'" style="display:none;">click</a><input type="hidden" name="pupilsightTemplateIDs['.$st['id'].']" id="pupilsightTemplateID-'.$st['id'].'" value=""><div id="showTemplateName'.$st['id'].'" >'.$templateNames.'</div>');
 
                 $col->addLabel('', __(''))->addClass('dte'); 
 

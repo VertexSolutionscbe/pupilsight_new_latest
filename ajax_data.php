@@ -1883,18 +1883,48 @@ if ($type == 'getCampaignStatusButton') {
         echo $data;
     } else {
         
-        $sql = 'SELECT GROUP_CONCAT(state_id) AS sid FROM campaign_form_status WHERE submission_id ='.$id.' ';
+        // $sql = 'SELECT GROUP_CONCAT(state_id) AS sid FROM campaign_form_status WHERE submission_id ='.$id.' ';
+        // $result = $connection2->query($sql);
+        // $stateid = $result->fetch();
+
+        // if(!empty($stateid['sid'])){
+        //     $sid = $stateid['sid'];
+        // } else {
+        //     $sid = 0;
+        // }
+
+
+        $sql = 'SELECT a.id, to_state FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id WHERE a.submission_id ='.$id.' ORDER BY a.id DESC LIMIT 0,1 ';
         $result = $connection2->query($sql);
         $stateid = $result->fetch();
-        if(!empty($stateid['sid'])){
-            $sid = $stateid['sid'];
+        
+        if(!empty($stateid['to_state'])){
+            $fromState = $stateid['to_state'];
+            
+            $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND a.from_state = '.$fromState.'  AND FIND_IN_SET("'.$staffId.'",user_permission) ';
+            $resultval = $connection2->query($sql);
+            $stats = $resultval->fetchAll();
         } else {
-            $sid = 0;
+
+            $sq = 'SELECT a.id FROM workflow_state AS a LEFT JOIN workflow_map AS b ON a.workflowid = b.workflow_id WHERE a.name = "A" AND b.campaign_id = '.$cid.' ';
+            $resultsq = $connection2->query($sq);
+            $sqstate = $resultsq->fetch();
+            $fromStateSub = $sqstate['id'];
+            
+            if(!empty($fromStateSub)){
+                $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND a.from_state = '.$fromStateSub.' AND FIND_IN_SET("'.$staffId.'",user_permission) ';
+            } else {
+                $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND FIND_IN_SET("'.$staffId.'",user_permission) ';
+            }
+            
+            $resultval = $connection2->query($sql);
+            $stats = $resultval->fetchAll();
         }
 
-        $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND a.id NOT IN ('.$sid.')  AND FIND_IN_SET("'.$staffId.'",user_permission) ';
-        $resultval = $connection2->query($sql);
-        $stats = $resultval->fetchAll();
+        // $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND a.id NOT IN ('.$sid.')  AND FIND_IN_SET("'.$staffId.'",user_permission) ';
+
+
+        
 
         $data ='';
         if(!empty($stats)){

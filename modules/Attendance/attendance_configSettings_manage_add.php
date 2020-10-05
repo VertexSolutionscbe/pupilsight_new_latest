@@ -245,7 +245,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
 <script type='text/javascript'>
    $(document).ready(function () {
       	$('#showMultiClassByProg').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });

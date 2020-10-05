@@ -281,9 +281,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
     
 </style>
 <script>
+    $("#start_date").datepicker({
+        //minDate: 0,
+        onClose: function (selectedDate) {
+            $("#end_date").datepicker("option", "minDate", selectedDate);
+        }
+    });
+    
     $(document).ready(function () {
       	$('#showMultiClassByProg').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });

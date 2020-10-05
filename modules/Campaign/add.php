@@ -137,11 +137,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('start_date', __('Start Date'))->addClass('dte');
-            $col->addDate('start_date')->addClass('txtfield')->readonly()->required();   
+            $col->addDate('start_date')->addClass('txtfield')->required();   
 
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('end_date', __('End Date'))->addClass('dte');
-            $col->addDate('end_date')->addClass('txtfield')->readonly()->required();
+            $col->addDate('end_date')->addClass('txtfield')->required();
 
     $row = $form->addRow();
         
@@ -176,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
               
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('description', __('Description'));
-            $col->addTextArea('description')->addClass('txtfield')->setRows(4); 
+            $col->addTextArea('description')->addClass('txtfield')->setRows(4);
 
     $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes');
@@ -224,10 +224,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     
 </style>
 <script>
+
+    $("#start_date").datepicker({
+        //minDate: 0,
+        onClose: function (selectedDate) {
+            $("#end_date").datepicker("option", "minDate", selectedDate);
+        }
+    });
     
     $(document).ready(function () {
       	$('#showMultiClassByProg').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });

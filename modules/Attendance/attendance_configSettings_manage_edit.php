@@ -283,7 +283,6 @@ margin-left: 200px;
 <script type='text/javascript'>
     $(document).ready(function () {
       	$('#showMultiClassByProg').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });

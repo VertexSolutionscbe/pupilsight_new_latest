@@ -84,7 +84,7 @@ echo '</h2>';
             $col->addTextField('name')->addClass('txtfield')->required();
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('wf_code', __('Work Flow Code'));
+            $col->addLabel('code', __('Work Flow Code'));
             $col->addTextField('code')->addClass('txtfield')->required();
 				
 	$row = $form->addRow();	   
@@ -121,7 +121,7 @@ echo '</h2>';
             $col->addLabel('notification', __('Notification'))->addClass('ncls');
             $col->addSelect('notification[1]')->addClass('txtfield kountseat szewdt showTemplate')->fromArray($notification)->addData('sid', '1');
 
-            $col->addContent('<a href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid=1&type=" data-hrf="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid=1&type=" class="thickbox" id="clickTemplate1" style="display:none;">click</a><input type="hidden" name="pupilsightTemplateIDs[1]" id="pupilsightTemplateID-1" value="">');
+            $col->addContent('<a href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid=1&type=" data-hrf="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid=1&type=" class="thickbox" id="clickTemplate1" style="display:none;">click</a><input type="hidden" name="pupilsightTemplateIDs[1]" id="pupilsightTemplateID-1" value=""><div id="showTemplateName1" ></div>');
 
             $col->addLabel('', __(''))->addClass('dte'); 
             

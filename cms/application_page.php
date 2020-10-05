@@ -64,7 +64,7 @@ $app_links = array();
                                 <input type="hidden" id="pid" value="<?php echo $campaign_byid['pupilsightProgramID']; ?>">
                                 <input type="hidden" id="fid" value="<?php echo $campaign_byid['form_id']; ?>">
 
-                                <div>
+                                <div id="progClassDiv">
                                     <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span>Class <span style="color:red">* </span>: </span>
                                     <select id="class">
@@ -299,6 +299,7 @@ $app_links = array();
             iframe.find("#wpadminbar").hide();
             iframe.find(".section-inner").hide();
             iframe.find("input[name=age_value]").prop('readonly', true);
+            iframe.find("input[name=dob_in_words]").prop('readonly', true);
             var pid = iframe.find(".fluentform");
             iframe.find("input[name=date_of_birth]").change(function() {
 
@@ -319,6 +320,11 @@ $app_links = array();
                 var ageval = years + " years " + months + " months and " + days + " days";
                 iframe.find("input[name=age_value]").val(ageval);
 
+                var dateTime = new Date(From_date);
+                var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                var date = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-First', 'Twenty-Second', 'Twenty-Third', 'Twenty-Fourth', 'Twenty-Fifth', 'Twenty-Sixth', 'Twenty-Seventh', 'Twenty-Eighth', 'Twenty-Ninth', 'Thirtieth', 'Thirty-First'];
+                var strDateTime =  date[dateTime.getDate()-1] + " " + month[dateTime.getMonth()] + " " +  toWords(dateTime.getFullYear());
+                iframe.find("input[name=dob_in_words]").val(strDateTime);
             });
 
             var cls = iframe.find("#class").prop('readonly', true);
@@ -347,12 +353,59 @@ $app_links = array();
                         flag = false;
                     });
                     if (flag) {
+                        $("#back-to-top").click();
+                        $("#progClassDiv").remove();
                         insertcampaign();
                     }
                 }, 2000);
             });
 
         });
+
+        
+        function toWords(s){
+            var th = ['','Thousand','Million', 'Billion','Trillion'];
+            var dg = ['Zero','One','Two','Three','Four', 'Five','Six','Seven','Eight','Nine'];
+            var tn = ['Ten','Eleven','Twelve','Thirteen', 'Fourteen','Fifteen','Sixteen', 'Seventeen','Eighteen','Nineteen'];
+            var tw = ['Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
+            s = s.toString();
+            s = s.replace(/[\, ]/g,'');
+            if (s != parseFloat(s)) {
+                return 'not a number';
+            }
+            var x = s.indexOf('.');
+            if (x == -1) x = s.length;
+            if (x > 15) return 'too big';
+            var n = s.split('');
+            var str = '';
+            var sk = 0;
+            for (var i=0; i < x; i++) {
+                if ((x-i)%3==2) {
+                    if (n[i] == '1') {
+                        str += tn[Number(n[i+1])] + ' ';
+                        i++;
+                        sk=1;
+                    } else if (n[i]!=0) {
+                        str += tw[n[i]-2] + ' ';
+                        sk=1;
+                    }
+                } else if (n[i]!=0) {
+                    str += dg[n[i]] +' ';
+                    if ((x-i)%3==0) str += 'hundred ';
+                    sk=1;
+                }
+                if ((x-i)%3==1) {
+                    if (sk) str += th[(x-i-1)/3] + ' ';
+                    sk=0;
+                }
+            }
+            if (x != s.length) {
+                var y = s.length;
+                str += 'point ';
+                for (var i=x+1;    i<y; i++) str += dg[n[i]] +' ';
+            }
+            return str.replace(/\s+/g,' ');
+        }
 
         function getPDF(pid) {
 
@@ -431,7 +484,7 @@ $app_links = array();
                         async: true,
                         success: function(response) {
                             //$("'html, body'").animate({scrollTop: $("#showdiv").offset().top}, 2000);
-                            $("#back-to-top").click();
+                            
                             //$("#admissionPay").submit();
                         }
                     });

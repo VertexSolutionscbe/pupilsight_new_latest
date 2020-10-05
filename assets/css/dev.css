@@ -216,7 +216,7 @@ div.ttPeriodCurrent {
 }
 
 #TB_ajaxContent {
-    height: auto!important
+    height: auto;
 }
 
 .relative .mb-2 {
