@@ -26,16 +26,26 @@ if ($_POST['db']) {
                     //print_r($result);
                     while ($row = $result->fetch_assoc()) {
                         //echo "<tr><td><input type='checkbox' id='db_" . $row["id"] . "' name='db[]' value='" . $row["id"] . "'><label for='db_" . $row["id"] . "'>" . $row["db_name"] . "</label></td></tr>";
-                        $con = new mysqli($row["server_name"], $row["user_name"], $row["password"], $row["db_name"]);
+                        try {
+
+                            $con = new mysqli(trim($row["server_name"]), trim($row["user_name"]), trim($row["password"]), trim($row["db_name"]));
+                            if ($con->connect_errno) {
+                                //print_r($con);
+                                print_r($row);
+                                printf("Connect failed: %s\n", $con->connect_error);
+                                //exit();
+                            } else {
+                                $con->query($sq);
+                                $con->close();
+                            }
+                        } catch (Exception $ex) {
+                            print_r($ex);
+                        }
                     }
                     //print_r($row);
-
-
                     //print_r($con);
                     //print_r($sq);
 
-                    $con->query($sq);
-                    $con->close();
                 } else {
                     echo "0 results";
                 }
@@ -80,13 +90,13 @@ if ($_POST['db']) {
             }
 
             //$sql = "select id, server_name, db_name, user_name, password from db_list";
-            $sql = "select id, db_name from db_list";
+            $sql = "select id, db_name from db_list order by db_name asc";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
                 // output data of each row
                 while ($row = $result->fetch_assoc()) {
-                    echo "<tr><td><input type='checkbox' id='db_" . $row["id"] . "' name='db[]' value='" . $row["id"] . "'><label for='db_" . $row["id"] . "'>" . $row["db_name"] . "</label></td></tr>";
+                    echo "<tr><td><input type='checkbox' id='db_" . $row["id"] . "' name='db[]' value='" . $row["id"] . "'><label for='db_" . $row["id"] . "'>" . trim($row["db_name"]) . "</label></td></tr>";
                 }
             } else {
                 echo "No results";

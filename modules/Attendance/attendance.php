@@ -151,7 +151,7 @@ if (isset($_SESSION[$guid]["username"])) {
                             __('N/A') . '</span>';
                 }
             });
-       /* $dailyAttendanceTable->addColumn('in', __('In'))
+        /* $dailyAttendanceTable->addColumn('in', __('In'))
             ->context('primary')
             ->width('6%');*/
 
@@ -176,7 +176,7 @@ if (isset($_SESSION[$guid]["username"])) {
     if ($currentDate > $today) {
         $page->write(Format::alert(__("The specified date is in the future: it must be today or earlier.")));
         return;
-    } elseif (isSchoolOpen($guid, $currentDate, $connection2)==false) {
+    } elseif (isSchoolOpen($guid, $currentDate, $connection2) == false) {
         $page->write(Format::alert(__("School is closed on the specified date, and so attendance information cannot be recorded.")));
         return;
     }
@@ -184,18 +184,13 @@ if (isset($_SESSION[$guid]["username"])) {
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
         // Show My Form Groups
         try {
-           
-         
-          
-                $result = $connection2->prepare("SELECT pupilsightRollGroupID, pupilsightRollGroup.nameShort as name, firstDay, lastDay FROM pupilsightRollGroup JOIN pupilsightSchoolYear ON (pupilsightRollGroup.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) WHERE (pupilsightPersonIDTutor=:pupilsightPersonIDTutor1 OR pupilsightPersonIDTutor2=:pupilsightPersonIDTutor2 OR pupilsightPersonIDTutor3=:pupilsightPersonIDTutor3) AND pupilsightRollGroup.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroup.attendance = 'Y'");
-                $result->execute([
-                    'pupilsightPersonIDTutor1' => $pupilsightPersonID,
-                    'pupilsightPersonIDTutor2' => $pupilsightPersonID,
-                    'pupilsightPersonIDTutor3' => $pupilsightPersonID,
-                    'pupilsightSchoolYearID' => $session->get('pupilsightSchoolYearID'),
-                ]);
-            
-           
+            $result = $connection2->prepare("SELECT pupilsightRollGroupID, pupilsightRollGroup.nameShort as name, firstDay, lastDay FROM pupilsightRollGroup JOIN pupilsightSchoolYear ON (pupilsightRollGroup.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) WHERE (pupilsightPersonIDTutor=:pupilsightPersonIDTutor1 OR pupilsightPersonIDTutor2=:pupilsightPersonIDTutor2 OR pupilsightPersonIDTutor3=:pupilsightPersonIDTutor3) AND pupilsightRollGroup.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroup.attendance = 'Y'");
+            $result->execute([
+                'pupilsightPersonIDTutor1' => $pupilsightPersonID,
+                'pupilsightPersonIDTutor2' => $pupilsightPersonID,
+                'pupilsightPersonIDTutor3' => $pupilsightPersonID,
+                'pupilsightSchoolYearID' => $session->get('pupilsightSchoolYearID'),
+            ]);
         } catch (PDOException $e) {
             $page->addError($e->getMessage());
         }
@@ -395,9 +390,9 @@ if (isset($_SESSION[$guid]["username"])) {
                             $dayData['status'] = 'present';
                         } else {
                             $dayData['status'] =
-                            isset($ttHistory[$row['pupilsightCourseClassID']][$lastNSchoolDays[$i]]) ?
-                            $dayData['status'] = 'absent' :
-                            $dayData['status'] = null;
+                                isset($ttHistory[$row['pupilsightCourseClassID']][$lastNSchoolDays[$i]]) ?
+                                $dayData['status'] = 'absent' :
+                                $dayData['status'] = null;
                         }
                     }
                     $row['recentHistory'][] = $dayData;

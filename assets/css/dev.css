@@ -833,3 +833,7 @@ select[multiple] {
 .text-active {
     color: white !important;
 }
+
+.-ml-24 {
+    margin-left: 0;
+}
