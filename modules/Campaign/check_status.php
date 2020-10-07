@@ -143,7 +143,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
     echo __('Action');
     echo '</th>';
     echo "<th>";
-    echo __('Download');
+    echo __('Form Download');
+    echo '</th>';
+    echo "<th>";
+    echo __('Fee Receipt Download');
     echo '</th>';
     echo "</thead>";
     echo "<tbody id='getInvoiceFeeItem'>";
@@ -328,12 +331,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 
                 if ($chkpayment == 'Paid') {
                     $cls = 'Paid';
-                    echo '<tr><td>' . $campstatus['name'] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td><td>&nbsp;&nbsp;Paid</td>';
+                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td><td>&nbsp;&nbsp;Paid</td><td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     $lin = $baseurl . "public/receipts/" . $ind["transaction_id"] . ".docx";
-                    echo "<td><a href='" . $lin . "' download>Download</a></td></tr>";
+                    echo "<td><a href='" . $lin . "' download><i title='Fee Receipt Download' class='mdi mdi-file-pdf mdi-24px download_icon'></i></a></td></tr>";
                 } else {
                     
-                    echo '<tr><td>' . $campstatus['name'] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td>';
+                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td>';
 
                     $sqlstu = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = "'.$campstatus['subid'].'" AND sub_field_name = "first_name" ';
                     $resultstu = $connection2->query($sqlstu);
@@ -368,6 +371,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                         </form> 
                     </td>
             <?php
+                    echo '<td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     echo "<td>NA</td></tr>";
                 }
                 //echo '<tr><td>'.$ind['officialName'].'</td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['totalamount'].'</td><td>'.$ind['pendingamount'].'</td><td>'.$cls.'</td></tr>';
@@ -381,9 +385,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 <td>' . $campstatus['created_at'] . '</td>
                 <td>' . $cmstatus . '</td>
                 <td>' . $totalamountnew . '</td>
-                <td></td>
-                <td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-id="'.$campstatus['subid'].'">Download</a></td>';
+                <td>NA</td>
+                <td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td><td>NA</td></tr>';
             }
+            
         }
     
     echo "</tbody>";

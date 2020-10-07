@@ -45,22 +45,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
 
     $submission_id =  $_GET['submission_id'];
 
-    $sql = 'Select * FROM campaign_form_status WHERE submission_id = '.$submission_id.' ';
+    $sql = 'Select a.*, b.officialName FROM campaign_form_status AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.submission_id = '.$submission_id.' ';
     $result = $connection2->query($sql);
     $statusdata = $result->fetchAll();
 
     $sqle = 'Select * FROM campaign_email_sms_sent_details WHERE submission_id = '.$submission_id.' ';
     $resulte = $connection2->query($sqle);
     $mailsmsdata = $resulte->fetchAll();
-$names="";
-$email="";
-    $sql1 = 'Select response FROM wp_fluentform_submissions WHERE id = '.$submission_id.' ';
+
+    $sql1 = 'Select response, created_at FROM wp_fluentform_submissions WHERE id = '.$submission_id.' ';
     $resultval1 = $connection2->query($sql1);
     $submissionData = $resultval1->fetch();
     $sd = json_decode($submissionData['response'], TRUE);
-    if(!empty($sd)){
-        $names = implode(' ', $sd['names']);
-        $email = $sd['email'];
+    $names = '';
+    $email = '';
+    if(!empty($sd['student_name'])){
+        $names = implode(' ', $sd['student_name']);
+    }
+    if(!empty($sd['father_email'])){
+        $email = $sd['father_email'];
     }
     
      echo '<h2>';
@@ -68,16 +71,30 @@ $email="";
      echo '</h2>';
      
     ?>
-    <table style="width:100%">
+    <table class="table">
     <thead>
         <tr>
             <th>Name</th>
             <th>Email</th>
             <th>Status</th>
+            <th>Status Change By</th>
             <th>Status Change Date & Time</th>
         </tr>
     </thead>
     <tbody>
+    <?php if(!empty($submissionData)){ ?>
+        <tr>
+            <th><?php echo $names; ?></th>
+            <th><?php echo $email; ?></th>
+            <th>Submitted</th>
+            <th><?php echo $email; ?></th>
+            <th><?php 
+            $dt1 = new DateTime($submissionData['created_at']);
+            $created_at1 = $dt1->format('d-m-Y H:i:s');
+            
+            echo $created_at1; ?></th>
+        </tr>
+    <?php } ?>    
     <?php if(!empty($statusdata)) { 
         foreach($statusdata as $std){ 
         ?>
@@ -85,6 +102,7 @@ $email="";
             <th><?php echo $names; ?></th>
             <th><?php echo $email; ?></th>
             <th><?php echo $std['state']; ?></th>
+            <th><?php echo $std['officialName']; ?></th>
             <th><?php 
             $dt = new DateTime($std['cdt']);
             $created_at= $dt->format('d-m-Y H:i:s');
@@ -98,7 +116,7 @@ $email="";
 
     <?php if(!empty($mailsmsdata)) { ?>
     <h2>Email Sms Sent History<h2>
-     <table style="width:100%">
+     <table class="table">
     <thead>
         <tr>
             <th>Name</th>

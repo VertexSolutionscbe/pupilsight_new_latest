@@ -290,28 +290,28 @@ background-color: rgba(78, 88, 178, 0.75)!important;
 
                             <li id="menu-item-634"
                                 class="menu-item menu-item-type-custom menu-item-object-custom  menu-item-634 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                                <a href="#aboutus" class="tc-menu-inner">About</a>
+                                <a href="index.php#aboutus" class="tc-menu-inner">About</a>
                             </li>
                             <li id="menu-item-642"
                                 class="menu-item menu-item-type-post_type_archive menu-item-object-lp_course  menu-item-642 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                                <a href="#courses" class="tc-menu-inner">Courses</a>
+                                <a href="index.php#courses" class="tc-menu-inner">Courses</a>
                             </li>
                             <li id="menu-item-1069"
                                 class="menu-item menu-item-type-post_type_archive menu-item-object-tp_event menu-item-1069 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                                <a href="#events" class="tc-menu-inner">Events</a></li>
+                                <a href="index.php#events" class="tc-menu-inner">Events</a></li>
                             <li id="menu-item-1069"
                                 class="menu-item menu-item-type-post_type_archive menu-item-object-tp_event menu-item-1069 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                                <a href="#announcement" class="tc-menu-inner">Announcement</a></li>
+                                <a href="index.php#announcement" class="tc-menu-inner">Announcement</a></li>
 
                             <li id="menu-item-606"
                                 class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                                <a href="#contactus" class="tc-menu-inner">Contact us</a></li>
+                                <a href="index.php#contactus" class="tc-menu-inner">Contact us</a></li>
 								<li id="menu-item-606"
                                 class="menu-item  menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                                <a href="#application" class="tc-menu-inner"
+                                <a href="index.php#application" class="tc-menu-inner"
 								data-toggle="modal" 
 								
-								data-target="#Application"
+								data-target="index.php#Application"
 								>Admission</a></li>
                         </ul>
                         <div class="menu-mobile-effect navbar-toggle hidden" data-effect="mobile-effect">

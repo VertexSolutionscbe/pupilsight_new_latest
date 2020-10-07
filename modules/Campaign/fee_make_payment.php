@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
         // die();
         echo "<div class ='row fee_hdr FeeInvoiceListManage'><div class='col-md-12'> Invoices</div></div>";
 
-        echo "<table cellspacing='0' style='width: 100%' id='FeeInvoiceListManage'>";
+        echo "<table class='table' id='FeeInvoiceListManage'>";
         echo "<thead>";
         echo "<tr class='head'>";
         echo '<th>';

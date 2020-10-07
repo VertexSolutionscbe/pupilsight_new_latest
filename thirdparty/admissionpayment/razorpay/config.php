@@ -1,6 +1,6 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'].'/pupilsight.php';
+include $_SERVER['DOCUMENT_ROOT'].'/pupilsight/pupilsight.php';
 
 $sql = 'SELECT * FROM fn_fee_payment_gateway WHERE name = "RAZORPAY" ';
 $result = $connection2->query($sql);

@@ -468,9 +468,10 @@ if (isset($_SESSION["loginstatus"])) {
                                 <a href="#events" class="tc-menu-inner">Events</a></li>
                             <li id="menu-item-1069" class="menu-item menu-item-type-post_type_archive menu-item-object-tp_event menu-item-1069 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                                 <a href="#announcement" class="tc-menu-inner">Announcement</a></li>
-                            <?php if (!empty($campaign)) { ?>
+                            
                                 <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                                     <a href="#contactus" class="tc-menu-inner">Contact us</a></li>
+                            <?php if (!empty($campaign)) { ?>
                                 <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                                     <a href="#" class="tc-menu-inner">Admission</a>
                                     <ul class="dropdown-content">
@@ -478,11 +479,12 @@ if (isset($_SESSION["loginstatus"])) {
                                         </li>
                                         <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Application Status</a>
                                         </li>
-                                    <?php } ?>
+                                    
 
                                     </ul>
 
                                 </li>
+                            <?php } ?>
                         </ul>
                         <div class="menu-mobile-effect navbar-toggle hidden" data-effect="mobile-effect">
                             <div class="text-menu">

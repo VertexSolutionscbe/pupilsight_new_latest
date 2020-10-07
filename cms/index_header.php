@@ -1100,7 +1100,7 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
             <!-- Modal body -->
             <div class="modal-body">
                 <div class="container">
-                    <div class="alert alert-danger"></div>
+                    <!-- <div class="alert alert-danger"></div> -->
                     <div class="row">
                         <div class="col-sm-3 col-lg-3">
                         </div>
@@ -1162,30 +1162,32 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
 
                                 <div class="row" style="">
                                     <div class="col-sm-12 col-lg-12">
-                                        <table id="app_lst_tbl" cellspacing='0' class='table display data-table text-nowrap' style='display:none;width: 100%; font-size: 16px;margin-top:20px'>
-                                            <thead style="width:100% !important">
-                                                <tr class='head'>
-                                                    <th>
-                                                        SI No
-                                                    </th>
-                                                    <th>
-                                                        Campaign Name
-                                                    </th>
-                                                    <th>
-                                                        Submission Date
-                                                    </th>
+                                    <table id="app_lst_tbl" cellspacing='0' class='table' style='display:none;'>
+                                                <thead>
+                                                    <tr class='head'>
+                                                        <th style="width:10%">
+                                                            SI No
+                                                        </th>
+                                                        <th  style="width:25%">
+                                                            Applicant Name
+                                                        </th>
+                                                        <th  style="width:25%">
+                                                            Campaign Name
+                                                        </th>
+                                                        <th style="width:20%">
+                                                            Submission Date
+                                                        </th>
 
-                                                    <th>
-                                                        Status
-                                                    </th>
+                                                        <th style="width:20%">
+                                                            Status
+                                                        </th>
 
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
 
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
 
                                     </div>
                                 </div>

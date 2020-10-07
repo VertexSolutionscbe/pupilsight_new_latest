@@ -1906,7 +1906,7 @@ if ($type == 'getCampaignStatusButton') {
             $stats = $resultval->fetchAll();
         } else {
 
-            $sq = 'SELECT a.id FROM workflow_state AS a LEFT JOIN workflow_map AS b ON a.workflowid = b.workflow_id WHERE a.name = "A" AND b.campaign_id = '.$cid.' ';
+            $sq = 'SELECT a.id FROM workflow_state AS a LEFT JOIN workflow_map AS b ON a.workflowid = b.workflow_id WHERE a.name = "Submitted" AND b.campaign_id = '.$cid.' ';
             $resultsq = $connection2->query($sq);
             $sqstate = $resultsq->fetch();
             $fromStateSub = $sqstate['id'];

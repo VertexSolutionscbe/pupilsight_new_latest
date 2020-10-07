@@ -736,7 +736,7 @@
                 data: { cid: cid, sid: sid, sname: sname, fid: fid, subid: subid },
                 async: true,
                 success: function (response) {
-                    // location.reload();
+                    location.reload();
                     // $("#preloader").fadeOut("slow", function () {
                     //     //$(this).remove();
                     //     window.location.href = response;
@@ -8169,6 +8169,7 @@ $(document).on('change', '#getMultiClassByProg', function () {
         success: function (response) {
             $("#showMultiClassByProg").html();
             $("#showMultiClassByProg").html(response);
+            $("#showMultiClassByProg").parent().children('.LV_validation_message').remove();
             $('#showMultiClassByProg').selectize({
                 plugins: ['remove_button'],
             });
@@ -8204,4 +8205,12 @@ $(document).on('change', '.showTemplateName', function () {
     var tname = checked.join(", ");
     var wid = $(this).attr('data-wid');
     $("#showTemplateName" + wid).html(tname);
+});
+
+$(document).on('change', '.changeForm', function () {
+    if ($(this).is(':checked')) {
+        $("#onlineClick")[0].click();
+    } else {
+        $("#offlineClick")[0].click();
+    }
 });
