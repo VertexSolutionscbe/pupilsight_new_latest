@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
     $resulte = $connection2->query($sqle);
     $mailsmsdata = $resulte->fetchAll();
 
-    $sql1 = 'Select response, created_at FROM wp_fluentform_submissions WHERE id = '.$submission_id.' ';
+    $sql1 = 'Select a.response, a.created_at, b.officialName FROM wp_fluentform_submissions AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.id = '.$submission_id.' ';
     $resultval1 = $connection2->query($sql1);
     $submissionData = $resultval1->fetch();
     $sd = json_decode($submissionData['response'], TRUE);
@@ -64,6 +64,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
     }
     if(!empty($sd['father_email'])){
         $email = $sd['father_email'];
+    }
+
+    if(!empty($sd['form_id'])){
+        $sqlc = 'Select form_id, offline_form_id FROM campaign WHERE form_id = '.$sd['form_id'].' OR offline_form_id = '.$sd['form_id'].' ';
+        $resultc = $connection2->query($sqlc);
+        $submissionData = $resultc->fetch();
     }
     
      echo '<h2>';
@@ -87,7 +93,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
             <th><?php echo $names; ?></th>
             <th><?php echo $email; ?></th>
             <th>Submitted</th>
-            <th><?php echo $email; ?></th>
+            <?php if(!empty($submissionData['officialName'])) { ?>
+                <th><?php echo $submissionData['officialName']; ?></th>
+            <?php } else { ?>
+                <th><?php echo $email; ?></th>
+            <?php } ?>
             <th><?php 
             $dt1 = new DateTime($submissionData['created_at']);
             $created_at1 = $dt1->format('d-m-Y H:i:s');
@@ -97,6 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
     <?php } ?>    
     <?php if(!empty($statusdata)) { 
         foreach($statusdata as $std){ 
+
         ?>
         <tr>
             <th><?php echo $names; ?></th>

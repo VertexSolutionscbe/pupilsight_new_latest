@@ -15,7 +15,7 @@ $campId = $forms['campId'];
     <div class="modal-content">
     <div class="modal-header">
        
-        <span class="modal-title mt-5" id="mySmallModalLabel" style="font-size:20px;font-weight:bold;">Create Form</span>  
+        <span class="modal-title mt-5" id="mySmallModalLabel" style="font-size:20px;font-weight:bold;">View & Edit Form</span>  
 
         <span class='ml-5 mt-5'>(Email or Mobile Field is Mandotry (input type field should be email or mobile)</span>
 
@@ -42,9 +42,16 @@ $campId = $forms['campId'];
 
     $('#wppage').load(function() {
         var iframe = $('#wppage').contents();
-        iframe.find("#wpadminbar").hide();
-        iframe.find(".form_internal_menu").hide();
-        iframe.find("#adminmenumain").hide();
+        iframe.find("#wpadminbar").remove();
+        iframe.find(".form_internal_menu").remove();
+        iframe.find("#adminmenumain").remove();
+        iframe.find(".entry_submission_activity").remove();
+        iframe.find(".entry_submission_logs").remove();
+        iframe.find(".ff_email_resend_inline").remove();
+        iframe.find(".el-icon-back").parent().remove();
+        iframe.find(".el-dropdown-selfdefine").remove();
+        iframe.find("#wpcontent").append($("<style type='text/css'> #wpcontent {margin-left:0px !important;margin-top: -50px;}  </style>"));
+        
         iframe.find("#saveFormData").click(function() {
             var fformid = $(this).parent().children().attr('data-clipboard-text');
             

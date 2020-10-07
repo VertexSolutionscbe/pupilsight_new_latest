@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     &nbsp;&nbsp;<a id='offlineClick' style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/offline_campaignFormList.php&id=".$id."'   class=' btn btn-primary' >Offline Submitted List</a>
     &nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=".$id."'   class=' btn btn-primary' id='' >Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' id='sendSMS'>Send SMS</a>";  
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' id='sendEmail'>Send Email</a>";
-    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i></div></div> <br>';
+    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i> <i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
     //  print_r($criteria);
     //  die();
@@ -162,6 +162,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         echo $showfields2 = '<select id="showfield2" class="filterCampaign" style="display:none;"><option>Select Search Criteria</option><option value="search">Search</option><option value="range">Range</option><option value="distance">Distance</option></select><input type="text" class="filterCampaign searchOpen searchby" name="searchby" id="" placeholder="Enter Your Search Data" style="display:none;"><input type="text" id="range1" name="rangestart" class="rangeOpen filterCampaign searchby" placeholder="Enter Your Start Range" style="display:none;"><input type="text" name="rangeend" class="rangeOpen filterCampaign searchby" id="range2" placeholder="Enter Your End Range" style="display:none;"><input type="hidden" id="campaignId" value='.$id.'><input type="hidden" id="formId" value='.$formId.'><button id="filterCampaign" class="btn btn-primary">Search</button>
         <br/>
           <span id="totalCount">&nbsp;Total Count : '.count($dataSet).'</span>
+
+         
         </div>';
 }
 
@@ -172,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
    echo "<input type='hidden' name='form_id' data-cid='".$id."' id='form_id' value = '".$formId."'> ";
   
 
-
+//    array_reverse($dataSet->data);
     if(!empty($formId)){
         $table->addCheckboxColumn('submission_id',__(''))
         ->addClass('chkbox')
@@ -180,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         ->notSortable()
         ->width('10%');
 
-
+        
         $len = count($dataSet->data);
         $i = 0;
         $flag = TRUE;
@@ -248,10 +250,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 $dataSet->data[$i][$field[$j]]=$fieldval[$j];
                 if($flag){
                     $headcol = ucwords(str_replace("_", " ", $field[$j]));
-                    $table->addColumn(''.$field[$j].'', __(''.$headcol.''))
-                    ->width('10%')
-                    ->notSortable()
-                    ->translatable();
+                    if($field[$j] == 'file-upload'){
+                        $table->addColumn(''.$field[$j].'', __(''.$headcol.''))
+                            ->format(function ($dataSet) {
+                                if($dataSet['file-upload'] != ''){
+                                    return '<a href="'.$dataSet['file-upload'].'" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                }
+                                
+                            });
+                    } elseif($field[$j] == 'image-upload'){
+                        $table->addColumn(''.$field[$j].'', __(''.$headcol.''))
+                            ->format(function ($dataSet) {
+                                if($dataSet['image-upload'] != ''){
+                                    return '<a href="'.$dataSet['image-upload'].'" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                }
+                               
+                            });
+                    } else {
+                        $table->addColumn(''.$field[$j].'', __(''.$headcol.''))
+                        ->width('10%')
+                        ->notSortable()
+                        ->translatable();
+                    }
+                    
 
                 }
                 $j++;
@@ -272,14 +293,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $table->addActionColumn()
      
         ->addParam('submission_id')
-        ->format(function ($person, $actions) use ($guid) { 
+        ->format(function ($dataSet, $actions) use ($guid) { 
                $actions->addAction('View', __('Show History'))
                ->setTitle('form')
                ->setIcon('eye')
+               ->setId('showhistory-'.$dataSet["submission_id"])
                ->setURL('modules/Campaign/history.php')
                ->modalWindow(1100, 550);
 
                $actions->addAction('form', __('Form'))
+                ->setId('showform-'.$dataSet["submission_id"])
                 ->setURL('/modules/Campaign/wplogin_form.php')
                 ->modalWindow(1100, 550);
           
@@ -504,6 +527,42 @@ $(document).ready(function() {
             alert('You Have to Select Applicant');
         }
         
+    });
+
+    $(document).on('click', '#showHistory', function() {
+        var favorite = [];
+        $.each($("input[name='submission_id[]']:checked"), function () {
+            favorite.push($(this).val());
+        });
+        var stuid = favorite.join(",");
+        if(stuid) {
+            if (favorite.length == 1) {
+                var id = stuid;
+                $("#showhistory-"+id)[0].click();
+            } else {
+                alert('You Have to Select One Applicant at a time.');
+            }
+        } else {
+            alert('You Have to Select Applicant.');
+        }
+    });
+
+    $(document).on('click', '#viewForm', function() {
+        var favorite = [];
+        $.each($("input[name='submission_id[]']:checked"), function () {
+            favorite.push($(this).val());
+        });
+        var stuid = favorite.join(",");
+        if(stuid) {
+            if (favorite.length == 1) {
+                var id = stuid;
+                $("#showform-"+id)[0].click();
+            } else {
+                alert('You Have to Select One Applicant at a time.');
+            }
+        } else {
+            alert('You Have to Select Applicant.');
+        }
     });
 </script>
 <?php
