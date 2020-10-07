@@ -144,8 +144,7 @@
                         {% endif %}
                     </nav>
 
-                    {% else %} {{ column.getOutput(rowData.data)|raw }} {% endif %} {{ cell.getAppended|raw }}
-                    &nbsp;
+                    {% else %} {{ column.getOutput(rowData.data)|raw }}&nbsp; {% endif %} {{ cell.getAppended|raw }}
                 </td>
                 {% endfor %} {{ row.getAppended|raw }}
             </tr>

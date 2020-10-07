@@ -5642,22 +5642,52 @@ function print_emoji_styles() {
 	$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
 	?>
 <style<?php echo $type_attr; ?>>
-img.wp-smiley,
-img.emoji {
-	display: inline !important;
-	border: none !important;
-	box-shadow: none !important;
-	height: 1em !important;
-	width: 1em !important;
-	margin: 0 .07em !important;
-	vertical-align: -0.1em !important;
-	background: none !important;
-	padding: 0 !important;
-}
-#wpadminbar, #footer-thankyou, #screen-meta-links,.error_notice_ff_fluentform_pro_license{
-    display: none;
-    visibility: hidden;
-  }
+	img.wp-smiley,
+	img.emoji {
+		display: inline !important;
+		border: none !important;
+		box-shadow: none !important;
+		height: 1em !important;
+		width: 1em !important;
+		margin: 0 .07em !important;
+		vertical-align: -0.1em !important;
+		background: none !important;
+		padding: 0 !important;
+	}
+	#wpadminbar, #footer-thankyou, #wpfooter, #wpdt-inline-logo, #screen-meta-links,.error_notice_ff_fluentform_pro_license{
+		display: none;
+		visibility: hidden;
+	}
+
+	body {
+		background-color: transparent !important;
+	}
+
+	.wrap.ff_form_wrap .form_internal_menu{
+		z-index:0;
+	}
+
+	html.wp-toolbar {
+		padding-top: 0 !important;
+	}
+
+	#adminmenu a{
+		color: rgba(53, 64, 82, 0.72) !important;
+		background-color: #ffffff !important;
+	}
+
+	#adminmenu, #adminmenu .wp-submenu, #adminmenuback, #adminmenuwrap {
+		background-color: #ffffff !important;
+		border-right: 1px solid rgba(110, 117, 130, 0.2);
+	}
+	.opensub{
+		background-color: #f1f1f1 !important;
+	}
+	.wpdt-c .card .card-header.ch-alt{
+		padding:20px !important;
+	}
+	
+
 </style>
 	<?php
 }
