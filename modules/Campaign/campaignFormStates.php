@@ -42,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
             $sd = json_decode($rowdata['response'], TRUE);
             if(!empty($sd)){
                 $names = implode(' ', $sd['names']);
-                $email = $sd['msg_email'];
-                $number = $sd['msg_phone'];
+                $email = $sd['email'];
+                // $number = $sd['msg_phone'];
                 $pupilsightProgramID = $rowdata['pupilsightProgramID'];
                 $pupilsightYearGroupID = $rowdata['pupilsightYearGroupID'];
             }
@@ -55,9 +55,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
             // die();
             if($datachk['kount'] == 0){
 
-                $data = array('campaign_id' => $campaignId,'form_id' => $formId, 'submission_id' => $sub, 'state' => $statename,  'state_id' => $stateid, 'status' => '1', 'cdt' => $crtd);
-                                
-                $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, cdt=:cdt";
+                $data = array('campaign_id' => $campaignId,'form_id' => $formId, 'submission_id' => $sub, 'state' => $statename,  'state_id' => $stateid, 'status' => '1', 'pupilsightPersonID' => $cuid, 'cdt' => $crtd);
+                
+                $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, cdt=:cdt";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
 
@@ -182,6 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                     $sqltemplate="SELECT * FROM pupilsightTemplate WHERE pupilsightTemplateID IN (".$chknotitype['pupilsightTemplateIDs'].") ";
                     $resulttem = $connection2->query($sqltemplate);
                     if($chknotitype['notification'] == '3'){
+                        echo '1';
                         $templateData = $resulttem->fetchAll();
                         
                         foreach($templateData as $td){
@@ -215,6 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                             }    
                         }
                     } else {
+                        echo '2';
                         $templateData = $resulttem->fetch();
                         $subject = $templateData['subject'];
                         $description = $templateData['description'];
@@ -227,8 +229,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                 $url .="&subject=".rawurlencode($subject);
                                 $url .="&body=".rawurlencode($body);
                                 $res = file_get_contents($url);
+                                echo $url;
                                 
-                                $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', email='".$email."', subject='".$subject."', description='".stripslashes($body)."', pupilsightPersonID=".$cuid." ";
+                                echo $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', email='".$email."', subject='".$subject."', description='".stripslashes($body)."', pupilsightPersonID=".$cuid." ";
                                 $connection2->query($sq);
                             }    
                         } else if($chknotitype['notification'] == '2'){
@@ -247,7 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                 }
             }    
             
-           
+           die();
 
             
             

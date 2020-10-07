@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                 
         $col = $row->addColumn()->setClass('newdes showClass');
                 $col->addLabel('classes', __('Class'))->addClass('dte');
-                $col->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple();    
+                $col->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple()->required();    
         // $col = $row->addColumn()->setClass('newdes');
         //         $col->addLabel('seats', __('Seats'))->addClass('dte');
         //         $col->addTextField('seats')->addClass('txtfield'); 
@@ -221,7 +221,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         overflow: auto;
     }
 
-    
+    select[multiple] {
+        min-height: 35px !important;
+    }
 </style>
 <script>
 
@@ -232,9 +234,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         }
     });
     
-    $(document).ready(function () {
-      	$('#showMultiClassByProg').selectize({
-      		plugins: ['remove_button'],
-      	});
-    });
+    // $(document).ready(function () {
+    //   	$('#showMultiClassByProg').selectize({
+    //   		plugins: ['remove_button'],
+    //   	});
+    // });
 </script>

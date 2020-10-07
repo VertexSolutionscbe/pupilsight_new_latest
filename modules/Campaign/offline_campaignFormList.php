@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $page->addError(__('You do not have access to this action.'));
 } else {
     
-    $page->breadcrumbs->add(__('Campaign Submitted Form List'));
+    $page->breadcrumbs->add(__('Offline Campaign Submitted Form List'));
 
  
      if (isset($_GET['return'])) {
@@ -72,15 +72,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
      echo __('Offline Campaign Submitted Form List');
      echo '</h2>';
 
+     echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" ><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
+
     // echo $butt = '<i id="btnExport" title="Export PDF" class="far fa-file-pdf download_icon"></i> ';
     //echo $butt = '<i id="expore_csv" title="Export CSV" class="fas fa-file-csv download_icon"></i> ';
     echo "<div style='height:25px; margin-top:5px;'><div class='float-right mb-2'>
     <a style='display:none; ' href='".$_SESSION[$guid]['absoluteURL']."/fullscreen.php?q=/modules/Campaign/fee_make_payment.php&cid=".$id."' class='thickbox btn btn-primary' id='clickAdmissionFeePayment'>Fee Payment</a>
     <a style='display:none; margin-bottom:10px;'  class='btn btn-primary' id='admissionFeePayment'>Fee Payment</a>
-    &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/campaignFormList.php&id=".$id."'   class=' btn btn-primary' >Online Submitted List</a>
-    &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=".$id."'   class=' btn btn-primary' id='sendSMS'>Add</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' id='sendSMS'>Send SMS</a>";  
+    &nbsp;&nbsp;<a id='onlineClick' style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/campaignFormList.php&id=".$id."'   class=' btn btn-primary' >Online Submitted List</a>
+    &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_formopen.php&id=".$id."'   class=' btn btn-primary' id=''>Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' id='sendSMS'>Send SMS</a>";  
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' id='sendEmail'>Send Email</a>";
-    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i></div></div> <br>';
+    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
     //  print_r($criteria);
     //  die();
@@ -271,14 +273,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $table->addActionColumn()
      
         ->addParam('submission_id')
-        ->format(function ($person, $actions) use ($guid) { 
+        ->format(function ($dataSet, $actions) use ($guid) { 
                $actions->addAction('View', __('Show History'))
                ->setTitle('form')
                ->setIcon('eye')
+               ->setId('showhistory-'.$dataSet["submission_id"])
                ->setURL('modules/Campaign/history.php')
                ->modalWindow(1100, 550);
 
                $actions->addAction('form', __('Form'))
+                ->setId('showform-'.$dataSet["submission_id"])
                 ->setURL('/modules/Campaign/wplogin_form.php')
                 ->modalWindow(1100, 550);
           
@@ -295,6 +299,95 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
    
 }
 ?>
+
+
+
+<style>
+    .download_icon {
+        cursor : pointer;
+    }
+
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 90px;
+    height: 34px;
+    }
+
+    .switch input {display:none;}
+
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ca2222;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    input:checked + .slider {
+    background-color: #2ab934;
+    }
+
+    input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+    -webkit-transform: translateX(55px);
+    -ms-transform: translateX(55px);
+    transform: translateX(55px);
+    }
+
+    /*------ ADDED CSS ---------*/
+    .on
+    {
+    display: none;
+    }
+
+    .on, .off
+    {
+    color: white;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    font-size: 15px;
+    font-family: Verdana, sans-serif;
+    }
+
+    input:checked+ .slider .on
+    {display: block;}
+
+    input:checked + .slider .off
+    {display: none;}
+
+    /*--------- END --------*/
+
+    /* Rounded sliders */
+    .slider.round {
+    border-radius: 34px;
+    }
+
+    .slider.round:before {
+    border-radius: 50%;
+    }
+</style>
 
 <script>
 $(document).ready(function() {
@@ -436,6 +529,42 @@ $(document).ready(function() {
                     $("#expore_tbl").parent().html(response);
                 }
             });
+        }
+    });
+
+    $(document).on('click', '#showHistory', function() {
+        var favorite = [];
+        $.each($("input[name='submission_id[]']:checked"), function () {
+            favorite.push($(this).val());
+        });
+        var stuid = favorite.join(",");
+        if(stuid) {
+            if (favorite.length == 1) {
+                var id = stuid;
+                $("#showhistory-"+id)[0].click();
+            } else {
+                alert('You Have to Select One Applicant at a time.');
+            }
+        } else {
+            alert('You Have to Select Applicant.');
+        }
+    });
+
+    $(document).on('click', '#viewForm', function() {
+        var favorite = [];
+        $.each($("input[name='submission_id[]']:checked"), function () {
+            favorite.push($(this).val());
+        });
+        var stuid = favorite.join(",");
+        if(stuid) {
+            if (favorite.length == 1) {
+                var id = stuid;
+                $("#showform-"+id)[0].click();
+            } else {
+                alert('You Have to Select One Applicant at a time.');
+            }
+        } else {
+            alert('You Have to Select Applicant.');
         }
     });
 </script>

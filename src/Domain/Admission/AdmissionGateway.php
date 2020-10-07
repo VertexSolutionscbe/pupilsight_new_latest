@@ -93,7 +93,7 @@ class AdmissionGateway extends QueryableGateway
                 $query->where('fd.form_id = '.$form_id.' ');
             }
             $query->groupBy(['fd.submission_id'])
-                    ->orderBy(['fd.submission_id DESC']);
+                 ->orderBy(['fd.submission_id DESC']);
         } else {
             $query = $this
             ->newQuery()

@@ -6,7 +6,10 @@ Pupilsight, Flexible & Open School System
 include '../../pupilsight.php';
 use Pupilsight\Contracts\Comms\Mailer;
 
-$input = json_decode($data, true);
+// ini_set( 'display_errors', 1 );
+// error_reporting( E_ALL );
+
+// $input = json_decode($data, true);
 
 $to = $_GET['to'];
 $subject = $_GET['subject'];

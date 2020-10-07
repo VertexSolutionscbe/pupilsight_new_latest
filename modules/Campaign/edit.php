@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
                     
             $col = $row->addColumn()->setClass('newdes showClass');
                     $col->addLabel('classes', __('Class'))->addClass('dte');
-                    $col->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple()->fromArray($classes)->selected($setclass);         
+                    $col->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple()->fromArray($classes)->selected($setclass)->required();         
 
             // $col = $row->addColumn()->setClass('newdes');
             //         $col->addLabel('seats', __('Seats'))->addClass('dte');
