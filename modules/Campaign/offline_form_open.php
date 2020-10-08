@@ -3,11 +3,12 @@
 include '../../pupilsight.php';
 $session = $container->get('session');
 $subId = $_GET['subid'];
-$sql = 'Select a.form_id,b.id AS campId FROM wp_fluentform_submissions AS a LEFT JOIN campaign AS b ON a.form_id = b.form_id WHERE a.id = '.$subId.' ';
+$sql = 'Select a.form_id,b.id AS campId FROM wp_fluentform_submissions AS a LEFT JOIN campaign AS b ON a.form_id = b.offline_form_id WHERE a.id = '.$subId.' ';
 $result = $connection2->query($sql);
 $forms = $result->fetch();
 $formId = $forms['form_id'];
 $campId = $forms['campId'];
+
 ?>
 
 <div class="modal fade bd-example-modal-lg show" id="popUp" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display:block !important;">
@@ -33,11 +34,7 @@ $campId = $forms['campId'];
 </div>
 <script>
     $(document).on('click','#closepopup',function(){
-        // if (confirm("Are you sure want to close?")) {
-            window.location.href = "<?php echo $_SESSION[$guid]['absoluteURL'];?>/index.php?q=/modules/Campaign/campaignFormList.php&id=<?php echo $campId;?>";
-            
-        // }
-        // return false;
+        window.location.href = "<?php echo $_SESSION[$guid]['absoluteURL'];?>/index.php?q=/modules/Campaign/offline_campaignFormList.php&id=<?php echo $campId;?>";
     });
 
     $('#wppage').load(function() {

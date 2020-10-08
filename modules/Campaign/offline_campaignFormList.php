@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
      $formId = '';
      if(isset($_REQUEST['id'])?$id=$_REQUEST['id']:$id="" );
 
-    $sql1 = 'Select offline_form_id FROM campaign WHERE id = '.$id.' ';
+    $sql1 = 'Select offline_form_id, name FROM campaign WHERE id = '.$id.' ';
     $resultval1 = $connection2->query($sql1);
     $formid = $resultval1->fetch();
     //  echo $formid['form_id'];
@@ -69,7 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
  
      // QUERY
      echo '<h2>';
-     echo __('Offline Campaign Submitted Form List');
+     echo __('Offline Campaign Submitted Form List  ');
+     echo '('.$formid['name'].')';
      echo '</h2>';
 
      echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" ><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
@@ -102,6 +103,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$id.' ';
     $resultval = $connection2->query($sql);
     $stats = $resultval->fetchAll();
+
+    $statefields = '<select class="" id="applicationStatus" ><option value="">Select Status</option><option value="Submitted">Submitted</option>';
+    foreach($stats as $st){
+        $statefields .= '<option value="'.$st['id'].'" >'.$st['transition_display_name'].'</option>';
+    }
+    $statefields .= '</select>';
+
     // echo '<pre>';
     //  print_r($dataSet);
     // echo '</pre>';
@@ -125,44 +133,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $showfields = '<div style="display:inline-flex;width:50%"><select class="filterCampaign" id="showfield1" style="width:50%"><option>Select Field for Filter</option>';
         foreach($field as $fe){
             foreach($fe as $f){
-                if(!empty($f->fields)){
+                // if(!empty($f->fields)){
                     
-                    foreach($f->fields as $fs){
-                        if(!empty($fs->attributes)){
-                            $lbl = $fs->attributes->placeholder;
+                //     foreach($f->fields as $fs){
+                //         if(!empty($fs->attributes)){
+                //             $lbl = $fs->attributes->placeholder;
+                //             if(empty($lbl)){
+                //                 $lbl = $fs->attributes->name;
+                //             }
+                //             $lbl = str_replace("_"," ",$lbl);
+                //             if($lbl){
+                //                 $fields[] = $fs->attributes->name;
+                //                 $showfields .= '<option value="'.$fs->attributes->name.'" >'.ucwords($lbl).'</option>';
+                //             }
+                //         }
+                //     }
+
+                // } else {
+                    if(!empty($f->attributes->name)){
+                        if(strpos($f->attributes->name, 'terms-n-condition') !== false){
+
+                        } else {
+                            $fields[] = $f->attributes->name;
+
+                            $lbl = $f->attributes->placeholder;
                             if(empty($lbl)){
-                                $lbl = $fs->attributes->name;
+                                $lbl = $f->attributes->name;
                             }
                             $lbl = str_replace("_"," ",$lbl);
-                            if($lbl){
-                                $fields[] = $fs->attributes->name;
-                                $showfields .= '<option value="'.$fs->attributes->name.'" >'.ucwords($lbl).'</option>';
-                            }
+                            $showfields .= '<option value="'.$f->attributes->name.'" >'.ucwords($lbl).'</option>';
                         }
+                        
                     }
-
-                } else {
-                    if(!empty($f->attributes)){
-                        $fields[] = $f->attributes->name;
-
-                        $lbl = $f->attributes->placeholder;
-                        if(empty($lbl)){
-                            $lbl = $f->attributes->name;
-                        }
-                        $lbl = str_replace("_"," ",$lbl);
-                        $showfields .= '<option value="'.$f->attributes->name.'" >'.ucwords($lbl).'</option>';
-                    }
-                }
+                // }
                 
             }
         }
         $showfields .= '</select>';
         echo $showfields;
 
-        echo $showfields2 = '<select id="showfield2" class="filterCampaign" style="display:none;"><option>Select Search Criteria</option><option value="search">Search</option><option value="range">Range</option><option value="distance">Distance</option></select><input type="text" class="filterCampaign searchOpen searchby" name="searchby" id="" placeholder="Enter Your Search Data" style="display:none;"><input type="text" id="range1" name="rangestart" class="rangeOpen filterCampaign searchby" placeholder="Enter Your Start Range" style="display:none;"><input type="text" name="rangeend" class="rangeOpen filterCampaign searchby" id="range2" placeholder="Enter Your End Range" style="display:none;"><input type="hidden" id="campaignId" value='.$id.'><input type="hidden" id="formId" value='.$formId.'><button id="filterCampaign" class="btn btn-primary">Search</button>
+        echo $showfields2 = '<select id="showfield2" class="filterCampaign" style="display:none;height: 36px;"><option>Select Search Criteria</option><option value="search">Search</option><option value="range">Range</option><option value="distance">Distance</option></select><input type="text" class="filterCampaign searchOpen searchby" name="searchby" id="" placeholder="Enter Your Search Data" style="display:none;height: 36px;"><input type="text" id="range1" name="rangestart" class="rangeOpen filterCampaign searchby" placeholder="Enter Your Start Range" style="display:none;height: 36px;"><input type="text" name="rangeend" class="rangeOpen filterCampaign searchby" id="range2" placeholder="Enter Your End Range" style="display:none;height: 36px;"><input type="hidden" id="campaignId" value='.$id.'><input type="hidden" id="formId" value='.$formId.'>
+        <input type="text" id="applicationName" style="height: 36px;" name="applicationName" class=""  placeholder="Application Name" >&nbsp;
+        <input type="text" id="applicationId" style="height: 36px;" name="application_id" class=""  placeholder="Application No" >&nbsp;
+        '.$statefields.' &nbsp;
+        <button id="offlinefilterCampaign" style="height: 36px;" class="btn btn-primary">Search</button>
+        
+        </div>
         <br/>
-          <span id="totalCount">&nbsp;Total Count : '.count($dataSet).'</span>
-        </div>';
+        <span id="totalCount">&nbsp;Total Count : '.count($dataSet).'</span>
+        ';
 }
 
     // $sqlw = 'Select * FROM wp_fluentform_entry_details WHERE form_id = '.$formId.' ';
@@ -171,7 +190,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     
    echo "<input type='hidden' name='form_id' data-cid='".$id."' id='form_id' value = '".$formId."'> ";
   
-
+   $arrHeader = array();
+    foreach($field as $fe){
+        foreach($fe as $f){
+            if(!empty($f->attributes)){
+                $arrHeader[] = $f->attributes->name;
+            }
+        }
+    }
 
     if(!empty($formId)){
         $table->addCheckboxColumn('submission_id',__(''))
@@ -179,6 +205,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         ->context('Select')
         ->notSortable()
         ->width('10%');
+
+        $table->addColumn('application_id',__('Application No'))
+         ->width('10%');
 
 
         $len = count($dataSet->data);
@@ -248,12 +277,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             while($j<$jlen){
                 $dataSet->data[$i][$field[$j]]=$fieldval[$j];
                 if($flag){
-                    $headcol = ucwords(str_replace("_", " ", $field[$j]));
-                    $table->addColumn(''.$field[$j].'', __(''.$headcol.''))
-                    ->width('10%')
-                    ->notSortable()
-                    ->translatable();
-
+                    foreach($arrHeader as $ar){
+                        $headcol = ucwords(str_replace("_", " ", $ar));
+                        if($ar == 'file-upload'){
+                            $table->addColumn(''.$ar.'', __(''.$headcol.''))
+                                ->format(function ($dataSet) {
+                                    if($dataSet['file-upload'] != ''){
+                                        return '<a href="'.$dataSet['file-upload'].'" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                    }
+                                    
+                                });
+                        } elseif($ar == 'image-upload'){
+                            $table->addColumn(''.$ar.'', __(''.$headcol.''))
+                                ->format(function ($dataSet) {
+                                    if($dataSet['image-upload'] != ''){
+                                        return '<a href="'.$dataSet['image-upload'].'" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                    }
+                                
+                                });
+                        } else {
+                            $table->addColumn(''.$ar.'', __(''.$headcol.''))
+                            ->width('10%')
+                            ->notSortable()
+                            ->translatable();
+                        }
+                    }
                 }
                 $j++;
             }
@@ -283,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
                $actions->addAction('form', __('Form'))
                 ->setId('showform-'.$dataSet["submission_id"])
-                ->setURL('/modules/Campaign/wplogin_form.php')
+                ->setURL('/modules/Campaign/offline_wplogin_form.php')
                 ->modalWindow(1100, 550);
           
         });
@@ -511,7 +559,7 @@ $(document).ready(function() {
         
     });
 
-    $(document).on('click', '#filterCampaign', function () {
+    $(document).on('click', '#offlinefilterCampaign', function () {
         var field = $("#showfield1").val();
         var searchby = $("#showfield2").val();
         var search = $(".searchOpen").val();
@@ -519,18 +567,24 @@ $(document).ready(function() {
         var range2 = $("#range2").val();
         var cid = $("#campaignId").val();
         var fid = $("#formId").val();
+        var aid = $("#applicationId").val();
+        var stid = $("#applicationStatus option:selected").val();
+        var aname = $("#applicationName").val();
         if (field != '' && searchby != '') {
             $.ajax({
                 url: 'modules/Campaign/offline_campaignFormListSearch.php',
                 type: 'post',
-                data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid },
+                data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid, aid: aid, stid: stid, aname: aname },
                 async: true,
                 success: function (response) {
-                    $("#expore_tbl").parent().html(response);
+                    $("#expore_tbls").html();
+                    $("#expore_tbls").html(response);
                 }
             });
         }
     });
+
+    
 
     $(document).on('click', '#showHistory', function() {
         var favorite = [];

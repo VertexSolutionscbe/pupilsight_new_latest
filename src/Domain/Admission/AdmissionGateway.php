@@ -86,14 +86,15 @@ class AdmissionGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from('wp_fluentform_entry_details as fd')
+            // ->cols([
+            //     'fd.submission_id', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' OR fd.sub_field_name = '0' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as workflowstate'
+            // ]);
             ->cols([
-                'fd.submission_id', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' OR fd.sub_field_name = '0' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as workflowstate'
-            ]);
-            if(!empty($form_id)){
-                $query->where('fd.form_id = '.$form_id.' ');
-            }
-            $query->groupBy(['fd.submission_id'])
-                 ->orderBy(['fd.submission_id DESC']);
+                'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as workflowstate'
+            ])
+            ->where('fd.form_id = '.$form_id.' ')
+            ->groupBy(['fd.submission_id'])
+            ->orderBy(['fd.submission_id DESC']);
         } else {
             $query = $this
             ->newQuery()
@@ -106,30 +107,116 @@ class AdmissionGateway extends QueryableGateway
            
         }    
 
-            
-        
-        return $this->runQuery($query, $criteria);
+        $res = $this->runQuery($query, $criteria);
+        $data = $res->data;
+
+        if(!empty($data)){
+            foreach($data as $k=>$d){
+                $submission_id = $d['submission_id'];
+                 $query2 = $this
+                    ->newQuery()
+                    ->from('wp_fluentform_submissions')
+                    ->cols([
+                        'wp_fluentform_submissions.*'
+                    ])
+                    ->where('wp_fluentform_submissions.id = "'.$submission_id.'" ');
+                
+                    $newdata = $this->runQuery($query2, $criteria);
+                    if(!empty($newdata->data[0]['application_id'])){
+                        $data[$k]['application_id'] = $newdata->data[0]['application_id'];
+                        $data[$k]['pupilsightProgramID'] = $newdata->data[0]['pupilsightProgramID'];
+                        $data[$k]['pupilsightYearGroupID'] = $newdata->data[0]['pupilsightYearGroupID'];
+                        $data[$k]['fn_fee_invoice_id'] = $newdata->data[0]['fn_fee_invoice_id'];
+                    } else {
+                        $data[$k]['application_id'] = '';
+                        $data[$k]['pupilsightProgramID'] = '';
+                        $data[$k]['pupilsightYearGroupID'] = '';
+                        $data[$k]['fn_fee_invoice_id'] = '';
+                    }
+                
+            }
+        }  
+        //  echo '<pre>';
+        //     print_r($data);
+        //     echo '</pre>';
+        //     die();
+        $res->data = $data;
+        return $res;
        
     }
 
-    public function getSearchCampaignFormList(QueryCriteria $criteria, $submissionIds) {
+    public function getSearchCampaignFormList(QueryCriteria $criteria, $submissionIds, $application_id, $applicationStatus) {
         
         $query = $this
             ->newQuery()
             ->from('wp_fluentform_entry_details as fd')
+            // ->cols([
+            //     'fd.submission_id', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as state'
+            // ]);
             ->cols([
-                'fd.submission_id', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as state'
-            ]);
+                'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", "GROUP_CONCAT(fd.field_value) as field_value",'(select cs.state from campaign_form_status AS cs where cs.submission_id=fd.submission_id and cs.status=1 order by cs.id desc limit 1) as workflowstate','ws.id','ws.application_id'
+            ])
+            ->leftJoin('wp_fluentform_submissions AS ws', 'fd.submission_id=ws.id');
+            if(!empty($applicationStatus) && $applicationStatus != 'Submitted'){
+                $query->leftJoin('campaign_form_status AS cfs', 'fd.submission_id=cfs.submission_id');
+            }
             if(!empty($submissionIds)){
                 $query->where('fd.submission_id IN ('.$submissionIds.') ');
             } else {
                 $query->where('fd.submission_id IN (0) ');
             }
+            if(!empty($application_id)){
+                $query->where('ws.application_id = "'.$application_id.'" ');
+            }
+            if(!empty($applicationStatus) && $applicationStatus != 'Submitted'){
+                $query->where('cfs.state_id = "'.$applicationStatus.'" ');
+            }
            
             $query->groupBy(['fd.submission_id']);
             
+        echo $query;
         
         return $this->runQuery($query, $criteria);
+        // $data = $res->data;
+
+        // if(!empty($data)){
+        //     foreach($data as $k=>$d){
+        //         $submission_id = $d['submission_id'];
+        //          $query2 = $this
+        //             ->newQuery()
+        //             ->from('wp_fluentform_submissions')
+        //             ->cols([
+        //                 'wp_fluentform_submissions.*'
+        //             ])
+        //             ->where('wp_fluentform_submissions.id = "'.$submission_id.'" ');
+                
+        //             $newdata = $this->runQuery($query2, $criteria);
+        //             if(!empty($newdata->data[0]['application_id'])){
+        //                 if($newdata->data[0]['application_id'] == $application_id){
+        //                     $data[$k]['application_id'] = $newdata->data[0]['application_id'];
+        //                     $data[$k]['pupilsightProgramID'] = $newdata->data[0]['pupilsightProgramID'];
+        //                     $data[$k]['pupilsightYearGroupID'] = $newdata->data[0]['pupilsightYearGroupID'];
+        //                     $data[$k]['fn_fee_invoice_id'] = $newdata->data[0]['fn_fee_invoice_id'];
+        //                 } else {
+        //                     $data = array();
+        //                 }
+                        
+        //             } else {
+        //                 $data[$k]['application_id'] = '';
+        //                 $data[$k]['pupilsightProgramID'] = '';
+        //                 $data[$k]['pupilsightYearGroupID'] = '';
+        //                 $data[$k]['fn_fee_invoice_id'] = '';
+        //             }
+                    
+                
+        //     }
+        // }  
+        //  echo '<pre>';
+        //     print_r($data);
+        //     echo '</pre>';
+        //     die();
+        // $res->data = $data;
+        // return $res;
        
     }
 
