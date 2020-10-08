@@ -19,13 +19,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     // print_r($dataSet);
     // echo '</pre>';
     //Proceed!
-    $field = $_POST['field'];
+    $fieldname = $_POST['field'];
     $searchby = $_POST['searchby'];
     $search = $_POST['search'];
     $range1 = $_POST['range1'];
     $range2 = $_POST['range2'];
     $cid = $_POST['cid'];
     $fid = $_POST['fid'];
+    $application_id = $_POST['aid'];
+    $applicationStatus = $_POST['stid'];
+    $applicantName = $_POST['aname'];
 
     $admissionGateway = $container->get(AdmissionGateway::class);
     $criteria = $admissionGateway->newQueryCriteria()
@@ -33,7 +36,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     ->sortBy(['id'])
     ->fromPOST();
 
-   
+    $sqlf = 'Select form_fields FROM wp_fluentform_forms WHERE id = '.$fid.' ';
+    $resultvalf = $connection2->query($sqlf);
+    $fluent = $resultvalf->fetch(); 
+    $field = json_decode($fluent['form_fields']);
+    $fields = array();
 
     $table = DataTable::createPaginated('userManage', $criteria);
 
@@ -44,10 +51,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     
     $sql = "SELECT `fd`.`submission_id`, GROUP_CONCAT(case when `fd`.`sub_field_name` IS NULL OR `fd`.`sub_field_name` = '' then `fd`.`field_name` else `fd`.`sub_field_name` end) AS `field_name`, GROUP_CONCAT(field_value) AS `field_value`, (select state from campaign_form_status where submission_id=`fd`.`submission_id` and status=1 order by id desc limit 1) AS `state` FROM `wp_fluentform_entry_details` AS `fd` WHERE fd.form_id = ".$fid." ";
     if($searchby == 'search'){
-        $sql .= "AND (fd.field_name = '".$field."' OR fd.sub_field_name = '".$field."')  AND fd.field_value like '%".$search."%' ";
+        $sql .= "AND (fd.field_name = '".$fieldname."' OR fd.sub_field_name = '".$fieldname."')  AND fd.field_value like '%".$search."%' ";
     } 
     if($searchby == 'range'){
-        $sql .= "AND fd.field_name = '".$field."' AND fd.field_value >= '".$range1."' AND fd.field_value <= '".$range2."' ";
+        $sql .= "AND fd.field_name = '".$fieldname."' AND fd.field_value >= '".$range1."' AND fd.field_value <= '".$range2."' ";
+    } 
+    if(!empty($applicantName)){
+        $sql .= "AND fd.field_name = 'student_name'  AND fd.field_value like '%".$applicantName."%' ";
     } 
     $sql .= " GROUP BY fd.submission_id";
     //echo $sql;
@@ -60,18 +70,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     foreach($rowdata as $Key => $rd){
         $subId[] = $rd['submission_id'];
     }
-    $submissionIds = implode(',',$subId);
+    
+    if($applicationStatus == 'Submitted'){
+        $chkcs = 'SELECT GROUP_CONCAT(submission_id) AS sids FROM campaign_form_status WHERE campaign_id = '.$cid.' AND form_id = '.$fid.' ';
+        $resultchkcs = $connection2->query($chkcs);
+        $chkStaData = $resultchkcs->fetch();
+        $sdata = explode(',', $chkStaData['sids']);
+        $resultd=array_diff($subId,$sdata);
+        $submissionIds = implode(',',$resultd);
+        //print_r($result);
+    } else {
+        $submissionIds = implode(',',$subId);
+    }
    
-    $dataSet = $admissionGateway->getSearchCampaignFormList($criteria, $submissionIds);
+    $dataSet = $admissionGateway->getSearchCampaignFormList($criteria, $submissionIds, $application_id, $applicationStatus);
     // echo '<pre>';
     // print_r($dataSet);
     // echo '</pre>';
+
+    $arrHeader = array();
+    foreach($field as $fe){
+        foreach($fe as $f){
+            if(!empty($f->attributes)){
+                if(!empty($f->attributes->name)){
+                    $arrHeader[] = $f->attributes->name;
+                }
+            }
+        }
+    }
 
     $table->addCheckboxColumn('submission_id','')
     ->setClass('chkbox')
     ->context('Select')
     ->notSortable()
     ->width('10%');
+
+    $table->addColumn('application_id',__('Application No'))
+         ->width('10%');
 
     $len = count($dataSet->data);
         $i = 0;
@@ -110,12 +145,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
             $fieldval = explode(",",$dataSet->data[$i]["field_value"]);
             $jlen = count($field);
             $j = 0;
-            if($dataSet->data[$i]["state"] == ''){
-                $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
-                $resultvals = $connection2->query($sqls);
-                $states = $resultvals->fetch();
-                $statename = $states['name'];
-                $dataSet->data[$i]["state"] = $statename;
+            if($dataSet->data[$i]["workflowstate"] == ''){
+                // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
+                // $resultvals = $connection2->query($sqls);
+                // $states = $resultvals->fetch();
+                // $statename = $states['name'];
+                $dataSet->data[$i]["workflowstate"] = 'Submitted';
             }
 
             //if($dataSet->data[$i]["created_at"] == ''){
@@ -134,12 +169,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
             while($j<$jlen){
                 $dataSet->data[$i][$field[$j]]=$fieldval[$j];
                 if($flag){
-                    $headcol = ucwords(str_replace("_", " ", $field[$j]));
-                    $table->addColumn(''.$field[$j].'', __(''.$headcol.''))
-                    ->width('10%')
-                    ->notSortable()
-                    ->translatable();
-
+                    foreach($arrHeader as $ar){
+                        $headcol = ucwords(str_replace("_", " ", $ar));
+                        if($ar == 'file-upload'){
+                            $table->addColumn(''.$ar.'', __(''.$headcol.''))
+                                ->format(function ($dataSet) {
+                                    if(!empty($dataSet['file-upload'])){
+                                        return '<a href="'.$dataSet['file-upload'].'" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                    }
+                                    
+                                });
+                        } elseif($ar == 'image-upload'){
+                            $table->addColumn(''.$ar.'', __(''.$headcol.''))
+                                ->format(function ($dataSet) {
+                                    if(!empty($dataSet['image-upload'])){
+                                        return '<a href="'.$dataSet['image-upload'].'" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                    }
+                                
+                                });
+                        } else {
+                            $table->addColumn(''.$ar.'', __(''.$headcol.''))
+                            ->width('10%')
+                            ->notSortable()
+                            ->translatable();
+                        }
+                    }
                 }
                 $j++;
             }
@@ -182,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
         //     unset($newarr[$i]["field_name"],$newarr[$i]["field_value"]);
         //     $i++;
         // }
-        $table->addColumn('state', __('Status'))
+        $table->addColumn('workflowstate', __('Status'))
         ->width('10%')
         ->translatable();
 
@@ -201,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
                ->modalWindow(1100, 550);
 
                $actions->addAction('form', __('Form'))
-                ->setURL('/modules/Campaign/wplogin_form.php')
+                ->setURL('/modules/Campaign/offline_wplogin_form.php')
                 ->modalWindow(1100, 550);
           
         });
