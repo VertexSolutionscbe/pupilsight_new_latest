@@ -86,6 +86,11 @@ $staff_list= $staff_list2;
     <div class=" ">
         <div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="transition_display_name" name="transition_display_name['.$aid.']" class="w-full txtfield"></div></div>
     </div></div>
+
+    <div class=" col-sm newdes" >
+    <div class=" ">
+        <div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="checkbox" id="enable_remark" name="enable_remark['.$aid.']" class="w-full txtfield" value="1"></div></div>
+    </div></div>
     
         <div class=" col-sm newdes" >
     <div class=" "><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><select id="tansition_action" name="tansition_action['.$aid.']" class="w-full txtfield">';

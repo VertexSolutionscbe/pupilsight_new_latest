@@ -295,7 +295,7 @@ $app_links = array();
         $('#application_view').load(function() {
             var iframe = $('#application_view').contents();
             iframe.find(".ff-btn-submit").prop('disabled', true);
-            iframe.find("head").append($("<style type='text/css'>  html{margin-top:-100px;}  </style>"));
+            iframe.find("head").append($("<style type='text/css'>  html{margin-top:-90px;}  </style>"));
             iframe.find("#wpadminbar").hide();
             iframe.find(".section-inner").hide();
             iframe.find("input[name=age_value]").prop('readonly', true);

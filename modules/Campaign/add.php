@@ -42,6 +42,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         $program2[$dt['pupilsightProgramID']] = $dt['name'];
     }
     $program= $program1 + $program2; 
+
+    $sqlrt = 'SELECT id, name FROM fn_fees_receipt_template_master ';
+    $resultrt = $connection2->query($sqlrt);
+    $templateData = $resultrt->fetchAll();
+
+    $receiptTemplate=array();  
+    $receiptTemplate2=array();  
+    $receiptTemplate1=array(''=>'Select Receipt Template');
+    foreach ($templateData as $key => $rt) {
+        $receiptTemplate2[$rt['id']] = $rt['name'];
+    }
+    $receiptTemplate= $receiptTemplate1 + $receiptTemplate2; 
+
+    
     
 
     $sqlcs = 'SELECT id, series_name, type FROM fn_fee_series WHERE type IN ("Application","Admission")';
@@ -116,6 +130,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         $col = $row->addColumn()->setClass('newdes showClass');
                 $col->addLabel('classes', __('Class'))->addClass('dte');
                 $col->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple()->required();    
+
+                $col = $row->addColumn()->setClass('newdes hiddencol');
+                $col->addLabel('', __(''))->addClass('dte');
+                $col->addSelect('')->setId('showMultiSecByProgCls')->addClass('txtfield')->placeholder('Select Class')->selectMultiple(); 
         // $col = $row->addColumn()->setClass('newdes');
         //         $col->addLabel('seats', __('Seats'))->addClass('dte');
         //         $col->addTextField('seats')->addClass('txtfield'); 
@@ -158,11 +176,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
             $col->addSelect('admission_series_id')->addClass('txtfield')->fromArray($admissionSeries); 
    
 
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('', __(''));
+    $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('fn_fee_structure_id', __('Fee Group'));
+            $col->addSelect('fn_fee_structure_id')->setId('getFeeStructureByProgClass')->addClass('txtfield');
                   
+    $row = $form->addRow();
 
-   
+    $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('fn_fees_receipt_template_id', __('Receipt Template'));
+            $col->addSelect('fn_fees_receipt_template_id')->addClass('txtfield')->fromArray($receiptTemplate); 
+
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('', __(''));
+            
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('', __(''));
+           
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('', __(''));
+           
     // $form->toggleVisibilityByClass('statusChange')->onSelect('status')->when('Current');
     // $direction = __('Past');
 
@@ -173,6 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
    
 
     $row = $form->addRow();
+
               
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('description', __('Description'));
@@ -239,4 +272,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     //   		plugins: ['remove_button'],
     //   	});
     // });
+
+    $(document).on('change', '#getMultiClassByProg', function () {
+        $("#getFeeStructureByProgClass").html('');
+    });
+
+    $(document).on('change', '#showMultiClassByProg', function () {
+        var id = $(this).val();
+        var aid = $('#academic_id').val();
+        var pid = $('#getMultiClassByProg').val();
+        var type = 'getFeeStructure';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, pid: pid, aid: aid },
+            async: true,
+            success: function (response) {
+                $("#getFeeStructureByProgClass").html('');
+                $("#getFeeStructureByProgClass").html(response);
+            }
+        });
+    });
 </script>

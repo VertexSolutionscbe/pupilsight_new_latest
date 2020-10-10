@@ -146,6 +146,11 @@ print_r($values);  */
         if(!empty($rowdata)){ 
             $i = '1';
             foreach($rowdata as $k=>$st){   
+                $stateId = $st['id'];
+                $sqlchkst = 'SELECT COUNT(id) as kount FROM workflow_transition  WHERE from_state = '.$stateId.' OR to_state = '.$stateId.' ';
+                $resultchkst = $connection2->query($sqlchkst);
+                $chkState = $resultchkst->fetch();
+
                 $templateNames = '';
                 $templateIds = $st['pupilsightTemplateIDs'];
                 if(!empty($templateIds)){
@@ -154,7 +159,7 @@ print_r($values);  */
                     $getTname = $resulttname->fetch();
                     $templateNames = $getTname['tempname'];
                 }
-                $row = $form->addRow()->setID('seatdiv');
+                $row = $form->addRow()->setID('seatdiv')->setClass('delstate'.$st['id']);
                 $col = $row->addColumn()->setClass('newdes');
                 if($i == '1'){
                     $col->addLabel('order', __('Order No *'));
@@ -183,7 +188,18 @@ print_r($values);  */
 
                 $col->addContent('<a href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" data-hrf="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" class="thickbox" id="clickTemplate'.$st['id'].'" style="display:none;">click</a><input type="hidden" name="pupilsightTemplateIDs['.$st['id'].']" id="pupilsightTemplateID-'.$st['id'].'" value=""><div id="showTemplateName'.$st['id'].'" >'.$templateNames.'</div>');
 
-                $col->addLabel('', __(''))->addClass('dte'); 
+                // $col->addLabel('', __(''))->addClass('dte'); 
+                //$col = $row->addColumn()->setClass('newdes del_style');
+                if(!empty($templateNames)){
+                    $style = 'style="cursor:pointer;float: right;margin: -62px -31px 0px 0px;"';
+                } else {
+                    $style = 'style="cursor:pointer;float: right;margin: -31px -31px 0px 0px;"';
+                }
+                if($chkState['kount'] == '1'){
+                    $col->addContent('<i '.$style.' class="mdi mdi-close-circle mdi-24px delStateAlert ""></i>'); 
+                } else {
+                    $col->addContent('<i '.$style.' class="mdi mdi-close-circle mdi-24px delStateData"  data-id="'.$st['id'].'" "></i>'); 
+                }
 
                 $i++;
             }
@@ -198,3 +214,30 @@ print_r($values);  */
         }
     }
 }
+
+?>
+
+<script>
+    $(document).on('click','.delStateAlert', function(){
+        alert('This State Already Assigned in WorkFlow transition!');
+    });
+
+    $(document).on('click','.delStateData', function(){
+        var id = $(this).attr('data-id');
+        var type = 'delWorkFlowState';
+        if (id != '') {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: { val: id, type: type },
+                async: true,
+                success: function (response) {
+                    alert('State is Deleted Successfully!');
+                    $(".delstate"+id).remove();
+                }
+            });
+        }
+
+        
+    });
+</script>

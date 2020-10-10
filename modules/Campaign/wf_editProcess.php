@@ -12,10 +12,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/wf_edit.php') != 
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    // echo '<pre>';
-    // print_r($_POST);
-    // echo '</pre>';
-    // die(0);
+    echo '<pre>';
+    print_r($_POST);
+    echo '</pre>';
+    die(0);
     $name = $_POST['name'];
     $code = $_POST['code'];
     $description = $_POST['description'];

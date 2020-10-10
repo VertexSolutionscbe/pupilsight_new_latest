@@ -212,6 +212,10 @@ print_r($values);  */
     .feeSetting {
         width: 15%;
     }
+
+    .leading-normal {
+        height: 0px !important;
+    }
 </style>
 
 <script>
