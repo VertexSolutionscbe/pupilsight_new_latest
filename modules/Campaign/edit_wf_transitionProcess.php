@@ -33,6 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit_wf_transaiti
         $screen_tab_def = dateConvert($guid, $_POST['screen_tab_def']);
         $campaignid = $_POST['cid'];
         $user_permission = $_POST['user_permission'];
+        $enableremark = $_POST['enable_remark'];
+        
         
         $cuid = $_SESSION[$guid]['pupilsightPersonID'];
 
@@ -50,8 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit_wf_transaiti
                     $screendef = $screen_tab_def[$k];
                     $userpermission = implode(',',$user_permission[$k]);
                     $tansitionaction = $tansition_action[$k];
+                    $enable_remark = $enableremark[$k];
                     $fn_fee_admission_setting_ids = $_POST['fn_fee_admission_setting_ids'][$k];
-                  
                     $tid = $k;
                     if(!empty($from_state) && !empty($to_state)){
                         $newdata = array('campaign_id'=> $campaignid, 'id'=>$tid);
@@ -61,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit_wf_transaiti
                         $valuesn = $resultn->fetch();
                        
                         if(empty($valuesn)){
-                            $data = array('campaign_id' => $campaignid,'from_state' => $fstate, 'to_state' => $tstate, 'transition_display_name' => $transitionname,  'auto_gen_inv' => $autoinv,  'screen_tab_def' => $screendef, 'tansition_action' => $tansitionaction,'user_permission'=>$userpermission, 'fn_fee_admission_setting_ids' => $fn_fee_admission_setting_ids, 'cuid' => $cuid);
+                            $data = array('campaign_id' => $campaignid,'from_state' => $fstate, 'to_state' => $tstate, 'transition_display_name' => $transitionname, 'enable_remark' => $enable_remark,  'auto_gen_inv' => $autoinv,  'screen_tab_def' => $screendef, 'tansition_action' => $tansitionaction,'user_permission'=>$userpermission, 'fn_fee_admission_setting_ids' => $fn_fee_admission_setting_ids, 'cuid' => $cuid);
                             
                             $data1 = array('campaign_id' => $campaignid,'from_state' => $fstate, 'to_state' => $tstate);
                             $sql1 = 'SELECT * FROM workflow_transition WHERE campaign_id=:campaign_id AND (from_state=:from_state AND to_state=:to_state) OR (from_state=:to_state AND to_state=:from_state)';
@@ -72,14 +74,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit_wf_transaiti
                             if(empty($values)){
 
                                 
-                                $sql = "INSERT INTO workflow_transition SET campaign_id=:campaign_id,from_state=:from_state, to_state=:to_state,transition_display_name=:transition_display_name,auto_gen_inv=:auto_gen_inv, screen_tab_def=:screen_tab_def, 
+                                $sql = "INSERT INTO workflow_transition SET campaign_id=:campaign_id,from_state=:from_state, to_state=:to_state,transition_display_name=:transition_display_name, enable_remark=:enable_remark,auto_gen_inv=:auto_gen_inv, screen_tab_def=:screen_tab_def, 
                                 tansition_action=:tansition_action,
                                 user_permission=:user_permission, fn_fee_admission_setting_ids=:fn_fee_admission_setting_ids, cuid=:cuid";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             }
                         } else {
-                            $data = array('campaign_id' => $campaignid,'from_state' => $fstate, 'to_state' => $tstate, 'transition_display_name' => $transitionname,  'auto_gen_inv' => $autoinv,  'screen_tab_def' => $screendef, 'tansition_action' => $tansitionaction,'user_permission'=>$userpermission, 'fn_fee_admission_setting_ids' => $fn_fee_admission_setting_ids, 'cuid' => $cuid, 'id'=>$tid);
+                            $data = array('campaign_id' => $campaignid,'from_state' => $fstate, 'to_state' => $tstate, 'transition_display_name' => $transitionname, 'enable_remark' => $enable_remark,  'auto_gen_inv' => $autoinv,  'screen_tab_def' => $screendef, 'tansition_action' => $tansitionaction,'user_permission'=>$userpermission, 'fn_fee_admission_setting_ids' => $fn_fee_admission_setting_ids, 'cuid' => $cuid, 'id'=>$tid);
                             
                         
                             $data1 = array('campaign_id' => $campaignid,'from_state' => $fstate, 'to_state' => $tstate, 'id'=>$tid);
@@ -89,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit_wf_transaiti
                             $values = $result1->fetch();
 
                             if(empty($values)){
-                                print_r(user_permission);
-                                $sql = "UPDATE workflow_transition SET campaign_id=:campaign_id,from_state=:from_state, to_state=:to_state,transition_display_name=:transition_display_name,auto_gen_inv=:auto_gen_inv, screen_tab_def=:screen_tab_def, tansition_action=:tansition_action,user_permission=:user_permission, fn_fee_admission_setting_ids=:fn_fee_admission_setting_ids, cuid=:cuid WHERE id=:id";
+                               // print_r($data);
+                               $sql = "UPDATE workflow_transition SET campaign_id=:campaign_id,from_state=:from_state, to_state=:to_state,transition_display_name=:transition_display_name, enable_remark=:enable_remark,auto_gen_inv=:auto_gen_inv, screen_tab_def=:screen_tab_def, tansition_action=:tansition_action,user_permission=:user_permission, fn_fee_admission_setting_ids=:fn_fee_admission_setting_ids, cuid=:cuid WHERE id=:id";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             }

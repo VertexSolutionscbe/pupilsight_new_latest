@@ -132,6 +132,12 @@ print_r($values);  */
         }
         $col->addTextField('transition_display_name['.$st['id'].']')->addClass('txtfield')->required()->setValue($st['transition_display_name']);  
 
+        $col = $row->addColumn()->setClass('newdes');
+        if($i == '1'){
+            $col->addLabel('enable_remark', __('Enable Remark'))->addClass('labelfsize');
+        }
+        $col->addCheckbox('enable_remark['.$st['id'].']')->addClass('txtfield')->setValue('1')->checked($st['enable_remark']);
+
         
         $col = $row->addColumn()->setClass('newdes');
         if($i == '1'){
@@ -212,6 +218,10 @@ print_r($values);  */
     
     .feeSetting{
         width: 15%;
+    }
+
+    .leading-normal {
+        height: 0px !important;
     }
 
     

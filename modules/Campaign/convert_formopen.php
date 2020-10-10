@@ -56,12 +56,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
     $page->breadcrumbs->add(__('Offline Campaign Submitted Form List'));
     
     $id = isset($_GET['id']) ? $_GET['id'] : '';
+    $sid = $_GET['sid'];
     $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
 
     $sqlq = 'SELECT a.*,b.name as progname FROM campaign AS a LEFT JOIN pupilsightProgram AS b ON a.pupilsightProgramID = b.pupilsightProgramID where a.id = ' . $id . ' ';
     //echo $sqlq;
     $resultval = $connection2->query($sqlq);
     $rowdata = $resultval->fetch();
+
+
+    $sqlws = 'SELECT pupilsightProgramID, pupilsightYearGroupID, application_id FROM wp_fluentform_submissions where id = ' . $sid . ' ';
+    $resultws = $connection2->query($sqlws);
+    $submdata = $resultws->fetch();
+
+
     if (empty($rowdata["form_id"])) {
         echo "<div class='text-danger'>Form is not attached.</div>";
     } else {
@@ -73,28 +81,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             $getClass = $result->fetchAll();
         }
 ?>
-        <div style="display:inline-flex; font-weight: 700; font-size:15px; width: 50%; margin-bottom:10px;" class="">
+        <div style="display:inline-flex; font-weight: 700; font-size:15px; width: 70%; margin-bottom:10px;" class="">
             <input type="hidden" id="chkFees" value="<?php echo $rowdata['fn_fee_structure_id']; ?>">
             <input type="hidden" id="cmpid" value="<?php echo $id; ?>">
             <input type="hidden" id="pid" value="<?php echo $rowdata['pupilsightProgramID']; ?>">
-            <input type="hidden" id="fid" value="<?php echo $rowdata['offline_form_id']; ?>">
+            <input type="hidden" id="fid" value="<?php echo $rowdata['form_id']; ?>">
             <input type="hidden" id="pupilsightPersonID" value="<?php echo $pupilsightPersonID; ?>">
+            <input type="hidden" id="aid" value="<?php echo $submdata['application_id']; ?>">
 
-            <span style="width: 40%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <span style="width: 20%;">Class <span style="color:red;">*</span> : </span>
-            <select id="class">
+            <span style="width: 60%;">Application No : <?php echo $submdata['application_id'];?> </span>
+            <span style="width: 20%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <span style="width: 12%;">Class <span style="color:red;">*</span> : </span>
+            
+            <select id="class" readonly style="width: 50%;">
                 <option value="">Select Class</option>
                 <?php if (!empty($getClass)) {
                     foreach ($getClass as $cls) {
+                        if($cls['pupilsightYearGroupID'] == $submdata['pupilsightYearGroupID']){
+                            $selected = 'selected';
+                        } else {
+                            $selected = '';
+                        }
                 ?>
-                        <option value="<?php echo  $cls['pupilsightYearGroupID']; ?>"><?php echo  $cls['name']; ?></option>
+                        <option value="<?php echo  $cls['pupilsightYearGroupID']; ?>" <?php echo $selected; ?>><?php echo  $cls['name']; ?></option>
                 <?php }
                 } ?>
             </select>
             <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
         </div>
     <?php
-        echo  '<iframe id="innerForm" data-campid=' . $id . ' src=' . $rowdata['offline_page_link'] . ' style="width:100%;height:120vh;" allowtransparency="true"></iframe>';
+        echo  '<iframe id="innerForm" data-campid=' . $id . ' src=' . $rowdata['page_link'] . ' style="width:100%;height:120vh;" allowtransparency="true"></iframe>';
         //echo "<script>setTimeout(function(){iframeLoaded('innerForm');},1000);</script>";
     }
     $callbacklink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ?
@@ -309,8 +325,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             var pupilsightPersonID = $("#pupilsightPersonID").val();
             var chkfees = $("#chkFees").val();
             var cmpid = $("#cmpid").val();
+            var aid = $("#aid").val();
             if (val != '') {
-                var type = 'updateApplicantData';
+                var type = 'convertApplicantData';
                 setTimeout(function() {
                     $.ajax({
                         url: 'ajax_data.php',
@@ -321,17 +338,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                             pid: pid,
                             fid: fid,
                             clid: clid,
-                            pupilsightPersonID: pupilsightPersonID
+                            pupilsightPersonID: pupilsightPersonID,
+                            aid: aid
                         },
                         async: true,
                         success: function(response) {
-                            // $('html, body').animate({
-                            //     scrollTop: $("#showdiv").offset().top
-                            // }, 2000);
-                            //$("#admissionPay").submit();
-                            if(chkfees != ''){
-                                window.location.href = 'index.php?q=/modules/Campaign/application_fee_payment.php&cid='+cmpid;
-                            }
+                            window.location.href = 'index.php?q=/modules/Campaign/offline_campaignFormList.php&id='+cmpid;
                         }
                     });
                 }, 500);

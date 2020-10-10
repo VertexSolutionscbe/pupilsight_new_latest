@@ -287,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $table->addColumn('print', __('Print Receipt'))
          ->format(function ($dataSet) {
              if (!empty($dataSet['transaction_id'])) {
-                 return '<a href="public/receipts/'.$dataSet['transaction_id'].'.docx"  download><i class="fas fa-receipt"></i></a>';
+                 return '<a href="public/receipts/'.$dataSet['transaction_id'].'.docx"  download><i class="mdi mdi-receipt mdi-24px"></i></a>';
              } else {
                 return 'Stoped';
              }

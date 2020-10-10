@@ -25,6 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add_wf_transition
     $screen_tab_def = dateConvert($guid, $_POST['screen_tab_def']);
     $user_permission = $_POST['user_permission'];
     $campaignid = $_POST['cid'];
+    $enableremark = $_POST['enable_remark'];
    
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
 
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add_wf_transition
                         $tansitionaction = $tansition_action[$k];
                         $fn_fee_admission_setting_ids = $_POST['fn_fee_admission_setting_ids'][$k];
                         if(!empty($from_state) && !empty($to_state)){
-                            $data = array('campaign_id' => $campaignid,'from_state' => $fstate, 'to_state' => $tstate, 'transition_display_name' => $transitionname,  'auto_gen_inv' => $autoinv,  'screen_tab_def' => $screendef, 'user_permission'=>$userpermission,'tansition_action' => $tansitionaction, 'fn_fee_admission_setting_ids' => $fn_fee_admission_setting_ids, 'cuid' => $cuid);
+                            $data = array('campaign_id' => $campaignid,'from_state' => $fstate, 'to_state' => $tstate, 'transition_display_name' => $transitionname, 'enable_remark' => $enable_remark,  'auto_gen_inv' => $autoinv,  'screen_tab_def' => $screendef, 'user_permission'=>$userpermission,'tansition_action' => $tansitionaction, 'fn_fee_admission_setting_ids' => $fn_fee_admission_setting_ids, 'cuid' => $cuid);
                             
                             $data1 = array('campaign_id' => $campaignid,'from_state' => $fstate, 'to_state' => $tstate);
                             $sql1 = 'SELECT * FROM workflow_transition WHERE campaign_id=:campaign_id AND (from_state=:from_state AND to_state=:to_state) OR (from_state=:to_state AND to_state=:from_state)';
@@ -67,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add_wf_transition
                             $values = $result1->fetch();
 
                             if(empty($values)){
-                                $sql = "INSERT INTO workflow_transition SET campaign_id=:campaign_id,from_state=:from_state, to_state=:to_state,transition_display_name=:transition_display_name,auto_gen_inv=:auto_gen_inv, screen_tab_def=:screen_tab_def, tansition_action=:tansition_action,user_permission=:user_permission, fn_fee_admission_setting_ids=:fn_fee_admission_setting_ids, cuid=:cuid";
+                                $sql = "INSERT INTO workflow_transition SET campaign_id=:campaign_id,from_state=:from_state, to_state=:to_state,transition_display_name=:transition_display_name, enable_remark=:enable_remark,auto_gen_inv=:auto_gen_inv, screen_tab_def=:screen_tab_def, tansition_action=:tansition_action,user_permission=:user_permission, fn_fee_admission_setting_ids=:fn_fee_admission_setting_ids, cuid=:cuid";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             }

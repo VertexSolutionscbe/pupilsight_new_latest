@@ -83,6 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     &nbsp;&nbsp;<a id='onlineClick' style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/campaignFormList.php&id=".$id."'   class=' btn btn-primary' >Online Submitted List</a>
     &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_formopen.php&id=".$id."'   class=' btn btn-primary' id=''>Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' id='sendSMS'>Send SMS</a>";  
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' id='sendEmail'>Send Email</a>";
+    echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' data-hrf='?q=/modules/Campaign/convert_formopen.php&id=".$id."' title='Convert Applicant' class='btn btn-primary' id='convertApplicant'>Convert</a> <a style='display:none;margin-bottom:10px;' href='?q=/modules/Campaign/convert_formopen.php&id=".$id."'   class=' btn btn-primary' id='convertApplicantClick'>Apply</a>";
     echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
     //  print_r($criteria);
@@ -130,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $field = json_decode($fluent['form_fields']);
         $fields = array();
         
-        $showfields = '<div style="display:inline-flex;width:50%"><select class="filterCampaign" id="showfield1" style="width:50%"><option>Select Field for Filter</option>';
+        $showfields = '<div style="display:inline-flex;"><select class="filterCampaign" id="showfield1" style="width:50%"><option>Select Field for Filter</option>';
         foreach($field as $fe){
             foreach($fe as $f){
                 // if(!empty($f->fields)){
@@ -172,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $showfields .= '</select>';
         echo $showfields;
 
-        echo $showfields2 = '<select id="showfield2" class="filterCampaign" style="display:none;height: 36px;"><option>Select Search Criteria</option><option value="search">Search</option><option value="range">Range</option><option value="distance">Distance</option></select><input type="text" class="filterCampaign searchOpen searchby" name="searchby" id="" placeholder="Enter Your Search Data" style="display:none;height: 36px;"><input type="text" id="range1" name="rangestart" class="rangeOpen filterCampaign searchby" placeholder="Enter Your Start Range" style="display:none;height: 36px;"><input type="text" name="rangeend" class="rangeOpen filterCampaign searchby" id="range2" placeholder="Enter Your End Range" style="display:none;height: 36px;"><input type="hidden" id="campaignId" value='.$id.'><input type="hidden" id="formId" value='.$formId.'>
+        echo $showfields2 = '<select id="showfield2" class="filterCampaign" style="display:none;height: 36px;"><option>Select Search Criteria</option><option value="search">Search</option><option value="range">Range</option></select><input type="text" class="filterCampaign searchOpen searchby" name="searchby" id="" placeholder="Enter Your Search Data" style="display:none;height: 36px;"><input type="text" id="range1" name="rangestart" class="rangeOpen filterCampaign searchby" placeholder="Enter Your Start Range" style="display:none;height: 36px;"><input type="text" name="rangeend" class="rangeOpen filterCampaign searchby" id="range2" placeholder="Enter Your End Range" style="display:none;height: 36px;"><input type="hidden" id="campaignId" value='.$id.'><input type="hidden" id="formId" value='.$formId.'>
         <input type="text" id="applicationName" style="height: 36px;" name="applicationName" class=""  placeholder="Application Name" >&nbsp;
         <input type="text" id="applicationId" style="height: 36px;" name="application_id" class=""  placeholder="Application No" >&nbsp;
         '.$statefields.' &nbsp;
@@ -614,6 +615,27 @@ $(document).ready(function() {
             if (favorite.length == 1) {
                 var id = stuid;
                 $("#showform-"+id)[0].click();
+            } else {
+                alert('You Have to Select One Applicant at a time.');
+            }
+        } else {
+            alert('You Have to Select Applicant.');
+        }
+    });
+
+    $(document).on('click', '#convertApplicant', function() {
+        var favorite = [];
+        $.each($("input[name='submission_id[]']:checked"), function () {
+            favorite.push($(this).val());
+        });
+        var stuid = favorite.join(",");
+        if(stuid) {
+            if (favorite.length == 1) {
+                var id = stuid;
+                var hrf = $(this).attr('data-hrf');
+                var newhrf = hrf+'&sid='+id;
+                $("#convertApplicantClick").attr('href',newhrf);
+                $("#convertApplicantClick")[0].click();
             } else {
                 alert('You Have to Select One Applicant at a time.');
             }

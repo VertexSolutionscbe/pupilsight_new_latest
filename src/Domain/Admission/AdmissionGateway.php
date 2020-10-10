@@ -90,7 +90,7 @@ class AdmissionGateway extends QueryableGateway
             //     'fd.submission_id', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' OR fd.sub_field_name = '0' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as workflowstate'
             // ]);
             ->cols([
-                'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as workflowstate'
+                'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select workflow_transition.transition_display_name AS state from campaign_form_status LEFT JOIN workflow_transition ON campaign_form_status.state_id = workflow_transition.id where campaign_form_status.submission_id=fd.submission_id and campaign_form_status.status=1 order by campaign_form_status.id desc limit 1) as workflowstate'
             ])
             ->where('fd.form_id = '.$form_id.' ')
             ->groupBy(['fd.submission_id'])
@@ -153,8 +153,9 @@ class AdmissionGateway extends QueryableGateway
             // ->cols([
             //     'fd.submission_id', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as state'
             // ]);
+           
             ->cols([
-                'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", "GROUP_CONCAT(fd.field_value) as field_value",'(select cs.state from campaign_form_status AS cs where cs.submission_id=fd.submission_id and cs.status=1 order by cs.id desc limit 1) as workflowstate','ws.id','ws.application_id'
+                'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", "GROUP_CONCAT(fd.field_value) as field_value",'(select workflow_transition.transition_display_name AS state from campaign_form_status AS cs LEFT JOIN workflow_transition ON cs.state_id = workflow_transition.id where cs.submission_id=fd.submission_id and cs.status=1 order by cs.id desc limit 1) as workflowstate','ws.id','ws.application_id'
             ])
             ->leftJoin('wp_fluentform_submissions AS ws', 'fd.submission_id=ws.id');
             if(!empty($applicationStatus) && $applicationStatus != 'Submitted'){
@@ -174,7 +175,7 @@ class AdmissionGateway extends QueryableGateway
            
             $query->groupBy(['fd.submission_id']);
             
-        echo $query;
+        //echo $query;
         
         return $this->runQuery($query, $criteria);
         // $data = $res->data;

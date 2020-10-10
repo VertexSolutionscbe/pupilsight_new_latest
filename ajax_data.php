@@ -1876,7 +1876,7 @@ if ($type == 'getCampaignStatusButton') {
         $data ='';
         if(!empty($stats)){
             foreach($stats as $s){
-                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
+                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' data-remark="'.$s['enable_remark'].'" style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
             }
         }
 
@@ -1929,7 +1929,7 @@ if ($type == 'getCampaignStatusButton') {
         $data ='';
         if(!empty($stats)){
             foreach($stats as $s){
-                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
+                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' data-remark="'.$s['enable_remark'].'" style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
             }
         }
 
@@ -2854,4 +2854,42 @@ if ($type == 'getAllSchoolStaff') {
         }
     }
     echo $data;
+}
+
+if ($type == 'getFeeStructure') {
+    $cid = implode(',',$val);
+    $pid = $_POST['pid'];
+    $aid = $_POST['aid'];
+    $sql = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "'.$aid.'" AND b.pupilsightProgramID = "' . $pid . '" AND B.pupilsightYearGroupID IN ('.$cid.') GROUP BY a.id';
+    $result = $connection2->query($sql);
+    $structure = $result->fetchAll();
+    $data = '<option value="">Select Fee Structure</option>';
+    if (!empty($structure)) {
+        foreach ($structure as $k => $cl) {
+            $data .= '<option value="' . $cl['id'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+if ($type == 'delWorkFlowState') {
+    $id = $val; 
+    $data2 = array('id' => $id);
+    $sql2 = 'DELETE FROM workflow_state WHERE id=:id';
+    $result2 = $connection2->prepare($sql2);
+    $result2->execute($data2);
+}
+
+if($type == 'convertApplicantData'){
+    $campaignid = $_POST['val'];
+    $submissionId = $_SESSION['submissionId'];
+    $pupilsightProgramID = $_POST['pid'];
+    $pupilsightYearGroupID = $_POST['clid'];
+    $pupilsightPersonID = $_POST['pupilsightPersonID'];
+    $application_id = $_POST['aid'];
+    
+    $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
+    $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 }

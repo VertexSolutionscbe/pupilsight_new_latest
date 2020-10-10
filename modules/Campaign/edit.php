@@ -71,6 +71,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             }
             $program= $program1 + $program2;
 
+            $sqlrt = 'SELECT id, name FROM fn_fees_receipt_template_master ';
+            $resultrt = $connection2->query($sqlrt);
+            $templateData = $resultrt->fetchAll();
+
+            $receiptTemplate=array();  
+            $receiptTemplate2=array();  
+            $receiptTemplate1=array(''=>'Select Receipt Template');
+            foreach ($templateData as $key => $rt) {
+                $receiptTemplate2[$rt['id']] = $rt['name'];
+            }
+            $receiptTemplate= $receiptTemplate1 + $receiptTemplate2; 
+
             $sqlcs = 'SELECT id, series_name, type FROM fn_fee_series WHERE type IN ("Application","Admission")';
             $resultcs = $connection2->query($sqlcs);
             $seriesData = $resultcs->fetchAll();
@@ -94,6 +106,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $admissionSeries = $admissionSeries1 + $admissionSeries2;
             
             $pid = $values['pupilsightProgramID'];
+            
+            $sqlf = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "'.$values['academic_id'].'" AND b.pupilsightProgramID = "' . $pid . '" AND B.pupilsightYearGroupID IN ('.$values['classes'].') GROUP BY a.id';
+            $resultf = $connection2->query($sqlf);
+            $feeGroupData = $resultf->fetchAll();
+            $feeGroups=array();  
+            $feeGroups2=array();  
+            $feeGroups1=array(''=>'Select Fee Structure');
+            foreach ($feeGroupData as $fg) {
+                $feeGroups2[$fg['id']] = $fg['name'];
+            }
+
+            $feeGroups= $feeGroups1 + $feeGroups2;
+
+
+
             $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
             $result = $connection2->query($sql);
             $classesdata = $result->fetchAll();
@@ -153,12 +180,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
             $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('pupilsightProgramID', __('Program'));
-                    $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProg')->addClass('txtfield')->fromArray($program)->required()->selected($values['pupilsightProgramID']);;        
+                    $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProg')->addClass('txtfield')->fromArray($program)->required()->selected($values['pupilsightProgramID']);        
                     
             $col = $row->addColumn()->setClass('newdes showClass');
                     $col->addLabel('classes', __('Class'))->addClass('dte');
                     $col->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple()->fromArray($classes)->selected($setclass)->required();         
-
+                    
+                $col = $row->addColumn()->setClass('newdes hiddencol');
+                    $col->addLabel('', __(''))->addClass('dte');
+                    $col->addSelect('')->setId('showMultiSecByProgCls')->addClass('txtfield')->placeholder('Select Class')->selectMultiple(); 
             // $col = $row->addColumn()->setClass('newdes');
             //         $col->addLabel('seats', __('Seats'))->addClass('dte');
             //         $col->addTextField('seats')->addClass('txtfield')->readonly()->setValue($values['seats']);
@@ -200,9 +230,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
                 $col->addLabel('admission_series_id', __('Admission Series'));
                 $col->addSelect('admission_series_id')->addClass('txtfield')->fromArray($admissionSeries)->selected($values['admission_series_id']);
             
-                    $col = $row->addColumn()->setClass('newdes');
-                    $col->addLabel('', __(''));
-                
+            $col = $row->addColumn()->setClass('newdes');
+                $col->addLabel('fn_fee_structure_id', __('Fee Group'));
+                $col->addSelect('fn_fee_structure_id')->setId('getFeeStructureByProgClass')->addClass('txtfield')->fromArray($feeGroups)->selected($values['fn_fee_structure_id']);
+            
+            $row = $form->addRow();
+
+                $col = $row->addColumn()->setClass('newdes');
+                        $col->addLabel('fn_fees_receipt_template_id', __('Receipt Template'));
+                        $col->addSelect('fn_fees_receipt_template_id')->addClass('txtfield')->fromArray($receiptTemplate)->selected($values['fn_fees_receipt_template_id']); 
+                        
+                        $col = $row->addColumn()->setClass('newdes');
+                        $col->addLabel('', __(''));
+                        
+                        $col = $row->addColumn()->setClass('newdes');
+                        $col->addLabel('', __(''));
+                       
+                        $col = $row->addColumn()->setClass('newdes');
+                        $col->addLabel('', __(''));
+
             $row = $form->addRow();
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('description', __('Description'));
@@ -292,5 +338,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
       	$('#showMultiClassByProg').selectize({
       		plugins: ['remove_button'],
       	});
+    });
+
+    $(document).on('change', '#getMultiClassByProg', function () {
+        $("#getFeeStructureByProgClass").html('');
+    });
+
+    $(document).on('change', '#showMultiClassByProg', function () {
+        var id = $(this).val();
+        var aid = $('#academic_id').val();
+        var pid = $('#getMultiClassByProg').val();
+        var type = 'getFeeStructure';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, pid: pid, aid: aid },
+            async: true,
+            success: function (response) {
+                $("#getFeeStructureByProgClass").html('');
+                $("#getFeeStructureByProgClass").html(response);
+            }
+        });
     });
 </script>

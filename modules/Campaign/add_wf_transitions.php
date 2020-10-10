@@ -107,7 +107,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add_wf_transition
         
                 $col = $row->addColumn()->setClass('newdes');
                 $col->addLabel('transition_display_name', __('Display Name'));
-                $col->addTextField('transition_display_name[1]')->addClass('txtfield')->required();  
+                $col->addTextField('transition_display_name[1]')->addClass('txtfield')->required(); 
+                
+                $col = $row->addColumn()->setClass('newdes');
+                $col->addLabel('enable_remark', __('Enable Remark'));
+                $col->addCheckbox('enable_remark[1]')->addClass('txtfield')->setValue('1');
 
                 $col = $row->addColumn()->setClass('newdes');
                 $col->addLabel('tansition_action', __('Transition Action'));
@@ -184,6 +188,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add_wf_transition
         width: 15%;
     }
     
+    .leading-normal {
+        height: 0px !important;
+    }
 </style>
 <script>
    $(document).ready(function () {

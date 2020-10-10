@@ -717,61 +717,50 @@
     $(document).on('click', '.statesButton', function () {
         $(".statesButton").removeClass('activestate');
         $(this).addClass('activestate');
-
-        var cid = $(this).attr('data-cid');
-        var sid = $(this).attr('data-sid');
-        var sname = $(this).attr('data-name');
-        var fid = $(this).attr('data-formid');
-        var favorite = [];
-        $.each($("input[name='submission_id[]']:checked"), function () {
-            favorite.push($(this).val());
-        });
-        var subid = favorite.join(", ");
-        //alert(subid);
-        if (subid) {
-            $("#preloader").show();
-            $.ajax({
-                url: 'modules/Campaign/campaignFormStates.php',
-                type: 'post',
-                data: { cid: cid, sid: sid, sname: sname, fid: fid, subid: subid },
-                async: true,
-                success: function (response) {
-                    location.reload();
-                    // $("#preloader").fadeOut("slow", function () {
-                    //     //$(this).remove();
-                    //     window.location.href = response;
-                    // });
-                }
-            });
+        var remark = $(this).attr('data-remark');
+        if (remark == '1') {
+            // var cid = $(this).attr('data-cid');
+            // var sid = $(this).attr('data-sid');
+            // var sname = $(this).attr('data-name');
+            // var fid = $(this).attr('data-formid');
+            // var favorite = [];
+            // $.each($("input[name='submission_id[]']:checked"), function () {
+            //     favorite.push($(this).val());
+            // });
+            // var subid = favorite.join(", ");
+            // if (subid) {
+            //     var hrf = 'fullscreen.php?q=/modules/Campaign/state_remark.php&cid=' + cid + '&sid=' + sid + '&sname=' + sname + '&fid=' + fid + '&subid=' + subid;
+            //     $("#clickStateRemark").attr('href', hrf);
+            //     $("#clickStateRemark")[0].click();
+            // } else {
+            //     alert('You Have to Select Applicants.');
+            // }
         } else {
-            alert('You Have to Select Applicants.');
-
+            var cid = $(this).attr('data-cid');
+            var sid = $(this).attr('data-sid');
+            var sname = $(this).attr('data-name');
+            var fid = $(this).attr('data-formid');
+            var favorite = [];
+            $.each($("input[name='submission_id[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var subid = favorite.join(", ");
+            //alert(subid);
+            if (subid) {
+                $("#preloader").show();
+                $.ajax({
+                    url: 'modules/Campaign/campaignFormStates.php',
+                    type: 'post',
+                    data: { cid: cid, sid: sid, sname: sname, fid: fid, subid: subid },
+                    async: true,
+                    success: function (response) {
+                        location.reload();
+                    }
+                });
+            } else {
+                alert('You Have to Select Applicants.');
+            }
         }
-
-
-
-        // var noti = $(this).attr('data-noti');
-        // $(".emailsmsFieldTitle").hide();
-        // $(".emailFieldTitle").hide();
-        // $(".emailField").hide();
-        // $(".smsFieldTitle").hide();
-        // $(".smsField").hide();
-        // if (noti == '1') {
-        //     $(".emailFieldTitle").show();
-        //     $(".emailField").show();
-        // } else if (noti == '2') {
-        //     $(".smsFieldTitle").show();
-        //     $(".smsField").show();
-        // } else if (noti == '3') {
-        //     $(".emailsmsFieldTitle").show();
-        //     $(".emailField").show();
-        //     $(".smsField").show();
-        // } else {
-        //     $(".emailsmsFieldTitle").show();
-        //     $(".emailField").show();
-        //     $(".smsField").show();
-        // }
-
     });
 
     $(document).on('click', '#sendState', function () {
@@ -7407,6 +7396,7 @@ $(document).on('change', '#chkAllInvoiceApplicant', function () {
                 $("#collectionForm").show();
                 $("#FeeItemManage").show();
                 $(".hideFeeItemContent").show();
+                // $("#chkAllFeeItem").prop('checked', true);
             }
         });
     } else {
@@ -7416,40 +7406,132 @@ $(document).on('change', '#chkAllInvoiceApplicant', function () {
         $("input[name=invoice_id]").val('');
     }
 });
+
 $(document).on('click', '.chkinvoiceApplicant', function () {
+    $("#collectionForm")[0].reset();
+    $(".ddChequeRow").addClass('hiddencol');
     var favorite = [];
+    var account_heads = [];
+    var series = [];
+    var aedt = [];
+    var ife = [];
     $.each($(".chkinvoiceApplicant:checked"), function () {
         favorite.push($(this).val());
+        account_heads.push($(this).attr("data-h"));
+        series.push($(this).attr("data-se"));
+        aedt.push($(this).attr("data-amtedt"));
+        ife.push($(this).attr("data-ife"));
     });
-    var invids = favorite.join(", ");
-    var sid = $("input[name=submission_id]").val();
-    var invid = $(this).val();
-    //$("#showPaymentButton").show();
-    if ($(this).is(':checked')) {
-        if (invid != '') {
+    var newData = removeDuplicates(account_heads);
+    var length1 = newData.length;
+    var chkStatus = false;
+    if (favorite.length != 0) {
+        var sid = $("input[name=submission_id]").val();
+        if (length1 == "1") {
+            chkStatus = true;
+        } else {
+            var r = confirm("Selected invoice receipt series are different.\n Do you want to make payment?");
+            if (r == true) {
+                chkStatus = true;
+            } else {
+                chkStatus = false;
+            }
+        }
+
+        //ajax request
+        if (chkStatus == true) {
+            var invids = favorite.join(", ");
             var type = 'applicantInvoiceFeeItem';
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
-                data: { val: invid, type: type, sid: sid },
+                data: { val: invids, type: type, sid: sid },
                 async: true,
                 success: function (response) {
+                    $(".btn_invoice_link_collection").hide();
+                    $(".addInvoiceLinkCollection").hide();
+                    $(".btn_cancel_invoice_collection").hide();
+                    $(".chkinvoice").hide();
+                    $(".apply_discount_btn").hide();
+                    $("#getInvoiceFeeItem").html('');
                     $("#getInvoiceFeeItem").append(response);
                     $("input[name=invoice_id]").val(invids);
                     $("#collectionForm").show();
                     $("#FeeItemManage").show();
                     $(".hideFeeItemContent").show();
+                    $('#fn_fees_head_id').val(account_heads[0]);
+                    $('#recptSerId').val(series[0]);
+                    $(".oCls_0").hide();
+                    $('.icon_0').removeClass('fa-arrow-down');
+                    $('.icon_0').addClass('fa-arrow-right');
+                    $(".oCls_1").hide();
+                    $('.icon_1').removeClass('fa-arrow-down');
+                    $('.icon_1').addClass('fa-arrow-right');
+
+                    if (aedt[0] == '1') {
+                        $("#amount_paying").attr("readonly", false);
+                    } else {
+                        $("#amount_paying").attr("readonly", true);
+                    }
+
+                    if (ife[0] == '1') {
+                        $("#fine").attr("readonly", false);
+                    } else {
+                        $("#fine").attr("readonly", true);
+                    }
+
+                    setTimeout(function () {
+                        $("#chkAllFeeItem").prop("checked", true).trigger("change");
+                    }, 1000);
+
                 }
             });
         }
+        //ends request
     } else {
-        $("#chkAllInvoiceApplicant").prop('checked', false);
+        alert('Please select atleast one invoice');
+        $("#chkAllInvoice").prop('checked', false);
         $(".invrow" + invid).remove();
         addInvoiceFeeAmt();
         $("input[name=invoice_id]").val(invids);
     }
-
 });
+// $(document).on('click', '.chkinvoiceApplicant', function () {
+//     var favorite = [];
+//     $.each($(".chkinvoiceApplicant:checked"), function () {
+//         favorite.push($(this).val());
+//     });
+//     var invids = favorite.join(", ");
+//     var sid = $("input[name=submission_id]").val();
+//     var invid = $(this).val();
+//     //$("#showPaymentButton").show();
+//     if ($(this).is(':checked')) {
+//         if (invid != '') {
+//             var type = 'applicantInvoiceFeeItem';
+//             $.ajax({
+//                 url: 'ajax_data.php',
+//                 type: 'post',
+//                 data: { val: invid, type: type, sid: sid },
+//                 async: true,
+//                 success: function (response) {
+//                     $("#getInvoiceFeeItem").append(response);
+//                     $("input[name=invoice_id]").val(invids);
+//                     $("#collectionForm").show();
+//                     $("#FeeItemManage").show();
+//                     $(".hideFeeItemContent").show();
+//                     $("#chkAllFeeItem").trigger('click');
+//                     // $(".selFeeItem").prop('checked', true);
+//                 }
+//             });
+//         }
+//     } else {
+//         $("#chkAllInvoiceApplicant").prop('checked', false);
+//         $(".invrow" + invid).remove();
+//         addInvoiceFeeAmt();
+//         $("input[name=invoice_id]").val(invids);
+//     }
+
+// });
 
 $(document).on('change', '.showTemplate', function () {
     var val = $(this).val();
