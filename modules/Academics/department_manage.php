@@ -6,9 +6,9 @@ Pupilsight, Flexible & Open School System
 use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
-use Pupilsight\Domain\Departments\DepartmentGateway;
 use Pupilsight\Forms\DatabaseFormFactory;
 
+use Pupilsight\Domain\Departments\DepartmentGateway;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
     echo '<h3>';
     echo __('Subjects');
     echo '</h3>';
-    
+
     $pupilsightSchoolYearID = '';
     if (isset($_GET['pupilsightSchoolYearID'])) {
         $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            echo "<div class='error'>" . $e->getMessage() . '</div>';
         }
         if ($result->rowcount() != 1) {
             echo "<div class='error'>";
@@ -68,13 +68,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
         'Administration' => __('Administration'),
     );
 
-    if($_POST){
-        if(!empty($_POST['search'])){
+    if ($_POST) {
+        if (!empty($_POST['search'])) {
             $serchName = $_POST['search'];
         } else {
             $serchName = '';
         }
-        if(!empty($_POST['type'])){
+        if (!empty($_POST['type'])) {
             $serchType = $_POST['type'];
         } else {
             $serchType = '';
@@ -85,34 +85,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
         unset($_SESSION['serchType']);
     }
 
-    if(!empty($serchType)){
+    if (!empty($serchType)) {
         $serchType = $_POST['type'];
         $_SESSION['serchType'] = $serchType;
     }
-    
 
-    $searchform = Form::create('searchForm','');
+    $searchform = Form::create('searchForm', '');
     $searchform->setFactory(DatabaseFormFactory::create($pdo));
     $searchform->addHiddenValue('studentId', '0');
     $row = $searchform->addRow();
     $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('type', __('Type'));
-        $col->addSelect('type')->fromArray($types)->selected($serchType);
+    $col->addLabel('type', __('Type'));
+    $col->addSelect('type')->fromArray($types)->selected($serchType);
 
-    $col = $row->addColumn()->setClass('newdes');    
-        $col->addLabel('search', __('Subject Name'));
-        $col->addTextField('search')->placeholder('Search by Subject Name')->addClass('txtfield')->setValue($serchName);
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('search', __('Subject Name'));
+    $col->addTextField('search')->placeholder('Search by Subject Name')->addClass('txtfield')->setValue($serchName);
 
-    $col = $row->addColumn()->setClass('newdes');   
+    $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('', __(''));
-    
-    $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');  
+
+    $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');
     echo $searchform->getOutput();
 
-    
+
 
     $departmentGateway = $container->get(DepartmentGateway::class);
-   
+
     // QUERY
     //echo $serchName;
     $criteria = $departmentGateway->newQueryCriteria()
@@ -121,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
         ->searchBy('name', $serchName)
         ->fromPOST();
 
-    if($_SESSION['serchType']){
+    if ($_SESSION['serchType']) {
         $serchType = $_SESSION['serchType'];
     } else {
         $serchType = '';
@@ -153,16 +152,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
     //             ? Format::nameList($staff, 'Staff', true, true)
     //             : '<i>'.__('None').'</i>';
     //     });
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('pupilsightDepartmentID')
         ->format(function ($department, $actions) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Academics/department_manage_edit.php');
+                ->setURL('/modules/Academics/department_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Academics/department_manage_delete.php');
+                ->setURL('/modules/Academics/department_manage_delete.php');
         });
 
     echo $table->render($departments);
