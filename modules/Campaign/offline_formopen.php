@@ -186,6 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
 
             var pid = iframe.find(".fluentform");
             iframe.find("form").submit(function() {
+                $("#preloader").show();
                 getPDF(pid);
 
                 setTimeout(function() {
@@ -195,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                     });
                     if (flag) {
                         insertcampaign();
-                        iframe.find(".ff-message-success").focus();
+                        //iframe.find(".ff-message-success").focus();
                     }
                 }, 2000);
             });

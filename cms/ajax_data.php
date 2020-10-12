@@ -35,6 +35,9 @@ if ($type == 'insertcampaigndetails') {
 
                     $lastno = substr("0000000{$lastnoadd}", -$str_length);
 
+                    $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
+                    $result1 = database::doUpdate($sql1);
+
                     $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise' AND order_wise= " . $orderwise . " ";
                     $result1 = database::doUpdate($sql1);
                 } else {

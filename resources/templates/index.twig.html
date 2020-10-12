@@ -22,13 +22,16 @@
     <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/fullcalendar.min.css?v=1.0" type="text/css" media="all" />
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/jquery.dataTables.min.css?v=1.0" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap-multiselect.css?v=1.0" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap-multiselect.css?v=1.0" type="text/css"
+        media="all" />
     <!--
 <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/jquery-ui/css/blitzer/jquery-ui.css?v=1.0" type="text/css" media="all" />
     -->
 
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/jquery-timepicker/jquery.timepicker.css?v=1.0" type="text/css" media="all" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/thickbox/thickbox.css?v=1.0" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/jquery-timepicker/jquery.timepicker.css?v=1.0"
+        type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/thickbox/thickbox.css?v=1.0" type="text/css"
+        media="all" />
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
     <link href="{{ absoluteURL }}/assets/css/selectize.css" rel="stylesheet" />
     <link href="{{ absoluteURL }}/assets/css/tabler.css" rel="stylesheet" />
@@ -42,22 +45,24 @@
     <script src="{{ absoluteURL }}/assets/js/jquery.dataTables.min.js?v=1.0v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/libs/jquery-timepicker/jquery.timepicker.min.js?v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/libs/livevalidation/livevalidation_standalone.compressed.js"></script>
-    
-    
+
+
     <script src="{{ absoluteURL }}/assets/js/core.js"></script>
     <script src="{{ absoluteURL }}/assets/js/main.js"></script>
     <script src="{{ absoluteURL }}/assets/js/jquery.table2excel.js"></script>
-    <script type="text/javascript">var tb_pathToImage="{{ absoluteURL }}/assets/libs/thickbox/loadingAnimation.gif";</script>
+    <script
+        type="text/javascript">var tb_pathToImage = "{{ absoluteURL }}/assets/libs/thickbox/loadingAnimation.gif";</script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/tinymce/tinymce.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/jquery-tokeninput/src/jquery.tokeninput.js?v=1.0"></script>
+    <script type="text/javascript"
+        src="{{ absoluteURL }}/assets/libs/jquery-tokeninput/src/jquery.tokeninput.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/moment.min.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/fullcalendar.min.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/bootstrap-multiselect.js?v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/js/selectize.min.js"></script>
     <script src="{{ absoluteURL }}/assets/js/tabler.min.js"></script>
-    
-<!--
+
+    <!--
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap.min.css?v=1.0" type="text/css" media="all" />
     
     
@@ -103,6 +108,9 @@
 </head>
 
 <body id='chkCounterSession' data-val='{{ counterid }}' class='antialiased'>
+    <!-- Preloader Start Here -->
+    <div id="preloader" style="display:none;"></div>
+    <!-- Preloader End Here -->
 
     <div class="page">
         <header class="navbar navbar-expand-md navbar-light">
@@ -280,7 +288,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class='card'>
                             <div class='card-body'>
                                 {% if submenu %}
@@ -294,7 +302,7 @@
                                 {% endfor %} {% endfor %} {{ content|join("\n")|raw }} {% endblock %}
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>

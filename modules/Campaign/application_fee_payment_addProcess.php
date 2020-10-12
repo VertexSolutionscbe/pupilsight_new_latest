@@ -243,10 +243,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
             
                     $_SESSION["dts_receipt_feeitem"] = $dts_receipt_feeitem;
                     $_SESSION["dts_receipt"] = $dts_receipt;
-                    $URL .= "&return=success0";
+                    if(!empty($transactionId)){
+                        $URL .= "&tid=".$transactionId."&return=success0";
+                    } else {
+                        $URL .= "&return=success0";
+                    }
+                    
                     $_SESSION["admin_callback"] = $URL;
                     if(!empty($dts_receipt) && !empty($dts_receipt_feeitem)){ 
-                        $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/fee_receipt.php&fid='.$fn_fees_receipt_template_id;
+                        $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/fee_receipt.php?fid='.$fn_fees_receipt_template_id;
                         header('Location: '.$callback);
                     } 
                 } else {
