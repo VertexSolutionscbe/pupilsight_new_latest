@@ -1,13 +1,15 @@
 <?php
-@define('BASE_URL', 'http://localhost/pupilsight/');
-@define('BASE_URL_HOME', 'http://localhost/pupilsight/');
+@define('BASE_URL', 'http://pupilsight.test');
+@define('BASE_URL_HOME', 'http://pupilsight.test');
 class database
 {
   static private $connection;
 
   public static function init()
   {
-  include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+    include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+    // include_once('http://pupilsight.test/config.php');
+    
     //self::$connection = mysqli_connect('127.0.0.1', 'root', '');;
     self::$connection = mysqli_connect($databaseServer, $databaseUsername, $databasePassword);
     if (!self::$connection) {

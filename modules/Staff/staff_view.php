@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
       
         // COLUMNS
       
-        $table->addCheckboxColumn('stuid',__(''))
+        $table->addCheckboxColumn('stuid', __(''))
         ->setClass('chkbox')
         ->notSortable();
         $table->addColumn('fullName', __('Name'))
@@ -160,11 +160,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             $table->addColumn('phone1', __('Phone'))->width('25%')->translatable();
             $table->addColumn('stat', __('Status'))->width('25%')->translatable();
             $table->addColumn('type', __('Type'))->width('25%')->translatable();
-        $table->addColumn('type', __('Type'))->width('25%')->translatable();
-        $table->addColumn('jobTitle', __('Job Title'))->width('25%');
+            $table->addColumn('type', __('Type'))->width('25%')->translatable();
+            $table->addColumn('jobTitle', __('Job Title'))->width('25%');
 
-        // ACTIONS
-        $table->addActionColumn()
+            // ACTIONS
+            $table->addActionColumn()
             ->addParam('pupilsightPersonID')
             ->addParam('search', $criteria->getSearchText(true))
             
@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             //    ->setURL('/modules/Transport/transport_route_delete.php');
                 $actions->addAction('view', __('View Details'))
                     ->setURL('/modules/Staff/staff_view_details.php');
-             });
+            });
 
         echo $table->render($staff);
     }

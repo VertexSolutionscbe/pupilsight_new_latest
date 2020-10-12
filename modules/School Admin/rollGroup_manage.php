@@ -3,10 +3,11 @@
 Pupilsight, Flexible & Open School System
 */
 
-use Pupilsight\Tables\DataTable;
-use Pupilsight\Services\Format;
-use Pupilsight\Domain\School\SchoolYearGateway;
 use Pupilsight\Domain\RollGroups\RollGroupGateway;
+use Pupilsight\Domain\School\SchoolYearGateway;
+use Pupilsight\Forms\Prefab\BulkActionForm;
+use Pupilsight\Services\Format;
+use Pupilsight\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage.php') == false) {
     //Acess denied
@@ -24,7 +25,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $pupilsightSchoolYearID = isset($_REQUEST['pupilsightSchoolYearID'])? $_REQUEST['pupilsightSchoolYearID'] : $_SESSION[$guid]['pupilsightSchoolYearID'];
+
+    if (isset($_GET["nameAlreadyExists"]) && $_GET["nameAlreadyExists"]) {
+        echo "<script>alert('Duplicate section names were not copied.')</script>";
+    }
+
+    $pupilsightSchoolYearID = isset($_REQUEST['pupilsightSchoolYearID']) ? $_REQUEST['pupilsightSchoolYearID'] : $_SESSION[$guid]['pupilsightSchoolYearID'];
 
     // School Year Picker
     if (!empty($pupilsightSchoolYearID)) {
@@ -36,20 +42,20 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         echo '</h2>';
 
         echo "<div class='linkTop'>";
-            if ($prevSchoolYear = $schoolYearGateway->getPreviousSchoolYearByID($pupilsightSchoolYearID)) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'].'&pupilsightSchoolYearID='.$prevSchoolYear['pupilsightSchoolYearID']."'>".__('Previous Year').'</a> ';
-            } else {
-                echo __('Previous Year').' ';
-            }
-			echo ' | ';
-			if ($nextSchoolYear = $schoolYearGateway->getNextSchoolYearByID($pupilsightSchoolYearID)) {
-				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'].'&pupilsightSchoolYearID='.$nextSchoolYear['pupilsightSchoolYearID']."'>".__('Next Year').'</a> ';
-			} else {
-				echo __('Next Year').' ';
-			}
+        if ($prevSchoolYear = $schoolYearGateway->getPreviousSchoolYearByID($pupilsightSchoolYearID)) {
+            echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . '&pupilsightSchoolYearID=' . $prevSchoolYear['pupilsightSchoolYearID'] . "'>" . __('Previous Year') . '</a> ';
+        } else {
+            echo __('Previous Year') . ' ';
+        }
+        echo ' | ';
+        if ($nextSchoolYear = $schoolYearGateway->getNextSchoolYearByID($pupilsightSchoolYearID)) {
+            echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . '&pupilsightSchoolYearID=' . $nextSchoolYear['pupilsightSchoolYearID'] . "'>" . __('Next Year') . '</a> ';
+        } else {
+            echo __('Next Year') . ' ';
+        }
         echo '</div>';
     }
-        
+
     $rollGroupGateway = $container->get(RollGroupGateway::class);
 
     // QUERY
@@ -59,12 +65,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     $rollGroups = $rollGroupGateway->queryRollGroups($criteria, $pupilsightSchoolYearID);
 
-    $formatTutorsList = function($row) use ($rollGroupGateway) {
+    $formatTutorsList = function ($row) use ($rollGroupGateway) {
         $tutors = $rollGroupGateway->selectTutorsByRollGroup($row['pupilsightRollGroupID'])->fetchAll();
-        if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
+        if (count($tutors) > 1) $tutors[0]['surname'] .= ' (' . __('Main Tutor') . ')';
 
         return Format::nameList($tutors, 'Staff', false, true);
     };
+
+    //BEGIN: bulk action
+    $form = BulkActionForm::create("bulkAction", $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/rollGroup_manageProcessBulk.php?action=bulkDelete');
+    $form->addHiddenValue('search', $search);
+
+    $bulkActions = array(
+        "bulkDelete" => __("bulkDelete"),
+    );
+
+    $col = $form->createBulkActionColumn($bulkActions);
+    $col->addSubmit(__('Go'));
+    //END: bulk action
 
     // DATA TABLE
     $table = DataTable::createPaginated('rollGroupManage', $criteria);
@@ -75,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
             ->addParam('pupilsightSchoolYearIDNext', $nextSchoolYear['pupilsightSchoolYearID'])
             ->setIcon('copy')
-            ->onClick('return confirm("'.__('Are you sure you want to continue?').' '.__('This operation cannot be undone.').'");')
+            ->onClick('return confirm("' . __('Are you sure you want to continue?') . ' ' . __('This operation cannot be undone.') . '");')
             ->displayLabel()
             ->directLink()
             ->append('&nbsp;|&nbsp;');
@@ -86,26 +104,32 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
         ->displayLabel();
 
+    $table->addCheckboxColumn("pupilsightRollGroupID", __(""))
+        ->setClass("chkbox")
+        ->notSortable();
+
     $table->addColumn('name', __('Name'))
-          ->description(__('Short Name'))
-          ->format(function ($rollGroup) {
+        ->description(__('Short Name'))
+        ->format(function ($rollGroup) {
             return '<strong>' . $rollGroup['name'] . '</strong><br/><small><i>' . $rollGroup['nameShort'] . '</i></small>';
-          });
+        });
+
     $table->addColumn('tutors', __('Form Tutors'))->sortable(false)->format($formatTutorsList);
     $table->addColumn('space', __('Location'));
     $table->addColumn('website', __('Website'))
-            ->format(Format::using('link', ['website']));
-        
+        ->format(Format::using('link', ['website']));
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('pupilsightRollGroupID')
         ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
+
         ->format(function ($rollGroup, $actions) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/School Admin/rollGroup_manage_edit.php');
+                ->setURL('/modules/School Admin/rollGroup_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/School Admin/rollGroup_manage_delete.php');
+                ->setURL('/modules/School Admin/rollGroup_manage_delete.php');
         });
 
     echo $table->render($rollGroups);

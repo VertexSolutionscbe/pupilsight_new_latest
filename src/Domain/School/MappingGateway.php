@@ -35,7 +35,8 @@ class MappingGateway extends QueryableGateway
         ->leftJoin('pupilsightProgram', 'pupilsightProgramClassSectionMapping.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
         ->leftJoin('pupilsightYearGroup', 'pupilsightProgramClassSectionMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
         ->leftJoin('pupilsightRollGroup', 'pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID');
-        if(!empty($pupilsightSchoolYearID)){
+        if(!empty($pupilsightSchoolYearID))
+        {
             $query->where('pupilsightProgramClassSectionMapping.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ');
         }
         if(!empty($pupilsightProgramID)){
@@ -56,6 +57,7 @@ class MappingGateway extends QueryableGateway
         //     },
         // ]);
         $query->orderBy(['pupilsightProgramClassSectionMapping.pupilsightMappingID DESC']);
+
 
         return $this->runQuery($query, $criteria);
     }
