@@ -101,32 +101,26 @@ print_r($values);  */
         }
         $staff_list = $staff_list2;
 
-        /*
-        echo '<h2>';
-        echo __('Edit WorkFlow Transitions');
-        echo '</h2>';
-        */
-
-        $form->addHiddenValue('cid', $id);
-        $row = $form->addRow();
         $col = $row->addColumn()->setClass('newdes');
-        //$col->addButton(__('Add More Transition'))->addData('cid', $lastid)->addData('wid', $wid)->setID('addTransition')->addClass('bttnsubmt');
-        $col->addContent('<a class="btn btn-primary" data-cid="' . $lastid . '" data-wid="' . $wid . '" id="addTransition">Add More Transition</a>');
-
-        $i = '1';
-        foreach ($values as $k => $st) {
-            $row = $form->addRow()->setID('seatdiv')->setClass('deltr' . $st['id']);
-            $col = $row->addColumn()->setClass('newdes');
-            if ($i == '1') {
-                $col->addLabel('from_state', __('From State'))->addClass('labelfsize');
-            }
-            $col->addSelect('from_state[' . $st['id'] . ']')->addClass('txtfield')->fromArray($statuses)->required()->selected($st['from_state']);
-
-            $col = $row->addColumn()->setClass('newdes');
-            if ($i == '1') {
-                $col->addLabel('to_state', __('To State'))->addClass('labelfsize');
-            }
-            $col->addSelect('to_state[' . $st['id'] . ']')->addClass('txtfield')->fromArray($statuses)->required()->selected($st['to_state']);
+        if($i == '1'){
+            $col->addLabel('transition_display_name', __('Display Name'))->addClass('labelfsize');
+        }
+        $col->addTextField('transition_display_name['.$st['id'].']')->addClass('txtfield')->required()->setValue($st['transition_display_name']); 
+        
+        
+          /* add by bikash */
+        $col = $row->addColumn()->setClass('newdes');
+        if($i == '1'){
+            $col->addLabel('enable_remark', __('Enable Remark'))->addClass('labelfsize');
+        }
+        $col->addCheckbox('enable_remark['.$st['id'].']')->addClass('txtfield')->setValue('1')->checked($st['enable_remark']);
+        /* add by bikash */
+        
+        $col = $row->addColumn()->setClass('newdes');
+        if($i == '1'){
+            $col->addLabel('tansition_action', __('Transition Action'))->addClass('labelfsize');
+        }
+        $col->addSelect('tansition_action['.$st['id'].']')->addClass('txtfield')->fromArray($tansition_action)->selected($st['tansition_action']);
 
             $col = $row->addColumn()->setClass('newdes');
             if ($i == '1') {
