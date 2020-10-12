@@ -39,8 +39,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             $nameAlreadyExists = 0;     //this will be changed to `1` if any name or short name already exists
             while ($row = $result->fetch()) {
                 //Write to database 
+                //Added by Anant
                 //Don't write if name or short name already exists
-                if (checkNameExists($connection2, $row["name"], $row['nameShort'], $pupilsightSchoolYearIDNext)) {
+                if (isSectionNameAdded($connection2, $row["name"], $row['nameShort'], $pupilsightSchoolYearIDNext)) {
                     try {
                         $dataInsert = array('pupilsightSchoolYearID' => $pupilsightSchoolYearIDNext, 'name' => $row['name'], 'nameShort' => $row['nameShort'], 'pupilsightPersonIDTutor' => $row['pupilsightPersonIDTutor'], 'pupilsightPersonIDTutor2' => $row['pupilsightPersonIDTutor2'], 'pupilsightPersonIDTutor3' => $row['pupilsightPersonIDTutor3'], 'pupilsightSpaceID' => $row['pupilsightSpaceID'], 'website' => $row['website']);
                         $sqlInsert = 'INSERT INTO pupilsightRollGroup SET pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, nameShort=:nameShort, pupilsightPersonIDTutor=:pupilsightPersonIDTutor, pupilsightPersonIDTutor2=:pupilsightPersonIDTutor2, pupilsightPersonIDTutor3=:pupilsightPersonIDTutor3, pupilsightSpaceID=:pupilsightSpaceID, pupilsightRollGroupIDNext=NULL, website=:website';
@@ -65,9 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     }
 }
 
-
+//Added by Anant
 //check if roll group name or short name exists
-function checkNameExists($connection2, $name, $nameShort, $pupilsightSchoolYearIDNext)
+function isSectionNameAdded($connection2, $name, $nameShort, $pupilsightSchoolYearIDNext)
 {
     $data1 = ['name' => $name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearIDNext];
     $query1 = "SELECT count(pupilsightRollGroupID) FROM pupilsightRollGroup WHERE name = :name AND pupilsightSchoolYearID = :pupilsightSchoolYearID";
