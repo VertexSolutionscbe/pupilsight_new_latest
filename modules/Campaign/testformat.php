@@ -13,7 +13,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $campaignid = '';
+    $campaignid = '103';
     if(!empty($campaignid)){
         $sqlrec = 'SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = "'.$campaignid.'" ';
         $resultrec = $connection2->query($sqlrec);
@@ -27,12 +27,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
             $orderwise = 0;
             foreach($invformat as $inv){
                 if($inv == '{AB}'){
-                    $datafort = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise');
-                    $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND order_wise=:order_wise AND type=:type';
+                    $datafort = array('fn_fee_series_id'=>$seriesId, 'type' => 'numberwise');
+                    $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id  AND type=:type';
                     $resultfort = $connection2->prepare($sqlfort);
                     $resultfort->execute($datafort);
                     $formatvalues = $resultfort->fetch();
-                    
+                    //print_r($datafort);
                     $iformat .= $formatvalues['last_no'];
                     
                     $str_length = $formatvalues['no_of_digit'];
@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                     $datafort1 = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise' , 'last_no' => $lastno);
                     $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type AND order_wise=:order_wise';
                     $resultfort1 = $connection2->prepare($sqlfort1);
-                    $resultfort1->execute($datafort1);
+                    //$resultfort1->execute($datafort1);
 
                 } else {
                     $iformat .= $inv;
@@ -55,4 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         } else {
             $application_id = '';
         }
+        echo $application_id;
     }
+
+    die();
+}

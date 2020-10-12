@@ -130,14 +130,16 @@ print_r($values);  */
         if($i == '1'){
             $col->addLabel('transition_display_name', __('Display Name'))->addClass('labelfsize');
         }
-        $col->addTextField('transition_display_name['.$st['id'].']')->addClass('txtfield')->required()->setValue($st['transition_display_name']);  
-
+        $col->addTextField('transition_display_name['.$st['id'].']')->addClass('txtfield')->required()->setValue($st['transition_display_name']); 
+        
+        
+          /* add by bikash */
         $col = $row->addColumn()->setClass('newdes');
         if($i == '1'){
             $col->addLabel('enable_remark', __('Enable Remark'))->addClass('labelfsize');
         }
         $col->addCheckbox('enable_remark['.$st['id'].']')->addClass('txtfield')->setValue('1')->checked($st['enable_remark']);
-
+        /* add by bikash */
         
         $col = $row->addColumn()->setClass('newdes');
         if($i == '1'){

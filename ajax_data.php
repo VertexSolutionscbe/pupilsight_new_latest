@@ -2076,8 +2076,10 @@ if($type == 'updateApplicantData'){
             $orderwise = 0;
             foreach($invformat as $inv){
                 if($inv == '{AB}'){
-                    $datafort = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise');
-                    $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND order_wise=:order_wise AND type=:type';
+                    // $datafort = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise');
+                    // $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND order_wise=:order_wise AND type=:type';
+                    $datafort = array('fn_fee_series_id'=>$seriesId, 'type' => 'numberwise');
+                    $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type';
                     $resultfort = $connection2->prepare($sqlfort);
                     $resultfort->execute($datafort);
                     $formatvalues = $resultfort->fetch();
