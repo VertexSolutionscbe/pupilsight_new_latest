@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             
             $pid = $values['pupilsightProgramID'];
             
-            $sqlf = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "'.$values['academic_id'].'" AND b.pupilsightProgramID = "' . $pid . '" AND B.pupilsightYearGroupID IN ('.$values['classes'].') GROUP BY a.id';
+            $sqlf = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "'.$values['academic_id'].'" AND b.pupilsightProgramID = "' . $pid . '" AND b.pupilsightYearGroupID IN ('.$values['classes'].') GROUP BY a.id';
             $resultf = $connection2->query($sqlf);
             $feeGroupData = $resultf->fetchAll();
             $feeGroups=array();  

@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    
+
     $page->breadcrumbs->add(__('Offline Campaign Submitted Form List'));
 
  
@@ -46,6 +46,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
      $id="";
      $formId = '';
      if(isset($_REQUEST['id'])?$id=$_REQUEST['id']:$id="" );
+
+    if(isset($_REQUEST['tid'])?$tid=$_REQUEST['tid']:$tid="" );
 
     $sql1 = 'Select offline_form_id, name FROM campaign WHERE id = '.$id.' ';
     $resultval1 = $connection2->query($sql1);
@@ -76,6 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
      echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" ><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
 
      echo "<a style='display:none;' href='' class='thickbox' id='clickStateRemark'>Remark</a>";
+     echo "<input type='hidden' id='tid' value=".$tid." ><input type='hidden' id='kountPopOpen' value=''><a style='display:none' href='fullscreen.php?q=/modules/Campaign/view_receipt.php&tid=".$tid."&width=600px'  class='thickbox' id='getReceiptPopup'>Receipt</a>";
 
     // echo $butt = '<i id="btnExport" title="Export PDF" class="far fa-file-pdf download_icon"></i> ';
     //echo $butt = '<i id="expore_csv" title="Export CSV" class="fas fa-file-csv download_icon"></i> ';
@@ -261,13 +264,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
             echo $dataSet->data[$i]["created_at"];
             if($dataSet->data[$i]["created_at"] == ''){
-                $sqls1 = 'Select ws.created_at FROM wp_fluentform_submissions AS ws WHERE ws.id = '.$dataSet->data[$i]["submission_id"].' AND  ws.form_id = '. $formId.'';
+                $sqls1 = 'Select ws.created_at, ws.is_converted FROM wp_fluentform_submissions AS ws WHERE ws.id = '.$dataSet->data[$i]["submission_id"].' AND  ws.form_id = '. $formId.'';
                 $resultvals1 = $connection2->query($sqls1);
                 $submited_form = $resultvals1->fetch();
                 //$created_at = date('d-m-Y H:i:s', datetotime($submited_form['created_at']));
                 $dt = new DateTime($submited_form['created_at']);
                 $created_at= $dt->format('d-m-Y H:i:s');
                 $dataSet->data[$i]["created_at"] = $created_at;
+
+                if($submited_form['is_converted'] == '1'){
+                    echo '<input type="hidden" class="converted" data-id='.$dataSet->data[$i]["submission_id"].' value="1" >';
+                } else {
+                    echo '<input type="hidden" class="converted" data-id="0" value="0"  >';
+                }
                 
             }
 
@@ -438,10 +447,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     .slider.round:before {
     border-radius: 50%;
     }
+
+    .converted {
+        background-color: bisque;
+    }
 </style>
 
 <script>
 $(document).ready(function() {
+    $('.converted').each(function() {
+        var val = $(this).val();
+        if(val == '1'){
+            var sid = $(this).attr('data-id');
+            $("#submission_id"+sid).parent().parent().parent().addClass('converted');
+            alert(sid);
+        }
+    });
+
+    var tid = $("#tid").val();
+    var kopen = $("#kountPopOpen").val();
+    if(tid != '' && kopen == ''){
+        $("#kountPopOpen").val('1');
+        $("#getReceiptPopup")[0].click();
+    }
+
+
     $('#expore_tbl').find("input[name='submission_id[]']").each(function() {
         $(this).addClass('include_cell');
         $(this).closest('tr').addClass('rm_cell');
@@ -637,7 +667,21 @@ $(document).ready(function() {
                 var hrf = $(this).attr('data-hrf');
                 var newhrf = hrf+'&sid='+id;
                 $("#convertApplicantClick").attr('href',newhrf);
-                $("#convertApplicantClick")[0].click();
+                var type = 'checkApplicantConversion';
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: id, type: type },
+                    async: true,
+                    success: function (response) {
+                        if(response == '1'){
+                            $("#convertApplicantClick")[0].click();
+                        } else {
+                            alert('This Applicant Already Converted!');
+                        }
+                    }
+                });
+                
             } else {
                 alert('You Have to Select One Applicant at a time.');
             }
@@ -647,3 +691,4 @@ $(document).ready(function() {
     });
 </script>
 <?php
+

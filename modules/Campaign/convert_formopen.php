@@ -88,6 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             <input type="hidden" id="fid" value="<?php echo $rowdata['form_id']; ?>">
             <input type="hidden" id="pupilsightPersonID" value="<?php echo $pupilsightPersonID; ?>">
             <input type="hidden" id="aid" value="<?php echo $submdata['application_id']; ?>">
+            <input type="hidden" id="oldsid" value="<?php echo $sid; ?>">
 
             <span style="width: 60%;">Application No : <?php echo $submdata['application_id'];?> </span>
             <span style="width: 20%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -139,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             iframe.find(".section-inner").hide();
             iframe.find("input[name=age_value]").prop('readonly', true);
             iframe.find("input[name=dob_in_words]").prop('readonly', true);
-            iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-100px;}  </style>"));
+            iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-90px;}  </style>"));
 
             iframe.find("input[name=date_of_birth]").change(function(){
            
@@ -326,6 +327,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             var chkfees = $("#chkFees").val();
             var cmpid = $("#cmpid").val();
             var aid = $("#aid").val();
+            var oldsid = $("#oldsid").val();
             if (val != '') {
                 var type = 'convertApplicantData';
                 setTimeout(function() {
@@ -339,11 +341,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                             fid: fid,
                             clid: clid,
                             pupilsightPersonID: pupilsightPersonID,
-                            aid: aid
+                            aid: aid,
+                            oldsid: oldsid
                         },
                         async: true,
                         success: function(response) {
-                            window.location.href = 'index.php?q=/modules/Campaign/offline_campaignFormList.php&id='+cmpid;
+                            window.location.href = 'index.php?q=/modules/Campaign/campaignFormList.php&id='+cmpid;
                         }
                     });
                 }, 500);

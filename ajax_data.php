@@ -2092,8 +2092,8 @@ if($type == 'updateApplicantData'){
 
                     $lastno = substr("0000000{$lastnoadd}", -$str_length); 
 
-                    $datafort1 = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise' , 'last_no' => $lastno);
-                    $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type AND order_wise=:order_wise';
+                    $datafort1 = array('fn_fee_series_id'=>$seriesId, 'type' => 'numberwise' , 'last_no' => $lastno);
+                    $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type ';
                     $resultfort1 = $connection2->prepare($sqlfort1);
                     $resultfort1->execute($datafort1);
 
@@ -2889,9 +2889,72 @@ if($type == 'convertApplicantData'){
     $pupilsightYearGroupID = $_POST['clid'];
     $pupilsightPersonID = $_POST['pupilsightPersonID'];
     $application_id = $_POST['aid'];
+    $oldsid = $_POST['oldsid'];
+
+    $chksub = 'SELECT is_converted FROM wp_fluentform_submissions WHERE id = '.$oldsid.' ';
+    $resultsub = $connection2->query($chksub);
+    $chkConvertion = $resultsub->fetch();
+
+    if($chkConvertion['is_converted'] == '0'){
     
-    $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
-    $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
+        $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
+        $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+        $data = array('is_converted' => '1', 'id' => $oldsid);
+        $sql = 'UPDATE wp_fluentform_submissions SET is_converted=:is_converted WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+        $invsql = 'SELECT * FROM fn_fee_invoice_applicant_assign WHERE submission_id = '.$oldsid.' ';
+        $resultinv = $connection2->query($invsql);
+        $invoiceData = $resultinv->fetchAll();
+        if(!empty($invoiceData)){
+            foreach($invoiceData as $inv){
+                $datainv = array('submission_id' => $submissionId, 'fn_fee_invoice_id' => $inv['fn_fee_invoice_id'], 'invoice_no' => $inv['invoice_no']);
+                $sqlinv = 'INSERT INTO fn_fee_invoice_applicant_assign SET submission_id=:submission_id, fn_fee_invoice_id=:fn_fee_invoice_id, invoice_no=:invoice_no';
+                $resulti = $connection2->prepare($sqlinv);
+                $resulti->execute($datainv);
+            }
+        }
+
+        $chksql = 'SELECT * FROM fn_fee_collection WHERE submission_id = '.$oldsid.' ';
+        $resultcol = $connection2->query($chksql);
+        $collectionData = $resultcol->fetchAll();
+        if(!empty($collectionData)){
+            foreach($collectionData as $col){
+                $datacol = array('transaction_id'=> $col['transaction_id'], 'fn_fees_invoice_id' => $col['fn_fees_invoice_id'], 'submission_id' => $submissionId, 'pupilsightSchoolYearID' => $col['pupilsightSchoolYearID'], 'fn_fees_counter_id' =>$col['fn_fees_counter_id'], 'receipt_number' => $col['receipt_number'], 'is_custom' => $col['is_custom'], 'payment_mode_id' => $col['payment_mode_id'], 'bank_id' => $col['bank_id'], 'dd_cheque_no' => $col['dd_cheque_no'], 'dd_cheque_date' => $col['dd_cheque_date'], 'dd_cheque_amount' => $col['dd_cheque_amount'], 'payment_status' => $col['payment_status'], 'payment_date' => $col['payment_date'], 'fn_fees_head_id' => $col['fn_fees_head_id'], 'fn_fees_receipt_series_id' => $col['fn_fees_receipt_series_id'], 'transcation_amount' => $col['transcation_amount'], 'total_amount_without_fine_discount' => $col['total_amount_without_fine_discount'], 'amount_paying' => $col['amount_paying'], 'fine' => $col['fine'], 'discount' =>$col['discount'], 'remarks' => $col['remarks'], 'status' => $col['status'], 'cdt' => $col['cdt']);
+                $sqlcol = 'INSERT INTO fn_fees_collection SET transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, submission_id=:submission_id, pupilsightSchoolYearID =:pupilsightSchoolYearID, fn_fees_counter_id=:fn_fees_counter_id, receipt_number=:receipt_number, is_custom=:is_custom, payment_mode_id=:payment_mode_id, bank_id=:bank_id, dd_cheque_no=:dd_cheque_no, dd_cheque_date=:dd_cheque_date, dd_cheque_amount=:dd_cheque_amount, payment_status=:payment_status, payment_date=:payment_date, fn_fees_head_id=:fn_fees_head_id, fn_fees_receipt_series_id=:fn_fees_receipt_series_id, transcation_amount=:transcation_amount, total_amount_without_fine_discount=:total_amount_without_fine_discount, amount_paying=:amount_paying, fine=:fine, discount=:discount, remarks=:remarks, status=:status,cdt=:cdt';
+                $resultc = $connection2->prepare($sqlcol);
+                $resultc->execute($datacol);
+            }
+        }
+
+        $acsql = 'SELECT * FROM fn_fees_applicant_collection WHERE submission_id = '.$oldsid.' ';
+        $resultac = $connection2->query($acsql);
+        $appCollectionData = $resultac->fetchAll();
+        if(!empty($appCollectionData)){
+            foreach($appCollectionData as $acol){
+                $datacola = array('submission_id' => $submissionId,  'transaction_id' => $inv['transaction_id'], 'fn_fee_invoice_id' => $inv['fn_fee_invoice_id'], 'fn_fee_invoice_item_id' => $inv['fn_fee_invoice_item_id'], 'invoice_no' => $inv['invoice_no']);
+                $sqlcola = 'INSERT INTO fn_fees_applicant_collection SET submission_id=:submission_id, transaction_id=:transaction_id, fn_fee_invoice_id=:fn_fee_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no';
+                $resultca = $connection2->prepare($sqlcola);
+                $resultca->execute($datacola);
+            }
+        }
+    }
+}
+
+
+if ($type == 'checkApplicantConversion') {
+    $sid = $val;
+    $chksub = 'SELECT is_converted FROM wp_fluentform_submissions WHERE id = '.$sid.' ';
+    $resultsub = $connection2->query($chksub);
+    $chkConvertion = $resultsub->fetch();
+    if($chkConvertion['is_converted'] == '0'){
+        $response = '1';
+    } else {
+        $response = '2';
+    }
+    echo $response;
 }
