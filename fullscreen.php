@@ -44,9 +44,9 @@ if (empty($address)) {
         'page'        => $page,
     ];
 
-    
-    if (is_file('./'.$address)) {
-        $page->writeFromFile('./'.$address, $globals);
+
+    if (is_file('./' . $address)) {
+        $page->writeFromFile('./' . $address, $globals);
     } else {
         $page->writeFromFile('./error.php', $globals);
     }

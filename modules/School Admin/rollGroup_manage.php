@@ -72,6 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         return Format::nameList($tutors, 'Staff', false, true);
     };
 
+    /*
     //BEGIN: bulk action
     $form = BulkActionForm::create("bulkAction", $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/rollGroup_manageProcessBulk.php?action=bulkDelete');
     $form->addHiddenValue('search', $search);
@@ -83,6 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $col = $form->createBulkActionColumn($bulkActions);
     $col->addSubmit(__('Go'));
     //END: bulk action
+    */
 
     // DATA TABLE
     $table = DataTable::createPaginated('rollGroupManage', $criteria);
@@ -103,6 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         ->setURL('/modules/School Admin/rollGroup_manage_add.php')
         ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
         ->displayLabel();
+
 
     $table->addCheckboxColumn("pupilsightRollGroupID", __(""))
         ->setClass("chkbox")
