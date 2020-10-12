@@ -18,7 +18,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     if ($pupilsightSchoolYearID == '' or $pupilsightSchoolYearIDNext == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
+    } 
+    else 
+    {
         //GET CURRENT ROLL GROUPS
         try {
             $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID);
@@ -31,30 +33,72 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             exit();
         }
 
-        if ($result->rowCount() < 1) {
+        if ($result->rowCount() < 1) 
+        {
             $URL .= '&return=error2';
             header("Location: {$URL}");
-        } else {
+        } 
+        else 
+        {
             $partialFail = false;
-            while ($row = $result->fetch()) {
-                //Write to database
-                try {
-                    $dataInsert = array('pupilsightSchoolYearID' => $pupilsightSchoolYearIDNext, 'name' => $row['name'], 'nameShort' => $row['nameShort'], 'pupilsightPersonIDTutor' => $row['pupilsightPersonIDTutor'], 'pupilsightPersonIDTutor2' => $row['pupilsightPersonIDTutor2'], 'pupilsightPersonIDTutor3' => $row['pupilsightPersonIDTutor3'], 'pupilsightSpaceID' => $row['pupilsightSpaceID'], 'website' => $row['website']);
-                    $sqlInsert = 'INSERT INTO pupilsightRollGroup SET pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, nameShort=:nameShort, pupilsightPersonIDTutor=:pupilsightPersonIDTutor, pupilsightPersonIDTutor2=:pupilsightPersonIDTutor2, pupilsightPersonIDTutor3=:pupilsightPersonIDTutor3, pupilsightSpaceID=:pupilsightSpaceID, pupilsightRollGroupIDNext=NULL, website=:website';
-                    $resultInsert = $connection2->prepare($sqlInsert);
-                    $resultInsert->execute($dataInsert);
-                } catch (PDOException $e) {
-                    $partialFail = true;
+            $nameAlreadyExists = 0;     //this will be changed to `1` if any name or short name already exists
+            while ($row = $result->fetch()) 
+            {
+                //Write to database 
+                //Don't write if name or short name already exists
+                if(checkNameExists($connection2, $row["name"], $row['nameShort'], $pupilsightSchoolYearIDNext))
+                {
+                    try 
+                    {
+                        $dataInsert = array('pupilsightSchoolYearID' => $pupilsightSchoolYearIDNext, 'name' => $row['name'], 'nameShort' => $row['nameShort'], 'pupilsightPersonIDTutor' => $row['pupilsightPersonIDTutor'], 'pupilsightPersonIDTutor2' => $row['pupilsightPersonIDTutor2'], 'pupilsightPersonIDTutor3' => $row['pupilsightPersonIDTutor3'], 'pupilsightSpaceID' => $row['pupilsightSpaceID'], 'website' => $row['website']);
+                        $sqlInsert = 'INSERT INTO pupilsightRollGroup SET pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, nameShort=:nameShort, pupilsightPersonIDTutor=:pupilsightPersonIDTutor, pupilsightPersonIDTutor2=:pupilsightPersonIDTutor2, pupilsightPersonIDTutor3=:pupilsightPersonIDTutor3, pupilsightSpaceID=:pupilsightSpaceID, pupilsightRollGroupIDNext=NULL, website=:website';
+                        $resultInsert = $connection2->prepare($sqlInsert);
+                        $resultInsert->execute($dataInsert);
+                    } 
+                    catch (PDOException $e) 
+                    {
+                        $partialFail = true;
+                    }
+                }
+                else
+                {
+                    $nameAlreadyExists = 1;
                 }
             }
 
-            if ($partialFail == true) {
-                $URL .= '&return=error5';
+            if($partialFail == true) 
+            {
+                $URL .= "&return=error5&nameAlreadyExists=" . $nameAlreadyExists;
                 header("Location: {$URL}");
-            } else {
-                $URL .= '&return=success0';
+            }
+            else 
+            {
+                $URL .= "&return=success0&nameAlreadyExists=" . $nameAlreadyExists;
                 header("Location: {$URL}");
             }
         }
     }
 }
+
+
+//check if roll group name or short name exists
+function checkNameExists($connection2, $name, $nameShort, $pupilsightSchoolYearIDNext)
+{
+    $data1 = ['name' => $name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearIDNext];
+    $query1= "SELECT count(pupilsightRollGroupID) FROM pupilsightRollGroup WHERE name = :name AND pupilsightSchoolYearID = :pupilsightSchoolYearID";
+    $result1 = $connection2->prepare($query1);
+    $result1->execute($data1);
+
+    $data2 = ['nameShort' => $nameShort, 'pupilsightSchoolYearID' => $pupilsightSchoolYearIDNext];
+    $query2 = "SELECT count(pupilsightRollGroupID) FROM pupilsightRollGroup WHERE nameShort = :nameShort AND pupilsightSchoolYearID = :pupilsightSchoolYearID";
+    $result2 = $connection2->prepare($query2);
+    $result2->execute($data2);
+
+    //return true if name and short name don't exist
+    if($result1->fetchColumn() == 0 && $result2->fetchColumn() == 0)
+        return true;
+    else
+        return false;
+}
+
+?>

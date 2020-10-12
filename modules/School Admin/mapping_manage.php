@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
 
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
-    $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
+    $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear';
     $resulta = $connection2->query($sqla);
     $academic = $resulta->fetchAll();
 
@@ -53,16 +53,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     }
     $program = $program1 + $program2;
 
-    if ($_POST) {
-        $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
+    if ($_POST) 
+    {
+        $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         $pupilsightProgramID =  $_POST['pupilsightProgramID'];
         $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
         $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
         
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
         $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
-
-    } else {
+    }
+    else 
+    {
         $classes = array('' => 'Select Class');
         $sections = array('' => 'Select Section');
         $pupilsightProgramID =  '';
@@ -73,13 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
 
     $MappingGateway = $container->get(MappingGateway::class);
     $criteria = $MappingGateway->newQueryCriteria()
-        ->searchBy($MappingGateway->getSearchableColumns(), $search)
-        ->sortBy(['pupilsightMappingID'])
-        ->fromPOST();
+                                ->searchBy($MappingGateway->getSearchableColumns(), $search)
+                                ->sortBy(['pupilsightMappingID'])
+                                ->fromPOST();
 
     $yearGroups = $MappingGateway->queryMappingGroups($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
-
-    
 
     echo '<h2>';
     echo __('Filter');
@@ -148,6 +148,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
         });
 
     echo $table->render($yearGroups);
+
+
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }

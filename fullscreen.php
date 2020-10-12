@@ -44,11 +44,13 @@ if (empty($address)) {
         'page'        => $page,
     ];
 
+    
     if (is_file('./'.$address)) {
         $page->writeFromFile('./'.$address, $globals);
     } else {
         $page->writeFromFile('./error.php', $globals);
     }
 }
+
 
 echo $page->render('fullscreen.twig.html');

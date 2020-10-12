@@ -22,16 +22,16 @@
 /** The name of the database for WordPress */
 include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
 
-define( 'DB_NAME', $databaseName);
+define( 'DB_NAME', "pupilsight");
 //define( 'DB_NAME', "pd_demo");
 
 /** MySQL database username */
 //define( 'DB_USER', 'root' );
-define( 'DB_USER', $databaseUsername);
+define( 'DB_USER', "root");
 
 /** MySQL database password */
 //define( 'DB_PASSWORD', '' );
-define( 'DB_PASSWORD', $databasePassword);
+define( 'DB_PASSWORD', "");
 
 /** MySQL hostname */
 define( 'DB_HOST', "127.0.0.1");
