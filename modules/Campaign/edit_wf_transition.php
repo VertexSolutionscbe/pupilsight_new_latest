@@ -74,19 +74,17 @@ print_r($values);  */
             '2' => _('Program Registration (Based on Organisation selected)'),
             '3' => _('Assign Curriculum (Subjects/Elective) ')
         );
-
         $auto_gen_inv = array(
             '2'  => __('No'),
-            '1'     => __('Yes')
+            '1'     => __('Yes'),
         );
-
         $defaul_open = array(
             '' => _('Select'),
             '1'     => __('Payment'),
             '2'  => __('Form'),
-            '3'  => __('History')
-        );
+            '3'  => __('History'),
 
+        );
         $sqlp = 'SELECT a.pupilsightStaffID,a.staff_status AS stat,b.*, b.pupilsightPersonID AS stu_id , a.type, b.firstName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID';
         $resultp = $connection2->query($sqlp);
         $getstaff = $resultp->fetchAll();
@@ -101,26 +99,31 @@ print_r($values);  */
         }
         $staff_list = $staff_list2;
 
+
+        echo '<h2>';
+        echo __('Edit WorkFlow Transitions');
+        echo '</h2>';
+
+        $form->addHiddenValue('cid', $id);
+        $row = $form->addRow();
         $col = $row->addColumn()->setClass('newdes');
-        if($i == '1'){
-            $col->addLabel('transition_display_name', __('Display Name'))->addClass('labelfsize');
-        }
-        $col->addTextField('transition_display_name['.$st['id'].']')->addClass('txtfield')->required()->setValue($st['transition_display_name']); 
-        
-        
-          /* add by bikash */
-        $col = $row->addColumn()->setClass('newdes');
-        if($i == '1'){
-            $col->addLabel('enable_remark', __('Enable Remark'))->addClass('labelfsize');
-        }
-        $col->addCheckbox('enable_remark['.$st['id'].']')->addClass('txtfield')->setValue('1')->checked($st['enable_remark']);
-        /* add by bikash */
-        
-        $col = $row->addColumn()->setClass('newdes');
-        if($i == '1'){
-            $col->addLabel('tansition_action', __('Transition Action'))->addClass('labelfsize');
-        }
-        $col->addSelect('tansition_action['.$st['id'].']')->addClass('txtfield')->fromArray($tansition_action)->selected($st['tansition_action']);
+        //$col->addButton(__('Add More Transition'))->addData('cid', $lastid)->addData('wid', $wid)->setID('addTransition')->addClass('bttnsubmt');
+        $col->addContent('<a class="btn btn-primary" data-cid="' . $lastid . '" data-wid="' . $wid . '" id="addTransition">Add More Transition</a>');
+
+        $i = '1';
+        foreach ($values as $k => $st) {
+            $row = $form->addRow()->setID('seatdiv')->setClass('deltr' . $st['id']);
+            $col = $row->addColumn()->setClass('newdes');
+            if ($i == '1') {
+                $col->addLabel('from_state', __('From State'))->addClass('labelfsize');
+            }
+            $col->addSelect('from_state[' . $st['id'] . ']')->addClass('txtfield')->fromArray($statuses)->required()->selected($st['from_state']);
+
+            $col = $row->addColumn()->setClass('newdes');
+            if ($i == '1') {
+                $col->addLabel('to_state', __('To State'))->addClass('labelfsize');
+            }
+            $col->addSelect('to_state[' . $st['id'] . ']')->addClass('txtfield')->fromArray($statuses)->required()->selected($st['to_state']);
 
             $col = $row->addColumn()->setClass('newdes');
             if ($i == '1') {
@@ -128,6 +131,14 @@ print_r($values);  */
             }
             $col->addTextField('transition_display_name[' . $st['id'] . ']')->addClass('txtfield')->required()->setValue($st['transition_display_name']);
 
+
+            /* add by bikash */
+            $col = $row->addColumn()->setClass('newdes');
+            if ($i == '1') {
+                $col->addLabel('enable_remark', __('Enable Remark'))->addClass('labelfsize');
+            }
+            $col->addCheckbox('enable_remark[' . $st['id'] . ']')->addClass('txtfield')->setValue('1')->checked($st['enable_remark']);
+            /* add by bikash */
 
             $col = $row->addColumn()->setClass('newdes');
             if ($i == '1') {
@@ -181,6 +192,7 @@ print_r($values);  */
                 $col->addContent('<div class="dte mb-1"  style="font-size: 25px; "><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr_trans " data-cid="' . $id . '" data-wid="' . $wid . '" data-id="' . $st['id'] . '" data-sid="' . $st['id'] . '"></i></div>');
             }
 
+
             $i++;
         }
 
@@ -202,6 +214,7 @@ print_r($values);  */
     .mb-1 label {
         height: 43px;
     }
+
 
     .feeSetting {
         width: 15%;
