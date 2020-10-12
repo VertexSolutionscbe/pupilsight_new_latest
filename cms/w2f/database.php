@@ -8,7 +8,7 @@ class database
   public static function init()
   {
     include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
-    // include_once('http://pupilsight.test/config.php');
+    //include_once('http://pupilsight.test/config.php');
 
     //self::$connection = mysqli_connect('127.0.0.1', 'root', '');;
     self::$connection = mysqli_connect($databaseServer, $databaseUsername, $databasePassword);
