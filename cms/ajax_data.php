@@ -23,7 +23,8 @@ if($type == 'insertcampaigndetails'){
             $orderwise = 0;
             foreach($invformat as $inv){
                 if($inv == '{AB}'){
-                    $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id='.$seriesId.' AND order_wise='.$orderwise.' AND type= "numberwise"';
+                    // $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id='.$seriesId.' AND order_wise='.$orderwise.' AND type= "numberwise"';
+                    $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id='.$seriesId.' AND type= "numberwise"';
                     $formatvalues = database::doSelectOne($sqlfort);
                    
                     $iformat .= $formatvalues['last_no'];
