@@ -186,8 +186,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
             $col->addLabel('fn_fees_receipt_template_id', __('Receipt Template'));
             $col->addSelect('fn_fees_receipt_template_id')->addClass('txtfield')->fromArray($receiptTemplate); 
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
+    $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('is_publish_parent', __('Publish For Parent'));
+            $col->addCheckBox('is_publish_parent')->addClass('txtfield')->setValue('1'); 
             
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('', __(''));

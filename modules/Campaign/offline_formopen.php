@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             iframe.find(".section-inner").hide();
             iframe.find("input[name=age_value]").prop('readonly', true);
             iframe.find("input[name=dob_in_words]").prop('readonly', true);
-            iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-100px;}  </style>"));
+            iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-90px;}  </style>"));
 
             iframe.find("input[name=date_of_birth]").change(function(){
            
@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             var val = $("#innerForm").attr('data-campid');
             var pid = $("#pid").val();
             var fid = $("#fid").val();
-            var clid = $("#class").val();
+            var clid = $("#class option:selected").val();
             var pupilsightPersonID = $("#pupilsightPersonID").val();
             var chkfees = $("#chkFees").val();
             var cmpid = $("#cmpid").val();

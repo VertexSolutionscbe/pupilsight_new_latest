@@ -83,6 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
             <th>Name</th>
             <th>Email</th>
             <th>Status</th>
+            <th>Remarks</th>
             <th>Status Change By</th>
             <th>Status Change Date & Time</th>
         </tr>
@@ -93,6 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
             <th><?php echo $names; ?></th>
             <th><?php echo $email; ?></th>
             <th>Submitted</th>
+            <th></th>
             <?php if(!empty($submissionData['officialName'])) { ?>
                 <th><?php echo $submissionData['officialName']; ?></th>
             <?php } else { ?>
@@ -113,6 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
             <th><?php echo $names; ?></th>
             <th><?php echo $email; ?></th>
             <th><?php echo $std['state']; ?></th>
+            <th><?php echo $std['remarks']; ?></th>
             <th><?php echo $std['officialName']; ?></th>
             <th><?php 
             $dt = new DateTime($std['cdt']);

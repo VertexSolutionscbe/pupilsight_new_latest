@@ -18,6 +18,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
     $campaignId = $_POST['cid'];
     $formId = $_POST['fid'];
     $subId = $_POST['subid'];
+    $remarks = $_POST['remarks'];
     $crtd =  date('Y-m-d H:i:s');
     $cdt = date('Y-m-d H:i:s');
     
@@ -55,9 +56,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
             // die();
             if($datachk['kount'] == 0){
 
-                $data = array('campaign_id' => $campaignId,'form_id' => $formId, 'submission_id' => $sub, 'state' => $statename,  'state_id' => $stateid, 'status' => '1', 'pupilsightPersonID' => $cuid, 'cdt' => $crtd);
+                $data = array('campaign_id' => $campaignId,'form_id' => $formId, 'submission_id' => $sub, 'state' => $statename,  'state_id' => $stateid, 'status' => '1', 'pupilsightPersonID' => $cuid, 'remarks' => $remarks, 'cdt' => $crtd);
                 
-                $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, cdt=:cdt";
+                $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, remarks=:remarks, cdt=:cdt";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
 
@@ -250,14 +251,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                 }
             }    
             
-           die();
+          // die();
 
             
             
         }
         
-        echo $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/campaignFormList.php&id='.$campaignId.'&search=';
-               // header("Location: {$URL}");
+        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/campaignFormList.php&id='.$campaignId.'&search=';
+        header("Location: {$URL}");
                 
        
     }

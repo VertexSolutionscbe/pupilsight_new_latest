@@ -68,6 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
         $pupilsightSchoolYearName = $_SESSION[$guid]['pupilsightSchoolYearName'];
     }
 
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+
     $email = $_SESSION[$guid]['email'];
     //$phone = $_SESSION[$guid]['phone1'];
     
@@ -106,7 +108,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
 
     $dataSet = $admissionGateway->getApp_status($criteria, $submissionId, $cuid);
     $table = DataTable::createPaginated('userManage', $criteria);
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=%2Fmodules%2FCampaign%2Factive_campaign.php' class='btn btn-primary'>Apply Here</a></div><div class='float-none'></div></div>";
+
+    if($roleId == '004'){
+        echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=%2Fmodules%2FCampaign%2Fparent_active_campaign.php' class='btn btn-primary'>Apply Here</a></div><div class='float-none'></div></div>";
+    } else {
+        echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=%2Fmodules%2FCampaign%2Factive_campaign.php' class='btn btn-primary'>Apply Here</a></div><div class='float-none'></div></div>";
+    }
+   
 
     // $table->addColumn('name', __('Campaign Name'))
     //     ->width('10%')

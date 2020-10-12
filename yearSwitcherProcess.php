@@ -17,10 +17,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 // Gibbon system-wide include
 require_once './pupilsight.php';
 
-$URL = './index.php';
+//$URL = './index.php';
 $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'] ?? null;
 
 $pupilsight->session->set('pageLoads', null);
+$URL = $_SERVER['HTTP_REFERER'];
+
+
 
 //Check for parameter
 if (empty($pupilsightSchoolYearID)) {
@@ -91,7 +94,7 @@ if (empty($pupilsightSchoolYearID)) {
                     // Clear the main menu from session cache
                     $pupilsight->session->forget('menuMainItems');
 
-                    $URL .= '?return=success0';
+                    //$URL .= '?return=success0';
                     header("Location: {$URL}");
                 }
             }

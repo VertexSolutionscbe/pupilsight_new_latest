@@ -77,6 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/view_selected_cam
         //iframe.find("#wpadminbar").hide();
         //iframe.find(".section-inner").hide();
         iframe.find(".ff-btn-submit").prop('disabled', true);
+        iframe.find("#ff_preview_only").prop('checked', true);
+        iframe.find(".ff_preview_body").addClass('ff_preview_only');
+        
     });
 
 </script>

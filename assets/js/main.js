@@ -719,22 +719,22 @@
         $(this).addClass('activestate');
         var remark = $(this).attr('data-remark');
         if (remark == '1') {
-            // var cid = $(this).attr('data-cid');
-            // var sid = $(this).attr('data-sid');
-            // var sname = $(this).attr('data-name');
-            // var fid = $(this).attr('data-formid');
-            // var favorite = [];
-            // $.each($("input[name='submission_id[]']:checked"), function () {
-            //     favorite.push($(this).val());
-            // });
-            // var subid = favorite.join(", ");
-            // if (subid) {
-            //     var hrf = 'fullscreen.php?q=/modules/Campaign/state_remark.php&cid=' + cid + '&sid=' + sid + '&sname=' + sname + '&fid=' + fid + '&subid=' + subid;
-            //     $("#clickStateRemark").attr('href', hrf);
-            //     $("#clickStateRemark")[0].click();
-            // } else {
-            //     alert('You Have to Select Applicants.');
-            // }
+            var cid = $(this).attr('data-cid');
+            var sid = $(this).attr('data-sid');
+            var sname = $(this).attr('data-name');
+            var fid = $(this).attr('data-formid');
+            var favorite = [];
+            $.each($("input[name='submission_id[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var subid = favorite.join(", ");
+            if (subid) {
+                var hrf = 'fullscreen.php?q=/modules/Campaign/state_remark.php&cid=' + cid + '&sid=' + sid + '&sname=' + sname + '&fid=' + fid + '&subid=' + subid + '&width=500&height=250';
+                $("#clickStateRemark").attr('href', hrf);
+                $("#clickStateRemark")[0].click();
+            } else {
+                alert('You Have to Select Applicants.');
+            }
         } else {
             var cid = $(this).attr('data-cid');
             var sid = $(this).attr('data-sid');
