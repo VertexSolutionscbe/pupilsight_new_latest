@@ -18,11 +18,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
     $campaignId = $_POST['cid'];
     $formId = $_POST['fid'];
     $subId = $_POST['subid'];
+    $remarks = $_POST['remarks'];
     $crtd =  date('Y-m-d H:i:s');
     $cdt = date('Y-m-d H:i:s');
     
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
-	$email_arr =array();
+    $email_arr =array();
+    
+    $sqlchkform = 'SELECT form_id, offline_form_id FROM campaign WHERE id = '.$campaignId.' AND form_id = '.$formId.' OR offline_form_id = '.$formId.' ';
+    $resultchkform = $connection2->query($sqlchkform);
+    $chkCampFormData = $resultchkform->fetch();
+    
+   
 	
     if ($stateid == '' or $statename == ''  or $campaignId == '' or $formId == '' or $subId == '') {
         $URL .= '&return=error1';
@@ -55,9 +62,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
             // die();
             if($datachk['kount'] == 0){
 
-                $data = array('campaign_id' => $campaignId,'form_id' => $formId, 'submission_id' => $sub, 'state' => $statename,  'state_id' => $stateid, 'status' => '1', 'pupilsightPersonID' => $cuid, 'cdt' => $crtd);
+                $data = array('campaign_id' => $campaignId,'form_id' => $formId, 'submission_id' => $sub, 'state' => $statename,  'state_id' => $stateid, 'status' => '1', 'pupilsightPersonID' => $cuid, 'remarks' => $remarks, 'cdt' => $crtd);
                 
-                $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, cdt=:cdt";
+                $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, remarks=:remarks, cdt=:cdt";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
 
@@ -250,14 +257,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                 }
             }    
             
-           die();
+          // die();
 
             
             
         }
+
+        if($chkCampFormData['form_id'] == $formId){
+            $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/campaignFormList.php&id='.$campaignId.'&search=';
+        } else {
+            $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/offline_campaignFormList.php&id='.$campaignId.'&search=';
+        }
         
-        echo $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/campaignFormList.php&id='.$campaignId.'&search=';
-               // header("Location: {$URL}");
+        
+        header("Location: {$URL}");
                 
        
     }

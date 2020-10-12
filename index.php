@@ -353,7 +353,7 @@ if ($isLoggedIn) {
     $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
     if ($roleid == '001') {
         $isAllMenu = TRUE;
-    }
+    } 
 
     if ($cacheLoad || !$session->has('fastFinder')) {
         $templateData = getFastFinder($connection2, $guid);
@@ -661,6 +661,12 @@ if ($isLoggedIn) {
     //echo $iframe ." - ".$iframesrc;
     //die();
 
+    $sqlterm = 'SELECT * FROM pupilsightSchoolYear ORDER BY pupilsightSchoolYearID ASC';
+    $resultterm = $connection2->query($sqlterm);
+    $yeardata = $resultterm->fetchAll();
+
+    $currentYear = $session->get('pupilsightSchoolYearID');
+
     $page->addData([
         'menuMain'   => $session->get('menuMainItems', []),
         'menuMainIcon'   => $menu_icon,
@@ -674,6 +680,8 @@ if ($isLoggedIn) {
         'parentrole' => $session->get('pupilsightRoleIDPrimary'),
         'counterid' => $session->get('counterid'),
         'smsCredits' => $smsCredits_data['value'],
+        'academicYear' => $yeardata,
+        'pupilsightSchoolYearID' => $currentYear,
     ]);
 }
 

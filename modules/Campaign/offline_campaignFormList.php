@@ -75,6 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
      echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" ><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
 
+     echo "<a style='display:none;' href='' class='thickbox' id='clickStateRemark'>Remark</a>";
+
     // echo $butt = '<i id="btnExport" title="Export PDF" class="far fa-file-pdf download_icon"></i> ';
     //echo $butt = '<i id="expore_csv" title="Export CSV" class="fas fa-file-csv download_icon"></i> ';
     echo "<div style='height:25px; margin-top:5px;'><div class='float-right mb-2'>

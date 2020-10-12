@@ -354,7 +354,6 @@ $app_links = array();
                     });
                     if (flag) {
                         $("#back-to-top").click();
-                        $("#progClassDiv").remove();
                         insertcampaign();
                     }
                 }, 2000);
@@ -467,7 +466,8 @@ $app_links = array();
             var val = $("#application_view").attr('data-campid');
             var pid = $("#pid").val();
             var fid = $("#fid").val();
-            var clid = $("#class").val();
+            var clid = $("#class option:selected").val();
+            alert(clid);
             if (val != '') {
                 var type = 'insertcampaigndetails';
                 setTimeout(function() {
@@ -486,6 +486,7 @@ $app_links = array();
                             //$("'html, body'").animate({scrollTop: $("#showdiv").offset().top}, 2000);
                             
                             //$("#admissionPay").submit();
+                            $("#progClassDiv").remove();
                         }
                     });
                 }, 500);

@@ -47,26 +47,26 @@ class StaffDashboard implements OutputableInterface
             $output .= $smartWorkflowHelp;
         }
 
-        if($_SESSION[$guid]['pupilsightRoleIDPrimary'] == '001'){
-            $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+        // if($_SESSION[$guid]['pupilsightRoleIDPrimary'] == '001'){
+        //     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-            $sqlterm = 'SELECT * FROM pupilsightSchoolYear ORDER BY pupilsightSchoolYearID ASC';
-            $resultterm = $connection2->query($sqlterm);
-            $yeardata = $resultterm->fetchAll();
+        //     $sqlterm = 'SELECT * FROM pupilsightSchoolYear ORDER BY pupilsightSchoolYearID ASC';
+        //     $resultterm = $connection2->query($sqlterm);
+        //     $yeardata = $resultterm->fetchAll();
             
-            $output .= '<form action="yearSwitcherProcess.php" method="post"><div style="float:right;margin-bottom:10px;"><span style="font-size:18px;float:left">Change Academic Year : </span> &nbsp;&nbsp;&nbsp;&nbsp; <select name="pupilsightSchoolYearID" style="float:left" id="academicYearChange">';
+        //     $output .= '<form action="yearSwitcherProcess.php" method="post"><div style="float:right;margin-bottom:10px;"><span style="font-size:18px;float:left">Change Academic Year : </span> &nbsp;&nbsp;&nbsp;&nbsp; <select name="pupilsightSchoolYearID" style="float:left" id="academicYearChange">';
 
-            $output .= '<option value="">Select Academic Year</option>';
-            foreach ($yeardata as $row) {
-                if($row['pupilsightSchoolYearID'] == $pupilsightSchoolYearID){
-                    $selected = 'selected';
-                } else {
-                    $selected = '';
-                }
-                $output .= '<option value=' . $row['pupilsightSchoolYearID'] . ' '.$selected.'>' . $row['name'] . '</option>';
-            }
-            $output .= '</select>  <button type="submit" style="float:right" id="" class="btn btn-primary">Change Year</a></div></form>';
-        }
+        //     $output .= '<option value="">Select Academic Year</option>';
+        //     foreach ($yeardata as $row) {
+        //         if($row['pupilsightSchoolYearID'] == $pupilsightSchoolYearID){
+        //             $selected = 'selected';
+        //         } else {
+        //             $selected = '';
+        //         }
+        //         $output .= '<option value=' . $row['pupilsightSchoolYearID'] . ' '.$selected.'>' . $row['name'] . '</option>';
+        //     }
+        //     $output .= '</select>  <button type="submit" style="float:right" id="" class="btn btn-primary">Change Year</a></div></form>';
+        // }
 
         
        $output .= '<h2 style="margin-top: 50px;border-top: 1px solid rgba(0, 0, 0, 0.5);padding-top: 5px;">'.
