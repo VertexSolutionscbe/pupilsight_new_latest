@@ -86,8 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     <a style='display:none; ' href='" . $_SESSION[$guid]['absoluteURL'] . "/fullscreen.php?q=/modules/Campaign/fee_make_payment.php&cid=" . $id . "' class='thickbox btn btn-primary' id='clickAdmissionFeePayment'>Fee Payment</a>
     <a style='display:none; margin-bottom:10px;'  class='btn btn-primary' id='admissionFeePayment'>Fee Payment</a>
     &nbsp;&nbsp;<a id='onlineClick' style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/campaignFormList.php&id=" . $id . "'   class=' btn btn-primary' >Online Submitted List</a>
-    &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_formopen.php&id=" . $id . "'   class=' btn btn-primary' id=''>Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' id='sendSMS'>Send SMS</a>";
-    echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' id='sendEmail'>Send Email</a>";
+    &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_formopen.php&id=" . $id . "'   class=' btn btn-primary' id=''>Apply</a>";
+
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' data-hrf='?q=/modules/Campaign/convert_formopen.php&id=" . $id . "' title='Convert Applicant' class='btn btn-primary' id='convertApplicant'>Convert</a> <a style='display:none;margin-bottom:10px;' href='?q=/modules/Campaign/convert_formopen.php&id=" . $id . "'   class=' btn btn-primary' id='convertApplicantClick'>Apply</a>";
     echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     //     echo $butt = '<button class="btn btn-primary statesButton"  data-formid = '.$formId.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$id.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
     //  }
     echo '<input type="hidden" id="campId" value="' . $id . '"><input type="hidden" id="formId" value="' . $formId . '">';
-    echo '<span id="statusButton"></span>';
+    //  echo '<span id="statusButton"></span>';
 
     if (!empty($formId)) {
         $sqlf = 'Select form_fields FROM wp_fluentform_forms WHERE id = ' . $formId . ' ';
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $field = json_decode($fluent['form_fields']);
         $fields = array();
 
-        $showfields = '<div style="display:inline-flex;"><select class="filterCampaign" id="showfield1" style="width:50%"><option>Select Field for Filter</option>';
+        $showfields = '<div style="display:inline-flex;"><select class="filterCampaign" id="showfield1" style="width:50%;display:none;"><option>Select Field for Filter</option>';
         foreach ($field as $fe) {
             foreach ($fe as $f) {
                 // if(!empty($f->fields)){
@@ -179,12 +179,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         echo $showfields2 = '<select id="showfield2" class="filterCampaign" style="display:none;height: 36px;"><option>Select Search Criteria</option><option value="search">Search</option><option value="range">Range</option></select><input type="text" class="filterCampaign searchOpen searchby" name="searchby" id="" placeholder="Enter Your Search Data" style="display:none;height: 36px;"><input type="text" id="range1" name="rangestart" class="rangeOpen filterCampaign searchby" placeholder="Enter Your Start Range" style="display:none;height: 36px;"><input type="text" name="rangeend" class="rangeOpen filterCampaign searchby" id="range2" placeholder="Enter Your End Range" style="display:none;height: 36px;"><input type="hidden" id="campaignId" value=' . $id . '><input type="hidden" id="formId" value=' . $formId . '>
         <input type="text" id="applicationName" style="height: 36px;" name="applicationName" class=""  placeholder="Application Name" >&nbsp;
         <input type="text" id="applicationId" style="height: 36px;" name="application_id" class=""  placeholder="Application No" >&nbsp;
-        ' . $statefields . ' &nbsp;
+        
         <button id="offlinefilterCampaign" style="height: 36px;" class="btn btn-primary">Search</button>
         
         </div>
         <br/>
-        <span id="totalCount">&nbsp;Total Count : ' . count($dataSet) . '</span>
+        <span id="totalCount">&nbsp;Total Count : <span id="kountApplicant">' . count($dataSet) . '</span></span>
         ';
     }
 
@@ -454,7 +454,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             if (val == '1') {
                 var sid = $(this).attr('data-id');
                 $("#submission_id" + sid).parent().parent().parent().addClass('converted');
-                //alert(sid);
+                // alert(sid);
             }
         });
 
@@ -527,27 +527,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     });
 
     //jQuery.noConflict()(function($){
-    $(document).on('click', "#checkall", function() {
-        var id = 'all';
-        var cid = $("#campId").val();
-        var fid = $("#formId").val();
-        var type = 'getCampaignStatusButton';
-        $.ajax({
-            url: 'ajax_data.php',
-            type: 'post',
-            data: {
-                val: id,
-                type: type,
-                cid: cid,
-                fid: fid
-            },
-            async: true,
-            success: function(response) {
-                $("#statusButton").html();
-                $("#statusButton").html(response);
-            }
-        });
-    });
+    // $(document).on('click', "#checkall", function() {
+    //     var id = 'all';
+    //     var cid = $("#campId").val();
+    //     var fid = $("#formId").val();
+    //     var type = 'getCampaignStatusButton';
+    //     $.ajax({
+    //         url: 'ajax_data.php',
+    //         type: 'post',
+    //         data: { val: id, type: type, cid:cid, fid:fid },
+    //         async: true,
+    //         success: function(response) {
+    //             $("#statusButton").html();
+    //             $("#statusButton").html(response);
+    //         }
+    //     });
+    // });
     /*
     $(document).ready(function() {
         $('#expore_tbl').DataTable( {

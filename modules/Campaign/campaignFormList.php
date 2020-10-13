@@ -182,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
          
         </div>
         <br/>
-        <span id="totalCount">&nbsp;Total Count : '.count($dataSet).'</span>';
+        <span id="totalCount">&nbsp;Total Count : <span id="kountApplicant">'.count($dataSet).'</span></span>';
 }
 
     // $sqlw = 'Select * FROM wp_fluentform_entry_details WHERE form_id = '.$formId.' ';
@@ -281,7 +281,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
             //$dt = array();
 
-            
+            $table->addColumn('workflowstate', __('Status'))
+            ->width('10%')
+            ->translatable();
 
 
             while($j<$jlen){
@@ -322,9 +324,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
 
 
-        $table->addColumn('workflowstate', __('Status'))
-        ->width('10%')
-        ->translatable();
+      
         $table->addColumn('created_at', __('Submitted Date and time'))
         ->width('10%')
         ->translatable();

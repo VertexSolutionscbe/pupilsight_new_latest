@@ -14,8 +14,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    //Proceed!
-   // $page->breadcrumbs->add(__('Manage Fee Structure'));
+   //Proceed!
+   $page->breadcrumbs->add(__('Offline Campaign Submitted List'), 'offline_campaignFormList.php&id='.$_GET['cid'].'')
+                     ->add(__('Application Fee'));
   
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

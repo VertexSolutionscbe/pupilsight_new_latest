@@ -45,7 +45,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     $admission_series_id = $_POST['admission_series_id'];
     $fn_fee_structure_id = $_POST['fn_fee_structure_id'];
     $fn_fees_receipt_template_id = $_POST['fn_fees_receipt_template_id'];
-    $is_publish_parent = $_POST['is_publish_parent'];
+    if(!empty($_POST['is_publish_parent'])){
+        $is_publish_parent = $_POST['is_publish_parent'];
+    } else {
+        $is_publish_parent = '0';
+    }
 
     if ($name == '' or $status == ''  or $start_date == '' or $end_date == '') {
         $URL .= '&return=error1';
@@ -53,8 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     } else {
         //Check unique inputs for uniquness
         try {
-            $data = array('name' => $name, 'academic_year' => $academic_year);
-            $sql = 'SELECT * FROM campaign WHERE name=:name AND academic_year=:academic_year';
+            $data = array('name' => $name, 'academic_id' => $academic_id);
+            $sql = 'SELECT * FROM campaign WHERE name=:name AND academic_id=:academic_id';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -81,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2';
+                    $URL .= '&return=error3';
                     header("Location: {$URL}");
                 }
 

@@ -56,21 +56,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
         }
 
         foreach ($sub_id as $si) {
-            $sqle = "SELECT response FROM wp_fluentform_submissions WHERE id = " . $si . " ";
+            $sqle = "SELECT * FROM campaign_parent_registration WHERE id = " . $si . " ";
             $resulte = $connection2->query($sqle);
             $rowdata = $resulte->fetch();
-            $sd = json_decode($rowdata['response'], TRUE);
-            $email = "";
-            $names = "";
+            // $sd = json_decode($rowdata['response'], TRUE);
+            // $email = "";
+            // $names = "";
 
-            if ($sd) {
-                $names = implode(' ', $sd['student_name']);
-                $email = $sd['father_email'];
-                if (!empty($sd['father_mobile'])) {
-                    $number = $sd['father_mobile'];
-                } else {
-                    $number = '';
-                }
+            if(!empty($rowdata)) {
+                $names = $rowdata['name'];
+                $email = $rowdata['email'];
+                $number = $rowdata['mobile'];
             }
 
             //$email = "it.rakesh@gmail.com";
@@ -79,9 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
             $body = nl2br($emailquote);
             $msg = $smsquote;
 
-            $sqlm = "SELECT field_name,field_value FROM wp_fluentform_entry_details WHERE submission_id = " . $si . " And field_name = 'numeric-field_1' ";
-            $resultm = $connection2->query($sqlm);
-            $rowdatm = $resultm->fetch();
+          
 
             if (!empty($emailquote) && !empty($body) && !empty($to)) {
                 $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
@@ -109,14 +103,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
                         $mail->Body = $body;
 
                         $mail->Send();
-                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', pupilsightPersonID=" . $cuid . " ";
+                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  campaign_parent_registration_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', pupilsightPersonID=" . $cuid . " ";
                         $connection2->query($sq);
                     } catch (Exception $ex) {
                         print_r($x);
                     }
                 } else {
                     $res = file_get_contents($url);
-                    $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
+                    $sq = "INSERT INTO campaign_email_sms_sent_details SET  campaign_parent_registration_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
                     $connection2->query($sq);
                 }
             }
@@ -128,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
                 $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                 $resms = file_get_contents($urls);
 
-                $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
+                $sq = "INSERT INTO campaign_email_sms_sent_details SET  campaign_parent_registration_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
                 $connection2->query($sq);
             }
         }

@@ -7252,9 +7252,12 @@ $(document).on('click', '.sendButton_campaign_list', function () {
     }
 
 });
-$('#sendEmailSms_campaignForm').on('submit', (function (e) {
+
+$(document).on('click', '#sendEmailSms_campaign', function (e) {
+    // $('#sendEmailSms_campaignForm').on('submit', (function (e) {
     e.preventDefault();
-    var formData = new FormData(this);
+    $("#preloader").show();
+    var formData = new FormData(document.getElementById("sendEmailSms_campaignForm"));
     var emailquote = $("#emailQuote_camp").val();
     var emailSubjct_camp = $("#emailSubjct_camp").val();
     var emailAttachment = $('input[name=email_attach]')[0].files[0];
@@ -7273,7 +7276,7 @@ $('#sendEmailSms_campaignForm').on('submit', (function (e) {
             formData.append('emailquote', emailquote);
             formData.append('emailSubjct_camp', emailSubjct_camp);
             formData.append('smsquote', smsquote);
-            $("#preloader").show();
+
             $.ajax({
                 url: "modules/Campaign/send_camp_email_msg.php",
                 type: "POST",
@@ -7284,18 +7287,19 @@ $('#sendEmailSms_campaignForm').on('submit', (function (e) {
                 async: false,
                 success: function (data) {
                     alert("Message Sent.");
+                    location.reload();
                     console.log(data);
                     $("#preloader").hide();
                 }
             });
         } else {
-            alert('You Have to Enter Quote.');
+            alert('You Have to Enter Message.');
         }
     } else {
         alert('You Have to Select Applicants.');
 
     }
-}));
+});
 
 // $("#expore_xl_campaign").click(function (e) {
 $(document).on('click', '#expore_xl_campaign', function () {
@@ -8298,5 +8302,94 @@ $(document).on('change', '.changeForm', function () {
         $("#onlineClick")[0].click();
     } else {
         $("#offlineClick")[0].click();
+    }
+});
+
+$(document).on('click', '.sendButton_campaign_listNew', function () {
+    var submit_ids = [];
+    $.each($("input[name='id[]']:checked"), function () {
+        submit_ids.push($(this).val());
+    });
+    var submt_id = submit_ids.join(",");
+    if (submt_id) {
+        $(".sendButton_campaign_listNew").removeClass('activestate');
+        $(this).addClass('activestate');
+        var noti = $(this).attr('data-noti');
+        $(".emailsmsFieldTitle").hide();
+        $(".emailFieldTitle").hide();
+        $(".emailField").hide();
+        $(".smsFieldTitle").hide();
+        $(".smsField").hide();
+        if (noti == '1') {
+            $(".emailFieldTitle").show();
+            $(".emailField").show();
+        } else if (noti == '2') {
+            $(".smsFieldTitle").show();
+            $(".smsField").show();
+        } else if (noti == '3') {
+            $(".emailsmsFieldTitle").show();
+            $(".emailField").show();
+            $(".smsField").show();
+        } else {
+            $(".emailsmsFieldTitle").show();
+            $(".emailField").show();
+            $(".smsField").show();
+        }
+    } else {
+        alert('You Have to Select User First');
+        window.setTimeout(function () {
+            $("#large-modal-register_list").removeClass('show');
+            $("#chkCounterSession").removeClass('modal-open');
+            $(".modal-backdrop").remove();
+        }, 10);
+    }
+
+});
+
+//$("#sendEmailSms_registerForm").submit(function (e) {
+$(document).on('click', '#sendEmailSmsContent', function (e) {
+
+    e.preventDefault();
+    var formData = new FormData(document.getElementById("sendEmailSms_registerForm"));
+    var emailquote = $("#emailQuote_Register").val();
+    var emailSubjct_camp = $("#emailSubjct_Register").val();
+    var emailAttachment = $('input[name=email_attach]')[0].files[0];
+    var smsquote = $("#smsQuote_Register").val();
+    var form_id = $("#form_id").val();
+    var camp_id = $("#form_id").attr('data-cid');
+    var favorite = [];
+    $.each($("input[name='id[]']:checked"), function () {
+        favorite.push($(this).val());
+    });
+    var submit_id = favorite.join(", ");
+    //   alert(submit_id + '-' + form_id + '-' + camp_id);
+    if (submit_id) {
+        if (emailquote != '' || smsquote != '') {
+            formData.append('submit_id', submit_id);
+            formData.append('emailquote', emailquote);
+            formData.append('emailSubjct_camp', emailSubjct_camp);
+            formData.append('smsquote', smsquote);
+            $("#preloader").show();
+            $.ajax({
+                url: "modules/Campaign/send_register_users_email_msg.php",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData: false,
+                async: false,
+                success: function (data) {
+                    alert("Message Sent.");
+                    location.reload();
+                    console.log(data);
+                    $("#preloader").hide();
+                }
+            });
+        } else {
+            alert('You Have to Enter Message.');
+        }
+    } else {
+        alert('You Have to Select User.');
+
     }
 });

@@ -43,7 +43,9 @@ class Action extends WebLink
             case 'editnew':  $this->setIcon('config')->modalWindowNew(650, 100);
                             break;
             case 'uploadtemplate':  $this->setIcon('config')->modalWindowNew(650, 100);
-                            break;                
+                            break;
+            case 'registereduser':  $this->setIcon('config');
+                        break;                
             case 'reason':  $this->setIcon('config')->modalWindowNew(650, 100);
                             break;                
             case 'copynew':  $this->setIcon('config')->modalWindowNew(650, 100);
@@ -408,7 +410,13 @@ class Action extends WebLink
                     $this->getIcon()
                 ));
                 
-			}
+			} elseif($this->getLabel() == 'Registered User'){
+				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-clipboard-account-outline mdi-24px"></i>', 
+                    ($this->displayLabel? $this->getLabel() : ''),
+                    $this->getLabel(), 
+                    $this->getIcon()
+                ));
+            }
             else {
 				$this->setContent(sprintf('%1$s<img title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['pupilsightThemeName'].'/img/%3$s.png" width="25" height="25" class="ml-1">', 
                     ($this->displayLabel? $this->getLabel() : ''),
