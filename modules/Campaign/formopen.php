@@ -99,9 +99,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
         var iframe = document.getElementById("innerForm");
 
         // Adjusting the iframe height onload event
-        iframe.onload = function() {
-            iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
-        }
+        // iframe.onload = function() {
+        //     iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
+        // }
 
         
 
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             iframe.find(".section-inner").hide();
             iframe.find("input[name=age_value]").prop('readonly', true);
             iframe.find("input[name=dob_in_words]").prop('readonly', true);
-            iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-100px;}  </style>"));
+            iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-90px;}  </style>"));
 
             iframe.find("input[name=date_of_birth]").change(function(){
            
@@ -167,8 +167,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                         flag = false;
                     });
                     if (flag) {
-                        insertcampaign();
                         iframe.find(".ff-message-success").focus();
+                        insertcampaign();
                     }
                 }, 2000);
             });
@@ -296,10 +296,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                         },
                         async: true,
                         success: function(response) {
+                            alert('Your Application Submitted Successfully, We Will get back to you Soon!');
+                            window.location.href = 'index.php?q=/modules/Campaign/check_status.php';
                             // $('html, body').animate({
                             //     scrollTop: $("#showdiv").offset().top
                             // }, 2000);
-                           
                         }
                     });
                 }, 500);

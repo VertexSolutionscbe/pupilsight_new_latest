@@ -176,7 +176,7 @@ class adminlib {
 	public function getApplist($val){
 				 // 
 		// $sql = "SELECT cs.id, cs.campaign_id, cm.form_id,cs.submission_id,cs.state,cs.state_id,cs.status,cm.name, ws.created_at FROM wp_fluentform_entry_details as we LEFT JOIN campaign AS cm ON we.form_id=cm.form_id LEFT JOIN campaign_form_status AS cs ON cm.id=cs.campaign_id LEFT JOIN wp_fluentform_submissions AS ws ON we.submission_id=ws.id WHERE we.field_value = '".$val."' GROUP BY we.form_id";		
-		$sql = "SELECT  cm.id, cm.form_id,cm.name, we.submission_id, ws.created_at FROM wp_fluentform_entry_details as we LEFT JOIN campaign AS cm ON we.form_id=cm.form_id LEFT JOIN wp_fluentform_submissions AS ws ON we.submission_id=ws.id WHERE we.field_value = '".$val."' AND (we.field_name = 'email' OR we.field_name = 'father_email' OR we.field_name = 'mother_email') GROUP BY we.submission_id";
+		$sql = "SELECT  cm.id, cm.form_id,cm.name, we.submission_id, ws.created_at FROM wp_fluentform_entry_details as we LEFT JOIN campaign AS cm ON we.form_id=cm.form_id LEFT JOIN wp_fluentform_submissions AS ws ON we.submission_id=ws.id WHERE we.field_value LIKE '%".$val."%' AND (we.field_name = 'email' OR we.field_name = 'father_email' OR we.field_name = 'mother_email' OR we.field_name = 'father_mobile' OR we.field_name = 'mother_mobile') GROUP BY we.submission_id";
 		$result = database::doSelect($sql);	
 
 		foreach($result as $k=>$rs){

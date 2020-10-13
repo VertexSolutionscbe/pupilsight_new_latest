@@ -101,6 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     // echo '<pre>';
     // print_r($arrHeader);
     // echo '</pre>';
+    echo '<input type="hidden" id="kountApplicantSearch" value='.count($dataSet).'>';
 
     $table->addCheckboxColumn('submission_id','')
     ->setClass('chkbox')
@@ -166,6 +167,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
                 $dataSet->data[$i]["created_at"] = $created_at;
             //}
 
+            $table->addColumn('workflowstate', __('Status'))
+            ->width('10%')
+            ->translatable();
 
 
             //$dt = array();
@@ -239,9 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
         //     unset($newarr[$i]["field_name"],$newarr[$i]["field_value"]);
         //     $i++;
         // }
-        $table->addColumn('workflowstate', __('Status'))
-        ->width('10%')
-        ->translatable();
+     
 
         $table->addColumn('created_at', __('Submitted Date and time'))
         ->width('10%')
@@ -305,6 +307,11 @@ echo $table->render($dataSet);
 
 <script>
 $(document).ready(function() {
+
+    var kount = $("#kountApplicantSearch").val();
+    $("#kountApplicant").html('');
+    $("#kountApplicant").html(kount);
+
     $('#expore_tbl').find("input[name='submission_id[]']").each(function() {
         $(this).addClass('include_cell');
         $(this).closest('tr').addClass('rm_cell');

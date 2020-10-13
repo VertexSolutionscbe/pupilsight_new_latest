@@ -200,11 +200,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
             
             $actions->addAction('list', __('Submitted Form'))
                 ->setURL('/modules/Campaign/campaignFormList.php'); 
-                $actions->addAction('View', __('View Application Form'))
+            
+            $actions->addAction('View', __('View Application Form'))
                 ->setTitle('form')
                 ->setIcon('eye')
                 ->setURL('/modules/Campaign/view_selected_campaign_form.php')
                 ->modalWindow(1100, 550);
+
+            $actions->addAction('registereduser', __('Registered User'))
+                ->setURL('/modules/Campaign/register_user_list.php');
          });
 
          $table->addmultiActionColumn()         

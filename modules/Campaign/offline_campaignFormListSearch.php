@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     $cid = $_POST['cid'];
     $fid = $_POST['fid'];
     $application_id = $_POST['aid'];
-    $applicationStatus = $_POST['stid'];
+    $applicationStatus = '';
     $applicantName = $_POST['aname'];
 
     $admissionGateway = $container->get(AdmissionGateway::class);
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
             }
         }
     }
-
+    echo '<input type="hidden" id="kountApplicantSearch" value='.count($dataSet).'>';
     $table->addCheckboxColumn('submission_id','')
     ->setClass('chkbox')
     ->context('Select')
@@ -302,6 +302,11 @@ echo $table->render($dataSet);
 
 <script>
 $(document).ready(function() {
+
+    var kount = $("#kountApplicantSearch").val();
+    $("#kountApplicant").html('');
+    $("#kountApplicant").html(kount);
+
     $('#expore_tbl').find("input[name='submission_id[]']").each(function() {
         $(this).addClass('include_cell');
         $(this).closest('tr').addClass('rm_cell');

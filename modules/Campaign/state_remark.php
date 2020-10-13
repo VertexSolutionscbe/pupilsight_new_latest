@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
     $row = $form->addRow();
    
     $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('remarks', __('Remark'));
+            //$col->addLabel('remarks', __('Remark'));
             $col->addTextArea('remarks')->addClass('txtfield')->setRows(4);
             
     $row = $form->addRow();

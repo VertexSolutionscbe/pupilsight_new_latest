@@ -11,10 +11,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit_wf_transitio
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
-} else {
+} else { 
+    $id = $_GET['id'];
+    $wid = $_GET['wid'];
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Work Flow Transition'), 'wf_tansition.php')
+        ->add(__('Campaign'), 'modules/Campaign/index.php')
+        ->add(__('Manage Work Flow'), 'modules/Campaign/wf_manage.php&id='.$id)
         ->add(__('Edit Work Flow Transition'));
 
     if (isset($_GET['return'])) {
@@ -22,8 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit_wf_transitio
     }
 
     //Check if school year specified
-    $id = $_GET['id'];
-    $wid = $_GET['wid'];
+    
     if ($id == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');

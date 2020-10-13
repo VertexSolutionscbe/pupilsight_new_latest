@@ -69,6 +69,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
     $resultws = $connection2->query($sqlws);
     $submdata = $resultws->fetch();
 
+    $sqled = 'SELECT field_name, field_value FROM wp_fluentform_entry_details where submission_id = ' . $sid . ' ';
+    $resulted = $connection2->query($sqled);
+    $applicantData = $resulted->fetchAll();
+
+    $studentName = '';
+    $fatherName = '';
+    $fatherMobile = '';
+    $fatherEmail = '';
+    if(!empty($applicantData)){
+        foreach($applicantData as $ad){
+            if($ad['field_name'] == 'student_name'){
+                $studentName = $ad['field_value'];
+            }
+            if($ad['field_name'] == 'father_name'){
+                $fatherName = $ad['field_value'];
+            }
+            if($ad['field_name'] == 'father_mobile'){
+                $fatherMobile = $ad['field_value'];
+            }
+            if($ad['field_name'] == 'father_email'){
+                $fatherEmail = $ad['field_value'];
+            }
+        }
+    }
+
 
     if (empty($rowdata["form_id"])) {
         echo "<div class='text-danger'>Form is not attached.</div>";
@@ -89,6 +114,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             <input type="hidden" id="pupilsightPersonID" value="<?php echo $pupilsightPersonID; ?>">
             <input type="hidden" id="aid" value="<?php echo $submdata['application_id']; ?>">
             <input type="hidden" id="oldsid" value="<?php echo $sid; ?>">
+            <input type="hidden" id="studentName" value="<?php echo $studentName; ?>">
+            <input type="hidden" id="fatherName" value="<?php echo $fatherName; ?>">
+            <input type="hidden" id="fatherMobile" value="<?php echo $fatherMobile; ?>">
+            <input type="hidden" id="fatherEmail" value="<?php echo $fatherEmail; ?>">
 
             <span style="width: 60%;">Application No : <?php echo $submdata['application_id'];?> </span>
             <span style="width: 20%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -135,13 +164,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
 
         $('#innerForm').load(function() {
             var iframe = $('#innerForm').contents();
-            iframe.find(".ff-btn-submit").prop('disabled', true);
+            var stname = $("#studentName").val();
+            var ftname = $("#fatherName").val();
+            var ftmobile = $("#fatherMobile").val();
+            var femail = $("#fatherEmail").val();
+            iframe.find("input[name=student_name]").val(stname);
+            iframe.find("input[name='student_name[first_name]']").val(stname);
+
+            iframe.find("input[name=father_name]").val(ftname);
+            iframe.find("input[name=father_mobile]").val(ftmobile);
+            iframe.find("input[name=father_email]").val(femail);
+
+            //iframe.find(".ff-btn-submit").prop('disabled', true);
             iframe.find("#wpadminbar").hide();
             iframe.find(".section-inner").hide();
             iframe.find("input[name=age_value]").prop('readonly', true);
             iframe.find("input[name=dob_in_words]").prop('readonly', true);
             iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-90px;}  </style>"));
-
+            
+            iframe.find(".ff-btn-submit").html('');
+            iframe.find(".ff-btn-submit").html('Submit');
             iframe.find("input[name=date_of_birth]").change(function(){
            
                 var userDate = $(this).val();
@@ -170,41 +212,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             });
 
             
-            iframe.find("input[name=student_name]").change(function(){
-                var sname = $(this).val();
-                $("#studentName").val(sname);
-            });
+            // iframe.find("input[name=student_name]").change(function(){
+            //     var sname = $(this).val();
+            //     $("#studentName").val(sname);
+            // });
 
-            iframe.find("input[name=father_email]").change(function(){
-                var semail = $(this).val();
-                $("#studentEmail").val(semail);
-            });
+            // iframe.find("input[name=father_email]").change(function(){
+            //     var semail = $(this).val();
+            //     $("#studentEmail").val(semail);
+            // });
 
-            iframe.find("input[name=father_mobile]").change(function(){
-                var sphone = $(this).val();
-                $("#studentPhone").val(sphone);
-            });
+            // iframe.find("input[name=father_mobile]").change(function(){
+            //     var sphone = $(this).val();
+            //     $("#studentPhone").val(sphone);
+            // });
 
-            iframe.find(".ff-el-form-control").change(function(){
-                $.each($(this), function () {
-                    val = $("#class option:selected").val();
-                    if(val == ''){
-                        $("#class").addClass('error').focus();
-                        iframe.find(".ff-btn-submit").prop('disabled', true);
-                        alert('You Have to Select Class');
-                        return false;
-                    } else {
-                        $("#class").removeClass('error');
-                        iframe.find(".ff-btn-submit").prop('disabled', false);
-                        return true;
-                    }
-                });
-            });    
+            // iframe.find(".ff-el-form-control").change(function(){
+            //     $.each($(this), function () {
+            //         val = $("#class option:selected").val();
+            //         if(val == ''){
+            //             $("#class").addClass('error').focus();
+            //             iframe.find(".ff-btn-submit").prop('disabled', true);
+            //             alert('You Have to Select Class');
+            //             return false;
+            //         } else {
+            //             $("#class").removeClass('error');
+            //             iframe.find(".ff-btn-submit").prop('disabled', false);
+            //             return true;
+            //         }
+            //     });
+            // });    
 
             var pid = iframe.find(".fluentform");
             iframe.find("form").submit(function() {
-                getPDF(pid);
-
+                //getPDF(pid);
                 setTimeout(function() {
                     var flag = true;
                     iframe.find(".text-danger").each(function() {
@@ -346,7 +387,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                         },
                         async: true,
                         success: function(response) {
-                            window.location.href = 'index.php?q=/modules/Campaign/campaignFormList.php&id='+cmpid;
+                            alert('Successfully converted the application form');
+                            window.location.href = 'index.php?q=/modules/Campaign/offline_campaignFormList.php&id='+cmpid;
                         }
                     });
                 }, 500);

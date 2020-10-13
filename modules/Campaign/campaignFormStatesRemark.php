@@ -47,10 +47,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
             $resulte = $connection2->query($sqle);
             $rowdata = $resulte->fetch();
             $sd = json_decode($rowdata['response'], TRUE);
+            $email = '';
+            $number = '';
             if(!empty($sd)){
                 $names = implode(' ', $sd['student_name']);
                 $email = $sd['father_email'];
-                // $number = $sd['msg_phone'];
+                $number = $sd['father_mobile'];
                 $pupilsightProgramID = $rowdata['pupilsightProgramID'];
                 $pupilsightYearGroupID = $rowdata['pupilsightYearGroupID'];
             }
@@ -223,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                             }    
                         }
                     } else {
-                        echo '2';
+                        
                         $templateData = $resulttem->fetch();
                         $subject = $templateData['subject'];
                         $description = $templateData['description'];
@@ -236,19 +238,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                 $url .="&subject=".rawurlencode($subject);
                                 $url .="&body=".rawurlencode($body);
                                 $res = file_get_contents($url);
-                                echo $url;
-                                
-                                echo $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', email='".$email."', subject='".$subject."', description='".stripslashes($body)."', pupilsightPersonID=".$cuid." ";
+                               
+                                $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', email='".$email."', subject='".$subject."', description='".stripslashes($body)."', pupilsightPersonID=".$cuid." ";
                                 $connection2->query($sq);
                             }    
                         } else if($chknotitype['notification'] == '2'){
+                            
                             if(!empty($body) && !empty($number)){
                                 $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
                                 $urls .="&send_to=".$number;
                                 $urls .="&msg=".rawurlencode($body);
                                 $urls .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                                 $resms = file_get_contents($urls);
-
                                 $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', phone=".$number.", description='".stripslashes($body)."', pupilsightPersonID=".$cuid." ";
                                 $connection2->query($sq);
                             }

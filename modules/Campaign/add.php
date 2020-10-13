@@ -26,10 +26,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
-    if ($pupilsightSchoolYearID == '' or $pupilsightSchoolYearID == $_SESSION[$guid]['pupilsightSchoolYearID']) {
+    //if ($pupilsightSchoolYearID == '' or $pupilsightSchoolYearID == $_SESSION[$guid]['pupilsightSchoolYearID']) {
         $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         $pupilsightSchoolYearName = $_SESSION[$guid]['pupilsightSchoolYearName'];
-    }
+    //}
 
     $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
     $resultp = $connection2->query($sqlp);

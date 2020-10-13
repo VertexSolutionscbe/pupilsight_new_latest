@@ -40,10 +40,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
             $resulte = $connection2->query($sqle);
             $rowdata = $resulte->fetch();
             $sd = json_decode($rowdata['response'], TRUE);
+            $email = '';
+            $number = '';
             if(!empty($sd)){
                 $names = implode(' ', $sd['student_name']);
                 $email = $sd['father_email'];
-                // $number = $sd['msg_phone'];
+                $number = $sd['father_mobile'];
                 $pupilsightProgramID = $rowdata['pupilsightProgramID'];
                 $pupilsightYearGroupID = $rowdata['pupilsightYearGroupID'];
             }

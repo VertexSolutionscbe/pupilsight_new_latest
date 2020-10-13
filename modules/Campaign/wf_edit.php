@@ -20,8 +20,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/wf_edit.php') != 
     echo '</div>';
 } else {
     //Proceed!
+    $id = $_GET['id'];
+    $csql = 'SELECT campaign_id FROM workflow_map WHERE workflow_id = '.$id.' ';
+    $resultc = $connection2->query($csql);
+    $cidData = $resultc->fetch();
+
     $page->breadcrumbs
-        ->add(__('Manage Work Flow'), 'wf_manage.php')
+        ->add(__('Manage Work Flow'), 'wf_manage.php&id='.$cidData['campaign_id'])
         ->add(__('Edit Work Flow'));
 
     if (isset($_GET['return'])) {
@@ -29,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/wf_edit.php') != 
     }
 
     //Check if school year specified
-    $id = $_GET['id'];
+    
     if ($id == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -119,11 +124,11 @@ print_r($values);  */
 		
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('name', __('Work Flow Name'));
-            $col->addTextField('name')->addClass('txtfield')->setValue($wf_name);	
+            $col->addTextField('name')->addClass('txtfield')->setValue($wf_name)->required();	
         
             $col = $row->addColumn()->setClass('newdes');     
             $col->addLabel('code', __('Work Flow Code'));
-            $col->addTextField('code')->addClass('txtfield')->setValue($wf_code);
+            $col->addTextField('code')->addClass('txtfield')->setValue($wf_code)->required();
             	        
 				
 	$row = $form->addRow();	   

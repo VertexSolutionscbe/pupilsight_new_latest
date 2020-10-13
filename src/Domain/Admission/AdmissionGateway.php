@@ -340,6 +340,43 @@ class AdmissionGateway extends QueryableGateway
         return $this->runQuery($query, $criteria, TRUE);
     }
 
+    public function getAllRegisterUserCampaign(QueryCriteria $criteria, $cid)
+    {
+        
+        $query = $this
+            ->newQuery()
+            ->from('campaign_parent_registration')
+            ->cols([
+                'campaign_parent_registration.*'
+            ])
+            ->where('campaign_parent_registration.campaign_id = "'.$cid.'" ')
+            ->orderBy(['campaign_parent_registration.id DESC']);
+            
+        $res = $this->runQuery($query, $criteria, TRUE);
+        $data = $res->data;
+        
+        if(!empty($data)){
+            foreach($data as $k=>$cd){
+                $query2 = $this
+                    ->newQuery()
+                    ->from('wp_fluentform_submissions')
+                    ->cols([
+                        'wp_fluentform_submissions.id'
+                    ])
+                    ->where('wp_fluentform_submissions.pupilsightPersonID = "'.$cd['pupilsightPersonID'].'" ');
+
+                    $newdata = $this->runQuery($query2, $criteria);
+                    if(!empty($newdata->data[0]['id'])){
+                        $data[$k]['status'] = 'Applied';
+                    } else {
+                        $data[$k]['status'] = 'Not Apply';
+                    }    
+            }
+        }    
+        $res->data = $data;
+        return $res;
+    }
+
 
     
 }
