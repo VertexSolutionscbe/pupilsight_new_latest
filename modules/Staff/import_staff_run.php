@@ -21,6 +21,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+    //Edited by : Mandeep, Reason : Notification after successful update added
         if($_GET['return'] == "success0"){
             echo "<div class='alert alert-success'>";
             echo __("Data import was successful");
