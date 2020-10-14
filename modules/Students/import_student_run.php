@@ -2,7 +2,8 @@
 /*
 Pupilsight, Flexible & Open School System
 */
-
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Domain\DataSet;
@@ -20,6 +21,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+        if($_GET['return'] == "success0"){
+            echo "<div class='alert alert-success'>";
+            echo __("Data import was successful");
+            echo '</div>';
+        }
         $page->breadcrumbs->add(__('Student Import'));
         $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_student_run.php');
 
@@ -290,6 +296,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $sql .= ")";
                     $sql = rtrim($sql, ", ");
                     //echo "\n<br/>student ".$sql;
+                    //mysqli_query( $conn, $sql );
                     $conn->query($sql);
                     $stu_id = $conn->insert_id;
 

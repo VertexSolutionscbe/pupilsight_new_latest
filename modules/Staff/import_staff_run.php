@@ -9,7 +9,7 @@ use Pupilsight\Domain\DataSet;
 use Pupilsight\Services\Format;
 
 
-include $_SERVER["DOCUMENT_ROOT"].'/db.php';
+include('C:/xampp/htdocs/pupilsight/db.php');
 
 
 
@@ -21,6 +21,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+        if($_GET['return'] == "success0"){
+            echo "<div class='alert alert-success'>";
+            echo __("Data import was successful");
+            echo '</div>';
+        }
         $page->breadcrumbs->add(__('Staff Import'));
         $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_staff_run.php');
 
@@ -186,3 +191,4 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
         }
 
 }
+
