@@ -353,7 +353,7 @@ if ($isLoggedIn) {
     $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
     if ($roleid == '001') {
         $isAllMenu = TRUE;
-    } 
+    }
 
     if ($cacheLoad || !$session->has('fastFinder')) {
         $templateData = getFastFinder($connection2, $guid);

@@ -82,7 +82,7 @@ $app_links = array();
                             <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
                                 <div class="wpb_wrapper">
 
-                                    <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="1000" src="<?php echo $campaign_byid['page_link']; ?>">
+                                    <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="1000" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
                                     </iframe>
 
                                 </div>
@@ -175,7 +175,7 @@ $app_links = array();
 
 
     <div id="tp_chameleon_list_google_fonts"></div>
-    <a id="downloadLink" href="ajaxfile.php?cid=<?php echo $url_id;?>" class="" style="display:none;">Download Receipts</a>
+    <a id="downloadLink" href="ajaxfile.php?cid=<?php echo $url_id; ?>" class="" style="display:none;">Download Receipts</a>
 
     <script type='text/javascript'>
         WebFont.load({
@@ -354,9 +354,7 @@ $app_links = array();
                         flag = false;
                     });
                     if (flag) {
-                        
                         insertcampaign();
-                        
                     }
                 }, 2000);
             });
@@ -469,7 +467,7 @@ $app_links = array();
             var pid = $("#pid").val();
             var fid = $("#fid").val();
             var clid = $("#class option:selected").val();
-            //alert(clid);
+            alert(clid);
             if (val != '') {
                 var type = 'insertcampaigndetails';
                 setTimeout(function() {
