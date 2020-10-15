@@ -44,8 +44,10 @@ class Action extends WebLink
                             break;
             case 'uploadtemplate':  $this->setIcon('config')->modalWindowNew(650, 100);
                             break;
+            case 'applicationtemplate':  $this->setIcon('config');
+                        break;
             case 'registereduser':  $this->setIcon('config');
-                        break;                
+                        break;  
             case 'reason':  $this->setIcon('config')->modalWindowNew(650, 100);
                             break;                
             case 'copynew':  $this->setIcon('config')->modalWindowNew(650, 100);

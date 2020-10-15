@@ -382,26 +382,26 @@ $(document).ready(function() {
         });
     });
 
-    $(document).on('click', '#pdf_export', function() {
-        //var type = 'getApplicationInvoice';
-        //var hrf = $("#clickAdmissionFeePayment").attr('href');
-        var checked = $("input[name='submission_id[]']:checked").length;
-        if (checked >= 1) {
-            var favorite = [];
-            $.each($("input[name='submission_id[]']:checked"), function() {
-                var id = $(this).val();
-                var nme = $("#"+id+"-subId").val();
-                var link = document.createElement('a');
-                link.href = "public/applicationpdf/"+id+"-application.pdf";
-                link.download = nme+".pdf";
-                link.click();
-            });
+    // $(document).on('click', '#pdf_export', function() {
+    //     //var type = 'getApplicationInvoice';
+    //     //var hrf = $("#clickAdmissionFeePayment").attr('href');
+    //     var checked = $("input[name='submission_id[]']:checked").length;
+    //     if (checked >= 1) {
+    //         var favorite = [];
+    //         $.each($("input[name='submission_id[]']:checked"), function() {
+    //             var id = $(this).val();
+    //             var nme = $("#"+id+"-subId").val();
+    //             var link = document.createElement('a');
+    //             link.href = "public/applicationpdf/"+id+"-application.pdf";
+    //             link.download = nme+".pdf";
+    //             link.click();
+    //         });
             
-        } else {
-            alert('You Have to Select Applicant');
-        }
+    //     } else {
+    //         alert('You Have to Select Applicant');
+    //     }
         
-    });
+    // });
     /*
     $(document).ready(function() {
         $('#expore_tbl').DataTable( {

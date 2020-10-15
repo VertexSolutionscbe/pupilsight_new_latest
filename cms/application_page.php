@@ -346,6 +346,7 @@ $app_links = array();
             });
 
             iframe.find("form").submit(function() {
+                $("#back-to-top").click();
                 getPDF(pid);
                 setTimeout(function() {
                     var flag = true;
@@ -353,7 +354,7 @@ $app_links = array();
                         flag = false;
                     });
                     if (flag) {
-                        $("#back-to-top").click();
+                        
                         insertcampaign();
                     }
                 }, 2000);

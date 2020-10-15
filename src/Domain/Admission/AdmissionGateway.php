@@ -377,6 +377,21 @@ class AdmissionGateway extends QueryableGateway
         return $res;
     }
 
+    public function getApplicationTemplate(QueryCriteria $criteria, $id)
+    {
+        
+        $query = $this
+            ->newQuery()
+            ->from('campaign')
+            ->cols([
+                'campaign.*'
+            ])
+            ->where('campaign.id = "'.$id.'" ')
+            ->where('campaign.template_path != "" ');
+            
+        return $this->runQuery($query, $criteria, TRUE);
+    }
+
 
     
 }
