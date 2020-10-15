@@ -24,7 +24,7 @@ function createZipAndDownload($files, $filesPath, $zipFileName)
     readfile($zipFileName);
     unlink($zipFileName);
     foreach ($files as $file) {
-        unlink($_SERVER["DOCUMENT_ROOT"]."/pupilsight/public/applicationpdf/".$file);
+        unlink($_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/".$file);
     }
     exit;
 }
@@ -93,11 +93,10 @@ if(!empty($file)){
             $fname = $aid;
         }
 
-        $savedocsx = $_SERVER["DOCUMENT_ROOT"]."/pupilsight/public/applicationpdf/".$fname.".docx";
+        $savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/".$fname.".docx";
         $files[] = $fname.".docx";
         $phpword->saveAs($savedocsx);
     }
-}
 
 // echo '<pre>';
 //         print_r($files);
@@ -107,8 +106,10 @@ if(!empty($file)){
 // Files which need to be added into zip
 
 // Directory of files
-$filesPath = $_SERVER["DOCUMENT_ROOT"]."/pupilsight/public/applicationpdf/";
+$filesPath = $_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/";
 
 // Name of creating zip file
 $zipName = 'ApplicationForm.zip';
 echo createZipAndDownload($files, $filesPath, $zipName);
+}
+
