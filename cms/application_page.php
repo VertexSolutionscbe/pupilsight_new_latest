@@ -469,7 +469,6 @@ $app_links = array();
             var pid = $("#pid").val();
             var fid = $("#fid").val();
             var clid = $("#class option:selected").val();
-            //alert(clid);
             if (val != '') {
                 var type = 'insertcampaigndetails';
                 setTimeout(function() {
