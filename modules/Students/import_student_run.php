@@ -20,7 +20,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Edited by : Mandeep, Reason : Notification after successful update added
+    //Edited by : Mandeep, Reason : added recomended way for displaying notification
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
