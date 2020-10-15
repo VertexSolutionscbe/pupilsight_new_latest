@@ -1,35 +1,9 @@
 <?php
 include '../../pupilsight.php';
 
-function createZipAndDownload($files, $filesPath, $zipFileName)
-{
-    // Create instance of ZipArchive. and open the zip folder.
-    $zip = new ZipArchive();
-    if ($zip->open($zipFileName, ZipArchive::CREATE) !== TRUE) {
-        exit("cannot open <$zipFileName>\n");
-    }
 
-    // Adding every attachments files into the ZIP.
-    foreach ($files as $file) {
-        $zip->addFile($filesPath . $file, $file);
-    }
-    $zip->close();
-    
-
-    // Download the created zip file
-    header("Content-type: application/zip");
-    header('Content-Disposition: attachment; filename = "'.$zipFileName.'"');
-    header("Pragma: no-cache");
-    header("Expires: 0");
-    readfile($zipFileName);
-    unlink($zipFileName);
-    foreach ($files as $file) {
-        unlink($_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/".$file);
-    }
-    exit;
-}
 $cid = $_GET['cid'];
-$submissionId = $_GET['id'];
+$submissionId = $_SESSION['submissionId'];
 $applicantId = explode(',', $submissionId);
 
 $sqlpt = "SELECT template_path, template_filename FROM campaign WHERE id = ".$cid." ";
@@ -83,33 +57,20 @@ if(!empty($file)){
             }
             
         }
-        // echo '<pre>';
-        // print_r($newarr);
-        // echo '</pre>';
-        // die();
         if(!empty($applicationData['application_id'])){
             $fname = $applicationData['application_id'];
         } else {
             $fname = $aid;
         }
 
-        $savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/".$fname.".docx";
-        $files[] = $fname.".docx";
+        $savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/parent/".$fname.".docx";
+        $filename = $fname.".docx";
         $phpword->saveAs($savedocsx);
+
+        header("Content-Disposition: attachment; filename=".$filename." ");
+        readfile($savedocsx); 
+        // unlink($savedocsx);
     }
 
-// echo '<pre>';
-//         print_r($files);
-//         echo '</pre>';
-//         die();
-
-// Files which need to be added into zip
-
-// Directory of files
-$filesPath = $_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/";
-
-// Name of creating zip file
-$zipName = 'ApplicationForm.zip';
-echo createZipAndDownload($files, $filesPath, $zipName);
 }
 

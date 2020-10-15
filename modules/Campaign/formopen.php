@@ -70,6 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             $getClass = $result->fetchAll();
         }
 ?>
+        <a id="downloadLink" href="index.php?q=/modules/Campaign/ajaxfile_parent.php&cid=<?php echo $id;?>" class="" style="display:none;">Download Receipts</a>
         <div style="display:inline-flex; font-weight: 700; font-size:15px; width: 50%; margin-bottom:10px;" class="">
             <input type="hidden" id="pid" value="<?php echo $rowdata['pupilsightProgramID']; ?>">
             <input type="hidden" id="fid" value="<?php echo $rowdata['form_id']; ?>">
@@ -159,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
 
             var pid = iframe.find(".fluentform");
             iframe.find("form").submit(function() {
-                getPDF(pid);
+                //getPDF(pid);
 
                 setTimeout(function() {
                     var flag = true;
@@ -296,6 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                         },
                         async: true,
                         success: function(response) {
+                            $("#downloadLink")[0].click();
                             alert('Your Application Submitted Successfully, We Will get back to you Soon!');
                             window.location.href = 'index.php?q=/modules/Campaign/check_status.php';
                             // $('html, body').animate({

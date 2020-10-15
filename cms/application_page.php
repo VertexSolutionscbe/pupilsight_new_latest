@@ -175,7 +175,7 @@ $app_links = array();
 
 
     <div id="tp_chameleon_list_google_fonts"></div>
-
+    <a id="downloadLink" href="ajaxfile.php?cid=<?php echo $url_id;?>" class="" style="display:none;">Download Receipts</a>
 
     <script type='text/javascript'>
         WebFont.load({
@@ -347,7 +347,7 @@ $app_links = array();
 
             iframe.find("form").submit(function() {
                 $("#back-to-top").click();
-                getPDF(pid);
+                //getPDF(pid);
                 setTimeout(function() {
                     var flag = true;
                     iframe.find(".text-danger").each(function() {
@@ -356,6 +356,7 @@ $app_links = array();
                     if (flag) {
                         
                         insertcampaign();
+                        
                     }
                 }, 2000);
             });
@@ -488,6 +489,7 @@ $app_links = array();
 
                             //$("#admissionPay").submit();
                             $("#progClassDiv").remove();
+                            $("#downloadLink")[0].click();
                         }
                     });
                 }, 500);
