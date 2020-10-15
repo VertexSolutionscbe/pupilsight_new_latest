@@ -180,7 +180,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                     $resultstu = $connection2->query($sqlstu);
                     $studetails = $resultstu->fetch();
 
-                    $class_section = $valuestu["prog"].' - '.$valuestu["class"];
+                    //$class_section = $valuestu["prog"].' - '.$valuestu["class"];
+                    $class_section = $valuestu["class"];
                     $dts_receipt = array(
                         "application_no" => $valuestu["application_id"],
                         "receipt_no" => $receipt_number,

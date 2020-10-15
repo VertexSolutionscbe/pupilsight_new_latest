@@ -209,6 +209,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
 
             $actions->addAction('registereduser', __('Registered User'))
                 ->setURL('/modules/Campaign/register_user_list.php');
+            
+            $actions->addAction('applicationtemplate', __('Upload Template'))
+                ->setURL('/modules/Campaign/form_template_manage.php');
          });
 
          $table->addmultiActionColumn()         

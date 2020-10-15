@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_formopen.php&id=".$id."'   class=' btn btn-primary' id=''>Apply</a>";  
     
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' data-hrf='?q=/modules/Campaign/convert_formopen.php&id=".$id."' title='Convert Applicant' class='btn btn-primary' id='convertApplicant'>Convert</a> <a style='display:none;margin-bottom:10px;' href='?q=/modules/Campaign/convert_formopen.php&id=".$id."'   class=' btn btn-primary' id='convertApplicantClick'>Apply</a>";
-    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
+    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="index.php?q=/modules/Campaign/ajaxfile.php&cid='.$id.'&id=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
     //  print_r($criteria);
     //  die();
@@ -578,14 +578,17 @@ $(document).ready(function() {
         if (checked >= 1) {
             var favorite = [];
             $.each($("input[name='submission_id[]']:checked"), function() {
-                var id = $(this).val();
-                var nme = $("#"+id+"-subId").val();
-                var link = document.createElement('a');
-                link.href = "public/applicationpdf/"+id+"-application.pdf";
-                link.download = nme+".pdf";
-                link.click();
+                favorite.push($(this).val());
             });
-            
+            var collid = favorite.join(",");
+            var url = $("#downloadLink").attr('data-hrf');
+            var newurl = url+collid;
+            if(collid != ''){
+                $("#downloadLink").attr('href',newurl);
+                window.setTimeout(function() {
+                    $("#downloadLink")[0].click();
+                }, 100);
+            }
         } else {
             alert('You Have to Select Applicant');
         }
