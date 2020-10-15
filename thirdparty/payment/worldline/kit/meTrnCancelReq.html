@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>Refund Transaction</title>
+		<title>Cancel Transaction</title>
 	<style>
 body{
 font-family:Verdana, sans-serif	;
@@ -25,8 +25,8 @@ padding:5px;
 </style>
 	</head>
 	<body>
-	<center> <H3> Refund Transaction Request </H3></center>
-		<form action="meTrnRefundSuccess.php" method="POST">
+	<center> <H3>Cancel Transaction Request </H3></center>
+		<form action="meTrnCancelSuccess.php" method="POST">
 			<table>
 				<tr>
 					<td><label for="txnRefNo">Transaction Ref No.</label></td>
@@ -36,7 +36,7 @@ padding:5px;
 					<td><input type="text" name="orderId" id="orderId" /></td>
 					
 					<td><label for="mId">Merchant Id</label></td>
-					<td><input type="text" name="mId" id="mId" value="AWL000000000001"/></td>
+					<td><input type="text" name="mId" id="mId" value="WL0000000027698"/></td>
 		
 				</tr>
 
@@ -70,22 +70,19 @@ padding:5px;
 					
 					<td><label for="addField8">Add Field 8</label></td>
 					<td><input type="text" name="addField8" id="addField8" /></td>
-
-					<td><label for="refAmt">Refund Amount</label></td>
-					<td><input type="text" name="refAmt" id="refAmt" /></td>					
+					
+					<td><label for="encKey">Enc Key</label></td>
+					<td><input type="text" name="encKey" id="encKey" value="6375b97b954b37f956966977e5753ee6"/></td>
 					
 				</tr>
-				<tr>
 
-					<td><label for="encKey">Enc Key</label></td>
-					<td><input type="text" name="encKey" id="encKey" value="4d5390bef3ef1ee3d4a7e77fd42238cb"/></td>
-				</tr>
+	
 				<tr>
 					<td></td>
 					<td></td>
 					<td></td>
 					<td>
-						 <input type="submit" class="btn btn-danger btn-block" style="background:#33CC33;padding:5px;font-size:15px" value= "Refund Txn" />
+						 <input type="submit" class="btn btn-danger btn-block" style="background:#33CC33;padding:5px;font-size:15px" value= "Cancel Txn" />
 					</td>
 				</tr>
 			</table>

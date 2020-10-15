@@ -2,6 +2,10 @@
 
 function convert($fileName, $inFilePath, $outFilePath = NULL, $deleteSourceFile = FALSE, $debug = FALSE)
 {
+    if (empty($outFilePath)) {
+        $outFilePath = $inFilePath;
+    }
+
     $file = $inFilePath . $fileName;
     if (file_exists($file)) {
         $commandPath = "lowriter --convert-to pdf " . $file;

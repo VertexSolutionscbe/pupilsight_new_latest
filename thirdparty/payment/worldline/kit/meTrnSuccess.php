@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * This Is the Kit File To Be Included For Transaction Request/Response
+	 * This Is the Kit File To Be included For Transaction Request/Response
 	 */
 	include 'AWLMEAPI.php';
 	
@@ -14,7 +14,7 @@
 	$reqMsgDTO = new ReqMsgDTO();
 	
 	//This is the Merchant Key that is used for decryption also
-	$enc_key = "df58d8ce4f9ce8a7865fa7b08e13f2e5";
+	$enc_key = "6375b97b954b37f956966977e5753ee6";
 	
 	/* Get the Response from the WorldLine */
 	$responseMerchant = $_REQUEST['merchantResponse'];
@@ -22,25 +22,25 @@
 	$response = $obj->parseTrnResMsg( $responseMerchant , $enc_key );
 ?>
 <style>
-body{
-font-family:Verdana, sans-serif	;
-font-size::12px;
-}
-.wrapper{
-width:980px;
-margin:0 auto;	
-}
-table{
+	body{
+	font-family:Verdana, sans-serif	;
+	font-size::12px;
+	}
+	.wrapper{
+	width:980px;
+	margin:0 auto;	
+	}
+	table{
 
-}
-tr{
-	padding:5px
-}
-td{
-padding:5px;	
-}
-input{
-padding:5px;	
+	}
+	tr{
+		padding:5px
+	}
+	td{
+	padding:5px;	
+	}
+	input{
+	padding:5px;	
 }
 </style>
 <form action="testTxnStatus.php" method="POST" >
