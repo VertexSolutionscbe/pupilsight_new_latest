@@ -51,7 +51,7 @@ if($type == 'insertcampaigndetails'){
 
 
         $insert = $adminlib->updateApplicantData($submissionId, $pupilsightProgramID, $pupilsightYearGroupID, $application_id);
-        unset($_SESSION["submissionId"]);
+        //unset($_SESSION["submissionId"]);
     }
 }
 

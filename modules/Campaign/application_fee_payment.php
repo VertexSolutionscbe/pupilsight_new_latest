@@ -68,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
 
     $cid = $_GET['cid'];
     $sid = $_SESSION['submissionId'];
+    $stuId = $sid;
     //$sid = 37;
     $crtd =  date('Y-m-d H:i:s');
     $cdt = date('Y-m-d H:i:s');
@@ -193,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
     }
     
 
-        $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, g.fine_type, g.rule_type, fn_fee_invoice_applicant_assign.invoice_no as stu_invoice_no FROM fn_fee_invoice LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN fn_fee_invoice_applicant_assign ON fn_fee_invoice.id = fn_fee_invoice_applicant_assign.fn_fee_invoice_id  WHERE fn_fee_invoice.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND fn_fee_invoice_applicant_assign.submission_id = "'.$sid.'"';
+        $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid,g.is_fine_editable, g.fine_type, g.rule_type, fn_fee_invoice_applicant_assign.id as invid, fn_fee_invoice_applicant_assign.invoice_no as stu_invoice_no FROM fn_fee_invoice LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN fn_fee_invoice_applicant_assign ON fn_fee_invoice.id = fn_fee_invoice_applicant_assign.fn_fee_invoice_id  WHERE fn_fee_invoice.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND fn_fee_invoice_applicant_assign.submission_id = "'.$sid.'"';
 
         // $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_applicant_assign.invoice_no as stu_invoice_no, fn_fee_invoice_applicant_assign.id as invid, g.is_fine_editable, g.fine_type, g.rule_type FROM fn_fee_invoice LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id  WHERE fn_fee_invoice.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND fn_fee_invoice_applicant_assign.submission_id = "'.$sid.'" GROUP BY fn_fee_invoice.id';
         $resultinv = $connection2->query($invoices);
