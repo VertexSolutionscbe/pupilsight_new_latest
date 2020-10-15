@@ -3,7 +3,7 @@
 /**
  * This Is the Kit File To Be Included For Transaction Request
  */
-include 'Merchant_Kit_PHP_V1.2/Kit/AWLMEAPI.php';
+include 'AWLMEAPI.php';
 
 //create an Object of the above included class
 $obj = new AWLMEAPI();
@@ -17,7 +17,7 @@ $reqMsgDTO->setMid($_REQUEST['mid']);
 // Merchant Unique order id
 $reqMsgDTO->setOrderId($_REQUEST['OrderId']);
 //Transaction amount in paisa format
-$reqMsgDTO->setTrnAmt($_REQUEST['amount']);
+$reqMsgDTO->setTrnAmt(round($_REQUEST['amount'], 2) * 100);
 //Transaction remarks
 $reqMsgDTO->setTrnRemarks("This txn has to be done ");
 // Merchant transaction type (S/P/R)
@@ -27,11 +27,11 @@ $reqMsgDTO->setEnckey($_REQUEST['enckey']);
 // Merchant transaction currency
 $reqMsgDTO->setTrnCurrency($_REQUEST['currencyName']);
 // Recurring period, if merchant transaction type is R
-$reqMsgDTO->setRecurrPeriod($_REQUEST['recurPeriod']);
+//$reqMsgDTO->setRecurrPeriod($_REQUEST['recurPeriod']);
 // Recurring day, if merchant transaction type is R
-$reqMsgDTO->setRecurrDay($_REQUEST['recurDay']);
+//$reqMsgDTO->setRecurrDay($_REQUEST['recurDay']);
 // No of recurring, if merchant transaction type is R
-$reqMsgDTO->setNoOfRecurring($_REQUEST['numberRecurring']);
+//$reqMsgDTO->setNoOfRecurring($_REQUEST['numberRecurring']);
 // Merchant response URl
 $reqMsgDTO->setResponseUrl($_REQUEST['responseUrl']);
 // Optional additional fields for merchant
@@ -51,21 +51,14 @@ $reqMsgDTO->setAddField8($_REQUEST['addField8']);
 //Generate transaction request message
 $merchantRequest = "";
 
-//print_r($reqMsgDTO);
-//die();
 $reqMsgDTO = $obj->generateTrnReqMsg($reqMsgDTO);
-error_reporting(E_ALL);
 if ($reqMsgDTO->getStatusDesc() == "Success") {
 	$merchantRequest = $reqMsgDTO->getReqMsg();
-	print_r($merchantRequest);
-} else {
-	echo "error ";
-	print_r($reqMsgDTO->getStatusDesc());
 }
 ?>
 
 
-<form id='txnSubmitFrm' name="txnSubmitFrm" action="https://cgt.in.worldline.com/ipg/doMEPayRequest" method="post">
+<form action="https://cgt.in.worldline.com/ipg/doMEPayRequest" method="post" name="txnSubmitFrm">
 	<h4 align="center">Redirecting To Payment Please Wait..</h4>
 	<h4 align="center">Please Do Not Press Back Button OR Refresh Page</h4>
 	<input type="hidden" size="200" name="merchantRequest" id="merchantRequest" value="<?php echo $merchantRequest; ?>" />
@@ -73,5 +66,5 @@ if ($reqMsgDTO->getStatusDesc() == "Success") {
 </form>
 <script type="text/javascript">
 	//submit the form to the worldline
-	//document.txnSubmitFrm.submit();
+	document.txnSubmitFrm.submit();
 </script>

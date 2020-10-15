@@ -119,8 +119,8 @@ print_r($values);  */
             $col->addTextField('academic_year')->addClass('txtfield')->setValue($ac_y);
 			
         $col = $row->addColumn()->setClass('newdes');
-                $col->addLabel('campaign Name', __('Campaign Name'));
-                $col->addTextField('name')->addClass('txtfield')->readonly()->setValue($camp_name);
+                $col->addLabel('campname', __('Campaign Name'));
+                $col->addTextField('campname')->addClass('txtfield')->readonly()->setValue($camp_name);
 		
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('name', __('Work Flow Name'));

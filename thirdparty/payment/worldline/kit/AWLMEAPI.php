@@ -7,29 +7,38 @@ include("ReqMsgDTO.php");
 class AWLMEAPI
 	{
 
+/**
+ * This method is used to return transaction status
+ *
+ * @param mid
+ * @param orderId
+ * @param transactionRefNo
+ * @param enc_key
+ * @return ResMsgDTO ResMsgDTO 
+ */
  
 	function generateTrnReqMsg($reqMsgDTO)
         { //echo $reqMsgDTO; die;
 		
-		if(empty($reqMsgDTO->getAddField10() ) || is_null($reqMsgDTO->getAddField10() )){
+		
+		if( $reqMsgDTO->getAddField10()==""){
 			$reqMsgDTO->setAddField10("NA");
 		}
 		
-		if(empty($reqMsgDTO->getAddField9() ) || is_null($reqMsgDTO->getAddField9() )){
+		if($reqMsgDTO->getAddField9()==""){
 			$reqMsgDTO->getAddField9("NA");
 		}
 		 
             try
             {
 			
-                if (is_null($reqMsgDTO) || empty($reqMsgDTO)  
-				|| is_null($reqMsgDTO->getMid() || empty($reqMsgDTO->getMid()))
-                || is_null($reqMsgDTO->getOrderId()) || empty($reqMsgDTO->getOrderId()) 
-                || is_null( $reqMsgDTO->getTrnAmt()) || empty( $reqMsgDTO->getTrnAmt())
-                || is_null($reqMsgDTO->getMeTransReqType()) || empty( $reqMsgDTO->getMeTransReqType())
-                || is_null($reqMsgDTO->getEnckey()) || empty( $reqMsgDTO->getEnckey())
-                || is_null($reqMsgDTO->getResponseUrl()) || empty( $reqMsgDTO->getResponseUrl())
-                || is_null($reqMsgDTO->getTrnCurrency()) || empty(  $reqMsgDTO->getTrnCurrency()) 
+                if ($reqMsgDTO->getMid()==""
+                || $reqMsgDTO->getOrderId()=="" 
+                || $reqMsgDTO->getTrnAmt()==""
+                || $reqMsgDTO->getMeTransReqType()==""
+                || $reqMsgDTO->getEnckey()==""
+                || $reqMsgDTO->getResponseUrl()==""
+                || $reqMsgDTO->getTrnCurrency()==""
                 )
                 {
 					$reqMsgDTO->setStatusDesc("Mandatory fields are missing");
@@ -41,9 +50,9 @@ class AWLMEAPI
                     return $reqMsgDTO;
                 }
                 if (($reqMsgDTO->getMeTransReqType() == "R")
-                        &&(is_null($reqMsgDTO->getRecurrPeriod()) || empty($reqMsgDTO->getRecurrPeriod())
-                        || is_null($reqMsgDTO->getRecurrDay()) ||  empty($reqMsgDTO->getRecurrDay()) 
-                        || is_null( $reqMsgDTO->getNoOfRecurring()) || empty( $reqMsgDTO->getNoOfRecurring())))
+                        &&($reqMsgDTO->getRecurrPeriod()==""
+                        || $reqMsgDTO->getRecurrDay()=="" 
+                        || $reqMsgDTO->getNoOfRecurring()==""))
                 {
 
                    	$reqMsgDTO->setStatusDesc("Mandatory fields are missing for recurring payment");
@@ -69,7 +78,7 @@ class AWLMEAPI
             }
             catch (Exception $ex)
             {
-              	$reqMsgDTO->setStatusDesc("Error occurred during creation of request message");
+              	$reqMsgDTO->setStatusDesc("Error Occured during Creating request message");
                 throw new Exception($ex->getMessage());
                
             }
@@ -192,11 +201,11 @@ class AWLMEAPI
     function cancelTransaction($reqMsgDTO)
         {
            
-			   if(empty($reqMsgDTO->getAddField10() ) || is_null($reqMsgDTO->getAddField10() )){
+			if($reqMsgDTO->getAddField10()=="" ){
 				$reqMsgDTO->setAddField10("NA");
-			  }
+			}
 		 
-			if(empty($reqMsgDTO->getAddField9() ) || is_null($reqMsgDTO->getAddField9() )){
+			if($reqMsgDTO->getAddField9()=="" ){
 				$reqMsgDTO->getAddField9("NA");
 			}
 		   
@@ -204,10 +213,10 @@ class AWLMEAPI
 			$httpPost = new HTTPPost();
             try
             {
-                if( is_null($reqMsgDTO->getMid()) || empty($reqMsgDTO->getMid())  
-                || is_null($reqMsgDTO->getOrderId()) || empty($reqMsgDTO->getOrderId())
-                || is_null($reqMsgDTO->getPgMeTrnRefNo()) || empty($reqMsgDTO->getPgMeTrnRefNo())
-                || is_null($reqMsgDTO->getEnckey()) || empty($reqMsgDTO->getEnckey()) 
+                if( $reqMsgDTO->getMid()==""
+                || $reqMsgDTO->getOrderId()=="" 
+                || $reqMsgDTO->getPgMeTrnRefNo()=="" 
+                || $reqMsgDTO->getEnckey()==""
                 )
                 {                    
 					
@@ -221,10 +230,6 @@ class AWLMEAPI
             $ini_array = parse_ini_file("ClientAPI.ini");
 
 	        $qpURL=$ini_array['CANCEL_TRANS_API'];
-			
-			if(is_null($reqMsgDTO->getAddField10()) || empty($reqMsgDTO->getAddField10())  ){
-				$reqMsgDTO->setAddField10('NA');
-			}
 			   
 			$merchantReqStr= $reqMsgDTO->getMid()	."|". $reqMsgDTO->getOrderId()  ."|". $reqMsgDTO->getPgMeTrnRefNo()
 			."|". $reqMsgDTO->getTrnAmt()  ."|". $reqMsgDTO->getAddField1() 
@@ -275,26 +280,27 @@ class AWLMEAPI
             return $resMsgDTO;
         }
 		
-	function refundTransaction($reqMsgDTO)
+		function refundTransaction($reqMsgDTO)
         {   //$reqMsgDTO = new ReqMsgDTO(); 
 		
-			if(empty($reqMsgDTO->getAddField10() ) || is_null($reqMsgDTO->getAddField10() )){
+			if($reqMsgDTO->getAddField10()=="" ){
 				$reqMsgDTO->setAddField10("NA");
 			}
-		
-			if(empty($reqMsgDTO->getAddField9() ) || is_null($reqMsgDTO->getAddField9() )){
+		 
+			if($reqMsgDTO->getAddField9()=="" ){
 				$reqMsgDTO->getAddField9("NA");
 			}
+
             $resMsgDTO = new ResMsgDTO();
 			$httpPost = new HTTPPost();
 						
             try
             {
-                if (  is_null($reqMsgDTO->getMid()) ||  empty($reqMsgDTO->getMid()) 
-                || is_null($reqMsgDTO->getOrderId()) || empty($reqMsgDTO->getOrderId()) 
-                || is_null($reqMsgDTO->getPgMeTrnRefNo() ) || empty($reqMsgDTO->getPgMeTrnRefNo())
-                || is_null( $reqMsgDTO->getEnckey() ) || empty( $reqMsgDTO->getEnckey())
-				|| is_null( $reqMsgDTO->getRefundAmt()) || empty( $reqMsgDTO->getRefundAmt()))
+                if ($reqMsgDTO->getMid()==""
+                || $reqMsgDTO->getOrderId()==""
+                || $reqMsgDTO->getPgMeTrnRefNo()=="" 
+                || $reqMsgDTO->getEnckey()==""
+				|| $reqMsgDTO->getRefundAmt()=="")
                 {
                     
 					$resMsgDTO->setStatusCode("F");
@@ -302,10 +308,7 @@ class AWLMEAPI
 					return $resMsgDTO;
                 }
                 
-			if( is_null($reqMsgDTO->getAddField10()) ||empty($reqMsgDTO->getAddField10()) ){
-			$reqMsgDTO->setAddField10('NA');
-			}
-		    $ini_array = parse_ini_file("ClientAPI.ini");
+			$ini_array = parse_ini_file("ClientAPI.ini");
 
 	        $qpURL=$ini_array['REFUND_TRANS_API'];
 			   
@@ -366,20 +369,25 @@ class AWLMEAPI
 
 	function generateTrnReqMsgWithCard($reqMsgDTO)
         {  
-			$reqMsgDTO->setAddField10('NA');
-			$reqMsgDTO->setAddField9('NA');
+			if($reqMsgDTO->getAddField10()=="" ){
+				$reqMsgDTO->setAddField10("NA");
+			}
+		 
+			if($reqMsgDTO->getAddField9()=="" ){
+				$reqMsgDTO->getAddField9("NA");
+			}
 		 
 		 //$reqMsgDTO->set_statusDesc("First Validation done"); 
 		// return $reqMsgDTO;
             try
             { 
-                if ( is_null($reqMsgDTO) || empty($reqMsgDTO) || is_null($reqMsgDTO->getMid() || empty($reqMsgDTO->getMid()) ) 
-                || is_null($reqMsgDTO->getOrderId()) || empty($reqMsgDTO->getOrderId())  
-                || is_null($reqMsgDTO->getTrnAmt())  || empty($reqMsgDTO->getTrnAmt()) 
-                || is_null($reqMsgDTO->getMeTransReqType()) || empty($reqMsgDTO->getMeTransReqType()) 
-                || is_null($reqMsgDTO->getEnckey()) || empty($reqMsgDTO->getEnckey())
-                || is_null($reqMsgDTO->getResponseUrl()) || empty($reqMsgDTO->getResponseUrl()) 
-                || is_null($reqMsgDTO->getTrnCurrency()) || empty($reqMsgDTO->getTrnCurrency())
+                if ( $reqMsgDTO->getMid()==""
+                || $reqMsgDTO->getOrderId()==""
+                || $reqMsgDTO->getTrnAmt()==""
+                || $reqMsgDTO->getMeTransReqType()==""
+                || $reqMsgDTO->getEnckey()==""
+                || $reqMsgDTO->getResponseUrl()==""
+                || $reqMsgDTO->getTrnCurrency()==""
                 )
                 {
                     
@@ -395,9 +403,9 @@ class AWLMEAPI
                     return $reqMsgDTO;
                 }
                 if (($reqMsgDTO->getMeTransReqType() == "R")
-                        && (is_null($reqMsgDTO->getRecurrPeriod() || empty($reqMsgDTO->getRecurrPeriod()))
-                        || is_null($reqMsgDTO->getRecurrDay()) ||empty($reqMsgDTO->getRecurrDay()) 
-                        || is_null($reqMsgDTO->getNoOfRecurring()) ||empty($reqMsgDTO->getNoOfRecurring()) )) 
+                        && ($reqMsgDTO->getRecurrPeriod()==""
+                        ||  $reqMsgDTO->getRecurrDay()==""
+                        ||  $reqMsgDTO->getNoOfRecurring())) 
                 {
 
                    	$reqMsgDTO->setStatusDesc("Mandatory fields are missing for recurring payment");
@@ -408,9 +416,9 @@ class AWLMEAPI
 			if($reqMsgDTO->getPayTypeCode() == "DC" || $reqMsgDTO->getPayTypeCode() == "CC"
 					||  $reqMsgDTO->getPayTypeCode() == "CUG") {
 					
-					if(is_null($reqMsgDTO->getCardNumber()) || empty($reqMsgDTO->getCardNumber())
-						|| is_null($reqMsgDTO->getExpiryDate()) || empty($reqMsgDTO->getExpiryDate()) 
-						|| is_null($reqMsgDTO->getPayTypeCode()) || empty($reqMsgDTO->getPayTypeCode()) 
+					if($reqMsgDTO->getCardNumber()==""
+						|| $reqMsgDTO->getExpiryDate()==""
+						|| $reqMsgDTO->getPayTypeCode()==""
 						){
 
 				
@@ -421,7 +429,7 @@ class AWLMEAPI
 			
 			} else if($reqMsgDTO->getPayTypeCode() == "NB" ){
 
-					if(is_null($reqMsgDTO->getNetBankCode()) || empty($reqMsgDTO->getNetBankCode())) {
+					if($reqMsgDTO->getNetBankCode()=="") {
 						$reqMsgDTO->setStatusDesc("Net bank code is missing");
 						return $reqMsgDTO;
 					}
@@ -454,7 +462,7 @@ class AWLMEAPI
             catch (Exception $ex)
             {
                
-				$reqMsgDTO->setStatusDesc("Error occurred during generating request message");
+				$reqMsgDTO->setStatusDesc("Error Occured during gerating request message");
                 throw new Exception($ex->getMessage());
                
             }

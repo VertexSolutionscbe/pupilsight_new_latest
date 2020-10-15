@@ -1,5 +1,6 @@
 <?php
 include '../../pupilsight.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
 
 $cid = $_GET['cid'];

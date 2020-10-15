@@ -1,6 +1,8 @@
 <?php
 include '../../pupilsight.php';
 
+include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
+
 function createZipAndDownload($files, $filesPath, $zipFileName)
 {
     // Create instance of ZipArchive. and open the zip folder.
@@ -23,6 +25,7 @@ function createZipAndDownload($files, $filesPath, $zipFileName)
     header("Expires: 0");
     readfile($zipFileName);
     unlink($zipFileName);
+
     foreach ($files as $file) {
         unlink($_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/" . $file);
     }
@@ -92,7 +95,8 @@ if (!empty($file)) {
         }
 
         $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/" . $fname . ".docx";
-        $files[] = $fname . ".docx";
+        $files_word[] = $fname . ".docx";
+        $files[] = $fname . ".pdf";
         $phpword->saveAs($savedocsx);
     }
 
@@ -108,5 +112,9 @@ if (!empty($file)) {
 
     // Name of creating zip file
     $zipName = 'ApplicationForm.zip';
+
+    convertBulk($filesPath, TRUE);
+    //echo convert("291.docx", $filesPath, $filesPath, TRUE, TRUE);
+
     echo createZipAndDownload($files, $filesPath, $zipName);
 }
