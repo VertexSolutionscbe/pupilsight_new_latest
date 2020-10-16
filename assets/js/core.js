@@ -2,7 +2,7 @@
 Pupilsight, Flexible & Open School System
 */
 
-jQuery(function($){
+jQuery(function ($) {
 
     /**
      * Generic toggle switch
@@ -21,7 +21,7 @@ jQuery(function($){
     /**
      * Sidebar toggle switch
      */
-    $('#sidebarToggle').click(function() {
+    $('#sidebarToggle').click(function () {
         if ($('#sidebar').hasClass('lg:w-sidebar')) {
             $('#sidebar').removeClass('lg:w-sidebar')
             $('#sidebar').addClass('lg:hidden');
@@ -36,8 +36,10 @@ jQuery(function($){
     /**
      * Form Class: generic check All/None checkboxes
      */
+    //Edited By : Mandeep , Reason : Check and uncheck all was not working data tables fixed the issue
     $(document).on('click', '.checkall', function () {
-        $(this).closest('table').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
+        $(this).closest('table').find(':checkbox').prop('checked', $(this).prop('checked')).trigger('change');
+        console.log('testingcheck');
     });
 
     /**
@@ -63,7 +65,7 @@ jQuery(function($){
             $('.bulkActionPanel').addClass('hidden');
         }
 
-        $('.checkall').prop('checked', checkedCount > 0 );
+        $('.checkall').prop('checked', checkedCount > 0);
         $('.checkall').prop('indeterminate', checkedCount > 0 && checkedCount < checkboxes.length);
 
         $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
@@ -78,26 +80,26 @@ jQuery(function($){
      * Column Highlighting
      */
     var columnHighlight = $(".columnHighlight td");
-    columnHighlight.on("mouseover", function() {
-      columnHighlight.filter(":nth-child(" + ($(this).index() + 1) + ")").addClass("hover");
+    columnHighlight.on("mouseover", function () {
+        columnHighlight.filter(":nth-child(" + ($(this).index() + 1) + ")").addClass("hover");
     })
-    .on("mouseout", function() {
-      columnHighlight.removeClass("hover");
-    });
+        .on("mouseout", function () {
+            columnHighlight.removeClass("hover");
+        });
 
     /**
      * Password Generator. Requires data-source, data-confirm and data-alert attributes.
      */
-    $(".generatePassword").click(function(){
+    $(".generatePassword").click(function () {
         if ($(this).data("source") == "" || $(this).data("confirm") == "") return;
 
         var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^~@|";
         var text = '';
-        for(var i=0; i < 12; i++) {
-            if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
-            else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
-            else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
-            else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
+        for (var i = 0; i < 12; i++) {
+            if (i == 0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
+            else if (i == 1) { text += chars.charAt(Math.floor(Math.random() * 26) + 26); }
+            else if (i == 2) { text += chars.charAt(Math.floor(Math.random() * 10) + 52); }
+            else if (i == 3) { text += chars.charAt(Math.floor(Math.random() * 19) + 62); }
             else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
         }
         $('input[name="' + $(this).data("source") + '"]').val(text).blur();
@@ -108,18 +110,18 @@ jQuery(function($){
     /**
      * Username Generator. Requires data-alert attribute.
      */
-    $(".generateUsername").click(function(){
+    $(".generateUsername").click(function () {
         var alertText = $(this).data('alert');
         $.ajax({
-            type : 'POST',
-            data : {
+            type: 'POST',
+            data: {
                 pupilsightRoleID: $('#pupilsightRoleIDPrimary').val(),
                 preferredName: $('#preferredName').val(),
                 firstName: $('#firstName').val(),
                 surname: $('#surname').val(),
             },
             url: "./modules/User Admin/user_manage_usernameAjax.php",
-            success: function(responseText){
+            success: function (responseText) {
                 if (responseText == 0) {
                     $('#pupilsightRoleIDPrimary').change();
                     $('#preferredName').blur();
@@ -145,14 +147,14 @@ $.prototype.pupilsightUniquenessCheck = function (settings) {
     var uniqueField = this;
     var validation;
 
-    $(uniqueField).ready(function(){
+    $(uniqueField).ready(function () {
         // Get the existing LiveValidation object, otherwise create one
         validation = window["lv" + $(uniqueField).attr('id') + "Validate"];
         if (validation == null || typeof validation != "object") {
             validation = new LiveValidation($(uniqueField).attr('id'));
         }
 
-        validation.onValid = function() {
+        validation.onValid = function () {
             // Pass the current value as POST['value'] (optionally by a defined fieldName)
             settings.ajaxData[settings.ajaxData.fieldName || "value"] = $(uniqueField).val();
 
@@ -188,7 +190,7 @@ $.prototype.pupilsightUniquenessCheck = function (settings) {
 // Define the CustomBlocks behaviour
 var CustomBlocks = window.CustomBlocks || {};
 
-CustomBlocks = (function(element, settings) {
+CustomBlocks = (function (element, settings) {
     var _ = this;
 
     _.container = $(element);
@@ -214,12 +216,12 @@ CustomBlocks = (function(element, settings) {
     _.init();
 });
 
-CustomBlocks.prototype.init = function() {
+CustomBlocks.prototype.init = function () {
     var _ = this;
 
     // Setup tool actions
-    $(_.settings.addSelector, _.container).each(function(){
-        $(this).on(_.settings.addOnEvent, function(){
+    $(_.settings.addSelector, _.container).each(function () {
+        $(this).on(_.settings.addOnEvent, function () {
             var identifier = $(this).val();
             if (!identifier) return;
 
@@ -241,11 +243,11 @@ CustomBlocks.prototype.init = function() {
         $(".blocks", _.container).sortable({
             placeholder: "sortHighlight",
             handle: ".sortHandle",
-        }).bind('sortstart', function(event, ui) {
+        }).bind('sortstart', function (event, ui) {
             $(_.container).trigger('hideAll');
 
             // Suspend the TinyMCE editors before sorting
-            $('textarea.tinymce', _.container).each(function(index, element) {
+            $('textarea.tinymce', _.container).each(function (index, element) {
                 tinymce.EditorManager.execCommand('mceRemoveEditor', false, $(this).prop("id"));
             });
         });
@@ -266,12 +268,12 @@ CustomBlocks.prototype.init = function() {
 
     // Built-in Button Events
     $(_.container)
-        .on('delete', function(event, block) {
+        .on('delete', function (event, block) {
             if (confirm(_.settings.deleteMessage)) {
                 _.removeBlock(block);
             }
         })
-        .on('showHide', function(event, block, button) {
+        .on('showHide', function (event, block, button) {
             if ($(button).hasClass('showHidden')) {
                 $(button).removeClass('showHidden');
                 $('img', button).prop('src', $(button).data('off'));
@@ -282,14 +284,14 @@ CustomBlocks.prototype.init = function() {
                 block.find('.showHide').show();
 
                 // Restart any TinyMCE editors that are not active
-                $('textarea.tinymce', _.container).each(function(index, element) {
+                $('textarea.tinymce', _.container).each(function (index, element) {
                     tinymce.EditorManager.execCommand('mceAddEditor', false, $(this).prop("id"));
                 });
             }
         })
-        .on('hideAll', function(event, block, button) {
+        .on('hideAll', function (event, block, button) {
             $('.showHide').hide();
-            $('a.blockButton[data-event="showHide"]').each(function(index, element){
+            $('a.blockButton[data-event="showHide"]').each(function (index, element) {
                 $(element).removeClass('showHidden');
                 $('img', element).prop('src', $(element).data('off'));
             });
@@ -298,13 +300,13 @@ CustomBlocks.prototype.init = function() {
     _.refresh();
 };
 
-CustomBlocks.prototype.addBlock = function(data) {
+CustomBlocks.prototype.addBlock = function (data) {
     var _ = this;
 
     _.blockCount++;
 
     var block = $(_.blockTemplate).clone().css("display", "block").appendTo($(".blocks", _.container));
-    $(block).append('<input type="hidden" name="'+_.settings.orderName+'[]" value="'+_.blockCount+'" />');
+    $(block).append('<input type="hidden" name="' + _.settings.orderName + '[]" value="' + _.blockCount + '" />');
 
     _.initBlock(block, data);
     _.refresh();
@@ -312,7 +314,7 @@ CustomBlocks.prototype.addBlock = function(data) {
     $(_.container).trigger('addedBlock', [block]);
 };
 
-CustomBlocks.prototype.removeBlock = function(block) {
+CustomBlocks.prototype.removeBlock = function (block) {
     var _ = this;
 
     _.blockCount--;
@@ -322,7 +324,7 @@ CustomBlocks.prototype.removeBlock = function(block) {
 
     _.removeBlockValidation(block);
 
-    $(block).fadeOut(_.settings.animationSpeed, function(){
+    $(block).fadeOut(_.settings.animationSpeed, function () {
         $(block).detach().remove();
         _.refresh();
     });
@@ -330,7 +332,7 @@ CustomBlocks.prototype.removeBlock = function(block) {
     $(_.container).trigger('removedBlock', [block]);
 };
 
-CustomBlocks.prototype.initBlock = function(block, data) {
+CustomBlocks.prototype.initBlock = function (block, data) {
     var _ = this;
 
     block.blockNumber = _.blockCount;
@@ -342,105 +344,105 @@ CustomBlocks.prototype.initBlock = function(block, data) {
     _.addBlockEvents(block);
 };
 
-CustomBlocks.prototype.loadBlockInputData = function(block, data) {
+CustomBlocks.prototype.loadBlockInputData = function (block, data) {
     var _ = this;
 
     $(':input', block).prop('disabled', false);
 
     for (key in data) {
-        $("[name='"+key+"']:not([type='file'])", block).val(data[key]);
-        $("label[for='"+key+"']", block).html(data[key]);
+        $("[name='" + key + "']:not([type='file'])", block).val(data[key]);
+        $("label[for='" + key + "']", block).html(data[key]);
     }
 
     var readonly = data.readonly || [];
-    readonly.forEach(function(element){
-        $("[name='"+element+"']", block).prop('readonly', true).addClass('readonly');
-        $("select[name='"+element+"'] option:not(:selected)", block).prop('disabled', true);
+    readonly.forEach(function (element) {
+        $("[name='" + element + "']", block).prop('readonly', true).addClass('readonly');
+        $("select[name='" + element + "'] option:not(:selected)", block).prop('disabled', true);
     });
 };
 
-CustomBlocks.prototype.renameBlockFields = function(block) {
+CustomBlocks.prototype.renameBlockFields = function (block) {
     var _ = this;
 
-    $("input, textarea, select", block).each(function(index, element) {
-        if ($(this).prop("name") == _.settings.orderName+'[]') return;
+    $("input, textarea, select", block).each(function (index, element) {
+        if ($(this).prop("name") == _.settings.orderName + '[]') return;
 
         var name;
-        switch(_.settings.inputNameStrategy) {
-            case 'object':  name = $(_.container).prop("id")+"["+block.blockNumber+"]["+$(this).prop("name")+"]"; break;
-            case 'array':   name = $(this).prop("name")+"["+block.blockNumber+"]"; break;
-            case 'string':  name = $(this).prop("name")+block.blockNumber; break;
+        switch (_.settings.inputNameStrategy) {
+            case 'object': name = $(_.container).prop("id") + "[" + block.blockNumber + "][" + $(this).prop("name") + "]"; break;
+            case 'array': name = $(this).prop("name") + "[" + block.blockNumber + "]"; break;
+            case 'string': name = $(this).prop("name") + block.blockNumber; break;
         }
 
         $(this).prop("name", name);
         if ($(this).prop("id") != '') {
-            $(this).prop("id", $(this).prop("id")+block.blockNumber);
+            $(this).prop("id", $(this).prop("id") + block.blockNumber);
         }
     });
 
-    $("label", block).each(function(index, element) {
-        $(this).prop("for", $(this).prop("for")+block.blockNumber);
+    $("label", block).each(function (index, element) {
+        $(this).prop("for", $(this).prop("for") + block.blockNumber);
     });
 
     // Initialize any textareas tagged as tinymce using an AJAX load to grab a full editor
     $("textarea[data-tinymce]", block).each(function (index, element) {
         var data = { id: $(this).prop("id"), value: $(this).val(), showMedia: $(this).data('media'), rows: $(this).prop("rows") };
-        $(this).parent().load('./modules/Planner/planner_editorAjax.php', data, function(responseText, textStatus, jqXHR) {
+        $(this).parent().load('./modules/Planner/planner_editorAjax.php', data, function (responseText, textStatus, jqXHR) {
             tinymce.EditorManager.execCommand('mceAddEditor', false, data.id);
         });
     });
 };
 
-CustomBlocks.prototype.addBlockValidation = function(block) {
+CustomBlocks.prototype.addBlockValidation = function (block) {
     var _ = this;
 
-    $("input, textarea, select", block).each(function(index, element) {
+    $("input, textarea, select", block).each(function (index, element) {
         if ($(this).data('validation') && !$(this).prop('readonly')) {
             var id = $(this).prop("id");
-            eval("block."+id+"Validate = new LiveValidation('"+id+"', {});");
-            $(this).data('validation').forEach(function(item) {
-                eval("block."+id+"Validate.add("+item.type+", {"+item.params+"});");
+            eval("block." + id + "Validate = new LiveValidation('" + id + "', {});");
+            $(this).data('validation').forEach(function (item) {
+                eval("block." + id + "Validate.add(" + item.type + ", {" + item.params + "});");
             });
         }
     });
 };
 
-CustomBlocks.prototype.removeBlockValidation = function(block) {
+CustomBlocks.prototype.removeBlockValidation = function (block) {
     var _ = this;
 
-    $("input, textarea, select", block).each(function(index, element) {
+    $("input, textarea, select", block).each(function (index, element) {
         if ($(this).data('validation') && !$(this).prop('readonly')) {
             var id = $(this).prop("id");
-            eval("block."+id+"Validate.destroy();");
+            eval("block." + id + "Validate.destroy();");
         }
     });
 
-    $('textarea.tinymce', block).each(function(index, element) {
+    $('textarea.tinymce', block).each(function (index, element) {
         tinymce.EditorManager.execCommand('mceRemoveEditor', false, $(this).prop("id"));
     });
 };
 
-CustomBlocks.prototype.addBlockEvents = function(block) {
+CustomBlocks.prototype.addBlockEvents = function (block) {
     var _ = this;
 
-    $("a.blockButton", block).each(function(index, element) {
-        $(element).click(function(event){
+    $("a.blockButton", block).each(function (index, element) {
+        $(element).click(function (event) {
             event.preventDefault();
-            $(_.container).trigger($(this).data('event'), [ block, this ]);
+            $(_.container).trigger($(this).data('event'), [block, this]);
         });
     });
 };
 
-CustomBlocks.prototype.refresh = function() {
+CustomBlocks.prototype.refresh = function () {
     var _ = this;
 
     $(".blockCount", _.container).val(_.blockCount);
-    $(".blockPlaceholder", _.container).css("display", (_.blockCount > 0)? "none" : "block");
+    $(".blockPlaceholder", _.container).css("display", (_.blockCount > 0) ? "none" : "block");
     $("select.addBlock", _.container).val(''); // Deselect after action
 };
 
 // Add the prototype method to jQuery
-$.prototype.pupilsightCustomBlocks = function(settings) {
+$.prototype.pupilsightCustomBlocks = function (settings) {
     this.pupilsightCustomBlocks = new CustomBlocks(this, settings);
 };
 
@@ -452,7 +454,7 @@ $.prototype.pupilsightCustomBlocks = function(settings) {
 
 var DataTable = window.DataTable || {};
 
-DataTable = (function(element, basePath, filters, identifier) {
+DataTable = (function (element, basePath, filters, identifier) {
     var _ = this;
 
     _.table = $(element);
@@ -465,11 +467,11 @@ DataTable = (function(element, basePath, filters, identifier) {
     _.init();
 });
 
-DataTable.prototype.init = function() {
+DataTable.prototype.init = function () {
     var _ = this;
 
     // Pagination
-    $(_.table).on('click', '.paginate', function() {
+    $(_.table).on('click', '.paginate', function () {
         var resultCount = $('.dataTable', _.table).data('results');
         _.filters.pageMax = Math.ceil(resultCount / _.filters.pageSize);
         _.filters.page = Math.min($(this).data('page'), _.filters.pageMax);
@@ -477,26 +479,26 @@ DataTable.prototype.init = function() {
     });
 
     // Sortable Columns
-    $(_.table).on('click', '.column.sortable', function(event) {
+    $(_.table).on('click', '.column.sortable', function (event) {
         var columns = $(this).data('sort').split(',');
 
         // Hold shift to add columns to the sort (or toggle them), otherwise clear it each time.
-        var activeColumns = columns.filter(function(item){ return item in _.filters.sortBy; });
+        var activeColumns = columns.filter(function (item) { return item in _.filters.sortBy; });
         if (activeColumns.length == 0 && !event.shiftKey) _.filters.sortBy = {};
 
-        columns.forEach(function(column) {
-            _.filters.sortBy[column] = (_.filters.sortBy[column] == 'ASC')? 'DESC' : 'ASC';
+        columns.forEach(function (column) {
+            _.filters.sortBy[column] = (_.filters.sortBy[column] == 'ASC') ? 'DESC' : 'ASC';
         });
 
         _.refresh();
     });
 
     // Remove Filter
-    $(_.table).on('click', '.filter', function() {
+    $(_.table).on('click', '.filter', function () {
         var filter = $(this).data('filter');
 
         if ($(this).hasClass('clear')) {
-            _.filters.filterBy = {'':''};
+            _.filters.filterBy = { '': '' };
             _.filters.searchBy.columns = [''];
         } else if (filter in _.filters.filterBy) {
             // Remove columns from search criteria if removing an in: filter
@@ -504,14 +506,14 @@ DataTable.prototype.init = function() {
             delete _.filters.filterBy[filter];
         }
 
-        if (jQuery.isEmptyObject(_.filters.filterBy)) _.filters.filterBy = {'':''};
+        if (jQuery.isEmptyObject(_.filters.filterBy)) _.filters.filterBy = { '': '' };
 
         _.filters.page = 1;
         _.refresh();
     });
 
     // Add Filter
-    $(_.table).on('change', '.filters', function() {
+    $(_.table).on('change', '.filters', function () {
         var filterData = $(this).val().split(':');
         var filter = filterData[0];
         var value = filterData[1];
@@ -523,7 +525,7 @@ DataTable.prototype.init = function() {
     });
 
     // Page Size
-    $(_.table).on('change', '.limit', function() {
+    $(_.table).on('change', '.limit', function () {
         var resultCount = $('.dataTable', _.table).data('results');
         _.filters.pageSize = parseInt($(this).val());
         _.filters.pageMax = Math.ceil(resultCount / _.filters.pageSize);
@@ -532,16 +534,16 @@ DataTable.prototype.init = function() {
     });
 
     // Expandable Rows
-    $(_.table).on('click', '.expander', function() {
+    $(_.table).on('click', '.expander', function () {
         $(this).toggleClass('expanded');
         $(this).parents('tr').next('tr').toggle();
     });
 };
 
-DataTable.prototype.refresh = function() {
+DataTable.prototype.refresh = function () {
     var _ = this;
 
-    var submitted = setTimeout(function() {
+    var submitted = setTimeout(function () {
         $('.pagination', _.table).prepend('<span class="submitted"></span>');
     }, 500);
 
@@ -553,16 +555,16 @@ DataTable.prototype.refresh = function() {
         postData = _.filters;
     }
 
-    $(_.table).load(_.path, postData, function(responseText, textStatus, jqXHR) {
+    $(_.table).load(_.path, postData, function (responseText, textStatus, jqXHR) {
         $('.bulkActionPanel').addClass('hidden');
         tb_init('a.thickbox');
         clearTimeout(submitted);
     });
 };
 
-$.prototype.pupilsightDataTable = function(basePath, filters, identifier) {
+$.prototype.pupilsightDataTable = function (basePath, filters, identifier) {
     this.pupilsightDataTable = new DataTable(this, basePath, filters, identifier);
-   
+
 };
 //$('#expore_tbl').DataTable();
 /**
@@ -573,7 +575,7 @@ function pupilsightFormSubmitted(form) {
     var submitButton = $('input[type="submit"]', $(form));
     submitButton.prop('disabled', true);
     if ($(form).hasClass('standardForm')) {
-        setTimeout(function() {
+        setTimeout(function () {
             submitButton.wrap('<span class="submitted"></span>');
         }, 500);
     }
