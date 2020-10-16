@@ -1,0 +1,94 @@
+<html>
+	<head>
+		<title>Refund Transaction</title>
+	<style>
+body{
+font-family:Verdana, sans-serif	;
+font-size::12px;
+}
+.wrapper{
+width:980px;
+margin:0 auto;	
+}
+table{
+
+}
+tr{
+	padding:5px
+}
+td{
+padding:5px;	
+}
+input{
+padding:5px;	
+}
+</style>
+	</head>
+	<body>
+	<center> <H3> Refund Transaction Request </H3></center>
+		<form action="meTrnRefundSuccess.php" method="POST">
+			<table>
+				<tr>
+					<td><label for="txnRefNo">Transaction Ref No.</label></td>
+					<td><input type="text" name="txnRefNo" id="txnRefNo" /></td>
+	
+					<td><label for="orderId">Order No.</label></td>
+					<td><input type="text" name="orderId" id="orderId" /></td>
+					
+					<td><label for="mId">Merchant Id</label></td>
+					<td><input type="text" name="mId" id="mId" value="WL0000000027698"/></td>
+		
+				</tr>
+
+				<tr>	
+					<td><label for="addField1">Add Field 1</label></td>
+					<td><input type="text" name="addField1" id="addField1"  /></td>
+		
+					<td><label for="addField2">Add Field 2</label></td>
+					<td><input type="text" name="addField2" id="addField2" /></td>
+					
+					<td><label for="addField3">Add Field 3</label></td>
+					<td><input type="text" name="addField3" id="addField3"  /></td>
+		
+					
+				</tr>
+				<tr>	
+					<td><label for="addField4">Add Field 4</label></td>
+					<td><input type="text" name="addField4" id="addField4" /></td>
+					
+					<td><label for="addField5">Add Field 5</label></td>
+					<td><input type="text" name="addField5" id="addField5" /></td>
+					
+					<td><label for="addField6">Add Field 6</label></td>
+					<td><input type="text" name="addField6" id="addField6"  /></td>
+		
+					
+				</tr>
+				<tr>	
+					<td><label for="addField7">Add Field 7</label></td>
+					<td><input type="text" name="addField7" id="addField7" /></td>
+					
+					<td><label for="addField8">Add Field 8</label></td>
+					<td><input type="text" name="addField8" id="addField8" /></td>
+
+					<td><label for="refAmt">Refund Amount</label></td>
+					<td><input type="text" name="refAmt" id="refAmt" /></td>					
+					
+				</tr>
+				<tr>
+
+					<td><label for="encKey">Enc Key</label></td>
+					<td><input type="text" name="encKey" id="encKey" value="6375b97b954b37f956966977e5753ee6"/></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td>
+						 <input type="submit" class="btn btn-danger btn-block" style="background:#33CC33;padding:5px;font-size:15px" value= "Refund Txn" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</body>
+</html>
