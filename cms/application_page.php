@@ -5,6 +5,8 @@ session_start();
 $data = $adminlib->getPupilSightData();
 $section = $adminlib->getPupilSightSectionFrontendData();
 $campaign = $adminlib->getcampaign();
+$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+//baseurl = http://testchristacademy.pupilpod.net
 // $app_status = $adminlib->getApp_statusData();
 //  print_r($app_status);die();
 /*$status= 1;
@@ -166,7 +168,7 @@ $app_links = array();
         <input type="hidden" name="email" value="bikash0389@gmail.com">
         <input type="hidden" name="phone" value="9883928942"> -->
 
-        <input type="hidden" name="responseUrl" id="responseUrl" value="http://localhost/pupilsight/thirdparty/payment/worldline/skit/meTrnSuccess.php" />
+        <input type="hidden" name="responseUrl" id="responseUrl" value="<?= $baseurl; ?>/thirdparty/payment/worldline/skit/meTrnSuccess.php" />
 
         <button type="submit" style="display:block;" id="payAdmissionFee">Pay</button>
     </form>
