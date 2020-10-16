@@ -6,6 +6,8 @@ $data = $adminlib->getPupilSightData();
 $section = $adminlib->getPupilSightSectionFrontendData();
 $campaign = $adminlib->getcampaign();
 $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+$responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
+
 //baseurl = http://testchristacademy.pupilpod.net
 // $app_status = $adminlib->getApp_statusData();
 //  print_r($app_status);die();
@@ -161,14 +163,14 @@ $app_links = array();
         <input type="hidden" name="amount" value="300">
         <input type="hidden" value="INR" id="currencyName" name="currencyName">
         <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
-        <input type="hidden" name="mid" id="mid" value="WL0000000009418">
-        <input type="hidden" name="enckey" id="enckey" value="8339dce5006a6cd76eb23c4aa84d1159">
+        <input type="hidden" name="mid" id="mid" value="WL0000000009424">
+        <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
         <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
         <!-- <input type="hidden" name="name" value="Bikash">
         <input type="hidden" name="email" value="bikash0389@gmail.com">
         <input type="hidden" name="phone" value="9883928942"> -->
 
-        <input type="hidden" name="responseUrl" id="responseUrl" value="<?= $baseurl; ?>/thirdparty/payment/worldline/skit/meTrnSuccess.php" />
+        <input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
 
         <button type="submit" style="display:block;" id="payAdmissionFee">Pay</button>
     </form>

@@ -15,7 +15,7 @@ $resMsgDTO = new ResMsgDTO();
 $reqMsgDTO = new ReqMsgDTO();
 
 //This is the Merchant Key that is used for decryption also
-$enc_key = "8339dce5006a6cd76eb23c4aa84d1159";
+$enc_key = "4d6428bf5c91676b76bb7c447e6546b8";
 
 /* Get the Response from the WorldLine */
 $responseMerchant = $_REQUEST['merchantResponse'];
