@@ -153,16 +153,22 @@ $app_links = array();
         $_SERVER['REQUEST_URI'];
 
     ?>
-    <form id="admissionPay" action="../thirdparty/admissionpayment/razorpay/pay.php" method="post">
+    <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 
+        <input type="hidden" value="" id="OrderId" name="OrderId">
         <input type="hidden" name="amount" value="300">
-        <input type="hidden" name="name" value="Bikash">
+        <input type="hidden" value="INR" id="currencyName" name="currencyName">
+        <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
+        <input type="hidden" name="mid" id="mid" value="WL0000000009418">
+        <input type="hidden" name="enckey" id="enckey" value="8339dce5006a6cd76eb23c4aa84d1159">
+        <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+        <!-- <input type="hidden" name="name" value="Bikash">
         <input type="hidden" name="email" value="bikash0389@gmail.com">
-        <input type="hidden" name="phone" value="9883928942">
-        <input type="hidden" name="payid" value="">
-        <input type="hidden" name="stuid" value="">
-        <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
-        <!-- <button type="submit">Pay</button> -->
+        <input type="hidden" name="phone" value="9883928942"> -->
+
+        <input type="hidden" name="responseUrl" id="responseUrl" value="http://localhost/pupilsight/thirdparty/payment/worldline/skit/meTrnSuccess.php" />
+
+        <button type="submit" style="display:block;" id="payAdmissionFee">Pay</button>
     </form>
     <!-- online Payment By Bikash -->
 
@@ -261,6 +267,19 @@ $app_links = array();
     <script type='text/javascript'>
         //<![CDATA[
         $(window).load(function() {
+
+
+
+            var d = new Date();
+            var n = d.getTime();
+            var orderID = n + '' + randomFromTo(0, 1000);
+
+            document.getElementById("OrderId").value = orderID;
+
+            function randomFromTo(from, to) {
+                return Math.floor(Math.random() * (to - from + 1) + from);
+            }
+
             $(document).ready(function() {
                 $('#txtPhone').blur(function(e) {
                     if (validatePhone('txtPhone')) {
@@ -484,7 +503,7 @@ $app_links = array();
                         success: function(response) {
                             //$("'html, body'").animate({scrollTop: $("#showdiv").offset().top}, 2000);
 
-                            //$("#admissionPay").submit();
+                            $("#admissionPay").submit();
                             $("#progClassDiv").remove();
                             $("#downloadLink")[0].click();
                         }
