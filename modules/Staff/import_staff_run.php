@@ -21,12 +21,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Edited by : Mandeep, Reason : Notification after successful update added
-    if ($_GET['return'] == "success0") {
-        echo "<div class='alert alert-success'>";
-        echo __("Data import was successful");
-        echo '</div>';
+    //Edited by : Mandeep, Reason : added recomended way for displaying notification
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
     }
+
     $page->breadcrumbs->add(__('Staff Import'));
     $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run.php');
 
@@ -102,6 +101,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 }
                 //}
 
+                $page->breadcrumbs->add(__('Staff Import'));
+                $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run.php');
             }
         }
 

@@ -58,11 +58,22 @@ $getselstaff = $StaffGateway->getselectedStaff($criteria);
                 <button id="simplesubmitInvoice" style="height: 34px; float: right;"class=" btn btn-primary">Assign</button>
             </div>
         </div>
-        <div class='row'>
+        <!-- Edited By : Mandeep, Reason : Search filter added to both staff and subjects -->
+        <div class = "row mt-2">
+            <div class = "col-6">
+                <input type="text" id="staff_search" onkeyup="searchStaff()" placeholder="Search for staff..">
+            </div>
+            <div class = "col-6">
+                <input type="text" id="subject_search" onkeyup="searchSubject()" placeholder="Search for subject..">
+            </div>
+        </div>
+        <!-- Edited By : Mandeep, Reason : margin added -->
+        <div class='row mt-2'>
 
             <div class='col-6'>
                 <h3>Staff List</h3>
-                <div>
+                <!-- Edited By : Mandeep, Reason : Search filter added to both staff and subjects -->
+                <div id = "staff_list">
                 <?php
                     foreach($getstaff as $staff){
                         $staffName = $staff['name'];
@@ -78,7 +89,8 @@ $getselstaff = $StaffGateway->getselectedStaff($criteria);
             </div>
             <div class='col-6'>
                 <h3>Subject List</h3>
-                <div>
+                <!-- Edited By : Mandeep, Reason : Search filter added to both staff and subjects -->
+                <div id = "subject_list">
                 <?php
                     foreach($getsub as $sub){
                         $subname = $sub['name'];
@@ -95,5 +107,42 @@ $getselstaff = $StaffGateway->getselectedStaff($criteria);
         </div>
         
     </form>
+    <!-- Edited By : Mandeep, Reason : Search filter added to both staff and subjects -->
+    <script>
+        function searchStaff() {
+            var input, filter, div, div_in, a, i, txtValue;
+            input = document.getElementById("staff_search");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("staff_list");
+            div_in = div.getElementsByTagName("div");
+            for (i = 0; i < div_in.length; i++) {
+                a = div_in[i].getElementsByTagName("label")[0];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    div_in[i].style.display = "";
+                } else {
+                    div_in[i].style.display = "none";
+                }
+            }
+        }
+
+        function searchSubject() {
+            var input, filter, div, div_in, a, i, txtValue;
+            input = document.getElementById("subject_search");
+            filter = input.value.toUpperCase();
+            div = document.getElementById("subject_list");
+            div_in = div.getElementsByTagName("div");
+            for (i = 0; i < div_in.length; i++) {
+                a = div_in[i].getElementsByTagName("label")[0];
+                txtValue = a.textContent || a.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    div_in[i].style.display = "";
+                } else {
+                    div_in[i].style.display = "none";
+                }
+            }
+        }
+    </script>
     <?php
+    
 }
