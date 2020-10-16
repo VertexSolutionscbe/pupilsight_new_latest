@@ -17,7 +17,7 @@ $reqMsgDTO->setMid($_REQUEST['mid']);
 // Merchant Unique order id
 $reqMsgDTO->setOrderId($_REQUEST['OrderId']);
 //Transaction amount in paisa format
-$reqMsgDTO->setTrnAmt(round($_REQUEST['amount'], 2) * 100);
+$reqMsgDTO->setTrnAmt($_REQUEST['amount']);
 //Transaction remarks
 $reqMsgDTO->setTrnRemarks("This txn has to be done ");
 // Merchant transaction type (S/P/R)
@@ -27,11 +27,11 @@ $reqMsgDTO->setEnckey($_REQUEST['enckey']);
 // Merchant transaction currency
 $reqMsgDTO->setTrnCurrency($_REQUEST['currencyName']);
 // Recurring period, if merchant transaction type is R
-//$reqMsgDTO->setRecurrPeriod($_REQUEST['recurPeriod']);
+$reqMsgDTO->setRecurrPeriod($_REQUEST['recurPeriod']);
 // Recurring day, if merchant transaction type is R
-//$reqMsgDTO->setRecurrDay($_REQUEST['recurDay']);
+$reqMsgDTO->setRecurrDay($_REQUEST['recurDay']);
 // No of recurring, if merchant transaction type is R
-//$reqMsgDTO->setNoOfRecurring($_REQUEST['numberRecurring']);
+$reqMsgDTO->setNoOfRecurring($_REQUEST['numberRecurring']);
 // Merchant response URl
 $reqMsgDTO->setResponseUrl($_REQUEST['responseUrl']);
 // Optional additional fields for merchant
@@ -52,13 +52,14 @@ $reqMsgDTO->setAddField8($_REQUEST['addField8']);
 $merchantRequest = "";
 
 $reqMsgDTO = $obj->generateTrnReqMsg($reqMsgDTO);
+
 if ($reqMsgDTO->getStatusDesc() == "Success") {
 	$merchantRequest = $reqMsgDTO->getReqMsg();
 }
 ?>
 
 
-<form action="https://cgt.in.worldline.com/ipg/doMEPayRequest" method="post" name="txnSubmitFrm">
+<form action="https://ipg.in.worldline.com/doMEPayRequest" method="post" name="txnSubmitFrm">
 	<h4 align="center">Redirecting To Payment Please Wait..</h4>
 	<h4 align="center">Please Do Not Press Back Button OR Refresh Page</h4>
 	<input type="hidden" size="200" name="merchantRequest" id="merchantRequest" value="<?php echo $merchantRequest; ?>" />
