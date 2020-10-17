@@ -8,27 +8,28 @@ function convert($fileName, $inFilePath, $outFilePath = NULL, $deleteSourceFile 
 
     $file = $inFilePath . $fileName;
     if (file_exists($file)) {
+        chmod($file, 0777);
         $commandPath = "lowriter --convert-to pdf " . $file;
         $command = escapeshellcmd($commandPath);
+        $convertFilePath = "";
+
+        $highlight = shell_exec($command);
+        $tmpFile = explode("->", $highlight);
+
+        //get filename from terminal
+        $filePath = trim(substr($tmpFile[1], 0, strpos($tmpFile[1], ".pdf"))) . ".pdf";
+
+        if (file_exists($filePath)) {
+            $convertFilePath = $filePath;
+            chmod($convertFilePath, 0777);
+        }
 
         if ($debug) {
-            $highlight = shell_exec($command);
-            print_r($highlight);
-        } else {
-            shell_exec($command);
+            print_r($tmpFile);
         }
 
         $baseFile = pathinfo($fileName);
         $baseFileName = $baseFile["filename"];
-        $convertFilePath = $_SERVER['DOCUMENT_ROOT'] . "/" . $baseFileName . ".pdf";
-
-        try {
-            chmod($convertFilePath, 0777);
-        } catch (Exception $ex) {
-            if ($debug) {
-                print_r($ex);
-            }
-        }
 
         if ($outFilePath) {
             try {
@@ -44,8 +45,9 @@ function convert($fileName, $inFilePath, $outFilePath = NULL, $deleteSourceFile 
                 }
             }
 
-
-            rename($convertFilePath, $outFilePath . $baseFileName . ".pdf");
+            if (file_exists($convertFilePath)) {
+                rename($convertFilePath, $outFilePath . $baseFileName . ".pdf");
+            }
         }
 
         if ($deleteSourceFile) {

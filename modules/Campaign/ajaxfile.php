@@ -59,45 +59,61 @@ if (!empty($file)) {
     $arr = array();
     $files = array();
     foreach ($applicantId as $aid) {
-        $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
+        try {
+            $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
 
-        $sqla = "select application_id FROM wp_fluentform_submissions  where id = " . $aid . " ";
-        $resulta = $connection2->query($sqla);
-        $applicationData = $resulta->fetch();
+            $sqla = "select application_id FROM wp_fluentform_submissions  where id = " . $aid . " ";
+            $resulta = $connection2->query($sqla);
+            $applicationData = $resulta->fetch();
 
-        $sql = "select field_name, field_value FROM wp_fluentform_entry_details  where submission_id = " . $aid . " ";
-        $result = $connection2->query($sql);
-        $rowdata = $result->fetchAll();
-        foreach ($rowdata as $key => $value) {
-            $arr[$value['field_name']] = $value['field_value'];
-        }
+            $sql = "select field_name, field_value FROM wp_fluentform_entry_details  where submission_id = " . $aid . " ";
+            $result = $connection2->query($sql);
+            $rowdata = $result->fetchAll();
 
-        foreach ($arrHeader as $k => $ah) {
-            if (array_key_exists($ah, $arr)) {
-                if ($ah == 'file-upload' || $ah == 'image-upload') {
-                    $attrValue = $arr[$ah];
-                    $phpword->setImageValue($ah, $attrValue);
-                } else {
-                    $phpword->setValue($ah, $arr[$ah]);
+            foreach ($rowdata as $key => $value) {
+                try {
+                    $arr[$value['field_name']] = $value['field_value'];
+                } catch (Exception $ex) {
                 }
-            } else {
-                $phpword->setValue($ah, '');
             }
-        }
-        // echo '<pre>';
-        // print_r($newarr);
-        // echo '</pre>';
-        // die();
-        if (!empty($applicationData['application_id'])) {
-            $fname = $applicationData['application_id'];
-        } else {
-            $fname = $aid;
-        }
 
-        $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/" . $fname . ".docx";
-        $files_word[] = $fname . ".docx";
-        $files[] = $fname . ".pdf";
-        $phpword->saveAs($savedocsx);
+            foreach ($arrHeader as $k => $ah) {
+                if (array_key_exists($ah, $arr)) {
+                    if ($ah == 'file-upload' || $ah == 'image-upload') {
+                        $attrValue = $arr[$ah];
+                        try {
+                            $phpword->setImageValue($ah, $attrValue);
+                        } catch (Exception $ex) {
+                        }
+                    } else {
+                        try {
+                            $phpword->setValue($ah, $arr[$ah]);
+                        } catch (Exception $ex) {
+                        }
+                    }
+                } else {
+                    try {
+                        $phpword->setValue($ah, '');
+                    } catch (Exception $ex) {
+                    }
+                }
+            }
+            // echo '<pre>';
+            // print_r($newarr);
+            // echo '</pre>';
+            // die();
+            if (!empty($applicationData['application_id'])) {
+                $fname = $applicationData['application_id'];
+            } else {
+                $fname = $aid;
+            }
+
+            $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/" . $fname . ".docx";
+            $files_word[] = $fname . ".docx";
+            $files[] = $fname . ".pdf";
+            $phpword->saveAs($savedocsx);
+        } catch (Exception $ex) {
+        }
     }
 
     // echo '<pre>';

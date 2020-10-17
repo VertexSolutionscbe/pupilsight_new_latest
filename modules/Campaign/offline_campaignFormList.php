@@ -55,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     //  echo $formid['form_id'];
     //  die();
     $formId = $formid['offline_form_id'];
+    
 
     $search = isset($_GET['search']) ? $_GET['search'] : '';
 
@@ -75,8 +76,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     echo '(' . $formid['name'] . ')';
     echo '</h2>';
 
-    echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" ><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
+    echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" ><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label><a id="onlineClick" style="display:none; margin-bottom:10px;" href="?q=/modules/Campaign/campaignFormList.php&id=' . $id . '"   class=" btn btn-primary" >Online Submitted List</a>';
 
+    if(!empty($formId)){
     echo "<a style='display:none;' href='' class='thickbox' id='clickStateRemark'>Remark</a>";
     echo "<input type='hidden' id='tid' value=" . $tid . " ><input type='hidden' id='kountPopOpen' value=''><a style='display:none' href='fullscreen.php?q=/modules/Campaign/view_receipt.php&tid=" . $tid . "&width=600px'  class='thickbox' id='getReceiptPopup'>Receipt</a>";
 
@@ -85,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     echo "<div style='height:25px; margin-top:5px;'><div class='float-right mb-2'>
     <a style='display:none; ' href='" . $_SESSION[$guid]['absoluteURL'] . "/fullscreen.php?q=/modules/Campaign/fee_make_payment.php&cid=" . $id . "' class='thickbox btn btn-primary' id='clickAdmissionFeePayment'>Fee Payment</a>
     <a style='display:none; margin-bottom:10px;'  class='btn btn-primary' id='admissionFeePayment'>Fee Payment</a>
-    &nbsp;&nbsp;<a id='onlineClick' style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/campaignFormList.php&id=" . $id . "'   class=' btn btn-primary' >Online Submitted List</a>
+    &nbsp;&nbsp;
     &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_formopen.php&id=" . $id . "'   class=' btn btn-primary' id=''>Apply</a>";
 
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' data-hrf='?q=/modules/Campaign/convert_formopen.php&id=" . $id . "' title='Convert Applicant' class='btn btn-primary' id='convertApplicant'>Convert</a> <a style='display:none;margin-bottom:10px;' href='?q=/modules/Campaign/convert_formopen.php&id=" . $id . "'   class=' btn btn-primary' id='convertApplicantClick'>Apply</a>";
@@ -352,6 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     // print_r($dataSet);
     // echo '</pre>';
     echo $table->render($dataSet);
+}
 }
 ?>
 

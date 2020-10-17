@@ -89,27 +89,27 @@ $app_links = array();
                                     <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="1000" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
                                     </iframe>
 
-                                
-                            <?php if(!empty($campaign_byid['fn_fee_structure_id'])) { ?>
-                            <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
-    
-                                <input type="hidden" value="" id="OrderId" name="OrderId">
-                                <input type="hidden" name="amount" value="30000">
-                                <input type="hidden" value="INR" id="currencyName" name="currencyName">
-                                <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
-                                <input type="hidden" name="mid" id="mid" value="WL0000000009424">
-                                <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
-                                <input type="hidden" name="campaignid" value="<?php echo $url_id;?>">
-                                <!-- <input type="hidden" name="name" value="Bikash">
+
+                                    <?php if (!empty($campaign_byid['fn_fee_structure_id'])) { ?>
+                                        <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
+
+                                            <input type="hidden" value="" id="OrderId" name="OrderId">
+                                            <input type="hidden" name="amount" value="100">
+                                            <input type="hidden" value="INR" id="currencyName" name="currencyName">
+                                            <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
+                                            <input type="hidden" name="mid" id="mid" value="WL0000000009424">
+                                            <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+                                            <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                            <!-- <input type="hidden" name="name" value="Bikash">
                                 <input type="hidden" name="email" value="bikash0389@gmail.com">
                                 <input type="hidden" name="phone" value="9883928942"> -->
 
-                                <input type="hidden" name="responseUrl" id="responseUrl"value="<?php echo $responseLink; ?>" />
-                                
-                                <button type="submit" class="btnSubmit" style="display:none;" id="payAdmissionFee">Pay</button>
-                            </form>
-                            <?php } ?>
-                            </div>
+                                            <input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
+
+                                            <button type="submit" class="btnSubmit" style="display:none;" id="payAdmissionFee">Pay</button>
+                                        </form>
+                                    <?php } ?>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -177,7 +177,7 @@ $app_links = array();
         $_SERVER['REQUEST_URI'];
 
     ?>
-    
+
     <!-- online Payment By Bikash -->
 
     <!-- #colophon -->
