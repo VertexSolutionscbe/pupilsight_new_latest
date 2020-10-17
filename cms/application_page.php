@@ -6,7 +6,7 @@ $data = $adminlib->getPupilSightData();
 $section = $adminlib->getPupilSightSectionFrontendData();
 $campaign = $adminlib->getcampaign();
 $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-$responseLink = $base_url . "/pupilsight/thirdparty/payment/worldline/skit/meTrnSuccess.php";
+$responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
 
 //baseurl = http://testchristacademy.pupilpod.net
 // $app_status = $adminlib->getApp_statusData();

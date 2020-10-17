@@ -4,7 +4,7 @@ session_start();
 // require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
 
 // $file = $_SERVER["DOCUMENT_ROOT"]."/thirdparty/phpword/templates/receipt_1.docx";
-require_once $_SERVER["DOCUMENT_ROOT"] . '/pupilsight/vendor/phpoffice/phpword/bootstrap.php';
+require_once $_SERVER["DOCUMENT_ROOT"] . '/vendor/phpoffice/phpword/bootstrap.php';
 
 $fn_fees_receipt_template_id = $_GET['fid'];
 $sqlpt = "SELECT path, filename FROM fn_fees_receipt_template_master WHERE id = " . $fn_fees_receipt_template_id . " ";
@@ -39,7 +39,7 @@ if (!empty($fee_items)) {
         //print_r($ex);
     }
 }
-$savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/pupilsight/public/receipts/" . $dts["transactionId"] . ".docx";
+$savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/receipts/" . $dts["transactionId"] . ".docx";
 //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
 //echo $savedocsx;
 $phpword->saveAs($savedocsx);

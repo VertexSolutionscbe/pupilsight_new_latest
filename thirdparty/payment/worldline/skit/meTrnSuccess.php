@@ -4,7 +4,7 @@
  * This Is the Kit File To Be included For Transaction Request/Response
  */
 include 'AWLMEAPI.php';
-include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight/pupilsight.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight.php';
 
 //create an Object of the above included class
 $obj = new AWLMEAPI();
