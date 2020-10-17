@@ -89,7 +89,6 @@ $app_links = array();
                                     <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="1000" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
                                     </iframe>
 
-
                                     <?php if (!empty($campaign_byid['fn_fee_structure_id'])) { ?>
                                         <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 
