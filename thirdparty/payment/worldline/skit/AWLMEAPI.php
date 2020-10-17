@@ -472,7 +472,3 @@ class AWLMEAPI
 
 
     }
-
-
-
-?>

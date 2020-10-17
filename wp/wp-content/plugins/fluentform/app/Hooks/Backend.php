@@ -61,7 +61,7 @@ $app->addAction('wp_dashboard_setup', function () {
     if (!$roleManager->currentUserFormFormCapability()) {
         return;
     }
-    wp_add_dashboard_widget('fluenform_stat_widget', __('Fluent Forms Latest Form Submissions', 'fluentform'), function () {
+    wp_add_dashboard_widget('fluenform_stat_widget', __('Forms Latest Form Submissions', 'fluentform'), function () {
         (new \FluentForm\App\Modules\DashboardWidgetModule)->showStat();
     }, 10, 1);
 });

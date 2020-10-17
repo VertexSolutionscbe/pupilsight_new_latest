@@ -14,19 +14,19 @@ $val = $_POST['val'];
 
 if ($type == 'remarkDetailsUpdate') {
     $remarkid = $_POST['remarkid'];
-    if($remarkid && $val){
-        $sq = "update acRemarks SET description='".$val."' where id=".$remarkid."";
+    if ($remarkid && $val) {
+        $sq = "update acRemarks SET description='" . $val . "' where id=" . $remarkid . "";
         //echo $sq;
         $connection2->query($sq);
         echo "success";
-    }else{
+    } else {
         echo "error";
     }
 }
 
 if ($type == 'getDescriptiveSubject') {
-     $pupilsightProgramID=$_POST['pupilsightProgramID'];
-    $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightProgramID ='".$pupilsightProgramID."' AND pupilsightYearGroupID ='".$val."' AND  di_mode NOT IN ('FREE_FORM','NO_DI') order by subject_display_name asc ";
+    $pupilsightProgramID = $_POST['pupilsightProgramID'];
+    $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightProgramID ='" . $pupilsightProgramID . "' AND pupilsightYearGroupID ='" . $val . "' AND  di_mode NOT IN ('FREE_FORM','NO_DI') order by subject_display_name asc ";
     $result = $connection2->query($sq);
     $rowdata = $result->fetchAll();
     $returndata = '<option value="">Select Subject</option>';
@@ -39,8 +39,8 @@ if ($type == 'getDescriptiveSubject') {
 if ($type == 'getDescriptiveSkill') {
     $pupilsightYearGroupID = $_POST["pupilsightYearGroupID"];
     $pupilsightDepartmentID = $_POST["pupilsightDepartmentID"];
-    if($pupilsightYearGroupID && $pupilsightDepartmentID){
-        $sq = "select skill_id, skill_display_name from subjectSkillMapping where pupilsightYearGroupID ='".$pupilsightYearGroupID."' and pupilsightDepartmentID ='".$pupilsightDepartmentID."' order by skill_display_name asc";
+    if ($pupilsightYearGroupID && $pupilsightDepartmentID) {
+        $sq = "select skill_id, skill_display_name from subjectSkillMapping where pupilsightYearGroupID ='" . $pupilsightYearGroupID . "' and pupilsightDepartmentID ='" . $pupilsightDepartmentID . "' order by skill_display_name asc";
         $result = $connection2->query($sq);
         $rowdata = $result->fetchAll();
         $returndata = '<option value="">Select Skill</option>';
@@ -112,13 +112,13 @@ if ($type == 'getAjaxDiscountCategory') {
     $sqlp = 'SELECT id,name FROM fee_category WHERE status="1"';
     $resultp = $connection2->query($sqlp);
     $rowdataprog = $resultp->fetchAll();
-    $fee_category=array();  
-    $fee_category2=array();  
-    $fee_category1=array(''=>'Select fee category');
+    $fee_category = array();
+    $fee_category2 = array();
+    $fee_category1 = array('' => 'Select fee category');
     foreach ($rowdataprog as $dt) {
-    $fee_category2[$dt['id']] = $dt['name'];
+        $fee_category2[$dt['id']] = $dt['name'];
     }
-    $fee_category= $fee_category1 + $fee_category2;
+    $fee_category = $fee_category1 + $fee_category2;
 
     $feeItemData = array();
     foreach ($feeItem as $dt) {
@@ -128,11 +128,11 @@ if ($type == 'getAjaxDiscountCategory') {
     $data = '<tr id="seatdiv" class="seatdiv fixedfine flex flex-col sm:flex-row justify-between content-center p-0 deltr' . $aid . '"><td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative">
-            <select id="cat_name['.$aid.']" name="cat_name['.$aid.']" class="w-full txtfield">';
-            foreach ($fee_category as $k => $st) {
-            $data .= '<option value="' . $k . '">' . $st . '</option>';
-            }
-            $data .= '</select>
+            <select id="cat_name[' . $aid . ']" name="cat_name[' . $aid . ']" class="w-full txtfield">';
+    foreach ($fee_category as $k => $st) {
+        $data .= '<option value="' . $k . '">' . $st . '</option>';
+    }
+    $data .= '</select>
             </div></div>
         </div></td>
         <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
@@ -261,13 +261,14 @@ if ($type == 'delFeeStructureItem') {
 }
 
 if ($type == 'addstudentidInSession') {
-    $val=$_POST['val'];
+    $val = $_POST['val'];
     $session->forget(['student_ids']);
     $session->set('student_ids', $val);
 }
- if($type=='copyfeeItemSession'){ 
-     $session->forget(['fee_items']);
-    $session->set('fee_items', $val);}
+if ($type == 'copyfeeItemSession') {
+    $session->forget(['fee_items']);
+    $session->set('fee_items', $val);
+}
 
 if ($type == 'addtransactionidInSession') {
     $session->forget(['transaction_ids']);
@@ -350,7 +351,7 @@ if ($type == 'filterstudentbyclass') {
     $students = $results->fetchAll();
     //     echo '<pre>';
     // echo $students;
-    
+
 
     $data = ' <td class="flex flex-col flex-grow justify-center -mb-1 sm:mb-0  px-2 border-b-0 sm:border-b border-t-0 ">
         <div class="input-group stylish-input-group">
@@ -393,7 +394,7 @@ if ($type == 'filterstudentbyclass') {
             if (!empty($rowdatafees)) {
                 $feesStructure = $rowdatafees['fsid'];
 
-                echo '<input type="hidden" id="pupilsightPersonID[structure][' . $cl['pupilsightPersonID'] . ']" name="pupilsightPersonID[structure][' . $cl['pupilsightPersonID'] . ']" class="w-full mbtm1" value="'.$feesStructure.'">';
+                echo '<input type="hidden" id="pupilsightPersonID[structure][' . $cl['pupilsightPersonID'] . ']" name="pupilsightPersonID[structure][' . $cl['pupilsightPersonID'] . ']" class="w-full mbtm1" value="' . $feesStructure . '">';
                 /*
                 $feesStructure = array();
                 $feesStructure1 = array('' => 'Select Fee Structure');
@@ -426,23 +427,23 @@ if ($type == 'filterstudentbyclass') {
 if ($type == 'invoiceFeeItem') {
     $id = $_POST['val'];
     $sid = $_POST['sid'];
-    $std_query="SELECT fee_category_id FROM `pupilsightPerson` WHERE `pupilsightPersonID` = '".$sid."'";
+    $std_query = "SELECT fee_category_id FROM `pupilsightPerson` WHERE `pupilsightPersonID` = '" . $sid . "'";
     $std_exe = $connection2->query($std_query);
-    $std_data=$std_exe->fetch();
-    $fee_category_id=$std_data['fee_category_id'];
+    $std_data = $std_exe->fetch();
+    $fee_category_id = $std_data['fee_category_id'];
     $sqli = 'SELECT e.pupilsightPersonID,a.*,a.id as itemid, b.*, b.id as ifid, b.name as feeitemname, c.id AS invoiceid, c.transport_schedule_id, d.format, e.invoice_no as stu_invoice_no, f.item_type, f.name, f.min_invoice, f.max_invoice, f.amount_in_percent, f.amount_in_number, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype  FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_items AS b ON a.fn_fee_item_id = b.id LEFT JOIN fn_fee_invoice AS c ON a.fn_fee_invoice_id = c.id LEFT JOIN fn_fee_series AS d ON c.inv_fn_fee_series_id = d.id LEFT JOIN fn_fee_invoice_student_assign AS e ON c.id = e.fn_fee_invoice_id  LEFT JOIN fn_fee_discount_item as f ON a.fn_fee_item_id = f.fn_fee_item_id LEFT JOIN trans_route_assign AS asg ON e.pupilsightPersonID = asg.pupilsightPersonID WHERE a.fn_fee_invoice_id IN (' . $id . ') AND e.pupilsightPersonID = ' . $sid . ' GROUP BY a.id';
     $resulti = $connection2->query($sqli);
     $feeItem = $resulti->fetchAll();
 
     $data = '';
-  
+
     foreach ($feeItem as $fI) {
-         $discountamt=0;
-         $discount=0;
-         $amtpaid = 0;
-         $amtpending = 0;
-         $paystatus = '';
-        $sql_dis = "SELECT discount FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$sid."  AND item_id='".$fI['itemid']."' ";
+        $discountamt = 0;
+        $discount = 0;
+        $amtpaid = 0;
+        $amtpending = 0;
+        $paystatus = '';
+        $sql_dis = "SELECT discount FROM fn_fee_item_level_discount WHERE pupilsightPersonID = " . $sid . "  AND item_id='" . $fI['itemid'] . "' ";
         $result_dis = $connection2->query($sql_dis);
         $special_dis = $result_dis->fetch();
         if (!empty($fI['transport_schedule_id'])) {
@@ -473,20 +474,20 @@ if ($type == 'invoiceFeeItem') {
 
         $resultchk = $connection2->query($sqlchk);
         $itemchk = $resultchk->fetch();
-       
+
 
         $amtpaid = $itemchk['total_amount_collection'];
         $amtpending = $itemchk['total_amount'] - $itemchk['total_amount_collection'];
-        if($amtpending){
+        if ($amtpending) {
             $payamount = $amtpending;
         } else {
             $payamount = $totalamount;
         }
-        if($itemchk['status'] == '1'){
+        if ($itemchk['status'] == '1') {
             $paystatus = 'Paid';
             $cls = '';
             $checked = 'checked disabled';
-        } else if($itemchk['status'] == '2') {
+        } else if ($itemchk['status'] == '2') {
             $paystatus = 'Partial Paid';
             $cls = 'selFeeItem';
             $checked = '';
@@ -498,7 +499,7 @@ if ($type == 'invoiceFeeItem') {
         // $inid = '000'.$id;
         // $invno = str_replace("0001",$inid,$fI['format']);
         //echo $fI['name'];
-        if($fee_category_id==$fI['name']){
+        if ($fee_category_id == $fI['name']) {
             if ($fI['item_type'] == 'Fixed') {
                 $discount = $fI['amount_in_number'];
                 $discountamt = $fI['amount_in_number'];
@@ -506,9 +507,9 @@ if ($type == 'invoiceFeeItem') {
                 $discount = $fI['amount_in_percent'] . '%';
                 $discountamt = ($fI['amount_in_percent'] / 100) * $totalamount;
             }
-        } 
-        if(!empty($special_dis['discount'])){
-          $discountamt+=$special_dis['discount'];
+        }
+        if (!empty($special_dis['discount'])) {
+            $discountamt += $special_dis['discount'];
         }
         $amtdiscount = $totalamount - $discountamt;
 
@@ -549,14 +550,14 @@ if ($type == 'invoiceFeeItem') {
             ' . $amtdiscount . '   
             </td>
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
-                '.$amtpaid.'
+                ' . $amtpaid . '
             </td>
              
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
-               '.$amtpending.'
+               ' . $amtpending . '
             </td>
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
-               '.$paystatus.'
+               ' . $paystatus . '
             </td>
              
         </tr>';
@@ -569,37 +570,37 @@ if ($type == 'searchStudentInvoice') {
     $pupilsightProgramID = $_POST['pupilsightProgramID'];
     $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
     $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
-  
-  
-    if(isset($_POST['pupilsightRollGroupID'])){
+
+
+    if (isset($_POST['pupilsightRollGroupID'])) {
         $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
-        } else {
-            $pupilsightRollGroupID='';
-        }
-        if(isset($_POST['search'])){
+    } else {
+        $pupilsightRollGroupID = '';
+    }
+    if (isset($_POST['search'])) {
         $search = $_POST['search'];
-        } else {
-            $search='';
-        }
+    } else {
+        $search = '';
+    }
 
     $sqli = 'SELECT a.pupilsightPersonID, a.admission_no, p.name, a.officialName,d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON b.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE a.pupilsightRoleIDPrimary = "003" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND b.pupilsightProgramID = "' . $pupilsightProgramID . '" AND b.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ';
-    if($pupilsightRollGroupID!=""){
-     $sqli.=' AND b.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ';
+    if ($pupilsightRollGroupID != "") {
+        $sqli .= ' AND b.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ';
     }
-    if($search!=""){
-      $sqli.='  AND a.officialName LIKE "%' . $search . '%" ';
+    if ($search != "") {
+        $sqli .= '  AND a.officialName LIKE "%' . $search . '%" ';
     }
     $resulti = $connection2->query($sqli);
     $students = $resulti->fetchAll();
     $data = '';
     foreach ($students as $k => $dt) {
         $sqls = 'SELECT p.officialName FROM pupilsightFamilyRelationship as r LEFT JOIN pupilsightPerson as p
-        ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2="'.$dt['pupilsightPersonID'].'" AND r.relationship="Father"';
+        ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2="' . $dt['pupilsightPersonID'] . '" AND r.relationship="Father"';
         $results = $connection2->query($sqls);
         $parents = $results->fetch();
-         
+
         $sqls1 = 'SELECT p.officialName FROM pupilsightFamilyRelationship as r LEFT JOIN pupilsightPerson as p
-        ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2="'.$dt['pupilsightPersonID'].'" AND r.relationship="Mother"';
+        ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2="' . $dt['pupilsightPersonID'] . '" AND r.relationship="Mother"';
         $results1 = $connection2->query($sqls1);
         $parents1 = $results1->fetch();
 
@@ -629,12 +630,12 @@ if ($type == 'searchStudent') {
     $data = '';
     foreach ($students as $k => $dt) {
         $sqls = 'SELECT p.officialName FROM pupilsightFamilyRelationship as r LEFT JOIN pupilsightPerson as p
-        ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2="'.$dt['pupilsightPersonID'].'" AND r.relationship="Father"';
+        ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2="' . $dt['pupilsightPersonID'] . '" AND r.relationship="Father"';
         $results = $connection2->query($sqls);
         $parents = $results->fetch();
-         
+
         $sqls1 = 'SELECT p.officialName FROM pupilsightFamilyRelationship as r LEFT JOIN pupilsightPerson as p
-        ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2="'.$dt['pupilsightPersonID'].'" AND r.relationship="Mother"';
+        ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2="' . $dt['pupilsightPersonID'] . '" AND r.relationship="Mother"';
         $results1 = $connection2->query($sqls1);
         $parents1 = $results1->fetch();
 
@@ -731,7 +732,7 @@ if ($type == 'getClass_new') {
 if ($type == 'getSection') {
     $cid = $val;
     $pid = $_POST['pid'];
-   $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" GROUP BY a.pupilsightRollGroupID';
+    $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" GROUP BY a.pupilsightRollGroupID';
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
@@ -749,11 +750,11 @@ if ($type == 'changestaffstatus') {
 }
 
 
-if($type == 'transStatusChange'){
+if ($type == 'transStatusChange') {
     $transid = $val;
     $status = $_POST['status'];
     $tid = explode(',', $transid);
-    foreach($tid as $t){
+    foreach ($tid as $t) {
         $data1 = array('payment_status' => $status, 'id' => $t);
         $sql1 = 'UPDATE fn_fees_collection SET payment_status=:payment_status WHERE id=:id';
         $result1 = $connection2->prepare($sql1);
@@ -761,19 +762,18 @@ if($type == 'transStatusChange'){
     }
 }
 
-if($type == 'deactiveCounter'){
+if ($type == 'deactiveCounter') {
     $counterid = $val;
     $data1 = array('status' => '2', 'id' => $counterid);
     $sql1 = 'UPDATE fn_fees_counter SET status=:status WHERE id=:id';
     $result1 = $connection2->prepare($sql1);
     $result1->execute($data1);
     $session->forget(['counterid']);
-
 }
 
-if($type == 'deleteStudentRoutes'){
-    $ids = explode(',',$val);
-    foreach($ids as $st){
+if ($type == 'deleteStudentRoutes') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
         $data2 = array('pupilsightPersonID' => $st);
         $sql2 = 'DELETE FROM trans_route_assign WHERE pupilsightPersonID=:pupilsightPersonID';
         $result2 = $connection2->prepare($sql2);
@@ -1052,27 +1052,27 @@ if ($type == 'assigncoresubtoclass') {
     $subjects = $_POST['subjects'];
     $pgrm_val = $_POST['pgrm_val'];
     $class_val = $_POST['class_val'];
-    $clses = explode(',',$class_val); 
+    $clses = explode(',', $class_val);
     $subs = explode(',', $subjects);
-    if(!empty($clses) && !empty($subs) && !empty($pgrm_val)){
-    foreach ($clses as $cl) {
-    foreach ($subs as $sb) {
-        $sqlprev = 'SELECT * FROM assign_core_subjects_toclass WHERE pupilsightProgramID = ' . $pgrm_val . ' AND pupilsightYearGroupID = ' . $cl . '  AND pupilsightDepartmentID=' . $sb . ' ';
-        $resultprev = $connection2->query($sqlprev);
-        $prevData = $resultprev->fetchAll();
-        if (count($prevData) < 1) {
-        $cuid = $_SESSION[$guid]['pupilsightPersonID'];
-        $data1 = array('pupilsightProgramID' => $pgrm_val, 'pupilsightYearGroupID' => $cl, 'pupilsightDepartmentID' => $sb);
-        $sql1 = "INSERT INTO assign_core_subjects_toclass SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightDepartmentID=:pupilsightDepartmentID";
-        $result = $connection2->prepare($sql1);
-        $result->execute($data1);
+    if (!empty($clses) && !empty($subs) && !empty($pgrm_val)) {
+        foreach ($clses as $cl) {
+            foreach ($subs as $sb) {
+                $sqlprev = 'SELECT * FROM assign_core_subjects_toclass WHERE pupilsightProgramID = ' . $pgrm_val . ' AND pupilsightYearGroupID = ' . $cl . '  AND pupilsightDepartmentID=' . $sb . ' ';
+                $resultprev = $connection2->query($sqlprev);
+                $prevData = $resultprev->fetchAll();
+                if (count($prevData) < 1) {
+                    $cuid = $_SESSION[$guid]['pupilsightPersonID'];
+                    $data1 = array('pupilsightProgramID' => $pgrm_val, 'pupilsightYearGroupID' => $cl, 'pupilsightDepartmentID' => $sb);
+                    $sql1 = "INSERT INTO assign_core_subjects_toclass SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightDepartmentID=:pupilsightDepartmentID";
+                    $result = $connection2->prepare($sql1);
+                    $result->execute($data1);
+                }
+            }
         }
+        echo "success";
+    } else {
+        echo "Some required parametters is missing";
     }
-    }
-    echo "success";
-   } else {
-       echo "Some required parametters is missing";
-   }
 }
 
 
@@ -1194,13 +1194,13 @@ if ($type == 'display_multiple_attend_session') {
     $sess_cnt = $_POST['val'];
     $data = '';
     $s = '1';
-    $data='<table align="center" class="table" border="1"><tr><td class=" ">Session No</td><td class=" ">Session Name</td></tr>';
-   
-    for($i=0;$i<$sess_cnt;$i++){
+    $data = '<table align="center" class="table" border="1"><tr><td class=" ">Session No</td><td class=" ">Session Name</td></tr>';
+
+    for ($i = 0; $i < $sess_cnt; $i++) {
         $data .= '<tr id="" class="  deltr' . $i . '">
-            <td class="text_centr ">'. $s.'</td>     
+            <td class="text_centr ">' . $s . '</td>     
             <td class="">
-                <input type="hidden" name="session_no[' . $s . ']" value="'.$s.'">
+                <input type="hidden" name="session_no[' . $s . ']" value="' . $s . '">
                 <input type="text" class="sessionName" name="session_name[' . $s . ']" value="">
             </td>
         </tr>';
@@ -1218,15 +1218,15 @@ if ($type == 'getSectionTimeTableWise') {
     $data = '<option value="">Select Section</option>';
     if (!empty($sections)) {
         foreach ($sections as $k => $cl) {
-            $sqlchk = 'SELECT pupilsightTTID FROM pupilsightTT WHERE find_in_set("'.$cl['pupilsightRollGroupID'].'",pupilsightRollGroupIDList) <> 0 AND pupilsightYearGroupIDList = "'.$cid.'"';
+            $sqlchk = 'SELECT pupilsightTTID FROM pupilsightTT WHERE find_in_set("' . $cl['pupilsightRollGroupID'] . '",pupilsightRollGroupIDList) <> 0 AND pupilsightYearGroupIDList = "' . $cid . '"';
             $resultchk = $connection2->query($sqlchk);
             $chksec = $resultchk->fetch();
-            if(empty($chksec['pupilsightTTID'])){
+            if (empty($chksec['pupilsightTTID'])) {
                 $data .= '<option value="' . $cl['pupilsightRollGroupID'] . '">' . $cl['name'] . '</option>';
             }
         }
     }
-}        
+}
 
 
 if ($type == 'getStudent') {
@@ -1250,11 +1250,11 @@ if ($type == 'getMultiStudent') {
     $pupilsightSchoolYearID = $_POST['yid'];
     $pupilsightProgramID = $_POST['pid'];
     $pupilsightYearGroupID = $_POST['cid'];
-    $pupilsightRollGroupID=$_POST['sid'];
+    $pupilsightRollGroupID = $_POST['sid'];
     // $clid = explode('-',$cd);
     //     $pupilsightProgramID = $clid[1];
     //     $pupilsightYearGroupID = $clid[0];   
-  
+
     // if(!empty($pupilsightRollGroupID)){
     //     $sql.='AND a.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '"';
     // }
@@ -1262,66 +1262,65 @@ if ($type == 'getMultiStudent') {
     //$sql. = 'GROUP BY b.pupilsightPersonID';
 
     //WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND a.pupilsightRollGroupID = "' . $cid . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
-   
-    if (is_array($pupilsightYearGroupID) && (empty($pupilsightRollGroupID)) ){
+
+    if (is_array($pupilsightYearGroupID) && (empty($pupilsightRollGroupID))) {
         $data = '<option value="">Select Student</option>';
-        foreach ($pupilsightYearGroupID as $cid){        
-                $sql = 'SELECT a.*, b.officialName FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
-            
+        foreach ($pupilsightYearGroupID as $cid) {
+            $sql = 'SELECT a.*, b.officialName FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+
             $result = $connection2->query($sql);
-    
-   
+
+
             $sections = $result->fetchAll();
-           
+
             if (!empty($sections)) {
                 foreach ($sections as $k => $cl) {
                     $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'] . '</option>';
                 }
             }
         }
-            echo $data;
-    }else if(!empty($pupilsightRollGroupID)){ 
-       
-$pupilsightRollGroupIDs = explode(',',$pupilsightRollGroupID);
-//print_r(count($pupilsightRollGroupIDs));die();
-$data = '<option value="">Select Student</option>';
-        foreach ($pupilsightRollGroupIDs as $seid){
-           
+        echo $data;
+    } else if (!empty($pupilsightRollGroupID)) {
+
+        $pupilsightRollGroupIDs = explode(',', $pupilsightRollGroupID);
+        //print_r(count($pupilsightRollGroupIDs));die();
+        $data = '<option value="">Select Student</option>';
+        foreach ($pupilsightRollGroupIDs as $seid) {
+
             $csid = explode('-', $seid);
             $sid = $csid[0];
-            $cid = $csid[1];      
-         
+            $cid = $csid[1];
+
             $sql = 'SELECT a.*, b.officialName FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightRollGroupID = "' . $sid . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
 
             $result = $connection2->query($sql);
-    
-   
+
+
             $sections = $result->fetchAll();
-           
+
             //print_r();
             if (!empty($sections)) {
                 foreach ($sections as $k => $cl) {
                     $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'] . '</option>';
                 }
             }
-            
         }
-        
+
         echo $data;
-    }else{
+    } else {
         $sql = 'SELECT a.*, b.officialName FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID ';
-        if(!empty($pupilsightSchoolYearID)){
-                    $sql.='WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '"';
-                }
-        if(!empty($pupilsightProgramID)){
-            $sql.=' AND a.pupilsightProgramID = "' . $pupilsightProgramID . '"';
+        if (!empty($pupilsightSchoolYearID)) {
+            $sql .= 'WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '"';
         }
-        if(!empty($pupilsightYearGroupID)){
-            $sql.=' AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '"';
+        if (!empty($pupilsightProgramID)) {
+            $sql .= ' AND a.pupilsightProgramID = "' . $pupilsightProgramID . '"';
+        }
+        if (!empty($pupilsightYearGroupID)) {
+            $sql .= ' AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '"';
         }
         $result = $connection2->query($sql);
-    
-   
+
+
         $sections = $result->fetchAll();
         $data = '<option value="">Select Student</option>';
         if (!empty($sections)) {
@@ -1330,30 +1329,26 @@ $data = '<option value="">Select Student</option>';
             }
         }
         echo $data;
-
     }
-
-    
- 
 }
-if($type == 'attendancePeriod'){
+if ($type == 'attendancePeriod') {
     $session->forget(['period_ids']);
-    $session->set('period_ids', $val);   
+    $session->set('period_ids', $val);
 }
 
-if($type == 'addSubjectSkills'){
+if ($type == 'addSubjectSkills') {
     $skid = $val;
-    $subid = explode(',', $_POST['subid']); 
-    $skillname = explode(',', $_POST['skillname']);  
+    $subid = explode(',', $_POST['subid']);
+    $skillname = explode(',', $_POST['skillname']);
     $pupilsightSchoolYearID = $_POST['academicId'];
     $pupilsightProgramID = $_POST['programId'];
     $classId = $_POST['classId'];
-    foreach($subid as $sub){
+    foreach ($subid as $sub) {
         $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $classId, 'pupilsightDepartmentID' => $sub);
         $sql1 = 'DELETE FROM subjectSkillMapping WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID';
         $result1 = $connection2->prepare($sql1);
         $result1->execute($data1);
-        foreach($skillname as $skname){
+        foreach ($skillname as $skname) {
             $skillidname = explode('-', $skname);
             $sid = $skillidname[0];
             $name = $skillidname[1];
@@ -1365,13 +1360,13 @@ if($type == 'addSubjectSkills'){
     }
 }
 
-if($type == 'subjectToClassId'){
+if ($type == 'subjectToClassId') {
     $session->forget(['subjectToClassId']);
-    $session->set('subjectToClassId', $val);   
+    $session->set('subjectToClassId', $val);
 }
 
-if($type == 'getSubjectSkills'){
-    $subid = $val; 
+if ($type == 'getSubjectSkills') {
+    $subid = $val;
     $pupilsightSchoolYearID = $_POST['academicId'];
     $pupilsightProgramID = $_POST['programId'];
     $classId = $_POST['classId'];
@@ -1380,60 +1375,57 @@ if($type == 'getSubjectSkills'){
     $result = $connection2->query($sql);
     $subskills = $result->fetchAll();
     $data = '';
-    foreach($subskills as $k=>$subsk){
-        $sqls = 'SELECT * FROM subjectSkillMapping WHERE skill_id = '.$subsk['id'].' AND pupilsightSchoolYearID= '.$pupilsightSchoolYearID.' AND pupilsightProgramID= '.$pupilsightProgramID.' AND pupilsightYearGroupID= '.$classId.' AND pupilsightDepartmentID= '.$subid.' ';
+    foreach ($subskills as $k => $subsk) {
+        $sqls = 'SELECT * FROM subjectSkillMapping WHERE skill_id = ' . $subsk['id'] . ' AND pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND pupilsightProgramID= ' . $pupilsightProgramID . ' AND pupilsightYearGroupID= ' . $classId . ' AND pupilsightDepartmentID= ' . $subid . ' ';
         $results = $connection2->query($sqls);
         $skills = $results->fetch();
-        if(!empty($skills['skill_display_name']) && $chk== 'checked'){
+        if (!empty($skills['skill_display_name']) && $chk == 'checked') {
             $sname = $skills['skill_display_name'];
             $checked = 'checked';
         } else {
             $sname = $subsk['name'];
             $checked = '';
         }
-        
-        
-        $data .= "<tr><td><input type='checkbox' class='skillId' name='skill_id[]'  data-id='".$subsk["id"]."' ".$checked."></td><td>".$subsk['name']."</td><td><input type='textbox'  name='skill_display_name' id='sname".$subsk["id"]."' value='".$sname."' style='border:1px solid gray'></td>/tr>";
+
+
+        $data .= "<tr><td><input type='checkbox' class='skillId' name='skill_id[]'  data-id='" . $subsk["id"] . "' " . $checked . "></td><td>" . $subsk['name'] . "</td><td><input type='textbox'  name='skill_display_name' id='sname" . $subsk["id"] . "' value='" . $sname . "' style='border:1px solid gray'></td>/tr>";
     }
     echo $data;
-
 }
 
 if ($type == 'copytesttonextyear') {
     $testid = $_POST['val'];
     $next_acyr = $_POST['next_acyr'];
-  //  $testids = explode(',',$testid);
-     
-        $sql_tst = 'SELECT * FROM examinationTest WHERE id IN (' . $testid . ')';
-        $result_test = $connection2->query($sql_tst);
-      //  $tests = $result_test->fetchAll();
+    //  $testids = explode(',',$testid);
 
-        while ($row = $result_test->fetch()) {
-            //Write to database
-          
-                $dataInsert = array('pupilsightSchoolYearID' => $next_acyr, 'name' => $row['name'], 'code' => $row['code']);
-                $sqlInsert = 'INSERT INTO examinationTest SET pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, code=:code';
-                $resultInsert = $connection2->prepare($sqlInsert);
-                $resultInsert->execute($dataInsert);
-           
-        }
-  
+    $sql_tst = 'SELECT * FROM examinationTest WHERE id IN (' . $testid . ')';
+    $result_test = $connection2->query($sql_tst);
+    //  $tests = $result_test->fetchAll();
+
+    while ($row = $result_test->fetch()) {
+        //Write to database
+
+        $dataInsert = array('pupilsightSchoolYearID' => $next_acyr, 'name' => $row['name'], 'code' => $row['code']);
+        $sqlInsert = 'INSERT INTO examinationTest SET pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, code=:code';
+        $resultInsert = $connection2->prepare($sqlInsert);
+        $resultInsert->execute($dataInsert);
+    }
 }
 
-if($type == 'selectSection'){
+if ($type == 'selectSection') {
     $session->forget(['section_ids']);
-    $session->set('section_ids', $val);   
+    $session->set('section_ids', $val);
 }
 
-if($type == 'selectSub'){
+if ($type == 'selectSub') {
     $session->forget(['subject_ids']);
-    $session->set('subject_ids', $val);   
+    $session->set('subject_ids', $val);
 }
 
 if ($type == 'changeGradeSystemCondition') {
     $val = $_POST['val'];
     $sid = $_POST['sid'];
-    
+
     $data1 = array('id' => $sid, 'pass_fail_condition' => $val);
     $sql1 = 'UPDATE examinationGradeSystem SET pass_fail_condition=:pass_fail_condition WHERE id=:id';
     $result1 = $connection2->prepare($sql1);
@@ -1453,29 +1445,25 @@ if ($type == 'getSection_checkbox') {
     position: absolute;
     z-index: 1;
     border: 1px solid gray;">';
-    foreach($cid as $sid){
+    foreach ($cid as $sid) {
         $sql = 'SELECT a.*, b.name ,c.name AS cname,c.pupilsightYearGroupID as cid FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID   LEFT JOIN pupilsightYearGroup as c ON a.pupilsightYearGroupID = c.pupilsightYearGroupID  WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $sid . '" GROUP BY a.pupilsightRollGroupID';
 
-       
+
         $result = $connection2->query($sql);
         $sections = $result->fetchAll();
-       
-        
-        if (!empty($sections)) {            
-            foreach ($sections as $k => $cl) {
-                $data .= '<li class="check_mrgin getClasses" ><input  id="classSectionDtl" type ="checkbox" name="pupilsightRollGroupID[]"  data-section="'. $cl['pupilsightRollGroupID']."-". $cl['cid'] .'" data-val="'.$cl['cname'].$cl['name'].'" value="' . $cl['pupilsightRollGroupID'].",". $cl['cid'] .'">' .$cl['cname']." ". $cl['name']." </li>" ;
-            }
 
-            
+
+        if (!empty($sections)) {
+            foreach ($sections as $k => $cl) {
+                $data .= '<li class="check_mrgin getClasses" ><input  id="classSectionDtl" type ="checkbox" name="pupilsightRollGroupID[]"  data-section="' . $cl['pupilsightRollGroupID'] . "-" . $cl['cid'] . '" data-val="' . $cl['cname'] . $cl['name'] . '" value="' . $cl['pupilsightRollGroupID'] . "," . $cl['cid'] . '">' . $cl['cname'] . " " . $cl['name'] . " </li>";
+            }
         }
-    
-        
     }
-    $data .="</ul>";
+    $data .= "</ul>";
     echo $data;
 }
 
-if ($type == 'getSection_checkbox_td'){
+if ($type == 'getSection_checkbox_td') {
     $cid = $val;
     $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightYearGroupID = "' . $cid . '" GROUP BY a.pupilsightRollGroupID';
     $result = $connection2->query($sql);
@@ -1484,63 +1472,63 @@ if ($type == 'getSection_checkbox_td'){
     if (!empty($sections)) {
         foreach ($sections as $k => $cl) {
             $data .= '<tr><td>
-            <input class="check_mrgin" type ="checkbox" name="pupilsightRollGroupID[]" value="' . $cl['pupilsightRollGroupID'] . '">'. " </td>
-            <td>". $cl['name']."</td></tr>" ;
+            <input class="check_mrgin" type ="checkbox" name="pupilsightRollGroupID[]" value="' . $cl['pupilsightRollGroupID'] . '">' . " </td>
+            <td>" . $cl['name'] . "</td></tr>";
         }
     }
     echo $data;
 }
 
 
-if($type == 'electiveGroupId'){
+if ($type == 'electiveGroupId') {
     $session->forget(['electiveGroupId']);
-    $session->set('electiveGroupId', $val);   
+    $session->set('electiveGroupId', $val);
 }
 
 if ($type == 'stdMarksEntry') {
 
-    $studentmarks_id='';
+    $studentmarks_id = '';
     $session->forget(['studentmarks_id']);
-    $session->set('studentmarks_id', $val); 
+    $session->set('studentmarks_id', $val);
     $test_id = $_POST['test_id'];
     $session->forget(['test_id']);
-    $session->set('test_id', $test_id); 
-    echo 'index.php?q=/modules/Academics/entry_marks_byStudent.php' ;
+    $session->set('test_id', $test_id);
+    echo 'index.php?q=/modules/Academics/entry_marks_byStudent.php';
 }
 
-if ($type == 'storetestId') {     
+if ($type == 'storetestId') {
     $session->forget(['test_id']);
     $session->set('test_id', $val);
-  
-  echo 'index.php?q=/modules/Academics/entry_marks_byStudent.php' ; 
+
+    echo 'index.php?q=/modules/Academics/entry_marks_byStudent.php';
 }
 
-if($type=='pre_stdMarksEntry'){
-        $studentmarks_id = '';
+if ($type == 'pre_stdMarksEntry') {
+    $studentmarks_id = '';
 
-        $sql = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID= "'.$val.'" ';
-        $res = $connection2->query($sql);
-        $stu_detail = $res->fetch();
+    $sql = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID= "' . $val . '" ';
+    $res = $connection2->query($sql);
+    $stu_detail = $res->fetch();
 
     $sqlp = 'SELECT pupilsightPerson.pupilsightPersonID  FROM pupilsightPerson 
     JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
     JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)  
     JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) 
      
-    WHERE  pupilsightStudentEnrolment.pupilsightProgramID="'.$stu_detail['pupilsightProgramID'].'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$stu_detail['pupilsightYearGroupID'].'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$stu_detail['pupilsightRollGroupID'].'" AND  pupilsightPerson.pupilsightPersonID < "'.$val.'"  ORDER BY pupilsightPerson.pupilsightPersonID DESC
+    WHERE  pupilsightStudentEnrolment.pupilsightProgramID="' . $stu_detail['pupilsightProgramID'] . '"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="' . $stu_detail['pupilsightYearGroupID'] . '" AND pupilsightStudentEnrolment.pupilsightRollGroupID="' . $stu_detail['pupilsightRollGroupID'] . '" AND  pupilsightPerson.pupilsightPersonID < "' . $val . '"  ORDER BY pupilsightPerson.pupilsightPersonID DESC
         ';
     $resultp = $connection2->query($sqlp);
     $previous = $resultp->fetch();
 
-   // print_r($rowdataprog);die();
-   
+    // print_r($rowdataprog);die();
+
     $session->forget(['studentmarks_id']);
-    $session->set('studentmarks_id', implode(' ',$previous));
+    $session->set('studentmarks_id', implode(' ', $previous));
 }
 
-if($type=='next_stdMarksEntry'){
+if ($type == 'next_stdMarksEntry') {
 
-    $sql = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID= "'.$val.'" ';
+    $sql = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID= "' . $val . '" ';
     $res = $connection2->query($sql);
     $stu_detail = $res->fetch();
     $studentmarks_id = '';
@@ -1549,7 +1537,7 @@ if($type=='next_stdMarksEntry'){
     JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)  
     JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) 
     
-    WHERE  pupilsightStudentEnrolment.pupilsightProgramID="'.$stu_detail['pupilsightProgramID'].'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$stu_detail['pupilsightYearGroupID'].'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$stu_detail['pupilsightRollGroupID'].'" AND pupilsightPerson.pupilsightPersonID > "'.$val.'"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
+    WHERE  pupilsightStudentEnrolment.pupilsightProgramID="' . $stu_detail['pupilsightProgramID'] . '"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="' . $stu_detail['pupilsightYearGroupID'] . '" AND pupilsightStudentEnrolment.pupilsightRollGroupID="' . $stu_detail['pupilsightRollGroupID'] . '" AND pupilsightPerson.pupilsightPersonID > "' . $val . '"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
         ';
     $resultp = $connection2->query($sqlp);
     $previous = $resultp->fetch();
@@ -1557,25 +1545,25 @@ if($type=='next_stdMarksEntry'){
     // print_r($rowdataprog);die();
 
     $session->forget(['studentmarks_id']);
-    $session->set('studentmarks_id', implode(' ',$previous));
+    $session->set('studentmarks_id', implode(' ', $previous));
 }
 
-if ($type == 'deleteAssignCls'){
+if ($type == 'deleteAssignCls') {
     $cid = explode(',', $val);
-    foreach($cid as $cd){
-        $clid = explode('-',$cd);
+    foreach ($cid as $cd) {
+        $clid = explode('-', $cd);
         $test_id = $clid[0];
         $pupilsightProgramID = $clid[1];
         $pupilsightYearGroupID = $clid[2];
 
-        $data2 = array('test_master_id' => $test_id, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID'=> $pupilsightYearGroupID);
+        $data2 = array('test_master_id' => $test_id, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID);
         $sql2 = 'DELETE FROM examinationTestAssignClass WHERE test_master_id=:test_master_id AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID';
         $result2 = $connection2->prepare($sql2);
         $result2->execute($data2);
     }
 }
 
-if ($type == 'addElectiveSubjectToStudent'){
+if ($type == 'addElectiveSubjectToStudent') {
     $pupilsightPersonID = $val;
     $pupilsightDepartmentID = $_POST['sid'];
     $pupilsightProgramID = $_POST['progId'];
@@ -1583,13 +1571,13 @@ if ($type == 'addElectiveSubjectToStudent'){
     $electiveId = $_POST['eid'];
     $chktype = $_POST['chktype'];
 
-    if($chktype == 'add'){
-        $sqlprev = 'SELECT id FROM assign_elective_subjects_tostudents WHERE pupilsightPersonID = '.$pupilsightPersonID.'  AND pupilsightDepartmentID= '.$pupilsightDepartmentID.' AND  pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID = '.$pupilsightYearGroupID.'';
+    if ($chktype == 'add') {
+        $sqlprev = 'SELECT id FROM assign_elective_subjects_tostudents WHERE pupilsightPersonID = ' . $pupilsightPersonID . '  AND pupilsightDepartmentID= ' . $pupilsightDepartmentID . ' AND  pupilsightProgramID = ' . $pupilsightProgramID . ' AND pupilsightYearGroupID = ' . $pupilsightYearGroupID . '';
         $resultprev = $connection2->query($sqlprev);
         $prevData = $resultprev->fetch();
 
         if ($prevData < 1) {
-            $data1 = array('ac_elective_group_id'=>$electiveId, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
+            $data1 = array('ac_elective_group_id' => $electiveId, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
             $sql1 = "INSERT INTO assign_elective_subjects_tostudents SET ac_elective_group_id=:ac_elective_group_id, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightDepartmentID=:pupilsightDepartmentID,pupilsightPersonID=:pupilsightPersonID";
             $result = $connection2->prepare($sql1);
             $result->execute($data1);
@@ -1600,125 +1588,118 @@ if ($type == 'addElectiveSubjectToStudent'){
             $result->execute($data1);
         }
     } else {
-        $data2 = array('ac_elective_group_id'=>$electiveId, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
+        $data2 = array('ac_elective_group_id' => $electiveId, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
 
         $sql2 = 'DELETE FROM assign_elective_subjects_tostudents WHERE  ac_elective_group_id=:ac_elective_group_id AND pupilsightPersonID=:pupilsightPersonID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID';
         $result2 = $connection2->prepare($sql2);
         $result2->execute($data2);
     }
-}    
-    
+}
+
 if ($type == 'getgrade_based_onmark') {
     $marks_enter = $val;
-    $sql = 'SELECT grade_name,id FROM examinationGradeSystemConfiguration  WHERE '.$marks_enter.' BETWEEN `lower_limit` AND `upper_limit`';
+    $sql = 'SELECT grade_name,id FROM examinationGradeSystemConfiguration  WHERE ' . $marks_enter . ' BETWEEN `lower_limit` AND `upper_limit`';
     $result = $connection2->query($sql);
     $grade = $result->fetch();
-   echo $grade['id'];
-   
+    echo $grade['id'];
 }
 if ($type == 'getgrade_based_onmark_new') {
     $marks_enter = $val;
-    $gradeSystemId=$_POST['gsid'];
-   $sql = 'SELECT grade_name,id FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="'.$gradeSystemId.'" AND  ('.$marks_enter.' BETWEEN `lower_limit` AND `upper_limit`)';
+    $gradeSystemId = $_POST['gsid'];
+    $sql = 'SELECT grade_name,id FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $gradeSystemId . '" AND  (' . $marks_enter . ' BETWEEN `lower_limit` AND `upper_limit`)';
     $result = $connection2->query($sql);
     $grade = $result->fetch();
-   echo $grade['id'];
-   
+    echo $grade['id'];
 }
 if ($type == 'lock_unlock_mark_entry') {
 
-   
-    $entryids = explode(',', $_POST['val']); 
-    if($_POST['action_type']=='lock_mark_entry')
-    {       $lock_status =  1;
-            foreach($entryids as $k=>$enid){
-                $data1 = array('id' => $enid, 'status' => $lock_status);
-                $sql1 = 'UPDATE examinationMarksEntrybySubject SET  status=:status WHERE id=:id';
-                $result1 = $connection2->prepare($sql1);
-                $result1->execute($data1);
-            }
 
+    $entryids = explode(',', $_POST['val']);
+    if ($_POST['action_type'] == 'lock_mark_entry') {
+        $lock_status =  1;
+        foreach ($entryids as $k => $enid) {
+            $data1 = array('id' => $enid, 'status' => $lock_status);
+            $sql1 = 'UPDATE examinationMarksEntrybySubject SET  status=:status WHERE id=:id';
+            $result1 = $connection2->prepare($sql1);
+            $result1->execute($data1);
         }
-      else  if($_POST['action_type']=='unlock_mark_entry')
-        {      $lock_status =  0;
-                foreach($entryids as $k=>$enid){
-                    $data1 = array('id' => $enid, 'status' => $lock_status);
-                    $sql1 = 'UPDATE examinationMarksEntrybySubject SET  status=:status WHERE id=:id';
-                    $result1 = $connection2->prepare($sql1);
-                    $result1->execute($data1);
-                }
-    
-            } 
+    } else  if ($_POST['action_type'] == 'unlock_mark_entry') {
+        $lock_status =  0;
+        foreach ($entryids as $k => $enid) {
+            $data1 = array('id' => $enid, 'status' => $lock_status);
+            $sql1 = 'UPDATE examinationMarksEntrybySubject SET  status=:status WHERE id=:id';
+            $result1 = $connection2->prepare($sql1);
+            $result1->execute($data1);
+        }
+    }
 }
 
-if($type=='getSubjectTimeslote')
-{
+if ($type == 'getSubjectTimeslote') {
     $dep_id = $_POST['val'];
-    $class_id =$_POST['class_id'];
-  //  $sql = 'SELECT a.*,c.pupilsightCourseID FROM  pupilsightTTColumnRow AS a LEFT JOIN pupilsightTTDayRowClass AS b ON a.pupilsightTTColumnRowID = b.pupilsightTTColumnRowID LEFT JOIN pupilsightCourseClass AS c ON b.pupilsightCourseClassID = c.pupilsightCourseClassID LEFT JOIN pupilsightCourse AS d ON c.pupilsightCourseID = d.pupilsightCourseID WHERE d.pupilsightYearGroupIDList = "' . $class_id . '"  AND  d.pupilsightDepartmentID = "' . $dep_id . '" GROUP By c.pupilsightCourseID  ';
-   //echo  $sql = 'SELECT a.pupilsightCourseID,a.pupilsightYearGroupIDList,a.pupilsightDepartmentID, b.pupilsightCourseClassID,c.pupilsightTTColumnRowID,d.pupilsightTTColumnRowID,d.nameShort,d.name FROM  pupilsightCourse AS a LEFT JOIN pupilsightCourseClass AS b ON a.pupilsightCourseID = b.pupilsightCourseID LEFT JOIN pupilsightTTDayRowClass AS c ON b.pupilsightCourseClassID = c.pupilsightCourseClassID LEFT JOIN pupilsightTTColumnRow AS d ON c.pupilsightTTColumnRowID = d.pupilsightTTColumnRowID WHERE a.pupilsightYearGroupIDList = "' . $class_id . '"  AND  a.pupilsightDepartmentID = "' . $dep_id . '"  ';
-   $pupilsightTTDayID='00000002';
-  // $data = array('pupilsightTTDayID' => $pupilsightTTDayID);
-        $sql = "SELECT pupilsightTTColumnRow.*, COUNT(DISTINCT pupilsightTTDayRowClassID) AS classCount
+    $class_id = $_POST['class_id'];
+    //  $sql = 'SELECT a.*,c.pupilsightCourseID FROM  pupilsightTTColumnRow AS a LEFT JOIN pupilsightTTDayRowClass AS b ON a.pupilsightTTColumnRowID = b.pupilsightTTColumnRowID LEFT JOIN pupilsightCourseClass AS c ON b.pupilsightCourseClassID = c.pupilsightCourseClassID LEFT JOIN pupilsightCourse AS d ON c.pupilsightCourseID = d.pupilsightCourseID WHERE d.pupilsightYearGroupIDList = "' . $class_id . '"  AND  d.pupilsightDepartmentID = "' . $dep_id . '" GROUP By c.pupilsightCourseID  ';
+    //echo  $sql = 'SELECT a.pupilsightCourseID,a.pupilsightYearGroupIDList,a.pupilsightDepartmentID, b.pupilsightCourseClassID,c.pupilsightTTColumnRowID,d.pupilsightTTColumnRowID,d.nameShort,d.name FROM  pupilsightCourse AS a LEFT JOIN pupilsightCourseClass AS b ON a.pupilsightCourseID = b.pupilsightCourseID LEFT JOIN pupilsightTTDayRowClass AS c ON b.pupilsightCourseClassID = c.pupilsightCourseClassID LEFT JOIN pupilsightTTColumnRow AS d ON c.pupilsightTTColumnRowID = d.pupilsightTTColumnRowID WHERE a.pupilsightYearGroupIDList = "' . $class_id . '"  AND  a.pupilsightDepartmentID = "' . $dep_id . '"  ';
+    $pupilsightTTDayID = '00000002';
+    // $data = array('pupilsightTTDayID' => $pupilsightTTDayID);
+    $sql = "SELECT pupilsightTTColumnRow.*, COUNT(DISTINCT pupilsightTTDayRowClassID) AS classCount
                 FROM pupilsightTTDay
                 JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTDay.pupilsightTTColumnID)
                 LEFT JOIN pupilsightTTDayRowClass ON (pupilsightTTDayRowClass.pupilsightTTColumnRowID=pupilsightTTColumnRow.pupilsightTTColumnRowID AND pupilsightTTDayRowClass.pupilsightTTDayID=pupilsightTTDay.pupilsightTTDayID)
                 LEFT JOIN pupilsightCourseClass  ON pupilsightCourseClass.pupilsightCourseClassID = pupilsightTTDayRowClass.pupilsightCourseClassID 
                  LEFT JOIN pupilsightCourse  ON pupilsightCourseClass.pupilsightCourseID = pupilsightCourse.pupilsightCourseID 
-                WHERE pupilsightTTDay.pupilsightTTDayID=".$pupilsightTTDayID." AND pupilsightCourse.pupilsightYearGroupIDList = ".$class_id."  AND  pupilsightCourse.pupilsightDepartmentID = ".$dep_id." 
+                WHERE pupilsightTTDay.pupilsightTTDayID=" . $pupilsightTTDayID . " AND pupilsightCourse.pupilsightYearGroupIDList = " . $class_id . "  AND  pupilsightCourse.pupilsightDepartmentID = " . $dep_id . " 
                 GROUP BY pupilsightTTColumnRow.pupilsightTTColumnRowID
                 ORDER BY pupilsightTTColumnRow.timeStart, pupilsightTTColumnRow.name";
-   $result = $connection2->query($sql);
+    $result = $connection2->query($sql);
     $timeslot = $result->fetchAll();
 
     //echo "<pre>";print_r($timeslot);
-    
+
     $data = '<option value="">Select Timeslot</option>';
     if (!empty($timeslot)) {
         foreach ($timeslot as $k => $cl) {
-           $data .= '<option value="' . $cl['pupilsightTTColumnRowID'] . '">' . $cl['nameShort'] .'('.$cl['timeStart'].'-'.$cl['timeEnd'].')' .'</option>';
+            $data .= '<option value="' . $cl['pupilsightTTColumnRowID'] . '">' . $cl['nameShort'] . '(' . $cl['timeStart'] . '-' . $cl['timeEnd'] . ')' . '</option>';
         }
     }
     echo $data;
 }
-if($type=='getSubjectTimesloteNew')
-{
+if ($type == 'getSubjectTimesloteNew') {
     $dep_id = $_POST['val'];
-    $class_id =$_POST['class_id'];
-  //  $sql = 'SELECT a.*,c.pupilsightCourseID FROM  pupilsightTTColumnRow AS a LEFT JOIN pupilsightTTDayRowClass AS b ON a.pupilsightTTColumnRowID = b.pupilsightTTColumnRowID LEFT JOIN pupilsightCourseClass AS c ON b.pupilsightCourseClassID = c.pupilsightCourseClassID LEFT JOIN pupilsightCourse AS d ON c.pupilsightCourseID = d.pupilsightCourseID WHERE d.pupilsightYearGroupIDList = "' . $class_id . '"  AND  d.pupilsightDepartmentID = "' . $dep_id . '" GROUP By c.pupilsightCourseID  ';
-   //echo  $sql = 'SELECT a.pupilsightCourseID,a.pupilsightYearGroupIDList,a.pupilsightDepartmentID, b.pupilsightCourseClassID,c.pupilsightTTColumnRowID,d.pupilsightTTColumnRowID,d.nameShort,d.name FROM  pupilsightCourse AS a LEFT JOIN pupilsightCourseClass AS b ON a.pupilsightCourseID = b.pupilsightCourseID LEFT JOIN pupilsightTTDayRowClass AS c ON b.pupilsightCourseClassID = c.pupilsightCourseClassID LEFT JOIN pupilsightTTColumnRow AS d ON c.pupilsightTTColumnRowID = d.pupilsightTTColumnRowID WHERE a.pupilsightYearGroupIDList = "' . $class_id . '"  AND  a.pupilsightDepartmentID = "' . $dep_id . '"  ';
-   $pupilsightTTDayID='00000002';
-  // $data = array('pupilsightTTDayID' => $pupilsightTTDayID);
-        $sql = "SELECT pupilsightTTColumnRow.*, COUNT(DISTINCT pupilsightTTDayRowClassID) AS classCount
+    $class_id = $_POST['class_id'];
+    //  $sql = 'SELECT a.*,c.pupilsightCourseID FROM  pupilsightTTColumnRow AS a LEFT JOIN pupilsightTTDayRowClass AS b ON a.pupilsightTTColumnRowID = b.pupilsightTTColumnRowID LEFT JOIN pupilsightCourseClass AS c ON b.pupilsightCourseClassID = c.pupilsightCourseClassID LEFT JOIN pupilsightCourse AS d ON c.pupilsightCourseID = d.pupilsightCourseID WHERE d.pupilsightYearGroupIDList = "' . $class_id . '"  AND  d.pupilsightDepartmentID = "' . $dep_id . '" GROUP By c.pupilsightCourseID  ';
+    //echo  $sql = 'SELECT a.pupilsightCourseID,a.pupilsightYearGroupIDList,a.pupilsightDepartmentID, b.pupilsightCourseClassID,c.pupilsightTTColumnRowID,d.pupilsightTTColumnRowID,d.nameShort,d.name FROM  pupilsightCourse AS a LEFT JOIN pupilsightCourseClass AS b ON a.pupilsightCourseID = b.pupilsightCourseID LEFT JOIN pupilsightTTDayRowClass AS c ON b.pupilsightCourseClassID = c.pupilsightCourseClassID LEFT JOIN pupilsightTTColumnRow AS d ON c.pupilsightTTColumnRowID = d.pupilsightTTColumnRowID WHERE a.pupilsightYearGroupIDList = "' . $class_id . '"  AND  a.pupilsightDepartmentID = "' . $dep_id . '"  ';
+    $pupilsightTTDayID = '00000002';
+    // $data = array('pupilsightTTDayID' => $pupilsightTTDayID);
+    $sql = "SELECT pupilsightTTColumnRow.*, COUNT(DISTINCT pupilsightTTDayRowClassID) AS classCount
                 FROM pupilsightTTDay
                 JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTDay.pupilsightTTColumnID)
                 LEFT JOIN pupilsightTTDayRowClass ON (pupilsightTTDayRowClass.pupilsightTTColumnRowID=pupilsightTTColumnRow.pupilsightTTColumnRowID AND pupilsightTTDayRowClass.pupilsightTTDayID=pupilsightTTDay.pupilsightTTDayID)
                 LEFT JOIN pupilsightCourseClass  ON pupilsightCourseClass.pupilsightCourseClassID = pupilsightTTDayRowClass.pupilsightCourseClassID 
                  LEFT JOIN pupilsightCourse  ON pupilsightCourseClass.pupilsightCourseID = pupilsightCourse.pupilsightCourseID 
-                WHERE pupilsightTTDay.pupilsightTTDayID=".$pupilsightTTDayID." AND pupilsightCourse.pupilsightYearGroupIDList = ".$class_id."  AND  pupilsightTTDayRowClass.pupilsightDepartmentID = ".$dep_id." 
+                WHERE pupilsightTTDay.pupilsightTTDayID=" . $pupilsightTTDayID . " AND pupilsightCourse.pupilsightYearGroupIDList = " . $class_id . "  AND  pupilsightTTDayRowClass.pupilsightDepartmentID = " . $dep_id . " 
                 GROUP BY pupilsightTTColumnRow.pupilsightTTColumnRowID
                 ORDER BY pupilsightTTColumnRow.timeStart, pupilsightTTColumnRow.name";
-   $result = $connection2->query($sql);
+    $result = $connection2->query($sql);
     $timeslot = $result->fetchAll();
 
     //echo "<pre>";print_r($timeslot);
-    
+
     $data = '<option value="">Select Timeslot</option>';
     if (!empty($timeslot)) {
         foreach ($timeslot as $k => $cl) {
-           $data .= '<option value="' . $cl['pupilsightTTColumnRowID'] . '">' . $cl['nameShort'] .'('.$cl['timeStart'].'-'.$cl['timeEnd'].')' .'</option>';
+            $data .= '<option value="' . $cl['pupilsightTTColumnRowID'] . '">' . $cl['nameShort'] . '(' . $cl['timeStart'] . '-' . $cl['timeEnd'] . ')' . '</option>';
         }
     }
     echo $data;
 }
 
-if($type == 'getTestBySection'){
+if ($type == 'getTestBySection') {
     $pupilsightYearGroupID = $_POST['cid'];
     $pupilsightRollGroupID = $val;
     $pupilsightProgramID = $_POST['pid'];
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-    $sql = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$pupilsightProgramID.' AND a.pupilsightYearGroupID = '.$pupilsightYearGroupID.' AND a.pupilsightRollGroupID = '.$pupilsightRollGroupID.' ';
+    $sql = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND a.pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' ';
     $result = $connection2->query($sql);
     $tests = $result->fetchAll();
     $returndata = '<option value="">Select Test</option>';
@@ -1728,34 +1709,32 @@ if($type == 'getTestBySection'){
     echo $returndata;
 }
 
-if($type == 'updateBulkTest'){
-   $tid = $val;
-   $coulmnname = $_POST['testcol'];
-   $coulmndata = $_POST['testdata'];
-   $sq = "update examinationTest SET ".$coulmnname." ='".$coulmndata."' where id IN (".$tid.") ";
-   $connection2->query($sq);
-}
-
-if($type == 'updateBulkTestettings'){
+if ($type == 'updateBulkTest') {
     $tid = $val;
     $coulmnname = $_POST['testcol'];
     $coulmndata = $_POST['testdata'];
-    $sq = "update examinationTest SET ".$coulmnname." ='".$coulmndata."' where id IN (".$tid.") ";
+    $sq = "update examinationTest SET " . $coulmnname . " ='" . $coulmndata . "' where id IN (" . $tid . ") ";
+    $connection2->query($sq);
+}
+
+if ($type == 'updateBulkTestettings') {
+    $tid = $val;
+    $coulmnname = $_POST['testcol'];
+    $coulmndata = $_POST['testdata'];
+    $sq = "update examinationTest SET " . $coulmnname . " ='" . $coulmndata . "' where id IN (" . $tid . ") ";
     $connection2->query($sq);
 }
 
 if ($type == 'getSubjectbasedonclass') {
-    $roleid= $_POST['roleid'];
-    $pupilsightPersonID= $_POST['pupilsightPersonID'];
-    if($roleid=='002')//for teacher login
+    $roleid = $_POST['roleid'];
+    $pupilsightPersonID = $_POST['pupilsightPersonID'];
+    if ($roleid == '002') //for teacher login
     {
-        $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where pupilsightYearGroupID ='".$val."' AND pupilsightStaff.pupilsightPersonID='".$pupilsightPersonID."' order by subject_display_name asc";
+        $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where pupilsightYearGroupID ='" . $val . "' AND pupilsightStaff.pupilsightPersonID='" . $pupilsightPersonID . "' order by subject_display_name asc";
+    } else {
+        $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightYearGroupID ='" . $val . "' order by subject_display_name asc";
     }
-    else
-    {
-        $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightYearGroupID ='".$val."' order by subject_display_name asc";
-    }
-   
+
     $result = $connection2->query($sq);
     $rowdata = $result->fetchAll();
     $returndata = '<option value="">Select Subject</option>';
@@ -1772,13 +1751,13 @@ if ($type == 'getNewSectionByClassProg') {
     $resultsec = $connection2->query($sqlsec);
     $secdata = $resultsec->fetch();
     $sqlId = $secdata['secId'];
-    if(!empty($sqlId)){
+    if (!empty($sqlId)) {
         $sqlId = $sqlId;
     } else {
         $sqlId = '0';
     }
 
-    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE pupilsightRollGroupID Not In ('.$sqlId.')  GROUP BY pupilsightRollGroupID';
+    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
@@ -1792,9 +1771,9 @@ if ($type == 'getNewSectionByClassProg') {
 
 
 if ($type == 'getClasses_assignedtoStaff') {
-    $id=$val;
+    $id = $val;
     $pid = $_POST['pid'];
-    $sql = 'SELECT a.*, c.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN assignstaff_toclasssection b ON(a.pupilsightMappingID =b.pupilsightMappingID)  LEFT JOIN pupilsightYearGroup AS c ON a.pupilsightYearGroupID =c.pupilsightYearGroupID  WHERE a.pupilsightProgramID = "' . $pid . '" AND b.pupilsightPersonID="'.$id.'" GROUP BY a.pupilsightYearGroupID';
+    $sql = 'SELECT a.*, c.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN assignstaff_toclasssection b ON(a.pupilsightMappingID =b.pupilsightMappingID)  LEFT JOIN pupilsightYearGroup AS c ON a.pupilsightYearGroupID =c.pupilsightYearGroupID  WHERE a.pupilsightProgramID = "' . $pid . '" AND b.pupilsightPersonID="' . $id . '" GROUP BY a.pupilsightYearGroupID';
     $result = $connection2->query($sql);
     $classes = $result->fetchAll();
     // echo '<pre>';
@@ -1811,18 +1790,18 @@ if ($type == 'getClasses_assignedtoStaff') {
 
 
 if ($type == 'getsections_assignedtoStaff') {
-$id=$val;
-$cid = $_POST['cid'];
-$sql = 'SELECT a.*, c.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN assignstaff_toclasssection b ON(a.pupilsightMappingID =b.pupilsightMappingID) LEFT JOIN pupilsightRollGroup AS c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightYearGroupID = "' . $cid . '" AND b.pupilsightPersonID="'.$id.'" GROUP BY a.pupilsightRollGroupID';
-$result = $connection2->query($sql);
-$sections = $result->fetchAll();
-$data = '<option value="">Select Section</option>';
-if (!empty($sections)) {
-    foreach ($sections as $k => $cl) {
-        $data .= '<option value="' . $cl['pupilsightRollGroupID'] . '">' . $cl['name'] . '</option>';
+    $id = $val;
+    $cid = $_POST['cid'];
+    $sql = 'SELECT a.*, c.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN assignstaff_toclasssection b ON(a.pupilsightMappingID =b.pupilsightMappingID) LEFT JOIN pupilsightRollGroup AS c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightYearGroupID = "' . $cid . '" AND b.pupilsightPersonID="' . $id . '" GROUP BY a.pupilsightRollGroupID';
+    $result = $connection2->query($sql);
+    $sections = $result->fetchAll();
+    $data = '<option value="">Select Section</option>';
+    if (!empty($sections)) {
+        foreach ($sections as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightRollGroupID'] . '">' . $cl['name'] . '</option>';
+        }
     }
-}
-echo $data;
+    echo $data;
 }
 
 if ($type == 'addstudentid_toassign_section') {
@@ -1834,55 +1813,54 @@ if ($type == 'addstudentid_toassign_section') {
         ';
     $resultp = $connection2->query($sqlp);
     $rowdata = $resultp->fetchAll();
-    $result_arr=array();
-    $result_arr1=array();
-    foreach( $rowdata as $rdata)
-    {   $result_arr+=$rdata;
-        $result_arr1=array_diff($result_arr,$rdata);
+    $result_arr = array();
+    $result_arr1 = array();
+    foreach ($rowdata as $rdata) {
+        $result_arr += $rdata;
+        $result_arr1 = array_diff($result_arr, $rdata);
     }
-  echo   count($result_arr1);
-
+    echo   count($result_arr1);
 }
 
 
 if ($type == 'getsession') {
- $pid= $val;   
-    $sqlp = 'SELECT a.session_no, a.session_name FROM attn_session_settings AS a LEFT JOIN attn_settings AS b ON(a.attn_settings_id =b.id) WHERE b.pupilsightProgramID='.$pid.' ';
+    $pid = $val;
+    $sqlp = 'SELECT a.session_no, a.session_name FROM attn_session_settings AS a LEFT JOIN attn_settings AS b ON(a.attn_settings_id =b.id) WHERE b.pupilsightProgramID=' . $pid . ' ';
     $resultp = $connection2->query($sqlp);
     $rowdatasession = $resultp->fetchAll();
     $data = '<option value="">Select Session</option>';
-if (!empty($rowdatasession)) {
-    foreach ($rowdatasession as $k => $cl) {
-        $data .= '<option value="' . $cl['session_no'] . '">' . $cl['session_name'] . '</option>';
+    if (!empty($rowdatasession)) {
+        foreach ($rowdatasession as $k => $cl) {
+            $data .= '<option value="' . $cl['session_no'] . '">' . $cl['session_name'] . '</option>';
+        }
     }
-}
-echo $data;
+    echo $data;
 }
 
 if ($type == 'getCampaignStatusButton') {
-    $id= $val;   
+    $id = $val;
     $cid = $_POST['cid'];
     $fid = $_POST['fid'];
     $userId = $_SESSION[$guid]['pupilsightPersonID'];
-    $sqlstf = 'Select pupilsightStaffID FROM pupilsightStaff WHERE pupilsightPersonID = '.$userId.'';
+    $sqlstf = 'Select pupilsightStaffID FROM pupilsightStaff WHERE pupilsightPersonID = ' . $userId . '';
     $resultstf = $connection2->query($sqlstf);
     $staff = $resultstf->fetch();
     $staffId = $staff['pupilsightStaffID'];
-    if($id == 'all'){
-        $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND FIND_IN_SET("'.$staffId.'",user_permission) ';
+    if ($id == 'all') {
+        $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = ' . $cid . ' AND FIND_IN_SET("' . $staffId . '",user_permission) ';
         $resultval = $connection2->query($sql);
         $stats = $resultval->fetchAll();
 
-        $data ='';
-        if(!empty($stats)){
-            foreach($stats as $s){
-                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' data-remark="'.$s['enable_remark'].'" style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
+        $data = '';
+        if (!empty($stats)) {
+            foreach ($stats as $s) {
+                $data .= '<button class="btn btn-primary statesButton"  data-formid = ' . $fid . ' data-name="' . $s['transition_display_name'] . '" data-sid=' . $s['id'] . ' data-cid=' . $cid . ' data-noti=' . $s['notification'] . ' data-remark="' . $s['enable_remark'] . '" style="margin:5px" >' . ucwords($s['transition_display_name']) . '</button>';
             }
         }
 
         echo $data;
     } else {
-        
+
         // $sql = 'SELECT GROUP_CONCAT(state_id) AS sid FROM campaign_form_status WHERE submission_id ='.$id.' ';
         // $result = $connection2->query($sql);
         // $stateid = $result->fetch();
@@ -1894,29 +1872,29 @@ if ($type == 'getCampaignStatusButton') {
         // }
 
 
-        $sql = 'SELECT a.id, to_state FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id WHERE a.submission_id ='.$id.' ORDER BY a.id DESC LIMIT 0,1 ';
+        $sql = 'SELECT a.id, to_state FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id WHERE a.submission_id =' . $id . ' ORDER BY a.id DESC LIMIT 0,1 ';
         $result = $connection2->query($sql);
         $stateid = $result->fetch();
-        
-        if(!empty($stateid['to_state'])){
+
+        if (!empty($stateid['to_state'])) {
             $fromState = $stateid['to_state'];
-            
-            $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND a.from_state = '.$fromState.'  AND FIND_IN_SET("'.$staffId.'",user_permission) ';
+
+            $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = ' . $cid . ' AND a.from_state = ' . $fromState . '  AND FIND_IN_SET("' . $staffId . '",user_permission) ';
             $resultval = $connection2->query($sql);
             $stats = $resultval->fetchAll();
         } else {
 
-            $sq = 'SELECT a.id FROM workflow_state AS a LEFT JOIN workflow_map AS b ON a.workflowid = b.workflow_id WHERE a.name = "Submitted" AND b.campaign_id = '.$cid.' ';
+            $sq = 'SELECT a.id FROM workflow_state AS a LEFT JOIN workflow_map AS b ON a.workflowid = b.workflow_id WHERE a.name = "Submitted" AND b.campaign_id = ' . $cid . ' ';
             $resultsq = $connection2->query($sq);
             $sqstate = $resultsq->fetch();
             $fromStateSub = $sqstate['id'];
-            
-            if(!empty($fromStateSub)){
-                $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND a.from_state = '.$fromStateSub.' AND FIND_IN_SET("'.$staffId.'",user_permission) ';
+
+            if (!empty($fromStateSub)) {
+                $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = ' . $cid . ' AND a.from_state = ' . $fromStateSub . ' AND FIND_IN_SET("' . $staffId . '",user_permission) ';
             } else {
-                $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND FIND_IN_SET("'.$staffId.'",user_permission) ';
+                $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = ' . $cid . ' AND FIND_IN_SET("' . $staffId . '",user_permission) ';
             }
-            
+
             $resultval = $connection2->query($sql);
             $stats = $resultval->fetchAll();
         }
@@ -1924,12 +1902,12 @@ if ($type == 'getCampaignStatusButton') {
         // $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$cid.' AND a.id NOT IN ('.$sid.')  AND FIND_IN_SET("'.$staffId.'",user_permission) ';
 
 
-        
 
-        $data ='';
-        if(!empty($stats)){
-            foreach($stats as $s){
-                $data .= '<button class="btn btn-primary statesButton"  data-formid = '.$fid.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$cid.' data-noti='.$s['notification'].' data-remark="'.$s['enable_remark'].'" style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
+
+        $data = '';
+        if (!empty($stats)) {
+            foreach ($stats as $s) {
+                $data .= '<button class="btn btn-primary statesButton"  data-formid = ' . $fid . ' data-name="' . $s['transition_display_name'] . '" data-sid=' . $s['id'] . ' data-cid=' . $cid . ' data-noti=' . $s['notification'] . ' data-remark="' . $s['enable_remark'] . '" style="margin:5px" >' . ucwords($s['transition_display_name']) . '</button>';
             }
         }
 
@@ -1937,11 +1915,11 @@ if ($type == 'getCampaignStatusButton') {
     }
 }
 
-if($type == 'chkInvoice'){
-    $sql = 'SELECT invoice_no FROM fn_fee_invoice_applicant_assign WHERE submission_id = '.$val.' ';
+if ($type == 'chkInvoice') {
+    $sql = 'SELECT invoice_no FROM fn_fee_invoice_applicant_assign WHERE submission_id = ' . $val . ' ';
     $result = $connection2->query($sql);
     $rowdata = $result->fetch();
-    if(!empty($rowdata['invoice_no'])){
+    if (!empty($rowdata['invoice_no'])) {
         echo 'yes';
     } else {
         echo 'no';
@@ -1962,7 +1940,7 @@ if ($type == 'applicantInvoiceFeeItem') {
     // echo '</pre>';
     foreach ($feeItem as $fI) {
         $totalamount = $fI['total_amount'];
-        
+
         $sqlchk = 'SELECT COUNT(a.id) as kount FROM fn_fees_applicant_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fee_invoice_item_id = ' . $fI['itemid'] . ' AND a.submission_id = ' . $sid . ' AND b.transaction_status = "1" ';
 
         $resultchk = $connection2->query($sqlchk);
@@ -2040,14 +2018,14 @@ if ($type == 'applicantInvoiceFeeItem') {
             ' . $amtdiscount . '   
             </td>
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
-            '.$paid.'
+            ' . $paid . '
             </td>
              
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
-            '.$pending.'
+            ' . $pending . '
             </td>
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
-               '.$status.'
+               ' . $status . '
             </td>
              
         </tr>';
@@ -2055,7 +2033,7 @@ if ($type == 'applicantInvoiceFeeItem') {
     echo $data;
 }
 
-if($type == 'updateApplicantData'){
+if ($type == 'updateApplicantData') {
     $campaignid = $_POST['val'];
     $submissionId = $_SESSION['submissionId'];
     $pupilsightProgramID = $_POST['pid'];
@@ -2063,40 +2041,39 @@ if($type == 'updateApplicantData'){
     $pupilsightPersonID = $_POST['pupilsightPersonID'];
     $application_id = '';
 
-    if(!empty($campaignid)){
-        $sqlrec = 'SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = "'.$campaignid.'" ';
+    if (!empty($campaignid)) {
+        $sqlrec = 'SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = "' . $campaignid . '" ';
         $resultrec = $connection2->query($sqlrec);
         $recptser = $resultrec->fetch();
 
         $seriesId = $recptser['id'];
 
-        if(!empty($seriesId)){
-            $invformat = explode('$',$recptser['formatval']);
+        if (!empty($seriesId)) {
+            $invformat = explode('$', $recptser['formatval']);
             $iformat = '';
             $orderwise = 0;
-            foreach($invformat as $inv){
-                if($inv == '{AB}'){
+            foreach ($invformat as $inv) {
+                if ($inv == '{AB}') {
                     // $datafort = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise');
                     // $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND order_wise=:order_wise AND type=:type';
-                    $datafort = array('fn_fee_series_id'=>$seriesId, 'type' => 'numberwise');
+                    $datafort = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise');
                     $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type';
                     $resultfort = $connection2->prepare($sqlfort);
                     $resultfort->execute($datafort);
                     $formatvalues = $resultfort->fetch();
-                    
+
                     $iformat .= $formatvalues['last_no'];
-                    
+
                     $str_length = $formatvalues['no_of_digit'];
 
                     $lastnoadd = $formatvalues['last_no'] + 1;
 
-                    $lastno = substr("0000000{$lastnoadd}", -$str_length); 
+                    $lastno = substr("0000000{$lastnoadd}", -$str_length);
 
-                    $datafort1 = array('fn_fee_series_id'=>$seriesId, 'type' => 'numberwise' , 'last_no' => $lastno);
+                    $datafort1 = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise', 'last_no' => $lastno);
                     $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type ';
                     $resultfort1 = $connection2->prepare($sqlfort1);
                     $resultfort1->execute($datafort1);
-
                 } else {
                     $iformat .= $inv;
                 }
@@ -2107,7 +2084,7 @@ if($type == 'updateApplicantData'){
             $application_id = '';
         }
     }
-    
+
     $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
     $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
     $result = $connection2->prepare($sql);
@@ -2132,96 +2109,94 @@ if ($type == 'getfeeitems') {
 if ($type == 'getAllStaff') {
     $name = $val;
     $id = $_POST['id'];
-    $sql = 'SELECT pupilsightPersonID, officialName FROM pupilsightPerson  WHERE officialName LIKE "%'.$name.'%"';
+    $sql = 'SELECT pupilsightPersonID, officialName FROM pupilsightPerson  WHERE officialName LIKE "%' . $name . '%"';
     $result = $connection2->query($sql);
     $staffData = $result->fetchAll();
     $returndata = '<ul>';
     foreach ($staffData as $row) {
-        $returndata .= '<li data-mid='.$id.' data-id='.$row['pupilsightPersonID'].' data-name='.$row['officialName'].' class="clickGetStaff">' . $row['officialName'] . '</li>';
+        $returndata .= '<li data-mid=' . $id . ' data-id=' . $row['pupilsightPersonID'] . ' data-name=' . $row['officialName'] . ' class="clickGetStaff">' . $row['officialName'] . '</li>';
     }
     $returndata .= '</ul>';
 
     echo $returndata;
 }
 
-if($type=='feeItemSession'){ 
+if ($type == 'feeItemSession') {
     $session->forget(['fee_structure']);
-   $session->set('fee_structure', $val);
-
+    $session->set('fee_structure', $val);
 }
 if ($type == 'invoiceFeeItem_parent') {
     $session->forget(['invoiceID_parent']);
     $session->set('invoiceID_parent', $val);
-    
 }
 
-if($type == 'saveApplicantForm'){
+if ($type == 'saveApplicantForm') {
     $submissionId = $_SESSION['submissionId'];
     $data = base64_decode($_POST['pdf']);
     // print_r($data);
-    file_put_contents( "public/applicationpdf/".$submissionId."-application.pdf", $data );
+    file_put_contents("public/applicationpdf/" . $submissionId . "-application.pdf", $data);
 }
 
-if($type=="getPaymentHistory"){
-    $stuId=$_POST['val'];
-    $pupilsightSchoolYearID=$_POST['py'];
-   $paymenthistory = 'SELECT  f.*,m.name as payMode
+if ($type == "getPaymentHistory") {
+    $stuId = $_POST['val'];
+    $pupilsightSchoolYearID = $_POST['py'];
+    $paymenthistory = 'SELECT  f.*,m.name as payMode
         FROM fn_fees_collection as f 
         LEFT JOIN fn_masters as m
         ON f.payment_mode_id = m.id
-        WHERE f.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND f.pupilsightPersonID = "'.$stuId.'"  ORDER BY f.id DESC';
-        $resultPhis = $connection2->query($paymenthistory);
-        $payhistory = $resultPhis->fetchAll();
-        // echo "<pre>";
-        // print_r($payhistory);die();
-        if(!empty($payhistory)){
-             foreach($payhistory as $ph){
-                $sqli="SELECT invoice_no FROM fn_fees_student_collection where transaction_id = '".$ph['transaction_id']."' LIMIT 0,1";
-                $resulti = $connection2->query($sqli);
-                $invdata = $resulti->fetch();
-                $invnno = $invdata['invoice_no'];
+        WHERE f.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND f.pupilsightPersonID = "' . $stuId . '"  ORDER BY f.id DESC';
+    $resultPhis = $connection2->query($paymenthistory);
+    $payhistory = $resultPhis->fetchAll();
+    // echo "<pre>";
+    // print_r($payhistory);die();
+    if (!empty($payhistory)) {
+        foreach ($payhistory as $ph) {
+            $sqli = "SELECT invoice_no FROM fn_fees_student_collection where transaction_id = '" . $ph['transaction_id'] . "' LIMIT 0,1";
+            $resulti = $connection2->query($sqli);
+            $invdata = $resulti->fetch();
+            $invnno = $invdata['invoice_no'];
 
-                $m_txt='';
-                $mode=strtoupper($ph['payMode']);
-                if($mode=="MULTIPLE"){
-                
-                    $sql="SELECT f.name FROM fn_multi_payment_mode AS m LEFT JOIN fn_masters as f ON m.payment_mode_id = f.id
-                    where m.transaction_id = '".$ph['transaction_id']."'";
-                    $re_m = $connection2->query($sql);
-                    $pm= $re_m->fetchAll();
-                    if(!empty($pm)){
-                        $i=1;
-                        foreach($pm as $m ){
-                            $m_txt.=$m['name'].",";
-                        }
-                    } 
-                }else {
-                    $m_txt=$ph['payMode'];
+            $m_txt = '';
+            $mode = strtoupper($ph['payMode']);
+            if ($mode == "MULTIPLE") {
+
+                $sql = "SELECT f.name FROM fn_multi_payment_mode AS m LEFT JOIN fn_masters as f ON m.payment_mode_id = f.id
+                    where m.transaction_id = '" . $ph['transaction_id'] . "'";
+                $re_m = $connection2->query($sql);
+                $pm = $re_m->fetchAll();
+                if (!empty($pm)) {
+                    $i = 1;
+                    foreach ($pm as $m) {
+                        $m_txt .= $m['name'] . ",";
+                    }
                 }
-
-                if($ph['transaction_status'] == '2'){
-                    $sqlc="SELECT a.*, b.officialName FROM fn_fees_cancel_collection AS a LEFT JOIN pupilsightPerson AS b ON a.canceled_by = b.pupilsightPersonID where a.fn_fees_collection_id = '".$ph['id']."' ";
-                    $resultc = $connection2->query($sqlc);
-                    $candata = $resultc->fetch();
-                    $canceledBy = $candata['officialName'];
-                    $canceledDate = $candata['cdt'];
-                    $canceledRemark = $candata['remarks'];
-                    $cantitle = 'Canceled By : '.$canceledBy.' , Date : '.$canceledDate; 
-
-                    $paystatus = '<td title="'.$cantitle.'">Cancelled</td>';
-                } else if($ph['transaction_status'] == '3'){
-                    $paystatus = '<td>Refunded</td>';
-                } else {
-                    $paystatus = '<td>'.$ph['payment_status'].'</td>';
-                }
-                echo '<tr><td><input type="checkbox" name="paymentHistory[]" id="paymentHistory" value="'.$ph['id'].'" class="selPayHistory payhistory'.$ph['transaction_id'].'"></td>
-                <td><a title="View receipt" href="public/receipts/'.$ph['transaction_id'].'.docx"  download><i class="fas fa-receipt"></i></a></td>
-                <td>                
-                <a href="index.php?q=/modules/Finance/fee_payment_history.php&tid='.$ph['transaction_id'].'" target="_blank">'.$ph['transaction_id'].'</a></td><td>'.$ph['receipt_number'].'</td><td>'.$invnno.'</td><td>'.$ph['total_amount_without_fine_discount'].'</td><td>'.$ph['fine'].'</td><td>'.$ph['discount'].'</td><td>'.$ph['amount_paying'].'</td><td>'.date("d/m/Y", strtotime($ph['payment_date'])).'</td><td>'.$ph['payMode'].'</td>'.$paystatus.'</tr>';
+            } else {
+                $m_txt = $ph['payMode'];
             }
-        } else {
-            echo "<tr><td colspan='7'>No payment history found</td></tr>";
+
+            if ($ph['transaction_status'] == '2') {
+                $sqlc = "SELECT a.*, b.officialName FROM fn_fees_cancel_collection AS a LEFT JOIN pupilsightPerson AS b ON a.canceled_by = b.pupilsightPersonID where a.fn_fees_collection_id = '" . $ph['id'] . "' ";
+                $resultc = $connection2->query($sqlc);
+                $candata = $resultc->fetch();
+                $canceledBy = $candata['officialName'];
+                $canceledDate = $candata['cdt'];
+                $canceledRemark = $candata['remarks'];
+                $cantitle = 'Canceled By : ' . $canceledBy . ' , Date : ' . $canceledDate;
+
+                $paystatus = '<td title="' . $cantitle . '">Cancelled</td>';
+            } else if ($ph['transaction_status'] == '3') {
+                $paystatus = '<td>Refunded</td>';
+            } else {
+                $paystatus = '<td>' . $ph['payment_status'] . '</td>';
+            }
+            echo '<tr><td><input type="checkbox" name="paymentHistory[]" id="paymentHistory" value="' . $ph['id'] . '" class="selPayHistory payhistory' . $ph['transaction_id'] . '"></td>
+                <td><a title="View receipt" href="public/receipts/' . $ph['transaction_id'] . '.docx"  download><i class="fas fa-receipt"></i></a></td>
+                <td>                
+                <a href="index.php?q=/modules/Finance/fee_payment_history.php&tid=' . $ph['transaction_id'] . '" target="_blank">' . $ph['transaction_id'] . '</a></td><td>' . $ph['receipt_number'] . '</td><td>' . $invnno . '</td><td>' . $ph['total_amount_without_fine_discount'] . '</td><td>' . $ph['fine'] . '</td><td>' . $ph['discount'] . '</td><td>' . $ph['amount_paying'] . '</td><td>' . date("d/m/Y", strtotime($ph['payment_date'])) . '</td><td>' . $ph['payMode'] . '</td>' . $paystatus . '</tr>';
         }
+    } else {
+        echo "<tr><td colspan='7'>No payment history found</td></tr>";
+    }
 }
 
 if ($type == 'getAjaxMultiPlayment') {
@@ -2231,32 +2206,32 @@ if ($type == 'getAjaxMultiPlayment') {
     $resultdr = $connection2->query($sqldr);
     $master = $resultdr->fetchAll();
     $paymentmode = array();
-    $paymentmode1 = array(''=>'Select Payment Mode');
+    $paymentmode1 = array('' => 'Select Payment Mode');
     $paymentmode2 = array();
     $bank = array();
-    $bank1 = array(''=>'Select Bank');
+    $bank1 = array('' => 'Select Bank');
     $bank2 = array();
     foreach ($master as $dr) {
-        if($dr['type'] == 'payment_mode'){
-            if($dr['name'] != 'Multiple'){
+        if ($dr['type'] == 'payment_mode') {
+            if ($dr['name'] != 'Multiple') {
                 $paymentmode2[$dr['id']] = $dr['name'];
-             }
-           
+            }
         } else {
             $bank2[$dr['id']] = $dr['name'];
         }
-        
     }
     $bank = $bank1 + $bank2;
     $paymentmode = $paymentmode1 + $paymentmode2;
-    $credit_card = array(''=>'Select',
-    'credit_card'=>'Credit Card',
-    'debit_card'=>'Debit Card');
+    $credit_card = array(
+        '' => 'Select',
+        'credit_card' => 'Credit Card',
+        'debit_card' => 'Debit Card'
+    );
 
     $data = '<tr id="seatdiv" class="seatdiv fixedfine flex flex-col sm:flex-row justify-between content-center p-0 deltr' . $aid . '"><td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative">
-            <select id="py_mode'.$disid.'" name="payment_mode_id[]" class="w-full  txtfield allFeeItemId payment_slt_mode" data-id="'.$disid.'">';
+            <select id="py_mode' . $disid . '" name="payment_mode_id[]" class="w-full  txtfield allFeeItemId payment_slt_mode" data-id="' . $disid . '">';
     foreach ($paymentmode as $k => $st) {
         $data .= '<option value="' . $k . '">' . $st . '</option>';
     }
@@ -2264,96 +2239,94 @@ if ($type == 'getAjaxMultiPlayment') {
         </div></td>
         <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
         <div class="input-group stylish-input-group">
-            <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><select id="feeStructureItemDisableId" name="bank_id[]" class="w-full  txtfield allFeeItemId bank_'.$disid.'">';
+            <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><select id="feeStructureItemDisableId" name="bank_id[]" class="w-full  txtfield allFeeItemId bank_' . $disid . '">';
     foreach ($bank as $k => $st) {
         $data .= '<option value="' . $k . '">' . $st . '</option>';
     }
     $data .= ' </select>
-    <input type="text" readonly placeholder="No option" class="d_bank_'.$disid.' form-control" style="display:none">
+    <input type="text" readonly placeholder="No option" class="d_bank_' . $disid . ' form-control" style="display:none">
     </div></div>
         </div></td>
 
         <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
             <div class="input-group stylish-input-group">
-                <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="amount" name="amount[]" class="w-full  txtfield numfield kountAmt amt_'.$disid.'"></div></div>
+                <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="amount" name="amount[]" class="w-full  txtfield numfield kountAmt amt_' . $disid . '"></div></div>
             </div></td>
             
             <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
             <div class="input-group stylish-input-group">
-                <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="reference_no" name="reference_no[]" class="w-full  txtfield  ref_'.$disid.'"></div></div>
+                <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="reference_no" name="reference_no[]" class="w-full  txtfield  ref_' . $disid . '"></div></div>
             </div></td>
       
       
         <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
         <div class="input-group stylish-input-group" style="display:inline-flex;">
-            <div class="dte mb-1"></div><div class=" txtfield   mb-1"><div class="flex-1 relative"><input type="date" id="instrument_date" name="instrument_date[]" class="w-full  txtfield  due_'.$disid.'"style="background-color: #f0f1f3;height: 35px;width:140px;font-size: 14px; font-size: 14px;color: #111111;border-radius: 4px !important;"></div></div><div class="dte mb-1"  style="font-size: 20px; padding:  7px 0 0px 4px; width: 15px"><i style="cursor:pointer" class="far fa-times-circle delSeattr" data-id="' . $disid . '"></i></div></div></td></tr>';
+            <div class="dte mb-1"></div><div class=" txtfield   mb-1"><div class="flex-1 relative"><input type="date" id="instrument_date" name="instrument_date[]" class="w-full  txtfield  due_' . $disid . '"style="background-color: #f0f1f3;height: 35px;width:140px;font-size: 14px; font-size: 14px;color: #111111;border-radius: 4px !important;"></div></div><div class="dte mb-1"  style="font-size: 20px; padding:  7px 0 0px 4px; width: 15px"><i style="cursor:pointer" class="far fa-times-circle delSeattr" data-id="' . $disid . '"></i></div></div></td></tr>';
     echo $data;
 }
 
 if ($type == 'AmountSession') {
     $session->forget(['amount']);
     $session->set('amount', $val);
-    
 }
 
-if ($type == 'SubdescriptiveIndicator') { 
-        $r_ID = explode(',',$_POST['val']);
-        $sub_id = $_POST['sub'];
-        $pupilsightYearGroupID = $_POST['cls'];
-        $di_mode = $_POST['dimode'];
-        $r_des= $_POST['rdes'];
-        $grade =  $_POST['grade'];
-        $prg =  $_POST['program'];
-        $grade_text=$_POST['grade_text'];
-    foreach($r_des as $rdata){      
+if ($type == 'SubdescriptiveIndicator') {
+    $r_ID = explode(',', $_POST['val']);
+    $sub_id = $_POST['sub'];
+    $pupilsightYearGroupID = $_POST['cls'];
+    $di_mode = $_POST['dimode'];
+    $r_des = $_POST['rdes'];
+    $grade =  $_POST['grade'];
+    $prg =  $_POST['program'];
+    $grade_text = $_POST['grade_text'];
+    foreach ($r_des as $rdata) {
         $remarks = explode('_', $rdata);
-      
+
         $rid = $remarks[0];
-        $name = $remarks[1]; 
-        $data1 = array('remark_id' => $rid ,'pupilsightDepartmentID'=>$sub_id,'pupilsightProgramID'=>$prg,'pupilsightYearGroupID'=>$pupilsightYearGroupID,);        
+        $name = $remarks[1];
+        $data1 = array('remark_id' => $rid, 'pupilsightDepartmentID' => $sub_id, 'pupilsightProgramID' => $prg, 'pupilsightYearGroupID' => $pupilsightYearGroupID,);
         $sql1 = 'DELETE FROM subject_skill_descriptive_indicator_config WHERE remark_id=:remark_id AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightProgramID =:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID';
         $result1 = $connection2->prepare($sql1);
-        $result1->execute($data1); 
-         
-        $data = array('remark_id' => $rid,'remark_description'=>$name,'pupilsightDepartmentID'=>$sub_id,'pupilsightYearGroupID'=>$pupilsightYearGroupID,'di_mode'=>$di_mode,'grade_id'=>$grade,'grade'=>$grade_text,'pupilsightProgramID'=>$prg);
-        
+        $result1->execute($data1);
+
+        $data = array('remark_id' => $rid, 'remark_description' => $name, 'pupilsightDepartmentID' => $sub_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'di_mode' => $di_mode, 'grade_id' => $grade, 'grade' => $grade_text, 'pupilsightProgramID' => $prg);
+
         $sql = "INSERT INTO subject_skill_descriptive_indicator_config SET remark_id    =:remark_id ,remark_description=:remark_description,pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightDepartmentID=:pupilsightDepartmentID,di_mode=:di_mode,grade_id=:grade_id,grade=:grade,pupilsightProgramID=:pupilsightProgramID";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     }
 }
 if ($type == 'remove_config') {
-    $id = $val; 
-    $ids = explode(',',$val);
-    foreach($ids as $st){
+    $id = $val;
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
         $data2 = array('id' => $st);
         $sql2 = 'DELETE FROM subject_skill_descriptive_indicator_config WHERE id=:id';
         $result2 = $connection2->prepare($sql2);
         $result2->execute($data2);
     }
 }
-if($type=='copyDescriptive'){
+if ($type == 'copyDescriptive') {
 
-$session->forget(['copyDesc']);
-$session->set('copyDesc',$val);
-$session->forget(['copycls']);
-$session->set('copycls',$_POST['cls']);
-$session->forget(['copyprg']);
-$session->set('copyprg',$_POST['prg']);
-
+    $session->forget(['copyDesc']);
+    $session->set('copyDesc', $val);
+    $session->forget(['copycls']);
+    $session->set('copycls', $_POST['cls']);
+    $session->forget(['copyprg']);
+    $session->set('copyprg', $_POST['prg']);
 }
 
-if($type == 'saveDescriptive'){
-    $dID =$_POST['descid'];
+if ($type == 'saveDescriptive') {
+    $dID = $_POST['descid'];
     $RemarksD = $_POST['val'];
-    
+
     $rid = explode(',', $dID);
-    $count=count($rid);
-    for($i=0;$i<$count;$i++){      
-            $data1 = array('remark_description' => $RemarksD[$i], 'id' => $rid[$i]);
-            $sql1 = 'UPDATE  subject_skill_descriptive_indicator_config SET remark_description=:remark_description WHERE id=:id';
-            $result1 = $connection2->prepare($sql1);
-            $result1->execute($data1);
+    $count = count($rid);
+    for ($i = 0; $i < $count; $i++) {
+        $data1 = array('remark_description' => $RemarksD[$i], 'id' => $rid[$i]);
+        $sql1 = 'UPDATE  subject_skill_descriptive_indicator_config SET remark_description=:remark_description WHERE id=:id';
+        $result1 = $connection2->prepare($sql1);
+        $result1->execute($data1);
     }
 }
 
@@ -2365,13 +2338,13 @@ if ($type == 'getSectionByClassProgForMapping') {
     $resultsec = $connection2->query($sqlsec);
     $secdata = $resultsec->fetch();
     $sqlId = $secdata['secId'];
-    if(!empty($sqlId)){
+    if (!empty($sqlId)) {
         $sqlId = $sqlId;
     } else {
         $sqlId = '0';
     }
 
-    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE pupilsightRollGroupID Not In ('.$sqlId.')  GROUP BY pupilsightRollGroupID';
+    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
@@ -2384,17 +2357,17 @@ if ($type == 'getSectionByClassProgForMapping') {
 }
 
 
-if($type == 'getSkillBySubject'){
+if ($type == 'getSkillBySubject') {
     $did = $val;
     $pid = $_POST['pid'];
     $cid = $_POST['cid'];
     $sid = $_POST['sid'];
     $aid = $_SESSION[$guid]['pupilsightSchoolYearID'];
-    
-    $sql = 'SELECT * FROM subjectSkillMapping WHERE pupilsightSchoolYearID = "'.$aid.'" AND pupilsightProgramID = "'.$pid.'" AND pupilsightYearGroupID = "'.$cid.'" AND pupilsightDepartmentID = "'.$did.'"  ';
+
+    $sql = 'SELECT * FROM subjectSkillMapping WHERE pupilsightSchoolYearID = "' . $aid . '" AND pupilsightProgramID = "' . $pid . '" AND pupilsightYearGroupID = "' . $cid . '" AND pupilsightDepartmentID = "' . $did . '"  ';
     $result = $connection2->query($sql);
     $skills = $result->fetchAll();
-    
+
     $data = '<option value="">Select Skill</option>';
     if (!empty($skills)) {
         foreach ($skills as $k => $cl) {
@@ -2406,43 +2379,40 @@ if($type == 'getSkillBySubject'){
 
 if ($type == 'getGradeConfigData') {
     $marks_enter = $val;
-    $gradeSystemId=$_POST['gsid'];
-    $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="'.$gradeSystemId.'" AND  ('.$marks_enter.' BETWEEN `lower_limit` AND `upper_limit`)';
+    $gradeSystemId = $_POST['gsid'];
+    $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $gradeSystemId . '" AND  (' . $marks_enter . ' BETWEEN `lower_limit` AND `upper_limit`)';
     $result = $connection2->query($sql);
     $grade = $result->fetch();
     $return['id'] = $grade['id'];
     $return['status'] = $grade['subject_status'];
     echo json_encode($return);
-    
 }
 if ($type == 'getGradeConfigData1') {
     $marks_enter = $val;
-    $gradeSystemId=$_POST['gsid'];
-    $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="'.$gradeSystemId.'" AND  ('.$marks_enter.' BETWEEN `lower_limit` AND `upper_limit`)';
+    $gradeSystemId = $_POST['gsid'];
+    $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $gradeSystemId . '" AND  (' . $marks_enter . ' BETWEEN `lower_limit` AND `upper_limit`)';
     $result = $connection2->query($sql);
     $grade = $result->fetch();
-  
-   $sql1 = 'SELECT skill_configure  FROM `examinationSubjectToTest` WHERE `test_id` ="'.$_POST['tid'].'"  AND `pupilsightDepartmentID` = "'.$_POST['d'].'" AND skill_configure !="" GROUP BY pupilsightDepartmentID';
+
+    $sql1 = 'SELECT skill_configure  FROM `examinationSubjectToTest` WHERE `test_id` ="' . $_POST['tid'] . '"  AND `pupilsightDepartmentID` = "' . $_POST['d'] . '" AND skill_configure !="" GROUP BY pupilsightDepartmentID';
     $result1 = $connection2->query($sql1);
     $mode = $result1->fetch();
     $return['id'] = $grade['id'];
     $return['status'] = $grade['subject_status'];
     $return['skill_configure'] = $mode['skill_configure'];
     echo json_encode($return);
-    
 }
 
 if ($type == 'getGradeConfigDataSubject') {
     $marks_enter = $val;
-    $gradeSystemId=$_POST['gsid'];
-    $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="'.$gradeSystemId.'" AND  ('.$marks_enter.' BETWEEN `lower_limit` AND `upper_limit`)';
+    $gradeSystemId = $_POST['gsid'];
+    $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $gradeSystemId . '" AND  (' . $marks_enter . ' BETWEEN `lower_limit` AND `upper_limit`)';
     $result = $connection2->query($sql);
     $grade = $result->fetch();
-  
+
     $return['id'] = $grade['id'];
     $return['status'] = $grade['subject_status'];
     echo json_encode($return);
-    
 }
 
 // if ($type == 'getSubjectbasedonclassNew') {
@@ -2457,7 +2427,7 @@ if ($type == 'getGradeConfigDataSubject') {
 //     {
 //         $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightYearGroupID ='".$val."' order by subject_display_name asc";
 //     }
-   
+
 //     $result = $connection2->query($sq);
 //     $rowdata = $result->fetchAll();
 //     $returndata = '<option value="">Select Subject</option>';
@@ -2467,43 +2437,39 @@ if ($type == 'getGradeConfigDataSubject') {
 //     echo $returndata;
 // }
 
-if($type == 'Classwisesubject'){
-    $sub = $val;   
-    $sql = 'SELECT a.pupilsightStaffID,a.pupilsightDepartmentID ,c.officialName FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID  WHERE a.pupilsightDepartmentID = "'.$sub.'"';
-  
+if ($type == 'Classwisesubject') {
+    $sub = $val;
+    $sql = 'SELECT a.pupilsightStaffID,a.pupilsightDepartmentID ,c.officialName FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID  WHERE a.pupilsightDepartmentID = "' . $sub . '"';
+
     $result = $connection2->query($sql);
     $staff = $result->fetchAll();
 
     $data = '<option value="">Select Staffs</option>';
-    if(!empty($staff)){
+    if (!empty($staff)) {
         foreach ($staff as $k => $st) {
-        $data .= '<option value="' . $st['pupilsightStaffID'] . '">' . $st['officialName'] . '</option>';
+            $data .= '<option value="' . $st['pupilsightStaffID'] . '">' . $st['officialName'] . '</option>';
         }
     }
     echo $data;
-
-
 }
 
 
 if ($type == 'getSubjectbasedonclassNew') {
-    $pupilsightSchoolYearID= $_SESSION[$guid]['pupilsightSchoolYearID'];
-    $pupilsightPersonID= $_SESSION[$guid]['pupilsightPersonID'];
-    $sqlck = 'SELECT pupilsightRoleIDPrimary FROM pupilsightPerson WHERE pupilsightPersonID = '.$pupilsightPersonID.' ';
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+    $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
+    $sqlck = 'SELECT pupilsightRoleIDPrimary FROM pupilsightPerson WHERE pupilsightPersonID = ' . $pupilsightPersonID . ' ';
     $resultck = $connection2->query($sqlck);
     $ckdata = $resultck->fetch();
-    $roleid= $ckdata['pupilsightRoleIDPrimary'];
-    
-    $pupilsightProgramID= $_POST['pupilsightProgramID'];
-    if($roleid=='002')//for teacher login
+    $roleid = $ckdata['pupilsightRoleIDPrimary'];
+
+    $pupilsightProgramID = $_POST['pupilsightProgramID'];
+    if ($roleid == '002') //for teacher login
     {
-        $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '".$pupilsightSchoolYearID."' AND subjectToClassCurriculum.pupilsightProgramID = '".$pupilsightProgramID."' AND subjectToClassCurriculum.pupilsightYearGroupID ='".$val."' AND pupilsightStaff.pupilsightPersonID='".$pupilsightPersonID."' order by subjectToClassCurriculum.subject_display_name asc";
+        $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND subjectToClassCurriculum.pupilsightProgramID = '" . $pupilsightProgramID . "' AND subjectToClassCurriculum.pupilsightYearGroupID ='" . $val . "' AND pupilsightStaff.pupilsightPersonID='" . $pupilsightPersonID . "' order by subjectToClassCurriculum.subject_display_name asc";
+    } else {
+        $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND pupilsightProgramID = '" . $pupilsightProgramID . "' AND pupilsightYearGroupID ='" . $val . "' order by subject_display_name asc";
     }
-    else
-    {
-        $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightSchoolYearID = '".$pupilsightSchoolYearID."' AND pupilsightProgramID = '".$pupilsightProgramID."' AND pupilsightYearGroupID ='".$val."' order by subject_display_name asc";
-    }
-   
+
     $result = $connection2->query($sq);
     $rowdata = $result->fetchAll();
     $returndata = '<option value="">Select Subject</option>';
@@ -2513,225 +2479,222 @@ if ($type == 'getSubjectbasedonclassNew') {
     echo $returndata;
 }
 
-if($type=='subPeriodWise'){
+if ($type == 'subPeriodWise') {
     $pro = $val;
     $cls = $_POST['cls'];
     $sec = $_POST['sec'];
-    $sqlt = 'SELECT d.name,d.pupilsightDepartmentID FROM pupilsightTT AS a LEFT JOIN pupilsightTTDay AS b ON a.pupilsightTTID = b.pupilsightTTID LEFT JOIN pupilsightTTDayRowClass AS c ON b.pupilsightTTDayID = c.pupilsightTTDayID LEFT JOIN pupilsightDepartment as d ON c.pupilsightDepartmentID = d.pupilsightDepartmentID WHERE a.pupilsightProgramID = "'.$pro.'" AND a.pupilsightYearGroupIDList = "'.$cls.'"';
-    if(!empty( $sec)){
-        $sqlt.= 'AND a.pupilsightRollGroupIDList = "'.$sec.'"';
+    $sqlt = 'SELECT d.name,d.pupilsightDepartmentID FROM pupilsightTT AS a LEFT JOIN pupilsightTTDay AS b ON a.pupilsightTTID = b.pupilsightTTID LEFT JOIN pupilsightTTDayRowClass AS c ON b.pupilsightTTDayID = c.pupilsightTTDayID LEFT JOIN pupilsightDepartment as d ON c.pupilsightDepartmentID = d.pupilsightDepartmentID WHERE a.pupilsightProgramID = "' . $pro . '" AND a.pupilsightYearGroupIDList = "' . $cls . '"';
+    if (!empty($sec)) {
+        $sqlt .= 'AND a.pupilsightRollGroupIDList = "' . $sec . '"';
     }
-    
-    $resultt = $connection2->query($sqlt);  
+
+    $resultt = $connection2->query($sqlt);
     $subjects = $resultt->fetchAll();
-   // print_r($subjects);die();
+    // print_r($subjects);die();
     $data = '<option value="">Select Subjects</option>';
-    if(!empty($subjects)){
+    if (!empty($subjects)) {
         foreach ($subjects as $k => $st) {
-        $data .= '<option value="' . $st['pupilsightDepartmentID'] . '">' . $st['name'] . '</option>';
+            $data .= '<option value="' . $st['pupilsightDepartmentID'] . '">' . $st['name'] . '</option>';
         }
     }
     echo $data;
 }
-if($type== "attendanceConfigCls"){
+if ($type == "attendanceConfigCls") {
 
-        $pid = $val;
-        $att_type="";
-        if(isset($_POST['att_type'])){
-            $att_type=$_POST['att_type'];
-        }
-        $sql = 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pid . '"  '; 
-        if($att_type!=""){
-         $sql.=' AND a.attn_type="'.$att_type.'"';
-        }
-        $sql.=' GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';   
-        $result = $connection2->query($sql);
-        $classes = $result->fetchAll();
-       
-        $data = '<option value="">Select Class</option>';
-        if (!empty($classes)) {
-            foreach ($classes as  $cl) {
-               
-                $class = explode(',' , $cl['name']);
-                $cid = explode(',' , $cl['clid']);            
-                $count=count($class);
-                for($i=0;$i<$count;$i++){                     
-                $data .= '<option value="'. $cid[$i] .'">' . $class[$i] . '</option>';
-            }
-                             
+    $pid = $val;
+    $att_type = "";
+    if (isset($_POST['att_type'])) {
+        $att_type = $_POST['att_type'];
+    }
+    $sql = 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pid . '"  ';
+    if ($att_type != "") {
+        $sql .= ' AND a.attn_type="' . $att_type . '"';
+    }
+    $sql .= ' GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+
+    $data = '<option value="">Select Class</option>';
+    if (!empty($classes)) {
+        foreach ($classes as  $cl) {
+
+            $class = explode(',', $cl['name']);
+            $cid = explode(',', $cl['clid']);
+            $count = count($class);
+            for ($i = 0; $i < $count; $i++) {
+                $data .= '<option value="' . $cid[$i] . '">' . $class[$i] . '</option>';
             }
         }
-        echo $data;
-    
-   
+    }
+    echo $data;
 }
 
 
 if ($type == 'getsessionbyclass') {
-    $pid= $val; 
-    $cid = $_POST['cid'];  
-       $sqlp = 'SELECT a.session_no, a.session_name FROM attn_session_settings AS a LEFT JOIN attn_settings AS b ON(a.attn_settings_id =b.id) WHERE b.pupilsightProgramID='.$pid.' AND FIND_IN_SET("'.$cid.'",b.pupilsightYearGroupID) ';
-       // b.pupilsightYearGroupID = '.$cid. '';
-       $resultp = $connection2->query($sqlp);
-      
-       $rowdatasession = $resultp->fetchAll();
-       $data = '<option value="">Select Session</option>';
-   if (!empty($rowdatasession)) {
-       foreach ($rowdatasession as $k => $cl) {
-           $data .= '<option value="' . $cl['session_no'] . '">' . $cl['session_name'] . '</option>';
-       }
-   }   
-   echo $data;
-   }
+    $pid = $val;
+    $cid = $_POST['cid'];
+    $sqlp = 'SELECT a.session_no, a.session_name FROM attn_session_settings AS a LEFT JOIN attn_settings AS b ON(a.attn_settings_id =b.id) WHERE b.pupilsightProgramID=' . $pid . ' AND FIND_IN_SET("' . $cid . '",b.pupilsightYearGroupID) ';
+    // b.pupilsightYearGroupID = '.$cid. '';
+    $resultp = $connection2->query($sqlp);
 
-   if($type=='subclassWise'){
+    $rowdatasession = $resultp->fetchAll();
+    $data = '<option value="">Select Session</option>';
+    if (!empty($rowdatasession)) {
+        foreach ($rowdatasession as $k => $cl) {
+            $data .= '<option value="' . $cl['session_no'] . '">' . $cl['session_name'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+if ($type == 'subclassWise') {
     $pro = $val;
     $cls = $_POST['cid'];
     //$sec = $_POST['sec'];
-    $sqlt = 'SELECT a.pupilsightDepartmentID, b.name FROM assign_core_subjects_toclass AS a LEFT JOIN pupilsightDepartment as b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.pupilsightProgramID = "'.$pro.'" AND  a.pupilsightYearGroupID = "'.$cls.'"';
-    $resultt = $connection2->query($sqlt);  
+    $sqlt = 'SELECT a.pupilsightDepartmentID, b.name FROM assign_core_subjects_toclass AS a LEFT JOIN pupilsightDepartment as b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.pupilsightProgramID = "' . $pro . '" AND  a.pupilsightYearGroupID = "' . $cls . '"';
+    $resultt = $connection2->query($sqlt);
     $subjects = $resultt->fetchAll();
     //print_r($subjects);die();
     $data = '<option value="">Select Subjects</option>';
-    if(!empty($subjects)){
+    if (!empty($subjects)) {
         foreach ($subjects as $k => $st) {
-        $data .= '<option value="' . $st['pupilsightDepartmentID'] . '">' . $st['name'] . '</option>';
+            $data .= '<option value="' . $st['pupilsightDepartmentID'] . '">' . $st['name'] . '</option>';
         }
     }
     echo $data;
 }
 
 
-if($type=='getPrograms'){
+if ($type == 'getPrograms') {
     $yr = $val;
-    $sqlp ="SELECT pupilsightProgramID,name FROM pupilsightProgram";
+    $sqlp = "SELECT pupilsightProgramID,name FROM pupilsightProgram";
     $resultp = $connection2->query($sqlp);
-    $rowdataprog = $resultp->fetchAll();    
-    $data = '' ;   
+    $rowdataprog = $resultp->fetchAll();
+    $data = '';
     foreach ($rowdataprog as $dt) {
-       
-      $data.= '<tr><td><input type="checkbox" data_check="Student_Program_'. $dt['pupilsightProgramID'] .'" data_pro="Student_Program_'. $dt['name'] .'_'. $dt['pupilsightProgramID'] .'" class="selectItems Student_Program_'. $dt['pupilsightProgramID'].'" name="selectItems[]" data_id="'. $dt['name']  .'-'.$dt['pupilsightProgramID'] .'"></td><td>'. $dt['name'] .'</td></tr>';
+
+        $data .= '<tr><td><input type="checkbox" data_check="Student_Program_' . $dt['pupilsightProgramID'] . '" data_pro="Student_Program_' . $dt['name'] . '_' . $dt['pupilsightProgramID'] . '" class="selectItems Student_Program_' . $dt['pupilsightProgramID'] . '" name="selectItems[]" data_id="' . $dt['name']  . '-' . $dt['pupilsightProgramID'] . '"></td><td>' . $dt['name'] . '</td></tr>';
     }
     echo $data;
 }
 
-if($type=='getClass_interaction'){
+if ($type == 'getClass_interaction') {
     $pid = $val;
     $sql = 'SELECT a.*, b.name,c.name as program FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID  LEFT JOIN pupilsightProgram as c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
     $result = $connection2->query($sql);
-    $classes = $result->fetchAll();   
-    $data = '' ;   
+    $classes = $result->fetchAll();
+    $data = '';
     foreach ($classes as $dt) {
-      $data.= '<tr><td><input type="checkbox" data_check="Student_Class_'.$pid.$dt['pupilsightYearGroupID'].'" data_pro="Student_Class_'.$dt['name'].'(' .$dt['program'].')_'.$pid.$dt['pupilsightYearGroupID'].'" class="selectItems Student_Class_'.$pid.$dt['pupilsightYearGroupID'].'" name="selectItems[]" data_id="'.$dt['name'].'-'.$pid.$dt['pupilsightYearGroupID'] .'"></td><td>'. $dt['name'].'</td></tr>';
+        $data .= '<tr><td><input type="checkbox" data_check="Student_Class_' . $pid . $dt['pupilsightYearGroupID'] . '" data_pro="Student_Class_' . $dt['name'] . '(' . $dt['program'] . ')_' . $pid . $dt['pupilsightYearGroupID'] . '" class="selectItems Student_Class_' . $pid . $dt['pupilsightYearGroupID'] . '" name="selectItems[]" data_id="' . $dt['name'] . '-' . $pid . $dt['pupilsightYearGroupID'] . '"></td><td>' . $dt['name'] . '</td></tr>';
     }
     echo $data;
 }
 
 
-if($type=='getSection_interaction'){
+if ($type == 'getSection_interaction') {
     $pid = $val;
     $cid = $_POST['cls'];
     $sql = 'SELECT a.*, b.name,c.name as class,d.name as program FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID LEFT JOIN pupilsightYearGroup AS c ON a.pupilsightYearGroupID = c.pupilsightYearGroupID  LEFT JOIN pupilsightProgram as d ON a.pupilsightProgramID = d.pupilsightProgramID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" GROUP BY a.pupilsightRollGroupID';
     $result = $connection2->query($sql);
-    $sections = $result->fetchAll();   
-    $data = '' ;   
+    $sections = $result->fetchAll();
+    $data = '';
     foreach ($sections as $dt) {
-      $data.= '<tr><td><input type="checkbox" data_check="Student_Section_'.$dt['pupilsightProgramID'].$dt['pupilsightRollGroupID'] .'" data_pro="Student_Section_'.$dt['name'].'(' .$dt['class'].'-'.$dt['program'].')_'. $dt['pupilsightProgramID'].$dt['pupilsightRollGroupID'] .'" class="selectItems Student_Section_'.$dt['pupilsightProgramID']. $dt['pupilsightRollGroupID'].'" name="selectItems[]" data_id="'. $dt['name']  .'-'.$dt['pupilsightProgramID'].$dt['pupilsightProgramID'] .'"></td><td>'. $dt['name'] .'</td></tr>';
+        $data .= '<tr><td><input type="checkbox" data_check="Student_Section_' . $dt['pupilsightProgramID'] . $dt['pupilsightRollGroupID'] . '" data_pro="Student_Section_' . $dt['name'] . '(' . $dt['class'] . '-' . $dt['program'] . ')_' . $dt['pupilsightProgramID'] . $dt['pupilsightRollGroupID'] . '" class="selectItems Student_Section_' . $dt['pupilsightProgramID'] . $dt['pupilsightRollGroupID'] . '" name="selectItems[]" data_id="' . $dt['name']  . '-' . $dt['pupilsightProgramID'] . $dt['pupilsightProgramID'] . '"></td><td>' . $dt['name'] . '</td></tr>';
     }
     echo $data;
 }
 
-if($type=='getStaffDeparment'){
-    $dip = $val;  
-    $sql = 'SELECT pupilsightRoleID as id,name as value, name FROM pupilsightRole WHERE category="'.$dip.'" ORDER BY name';
+if ($type == 'getStaffDeparment') {
+    $dip = $val;
+    $sql = 'SELECT pupilsightRoleID as id,name as value, name FROM pupilsightRole WHERE category="' . $dip . '" ORDER BY name';
     $result = $connection2->query($sql);
-    $deparment = $result->fetchAll();   
-    $data = '' ;   
-    
+    $deparment = $result->fetchAll();
+    $data = '';
+
     foreach ($deparment as $dt) {
-        
-      $data.= '<tr><td><input type="checkbox" data_check="Staff_Department_'.$dt['value'].'" data_pro="Staff_Deprtment_'.$dt['name'].'_'. $dt['id'] .'" class="selectItems Staff_Deprtment_'.$dt['name'].'" name="selectItems[]" data_id="'.$dt['name'].'-'.$dt['id'] .'"></td><td>'. $dt['name'] .'</td></tr>';
+
+        $data .= '<tr><td><input type="checkbox" data_check="Staff_Department_' . $dt['value'] . '" data_pro="Staff_Deprtment_' . $dt['name'] . '_' . $dt['id'] . '" class="selectItems Staff_Deprtment_' . $dt['name'] . '" name="selectItems[]" data_id="' . $dt['name'] . '-' . $dt['id'] . '"></td><td>' . $dt['name'] . '</td></tr>';
     }
     echo $data;
 }
 
-if($type == 'getindStaff'){
-    $sname = $val;  
-    $sql = 'SELECT a.pupilsightStaffID ,b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID  WHERE b.officialName LIKE "'.$sname.'%"';
+if ($type == 'getindStaff') {
+    $sname = $val;
+    $sql = 'SELECT a.pupilsightStaffID ,b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID  WHERE b.officialName LIKE "' . $sname . '%"';
     echo $sql;
     $result = $connection2->query($sql);
-    $stafflist = $result->fetchAll();   
-    $data = '' ;   
+    $stafflist = $result->fetchAll();
+    $data = '';
     foreach ($stafflist as $dt) {
-      $data.= '<tr><td><input type="checkbox"  data_check="Staff_Individual_'.$dt['pupilsightStaffID'].'" data_pro="Staff_Individual_'.$dt['officialName'].'_'. $dt['pupilsightStaffID'] .'" class="selectItems Staff_Individual_'.$dt['pupilsightStaffID'].'" name="selectItems[]" data_id="'.$dt['officialName'].'-'.$dt['pupilsightStaffID'] .'"></td><td>'. $dt['officialName'] .'</td></tr>';
+        $data .= '<tr><td><input type="checkbox"  data_check="Staff_Individual_' . $dt['pupilsightStaffID'] . '" data_pro="Staff_Individual_' . $dt['officialName'] . '_' . $dt['pupilsightStaffID'] . '" class="selectItems Staff_Individual_' . $dt['pupilsightStaffID'] . '" name="selectItems[]" data_id="' . $dt['officialName'] . '-' . $dt['pupilsightStaffID'] . '"></td><td>' . $dt['officialName'] . '</td></tr>';
     }
     echo $data;
 }
 
-if($type == 'recipienst'){
+if ($type == 'recipienst') {
     $session->forget(['recipients_dtl']);
-    $session->set('recipients_dtl', $val); 
+    $session->set('recipients_dtl', $val);
 }
 
-if($type=='getIndi_interaction'){
+if ($type == 'getIndi_interaction') {
     $pupilsightSchoolYearID = $val;
     $pupilsightProgramID = $_POST['pid'];
     $pupilsightYearGroupID = $_POST['cls'];
     $sec = $_POST['sec'];
     $search = $_POST['name'];
     $sql = 'SELECT a.*, b.officialName as name ,c.name as program,d.name as class,e.name as section FROM  pupilsightStudentEnrolment AS a  LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID  LEFT JOIN pupilsightProgram as c ON a.pupilsightProgramID = c.pupilsightProgramID LEFT JOIN pupilsightYearGroup as d ON a.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup as e ON a.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ';
-    if(!empty($pupilsightProgramID)){
-        $sql.=  'AND a.pupilsightProgramID = "' . $pupilsightProgramID . '"';
+    if (!empty($pupilsightProgramID)) {
+        $sql .=  'AND a.pupilsightProgramID = "' . $pupilsightProgramID . '"';
     }
-    if(!empty($pupilsightYearGroupID)){
-        $sql.=  'AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '"';
+    if (!empty($pupilsightYearGroupID)) {
+        $sql .=  'AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '"';
     }
-    if(!empty($pupilsightRollGroupID)){
-        $sql.= 'AND a.pupilsightRollGroupID = "' . $sec . '"';
+    if (!empty($pupilsightRollGroupID)) {
+        $sql .= 'AND a.pupilsightRollGroupID = "' . $sec . '"';
     }
-    if(!empty($search)){
-        $sql.='AND b.officialName LIKE "' . $search . '%"';
+    if (!empty($search)) {
+        $sql .= 'AND b.officialName LIKE "' . $search . '%"';
     }
-    $sql.='AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+    $sql .= 'AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
 
     $result = $connection2->query($sql);
-    $selectInd = $result->fetchAll();   
-    $data = '' ;   
+    $selectInd = $result->fetchAll();
+    $data = '';
     foreach ($selectInd as $dt) {
-      $data.= '<tr><td><input  type="checkbox" data_check="Student_Individual_'.$dt['pupilsightPersonID'].'" data_pro="Student_Individual_'. $dt['name'].'_'.$dt['pupilsightPersonID'].'" class="selectItems Student_Individual_'.$dt['pupilsightPersonID']. '" name="selectItems[]" data_id="'. $dt['name']  .'-'.$dt['pupilsightPersonID'].'"></td><td>'. $dt['name'] .'('.$dt['class'].'-'.$dt['program'].')</td></tr>';
+        $data .= '<tr><td><input  type="checkbox" data_check="Student_Individual_' . $dt['pupilsightPersonID'] . '" data_pro="Student_Individual_' . $dt['name'] . '_' . $dt['pupilsightPersonID'] . '" class="selectItems Student_Individual_' . $dt['pupilsightPersonID'] . '" name="selectItems[]" data_id="' . $dt['name']  . '-' . $dt['pupilsightPersonID'] . '"></td><td>' . $dt['name'] . '(' . $dt['class'] . '-' . $dt['program'] . ')</td></tr>';
     }
     echo $data;
 }
 
-if($type=="getSelect_interaction"){
-    $ids = explode(',',$val);
-    $data = '' ; 
-    foreach($ids as $st){
-         $clid = explode('_',$st);
+if ($type == "getSelect_interaction") {
+    $ids = explode(',', $val);
+    $data = '';
+    foreach ($ids as $st) {
+        $clid = explode('_', $st);
         $stakeholder = $clid[0];
-        $target = $clid[1]; 
-        $name = $clid[2];  
-        $id = $clid[3]; 
-  
-        $data.= '<tr data_dtl='.$stakeholder.'_'.$target.'_'.$id.'_'.$name.' data_id='.$stakeholder.'_'.$target.'_'.$id.'><td>' . $stakeholder . ' </td><td>'.$target.'</td><td>'.$name.'</td><td><i class="fa fa-times deletRow" aria-hidden="true"></i>
+        $target = $clid[1];
+        $name = $clid[2];
+        $id = $clid[3];
+
+        $data .= '<tr data_dtl=' . $stakeholder . '_' . $target . '_' . $id . '_' . $name . ' data_id=' . $stakeholder . '_' . $target . '_' . $id . '><td>' . $stakeholder . ' </td><td>' . $target . '</td><td>' . $name . '</td><td><i class="fa fa-times deletRow" aria-hidden="true"></i>
         </td></tr>';
     }
-    echo $data; 
-}    
+    echo $data;
+}
 
-if($type=='getSketchLabel'){
+if ($type == 'getSketchLabel') {
     $entity = $val;
-    if($entity == 'Entity'){
+    if ($entity == 'Entity') {
         $label = "'Student','Parent','Principal','Staff','Subject Teacher','Class Teacher'";
-    } else if($entity == 'Test'){
+    } else if ($entity == 'Test') {
         $label = "'Marks','Max Marks','Min Marks','Grade','Grade Point','Remarks','Subject','Subject Code'";
     } else {
         $label = "'Marks','Grade','Grade Point','Fail Count','Change of Color','Percentage'";
     }
-    echo $sql = "SELECT table_label FROM examinationReportTemplateConfiguration WHERE table_label IN (".$label.") GROUP BY table_label";
+    echo $sql = "SELECT table_label FROM examinationReportTemplateConfiguration WHERE table_label IN (" . $label . ") GROUP BY table_label";
     $result = $connection2->query($sql);
     $labeldata = $result->fetchAll();
-    $data = '<option value="">Select Type</option>';   
+    $data = '<option value="">Select Type</option>';
     foreach ($labeldata as $ldt) {
         $data .= '<option value="' . $ldt['table_label'] . '">' . $ldt['table_label'] . '</option>';
     }
@@ -2740,9 +2703,9 @@ if($type=='getSketchLabel'){
 
 
 if ($type == 'getsessionConfigured') {
-    $pid= $val;  
-    $pupilsightYearGroupID=$_POST['pupilsightYearGroupID'];
-    $sqlp = 'SELECT a.session_no, a.session_name FROM attn_session_settings AS a LEFT JOIN attn_settings AS b ON(a.attn_settings_id =b.id) WHERE b.pupilsightProgramID='.$pid.' AND  FIND_IN_SET("'.$pupilsightYearGroupID.'",b.pupilsightYearGroupID) > 0';
+    $pid = $val;
+    $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
+    $sqlp = 'SELECT a.session_no, a.session_name FROM attn_session_settings AS a LEFT JOIN attn_settings AS b ON(a.attn_settings_id =b.id) WHERE b.pupilsightProgramID=' . $pid . ' AND  FIND_IN_SET("' . $pupilsightYearGroupID . '",b.pupilsightYearGroupID) > 0';
     $resultp = $connection2->query($sqlp);
     $rowdatasession = $resultp->fetchAll();
     $data = '<option value="">Select Session</option>';
@@ -2754,14 +2717,14 @@ if ($type == 'getsessionConfigured') {
     echo $data;
 }
 
-if($type == 'getTestBySubject'){
+if ($type == 'getTestBySubject') {
     $pupilsightDepartmentID = $val;
     $pupilsightYearGroupID = $_POST['cid'];
     $pupilsightRollGroupID = $_POST['sid'];
     $pupilsightProgramID = $_POST['pid'];
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-    $sql = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id LEFT JOIN examinationSubjectToTest AS c ON a.test_id = c.test_id  WHERE a.pupilsightSchoolYearID= '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$pupilsightProgramID.' AND a.pupilsightYearGroupID = '.$pupilsightYearGroupID.' AND a.pupilsightRollGroupID = '.$pupilsightRollGroupID.' AND c.pupilsightDepartmentID = '.$pupilsightDepartmentID.' GROUP BY a.test_id ';
+    $sql = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id LEFT JOIN examinationSubjectToTest AS c ON a.test_id = c.test_id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND a.pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' AND c.pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' GROUP BY a.test_id ';
     $result = $connection2->query($sql);
     $tests = $result->fetchAll();
     $returndata = '<option value="">Select Test</option>';
@@ -2771,9 +2734,9 @@ if($type == 'getTestBySubject'){
     echo $returndata;
 }
 
-if($type == 'deleteSketchAttribute'){
-    $ids = explode(',',$val);
-    foreach($ids as $st){
+if ($type == 'deleteSketchAttribute') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
         $data2 = array('id' => $st);
         $sql2 = 'DELETE FROM examinationReportTemplateAttributes WHERE id=:id';
         $result2 = $connection2->prepare($sql2);
@@ -2781,29 +2744,29 @@ if($type == 'deleteSketchAttribute'){
     }
 }
 
-if($type == 'getStudentSketchData'){
+if ($type == 'getStudentSketchData') {
     $sketch_id = $val;
     $pupilsightPersonID = $_POST['pid'];
-   
-    $sql = 'SELECT * FROM examinationReportTemplateSketchData WHERE sketch_id = '.$sketch_id.' AND pupilsightPersonID = '.$pupilsightPersonID.'';
-  
+
+    $sql = 'SELECT * FROM examinationReportTemplateSketchData WHERE sketch_id = ' . $sketch_id . ' AND pupilsightPersonID = ' . $pupilsightPersonID . '';
+
     $result = $connection2->query($sql);
     $studentData = $result->fetchAll();
 
     $data = '';
-    if(!empty($studentData)){
+    if (!empty($studentData)) {
         foreach ($studentData as $k => $st) {
-        $data .= '<tr>
-                        <td style="width:15%">'.$st['attribute_name'].'</td>
-                        <td style="width:15%">${'.$st['attribute_name'].'}</td>
-                        <td style="width:15%">'.$st['attribute_value'].'</td>
+            $data .= '<tr>
+                        <td style="width:15%">' . $st['attribute_name'] . '</td>
+                        <td style="width:15%">${' . $st['attribute_name'] . '}</td>
+                        <td style="width:15%">' . $st['attribute_value'] . '</td>
                     </tr>';
         }
     }
     echo $data;
 }
 
-if($type == 'transStatusChangeNew'){
+if ($type == 'transStatusChangeNew') {
     $session->forget(['collection_id']);
     $session->set('collection_id', $val);
 }
@@ -2812,26 +2775,26 @@ if ($type == 'getMultiSectionData') {
     $cid = $val;
     $pid = $_POST['pid'];
     $data = '<option value="">Select Section</option>';
-    foreach($cid as $sid){
+    foreach ($cid as $sid) {
         $sql = 'SELECT a.*, b.name ,c.name AS cname,c.pupilsightYearGroupID as cid FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID   LEFT JOIN pupilsightYearGroup as c ON a.pupilsightYearGroupID = c.pupilsightYearGroupID  WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $sid . '" GROUP BY a.pupilsightRollGroupID';
 
-       
+
         $result = $connection2->query($sql);
         $sections = $result->fetchAll();
-       
-        
+
+
         if (!empty($sections)) {
             foreach ($sections as $k => $cl) {
                 $data .= '<option value="' . $cl['pupilsightRollGroupID'] . '">' . $cl['name'] . '</option>';
             }
         }
     }
-   
+
     echo $data;
 }
 
 if ($type == 'getMultiSection') {
-    $cid = implode(',',$val);
+    $cid = implode(',', $val);
     $pid = $_POST['pid'];
     $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.pupilsightRollGroupID';
     $result = $connection2->query($sql);
@@ -2852,17 +2815,17 @@ if ($type == 'getAllSchoolStaff') {
     $data = '<option value="">Select Staff</option>';
     if (!empty($staffs)) {
         foreach ($staffs as $k => $cl) {
-            $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'].' ('.$cl['type']. ') </option>';
+            $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'] . ' (' . $cl['type'] . ') </option>';
         }
     }
     echo $data;
 }
 
 if ($type == 'getFeeStructure') {
-    $cid = implode(',',$val);
+    $cid = implode(',', $val);
     $pid = $_POST['pid'];
     $aid = $_POST['aid'];
-    $sql = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "'.$aid.'" AND b.pupilsightProgramID = "' . $pid . '" AND B.pupilsightYearGroupID IN ('.$cid.') GROUP BY a.id';
+    $sql = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "' . $aid . '" AND b.pupilsightProgramID = "' . $pid . '" AND B.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.id';
     $result = $connection2->query($sql);
     $structure = $result->fetchAll();
     $data = '<option value="">Select Fee Structure</option>';
@@ -2875,14 +2838,14 @@ if ($type == 'getFeeStructure') {
 }
 
 if ($type == 'delWorkFlowState') {
-    $id = $val; 
+    $id = $val;
     $data2 = array('id' => $id);
     $sql2 = 'DELETE FROM workflow_state WHERE id=:id';
     $result2 = $connection2->prepare($sql2);
     $result2->execute($data2);
 }
 
-if($type == 'convertApplicantData'){
+if ($type == 'convertApplicantData') {
     $campaignid = $_POST['val'];
     $submissionId = $_SESSION['submissionId'];
     $pupilsightProgramID = $_POST['pid'];
@@ -2891,12 +2854,12 @@ if($type == 'convertApplicantData'){
     $application_id = $_POST['aid'];
     $oldsid = $_POST['oldsid'];
 
-    $chksub = 'SELECT is_converted FROM wp_fluentform_submissions WHERE id = '.$oldsid.' ';
+    $chksub = 'SELECT is_converted FROM wp_fluentform_submissions WHERE id = ' . $oldsid . ' ';
     $resultsub = $connection2->query($chksub);
     $chkConvertion = $resultsub->fetch();
 
-    if($chkConvertion['is_converted'] == '0'){
-    
+    if ($chkConvertion['is_converted'] == '0') {
+
         $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
         $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
         $result = $connection2->prepare($sql);
@@ -2907,11 +2870,11 @@ if($type == 'convertApplicantData'){
         $result = $connection2->prepare($sql);
         $result->execute($data);
 
-        $invsql = 'SELECT * FROM fn_fee_invoice_applicant_assign WHERE submission_id = '.$oldsid.' ';
+        $invsql = 'SELECT * FROM fn_fee_invoice_applicant_assign WHERE submission_id = ' . $oldsid . ' ';
         $resultinv = $connection2->query($invsql);
         $invoiceData = $resultinv->fetchAll();
-        if(!empty($invoiceData)){
-            foreach($invoiceData as $inv){
+        if (!empty($invoiceData)) {
+            foreach ($invoiceData as $inv) {
                 $datainv = array('submission_id' => $submissionId, 'fn_fee_invoice_id' => $inv['fn_fee_invoice_id'], 'invoice_no' => $inv['invoice_no']);
                 $sqlinv = 'INSERT INTO fn_fee_invoice_applicant_assign SET submission_id=:submission_id, fn_fee_invoice_id=:fn_fee_invoice_id, invoice_no=:invoice_no';
                 $resulti = $connection2->prepare($sqlinv);
@@ -2919,23 +2882,23 @@ if($type == 'convertApplicantData'){
             }
         }
 
-        $chksql = 'SELECT * FROM fn_fee_collection WHERE submission_id = '.$oldsid.' ';
+        $chksql = 'SELECT * FROM fn_fee_collection WHERE submission_id = ' . $oldsid . ' ';
         $resultcol = $connection2->query($chksql);
         $collectionData = $resultcol->fetchAll();
-        if(!empty($collectionData)){
-            foreach($collectionData as $col){
-                $datacol = array('transaction_id'=> $col['transaction_id'], 'fn_fees_invoice_id' => $col['fn_fees_invoice_id'], 'submission_id' => $submissionId, 'pupilsightSchoolYearID' => $col['pupilsightSchoolYearID'], 'fn_fees_counter_id' =>$col['fn_fees_counter_id'], 'receipt_number' => $col['receipt_number'], 'is_custom' => $col['is_custom'], 'payment_mode_id' => $col['payment_mode_id'], 'bank_id' => $col['bank_id'], 'dd_cheque_no' => $col['dd_cheque_no'], 'dd_cheque_date' => $col['dd_cheque_date'], 'dd_cheque_amount' => $col['dd_cheque_amount'], 'payment_status' => $col['payment_status'], 'payment_date' => $col['payment_date'], 'fn_fees_head_id' => $col['fn_fees_head_id'], 'fn_fees_receipt_series_id' => $col['fn_fees_receipt_series_id'], 'transcation_amount' => $col['transcation_amount'], 'total_amount_without_fine_discount' => $col['total_amount_without_fine_discount'], 'amount_paying' => $col['amount_paying'], 'fine' => $col['fine'], 'discount' =>$col['discount'], 'remarks' => $col['remarks'], 'status' => $col['status'], 'cdt' => $col['cdt']);
+        if (!empty($collectionData)) {
+            foreach ($collectionData as $col) {
+                $datacol = array('transaction_id' => $col['transaction_id'], 'fn_fees_invoice_id' => $col['fn_fees_invoice_id'], 'submission_id' => $submissionId, 'pupilsightSchoolYearID' => $col['pupilsightSchoolYearID'], 'fn_fees_counter_id' => $col['fn_fees_counter_id'], 'receipt_number' => $col['receipt_number'], 'is_custom' => $col['is_custom'], 'payment_mode_id' => $col['payment_mode_id'], 'bank_id' => $col['bank_id'], 'dd_cheque_no' => $col['dd_cheque_no'], 'dd_cheque_date' => $col['dd_cheque_date'], 'dd_cheque_amount' => $col['dd_cheque_amount'], 'payment_status' => $col['payment_status'], 'payment_date' => $col['payment_date'], 'fn_fees_head_id' => $col['fn_fees_head_id'], 'fn_fees_receipt_series_id' => $col['fn_fees_receipt_series_id'], 'transcation_amount' => $col['transcation_amount'], 'total_amount_without_fine_discount' => $col['total_amount_without_fine_discount'], 'amount_paying' => $col['amount_paying'], 'fine' => $col['fine'], 'discount' => $col['discount'], 'remarks' => $col['remarks'], 'status' => $col['status'], 'cdt' => $col['cdt']);
                 $sqlcol = 'INSERT INTO fn_fees_collection SET transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, submission_id=:submission_id, pupilsightSchoolYearID =:pupilsightSchoolYearID, fn_fees_counter_id=:fn_fees_counter_id, receipt_number=:receipt_number, is_custom=:is_custom, payment_mode_id=:payment_mode_id, bank_id=:bank_id, dd_cheque_no=:dd_cheque_no, dd_cheque_date=:dd_cheque_date, dd_cheque_amount=:dd_cheque_amount, payment_status=:payment_status, payment_date=:payment_date, fn_fees_head_id=:fn_fees_head_id, fn_fees_receipt_series_id=:fn_fees_receipt_series_id, transcation_amount=:transcation_amount, total_amount_without_fine_discount=:total_amount_without_fine_discount, amount_paying=:amount_paying, fine=:fine, discount=:discount, remarks=:remarks, status=:status,cdt=:cdt';
                 $resultc = $connection2->prepare($sqlcol);
                 $resultc->execute($datacol);
             }
         }
 
-        $acsql = 'SELECT * FROM fn_fees_applicant_collection WHERE submission_id = '.$oldsid.' ';
+        $acsql = 'SELECT * FROM fn_fees_applicant_collection WHERE submission_id = ' . $oldsid . ' ';
         $resultac = $connection2->query($acsql);
         $appCollectionData = $resultac->fetchAll();
-        if(!empty($appCollectionData)){
-            foreach($appCollectionData as $acol){
+        if (!empty($appCollectionData)) {
+            foreach ($appCollectionData as $acol) {
                 $datacola = array('submission_id' => $submissionId,  'transaction_id' => $inv['transaction_id'], 'fn_fee_invoice_id' => $inv['fn_fee_invoice_id'], 'fn_fee_invoice_item_id' => $inv['fn_fee_invoice_item_id'], 'invoice_no' => $inv['invoice_no']);
                 $sqlcola = 'INSERT INTO fn_fees_applicant_collection SET submission_id=:submission_id, transaction_id=:transaction_id, fn_fee_invoice_id=:fn_fee_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no';
                 $resultca = $connection2->prepare($sqlcola);
@@ -2948,10 +2911,10 @@ if($type == 'convertApplicantData'){
 
 if ($type == 'checkApplicantConversion') {
     $sid = $val;
-    $chksub = 'SELECT is_converted FROM wp_fluentform_submissions WHERE id = '.$sid.' ';
+    $chksub = 'SELECT is_converted FROM wp_fluentform_submissions WHERE id = ' . $sid . ' ';
     $resultsub = $connection2->query($chksub);
     $chkConvertion = $resultsub->fetch();
-    if($chkConvertion['is_converted'] == '0'){
+    if ($chkConvertion['is_converted'] == '0') {
         $response = '1';
     } else {
         $response = '2';

@@ -325,7 +325,3 @@ public function setNetBankCode($netBankCode) {
 }
 
 }
-
-
-
-?>

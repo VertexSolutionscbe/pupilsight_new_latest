@@ -4,10 +4,28 @@ unset($CFG);
 global $CFG;
 $CFG = new stdClass();
 //include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+/*
 $databaseServer = '127.0.0.1';
 $databaseUsername = 'root';
 $databasePassword = '';
 $databaseName = 'pd_demo';
+
+
+$CFG->wwwroot   = 'http://localhost/lms';
+$CFG->dataroot  = '/Users/dugu/laravel/pupilsight_lmsdata';
+$CFG->admin     = 'admin';
+*/
+
+$databaseServer = '127.0.0.1';
+$databaseUsername = 'dev_user';
+$databasePassword = '5dvd#NvdnRDVP#48mmbs';
+$databaseName = 'christacademy';
+
+
+$CFG->wwwroot   = 'http://testchristacademy.pupilpod.net/lms';
+$CFG->dataroot  = '/var/www/testchristacademy/lmsdata';
+$CFG->admin     = 'admin';
+
 
 $CFG->dbtype    = 'mariadb';
 $CFG->dblibrary = 'native';
@@ -23,9 +41,7 @@ $CFG->dboptions = array(
   'dbcollation' => 'utf8mb4_general_ci',
 );
 
-$CFG->wwwroot   = 'http://localhost/lms';
-$CFG->dataroot  = '/Users/dugu/laravel/pupilsight_lmsdata';
-$CFG->admin     = 'admin';
+
 
 $CFG->directorypermissions = 0777;
 

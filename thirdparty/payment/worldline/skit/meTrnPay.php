@@ -38,8 +38,8 @@ $reqMsgDTO->setNoOfRecurring($_REQUEST['numberRecurring']);
 // Merchant response URl
 $reqMsgDTO->setResponseUrl($_REQUEST['responseUrl']);
 // Optional additional fields for merchant
- $reqMsgDTO->setAddField1($submissionId);
- $reqMsgDTO->setAddField2($_REQUEST['campaignid']);
+$reqMsgDTO->setAddField1($submissionId);
+$reqMsgDTO->setAddField2($_REQUEST['campaignid']);
 // $reqMsgDTO->setAddField3($_REQUEST['addField3']);
 // $reqMsgDTO->setAddField4($_REQUEST['addField4']);
 // $reqMsgDTO->setAddField5($_REQUEST['addField5']);

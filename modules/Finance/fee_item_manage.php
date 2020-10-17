@@ -16,8 +16,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_item_manage.ph
     echo '</div>';
 } else {
 
-   
-    if(!empty($_POST['search'])){
+
+    if (!empty($_POST['search'])) {
         $search =  $_POST['search'];
     } else {
         $search = '';
@@ -45,27 +45,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_item_manage.ph
     // $table->addHeaderAction('add', __('Add'))
     //     ->setURL('/modules/Finance/program_manage_add.php')
     //     ->displayLabel();
-    
+
     echo "<div style='height:50px;'><div class='float-right mb-2'>
     <a href='index.php?q=/modules/Finance/fee_item_manage_add.php' class=' btn btn-primary'>Add</a>&nbsp;&nbsp;<a id='cop_feeitem' class='btn btn-primary'>copy</a>
-    <a href='fullscreen.php?q=/modules/Finance/fee_item_manage_copy.php' id='feeitem_copy' class='thickbox btn btn-primary'style='display:none' >copybutton</a></div><div class='float-none'></div></div>";  
+    <a href='fullscreen.php?q=/modules/Finance/fee_item_manage_copy.php' id='feeitem_copy' class='thickbox btn btn-primary'style='display:none' >copybutton</a></div><div class='float-none'></div></div>";
 
-    $searchform = Form::create('searchForm','');
+    $searchform = Form::create('searchForm', '');
     $searchform->setFactory(DatabaseFormFactory::create($pdo));
     $searchform->addHiddenValue('studentId', '0');
 
     $row = $searchform->addRow()->setId('normalSearchRow');
-    $col = $row->addColumn()->setClass('newdes');    
-        //$col->addLabel('', __(''));
-        $col->addTextField('search')->placeholder('Search by Name, Code')->addClass('txtfield')->setValue($search);
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addTextField('search')->placeholder('Search by Name, Code')->addClass('txtfield')->setValue($search);
 
-    $col = $row->addColumn()->setClass('newdes');   
-    $col->addLabel('', __(''));
-    $col->addContent('<button class="transactionButton btn btn-primary">Search</button>');   
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addContent('<button class="transactionButton btn btn-primary">Search</button>');
     echo $searchform->getOutput();
 
-    
-    
     //$table->addColumn('sequenceNumber', __('sequenceNumber'));
     $table->addColumn('serial_number', __('SI No'));
     $table->addCheckBoxColumn('id', __(''));
@@ -73,18 +69,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_item_manage.ph
     $table->addColumn('code', __('Fee Item Code'));
     $table->addColumn('acedemic_year', __('Acedemic Year'));
     $table->addColumn('fee_item_type', __('Item Type'));
-   
-        
+
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('id')
         ->format(function ($facilities, $actions) use ($guid) {
-            
+
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Finance/fee_item_manage_edit.php');
+                ->setURL('/modules/Finance/fee_item_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Finance/fee_item_manage_delete.php');
+                ->setURL('/modules/Finance/fee_item_manage_delete.php');
         });
 
     echo $table->render($yearGroups);

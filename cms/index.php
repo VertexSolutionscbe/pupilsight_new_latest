@@ -167,6 +167,9 @@ if (isset($_SESSION["loginstatus"])) {
 	 
 }*/
 
+        <?php if($_GET['return'] == 'success'){?>
+            alert('Your Application Submitted Successfully!');
+        <?php } ?>
         
         $(document).on('keydown', '#txtPhone', function(e) {
             if(e.keyCode == 13){

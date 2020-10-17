@@ -29,7 +29,8 @@
             <tr>
                 {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
                 <th {{ th.getAttributeString|raw }}>
-                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }} {% endif %}
+                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }}
+                    {% endif %}
                 </th>
                 {% endif %} {% endfor %}
             </tr>
@@ -37,12 +38,61 @@
 
         </thead>
         <tbody>
-           
-    </tbody>
 
-</table>
+        </tbody>
+
+    </table>
+
 </div>
 {% else %} {% block tableInner %}
+
+{% if headers|length > 0 %}
+<style>
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+    }
+    tr {
+        border: 1px solid #ccc !important;
+    }
+    .p-2 {
+        padding: 0 !important;
+    }
+    .dataTables_wrapper .table tbody tr td, td {
+        /* Behave  like a "row" */
+        border: none !important;
+        border-bottom: 1px solid #eee;
+        position: relative !important;
+        padding-left: 50% !important;
+    }
+    td:before {
+        /* Now like a table header */
+        position: absolute !important;
+        /* Top/left values mimic padding */
+        top: 6px !important;
+        left: 6px !important;
+        width: 45% !important;
+        padding-right: 10px !important;
+        white-space: nowrap !important;
+    }
+
+    {% for headerRow in headers %}
+                {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
+                td:nth-of-type({{columnIndex+1}}):before {
+                    content: "{{ th.getOutput|raw }}";
+                }
+                {% endif %} {% endfor %}
+    {% endfor %}
+}
+</style>
+{% endif %}
 <div class="table-responsive dataTables_wrapper">
     <table class="table" id="expore_tbl">
         <!--<div class="overflow-x-auto overflow-y-visible">
@@ -52,7 +102,8 @@
             <tr>
                 {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
                 <th {{ th.getAttributeString|raw }}>
-                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }} {% endif %}
+                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }}
+                    {% endif %}
                 </th>
                 {% endif %} {% endfor %}
             </tr>
@@ -69,15 +120,18 @@
             {% endif %} {% for rowIndex, rowData in rows %} {% set row = rowData.row %}
 
             <tr {{ row.getAttributeString|raw }}>
-                {{ row.getPrepended|raw }} {% for columnIndex, column in columns %} {% set cell = rowData.cells[columnIndex] %}
+                {{ row.getPrepended|raw }} {% for columnIndex, column in columns %}
+                {% set cell = rowData.cells[columnIndex] %}
 
                 <td {{ cell.getAttributeString|raw }}>
                     {{ cell.getPrepended|raw }} {% if column.getID == "actions" %}
                     <nav class="relative group">
                         {% do column.getOutput(rowData.data) %} {% set actions = column.getActions %}
 
-                        <div class="{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden-1 group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded  sm:shadow-none sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }}">
-                            {% for actionName, action in actions %} {% do action.addClass('') %} {{ action.getOutput(rowData.data, column.getParams)|raw }} {% endfor %}
+                        <div
+                            class="{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden-1 group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded  sm:shadow-none sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }}">
+                            {% for actionName, action in actions %} {% do action.addClass('') %}
+                            {{ action.getOutput(rowData.data, column.getParams)|raw }} {% endfor %}
                         </div>
 
                         {% if actions|length > 1 %}
@@ -86,11 +140,11 @@
                             <span class="block -mt-3">...</span>
                         </button> 
                         -->
-                        
+
                         {% endif %}
                     </nav>
 
-                    {% else %} {{ column.getOutput(rowData.data)|raw }} {% endif %} {{ cell.getAppended|raw }}
+                    {% else %} {{ column.getOutput(rowData.data)|raw }}&nbsp; {% endif %} {{ cell.getAppended|raw }}
                 </td>
                 {% endfor %} {{ row.getAppended|raw }}
             </tr>
