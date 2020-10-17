@@ -3,6 +3,7 @@
 Pupilsight, Flexible & Open School System
  */
 use Pupilsight\Domain\Curriculum\CurriculamGateway;
+
 use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Forms\Form;
 

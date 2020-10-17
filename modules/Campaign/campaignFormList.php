@@ -100,6 +100,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $resultvalw = $connection2->query($sqlw);
     $woid = $resultvalw->fetch();
     $wid = $woid['workflow_id'];
+
+    $sqlct = 'Select count(id) AS kount  FROM wp_fluentform_submissions WHERE form_id = '.$formId.' ';
+    $resultct = $connection2->query($sqlct);
+    $kountSubmission = $resultct->fetch();
      
     // $sql = 'Select b.name as states, b.id as sid, b.notification FROM workflow_map as a LEFT JOIN workflow_state as b ON a.workflow_id = b.workflowid WHERE a.campaign_id = '.$id.' ';
     $sql = 'Select a.*, b.notification FROM workflow_transition as a LEFT JOIN workflow_state as b ON a.to_state = b.id WHERE a.campaign_id = '.$id.' ';
@@ -182,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
          
         </div>
         <br/>
-        <span id="totalCount">&nbsp;Total Count : <span id="kountApplicant">'.count($dataSet).'</span></span>';
+        <span id="totalCount">&nbsp;Total Count : <span id="kountApplicant">'.$kountSubmission['kount'].'</span></span>';
 }
 
     // $sqlw = 'Select * FROM wp_fluentform_entry_details WHERE form_id = '.$formId.' ';

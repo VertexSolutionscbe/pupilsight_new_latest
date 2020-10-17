@@ -1,19 +1,19 @@
-<?php 
+<?php
 /*
 Pupilsight, Flexible & Open School System
 */
 include 'pupilsight.php';
 $session = $container->get('session');
-if(isset($_POST['type'])){
-    $type=trim($_POST['type']);
-    switch ($type) {
-           case "download_excel_results":
-            $testId=$_POST['testId'];
-            $pupilsightProgramID=$_POST['pupilsightProgramID'];
-            $pupilsightYearGroupID=$_POST['pupilsightYearGroupID'];
-            $pupilsightRollGroupID=$_POST['pupilsightRollGroupID'];
-            $stdid=implode(',',$_POST['stuid']);
-        /*$sqls ="SELECT a.*,c.name as test ,d.skill_id,GROUP_CONCAT(DISTINCT d.skill_id SEPARATOR ', ') as skill_ids,GROUP_CONCAT(DISTINCT d.skill_display_name SEPARATOR ', ') as skillname, GROUP_CONCAT(DISTINCT d.skill_display_name SEPARATOR ', ') as skillname,GROUP_CONCAT(DISTINCT sub.gradeId SEPARATOR ', ') as grade,b.pupilsightDepartmentID,e.pupilsightDepartmentID ,e.name AS subject FROM examinationSubjectToTest AS a  LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID  LEFT JOIN examinationTest AS c ON a.test_id = c.id LEFT JOIN  subjectSkillMapping as d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID  LEFT JOIN pupilsightDepartment AS e ON a.pupilsightDepartmentID = e.pupilsightDepartmentID 
+if (isset($_POST['type'])) {
+  $type = trim($_POST['type']);
+  switch ($type) {
+    case "download_excel_results":
+      $testId = $_POST['testId'];
+      $pupilsightProgramID = $_POST['pupilsightProgramID'];
+      $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
+      $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
+      $stdid = implode(',', $_POST['stuid']);
+      /*$sqls ="SELECT a.*,c.name as test ,d.skill_id,GROUP_CONCAT(DISTINCT d.skill_id SEPARATOR ', ') as skill_ids,GROUP_CONCAT(DISTINCT d.skill_display_name SEPARATOR ', ') as skillname, GROUP_CONCAT(DISTINCT d.skill_display_name SEPARATOR ', ') as skillname,GROUP_CONCAT(DISTINCT sub.gradeId SEPARATOR ', ') as grade,b.pupilsightDepartmentID,e.pupilsightDepartmentID ,e.name AS subject FROM examinationSubjectToTest AS a  LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID  LEFT JOIN examinationTest AS c ON a.test_id = c.id LEFT JOIN  subjectSkillMapping as d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID  LEFT JOIN pupilsightDepartment AS e ON a.pupilsightDepartmentID = e.pupilsightDepartmentID 
         LEFT JOIN examinationMarksEntrybySubject as sub ON a.test_id=sub.test_id
         WHERE a.test_id = ".$testId." AND 
        b.pupilsightYearGroupID = ".$pupilsightYearGroupID." AND d.pupilsightYearGroupID = ".$pupilsightYearGroupID." GROUP BY a.pupilsightDepartmentID";
@@ -29,112 +29,110 @@ if(isset($_POST['type'])){
         //echo($sqlm);die();
         $resultm = $connection2->query($sqlm);
         $rowdatam = $resultm->fetchAll();*/
-        $sql = 'SELECT b.officialName, b.pupilsightPersonID, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE  a.pupilsightPersonID IN('.$stdid.') AND a.test_id = '.$testId.' GROUP BY a.pupilsightPersonID';
-        $result = $connection2->query($sql);
-        $data = $result->fetchAll();
-         foreach($data as $k => $dt){
-            $sqlm='SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
+      $sql = 'SELECT b.officialName, b.pupilsightPersonID, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE  a.pupilsightPersonID IN(' . $stdid . ') AND a.test_id = ' . $testId . ' GROUP BY a.pupilsightPersonID';
+      $result = $connection2->query($sql);
+      $data = $result->fetchAll();
+      foreach ($data as $k => $dt) {
+        $sqlm = 'SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
                     LEFT JOIN examinationSubjectToTest AS m ON a.pupilsightDepartmentID = m.pupilsightDepartmentID
-                    WHERE a.test_id = '.$testId.' AND a.pupilsightPersonID = '.$dt['pupilsightPersonID'].' GROUP by a.pupilsightDepartmentID,c.skill_id';
-                    $resultm = $connection2->query($sqlm);
-                    $datam = $resultm->fetchAll();
-                    if(!empty($datam)){
-                    $data[$k]['marks'] = $datam;
-                    }
-              }    
-            $sql1='SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
+                    WHERE a.test_id = ' . $testId . ' AND a.pupilsightPersonID = ' . $dt['pupilsightPersonID'] . ' GROUP by a.pupilsightDepartmentID,c.skill_id';
+        $resultm = $connection2->query($sqlm);
+        $datam = $resultm->fetchAll();
+        if (!empty($datam)) {
+          $data[$k]['marks'] = $datam;
+        }
+      }
+      $sql1 = 'SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
             LEFT JOIN examinationSubjectToTest AS m ON a.pupilsightDepartmentID = m.pupilsightDepartmentID
-            WHERE a.test_id = '.$testId.' GROUP by a.pupilsightDepartmentID,c.skill_id';
-            $resu_h= $connection2->query($sql1);
-            $datam_h = $resu_h->fetchAll();
-        ?>
-            
-<table id="excelexport">
-  <tr>
-    <th>Student Name</th>
-    <th>Student ID</th>
-    <th>Class</th>
-    <th>Section</th>
-    <?php 
-         foreach ($datam_h as $m) {
-            ?>
-            <th><?php echo $m['subject_name']."-".$m['skill_display_name']."/".ceil($m['max_marks']);?></th>
-            <?php
-         }
-    ?>
-  </tr>
-  
-  <?php foreach($data as $row) {  
-  echo "<tr>
-    <td>".$row['officialName']."</td>
-    <td>".$row['pupilsightPersonID']."</td>
-    <td>".$row['classname']."</td>
-    <td>".$row['sectionname']."</td>";
-    $marks=$row['marks'];
-    foreach ($data as $val) { 
-         $marks=$val['marks'];
-         foreach ($marks as $m) {
-            $sql='SELECT grade_name FROM  examinationGradeSystemConfiguration WHERE id="'.$m['gradeId'].'"';
-            $result = $connection2->query($sql);
-            $gradeName = $result->fetch();
-            $grade_name='';
+            WHERE a.test_id = ' . $testId . ' GROUP by a.pupilsightDepartmentID,c.skill_id';
+      $resu_h = $connection2->query($sql1);
+      $datam_h = $resu_h->fetchAll();
+?>
 
-            if(!empty($gradeName['grade_name'])){
-              $grade_name=$gradeName['grade_name'];
-            }
-            $marks = str_replace(".00","",$m['marks_obtained']);
-            if(empty($marks)){
-              if(isset($m['marks_abex'])){
-                if(empty($m['marks_abex'])){
-                  $marks = $m['marks_abex'];
+      <table id="excelexport">
+        <tr>
+          <th>Student Name</th>
+          <th>Student ID</th>
+          <th>Class</th>
+          <th>Section</th>
+          <?php
+          foreach ($datam_h as $m) {
+          ?>
+            <th><?php echo $m['subject_name'] . "-" . $m['skill_display_name'] . "/" . ceil($m['max_marks']); ?></th>
+          <?php
+          }
+          ?>
+        </tr>
+
+        <?php foreach ($data as $row) {
+          echo "<tr>
+    <td>" . $row['officialName'] . "</td>
+    <td>" . $row['pupilsightPersonID'] . "</td>
+    <td>" . $row['classname'] . "</td>
+    <td>" . $row['sectionname'] . "</td>";
+          $marks = $row['marks'];
+          foreach ($data as $val) {
+            $marks = $val['marks'];
+            foreach ($marks as $m) {
+              $sql = 'SELECT grade_name FROM  examinationGradeSystemConfiguration WHERE id="' . $m['gradeId'] . '"';
+              $result = $connection2->query($sql);
+              $gradeName = $result->fetch();
+              $grade_name = '';
+
+              if (!empty($gradeName['grade_name'])) {
+                $grade_name = $gradeName['grade_name'];
+              }
+              $marks = str_replace(".00", "", $m['marks_obtained']);
+              if (empty($marks)) {
+                if (isset($m['marks_abex'])) {
+                  if (empty($m['marks_abex'])) {
+                    $marks = $m['marks_abex'];
+                  }
                 }
               }
-            }
-            $mg = $marks."(".$grade_name.")";
-            if($row['pupilsightPersonID']==$val['pupilsightPersonID']){
+              $mg = $marks . "(" . $grade_name . ")";
+              if ($row['pupilsightPersonID'] == $val['pupilsightPersonID']) {
 
-                $marks = str_replace(".00","",$m['marks_obtained']);
-                  if($marks==0){
-                      if($m['marks_abex']){
-                          $marks = $m['marks_abex'];
-                      }
+                $marks = str_replace(".00", "", $m['marks_obtained']);
+                if ($marks == 0) {
+                  if ($m['marks_abex']) {
+                    $marks = $m['marks_abex'];
+                  }
                 }
-                if(!empty($grade_name)){
-                    echo "<td>".$marks."(".$grade_name.")</td>";
+                if (!empty($grade_name)) {
+                  echo "<td>" . $marks . "(" . $grade_name . ")</td>";
                 } else {
-                    echo "<td>".$marks."</td>";
+                  echo "<td>" . $marks . "</td>";
                 }
-            }
-            ?>
-            
-            <?php
-        
-        }
-    } 
-    ?>
-</tr>
-<?php } ?>
-</table>
+              }
+        ?>
 
-<?php
-     break;
-     case "systemByidloadGrades":
-      $syid=$_POST['syid'];
-      $sql_grade = 'SELECT id,grade_name  FROM `examinationGradeSystemConfiguration` WHERE `gradeSystemId` ="'.$syid.'" ';
+          <?php
+
+            }
+          }
+          ?>
+          </tr>
+        <?php } ?>
+      </table>
+
+    <?php
+      break;
+    case "systemByidloadGrades":
+      $syid = $_POST['syid'];
+      $sql_grade = 'SELECT id,grade_name  FROM `examinationGradeSystemConfiguration` WHERE `gradeSystemId` ="' . $syid . '" ';
       $r_grade = $connection2->query($sql_grade);
       $grade_data = $r_grade->fetchAll();
-      ?>
+    ?>
       <option value="">Select Grade </option>
       <?php foreach ($grade_data as $val) { ?>
-      <option value="<?php echo $val['id'];?>"><?php echo $val['grade_name'];?></option>
-      <?php } 
-     break;
+        <option value="<?php echo $val['id']; ?>"><?php echo $val['grade_name']; ?></option>
+<?php }
+      break;
     default:
       echo "Invalid request";
-    }
+  }
 } else {
   echo "Request type is missing";
 }
 ?>
-
-

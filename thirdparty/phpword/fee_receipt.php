@@ -4,59 +4,78 @@ session_start();
 // require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
 
 // $file = $_SERVER["DOCUMENT_ROOT"]."/thirdparty/phpword/templates/receipt_1.docx";
-require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
+require_once $_SERVER["DOCUMENT_ROOT"] . '/vendor/phpoffice/phpword/bootstrap.php';
+require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
-$fn_fees_receipt_template_id = $_GET['fid'];
-$sqlpt = "SELECT path, filename FROM fn_fees_receipt_template_master WHERE id = ".$fn_fees_receipt_template_id." ";
-$resultpt = $connection2->query($sqlpt);
-$valuept = $resultpt->fetch();
-// $file = $_SERVER["DOCUMENT_ROOT"]."/thirdparty/phpword/templates/receipt_1.docx";
-$file = $valuept['path'];
-$phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
 
-$dts = $_SESSION["dts_receipt"];
-$fee_items = $_SESSION["dts_receipt_feeitem"];
+try {
 
-//print_r($dts);
-//print_r($fee_items);
+    $fn_fees_receipt_template_id = $_GET['fid'];
+    $sqlpt = "SELECT path, filename FROM fn_fees_receipt_template_master WHERE id = " . $fn_fees_receipt_template_id . " ";
+    $resultpt = $connection2->query($sqlpt);
+    $valuept = $resultpt->fetch();
+    // $file = $_SERVER["DOCUMENT_ROOT"]."/thirdparty/phpword/templates/receipt_1.docx";
+    $file = $valuept['path'];
+    $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
 
-$dts["total"]=$dts["transcation_amount"];
-foreach ($dts as $key => $value) {
-    $phpword->setValue($key, $value);
-}
+    $dts = $_SESSION["dts_receipt"];
+    $fee_items = $_SESSION["dts_receipt_feeitem"];
 
-if(!empty($dts["transcation_amount"])){
-    /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+    //print_r($dts);
+    //print_r($fee_items);
+
+    $dts["total"] = $dts["transcation_amount"];
+    foreach ($dts as $key => $value) {
+        $phpword->setValue($key, $value);
+    }
+
+    if (!empty($dts["transcation_amount"])) {
+        /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
     $total_in_words = $nf->format($dts["transcation_amount"]);*/
-    $total_in_words=convert_number_to_words($dts["transcation_amount"]);
-    $phpword->setValue('total_in_words', ucwords($total_in_words));
+        $total_in_words = convert_number_to_words($dts["transcation_amount"]);
+        $phpword->setValue('total_in_words', ucwords($total_in_words));
+    }
+
+    if (!empty($fee_items)) {
+        try {
+            $phpword->cloneRowAndSetValues('serial.all', $fee_items);
+        } catch (Exception $ex) {
+            //print_r($ex);
+        }
+    }
+    try {
+        $fileName = $dts["transactionId"] . ".docx";
+        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/receipts/";
+        $savedocsx = $inFilePath . $fileName;
+        //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
+        //echo $savedocsx;
+        $phpword->saveAs($savedocsx);
+
+        convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+    } catch (Exception $ex) {
+    }
+
+    //die();
+    $admincallback = $_SESSION["admin_callback"];
+    if (!empty($admincallback)) {
+        $callback = $admincallback;
+    } else {
+        $callback = $_SESSION["paypost"]["callbackurl"];
+    }
+
+    if (isset($callback)) {
+        header('Location: ' . $callback);
+        exit;
+    } else {
+        header('Location: index.php');
+        exit;
+    }
+} catch (Exception $ex) {
 }
 
-if(!empty($fee_items)){
-    $phpword->cloneRowAndSetValues('serial.all', $fee_items);
-}
-$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
-//$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
-//echo $savedocsx;
-$phpword->saveAs($savedocsx);
-//die();
-$admincallback = $_SESSION["admin_callback"];
-if(!empty($admincallback)){
-    $callback = $admincallback;
-} else {
-    $callback = $_SESSION["paypost"]["callbackurl"];
-}
+function convert_number_to_words($number)
+{
 
-if(isset($callback)){
-    header('Location: '.$callback);
-    exit;
-}else{
-    header('Location: index.php');
-    exit;
-}
-
-function convert_number_to_words($number) {
-   
     $hyphen      = '-';
     $conjunction = '  ';
     $separator   = ' ';
@@ -99,11 +118,11 @@ function convert_number_to_words($number) {
         1000000000000000    => 'Quadrillion',
         1000000000000000000 => 'Quintillion'
     );
-   
+
     if (!is_numeric($number)) {
         return false;
     }
-   
+
     if (($number >= 0 && (int) $number < 0) || (int) $number < 0 - PHP_INT_MAX) {
         // overflow
         trigger_error(
@@ -112,17 +131,17 @@ function convert_number_to_words($number) {
         );
         return false;
     }
- 
+
     if ($number < 0) {
         return $negative . convert_number_to_words(abs($number));
     }
-   
+
     $string = $fraction = null;
-   
+
     if (strpos($number, '.') !== false) {
         list($number, $fraction) = explode('.', $number);
     }
-   
+
     switch (true) {
         case $number < 21:
             $string = $dictionary[$number];
@@ -154,7 +173,7 @@ function convert_number_to_words($number) {
             }
             break;
     }
-   
+
     if (null !== $fraction && is_numeric($fraction)) {
         $string .= $decimal;
         $words = array();
@@ -163,7 +182,6 @@ function convert_number_to_words($number) {
         }
         $string .= implode(' ', $words);
     }
-   
+
     return $string;
 }
-?>

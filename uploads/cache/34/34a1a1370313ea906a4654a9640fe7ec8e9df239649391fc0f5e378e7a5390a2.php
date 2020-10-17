@@ -102,49 +102,51 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
                         if (twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getData", array(0 => "description"), "method")) {
                             echo " ";
                             echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getData", array(0 => "description"), "method"), "html", null, true);
-                            echo " ";
+                            echo "
+                    ";
                         }
-                        // line 33
+                        // line 34
                         echo "                </th>
                 ";
                     }
-                    // line 34
+                    // line 35
                     echo " ";
                 }
                 $_parent = $context['_parent'];
                 unset($context['_seq'], $context['_iterated'], $context['columnIndex'], $context['column'], $context['_parent'], $context['loop']);
                 $context = array_intersect_key($context, $_parent) + $_parent;
-                // line 35
+                // line 36
                 echo "            </tr>
             ";
             }
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['headerRow'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 37
+            // line 38
             echo "
         </thead>
         <tbody>
-           
-    </tbody>
 
-</table>
+        </tbody>
+
+    </table>
+
 </div>
 ";
         } else {
-            // line 45
+            // line 47
             echo " ";
             $this->displayBlock('tableInner', $context, $blocks);
-            // line 106
+            // line 160
             echo " ";
         }
-        // line 107
+        // line 161
         echo "
 <footer>
     ";
-        // line 109
+        // line 163
         $this->displayBlock('footer', $context, $blocks);
-        // line 110
+        // line 164
         echo "</footer>
 
 ";
@@ -202,171 +204,259 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
     ";
     }
 
-    // line 45
+    // line 47
     public function block_tableInner($context, array $blocks = array())
     {
-        // line 46
+        // line 48
+        echo "
+";
+        // line 49
+        if ((twig_length_filter($this->env, ($context["headers"] ?? null)) > 0)) {
+            // line 50
+            echo "<style>
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+    }
+    tr {
+        border: 1px solid #ccc !important;
+    }
+    .p-2 {
+        padding: 0 !important;
+    }
+    .dataTables_wrapper .table tbody tr td, td {
+        /* Behave  like a \"row\" */
+        border: none !important;
+        border-bottom: 1px solid #eee;
+        position: relative !important;
+        padding-left: 50% !important;
+    }
+    td:before {
+        /* Now like a table header */
+        position: absolute !important;
+        /* Top/left values mimic padding */
+        top: 6px !important;
+        left: 6px !important;
+        width: 45% !important;
+        padding-right: 10px !important;
+        white-space: nowrap !important;
+    }
+
+    ";
+            // line 86
+            $context['_parent'] = $context;
+            $context['_seq'] = twig_ensure_traversable(($context["headers"] ?? null));
+            foreach ($context['_seq'] as $context["_key"] => $context["headerRow"]) {
+                // line 87
+                echo "                ";
+                $context['_parent'] = $context;
+                $context['_seq'] = twig_ensure_traversable(($context["columns"] ?? null));
+                foreach ($context['_seq'] as $context["columnIndex"] => $context["column"]) {
+                    echo " ";
+                    $context["th"] = (($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a = $context["headerRow"]) && is_array($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a) || $__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a instanceof ArrayAccess ? ($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a[$context["columnIndex"]] ?? null) : null);
+                    echo " ";
+                    if (($context["th"] ?? null)) {
+                        // line 88
+                        echo "                td:nth-of-type(";
+                        echo twig_escape_filter($this->env, ($context["columnIndex"] + 1), "html", null, true);
+                        echo "):before {
+                    content: \"";
+                        // line 89
+                        echo twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getOutput", array());
+                        echo "\";
+                }
+                ";
+                    }
+                    // line 91
+                    echo " ";
+                }
+                $_parent = $context['_parent'];
+                unset($context['_seq'], $context['_iterated'], $context['columnIndex'], $context['column'], $context['_parent'], $context['loop']);
+                $context = array_intersect_key($context, $_parent) + $_parent;
+                // line 92
+                echo "    ";
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['headerRow'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 93
+            echo "}
+</style>
+";
+        }
+        // line 96
         echo "<div class=\"table-responsive dataTables_wrapper\">
     <table class=\"table\" id=\"expore_tbl\">
         <!--<div class=\"overflow-x-auto overflow-y-visible\">
             <table class=\"";
-        // line 49
+        // line 99
         echo twig_escape_filter($this->env, ($context["class"] ?? null), "html", null, true);
         echo " w-full\" cellspacing=0>-->
         <thead>
             ";
-        // line 51
+        // line 101
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable(($context["headers"] ?? null));
         foreach ($context['_seq'] as $context["_key"] => $context["headerRow"]) {
-            // line 52
+            // line 102
             echo "            <tr>
                 ";
-            // line 53
+            // line 103
             $context['_parent'] = $context;
             $context['_seq'] = twig_ensure_traversable(($context["columns"] ?? null));
             foreach ($context['_seq'] as $context["columnIndex"] => $context["column"]) {
                 echo " ";
-                $context["th"] = (($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a = $context["headerRow"]) && is_array($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a) || $__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a instanceof ArrayAccess ? ($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a[$context["columnIndex"]] ?? null) : null);
+                $context["th"] = (($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57 = $context["headerRow"]) && is_array($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57) || $__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57 instanceof ArrayAccess ? ($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57[$context["columnIndex"]] ?? null) : null);
                 echo " ";
                 if (($context["th"] ?? null)) {
-                    // line 54
+                    // line 104
                     echo "                <th ";
                     echo twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getAttributeString", array());
                     echo ">
                     ";
-                    // line 55
+                    // line 105
                     echo twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getOutput", array());
                     echo " ";
                     if (twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getData", array(0 => "description"), "method")) {
                         echo " ";
                         echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getData", array(0 => "description"), "method"), "html", null, true);
-                        echo " ";
+                        echo "
+                    ";
                     }
-                    // line 56
+                    // line 107
                     echo "                </th>
                 ";
                 }
-                // line 57
+                // line 108
                 echo " ";
             }
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['columnIndex'], $context['column'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 58
+            // line 109
             echo "            </tr>
             ";
         }
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['headerRow'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 60
+        // line 111
         echo "
         </thead>
         <tbody>
             ";
-        // line 63
+        // line 114
         if (( !($context["rows"] ?? null) && ($context["isFiltered"] ?? null))) {
-            // line 64
+            // line 115
             echo "            <tr class=\"h-48 bg-gray shadow-inner\">
                 <td class=\"p-0\" colspan=\"";
-            // line 65
+            // line 116
             echo twig_escape_filter($this->env, twig_length_filter($this->env, ($context["columns"] ?? null)), "html", null, true);
             echo "\">
                     ";
-            // line 66
+            // line 117
             $this->displayBlock("blankslate", $context, $blocks);
             echo "
                 </td>
             </tr>
             ";
         }
-        // line 69
+        // line 120
         echo " ";
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable(($context["rows"] ?? null));
         foreach ($context['_seq'] as $context["rowIndex"] => $context["rowData"]) {
             echo " ";
             $context["row"] = twig_get_attribute($this->env, $this->source, $context["rowData"], "row", array());
-            // line 70
+            // line 121
             echo "
             <tr ";
-            // line 71
+            // line 122
             echo twig_get_attribute($this->env, $this->source, ($context["row"] ?? null), "getAttributeString", array());
             echo ">
                 ";
-            // line 72
+            // line 123
             echo twig_get_attribute($this->env, $this->source, ($context["row"] ?? null), "getPrepended", array());
             echo " ";
             $context['_parent'] = $context;
             $context['_seq'] = twig_ensure_traversable(($context["columns"] ?? null));
             foreach ($context['_seq'] as $context["columnIndex"] => $context["column"]) {
-                echo " ";
-                $context["cell"] = (($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57 = twig_get_attribute($this->env, $this->source, $context["rowData"], "cells", array())) && is_array($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57) || $__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57 instanceof ArrayAccess ? ($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57[$context["columnIndex"]] ?? null) : null);
-                // line 73
+                // line 124
+                echo "                ";
+                $context["cell"] = (($__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9 = twig_get_attribute($this->env, $this->source, $context["rowData"], "cells", array())) && is_array($__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9) || $__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9 instanceof ArrayAccess ? ($__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9[$context["columnIndex"]] ?? null) : null);
+                // line 125
                 echo "
                 <td ";
-                // line 74
+                // line 126
                 echo twig_get_attribute($this->env, $this->source, ($context["cell"] ?? null), "getAttributeString", array());
                 echo ">
                     ";
-                // line 75
+                // line 127
                 echo twig_get_attribute($this->env, $this->source, ($context["cell"] ?? null), "getPrepended", array());
                 echo " ";
                 if ((twig_get_attribute($this->env, $this->source, $context["column"], "getID", array()) == "actions")) {
-                    // line 76
+                    // line 128
                     echo "                    <nav class=\"relative group\">
                         ";
-                    // line 77
+                    // line 129
                     twig_get_attribute($this->env, $this->source, $context["column"], "getOutput", array(0 => twig_get_attribute($this->env, $this->source, $context["rowData"], "data", array())), "method");
                     echo " ";
                     $context["actions"] = twig_get_attribute($this->env, $this->source, $context["column"], "getActions", array());
-                    // line 78
+                    // line 130
                     echo "
-                        <div class=\"";
-                    // line 79
+                        <div
+                            class=\"";
+                    // line 132
                     echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["column"], "getClass", array(), "method"), "html", null, true);
                     echo " ";
                     echo (((twig_length_filter($this->env, ($context["actions"] ?? null)) == 1)) ? ("flex -m-2 sm:m-0") : ("hidden-1 group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded  sm:shadow-none sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10"));
                     echo "\">
                             ";
-                    // line 80
+                    // line 133
                     $context['_parent'] = $context;
                     $context['_seq'] = twig_ensure_traversable(($context["actions"] ?? null));
                     foreach ($context['_seq'] as $context["actionName"] => $context["action"]) {
                         echo " ";
                         twig_get_attribute($this->env, $this->source, $context["action"], "addClass", array(0 => ""), "method");
-                        echo " ";
+                        // line 134
+                        echo "                            ";
                         echo twig_get_attribute($this->env, $this->source, $context["action"], "getOutput", array(0 => twig_get_attribute($this->env, $this->source, $context["rowData"], "data", array()), 1 => twig_get_attribute($this->env, $this->source, $context["column"], "getParams", array())), "method");
                         echo " ";
                     }
                     $_parent = $context['_parent'];
                     unset($context['_seq'], $context['_iterated'], $context['actionName'], $context['action'], $context['_parent'], $context['loop']);
                     $context = array_intersect_key($context, $_parent) + $_parent;
-                    // line 81
+                    // line 135
                     echo "                        </div>
 
                         ";
-                    // line 83
+                    // line 137
                     if ((twig_length_filter($this->env, ($context["actions"] ?? null)) > 1)) {
-                        // line 84
+                        // line 138
                         echo "                        <!--
 <button class=\"block sm:hidden rounded mx-auto my-1 px-1 py-2 bg-gray text-2xl text-gray font-sans font-bold leading-none\" onClick=\"event.preventDefault();\" onTouchEnd=\"event.preventDefault();\">
                             <span class=\"block -mt-3\">...</span>
                         </button> 
                         -->
-                        
+
                         ";
                     }
-                    // line 91
+                    // line 145
                     echo "                    </nav>
 
                     ";
                 } else {
-                    // line 93
+                    // line 147
                     echo " ";
                     echo twig_get_attribute($this->env, $this->source, $context["column"], "getOutput", array(0 => twig_get_attribute($this->env, $this->source, $context["rowData"], "data", array())), "method");
-                    echo " ";
+                    echo "&nbsp; ";
                 }
                 echo " ";
                 echo twig_get_attribute($this->env, $this->source, ($context["cell"] ?? null), "getAppended", array());
@@ -377,7 +467,7 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['columnIndex'], $context['column'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 95
+            // line 149
             echo " ";
             echo twig_get_attribute($this->env, $this->source, ($context["row"] ?? null), "getAppended", array());
             echo "
@@ -387,7 +477,7 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['rowIndex'], $context['rowData'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 98
+        // line 152
         echo "        </tbody>
 
     </table>
@@ -399,7 +489,7 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
 ";
     }
 
-    // line 109
+    // line 163
     public function block_footer($context, array $blocks = array())
     {
         echo " ";
@@ -417,7 +507,7 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
 
     public function getDebugInfo()
     {
-        return array (  403 => 109,  391 => 98,  381 => 95,  367 => 93,  362 => 91,  353 => 84,  351 => 83,  347 => 81,  334 => 80,  328 => 79,  325 => 78,  321 => 77,  318 => 76,  314 => 75,  310 => 74,  307 => 73,  299 => 72,  295 => 71,  292 => 70,  285 => 69,  278 => 66,  274 => 65,  271 => 64,  269 => 63,  264 => 60,  257 => 58,  251 => 57,  247 => 56,  239 => 55,  234 => 54,  226 => 53,  223 => 52,  219 => 51,  214 => 49,  209 => 46,  206 => 45,  201 => 20,  187 => 19,  184 => 18,  181 => 17,  177 => 12,  173 => 11,  162 => 10,  159 => 9,  154 => 8,  148 => 110,  146 => 109,  142 => 107,  139 => 106,  136 => 45,  125 => 37,  118 => 35,  112 => 34,  108 => 33,  100 => 32,  95 => 31,  87 => 30,  84 => 29,  80 => 28,  75 => 26,  69 => 22,  67 => 17,  64 => 16,  62 => 15,  58 => 13,  56 => 8,  52 => 6,  45 => 5,  39 => 4,  36 => 3,  30 => 2,  28 => 1,);
+        return array (  493 => 163,  481 => 152,  471 => 149,  457 => 147,  452 => 145,  443 => 138,  441 => 137,  437 => 135,  429 => 134,  423 => 133,  417 => 132,  413 => 130,  409 => 129,  406 => 128,  402 => 127,  398 => 126,  395 => 125,  392 => 124,  386 => 123,  382 => 122,  379 => 121,  372 => 120,  365 => 117,  361 => 116,  358 => 115,  356 => 114,  351 => 111,  344 => 109,  338 => 108,  334 => 107,  325 => 105,  320 => 104,  312 => 103,  309 => 102,  305 => 101,  300 => 99,  295 => 96,  290 => 93,  284 => 92,  278 => 91,  272 => 89,  267 => 88,  258 => 87,  254 => 86,  216 => 50,  214 => 49,  211 => 48,  208 => 47,  203 => 20,  189 => 19,  186 => 18,  183 => 17,  179 => 12,  175 => 11,  164 => 10,  161 => 9,  156 => 8,  150 => 164,  148 => 163,  144 => 161,  141 => 160,  138 => 47,  126 => 38,  119 => 36,  113 => 35,  109 => 34,  100 => 32,  95 => 31,  87 => 30,  84 => 29,  80 => 28,  75 => 26,  69 => 22,  67 => 17,  64 => 16,  62 => 15,  58 => 13,  56 => 8,  52 => 6,  45 => 5,  39 => 4,  36 => 3,  30 => 2,  28 => 1,);
     }
 
     public function getSourceContext()
@@ -453,7 +543,8 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
             <tr>
                 {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
                 <th {{ th.getAttributeString|raw }}>
-                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }} {% endif %}
+                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }}
+                    {% endif %}
                 </th>
                 {% endif %} {% endfor %}
             </tr>
@@ -461,12 +552,61 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
 
         </thead>
         <tbody>
-           
-    </tbody>
 
-</table>
+        </tbody>
+
+    </table>
+
 </div>
 {% else %} {% block tableInner %}
+
+{% if headers|length > 0 %}
+<style>
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+    }
+    tr {
+        border: 1px solid #ccc !important;
+    }
+    .p-2 {
+        padding: 0 !important;
+    }
+    .dataTables_wrapper .table tbody tr td, td {
+        /* Behave  like a \"row\" */
+        border: none !important;
+        border-bottom: 1px solid #eee;
+        position: relative !important;
+        padding-left: 50% !important;
+    }
+    td:before {
+        /* Now like a table header */
+        position: absolute !important;
+        /* Top/left values mimic padding */
+        top: 6px !important;
+        left: 6px !important;
+        width: 45% !important;
+        padding-right: 10px !important;
+        white-space: nowrap !important;
+    }
+
+    {% for headerRow in headers %}
+                {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
+                td:nth-of-type({{columnIndex+1}}):before {
+                    content: \"{{ th.getOutput|raw }}\";
+                }
+                {% endif %} {% endfor %}
+    {% endfor %}
+}
+</style>
+{% endif %}
 <div class=\"table-responsive dataTables_wrapper\">
     <table class=\"table\" id=\"expore_tbl\">
         <!--<div class=\"overflow-x-auto overflow-y-visible\">
@@ -476,7 +616,8 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
             <tr>
                 {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
                 <th {{ th.getAttributeString|raw }}>
-                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }} {% endif %}
+                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }}
+                    {% endif %}
                 </th>
                 {% endif %} {% endfor %}
             </tr>
@@ -493,15 +634,18 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
             {% endif %} {% for rowIndex, rowData in rows %} {% set row = rowData.row %}
 
             <tr {{ row.getAttributeString|raw }}>
-                {{ row.getPrepended|raw }} {% for columnIndex, column in columns %} {% set cell = rowData.cells[columnIndex] %}
+                {{ row.getPrepended|raw }} {% for columnIndex, column in columns %}
+                {% set cell = rowData.cells[columnIndex] %}
 
                 <td {{ cell.getAttributeString|raw }}>
                     {{ cell.getPrepended|raw }} {% if column.getID == \"actions\" %}
                     <nav class=\"relative group\">
                         {% do column.getOutput(rowData.data) %} {% set actions = column.getActions %}
 
-                        <div class=\"{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden-1 group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded  sm:shadow-none sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }}\">
-                            {% for actionName, action in actions %} {% do action.addClass('') %} {{ action.getOutput(rowData.data, column.getParams)|raw }} {% endfor %}
+                        <div
+                            class=\"{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden-1 group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded  sm:shadow-none sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }}\">
+                            {% for actionName, action in actions %} {% do action.addClass('') %}
+                            {{ action.getOutput(rowData.data, column.getParams)|raw }} {% endfor %}
                         </div>
 
                         {% if actions|length > 1 %}
@@ -510,11 +654,11 @@ class __TwigTemplate_d12725a078981cfb111edc629fc5067d0077da1ce2a8758a012082f709d
                             <span class=\"block -mt-3\">...</span>
                         </button> 
                         -->
-                        
+
                         {% endif %}
                     </nav>
 
-                    {% else %} {{ column.getOutput(rowData.data)|raw }} {% endif %} {{ cell.getAppended|raw }}
+                    {% else %} {{ column.getOutput(rowData.data)|raw }}&nbsp; {% endif %} {{ cell.getAppended|raw }}
                 </td>
                 {% endfor %} {{ row.getAppended|raw }}
             </tr>

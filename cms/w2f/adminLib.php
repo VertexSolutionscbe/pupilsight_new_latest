@@ -184,6 +184,14 @@ class adminlib {
 			$sql1 = "SELECT GROUP_CONCAT(field_value SEPARATOR ' ') as names FROM wp_fluentform_entry_details WHERE submission_id = ".$subId."  AND field_name = 'student_name' ";
 			$result1 = database::doSelectOne($sql1);
 			$result[$k]['username'] = $result1['names'];
+
+			$sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = ".$subId."  ";
+			$result2 = database::doSelectOne($sql2);
+			if(!empty($result2['transaction_id'])){
+				$result[$k]['transaction_id'] = $result2['transaction_id'].'.pdf';
+			} else {
+				$result[$k]['transaction_id'] = '';
+			}
 		}
 		// echo '<pre>';
 		// print_r($result1);

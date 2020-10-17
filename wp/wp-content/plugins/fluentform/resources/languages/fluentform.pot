@@ -23,7 +23,7 @@ msgid "Every 5 minites (FluentForm)"
 msgstr ""
 
 #: app/Hooks/Backend.php:64
-msgid "Fluent Forms Latest Form Submissions"
+msgid "Forms Latest Form Submissions"
 msgstr ""
 
 #: app/Hooks/Backend.php:114

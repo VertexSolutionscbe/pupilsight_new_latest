@@ -73,7 +73,11 @@ function _wp_menu_output( $menu, $submenu, $submenu_as_parent = true ) {
 	$flag = TRUE;
 	foreach ( $menu as $key => $item ) {
 		if ($item[0] == "Fluent Forms Pro" || $item[0] == "wpDataTables" || $item[0] == "Report Builder") {
-			//if($flag){
+			if($item[0]=="Fluent Forms Pro"){
+				$item[0] = "Forms";
+			}else if($item[0]=="wpDataTables"){
+				$item[0] = "Data Tables";
+			}
 
 		$admin_is_parent = false;
 		$class           = array();

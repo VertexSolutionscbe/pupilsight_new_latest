@@ -24,9 +24,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-    $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
+    $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear';
     $resulta = $connection2->query($sqla);
     $academic = $resulta->fetchAll();
 
@@ -40,8 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     $rowdataprog = $resultp->fetchAll();
     $prog = array();
     $prog1 = array();
-    foreach($rowdataprog as $prg){
-        $id = 'type:'.$prg['pupilsightProgramID'];
+    foreach ($rowdataprog as $prg) {
+        $id = 'type:' . $prg['pupilsightProgramID'];
         $prog[$id] = $prg['name'];
     }
 
@@ -53,15 +53,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     }
     $program = $program1 + $program2;
 
-    if ($_POST) {
+    if ($_POST['pupilsightProgramID']) {
         $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
         $pupilsightProgramID =  $_POST['pupilsightProgramID'];
         $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
         $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
-        
+
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
         $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
-
     } else {
         $classes = array('' => 'Select Class');
         $sections = array('' => 'Select Section');
@@ -79,12 +78,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
 
     $yearGroups = $MappingGateway->queryMappingGroups($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
 
-    
-
-    echo '<h2>';
-    echo __('Filter');
-    echo '</h2>';
-
     $searchform = Form::create('searchForm', '');
     $searchform->setFactory(DatabaseFormFactory::create($pdo));
     $searchform->addHiddenValue('studentId', '0');
@@ -93,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
     $col->addSelect('pupilsightSchoolYearID')->fromArray($academicData)->selected($pupilsightSchoolYearID)->required();
-   
+
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
     $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder('Select Program');
@@ -107,11 +100,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->selected($pupilsightRollGroupID);
 
     $col = $row->addColumn()->setClass('newdes');
-    
 
+    $col->addLabel('', __(''));
     $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>  &nbsp;&nbsp; <a href=""  >Clr Filter</a>');
 
-    
+
     echo $searchform->getOutput();
 
     // DATA TABLE
@@ -120,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/School Admin/mapping_manage_add.php')
         ->displayLabel();
-   
+
     // $table->addMetaData('filterOptions', [
     //     'program'     => __('Program').': '.__('Full'),
     //     'status:left'     => __('Status').': '.__('Left'),
@@ -128,26 +121,25 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     //     'date:starting'   => __('Before Start Date'),
     //     'date:ended'      => __('After End Date'),
     // ]);
-    
+
     //$table->addMetaData('filterOptions', $prog);
     $table->addColumn('academicyear', __('Academic Year'));
     $table->addColumn('program', __('Program'));
     $table->addColumn('yearGroup', __('Class'));
     $table->addColumn('rollGroup', __('Section'));
-   
-        
+
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('pupilsightMappingID')
         ->format(function ($facilities, $actions) use ($guid) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/School Admin/mapping_manage_edit.php');
+                ->setURL('/modules/School Admin/mapping_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/School Admin/mapping_manage_delete.php');
+                ->setURL('/modules/School Admin/mapping_manage_delete.php');
         });
 
     echo $table->render($yearGroups);
-
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }

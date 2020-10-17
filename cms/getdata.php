@@ -29,6 +29,14 @@ if(!empty($camdata)){
 			echo '<td>';
 			echo $statedata;
 			echo '</td>';
+			echo '<td>';
+			if(!empty($row['transaction_id'])){
+				$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+				$link = $base_url.'/public/receipts/'.$row['transaction_id'];
+				echo '<a href="'.$link.'" download>Download</a>';
+			}
+			
+			echo '</td>';
 			echo '</tr>';
 		} else {
 			echo "<tr>";

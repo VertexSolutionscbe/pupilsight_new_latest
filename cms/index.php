@@ -167,15 +167,50 @@ if (isset($_SESSION["loginstatus"])) {
 	 
 }*/
 
+        <?php if(!empty($_GET['return'])){?>
+            alert('Your Application Submitted Successfully!');
+        <?php } ?>
+        
+        $(document).on('keydown', '#txtPhone', function(e) {
+            if(e.keyCode == 13){
+                $("#spnPhoneStatus").html("").hide();
+                var val = $("#txtPhone").val();
+                if (val != '') {
+                    // if (isEmail(val) == false) {
+                    //     alert('Email is not Valid!');
+                    //     return false;
+                    // }
+                    $('#app_lst_tbl').css('display', 'block');
+                    $.ajax({
+                        url: 'getdata.php',
+                        type: 'POST',
+                        data: {
+                            val: val
+                        },
+                        success: function(response) {
+                            //alert(response);
+                            if (response != '') {
+                                $(".chkdata").hide();
+                                $('#app_lst_tbl tbody').html(response);
+                            } else {
+                                $('#app_lst_tbl tbody').html("<tr><td colspan='4'>No Records Found !</td></tr>");
+                            }
+                        }
+                    });
+                }
+                return false;
+            }
+        });
+
         $(document).on('click', '.searchStatus', function(e) {
             e.preventDefault();
             $("#spnPhoneStatus").html("").hide();
             var val = $("#txtPhone").val();
             if (val != '') {
-                if (isEmail(val) == false) {
-                    alert('Email is not Valid!');
-                    return false;
-                }
+                // if (isEmail(val) == false) {
+                //     alert('Email is not Valid!');
+                //     return false;
+                // }
                 $('#app_lst_tbl').css('display', 'block');
                 $.ajax({
                     url: 'getdata.php',
@@ -475,9 +510,9 @@ if (isset($_SESSION["loginstatus"])) {
                                 <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                                     <a href="#" class="tc-menu-inner">Admission</a>
                                     <ul class="dropdown-content">
-                                        <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Application</a>
+                                        <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Registration</a>
                                         </li>
-                                        <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Application Status</a>
+                                        <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Registration Status</a>
                                         </li>
                                     
 
@@ -1938,13 +1973,14 @@ if (isset($_SESSION["loginstatus"])) {
 
                                         <div class="row" style="margin-top: 32px;">
                                             <div class="co-sm-4 col-lg-4">
-                                                <span class="lablembl">Email :
+                                                <span class="lablembl">Mobile
+                                                / Email :
                                                 </span>
                                             </div>
                                             <div class="col-sm-4 col-lg-4">
 
 
-                                                <input type="email" class="mblnum" id="txtPhone" placeholder="" name="txtPhone" data-error="Please enter mobile number." required />
+                                                <input type="text" class="mblnum" id="txtPhone" placeholder="" name="txtPhone" data-error="Please enter mobile number." required />
 
                                                 <br /><span title="" id="spnPhoneStatus"></span>
                                             </div>
@@ -2005,8 +2041,12 @@ if (isset($_SESSION["loginstatus"])) {
                                                             Submission Date
                                                         </th>
 
-                                                        <th style="width:20%">
+                                                        <th style="width:10%">
                                                             Status
+                                                        </th>
+
+                                                        <th style="width:10%">
+                                                            Receipt
                                                         </th>
 
                                                     </tr>

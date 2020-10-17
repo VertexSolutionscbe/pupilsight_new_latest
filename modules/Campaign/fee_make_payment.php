@@ -67,9 +67,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
 
     $cid = $_GET['cid'];
     $sid = $_GET['sid'];
+    $stuId = $sid;
     
 
-        $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, g.fine_type, g.rule_type, fn_fee_invoice_applicant_assign.invoice_no as stu_invoice_no FROM fn_fee_invoice LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN fn_fee_invoice_applicant_assign ON fn_fee_invoice.id = fn_fee_invoice_applicant_assign.fn_fee_invoice_id  WHERE fn_fee_invoice.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND fn_fee_invoice_applicant_assign.submission_id = "'.$sid.'"';
+        $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid,g.is_fine_editable, g.fine_type, g.rule_type, fn_fee_invoice_applicant_assign.id as invid, fn_fee_invoice_applicant_assign.invoice_no as stu_invoice_no FROM fn_fee_invoice LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN fn_fee_invoice_applicant_assign ON fn_fee_invoice.id = fn_fee_invoice_applicant_assign.fn_fee_invoice_id  WHERE fn_fee_invoice.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND fn_fee_invoice_applicant_assign.submission_id = "'.$sid.'"';
         $resultinv = $connection2->query($invoices);
         $invdata = $resultinv->fetchAll();
         // echo '<pre>';
@@ -245,12 +246,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
         echo "<tbody id=''>";
         if(!empty($invdata)){
             foreach($invdata as $ind){
+                $totAmt = number_format($ind['finalamount'], 2, '.', '');
                 if($ind['chkpayment'] == 'Paid'){
-                    $cls = 'value="0" checked disabled';
+                    //$cls = 'value="0" checked disabled';
+                    echo '<tr><td><input type="checkbox" class=" invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'" value="0" checked disabled ></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$totAmt.'</td><td>'.$ind['pendingamount'].'</td></tr>';
                 } else {
                     $cls = 'value="'.$ind['invoiceid'].'"'; 
+                     echo '<tr><td><input type="checkbox" class="chkinvoiceApplicant invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'"  '.$cls.'  data-amtedt="'.$ind['amount_editable'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'"></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['finalamount'].'</td><td>'.$ind['pendingamount'].'</td></tr>';
+                    
                 }
-                echo '<tr><td><input type="checkbox" class="chkinvoiceApplicant invoice'.$ind['id'].'" name="invoiceid[]" id="allfeeItemid" data-stu="'.$sid.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'"  '.$cls.'></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['finalamount'].'</td><td>'.$ind['pendingamount'].'</td></tr>';
             }
         }
         
@@ -457,7 +461,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
         
         echo $form->getOutput();
 
-            echo "<div class ='row fee_hdr hideFeeItemContent'><div class='col-md-12'> Fee Items</div></div>";
+            echo "<div style='display:none;'><div class ='row fee_hdr hideFeeItemContent'><div class='col-md-12'> Fee Items</div></div>";
 
             echo "<table cellspacing='0' style='width: 100%' id='FeeItemManage'>";
             echo "<thead>";
@@ -502,7 +506,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
             echo "</thead>";
             echo "<tbody id='getInvoiceFeeItem'>";
             echo "</tbody>";
-            echo '</table>';
+            echo '</table></div>';
 }
 ?>
 

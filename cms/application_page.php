@@ -5,6 +5,10 @@ session_start();
 $data = $adminlib->getPupilSightData();
 $section = $adminlib->getPupilSightSectionFrontendData();
 $campaign = $adminlib->getcampaign();
+$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+$responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
+
+//baseurl = http://testchristacademy.pupilpod.net
 // $app_status = $adminlib->getApp_statusData();
 //  print_r($app_status);die();
 /*$status= 1;
@@ -82,9 +86,29 @@ $app_links = array();
                             <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
                                 <div class="wpb_wrapper">
 
-                                    <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="1000" src="<?php echo $campaign_byid['page_link']; ?>">
+                                    <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="1000" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
                                     </iframe>
 
+
+                                    <?php if (!empty($campaign_byid['fn_fee_structure_id'])) { ?>
+                                        <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
+
+                                            <input type="hidden" value="" id="OrderId" name="OrderId">
+                                            <input type="hidden" name="amount" value="30000">
+                                            <input type="hidden" value="INR" id="currencyName" name="currencyName">
+                                            <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
+                                            <input type="hidden" name="mid" id="mid" value="WL0000000009424">
+                                            <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+                                            <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                            <!-- <input type="hidden" name="name" value="Bikash">
+                                <input type="hidden" name="email" value="bikash0389@gmail.com">
+                                <input type="hidden" name="phone" value="9883928942"> -->
+
+                                            <input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
+
+                                            <button type="submit" class="btnSubmit" style="display:none;" id="payAdmissionFee">Pay</button>
+                                        </form>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -153,17 +177,7 @@ $app_links = array();
         $_SERVER['REQUEST_URI'];
 
     ?>
-    <form id="admissionPay" action="../thirdparty/admissionpayment/razorpay/pay.php" method="post">
 
-        <input type="hidden" name="amount" value="300">
-        <input type="hidden" name="name" value="Bikash">
-        <input type="hidden" name="email" value="bikash0389@gmail.com">
-        <input type="hidden" name="phone" value="9883928942">
-        <input type="hidden" name="payid" value="">
-        <input type="hidden" name="stuid" value="">
-        <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
-        <!-- <button type="submit">Pay</button> -->
-    </form>
     <!-- online Payment By Bikash -->
 
     <!-- #colophon -->
@@ -175,7 +189,7 @@ $app_links = array();
 
 
     <div id="tp_chameleon_list_google_fonts"></div>
-
+    <a id="downloadLink" href="ajaxfile.php?cid=<?php echo $url_id; ?>" class="" style="display:none;">Download Receipts</a>
 
     <script type='text/javascript'>
         WebFont.load({
@@ -255,12 +269,29 @@ $app_links = array();
         .error {
             border: 2px solid red;
         }
+
+        .iheight {
+            height: 300px !important;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
     <script type='text/javascript'>
         //<![CDATA[
         $(window).load(function() {
+
+
+
+            var d = new Date();
+            var n = d.getTime();
+            var orderID = n + '' + randomFromTo(0, 1000);
+
+            document.getElementById("OrderId").value = orderID;
+
+            function randomFromTo(from, to) {
+                return Math.floor(Math.random() * (to - from + 1) + from);
+            }
+
             $(document).ready(function() {
                 $('#txtPhone').blur(function(e) {
                     if (validatePhone('txtPhone')) {
@@ -323,7 +354,7 @@ $app_links = array();
                 var dateTime = new Date(From_date);
                 var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                 var date = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-First', 'Twenty-Second', 'Twenty-Third', 'Twenty-Fourth', 'Twenty-Fifth', 'Twenty-Sixth', 'Twenty-Seventh', 'Twenty-Eighth', 'Twenty-Ninth', 'Thirtieth', 'Thirty-First'];
-                var strDateTime =  date[dateTime.getDate()-1] + " " + month[dateTime.getMonth()] + " " +  toWords(dateTime.getFullYear());
+                var strDateTime = date[dateTime.getDate() - 1] + " " + month[dateTime.getMonth()] + " " + toWords(dateTime.getFullYear());
                 iframe.find("input[name=dob_in_words]").val(strDateTime);
             });
 
@@ -347,14 +378,13 @@ $app_links = array();
 
             iframe.find("form").submit(function() {
                 $("#back-to-top").click();
-                getPDF(pid);
+                //getPDF(pid);
                 setTimeout(function() {
                     var flag = true;
                     iframe.find(".text-danger").each(function() {
                         flag = false;
                     });
                     if (flag) {
-                        
                         insertcampaign();
                     }
                 }, 2000);
@@ -362,14 +392,14 @@ $app_links = array();
 
         });
 
-        
-        function toWords(s){
-            var th = ['','Thousand','Million', 'Billion','Trillion'];
-            var dg = ['Zero','One','Two','Three','Four', 'Five','Six','Seven','Eight','Nine'];
-            var tn = ['Ten','Eleven','Twelve','Thirteen', 'Fourteen','Fifteen','Sixteen', 'Seventeen','Eighteen','Nineteen'];
-            var tw = ['Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
+
+        function toWords(s) {
+            var th = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
+            var dg = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+            var tn = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            var tw = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
             s = s.toString();
-            s = s.replace(/[\, ]/g,'');
+            s = s.replace(/[\, ]/g, '');
             if (s != parseFloat(s)) {
                 return 'not a number';
             }
@@ -379,32 +409,32 @@ $app_links = array();
             var n = s.split('');
             var str = '';
             var sk = 0;
-            for (var i=0; i < x; i++) {
-                if ((x-i)%3==2) {
+            for (var i = 0; i < x; i++) {
+                if ((x - i) % 3 == 2) {
                     if (n[i] == '1') {
-                        str += tn[Number(n[i+1])] + ' ';
+                        str += tn[Number(n[i + 1])] + ' ';
                         i++;
-                        sk=1;
-                    } else if (n[i]!=0) {
-                        str += tw[n[i]-2] + ' ';
-                        sk=1;
+                        sk = 1;
+                    } else if (n[i] != 0) {
+                        str += tw[n[i] - 2] + ' ';
+                        sk = 1;
                     }
-                } else if (n[i]!=0) {
-                    str += dg[n[i]] +' ';
-                    if ((x-i)%3==0) str += 'hundred ';
-                    sk=1;
+                } else if (n[i] != 0) {
+                    str += dg[n[i]] + ' ';
+                    if ((x - i) % 3 == 0) str += 'hundred ';
+                    sk = 1;
                 }
-                if ((x-i)%3==1) {
-                    if (sk) str += th[(x-i-1)/3] + ' ';
-                    sk=0;
+                if ((x - i) % 3 == 1) {
+                    if (sk) str += th[(x - i - 1) / 3] + ' ';
+                    sk = 0;
                 }
             }
             if (x != s.length) {
                 var y = s.length;
                 str += 'point ';
-                for (var i=x+1;    i<y; i++) str += dg[n[i]] +' ';
+                for (var i = x + 1; i < y; i++) str += dg[n[i]] + ' ';
             }
-            return str.replace(/\s+/g,' ');
+            return str.replace(/\s+/g, ' ');
         }
 
         function getPDF(pid) {
@@ -468,7 +498,6 @@ $app_links = array();
             var pid = $("#pid").val();
             var fid = $("#fid").val();
             var clid = $("#class option:selected").val();
-            //alert(clid);
             if (val != '') {
                 var type = 'insertcampaigndetails';
                 setTimeout(function() {
@@ -484,10 +513,10 @@ $app_links = array();
                         },
                         async: true,
                         success: function(response) {
-                            //$("'html, body'").animate({scrollTop: $("#showdiv").offset().top}, 2000);
-                            
-                            //$("#admissionPay").submit();
                             $("#progClassDiv").remove();
+                            $("#downloadLink")[0].click();
+                            $("#application_view").addClass('iheight');
+                            $("#payAdmissionFee").show();
                         }
                     });
                 }, 500);

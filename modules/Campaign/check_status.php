@@ -165,7 +165,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
 
         foreach ($dataSet as $campstatus) {
             if(!empty($campstatus['subid'])){
-               
+
+                $sqla = "select application_id FROM wp_fluentform_submissions  where id = ".$campstatus['subid']." ";
+                $resulta = $connection2->query($sqla);
+                $applicationData = $resulta->fetch();
+                $applicationId = $applicationData['application_id'];
 
                 $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, g.fine_type, g.rule_type, fn_fee_invoice_applicant_assign.invoice_no as stu_invoice_no FROM fn_fee_invoice LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN fn_fee_invoice_applicant_assign ON fn_fee_invoice.id = fn_fee_invoice_applicant_assign.fn_fee_invoice_id  WHERE fn_fee_invoice.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND fn_fee_invoice_applicant_assign.submission_id = "'.$campstatus['subid'].'" ';
                 $resultinv = $connection2->query($invoices);
@@ -339,7 +343,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 
                 if ($chkpayment == 'Paid') {
                     $cls = 'Paid';
-                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td><td>&nbsp;&nbsp;Paid</td><td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
+                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td><td>&nbsp;&nbsp;Paid</td><td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'" data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     $lin = $baseurl . "public/receipts/" . $ind["transaction_id"] . ".docx";
                     echo "<td><a href='" . $lin . "' download><i title='Fee Receipt Download' class='mdi mdi-file-pdf mdi-24px download_icon'></i></a></td></tr>";
                 } else {
@@ -379,7 +383,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                         </form> 
                     </td>
             <?php
-                    echo '<td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
+                    echo '<td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     echo "<td>NA</td></tr>";
                 }
                 //echo '<tr><td>'.$ind['officialName'].'</td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['totalamount'].'</td><td>'.$ind['pendingamount'].'</td><td>'.$cls.'</td></tr>';
@@ -394,7 +398,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 <td>' . $cmstatus . '</td>
                 <td>' . $totalamountnew . '</td>
                 <td>NA</td>
-                <td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td><td>NA</td></tr>';
+                <td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td><td>NA</td></tr>';
             }
             
         }
@@ -406,10 +410,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
 ?>
 <script type="text/javascript">
     $(document).on('click','.download_form',function(){
-      var id = $(this).attr('data-id');
-    var link = document.createElement('a');
-    link.href = "public/applicationpdf/"+id+"-application.pdf";
-    link.download = id+".pdf";
-    link.click();
+        var id = $(this).attr('data-id');
+        var aid = $(this).attr('data-aid');
+        var fname = '';
+        if(aid != ''){
+            fname = aid;
+        } else {
+            fname = id;
+        }
+        var link = document.createElement('a');
+        link.href = "public/applicationpdf/parent/"+fname+".pdf";
+        link.download = fname+".pdf";
+        link.click();
     });
 </script>

@@ -173,6 +173,68 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
     </style>
 
     <script>
+
+        $(document).on('keydown', '#txtPhone', function(e) {
+            if(e.keyCode == 13){
+                $("#spnPhoneStatus").html("").hide();
+                var val = $("#txtPhone").val();
+                if (val != '') {
+                    // if (isEmail(val) == false) {
+                    //     alert('Email is not Valid!');
+                    //     return false;
+                    // }
+                    $('#app_lst_tbl').css('display', 'block');
+                    $.ajax({
+                        url: 'getdata.php',
+                        type: 'POST',
+                        data: {
+                            val: val
+                        },
+                        success: function(response) {
+                            //alert(response);
+                            if (response != '') {
+                                $(".chkdata").hide();
+                                $('#app_lst_tbl tbody').html(response);
+                            } else {
+                                $('#app_lst_tbl tbody').html("<tr><td colspan='4'>No Records Found !</td></tr>");
+                            }
+                        }
+                    });
+                }
+                return false;
+            }
+        });
+
+        $(document).on('click', '.searchStatus', function(e) {
+            e.preventDefault();
+            $("#spnPhoneStatus").html("").hide();
+            var val = $("#txtPhone").val();
+            if (val != '') {
+                // if (isEmail(val) == false) {
+                //     alert('Email is not Valid!');
+                //     return false;
+                // }
+                $('#app_lst_tbl').css('display', 'block');
+                $.ajax({
+                    url: 'getdata.php',
+                    type: 'POST',
+                    data: {
+                        val: val
+                    },
+                    success: function(response) {
+                        //alert(response);
+                        if (response != '') {
+                            $(".chkdata").hide();
+                            $('#app_lst_tbl tbody').html(response);
+                        } else {
+                            $('#app_lst_tbl tbody').html("<tr><td colspan='4'>No Records Found !</td></tr>");
+                        }
+                    }
+                });
+            }
+        });
+
+
         //sendOTP
         /*function sendOTP() {
 		//alert("ok");
@@ -457,9 +519,9 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
                     <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                         <a href="#" class="tc-menu-inner">Admission</a>
                         <ul class="dropdown-content">
-                            <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Application</a>
+                            <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Registration</a>
                             </li>
-                            <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Application Status</a>
+                            <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Registration Status</a>
                             </li>
 
 
@@ -1127,7 +1189,7 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
                                         <div class="col-sm-4 col-lg-4">
 
 
-                                            <button style="" id="otpsend" type="submit" class="btnSubmit icon" onClick="sendOTP();" value="Send OTP">
+                                        <button style="" id="otpsend" type="button" class="btnSubmit icon searchStatus" value="Send OTP">
 
                                                 Submit
 

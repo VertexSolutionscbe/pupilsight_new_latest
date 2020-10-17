@@ -28,14 +28,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
     echo __('Add Fee Payment Gateway');
     echo '</h2>';
 
+    $gateway = array('' => 'Select Gateway', 'RAZORPAY' => 'RAZORPAY', 'WORLDLINE' => 'WORLDLINE', 'PAYTM' => 'PAYTM');
+
     $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_payment_gateway_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
-        $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->required();
+        $row->addLabel('name', __('Gateway Name'))->description(__('Must be unique.'));
+        $row->addSelect('name')->fromArray($gateway)->required();
 
     $row = $form->addRow();
         $row->addLabel('mid', __('Merchant ID'))->description(__('Must be unique.'));

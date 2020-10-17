@@ -267,21 +267,23 @@
                             <li class="nav-item">
                                 <form action="yearSwitcherProcess.php" method="post">
                                     <div style="display:inline-flex;">
-                                        <select name="pupilsightSchoolYearID"
-                                            style="float:left;width: 150px;margin-right: 10px;" id="academicYearChange">
-                                            <option value="">Select Academic Year</option>
-                                            {% for ay in academicYear %}
-                                            {% if ay.pupilsightSchoolYearID == pupilsightSchoolYearID %}
-                                            <option value='{{ ay.pupilsightSchoolYearID }}' selected>{{ ay.name }}
-                                            </option>
-                                            {% else %}
-                                            <option value='{{ ay.pupilsightSchoolYearID }}'>{{ ay.name }}
-                                            </option>
-                                            {% endif %}
-                                            {% endfor %}
-                                        </select>
-                                        <button type="submit" style="width:120px;" class="btn btn-primary">Change
-                                            Year</a></div>
+                                        <div class="input-group">
+                                            <select name="pupilsightSchoolYearID" style="float:left;width: 120px;"
+                                                id="academicYearChange">
+                                                <option value="">Select Academic Year</option>
+                                                {% for ay in academicYear %}
+                                                {% if ay.pupilsightSchoolYearID == pupilsightSchoolYearID %}
+                                                <option value='{{ ay.pupilsightSchoolYearID }}' selected>{{ ay.name }}
+                                                </option>
+                                                {% else %}
+                                                <option value='{{ ay.pupilsightSchoolYearID }}'>{{ ay.name }}
+                                                </option>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            <button type="submit" class="btn btn-white">Change Year</a>
+                                        </div>
+                                    </div>
                                 </form>
                             </li>
 

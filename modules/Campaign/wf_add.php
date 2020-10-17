@@ -76,8 +76,8 @@ echo '</h2>';
             $col->addTextField('academic_year')->addClass('txtfield')->required()->setValue($ac_y);
 			
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('campaign Name', __('Campaign Name'));
-            $col->addTextField('name')->addClass('txtfield')->required()->setValue($name);
+            $col->addLabel('campname', __('Campaign Name'));
+            $col->addTextField('campname')->addClass('txtfield')->required()->setValue($name);
 
 			$col = $row->addColumn()->setClass('newdes');
             $col->addLabel('name', __('Work Flow Name'));
