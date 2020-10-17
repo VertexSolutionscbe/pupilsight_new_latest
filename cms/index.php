@@ -167,7 +167,7 @@ if (isset($_SESSION["loginstatus"])) {
 	 
 }*/
 
-        <?php if($_GET['return'] == 'success'){?>
+        <?php if(!empty($_GET['return'])){?>
             alert('Your Application Submitted Successfully!');
         <?php } ?>
         
@@ -2041,8 +2041,12 @@ if (isset($_SESSION["loginstatus"])) {
                                                             Submission Date
                                                         </th>
 
-                                                        <th style="width:20%">
+                                                        <th style="width:10%">
                                                             Status
+                                                        </th>
+
+                                                        <th style="width:10%">
+                                                            Receipt
                                                         </th>
 
                                                     </tr>

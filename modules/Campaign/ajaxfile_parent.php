@@ -3,6 +3,7 @@ include '../../pupilsight.php';
 include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
 
+
 $cid = $_GET['cid'];
 $submissionId = $_SESSION['submissionId'];
 $applicantId = explode(',', $submissionId);
@@ -41,19 +42,31 @@ if (!empty($file)) {
         $result = $connection2->query($sql);
         $rowdata = $result->fetchAll();
         foreach ($rowdata as $key => $value) {
-            $arr[$value['field_name']] = $value['field_value'];
+            try {
+                $arr[$value['field_name']] = $value['field_value'];
+            } catch (Exception $ex) {
+            }
         }
 
         foreach ($arrHeader as $k => $ah) {
             if (array_key_exists($ah, $arr)) {
                 if ($ah == 'file-upload' || $ah == 'image-upload') {
                     $attrValue = $arr[$ah];
-                    $phpword->setImageValue($ah, $attrValue);
+                    try {
+                        $phpword->setImageValue($ah, $attrValue);
+                    } catch (Exception $ex) {
+                    }
                 } else {
-                    $phpword->setValue($ah, $arr[$ah]);
+                    try {
+                        $phpword->setValue($ah, $arr[$ah]);
+                    } catch (Exception $ex) {
+                    }
                 }
             } else {
-                $phpword->setValue($ah, '');
+                try {
+                    $phpword->setValue($ah, '');
+                } catch (Exception $ex) {
+                }
             }
         }
         if (!empty($applicationData['application_id'])) {
@@ -62,12 +75,25 @@ if (!empty($file)) {
             $fname = $aid;
         }
 
-        $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".docx";
-        $filename = $fname . ".docx";
+        // $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".docx";
+        // $filename = $fname . ".docx";
+        // $phpword->saveAs($savedocsx);
+
+        // header("Content-Disposition: attachment; filename=" . $filename . " ");
+        // readfile($savedocsx);
+
+        $fileName = $fname . ".docx";
+        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/";
+        $savedocsx = $inFilePath . $fileName;
+      
         $phpword->saveAs($savedocsx);
 
-        header("Content-Disposition: attachment; filename=" . $filename . " ");
-        readfile($savedocsx);
+        convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+
+        $pdfFilename = $fname . ".pdf";
+
+        header("Content-Disposition: attachment; filename=".$pdfFilename." ");
+        readfile($savedocsx); 
         // unlink($savedocsx);
     }
 }

@@ -43,20 +43,32 @@ if(!empty($file)){
         $rowdata = database::doSelect($sql);
         
         foreach($rowdata as $key => $value) {
-            $arr[$value['field_name']] = $value['field_value'];
+            try {
+                $arr[$value['field_name']] = $value['field_value'];
+            } catch (Exception $ex) {
+            }
         }
 
         foreach($arrHeader as $k=>$ah){
             if(array_key_exists($ah,$arr)){
                 if($ah == 'file-upload' || $ah == 'image-upload'){
                     $attrValue = $arr[$ah];
-                    $phpword->setImageValue($ah, $attrValue);
+                    try {
+                        $phpword->setImageValue($ah, $attrValue);
+                    } catch (Exception $ex) {
+                    }
                 } else {
-                    $phpword->setValue($ah, $arr[$ah]);
+                    try {
+                        $phpword->setValue($ah, $arr[$ah]);
+                    } catch (Exception $ex) {
+                    }
                 }
                 
             } else {
-                $phpword->setValue($ah, '');
+                try {
+                    $phpword->setValue($ah, '');
+                } catch (Exception $ex) {
+                }
             }
             
         }
@@ -70,11 +82,22 @@ if(!empty($file)){
             $fname = $aid;
         }
 
-        $savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/parent/".$fname.".docx";
-        $filename = $fname.".docx";
+        // $savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/parent/".$fname.".docx";
+        // $filename = $fname.".docx";
+        // $phpword->saveAs($savedocsx);
+
+        $fileName = $fname . ".docx";
+        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/";
+        $savedocsx = $inFilePath . $fileName;
+        //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
+        //echo $savedocsx;
         $phpword->saveAs($savedocsx);
 
-        header("Content-Disposition: attachment; filename=".$filename." ");
+        convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+
+        $pdfFilename = $fname . ".pdf";
+
+        header("Content-Disposition: attachment; filename=".$pdfFilename." ");
         readfile($savedocsx); 
         //unlink($savedocsx);
     }

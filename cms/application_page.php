@@ -93,7 +93,7 @@ $app_links = array();
                                         <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 
                                             <input type="hidden" value="" id="OrderId" name="OrderId">
-                                            <input type="hidden" name="amount" value="100">
+                                            <input type="hidden" name="amount" value="30000">
                                             <input type="hidden" value="INR" id="currencyName" name="currencyName">
                                             <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
                                             <input type="hidden" name="mid" id="mid" value="WL0000000009424">
@@ -270,7 +270,7 @@ $app_links = array();
         }
 
         .iheight {
-            height: 200px !important;
+            height: 300px !important;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>

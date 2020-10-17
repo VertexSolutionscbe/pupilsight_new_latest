@@ -419,8 +419,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
             fname = id;
         }
         var link = document.createElement('a');
-        link.href = "public/applicationpdf/parent/"+fname+".docx";
-        link.download = fname+".docx";
+        link.href = "public/applicationpdf/parent/"+fname+".pdf";
+        link.download = fname+".pdf";
         link.click();
     });
 </script>
