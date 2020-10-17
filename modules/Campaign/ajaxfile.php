@@ -43,7 +43,16 @@ $file = $valuept['template_path'];
 $sqlf = 'Select b.form_fields FROM campaign AS a LEFT JOIN wp_fluentform_forms AS b ON a.form_id = b.id WHERE a.id = ' . $cid . ' ';
 $resultvalf = $connection2->query($sqlf);
 $fluent = $resultvalf->fetch();
-$field = json_decode($fluent['form_fields']);
+
+try {
+    $string = preg_replace("/[\r\n]+/", " ", $fluent['form_fields']);
+    $json = utf8_encode($string);
+    $field = json_decode($json);
+} catch (Exception $ex) {
+    print_r($ex);
+}
+
+//$field = json_decode($fluent['form_fields']);
 $fields = array();
 
 $arrHeader = array();
