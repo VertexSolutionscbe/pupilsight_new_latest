@@ -85,7 +85,27 @@ $app_links = array();
                                     <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="1000" src="<?php echo $campaign_byid['page_link']; ?>">
                                     </iframe>
 
-                                </div>
+                                
+                            <?php if(!empty($campaign_byid['fn_fee_structure_id'])) { ?>
+                            <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
+    
+                                <input type="hidden" value="" id="OrderId" name="OrderId">
+                                <input type="hidden" name="amount" value="300">
+                                <input type="hidden" value="INR" id="currencyName" name="currencyName">
+                                <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
+                                <input type="hidden" name="mid" id="mid" value="WL0000000009418">
+                                <input type="hidden" name="enckey" id="enckey" value="8339dce5006a6cd76eb23c4aa84d1159">
+                                <input type="hidden" name="campaignid" value="<?php echo $url_id;?>">
+                                <!-- <input type="hidden" name="name" value="Bikash">
+                                <input type="hidden" name="email" value="bikash0389@gmail.com">
+                                <input type="hidden" name="phone" value="9883928942"> -->
+
+                                <input type="hidden" name="responseUrl" id="responseUrl"value="http://localhost/pupilsight/thirdparty/payment/worldline/skit/meTrnSuccess.php" />
+                                
+                                <button type="submit" class="btnSubmit" style="display:none;margin: 0 0 0 500px" id="payAdmissionFee">Pay</button>
+                            </form>
+                            <?php } ?>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -153,23 +173,7 @@ $app_links = array();
         $_SERVER['REQUEST_URI'];
 
     ?>
-    <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
     
-        <input type="hidden" value="" id="OrderId" name="OrderId">
-        <input type="hidden" name="amount" value="300">
-        <input type="hidden" value="INR" id="currencyName" name="currencyName">
-        <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
-        <input type="hidden" name="mid" id="mid" value="WL0000000009418">
-        <input type="hidden" name="enckey" id="enckey" value="8339dce5006a6cd76eb23c4aa84d1159">
-        <input type="hidden" name="campaignid" value="<?php echo $url_id;?>">
-        <!-- <input type="hidden" name="name" value="Bikash">
-        <input type="hidden" name="email" value="bikash0389@gmail.com">
-        <input type="hidden" name="phone" value="9883928942"> -->
-
-        <input type="hidden" name="responseUrl" id="responseUrl"value="http://localhost/pupilsight/thirdparty/payment/worldline/skit/meTrnSuccess.php" />
-        
-        <button type="submit" style="display:block;" id="payAdmissionFee">Pay</button>
-    </form>
     <!-- online Payment By Bikash -->
 
     <!-- #colophon -->
@@ -505,7 +509,8 @@ $app_links = array();
                         success: function(response) {
                             //$("'html, body'").animate({scrollTop: $("#showdiv").offset().top}, 2000);
                             
-                            $("#admissionPay").submit();
+                            //$("#admissionPay").submit();
+                            $("#payAdmissionFee").show();
                             $("#progClassDiv").remove();
                             $("#downloadLink")[0].click();
                         }
