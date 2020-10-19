@@ -143,7 +143,7 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
             font-size: 14px;
         }
 
-        #app_lst_tbl tr,
+        /* #app_lst_tbl tr,
         td {
             width: 100% !important;
             color: #524b4b;
@@ -153,7 +153,7 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
         #app_lst_tbl td {
             padding: 7px 52px 7px 29px;
             text-align: left;
-        }
+        } */
 
         .header_colr {
             background-color: rgba(78, 88, 178, 0.75) !important;

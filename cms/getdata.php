@@ -72,7 +72,7 @@ if (!empty($camdata)) {
 							<input type="hidden" name="campaignid" value="<?php echo $cid; ?>">
 							<input type="hidden" name="sid" value="<?php echo $sid; ?>">
 							<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
-							<button type="submit" class="btnPay" id="payAdmissionFee">Pay</button>
+							<button type="submit" class="btnPayNew" id="payAdmissionFee">Pay</button>
 						</form>
 <?php }
 				}
@@ -90,11 +90,11 @@ if (!empty($camdata)) {
 ?>
 
 <style>
-	.btnPay {
+	.btnPayNew {
 		display: inline-block;
 		font-weight: bold;
-		font-size: 15px;
-		width: 50px;
+		font-size: 15px !important;
+		width: 50px !important;
 		line-height: 1.4285714;
 		text-align: center;
 		vertical-align: middle;
