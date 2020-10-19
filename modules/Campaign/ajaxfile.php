@@ -3,6 +3,21 @@ include '../../pupilsight.php';
 
 include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
+function createSingleDownload($files, $filesPath)
+{
+    try {
+        foreach ($files as $file) {
+            if (file_exists($filesPath . $file)) {
+                header("Content-Disposition: attachment; filename=" . $file);
+                readfile($filesPath . $file);
+                unlink($filesPath . $file);
+            }
+        }
+    } catch (Exception $ex) {
+        print_r($ex);
+    }
+}
+
 function createZipAndDownload($files, $filesPath, $zipFileName)
 {
     // Create instance of ZipArchive. and open the zip folder.
@@ -13,7 +28,9 @@ function createZipAndDownload($files, $filesPath, $zipFileName)
 
     // Adding every attachments files into the ZIP.
     foreach ($files as $file) {
-        $zip->addFile($filesPath . $file, $file);
+        if (file_exists($filesPath . $file)) {
+            $zip->addFile($filesPath . $file, $file);
+        }
     }
     $zip->close();
 
@@ -25,12 +42,13 @@ function createZipAndDownload($files, $filesPath, $zipFileName)
     header("Expires: 0");
     readfile($zipFileName);
     unlink($zipFileName);
-
+    /*
     foreach ($files as $file) {
         unlink($_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/" . $file);
-    }
+    }*/
     exit;
 }
+
 $cid = $_GET['cid'];
 $submissionId = $_GET['id'];
 $applicantId = explode(',', $submissionId);
@@ -43,7 +61,25 @@ $file = $valuept['template_path'];
 $sqlf = 'Select b.form_fields FROM campaign AS a LEFT JOIN wp_fluentform_forms AS b ON a.form_id = b.id WHERE a.id = ' . $cid . ' ';
 $resultvalf = $connection2->query($sqlf);
 $fluent = $resultvalf->fetch();
-$field = json_decode($fluent['form_fields']);
+
+try {
+    $field = json_decode($fluent['form_fields']);
+} catch (Exception $ex) {
+    $string = preg_replace("/[\r\n]+/", " ", $fluent['form_fields']);
+    $json = utf8_encode($string);
+    $field = json_decode($json);
+}
+
+if (empty($field)) {
+    try {
+        $string = preg_replace("/[\r\n]+/", " ", $fluent['form_fields']);
+        $json = utf8_encode($string);
+        $field = json_decode($json);
+    } catch (Exception $ex) {
+    }
+}
+
+
 $fields = array();
 
 $arrHeader = array();
@@ -55,6 +91,8 @@ foreach ($field as $fe) {
     }
 }
 
+error_reporting(-1);
+$debugFlag = TRUE;
 if (!empty($file)) {
     $arr = array();
     $files = array();
@@ -79,28 +117,40 @@ if (!empty($file)) {
 
             foreach ($arrHeader as $k => $ah) {
                 if (array_key_exists($ah, $arr)) {
+                    $attrValue = $arr[$ah];
+
                     if ($ah == 'file-upload' || $ah == 'image-upload') {
-                        $attrValue = $arr[$ah];
                         try {
                             $phpword->setImageValue($ah, $attrValue);
                         } catch (Exception $ex) {
+                            if ($debugFlag) {
+                                echo "setImageValue:";
+                                print_r($ex);
+                            }
                         }
                     } else {
                         try {
-                            $phpword->setValue($ah, $arr[$ah]);
+                            $phpword->setValue($ah, $attrValue);
                         } catch (Exception $ex) {
+                            if ($debugFlag) {
+                                echo "setValue:";
+                                print_r($ex);
+                            }
                         }
                     }
                 } else {
                     try {
                         $phpword->setValue($ah, '');
                     } catch (Exception $ex) {
+                        if ($debugFlag) {
+                            echo "setValue:Blank:";
+                            print_r($ex);
+                        }
                     }
                 }
             }
-            // echo '<pre>';
-            // print_r($newarr);
-            // echo '</pre>';
+
+
             // die();
             if (!empty($applicationData['application_id'])) {
                 $fname = $applicationData['application_id'];
@@ -108,11 +158,26 @@ if (!empty($file)) {
                 $fname = $aid;
             }
 
+            $fname = trim(str_replace("/", "_", $fname));
+
+            $date = date('Y-m-d');
+            $phpword->setValue('application_no', $fname);
+            $phpword->setValue('application_date', $date);
+
+            chmod($_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/", 0777);
             $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/" . $fname . ".docx";
+            if ($debugFlag) {
+                echo "fileName: " . $savedocsx;
+            }
+
             $files_word[] = $fname . ".docx";
             $files[] = $fname . ".pdf";
             $phpword->saveAs($savedocsx);
         } catch (Exception $ex) {
+            if ($debugFlag) {
+                echo "All:";
+                print_r($ex);
+            }
         }
     }
 
@@ -129,8 +194,7 @@ if (!empty($file)) {
     // Name of creating zip file
     $zipName = 'ApplicationForm.zip';
 
-    convertBulk($filesPath, TRUE);
-    //echo convert("291.docx", $filesPath, $filesPath, TRUE, TRUE);
-
-    echo createZipAndDownload($files, $filesPath, $zipName);
+    convertBulk($filesPath, FALSE); //convert pdf
+    createSingleDownload($files, $filesPath);
+    //echo createZipAndDownload($files, $filesPath, $zipName);
 }

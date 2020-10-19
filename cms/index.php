@@ -2028,26 +2028,27 @@ if (isset($_SESSION["loginstatus"])) {
                                             <table id="app_lst_tbl" cellspacing='0' class='table' style='display:none;'>
                                                 <thead>
                                                     <tr class='head'>
-                                                        <th style="width:10%">
+                                                        <th style="width:5%">
                                                             SI No
                                                         </th>
-                                                        <th  style="width:25%">
+                                                        <th  style="width:20%">
                                                             Applicant Name
                                                         </th>
-                                                        <th  style="width:25%">
+                                                        <th  style="width:20%">
                                                             Campaign Name
                                                         </th>
                                                         <th style="width:20%">
                                                             Submission Date
                                                         </th>
 
-                                                        <th style="width:10%">
+                                                        <th style="width:5%">
                                                             Status
                                                         </th>
-                                                        <th style="width:10%">
-                                                            Form Receipt
+
+                                                        <th style="width:5%">
+                                                            Form
                                                         </th>
-                                                        <th style="width:10%">
+                                                        <th style="width:5%">
                                                             Fee Receipt
                                                         </th>
 

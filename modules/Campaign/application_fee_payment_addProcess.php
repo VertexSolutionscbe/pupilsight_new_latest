@@ -182,6 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
 
                     //$class_section = $valuestu["prog"].' - '.$valuestu["class"];
                     $class_section = $valuestu["class"];
+                    $applicationAmount = $amount_paying / 100;
                     $dts_receipt = array(
                         "application_no" => $valuestu["application_id"],
                         "receipt_no" => $receipt_number,
@@ -191,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                         "class_section" => $class_section,
                         "instrument_date" => "NA",
                         "instrument_no" => "NA",
-                        "transcation_amount" => $amount_paying,
+                        "transcation_amount" => $applicationAmount,
                         "fine_amount" => $fine,
                         "other_amount" => "NA",
                         "pay_mode" => $valuept['name'],
