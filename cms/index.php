@@ -167,12 +167,12 @@ if (isset($_SESSION["loginstatus"])) {
 	 
 }*/
 
-        <?php if(!empty($_GET['return'])){?>
+        <?php if (!empty($_GET['return'])) { ?>
             alert('Your Application Submitted Successfully!');
         <?php } ?>
-        
+
         $(document).on('keydown', '#txtPhone', function(e) {
-            if(e.keyCode == 13){
+            if (e.keyCode == 13) {
                 $("#spnPhoneStatus").html("").hide();
                 var val = $("#txtPhone").val();
                 if (val != '') {
@@ -503,18 +503,18 @@ if (isset($_SESSION["loginstatus"])) {
                                 <a href="#events" class="tc-menu-inner">Events</a></li>
                             <li id="menu-item-1069" class="menu-item menu-item-type-post_type_archive menu-item-object-tp_event menu-item-1069 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                                 <a href="#announcement" class="tc-menu-inner">Announcement</a></li>
-                            
-                                <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                                    <a href="#contactus" class="tc-menu-inner">Contact us</a></li>
+
+                            <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
+                                <a href="#contactus" class="tc-menu-inner">Contact us</a></li>
                             <?php if (!empty($campaign)) { ?>
                                 <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                                    <a href="#" class="tc-menu-inner">Admission</a>
+                                    <a href="#" class="tc-menu-inner">Registration</a>
                                     <ul class="dropdown-content">
                                         <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Registration</a>
                                         </li>
                                         <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Registration Status</a>
                                         </li>
-                                    
+
 
                                     </ul>
 
@@ -837,20 +837,20 @@ if (isset($_SESSION["loginstatus"])) {
                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                     <a href="#contactus" class="tc-menu-inner">Contact us</a></li>
 
-                    <?php if (!empty($campaign)) { ?>
-                                <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                                    <a href="#" class="tc-menu-inner">Admission</a>
-                                    <ul class="dropdown-content" style="position:inherit;">
-                                        <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application" >Registration</a>
-                                        </li>
-                                        <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status" >Registration Status</a>
-                                        </li>
-                                    
+                <?php if (!empty($campaign)) { ?>
+                    <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
+                        <a href="#" class="tc-menu-inner">Registration</a>
+                        <ul class="dropdown-content" style="position:inherit;">
+                            <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Registration</a>
+                            </li>
+                            <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Registration Status</a>
+                            </li>
 
-                                    </ul>
 
-                                </li>
-                            <?php } ?>
+                        </ul>
+
+                    </li>
+                <?php } ?>
 
                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                     <a href="#" class="tc-menu-inner" onclick="loginMobile();">Login</a></li>
@@ -1989,7 +1989,7 @@ if (isset($_SESSION["loginstatus"])) {
                                         <div class="row" style="margin-top: 32px;">
                                             <div class="co-sm-4 col-lg-4">
                                                 <span class="lablembl">Mobile
-                                                / Email :
+                                                    / Email :
                                                 </span>
                                             </div>
                                             <div class="col-sm-4 col-lg-4">
@@ -2046,10 +2046,10 @@ if (isset($_SESSION["loginstatus"])) {
                                                         <th style="width:5%">
                                                             SI No
                                                         </th>
-                                                        <th  style="width:20%">
+                                                        <th style="width:20%">
                                                             Applicant Name
                                                         </th>
-                                                        <th  style="width:20%">
+                                                        <th style="width:20%">
                                                             Campaign Name
                                                         </th>
                                                         <th style="width:20%">

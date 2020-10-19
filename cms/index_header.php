@@ -173,9 +173,8 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
     </style>
 
     <script>
-
         $(document).on('keydown', '#txtPhone', function(e) {
-            if(e.keyCode == 13){
+            if (e.keyCode == 13) {
                 $("#spnPhoneStatus").html("").hide();
                 var val = $("#txtPhone").val();
                 if (val != '') {
@@ -517,7 +516,7 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
                     <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                         <a href="index.php#contactus" class="tc-menu-inner">Contact us</a></li>
                     <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                        <a href="#" class="tc-menu-inner">Admission</a>
+                        <a href="#" class="tc-menu-inner">Registration</a>
                         <ul class="dropdown-content">
                             <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Registration</a>
                             </li>
@@ -958,13 +957,13 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
             <a href="#contactus" class="tc-menu-inner">Contact us</a></li>
         <?php if (!empty($campaign)) { ?>
             <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
-                <a href="#" class="tc-menu-inner">Admission</a>
+                <a href="#" class="tc-menu-inner">Registration</a>
                 <ul class="dropdown-content" style="position:inherit;">
-                    <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application" >Registration</a>
+                    <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Registration</a>
                     </li>
-                    <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status" >Registration Status</a>
+                    <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Registration Status</a>
                     </li>
-                
+
 
                 </ul>
 
@@ -1203,7 +1202,7 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
                                         <div class="col-sm-4 col-lg-4">
 
 
-                                        <button style="" id="otpsend" type="button" class="btnSubmit icon searchStatus" value="Send OTP">
+                                            <button style="" id="otpsend" type="button" class="btnSubmit icon searchStatus" value="Send OTP">
 
                                                 Submit
 
@@ -1238,39 +1237,39 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
 
                                 <div class="row" style="">
                                     <div class="col-sm-12 col-lg-12">
-                                    <table id="app_lst_tbl" cellspacing='0' class='table' style='display:none;'>
-                                                <thead>
-                                                    <tr class='head'>
-                                                        <th style="width:5%">
-                                                            SI No
-                                                        </th>
-                                                        <th  style="width:20%">
-                                                            Applicant Name
-                                                        </th>
-                                                        <th  style="width:20%">
-                                                            Campaign Name
-                                                        </th>
-                                                        <th style="width:20%">
-                                                            Submission Date
-                                                        </th>
+                                        <table id="app_lst_tbl" cellspacing='0' class='table' style='display:none;'>
+                                            <thead>
+                                                <tr class='head'>
+                                                    <th style="width:5%">
+                                                        SI No
+                                                    </th>
+                                                    <th style="width:20%">
+                                                        Applicant Name
+                                                    </th>
+                                                    <th style="width:20%">
+                                                        Campaign Name
+                                                    </th>
+                                                    <th style="width:20%">
+                                                        Submission Date
+                                                    </th>
 
-                                                        <th style="width:5%">
-                                                            Status
-                                                        </th>
+                                                    <th style="width:5%">
+                                                        Status
+                                                    </th>
 
-                                                        <th style="width:5%">
-                                                            Form
-                                                        </th>
-                                                        <th style="width:5%">
-                                                            Fee Receipt
-                                                        </th>
+                                                    <th style="width:5%">
+                                                        Form
+                                                    </th>
+                                                    <th style="width:5%">
+                                                        Fee Receipt
+                                                    </th>
 
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
 
-                                                </tbody>
-                                            </table>
+                                            </tbody>
+                                        </table>
 
                                     </div>
                                 </div>
