@@ -43,6 +43,23 @@ $app_links = array();
 ?>
 
 <?php include("index_header.php"); ?>
+<style>
+    .btnPay {
+        display: inline-block;
+        font-weight: bold;
+        font-size: 20px;
+        width: 200px;
+        line-height: 1.4285714;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 0.4375rem 1rem;
+        border-radius: 3px;
+        color: #ffffff !important;
+        background-color: #206bc4;
+        border-color: #206bc4;
+    }
+</style>
 
 <body class="home page-template page-template-templates page-template-home-page page-template-templateshome-page-php page page-id-17 wp-embed-responsive theme-ivy-school pmpro-body-has-access woocommerce-no-js bg-type-color responsive auto-login left_courses wpb-js-composer js-comp-ver-6.0.5 vc_responsive">
 
@@ -89,11 +106,16 @@ $app_links = array();
                                     <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="1000" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
                                     </iframe>
 
-                                    <?php if (!empty($campaign_byid['fn_fee_structure_id'])) { ?>
+
+                                    <?php if (!empty($campaign_byid['fn_fee_structure_id'])) {
+                                        $sql = "SELECT SUM(total_amount) AS amt FROM fn_fee_structure_item WHERE fn_fee_structure_id = " . $campaign_byid['fn_fee_structure_id'] . " ";
+                                        $result = database::doSelectOne($sql);
+                                        $applicationAmount = $result['amt'] * 100;
+                                    ?>
                                         <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 
                                             <input type="hidden" value="" id="OrderId" name="OrderId">
-                                            <input type="hidden" name="amount" value="30000">
+                                            <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
                                             <input type="hidden" value="INR" id="currencyName" name="currencyName">
                                             <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
                                             <input type="hidden" name="mid" id="mid" value="WL0000000009424">
@@ -105,7 +127,7 @@ $app_links = array();
 
                                             <input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
 
-                                            <button type="submit" class="btnSubmit" style="display:none;" id="payAdmissionFee">Pay</button>
+                                            <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
                                         </form>
                                     <?php } ?>
                                 </div>
@@ -513,7 +535,7 @@ $app_links = array();
                         async: true,
                         success: function(response) {
                             $("#progClassDiv").remove();
-                            $("#downloadLink")[0].click();
+                            //$("#downloadLink")[0].click();
                             $("#application_view").addClass('iheight');
                             $("#payAdmissionFee").show();
                         }

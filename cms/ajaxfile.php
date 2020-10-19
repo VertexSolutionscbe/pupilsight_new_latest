@@ -96,6 +96,11 @@ if (!empty($file)) {
             }
 
             $fname = trim(str_replace("/", "_", $fname));
+
+            $date = date('Y-m-d');
+            $phpword->setValue('application_no', $fname);
+            $phpword->setValue('application_date', $date);
+
             $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".docx";
             $phpword->saveAs($savedocsx);
 

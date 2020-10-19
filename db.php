@@ -1,5 +1,6 @@
 <?php
-include('C:/xampp/htdocs/pupilsight/config.php');
+
+include $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $conn = new mysqli($databaseServer, $databaseUsername, $databasePassword, $databaseName);
 

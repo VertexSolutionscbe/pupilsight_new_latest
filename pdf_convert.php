@@ -5,7 +5,6 @@ function convert($fileName, $inFilePath, $outFilePath = NULL, $deleteSourceFile 
     if (empty($outFilePath)) {
         $outFilePath = $inFilePath;
     }
-
     $file = $inFilePath . $fileName;
     if (file_exists($file)) {
         chmod($file, 0777);
@@ -25,6 +24,7 @@ function convert($fileName, $inFilePath, $outFilePath = NULL, $deleteSourceFile 
         }
 
         if ($debug) {
+            echo "convert file: " . $convertFilePath;
             print_r($tmpFile);
         }
 
@@ -59,21 +59,19 @@ function convert($fileName, $inFilePath, $outFilePath = NULL, $deleteSourceFile 
                 }
             }
         }
-    } else {
-        return "The file $file does not exist";
     }
 }
 
-function convertBulk($inDir, $debug = FALSE, $ext = "docx")
+function convertBulk($inDir, $debug = FALSE)
 {
     if (is_dir($inDir)) {
         $files = scandir($inDir);
         $len = count($files);
         $i = 0;
         while ($i < $len) {
-            $pos = strpos($files[$i], $ext);
+            $pos = strpos($files[$i], "docx");
             if ($pos) {
-                convert($files[$i], $inDir, $inDir, TRUE, FALSE);
+                convert($files[$i], $inDir, $inDir, TRUE, TRUE);
             }
             $i++;
         }

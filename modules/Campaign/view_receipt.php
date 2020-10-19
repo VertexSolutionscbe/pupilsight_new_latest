@@ -22,7 +22,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/view_receipt.php'
 
 <?php
     $filePath = $_SESSION[$guid]['absoluteURL'] . "/public/receipts/" . $transid . ".pdf";
-    echo "<a  href='" . $filePath . "' download class='btn btn-primary' type='' >Download receipt</a>&nbsp;&nbsp;<a id='printReceipt' class='btn btn-primary' type='' >Print receipt</a></br><input type='hidden' id='uri' value='" . $filePath . "'>";
+    //echo "<a  href='" . $filePath . "' download class='btn btn-primary' type='' >Download receipt</a>&nbsp;&nbsp;<a id='printReceipt' class='btn btn-primary' type='' >Print receipt</a></br><input type='hidden' id='uri' value='" . $filePath . "'>";
+    echo "<a  href='" . $filePath . "' download class='btn btn-primary' type='' >Download receipt</a><input type='hidden' id='uri' value='" . $filePath . "'>";
 } ?>
 <iframe style="width:100%; height:500px;border=0;" id="printPage" src="https://docs.google.com/gview?url=<?php echo $filePath; ?>&embedded=true"></iframe>
 
