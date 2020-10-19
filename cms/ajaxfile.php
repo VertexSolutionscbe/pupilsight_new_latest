@@ -1,7 +1,7 @@
 <?php
 include_once '../vendor/autoload.php';
 include_once 'w2f/adminLib.php';
-include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
+//include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 $adminlib = new adminlib();
 session_start();
 
@@ -72,6 +72,7 @@ if(!empty($file)){
             }
             
         }
+
         // echo '<pre>';
         // print_r($newarr);
         // echo '</pre>';
@@ -81,21 +82,24 @@ if(!empty($file)){
         } else {
             $fname = $aid;
         }
+        $date = date('y-m-d');
+        $phpword->setValue('application_no', $fname);
+        $phpword->setValue('application_date', $date);
 
         // $savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/applicationpdf/parent/".$fname.".docx";
         // $filename = $fname.".docx";
         // $phpword->saveAs($savedocsx);
 
         $fileName = $fname . ".docx";
-        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/";
+        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/pupilsight/public/applicationpdf/parent/";
         $savedocsx = $inFilePath . $fileName;
         //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
         //echo $savedocsx;
         $phpword->saveAs($savedocsx);
 
-        convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+        //convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
 
-        $pdfFilename = $fname . ".pdf";
+        $pdfFilename = $fname . ".docx";
 
         header("Content-Disposition: attachment; filename=".$pdfFilename." ");
         readfile($savedocsx); 

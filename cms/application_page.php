@@ -90,11 +90,16 @@ $app_links = array();
                                     </iframe>
 
 
-                                    <?php if (!empty($campaign_byid['fn_fee_structure_id'])) { ?>
+                                    <?php if (!empty($campaign_byid['fn_fee_structure_id'])) { 
+                                        $sql = "SELECT SUM(total_amount) AS amt FROM fn_fee_structure_item WHERE fn_fee_structure_id = ".$campaign_byid['fn_fee_structure_id']." ";
+                                        $result = database::doSelectOne($sql);
+                                        $applicationAmount = $result['amt'] * 100;
+                                        
+                                    ?>
                                         <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 
                                             <input type="hidden" value="" id="OrderId" name="OrderId">
-                                            <input type="hidden" name="amount" value="30000">
+                                            <input type="hidden" name="amount" value="<?php echo $applicationAmount;?>">
                                             <input type="hidden" value="INR" id="currencyName" name="currencyName">
                                             <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
                                             <input type="hidden" name="mid" id="mid" value="WL0000000009424">

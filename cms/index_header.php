@@ -1240,8 +1240,12 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
                                                             Submission Date
                                                         </th>
 
-                                                        <th style="width:20%">
+                                                        <th style="width:10%">
                                                             Status
+                                                        </th>
+
+                                                        <th style="width:10%">
+                                                            Receipt
                                                         </th>
 
                                                     </tr>

@@ -2044,9 +2044,11 @@ if (isset($_SESSION["loginstatus"])) {
                                                         <th style="width:10%">
                                                             Status
                                                         </th>
-
                                                         <th style="width:10%">
-                                                            Receipt
+                                                            Form Receipt
+                                                        </th>
+                                                        <th style="width:10%">
+                                                            Fee Receipt
                                                         </th>
 
                                                     </tr>
