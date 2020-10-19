@@ -121,6 +121,7 @@ $app_links = array();
                                             <input type="hidden" name="mid" id="mid" value="WL0000000009424">
                                             <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
                                             <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                            <input type="hidden" name="sid" value="0">
                                             <!-- <input type="hidden" name="name" value="Bikash">
                                 <input type="hidden" name="email" value="bikash0389@gmail.com">
                                 <input type="hidden" name="phone" value="9883928942"> -->

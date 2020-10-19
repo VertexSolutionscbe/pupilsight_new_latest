@@ -365,11 +365,95 @@ if ($response->getStatusCode() == 'S') {
 	} else {
 	}
 } else {
+	$backUrl = $_SESSION[$guid]['absoluteURL'].'/cms/index.php';
+	$responseLink = $_SESSION[$guid]['absoluteURL'] . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
+	$sid = $response->getAddField1();
+	$cid = $response->getAddField2();
+	// $sid = 83;
+	// $cid = 103;
+
+	$sql = "SELECT SUM(b.total_amount) AS amt FROM campaign AS a LEFT JOIN fn_fee_structure_item AS b ON a.fn_fee_structure_id = b.fn_fee_structure_id WHERE a.id = " . $cid . " ";
+	$result = $connection2->query($sql);
+	$resultData = $result->fetch();
+	$applicationAmount = $resultData['amt'] * 100;
 ?>
+	<div style="text-align:center;">
 	<div style='color:red;font-size:18px;border:1px red solid;padding:10px;'>Transcation is cancelled, please try again.</div>
-	<a href="cms/index.php">Back</a>
+
+	<div style="display:inline-flex;">
+	<form id="admissionPay" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
+
+		<input type="hidden" value="" id="OrderId" name="OrderId">
+		<input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+		<input type="hidden" value="INR" id="currencyName" name="currencyName">
+		<input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
+		<input type="hidden" name="mid" id="mid" value="WL0000000009424">
+		<input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+		<input type="hidden" name="campaignid" value="<?php echo $cid; ?>">
+		<input type="hidden" name="sid" value="<?php echo $sid; ?>">
+		<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
+
+		<button type="submit" class="btnPay" id="payAdmissionFee">Pay</button>
+	</form>
+	<a class="btnBack" href="<?php echo $backUrl;?>" >Back</a>
+	</div>
+	</div>
 <?php
 }
+?>
+
+<script type='text/javascript'>
+        //<![CDATA[
+        $(window).load(function() {
+			var d = new Date();
+            var n = d.getTime();
+            var orderID = n + '' + randomFromTo(0, 1000);
+
+            document.getElementById("OrderId").value = orderID;
+
+            function randomFromTo(from, to) {
+                return Math.floor(Math.random() * (to - from + 1) + from);
+			}
+		});
+</script>
+<style>
+    .btnBack {
+        display: inline-block;
+        font-weight: bold;
+        font-size: 20px;
+        width: 200px;
+        line-height: 1.4285714;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 0.4375rem 1rem;
+        border-radius: 3px;
+        color: #ffffff !important;
+        background-color: #206bc4;
+        border-color: #206bc4;
+		margin: 20px 0 16px 0;
+		text-decoration: none;
+
+    }
+
+	.btnPay {
+        display: inline-block;
+        font-weight: bold;
+        font-size: 20px;
+        width: 200px;
+        line-height: 1.4285714;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 0.4375rem 1rem;
+        border-radius: 3px;
+        color: #ffffff !important;
+        background-color: #206bc4;
+        border-color: #206bc4;
+		margin: 20px 20px 0 0px;
+    }
+</style>
+<?php
 
 /*
 ?>

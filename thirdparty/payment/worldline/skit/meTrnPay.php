@@ -12,7 +12,11 @@ $obj = new AWLMEAPI();
 //create an object of Request Message
 $reqMsgDTO = new ReqMsgDTO();
 
-$submissionId = $_SESSION['submissionId'];
+if(!empty($_REQUEST['sid'])){
+	$submissionId = $_REQUEST['sid'];
+} else {
+	$submissionId = $_SESSION['submissionId'];
+}
 
 /* Populate the above DTO Object On the Basis Of The Received Values */
 // PG MID
@@ -70,5 +74,5 @@ if ($reqMsgDTO->getStatusDesc() == "Success") {
 </form>
 <script type="text/javascript">
 	//submit the form to the worldline
-	document.txnSubmitFrm.submit();
+	//document.txnSubmitFrm.submit();
 </script>
