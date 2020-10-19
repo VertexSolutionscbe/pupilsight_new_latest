@@ -1,7 +1,7 @@
 <?php
 include_once '../vendor/autoload.php';
 include_once 'w2f/adminLib.php';
-//include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 $adminlib = new adminlib();
 
 session_start();
@@ -114,10 +114,10 @@ if (!empty($file)) {
                 echo "file not fund.";
             }
 
-            $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".pdf";
+            //$pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".pdf";
 
-            header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
-            readfile($pdfFilename);
+            // header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
+            // readfile($pdfFilename);
             //unlink($savedocsx);
 
         } catch (Exception $ex) {
