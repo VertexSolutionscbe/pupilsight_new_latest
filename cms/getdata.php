@@ -26,15 +26,23 @@ if (!empty($camdata)) {
 			echo $row['created_at'];
 			echo '</td>';
 			echo '<td>';
-			echo $statedata;
+
+			if (!empty($row['transaction_id'])) {
+				echo $statedata;
+			} else {
+				echo "Created";
+			}
+
 			echo '</td>';
 			echo '<td>';
-			if (!empty($row['application_no'])) {
+			if (!empty($row['application_no']) && !empty($row['transaction_id'])) {
 				$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 				$fname = trim(str_replace("/", "_", $row['application_no']));
 				//$link = $base_url . '/public/applicationpdf/parent/' . $fname;
 				$link = $base_url . '/cms/ajaxfile.php?cid=' . $row['id'] . "&submissionId=" . $row['submission_id'];
 				echo '<a href="' . $link . '"><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+			} else {
+				echo "NA";
 			}
 			echo '</td>';
 			echo '<td>';

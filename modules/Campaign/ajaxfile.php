@@ -1,4 +1,12 @@
 <?php
+$cid = $_GET['cid'];
+$submissionId = $_GET['submissionId'];
+
+header("Content-Disposition: attachment; filename=test.pdf");
+$link = "http://christacademy.pupilpod.net/cms/ajaxfile.php?cid=" . $cid . "&submissionId=" . $submissionId;
+readfile($link);
+die();
+
 include '../../pupilsight.php';
 
 include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
@@ -49,6 +57,7 @@ function createZipAndDownload($files, $filesPath, $zipFileName)
     exit;
 }
 
+
 $cid = $_GET['cid'];
 $submissionId = $_GET['id'];
 $applicantId = explode(',', $submissionId);
@@ -98,6 +107,7 @@ if (!empty($file)) {
     $files = array();
     foreach ($applicantId as $aid) {
         try {
+            chmod($file, 0777);
             $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
 
             $sqla = "select application_id FROM wp_fluentform_submissions  where id = " . $aid . " ";
@@ -158,21 +168,54 @@ if (!empty($file)) {
                 $fname = $aid;
             }
 
-            $fname = trim(str_replace("/", "_", $fname));
 
             $date = date('Y-m-d');
             $phpword->setValue('application_no', $fname);
             $phpword->setValue('application_date', $date);
 
-            chmod($_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/", 0777);
+            $fname = trim(str_replace("/", "_", $fname));
+
+            $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".docx";
+            $phpword->saveAs($savedocsx);
+
+            $fileName = $fname . ".docx";
+            $dirPath = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/";
+
+            if (file_exists($dirPath . $fileName)) {
+                //echo "converting pdf.." . $dirPath . $fileName;
+                convert($fileName, $dirPath, $dirPath, FALSE, TRUE);
+            } else {
+                //echo "file not fund.";
+            }
+
+            $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".pdf";
+
+            header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
+            readfile($pdfFilename);
+
+            /*
+            $date = date('Y-m-d');
+            $phpword->setValue('application_no', $fname);
+            $phpword->setValue('application_date', $date);
+
+            $fname = trim(str_replace("/", "_", $fname));
+            // chmod($_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/", 0777);
             $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/" . $fname . ".docx";
+            $phpword->saveAs($savedocsx);
             if ($debugFlag) {
                 echo "fileName: " . $savedocsx;
             }
 
             $files_word[] = $fname . ".docx";
             $files[] = $fname . ".pdf";
-            $phpword->saveAs($savedocsx);
+
+            $filesPath = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/";
+
+            convert($fname . ".docx", $filesPath, $filesPath, FALSE, TRUE);
+
+            $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/" . $fname . ".pdf";
+            header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
+            readfile($pdfFilename);*/
         } catch (Exception $ex) {
             if ($debugFlag) {
                 echo "All:";
@@ -189,12 +232,13 @@ if (!empty($file)) {
     // Files which need to be added into zip
 
     // Directory of files
-    $filesPath = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/";
+    //$filesPath = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/";
 
     // Name of creating zip file
-    $zipName = 'ApplicationForm.zip';
+    //$zipName = 'ApplicationForm.zip';
 
-    convertBulk($filesPath, FALSE); //convert pdf
-    createSingleDownload($files, $filesPath);
+    //convertBulk($filesPath, FALSE); //convert pdf
+
+    //createSingleDownload($files, $filesPath);
     //echo createZipAndDownload($files, $filesPath, $zipName);
 }
