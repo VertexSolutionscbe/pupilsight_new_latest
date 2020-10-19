@@ -88,20 +88,7 @@ if (!empty($camdata)) {
 	}
 }
 ?>
-<script type='text/javascript'>
-	//<![CDATA[
-	$(window).load(function() {
-		var d = new Date();
-		var n = d.getTime();
-		var orderID = n + '' + randomFromTo(0, 1000);
 
-		document.getElementById("OrderId").value = orderID;
-
-		function randomFromTo(from, to) {
-			return Math.floor(Math.random() * (to - from + 1) + from);
-		}
-	});
-</script>
 <style>
 	.btnPay {
 		display: inline-block;
