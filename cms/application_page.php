@@ -103,7 +103,7 @@ $app_links = array();
                             <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
                                 <div class="wpb_wrapper">
 
-                                    <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="1000" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
+                                    <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="100%" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
                                     </iframe>
 
 
