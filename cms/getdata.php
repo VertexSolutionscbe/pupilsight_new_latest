@@ -31,15 +31,20 @@ if (!empty($camdata)) {
 			echo '<td>';
 			if (!empty($row['application_no'])) {
 				$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-				$link = $base_url . '/public/applicationpdf/parent/' . $row['application_no'];
-				echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+				$link = $base_url . '/pupilsight/public/applicationpdf/parent/' . $row['application_no'];
+				if(file_exists($link)){
+					echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+				}
 			}
 			echo '</td>';
 			echo '<td>';
 			if (!empty($row['transaction_id'])) {
 				$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 				$link = $base_url . '/public/receipts/' . $row['transaction_id'];
-				echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+				if(file_exists($link)){
+					echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+				}
+				
 			} else { 
 				$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 				$responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
@@ -80,12 +85,13 @@ if (!empty($camdata)) {
 }
 ?>
 
+
 <style>
     .btnPay {
         display: inline-block;
         font-weight: bold;
         font-size: 15px;
-        width: 50px;
+        width: 50px !important;
         line-height: 1.4285714;
         text-align: center;
         vertical-align: middle;

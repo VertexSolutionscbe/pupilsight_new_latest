@@ -104,13 +104,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                         $resultfort->execute($datafort);
                         $formatvalues = $resultfort->fetch();
                         // $iformat .= $formatvalues['last_no'].'/';
-                        $iformat .= $formatvalues['last_no'];
-
+                        
                         $str_length = $formatvalues['no_of_digit'];
+
+                        $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
 
                         $lastnoadd = $formatvalues['last_no'] + 1;
 
-                        $lastno = substr("0000000{$lastnoadd}", -$str_length);
+                        //$lastno = substr("0000000{$lastnoadd}", -$str_length);
+                        $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
 
                         $datafort1 = array('fn_fee_series_id' => $fn_fees_receipt_series_id, 'order_wise' => $orderwise, 'type' => 'numberwise', 'last_no' => $lastno);
                         $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type AND order_wise=:order_wise';
