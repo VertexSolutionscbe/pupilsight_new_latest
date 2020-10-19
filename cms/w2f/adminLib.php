@@ -214,16 +214,17 @@ class adminlib {
 			if(!empty($result)){
 				$state = $result['state'];
 			} else {
-				$sql = "Select workflow_id  FROM workflow_map WHERE campaign_id = ".$cid." ";
-				$result = database::doSelectOne($sql);
+				// $sql = "Select workflow_id  FROM workflow_map WHERE campaign_id = ".$cid." ";
+				// $result = database::doSelectOne($sql);
 
-			 	$sql1 = "Select name FROM workflow_state WHERE workflowid = ".$result['workflow_id']." AND order_wise = '1' ";
-				$result1 = database::doSelectOne($sql1);
-				$state = $result1['name'];
+			 	// $sql1 = "Select name FROM workflow_state WHERE workflowid = ".$result['workflow_id']." AND order_wise = '1' ";
+				// $result1 = database::doSelectOne($sql1);
+				// $state = $result1['name'];
+				$state = 'Submitted';
 			}
 			return $state;
 		} else {
-			$state = 'No Status';
+			$state = 'Submitted';
 			return $state;
 		}
 		
@@ -320,4 +321,37 @@ class adminlib {
 		$result = database::doSelect($sql);
 		return $result;
 	}	
+
+	public function getStatus($sid){
+		// 
+		// $sql = "SELECT cs.id, cs.campaign_id, cm.form_id,cs.submission_id,cs.state,cs.state_id,cs.status,cm.name, ws.created_at FROM wp_fluentform_entry_details as we LEFT JOIN campaign AS cm ON we.form_id=cm.form_id LEFT JOIN campaign_form_status AS cs ON cm.id=cs.campaign_id LEFT JOIN wp_fluentform_submissions AS ws ON we.submission_id=ws.id WHERE we.field_value = '".$val."' GROUP BY we.form_id";		
+		$sql = "SELECT  cm.id, cm.form_id,cm.name, we.submission_id, ws.created_at, ws.application_id FROM wp_fluentform_entry_details as we LEFT JOIN campaign AS cm ON we.form_id=cm.form_id LEFT JOIN wp_fluentform_submissions AS ws ON we.submission_id=ws.id WHERE we.submission_id = ".$sid." GROUP BY we.submission_id";
+		$result = database::doSelect($sql);	
+
+		foreach($result as $k=>$rs){
+		$subId = $rs['submission_id'];
+		$sql1 = "SELECT GROUP_CONCAT(field_value SEPARATOR ' ') as names FROM wp_fluentform_entry_details WHERE submission_id = ".$subId."  AND field_name = 'student_name' ";
+		$result1 = database::doSelectOne($sql1);
+		$result[$k]['username'] = $result1['names'];
+
+		$sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = ".$subId."  ";
+		$result2 = database::doSelectOne($sql2);
+		if(!empty($result2['transaction_id'])){
+			$result[$k]['transaction_id'] = $result2['transaction_id'].'.pdf';
+		} else {
+			$result[$k]['transaction_id'] = '';
+		}
+
+		if(!empty($rs['application_id'])){
+			$result[$k]['application_no'] = $rs['application_id'].'.pdf';
+		} else {
+			$result[$k]['application_no'] = $subId.'.pdf';;
+		}
+		}
+		// echo '<pre>';
+		// print_r($result1);
+		// echo '</pre>';
+		// die();
+		return $result;			
+	}
 }

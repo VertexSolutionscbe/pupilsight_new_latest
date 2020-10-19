@@ -346,9 +346,9 @@ if ($response->getStatusCode() == 'S') {
 					$_SESSION["dts_receipt_feeitem"] = $dts_receipt_feeitem;
 					$_SESSION["dts_receipt"] = $dts_receipt;
 					if (!empty($transactionId)) {
-						$URL = $_SESSION[$guid]['absoluteURL'] . "/cms/index.php?return=success";
+						$URL = $_SESSION[$guid]['absoluteURL'] . "/cms/status.php?id=" . $sid;
 					} else {
-						$URL = $_SESSION[$guid]['absoluteURL'] . "/cms/index.php?return=success";
+						$URL = $_SESSION[$guid]['absoluteURL'] . "/cms/status.php?id=" . $sid;
 					}
 
 					$_SESSION["admin_callback"] = $URL;
@@ -365,6 +365,10 @@ if ($response->getStatusCode() == 'S') {
 	} else {
 	}
 } else {
+?>
+	<div style='color:red;font-size:18px;border:1px red solid;padding:10px;'>Transcation is cancelled, please try again.</div>
+	<a href="cms/index.php">Back</a>
+<?php
 }
 
 /*
