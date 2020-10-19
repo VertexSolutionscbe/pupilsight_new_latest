@@ -81,6 +81,64 @@ $baseurl = getDomain();
         body {
             display: none;
         }
+
+        .carouselTitle {
+            line-height: 42px;
+            font-size: 42px;
+            font-weight: 600;
+        }
+
+        .carouselSubTitle {
+            line-height: 36px;
+            font-size: 36px;
+            font-weight: 600;
+        }
+
+        .carouselBox {
+            margin: auto;
+            width: 100%;
+            min-height: 400px;
+        }
+
+        .owl-nav .owl-next,
+        .owl-nav .owl-prev {
+            position: absolute;
+            top: 48%;
+            transform: translateY(-50%);
+            -webkit-transform: translateY(-50%);
+        }
+
+        .owl-nav .owl-next {
+            right: 0;
+            display: flex;
+            margin-right: 2%;
+            font-size: 25px !important;
+        }
+
+        .owl-nav .owl-prev {
+            left: 0;
+            display: flex;
+            margin-left: 2%;
+            font-size: 25px !important;
+        }
+
+        .multiple_device {
+            left: 45%;
+            margin: 0 auto;
+            max-width: 115vw;
+            position: relative;
+            -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
+            width: 115vw;
+        }
+
+        .mh375 {
+            min-height: 375px;
+        }
+
+        .gray {
+            background-color: #f8f9fa;
+        }
     </style>
 </head>
 
@@ -96,7 +154,7 @@ $baseurl = getDomain();
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a href="<?= $baseurl; ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
-                    <img src="<?= $baseurl . "/themes/Default/img/logo.png"; ?>" alt="Pupilpod" class="navbar-brand-image">
+                    <img src="<?= $baseurl . "/cms/images/logo.png"; ?>" alt="Pupilpod" class="navbar-brand-image">
                 </a>
 
                 <div class="navbar-nav flex-row order-md-last">
@@ -165,8 +223,30 @@ $baseurl = getDomain();
             </div>
         </header>
 
-
-
+        <div class="container-fluid">
+            <div class="row bg-white">
+                <div class="row">
+                    <div class="col-md-6 col-sm-12 m-auto">
+                        <div class='my-3' style="width:400px;margin:auto;">
+                            <div class="carouselTitle">Welcome to Christ Academy</div>
+                            <div class='mt-3'>
+                                <div>
+                                    Christ Academy School aims a tradition of excellence
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <a href="#" class="btn btn-primary btn-lg btn-square">VIEW OUR COURSES</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 m-auto">
+                        <div style="min-height:315px;" class="mx-2 my-4">
+                            <img src="<?= $baseurl . "/cms/images/hero.jpg"; ?>" style="border: 1px solid rgba(110,117,130,.2);border-radius: 3px;" class="img-fluid" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Page Area End Here -->
     </div>
 

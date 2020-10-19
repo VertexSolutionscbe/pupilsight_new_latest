@@ -31,8 +31,10 @@ if (!empty($camdata)) {
 			echo '<td>';
 			if (!empty($row['application_no'])) {
 				$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-				$link = $base_url . '/public/applicationpdf/parent/' . $row['application_no'];
-				echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+				$fname = trim(str_replace("/", "_", $row['application_no']));
+				//$link = $base_url . '/public/applicationpdf/parent/' . $fname;
+				$link = $base_url . '/cms/ajaxfile.php?cid=' . $row['id'] . "&submissionId=" . $row['submission_id'];
+				echo '<a href="' . $link . '"><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
 			}
 			echo '</td>';
 			echo '<td>';

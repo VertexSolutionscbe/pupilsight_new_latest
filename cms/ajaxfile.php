@@ -1,13 +1,13 @@
 <?php
 include_once '../vendor/autoload.php';
 include_once 'w2f/adminLib.php';
-//include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 $adminlib = new adminlib();
 
 session_start();
 
 $cid = $_GET['cid'];
-$submissionId = $_SESSION['submissionId'];
+$submissionId = $_GET['submissionId'];
 //$cid = 9;
 //$submissionId = 94;
 //error_reporting(E_ALL);
@@ -108,7 +108,7 @@ if (!empty($file)) {
             $dirPath = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/";
 
             if (file_exists($dirPath . $fileName)) {
-                echo "converting pdf..";
+                echo "converting pdf.." . $dirPath . $fileName;
                 convert($fileName, $dirPath, $dirPath, FALSE, TRUE);
             } else {
                 echo "file not fund.";
