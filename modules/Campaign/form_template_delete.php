@@ -18,6 +18,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
 
     //Check if school year specified
     $id = $_GET['id'];
+    $type = $_GET['type'];
     if ($id == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -42,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
             echo '</div>';
         
         }else {
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/form_template_deleteProcess.php?id=$id", true);
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/form_template_deleteProcess.php?id=$id&type=$type", true);
             echo $form->getOutput();
         }
     }

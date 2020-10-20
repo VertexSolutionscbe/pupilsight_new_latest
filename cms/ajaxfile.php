@@ -114,10 +114,10 @@ if (!empty($file)) {
                 echo "file not fund.";
             }
 
-            //$pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".pdf";
+            $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".pdf";
 
-            // header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
-            // readfile($pdfFilename);
+            header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
+            readfile($pdfFilename);
             //unlink($savedocsx);
 
         } catch (Exception $ex) {
