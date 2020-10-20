@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
 
 
                 $filename = time() . '_' .  $_FILES["file"]["name"];
-                $fileTarget = $_SERVER['DOCUMENT_ROOT'] . "/pupilsight/public/application_template/" . $filename;
+                $fileTarget = $_SERVER['DOCUMENT_ROOT'] . "/public/application_template/" . $filename;
                 if (move_uploaded_file($_FILES["file"]["tmp_name"], $fileTarget)) {
                     echo "Template updated successfully";
                 } else {

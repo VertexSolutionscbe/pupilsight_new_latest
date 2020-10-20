@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i>';
     
     if(!empty($formid['offline_template_filename'])){
-        echo '<a href="'.$_SESSION[$guid]['absoluteURL'].'/public/application_template/'.$formid['offline_template_filename'].'" download><i id="" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a>';
+        echo '<i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i>';
     }
     echo '<a id="downloadLink" data-hrf="index.php?q=/modules/Campaign/ajaxfile.php&cid=' . $id . '&id=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
