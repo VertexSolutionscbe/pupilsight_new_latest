@@ -2883,7 +2883,7 @@ if ($type == 'convertApplicantData') {
             }
         }
 
-        $chksql = 'SELECT * FROM fn_fee_collection WHERE submission_id = ' . $oldsid . ' ';
+        $chksql = 'SELECT * FROM fn_fees_collection WHERE submission_id = ' . $oldsid . ' ';
         $resultcol = $connection2->query($chksql);
         $collectionData = $resultcol->fetchAll();
         if (!empty($collectionData)) {

@@ -6,6 +6,7 @@ Pupilsight, Flexible & Open School System
 include '../../pupilsight.php';
 
 $id = $_GET['id'];
+$type = $_GET['type'];
 
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/form_template_manage.php&id='.$id;
 
@@ -40,10 +41,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
         } else {
             //Write to database
             try {
-                $data = array('template_name' => '', 'template_path' => '', 'template_filename' => '', 'id' => $id);
-                $sql = "UPDATE campaign SET template_name=:template_name, template_path=:template_path, template_filename=:template_filename WHERE id=:id";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+
+                if($type == 1){
+                    $data = array('template_name' => '', 'template_path' => '', 'template_filename' => '', 'id' => $id);
+                    $sql = "UPDATE campaign SET template_name=:template_name, template_path=:template_path, template_filename=:template_filename WHERE id=:id";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } else {
+                    $data = array('offline_template_name' => '', 'offline_template_path' => '', 'offline_template_filename' => '', 'id' => $id);
+                    $sql = "UPDATE campaign SET offline_template_name=:offline_template_name, offline_template_path=:offline_template_path, offline_template_filename=:offline_template_filename WHERE id=:id";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                }
+                
 
                
             } catch (PDOException $e) {

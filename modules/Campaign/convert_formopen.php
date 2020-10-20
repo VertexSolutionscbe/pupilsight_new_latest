@@ -387,8 +387,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                         },
                         async: true,
                         success: function(response) {
-                            alert('Successfully converted the application form');
-                            window.location.href = 'index.php?q=/modules/Campaign/offline_campaignFormList.php&id='+cmpid;
+                            alert('Successfully Converted the application form');
+                            window.location.href = 'index.php?q=/modules/Campaign/campaignFormList.php&id='+cmpid;
                         }
                     });
                 }, 500);

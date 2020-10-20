@@ -25,6 +25,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
 
     $id = $_GET['id'];
 
+    
+
+    $chksub = 'SELECT * FROM campaign WHERE id = ' . $id . ' ';
+    $resultsub = $connection2->query($chksub);
+    $chkCamp = $resultsub->fetch();
+    if(!empty($chkCamp['template_name']) && empty($chkCamp['offline_template_name'])){
+        $type = array(''=>'Select Type', 'Offline' => 'Offline');
+    }
+
+    if(!empty($chkCamp['offline_template_name']) && empty($chkCamp['template_name'])){
+        $type = array(''=>'Select Type', 'Online' => 'Online');
+    }
+
+    if(!empty($chkCamp['offline_template_name']) && !empty($chkCamp['template_name'])){
+        $type = array(''=>'Select Type');
+    }
+
+    if(empty($chkCamp['offline_template_name']) && empty($chkCamp['template_name'])){
+        $type = array(''=>'Select Type', 'Online' => 'Online', 'Offline' => 'Offline');
+    }
+
+
    
         echo '<h2>';
         echo __('Add Application Form Template');
@@ -35,6 +57,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('id', $id);
+
+        
+
+        $row = $form->addRow();
+        $row->addLabel('type', __('Template Type'));
+        $row->addSelect('type')->fromArray($type)->required();
         
         $row = $form->addRow();
         $row->addLabel('name', __('Template Name'));

@@ -21,6 +21,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     //Proceed!
     //$id = $_POST['id'];
     $name = $_POST['name'];
+    $type = $_POST['type'];
 
 
     if ($name == '') {
@@ -58,10 +59,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
                 // echo "Error: " . $_FILES["file"]["error"];
             }
 
-            $data = array('template_name' => $name, 'template_path' => $fileTarget, 'template_filename' => $filename, 'id' => $id);
-            $sql = "UPDATE campaign SET template_name=:template_name, template_path=:template_path, template_filename=:template_filename WHERE id=:id";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
+            if ($type == 'Online') {
+                $data = array('template_name' => $name, 'template_path' => $fileTarget, 'template_filename' => $filename, 'id' => $id);
+                $sql = "UPDATE campaign SET template_name=:template_name, template_path=:template_path, template_filename=:template_filename WHERE id=:id";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } else {
+                $data = array('offline_template_name' => $name, 'offline_template_path' => $fileTarget, 'offline_template_filename' => $filename, 'id' => $id);
+                $sql = "UPDATE campaign SET offline_template_name=:offline_template_name, offline_template_path=:offline_template_path, offline_template_filename=:offline_template_filename WHERE id=:id";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            }
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");

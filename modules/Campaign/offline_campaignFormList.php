@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
     if (isset($_REQUEST['tid']) ? $tid = $_REQUEST['tid'] : $tid = "");
 
-    $sql1 = 'Select offline_form_id, name FROM campaign WHERE id = ' . $id . ' ';
+    $sql1 = 'Select offline_form_id, name, offline_template_filename FROM campaign WHERE id = ' . $id . ' ';
     $resultval1 = $connection2->query($sql1);
     $formid = $resultval1->fetch();
     //  echo $formid['form_id'];
@@ -79,8 +79,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" ><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label><a id="onlineClick" style="display:none; margin-bottom:10px;" href="?q=/modules/Campaign/campaignFormList.php&id=' . $id . '"   class=" btn btn-primary" >Online Submitted List</a>';
 
     if (!empty($formId)) {
+
         echo "<a style='display:none;' href='' class='thickbox' id='clickStateRemark'>Remark</a>";
-        echo "<input type='hidden' id='tid' value=" . $tid . " ><input type='hidden' id='kountPopOpen' value=''><a style='display:none' href='fullscreen.php?q=/modules/Campaign/view_receipt.php&tid=" . $tid . "&width=600px'  class='thickbox' id='getReceiptPopup'>Receipt</a>";
+        echo "<input type='hidden' id='tid' value=" . $tid . " ><input type='hidden' id='kountPopOpen' value=''><a style='display:none' href='fullscreen.php?q=/modules/Campaign/view_receipt.php&tid=" . $tid . "&width=960px&height=720px'  class='thickbox' id='getReceiptPopup'>Receipt</a>";
 
         // echo $butt = '<i id="btnExport" title="Export PDF" class="far fa-file-pdf download_icon"></i> ';
         //echo $butt = '<i id="expore_csv" title="Export CSV" class="fas fa-file-csv download_icon"></i> ';
@@ -91,7 +92,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     &nbsp;&nbsp;<a style=' margin-bottom:10px;' href='?q=/modules/Campaign/offline_formopen.php&id=" . $id . "'   class=' btn btn-primary' id=''>Apply</a>";
 
         echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' data-hrf='?q=/modules/Campaign/convert_formopen.php&id=" . $id . "' title='Convert Applicant' class='btn btn-primary' id='convertApplicant'>Convert</a> <a style='display:none;margin-bottom:10px;' href='?q=/modules/Campaign/convert_formopen.php&id=" . $id . "'   class=' btn btn-primary' id='convertApplicantClick'>Apply</a>";
-        echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="cms/ajaxfile.php?cid=' . $id . '&submissionId=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
+        echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i>';
+
+        if (!empty($formid['offline_template_filename'])) {
+            echo '<a href="' . $_SESSION[$guid]['absoluteURL'] . '/public/application_template/' . $formid['offline_template_filename'] . '" download><i id="" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a>';
+        }
+        echo '<a id="downloadLink" data-hrf="index.php?q=/modules/Campaign/ajaxfile.php&cid=' . $id . '&id=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
         //  print_r($criteria);
         //  die();

@@ -69,6 +69,8 @@ if (!empty($file)) {
                     if ($ah == 'file-upload' || $ah == 'image_upload') {
                         $attrValue = $arr[$ah];
                         try {
+                            //$imgVal = array("path" => $attrValue, "width" => 75, "height" => 75);
+                            //$phpword->setImageValue($ah, $imgVal);
                             $phpword->setImageValue($ah, $attrValue);
                         } catch (Exception $ex) {
                         }

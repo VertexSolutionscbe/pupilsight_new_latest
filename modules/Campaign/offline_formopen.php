@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
 
             var pid = iframe.find(".fluentform");
             iframe.find("form").submit(function() {
-                getPDF(pid);
+                //getPDF(pid);
 
                 setTimeout(function() {
                     var flag = true;
@@ -332,6 +332,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                             //     scrollTop: $("#showdiv").offset().top
                             // }, 2000);
                             //$("#admissionPay").submit();
+                            $("#preloader").hide();
                             if (chkfees != '') {
                                 window.location.href = 'index.php?q=/modules/Campaign/application_fee_payment.php&cid=' + cmpid;
                             }
