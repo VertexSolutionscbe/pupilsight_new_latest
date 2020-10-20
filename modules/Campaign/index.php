@@ -50,8 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
 
     $page->breadcrumbs->add(__('Application List'));
 
-    echo '<a href="/pupilsight/public/applicationpdf/93-application.pdf" class="thickbox">example</a>';
-
+    
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

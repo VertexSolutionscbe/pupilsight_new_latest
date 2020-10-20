@@ -97,7 +97,7 @@ if (!empty($file)) {
                 $fname = $aid;
             }
 
-            $date = date('Y-m-d');
+            $date = date('d-m-Y');
             $phpword->setValue('application_no', $fname);
             $phpword->setValue('application_date', $date);
 
