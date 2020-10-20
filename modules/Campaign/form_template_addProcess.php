@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
                 // echo "Error: " . $_FILES["file"]["error"];
             }
 
-            if($type == 'Online'){
+            if ($type == 'Online') {
                 $data = array('template_name' => $name, 'template_path' => $fileTarget, 'template_filename' => $filename, 'id' => $id);
                 $sql = "UPDATE campaign SET template_name=:template_name, template_path=:template_path, template_filename=:template_filename WHERE id=:id";
                 $result = $connection2->prepare($sql);
@@ -70,8 +70,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             }
-
-            
         } catch (PDOException $e) {
             $URL .= '&return=error2';
             header("Location: {$URL}");

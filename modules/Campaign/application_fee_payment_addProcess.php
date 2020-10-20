@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                         $resultfort->execute($datafort);
                         $formatvalues = $resultfort->fetch();
                         // $iformat .= $formatvalues['last_no'].'/';
-                        
+
                         $str_length = $formatvalues['no_of_digit'];
 
                         $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);

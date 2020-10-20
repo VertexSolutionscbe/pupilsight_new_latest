@@ -66,9 +66,11 @@ if (!empty($file)) {
 
             foreach ($arrHeader as $k => $ah) {
                 if (array_key_exists($ah, $arr)) {
-                    if ($ah == 'file-upload' || $ah == 'image-upload') {
+                    if ($ah == 'file-upload' || $ah == 'image_upload') {
                         $attrValue = $arr[$ah];
                         try {
+                            //$imgVal = array("path" => $attrValue, "width" => 75, "height" => 75);
+                            //$phpword->setImageValue($ah, $imgVal);
                             $phpword->setImageValue($ah, $attrValue);
                         } catch (Exception $ex) {
                         }
@@ -95,11 +97,11 @@ if (!empty($file)) {
                 $fname = $aid;
             }
 
-            $fname = trim(str_replace("/", "_", $fname));
-
             $date = date('Y-m-d');
             $phpword->setValue('application_no', $fname);
             $phpword->setValue('application_date', $date);
+
+            $fname = trim(str_replace("/", "_", $fname));
 
             $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".docx";
             $phpword->saveAs($savedocsx);
@@ -108,10 +110,10 @@ if (!empty($file)) {
             $dirPath = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/";
 
             if (file_exists($dirPath . $fileName)) {
-                echo "converting pdf.." . $dirPath . $fileName;
+                //echo "converting pdf.." . $dirPath . $fileName;
                 convert($fileName, $dirPath, $dirPath, FALSE, TRUE);
             } else {
-                echo "file not fund.";
+                //echo "file not fund.";
             }
 
             $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".pdf";

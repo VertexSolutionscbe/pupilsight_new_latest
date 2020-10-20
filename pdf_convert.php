@@ -71,7 +71,7 @@ function convertBulk($inDir, $debug = FALSE)
         while ($i < $len) {
             $pos = strpos($files[$i], "docx");
             if ($pos) {
-                convert($files[$i], $inDir, $inDir, TRUE, TRUE);
+                convert($files[$i], $inDir, $inDir, FALSE, TRUE);
             }
             $i++;
         }

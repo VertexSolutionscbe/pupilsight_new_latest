@@ -15,7 +15,7 @@ $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php
 
 
 $data_target = $status==1 ? "#Application" : "#Login-reg"; */
-if(!empty($_REQUEST['id'])){
+if (!empty($_REQUEST['id'])) {
     $sid = $_REQUEST['id'];
 } else {
     $sid = 0;
@@ -43,23 +43,23 @@ $chkstatus = $adminlib->getStatus($sid);
                     <div class="vc_column-inner vc_custom_1540537006055">
                         <div class="container" style="margin-top: -100px;text-align:center;">
                             <div class="bp-element bp-element-heading vc_custom_1542033515902  layout-1  mobile-center mobile-line-heading">
-                                
+
                             </div>
                             <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
                                 <div class="wpb_wrapper">
 
-                                <div class="row" style="">
-                                    <div class="col-sm-12 col-lg-12">
-                                    <table id="app_lst_tbl" cellspacing='0' class='table' >
+                                    <div class="row" style="">
+                                        <div class="col-sm-12 col-lg-12">
+                                            <table id="app_lst_tbl" cellspacing='0' class='table'>
                                                 <thead>
                                                     <tr class='head'>
                                                         <th style="width:5%">
                                                             SI No
                                                         </th>
-                                                        <th  style="width:20%">
+                                                        <th style="width:20%">
                                                             Applicant Name
                                                         </th>
-                                                        <th  style="width:20%">
+                                                        <th style="width:20%">
                                                             Campaign Name
                                                         </th>
                                                         <th style="width:20%">
@@ -80,11 +80,11 @@ $chkstatus = $adminlib->getStatus($sid);
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                <?php if(!empty($chkstatus)){
-                                                    $cnt = 1;
-                                                    foreach($chkstatus as $row){ 
-                                                        $statedata = $adminlib->getstatedata($row['id'], $row['form_id'], $row['submission_id']);   
-                                                        echo "<tr>";
+                                                    <?php if (!empty($chkstatus)) {
+                                                        $cnt = 1;
+                                                        foreach ($chkstatus as $row) {
+                                                            $statedata = $adminlib->getstatedata($row['id'], $row['form_id'], $row['submission_id']);
+                                                            echo "<tr>";
                                                             echo '<td>';
                                                             echo $cnt;
                                                             echo '</td>';
@@ -107,7 +107,6 @@ $chkstatus = $adminlib->getStatus($sid);
                                                                 //$link = $base_url . '/public/applicationpdf/parent/' . $fname;
                                                                 $link = $base_url . '/cms/ajaxfile.php?cid=' . $row['id'] . "&submissionId=" . $row['submission_id'];
                                                                 echo '<a href="' . $link . '"><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
-                                                                
                                                             }
                                                             echo '</td>';
                                                             echo '<td>';
@@ -117,14 +116,14 @@ $chkstatus = $adminlib->getStatus($sid);
                                                                 echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
                                                             }
                                                             echo '</td>';
-                                                        echo '</tr>';
-                                                
-                                                } } ?>
+                                                            echo '</tr>';
+                                                        }
+                                                    } ?>
                                                 </tbody>
                                             </table>
 
+                                        </div>
                                     </div>
-                                </div>
                                 </div>
                             </div>
                         </div>

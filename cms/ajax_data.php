@@ -27,7 +27,7 @@ if ($type == 'insertcampaigndetails') {
                     $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=' . $seriesId . ' AND type= "numberwise"';
                     $formatvalues = database::doSelectOne($sqlfort);
 
-                    
+
                     $str_length = $formatvalues['no_of_digit'];
 
                     $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
@@ -39,8 +39,6 @@ if ($type == 'insertcampaigndetails') {
 
                     $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
                     $result1 = database::doUpdate($sql1);
-
-                    
                 } else {
                     //$iformat .= $inv.'/';
                     $iformat .= $inv;
