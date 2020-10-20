@@ -2900,7 +2900,7 @@ if ($type == 'convertApplicantData') {
         $appCollectionData = $resultac->fetchAll();
         if (!empty($appCollectionData)) {
             foreach ($appCollectionData as $acol) {
-                $datacola = array('submission_id' => $submissionId,  'transaction_id' => $inv['transaction_id'], 'fn_fee_invoice_id' => $inv['fn_fee_invoice_id'], 'fn_fee_invoice_item_id' => $inv['fn_fee_invoice_item_id'], 'invoice_no' => $inv['invoice_no']);
+                $datacola = array('submission_id' => $submissionId,  'transaction_id' => $acol['transaction_id'], 'fn_fee_invoice_id' => $acol['fn_fee_invoice_id'], 'fn_fee_invoice_item_id' => $acol['fn_fee_invoice_item_id'], 'invoice_no' => $acol['invoice_no']);
                 $sqlcola = 'INSERT INTO fn_fees_applicant_collection SET submission_id=:submission_id, transaction_id=:transaction_id, fn_fee_invoice_id=:fn_fee_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no';
                 $resultca = $connection2->prepare($sqlcola);
                 $resultca->execute($datacola);
