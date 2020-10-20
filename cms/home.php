@@ -157,8 +157,6 @@ $baseurl = getDomain();
                     <img src="<?= $baseurl . "/cms/images/logo.png"; ?>" alt="Pupilpod" class="navbar-brand-image">
                 </a>
 
-
-
                 <div class="navbar-collapse collapse" id="navbar-menu" style='flex: inherit !important;'>
                     <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
                         <ul class="navbar-nav">
@@ -216,32 +214,47 @@ $baseurl = getDomain();
                         </ul>
                     </div>
                 </div>
-
-
-
-
             </div>
         </header>
 
         <div class="container-fluid">
+            <!---Hero Page---->
             <div class="row bg-white">
-                <div class="row">
-                    <div class="col-md-6 col-sm-12 m-auto">
-                        <div class='my-3' style="width:400px;margin:auto;">
-                            <div class="carouselTitle">Welcome to Christ Academy</div>
-                            <div class='mt-3'>
-                                <div>
-                                    Christ Academy School aims a tradition of excellence
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <a href="#" class="btn btn-primary btn-lg btn-square">VIEW OUR COURSES</a>
+                <div class="col-md-6 col-sm-12 m-auto">
+                    <div class='my-3' style="width:400px;margin:auto;">
+                        <div class="carouselTitle">Welcome to Christ Academy</div>
+                        <div class='mt-3'>
+                            <div>
+                                Christ Academy School aims a tradition of excellence
                             </div>
                         </div>
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-primary btn-lg btn-square">VIEW OUR COURSES</a>
+                        </div>
                     </div>
-                    <div class="col-md-6 col-sm-12 m-auto">
-                        <div style="min-height:315px;" class="mx-2 my-4">
-                            <img src="<?= $baseurl . "/cms/images/hero.jpg"; ?>" style="border: 1px solid rgba(110,117,130,.2);border-radius: 3px;" class="img-fluid" />
+                </div>
+                <div class="col-md-6 col-sm-12 m-auto">
+                    <div style="min-height:315px;" class="mx-2 my-4">
+                        <img src="<?= $baseurl . "/cms/images/hero.jpg"; ?>" style="border: 1px solid rgba(110,117,130,.2);border-radius: 3px;" class="img-fluid" />
+                    </div>
+                </div>
+            </div>
+
+            <!---About us Page---->
+            <div class="row">
+                <div class="col-md-6 col-sm-12 m-auto">
+                    <div style="min-height:315px;" class="mx-2 my-4">
+                        <img src="<?= $baseurl . "/cms/images/about_us.png"; ?>" class="img-fluid" />
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12 m-auto">
+                    <div class='my-3' style="width:400px;margin:auto;">
+                        <div class="carouselTitle">About Us</div>
+                        <div class='mt-3'>
+                            <div>
+                                Demo Group is an established education provider and entrepreneurship incubator in India
+                            </div>
                         </div>
                     </div>
                 </div>
