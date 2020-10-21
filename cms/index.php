@@ -206,7 +206,8 @@ if (isset($_SESSION["loginstatus"])) {
             e.preventDefault();
             $("#spnPhoneStatus").html("").hide();
             var val = $("#txtPhone").val();
-            if (val != '') {
+            if (val != '' && val.length >= 10) {
+            // if (val != '') {
                 // if (isEmail(val) == false) {
                 //     alert('Email is not Valid!');
                 //     return false;

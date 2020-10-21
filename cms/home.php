@@ -157,91 +157,104 @@ $baseurl = getDomain();
                     <img src="<?= $baseurl . "/cms/images/logo.png"; ?>" alt="Pupilpod" class="navbar-brand-image">
                 </a>
 
-                <div class="navbar-nav flex-row order-md-last">
+                <div class="navbar-collapse collapse" id="navbar-menu" style='flex: inherit !important;'>
+                    <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+                        <ul class="navbar-nav">
+                            <?php
+                            $menu = array();
+                            $menu[0]["title"] = "About Us";
+                            $menu[0]["link"] = "#";
+                            $menu[0]["icon"] = "mdi-information-outline";
+                            $menu[0]["iconActive"] = "mdi-information";
 
-                    <div class="collapse navbar-collapse" id="navbar-menu">
-                        <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
-                            <ul class="navbar-nav">
-                                <?php
-                                $menu = array();
-                                $menu[0]["title"] = "About Us";
-                                $menu[0]["link"] = "#";
-                                $menu[0]["icon"] = "mdi-information-outline";
-                                $menu[0]["iconActive"] = "mdi-information";
+                            $menu[1]["title"] = "Courses";
+                            $menu[1]["link"] = "#";
+                            $menu[1]["icon"] = "mdi-certificate-outline";
+                            $menu[1]["iconActive"] = "mdi-certificate";
 
-                                $menu[1]["title"] = "Courses";
-                                $menu[1]["link"] = "#";
-                                $menu[1]["icon"] = "mdi-certificate-outline";
-                                $menu[1]["iconActive"] = "mdi-certificate";
+                            $menu[2]["title"] = "Events";
+                            $menu[2]["link"] = "#";
+                            $menu[2]["icon"] = "mdi-calendar-check-outline";
+                            $menu[3]["iconActive"] = "mdi-calendar-check";
 
-                                $menu[2]["title"] = "Events";
-                                $menu[2]["link"] = "#";
-                                $menu[2]["icon"] = "mdi-calendar-check-outline";
-                                $menu[3]["iconActive"] = "mdi-calendar-check";
+                            $menu[3]["title"] = "Announcement";
+                            $menu[3]["link"] = "#";
+                            $menu[3]["icon"] = "mdi-bullhorn-outline";
+                            $menu[3]["iconActive"] = "mdi-bullhorn";
 
-                                $menu[3]["title"] = "Announcement";
-                                $menu[3]["link"] = "#";
-                                $menu[3]["icon"] = "mdi-bullhorn-outline";
-                                $menu[3]["iconActive"] = "mdi-bullhorn";
+                            $menu[4]["title"] = "Contact us";
+                            $menu[4]["link"] = "#";
+                            $menu[4]["icon"] = "mdi-phone-in-talk-outline";
+                            $menu[4]["iconActive"] = "mdi-phone-in-talk";
 
-                                $menu[4]["title"] = "Contact us";
-                                $menu[4]["link"] = "#";
-                                $menu[4]["icon"] = "mdi-phone-in-talk-outline";
-                                $menu[4]["iconActive"] = "mdi-phone-in-talk";
+                            $menu[5]["title"] = "Admission";
+                            $menu[5]["link"] = "#";
+                            $menu[5]["icon"] = "mdi-clipboard-text-outline";
+                            $menu[5]["iconActive"] = "mdi-clipboard-text";
 
-                                $menu[5]["title"] = "Admission";
-                                $menu[5]["link"] = "#";
-                                $menu[5]["icon"] = "mdi-clipboard-text-outline";
-                                $menu[5]["iconActive"] = "mdi-clipboard-text";
+                            $menu[6]["title"] = "Login";
+                            $menu[6]["link"] = "#";
+                            $menu[6]["icon"] = "mdi-login-variant";
+                            $menu[6]["iconActive"] = "mdi-login-variant";
 
-                                $menu[6]["title"] = "Login";
-                                $menu[6]["link"] = "#";
-                                $menu[6]["icon"] = "mdi-login-variant";
-                                $menu[6]["iconActive"] = "mdi-login-variant";
-
-                                $len = count($menu);
-                                $i = 0;
-                                while ($i < $len) {
-                                ?>
-                                    <li class="nav-item">
-                                        <a class="nav-link chkCounter" href="#">
-                                            <span class="nav-link-icon d-md-none d-lg-inline-block mdi <?= $menu[$i]["icon"] ?>"></span>
-                                            <span class="nav-link-title"><?= $menu[$i]["title"]; ?></span>
-                                        </a>
-                                    </li>
-                                <?php
-                                    $i++;
-                                }
-                                ?>
-                            </ul>
-                        </div>
+                            $len = count($menu);
+                            $i = 0;
+                            while ($i < $len) {
+                            ?>
+                                <li class="nav-item">
+                                    <a class="nav-link chkCounter" href="#">
+                                        <span class="nav-link-icon d-md-none d-lg-inline-block mdi <?= $menu[$i]["icon"] ?>"></span>
+                                        <span class="nav-link-title"><?= $menu[$i]["title"]; ?></span>
+                                    </a>
+                                </li>
+                            <?php
+                                $i++;
+                            }
+                            ?>
+                        </ul>
                     </div>
-
                 </div>
-
-
             </div>
         </header>
 
         <div class="container-fluid">
+            <!---Hero Page---->
             <div class="row bg-white">
-                <div class="row">
-                    <div class="col-md-6 col-sm-12 m-auto">
-                        <div class='my-3' style="width:400px;margin:auto;">
-                            <div class="carouselTitle">Welcome to Christ Academy</div>
-                            <div class='mt-3'>
-                                <div>
-                                    Christ Academy School aims a tradition of excellence
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <a href="#" class="btn btn-primary btn-lg btn-square">VIEW OUR COURSES</a>
+                <div class="col-md-6 col-sm-12 m-auto">
+                    <div class='my-3' style="width:400px;margin:auto;">
+                        <div class="carouselTitle">Welcome to Christ Academy</div>
+                        <div class='mt-3'>
+                            <div>
+                                Christ Academy School aims a tradition of excellence
                             </div>
                         </div>
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-primary btn-lg btn-square">VIEW OUR COURSES</a>
+                        </div>
                     </div>
-                    <div class="col-md-6 col-sm-12 m-auto">
-                        <div style="min-height:315px;" class="mx-2 my-4">
-                            <img src="<?= $baseurl . "/cms/images/hero.jpg"; ?>" style="border: 1px solid rgba(110,117,130,.2);border-radius: 3px;" class="img-fluid" />
+                </div>
+                <div class="col-md-6 col-sm-12 m-auto">
+                    <div style="min-height:315px;" class="mx-2 my-4">
+                        <img src="<?= $baseurl . "/cms/images/hero.jpg"; ?>" style="border: 1px solid rgba(110,117,130,.2);border-radius: 3px;" class="img-fluid" />
+                    </div>
+                </div>
+            </div>
+
+            <!---About us Page---->
+            <div class="row">
+                <div class="col-md-6 col-sm-12 m-auto">
+                    <div style="min-height:315px;" class="mx-2 my-4">
+                        <img src="<?= $baseurl . "/cms/images/about_us.png"; ?>" class="img-fluid" />
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-sm-12 m-auto">
+                    <div class='my-3' style="width:400px;margin:auto;">
+                        <div class="carouselTitle">About Us</div>
+                        <div class='mt-3'>
+                            <div>
+                                Demo Group is an established education provider and entrepreneurship incubator in India
+                            </div>
                         </div>
                     </div>
                 </div>
