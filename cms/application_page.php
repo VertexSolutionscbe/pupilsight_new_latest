@@ -40,6 +40,14 @@ $app_links = array();
 // print_r($_SESSION['campaignuserdata']);
 // echo '</pre>';
 
+$sql = "SELECT id FROM campaign  WHERE id = ".$url_id." AND  status = '2' AND CURDATE() between start_date and end_date order by id DESC";
+$campaignStatus = database::doSelect($sql);
+
+if(empty($campaignStatus)){
+    header("Location: index.php");
+    exit;
+}
+
 ?>
 
 <?php include("index_header.php"); ?>

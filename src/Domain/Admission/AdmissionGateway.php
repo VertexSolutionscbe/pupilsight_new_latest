@@ -292,32 +292,72 @@ class AdmissionGateway extends QueryableGateway
     }
 
     public function getApplicationFormList(QueryCriteria $criteria, $formId) {
+
         $form_id = $formId;
         
         if(!empty($form_id)){
         $query = $this
             ->newQuery()
             ->from('wp_fluentform_entry_details as fd')
+            // ->cols([
+            //     'fd.submission_id', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' OR fd.sub_field_name = '0' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as workflowstate'
+            // ]);
             ->cols([
-                'fd.submission_id as sid', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as state'
-            ]);
-            if(!empty($form_id)){
-                $query->where('fd.form_id = '.$form_id.' ');
-            }
-            $query->where('fd.status = "0" ')
-                    ->groupBy(['fd.submission_id']);
+                'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select workflow_transition.transition_display_name AS state from campaign_form_status LEFT JOIN workflow_transition ON campaign_form_status.state_id = workflow_transition.id where campaign_form_status.submission_id=fd.submission_id and campaign_form_status.status=1 order by campaign_form_status.id desc limit 1) as workflowstate'
+            ])
+            ->where('fd.form_id = '.$form_id.' ')
+            ->where('fd.status = "0" ')
+            ->groupBy(['fd.submission_id'])
+            ->orderBy(['fd.submission_id DESC']);
         } else {
             $query = $this
             ->newQuery()
             ->from('wp_fluentform_entry_details as fd')
             ->cols([
-                'fd.submission_id as sid', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value"
+                'fd.submission_id', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value"
             ]);
-            $query->where('fd.status = "0" ')
-                  ->where('fd.form_id = "0" ');
+            $query->where('fd.form_id = "0" ')
+            ->where('fd.status = "0" ')
+            ->orderBy(['fd.submission_id DESC']);
            
         }    
-        return $this->runQuery($query, $criteria);
+
+        $res = $this->runQuery($query, $criteria);
+        $data = $res->data;
+
+        if(!empty($data)){
+            foreach($data as $k=>$d){
+                $submission_id = $d['submission_id'];
+                 $query2 = $this
+                    ->newQuery()
+                    ->from('wp_fluentform_submissions')
+                    ->cols([
+                        'wp_fluentform_submissions.*'
+                    ])
+                    ->where('wp_fluentform_submissions.id = "'.$submission_id.'" ');
+                
+                    $newdata = $this->runQuery($query2, $criteria);
+                    if(!empty($newdata->data[0]['application_id'])){
+                        $data[$k]['application_id'] = $newdata->data[0]['application_id'];
+                        $data[$k]['pupilsightProgramID'] = $newdata->data[0]['pupilsightProgramID'];
+                        $data[$k]['pupilsightYearGroupID'] = $newdata->data[0]['pupilsightYearGroupID'];
+                        $data[$k]['fn_fee_invoice_id'] = $newdata->data[0]['fn_fee_invoice_id'];
+                    } else {
+                        $data[$k]['application_id'] = '';
+                        $data[$k]['pupilsightProgramID'] = '';
+                        $data[$k]['pupilsightYearGroupID'] = '';
+                        $data[$k]['fn_fee_invoice_id'] = '';
+                    }
+                
+            }
+        }  
+        //  echo '<pre>';
+        //     print_r($data);
+        //     echo '</pre>';
+        //     die();
+        $res->data = $data;
+        return $res;
+        
     }
 
 

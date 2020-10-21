@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
         $tabledata[$k]['admission_series_id'] = $tbl['admission_series_id'];
     }    
     
-     
+    
     $tdata = array();
     $cname = array();
     if(!empty($tabledata)){
@@ -72,14 +72,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                                 $resultfort = $connection2->prepare($sqlfort);
                                 $resultfort->execute($datafort);
                                 $formatvalues = $resultfort->fetch();
-                                //$iformat .= $formatvalues['last_no'].'/';
-                                $iformat .= $formatvalues['last_no'];
-                                
                                 $str_length = $formatvalues['no_of_digit'];
-                
+
+                                $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
+
                                 $lastnoadd = $formatvalues['last_no'] + 1;
-                
-                                $lastno = substr("0000000{$lastnoadd}", -$str_length); 
+
+                                //$lastno = substr("0000000{$lastnoadd}", -$str_length);
+                                $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
                 
                                 $datafort1 = array('fn_fee_series_id'=>$seriesId,'order_wise' => $orderwise, 'type' => 'numberwise' , 'last_no' => $lastno);
                                 $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type AND order_wise=:order_wise';
@@ -132,36 +132,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         
                }
             }
+            
             if($chk == '1' && !empty($tdata)){
                 foreach($tdata as $td){
-                    $sid = $td['sid'];
-                    unset($td['sid']);
-                    // echo '<pre>';
-                    // print_r($td);
-                    // echo '</pre>';
-                    $setdata  = implode(',',$cname);
-                    $setdata  = $setdata.',pupilsightRoleIDPrimary=:pupilsightRoleIDPrimary,pupilsightRoleIDAll=:pupilsightRoleIDAll,admission_no=:admission_no';
-                    $sqlins = "INSERT INTO ".$tablename." SET ".$setdata." ";
-                    $resultins = $connection2->prepare($sqlins);
-                    $resultins->execute($td);
-                    $stuId = $connection2->lastInsertID();
-
-                    if($tablename == 'pupilsightPerson' && !empty($prog) && !empty($cls)){
-                        
-                        $data = array('pupilsightPersonID' => $stuId,'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $prog, 'pupilsightYearGroupID' => $cls);
-                                
-                        $sqlenroll = "INSERT INTO pupilsightStudentEnrolment SET pupilsightPersonID=:pupilsightPersonID,pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID,pupilsightYearGroupID=:pupilsightYearGroupID";
-                        $resultenroll = $connection2->prepare($sqlenroll);
-                        $resultenroll->execute($data);
-                        
+                    try {
+                        $sid = $td['sid'];
+                        unset($td['sid']);
+                        // echo '<pre>';
+                        // print_r($td);
+                        // echo '</pre>';
+                        $setdata  = implode(',',$cname);
+                        $setdata  = $setdata.',pupilsightRoleIDPrimary=:pupilsightRoleIDPrimary,pupilsightRoleIDAll=:pupilsightRoleIDAll,admission_no=:admission_no';
+                        $sqlins = "INSERT INTO ".$tablename." SET ".$setdata." ";
+                        $resultins = $connection2->prepare($sqlins);
+                        $resultins->execute($td);
+                        $stuId = $connection2->lastInsertID();
+                    } catch (Exception $ex) {
+                        print_r($ex);
                     }
+                    
+                        if($tablename == 'pupilsightPerson' && !empty($prog) && !empty($cls)){
+                            
+                            $data = array('pupilsightPersonID' => $stuId,'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $prog, 'pupilsightYearGroupID' => $cls);
+                                    
+                            $sqlenroll = "INSERT INTO pupilsightStudentEnrolment SET pupilsightPersonID=:pupilsightPersonID,pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID,pupilsightYearGroupID=:pupilsightYearGroupID";
+                            $resultenroll = $connection2->prepare($sqlenroll);
+                            $resultenroll->execute($data);
+                            
+                        }
 
 
 
-                    $wdata = array('status'=> '1', 'submission_id' => $sid);
-                    $sqlupd = "UPDATE wp_fluentform_entry_details SET status=:status WHERE submission_id=:submission_id";
-                    $resultupd = $connection2->prepare($sqlupd);
-                    $resultupd->execute($wdata);
+                        $wdata = array('status'=> '1', 'submission_id' => $sid);
+                        $sqlupd = "UPDATE wp_fluentform_entry_details SET status=:status WHERE submission_id=:submission_id";
+                        $resultupd = $connection2->prepare($sqlupd);
+                        $resultupd->execute($wdata);
+                    
                 }
                 $tdata=[];
             }    

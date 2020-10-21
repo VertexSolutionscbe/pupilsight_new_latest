@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
-include($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/pupilsight/config.php');
 
 if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionsList.php') == false) {
     //Acess denied
