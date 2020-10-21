@@ -219,7 +219,7 @@ $baseurl = getDomain();
 
         <div class="container-fluid">
             <!---Hero Page---->
-            <div class="row bg-white">
+            <div class="row">
                 <div class="col-md-6 col-sm-12 m-auto">
                     <div class='my-3' style="width:400px;margin:auto;">
                         <div class="carouselTitle">Welcome to Christ Academy</div>
@@ -229,22 +229,22 @@ $baseurl = getDomain();
                             </div>
                         </div>
                         <div class="mt-3">
-                            <a href="#" class="btn btn-primary btn-lg btn-square">VIEW OUR COURSES</a>
+                            <a href="#" class="btn btn-primary btn-lg btn-square">View Our Courses</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12 m-auto">
                     <div style="min-height:315px;" class="mx-2 my-4">
-                        <img src="<?= $baseurl . "/cms/images/hero.jpg"; ?>" style="border: 1px solid rgba(110,117,130,.2);border-radius: 3px;" class="img-fluid" />
+                        <img src="<?= $baseurl . "/cms/images/hero.jpg"; ?>" style="border: 1px solid rgba(110,117,130,.2);border-radius: 3px;max-height:400px;" class="img-fluid" />
                     </div>
                 </div>
             </div>
 
             <!---About us Page---->
-            <div class="row">
+            <div class="row bg-white">
                 <div class="col-md-6 col-sm-12 m-auto">
-                    <div style="min-height:315px;" class="mx-2 my-4">
-                        <img src="<?= $baseurl . "/cms/images/about_us.png"; ?>" class="img-fluid" />
+                    <div style="max-height:400px;" class="mx-2 my-4">
+                        <img src="<?= $baseurl . "/cms/images/upload/1573726080_bg-18.jpg"; ?>" class="img-fluid" style='max-height:400px;' />
                     </div>
                 </div>
 
@@ -259,6 +259,19 @@ $baseurl = getDomain();
                     </div>
                 </div>
             </div>
+
+            <!---Courses---->
+            <div class="row">
+                <div class="col-12 carouselTitle text-center my-4">
+                    Courses
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-auto">
+                    <div class="carouselTitle">Welcome to Christ Academy</div>
+                </div>
+            </div>
+
         </div>
         <!-- Page Area End Here -->
     </div>
