@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $stats = $resultval->fetchAll();
     
     echo '<input type="hidden" id="campId" value="'.$id.'"><input type="hidden" id="formId" value="'.$formId.'">';
-     echo '<span id="statusButton"></span>';
+    //  echo '<span id="statusButton"></span>';
      
     if(!empty($formId)){
         $sqlf = 'Select form_fields FROM wp_fluentform_forms WHERE id = '.$formId.' ';
@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
 
    if (!empty($formId)) {
-        $table->addCheckboxColumn('sid', __(''))
+        $table->addCheckboxColumn('submission_id', __(''))
             ->addClass('chkbox')
             ->context('Select')
             ->notSortable()
@@ -287,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 <script>
 $(document).on('click', "#saveApplicant", function() {
     var favorite = [];
-    $.each($("input[name='sid[]']:checked"), function() {
+    $.each($("input[name='submission_id[]']:checked"), function() {
         favorite.push($(this).val());
     });
     var submit_id = favorite.join(", ");

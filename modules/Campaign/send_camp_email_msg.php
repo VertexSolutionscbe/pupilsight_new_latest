@@ -2,7 +2,7 @@
 /*
 Pupilsight, Flexible & Open School System
 */
-include '../../pupilsight.php';
+include $_SERVER["DOCUMENT_ROOT"] .'/pupilsight/pupilsight.php';
 
 use Pupilsight\Contracts\Comms\Mailer;
 
@@ -62,19 +62,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
             $sd = json_decode($rowdata['response'], TRUE);
             $email = "";
             $names = "";
+            $ft_number = '';
+            $mt_number = '';
+            $gt_number = '';
+            $ft_email = '';
+            $mt_email = '';
+            $gt_email = '';
 
             if ($sd) {
                 $names = implode(' ', $sd['student_name']);
                 $email = $sd['father_email'];
                 if (!empty($sd['father_mobile'])) {
-                    $number = $sd['father_mobile'];
-                } else {
-                    $number = '';
-                }
+                    $ft_number = $sd['father_mobile'];
+                } 
+                if (!empty($sd['mother_mobile'])) {
+                    $mt_number = $sd['mother_mobile'];
+                } 
+                if (!empty($sd['guardian_mobile'])) {
+                    $gt_number = $sd['guardian_mobile'];
+                } 
+
+                if (!empty($sd['father_email'])) {
+                    $ft_email = $sd['father_email'];
+                } 
+                if (!empty($sd['mother_email'])) {
+                    $mt_email = $sd['mother_email'];
+                } 
+                if (!empty($sd['guardian_email'])) {
+                    $gt_email = $sd['guardian_email'];
+                } 
             }
 
             //$email = "it.rakesh@gmail.com";
-            $to = $email;
             $subject = nl2br($emailSubjct_camp);
             $body = nl2br($emailquote);
             $msg = $smsquote;
@@ -83,55 +102,88 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
             $resultm = $connection2->query($sqlm);
             $rowdatm = $resultm->fetch();
 
-            if (!empty($emailquote) && !empty($body) && !empty($to)) {
-                $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
-                $url .= "&to=" . $to;
-                $url .= "&subject=" . rawurlencode($subject);
-                $url .= "&body=" . rawurlencode($body);
-
-                //sending attachment
-                if ($attachmentStatus == "Yes") {
-                    $from = $_SESSION[$guid]['organisationAdministratorEmail'];
-                    $fromName = $_SESSION[$guid]['organisationAdministratorName'];
-                    // sendEmailAttactment($to,$subject,$body,$NewNameFile,$from, $fromName);
-
-
-                    try {
-                        $mail = $container->get(Mailer::class);
-                        $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
-
-                        $mail->AddAddress($to);
-                        $mail->CharSet = 'UTF-8';
-                        $mail->Encoding = 'base64';
-                        $mail->AddAttachment($uploadfile);                        // Optional name
-                        $mail->isHTML(true);
-                        $mail->Subject = $subject;
-                        $mail->Body = $body;
-
-                        $mail->Send();
-                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', pupilsightPersonID=" . $cuid . " ";
-                        $connection2->query($sq);
-                    } catch (Exception $ex) {
-                        print_r($x);
-                    }
-                } else {
-                    $res = file_get_contents($url);
-                    $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
-                    $connection2->query($sq);
+            if (!empty($emailquote) && !empty($body)) {
+                
+                if(!empty($ft_email)){
+                    $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
+                    $url .= "&to=" . $ft_email;
+                    $url .= "&subject=" . rawurlencode($subject);
+                    $url .= "&body=" . rawurlencode($body);
+                    sendEmail($ft_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
+                }
+                if(!empty($mt_email)){
+                    $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
+                    $url .= "&to=" . $mt_email;
+                    $url .= "&subject=" . rawurlencode($subject);
+                    $url .= "&body=" . rawurlencode($body);
+                    sendEmail($mt_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
+                }
+                if(!empty($gt_email)){
+                    $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
+                    $url .= "&to=" . $gt_email;
+                    $url .= "&subject=" . rawurlencode($subject);
+                    $url .= "&body=" . rawurlencode($body);
+                    sendEmail($gt_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
                 }
             }
 
-            if (!empty($smsquote) && !empty($msg) && !empty($number)) {
-                $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
-                $urls .= "&send_to=" . $number;
-                $urls .= "&msg=" . rawurlencode($msg);
-                $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
-                $resms = file_get_contents($urls);
-
-                $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
-                $connection2->query($sq);
+            if (!empty($smsquote) && !empty($msg)) {
+                if(!empty($ft_number)){
+                    sendSMS($ft_number, $msg, $subid, $cuid, $connection2);
+                }
+                if(!empty($mt_number)){
+                    sendSMS($mt_number, $msg, $subid, $cuid, $connection2);
+                }
+                if(!empty($gt_number)){
+                    sendSMS($gt_number, $msg, $subid, $cuid, $connection2);
+                }
             }
         }
+    }
+}
+
+function sendSMS($number, $msg, $subid, $cuid, $connection2){
+    $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
+    $urls .= "&send_to=" . $number;
+    $urls .= "&msg=" . rawurlencode($msg);
+    $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
+    $resms = file_get_contents($urls);
+
+    $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
+    $connection2->query($sq);
+}
+
+function sendEMail($to, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url){
+   
+    //sending attachment
+    if ($attachmentStatus == "Yes") {
+        $from = $_SESSION[$guid]['organisationAdministratorEmail'];
+        $fromName = $_SESSION[$guid]['organisationAdministratorName'];
+        // sendEmailAttactment($to,$subject,$body,$NewNameFile,$from, $fromName);
+
+
+        try {
+            $mail = $container->get(Mailer::class);
+            $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+
+            $mail->AddAddress($to);
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+            $mail->AddAttachment($uploadfile);                        // Optional name
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body = $body;
+
+            $mail->Send();
+            $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', pupilsightPersonID=" . $cuid . " ";
+            $connection2->query($sq);
+        } catch (Exception $ex) {
+            print_r($x);
+        }
+    } else {
+        $res = file_get_contents($url);
+        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
+        $connection2->query($sq);
     }
 }
 

@@ -83,8 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     <a style='display:none; ' href='" . $_SESSION[$guid]['absoluteURL'] . "/fullscreen.php?q=/modules/Campaign/fee_make_payment.php&cid=" . $id . "' class='thickbox btn btn-primary' id='clickAdmissionFeePayment'>Fee Payment</a>
     <a style='display:none; margin-bottom:10px;'  class='btn btn-primary' id='admissionFeePayment'>Fee Payment</a>
     &nbsp;&nbsp;<a id='offlineClick' style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/offline_campaignFormList.php&id=" . $id . "'   class=' btn btn-primary' >Offline Submitted List</a>
-    &nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=" . $id . "'   class=' btn btn-primary' id='' >Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' id='sendSMS'>Send SMS</a>";
-    echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' id='sendEmail'>Send Email</a>";
+    &nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=" . $id . "'   class=' btn btn-primary' id='' >Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' data-cid=".$id." data-fid=".$formId." id='sendSMS'>Send SMS</a>";
+    echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' data-cid=".$id."  data-fid=".$formId." id='sendEmail'>Send Email</a>";
     //echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="index.php?q=/modules/Campaign/ajaxfile.php&cid='.$id.'&id=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
     echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="cms/ajaxfile.php?cid=' . $id . '&submissionId=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
@@ -196,14 +196,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
 
     //    array_reverse($dataSet->data);
+    
     $arrHeader = array();
     foreach ($field as $fe) {
         foreach ($fe as $f) {
-            if (!empty($f->attributes)) {
-                $arrHeader[] = $f->attributes->name;
+            if (!empty($f->attributes) && !empty($f->attributes->class)) {
+                if ($f->attributes->class == 'show-in-grid') {
+                    $arrHeader[] = $f->attributes->name;
+                }
             }
         }
     }
+
+    // echo '<pre>';
+    // print_r($arrHeader);
+    // echo '</pre>';
 
 
     if (!empty($formId)) {
@@ -443,6 +450,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     .slider.round:before {
         border-radius: 50%;
     }
+
+    .table-responsive {
+        height : 500px;
+    }
 </style>
 
 <script>
@@ -627,5 +638,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             alert('You Have to Select Applicant.');
         }
     });
+
+    $(document).on('keydown', '#applicationName', function(e) {
+        var key = e.which;
+        if(key == 13){
+            $("#filterCampaign").click();
+        }
+    });
+
+    $(document).on('keydown', '#applicationId', function(e) {
+        var key = e.which;
+        if(key == 13){
+            $("#filterCampaign").click();
+        }
+    });
+
+    $(document).on('change', '#applicationStatus', function(e) {
+        $("#filterCampaign").click();
+    });
+
 </script>
 <?php

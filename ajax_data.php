@@ -2958,3 +2958,35 @@ if ($type == 'checkApplicantConversion') {
     }
     echo $response;
 }
+
+if ($type == 'chkCampaignFromField') {
+    $cid = $val;
+    $fid = $_POST['fid'];
+    $sqlf = 'Select form_fields FROM wp_fluentform_forms WHERE id = ' . $fid . ' ';
+    $resultvalf = $connection2->query($sqlf);
+    $fluent = $resultvalf->fetch();
+    $field = json_decode($fluent['form_fields']);
+    $fields = array();
+
+    $showfields = '';
+    $showfields2 = '';
+    foreach ($field as $fe) {
+        foreach ($fe as $f) {
+            if (!empty($f->attributes->name)) {
+                if (strpos($f->attributes->name, '_email') !== false) {
+                    $lbl = $f->attributes->name;
+                    $lbl = str_replace("_"," ",$lbl);
+                    $showfields .= '<input type="checkbox" name="' . $f->attributes->name . '" value="1"> ' . ucwords($lbl) . ' &nbsp;&nbsp;';
+                } 
+
+                if (strpos($f->attributes->name, '_mobile') !== false) {
+                    $lbl = $f->attributes->name;
+                    $lbl = str_replace("_"," ",$lbl);
+                    $showfields2 .= '<input type="checkbox" name="' . $f->attributes->name . '" value="1"> ' . ucwords($lbl) . ' &nbsp;&nbsp;';
+                } 
+            }
+        }
+    }
+    $response = array('mobile' => $showfields2, 'email' => $showfields);
+    echo json_encode($response);
+}

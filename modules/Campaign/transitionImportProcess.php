@@ -4,6 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 
 include '../../pupilsight.php';
+//include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight/db.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php';
 
@@ -45,9 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
         $tabledata[$k]['tablesubdata'] = $subid;
         $tabledata[$k]['admission_series_id'] = $tbl['admission_series_id'];
     }    
-    
+   
     
     $tdata = array();
+    $tdataft = array();
+    $tdatamt = array();
     $cname = array();
     if(!empty($tabledata)){
         foreach($tabledata as $k=>$td){
@@ -112,19 +115,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                             $prog = '';
                             $cls = '';
                         }
+                        //print_r($coldata);
 
                         //echo $coldata->rowCount();
                         if(!empty($coldata)){
-                            $colname = $tcol['column_name'];
-                            $val = $coldata['field_value'];
-                            $fid = $td['form_id'];
-                            $tablename = $td['tablename']; 
-                            $tdata[$ts][$colname] = $val;
-                            $tdata[$ts]['pupilsightRoleIDPrimary'] = '003';
-                            $tdata[$ts]['pupilsightRoleIDAll'] = '003';
-                            $tdata[$ts]['admission_no'] = $admission_no;
-                            $tdata[$ts]['sid'] = $tsub;
-                            $cname[$t] = $tcol['column_name'].'=:'.$tcol['column_name'];
+                            if(strpos($tcol['fluent_form_column_name'], 'father_') !== false){
+                                $colname = 'ft_'.$tcol['column_name'];
+                                $val = $coldata['field_value'];
+                                $tdata[$k][$colname] = $val;
+                                $tdata[$k]['ft_pupilsightRoleIDPrimary'] = '004';
+                                $tdata[$k]['ft_pupilsightRoleIDAll'] = '004';
+                                $cname[$t] = $colname.'=:'.$colname;
+                            } else {
+                                $colname = 'st_'.$tcol['column_name'];
+                                $val = $coldata['field_value'];
+                                $fid = $td['form_id'];
+                                $tablename = $td['tablename']; 
+                                $tdata[$k][$colname] = $val;
+                                $tdata[$k]['st_pupilsightRoleIDPrimary'] = '003';
+                                $tdata[$k]['st_pupilsightRoleIDAll'] = '003';
+                                $tdata[$k]['st_admission_no'] = $admission_no;
+                                $tdata[$k]['sid'] = $tsub;
+                                $cname[$t] = $colname.'=:'.$colname;
+                            }
+                            
                             $chk = '1';
                         } else {
                             $chk = '2';
@@ -132,35 +146,159 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         
                }
             }
+            // echo $chk;
             
-            if($chk == '1' && !empty($tdata)){
+          
+            if(!empty($tdata)){
+               
                 foreach($tdata as $td){
-                    try {
-                        $sid = $td['sid'];
-                        unset($td['sid']);
-                        // echo '<pre>';
-                        // print_r($td);
-                        // echo '</pre>';
-                        $setdata  = implode(',',$cname);
-                        $setdata  = $setdata.',pupilsightRoleIDPrimary=:pupilsightRoleIDPrimary,pupilsightRoleIDAll=:pupilsightRoleIDAll,admission_no=:admission_no';
-                        $sqlins = "INSERT INTO ".$tablename." SET ".$setdata." ";
-                        $resultins = $connection2->prepare($sqlins);
-                        $resultins->execute($td);
-                        $stuId = $connection2->lastInsertID();
-                    } catch (Exception $ex) {
-                        print_r($ex);
+                  
+                    $sql = "INSERT INTO pupilsightPerson (";
+                    foreach ($td as $key => $ar) {
+                        if (strpos($key, 'st_') !== false && !empty($ar)) {
+                            //$clname = ltrim($key, 'st_'); 
+                            $clname = substr($key, 3, strlen($key));
+                            $sql .= $clname . ',';
+                        }
                     }
+                    $sql = rtrim($sql, ", ");
+                    $sql .= ") VALUES (";
+                    foreach ($td as $k => $value) {
+                        if (strpos($k, 'st_') !== false && !empty($value)) {
+                            $val = str_replace('"', "", $value);
+                            $sql .= '"' . $val . '",';
+                        }
+                    }
+                    $sql = rtrim($sql, ", ");
+                    $sql .= ")";
+                    $sql = rtrim($sql, ", ");
                     
-                        if($tablename == 'pupilsightPerson' && !empty($prog) && !empty($cls)){
-                            
-                            $data = array('pupilsightPersonID' => $stuId,'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $prog, 'pupilsightYearGroupID' => $cls);
-                                    
-                            $sqlenroll = "INSERT INTO pupilsightStudentEnrolment SET pupilsightPersonID=:pupilsightPersonID,pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID,pupilsightYearGroupID=:pupilsightYearGroupID";
-                            $resultenroll = $connection2->prepare($sqlenroll);
-                            $resultenroll->execute($data);
-                            
+
+                    $conn->query($sql);
+                    $stu_id = $conn->insert_id;
+
+                // Father Entry
+                //if (!empty($alrow['ft_officialName'])) {
+                    $sqlf = "INSERT INTO pupilsightPerson (";
+                    foreach ($td as $key => $ar) {
+                        if (strpos($key, 'ft_') !== false  && !empty($ar)) {
+                            //$clname = ltrim($key, 'ft_'); 
+                            $clname = substr($key, 3, strlen($key));
+                            $sqlf .= $clname . ',';
+                        }
+                    }
+                    $sqlf = rtrim($sqlf, ", ");
+                    $sqlf .= ") VALUES (";
+                    foreach ($td as $k => $value) {
+                        if (strpos($k, 'ft_') !== false  && !empty($value)) {
+                            $val = str_replace('"', "", $value);
+                            $sqlf .= '"' . $val . '",';
+                            $chkf = true;
+
+                            if (!empty($value['ft_officialName'])) {
+                                $fmname = $value['ft_officialName'].' Family';
+                            } 
+
+                        } else {
+                            $chkf = false;
+                        }
+                    }
+                    $sqlf = rtrim($sqlf, ", ");
+                    $sqlf .= ")";
+                    $sqlf = rtrim($sqlf, ", ");
+
+                    echo "\n<br/>father ".$sqlf;
+                    if($chkf){
+                             echo "\n<br/>father ".$sqlf;
+                    $conn->query($sqlf);
+                    $fat_id = $conn->insert_id;
+                    }
+                //}
+
+                // Mother Entry
+                //if (!empty($alrow['mt_officialName'])) {
+                    $sqlm = "INSERT INTO pupilsightPerson (";
+                    foreach ($td as $key => $ar) {
+                        if (strpos($key, 'mt_') !== false  && !empty($ar)) {
+                            //$clname = ltrim($key, 'mt_'); 
+                            $clname = substr($key, 3, strlen($key));
+                            $sqlm .= $clname . ',';
+                        }
+                    }
+                    $sqlm = rtrim($sqlm, ", ");
+                    $sqlm .= ") VALUES (";
+                    foreach ($td as $k => $value) {
+                        if (strpos($k, 'mt_') !== false  && !empty($value)) {
+                            $val = str_replace('"', "", $value);
+                            $sqlm .= '"' . $val . '",';
+
+                            if (!empty($value['mt_officialName'])) {
+                                $fmname = $value['mt_officialName'].' Family';
+                            } 
+
+                            $chkm = true;
+                        } else {
+                            $chkm = false;
+                        }
+                    }
+                    $sqlm = rtrim($sqlm, ", ");
+                    $sqlm .= ")";
+                    $sqlm = rtrim($sqlm, ", ");
+                    echo "\n<br/>mother ".$sqlm;
+                    if($chkm){
+                        echo "\n<br/>mother ".$sqlm;
+                    $conn->query($sqlm);
+                    $mot_id = $conn->insert_id;
+                    }
+                //}
+               
+                if (!empty($stu_id) && !empty($pupilsightSchoolYearID)) {
+                    $sqle = "INSERT INTO pupilsightStudentEnrolment (pupilsightPersonID,pupilsightSchoolYearID,pupilsightProgramID,pupilsightYearGroupID) VALUES (" . $stu_id . "," . $pupilsightSchoolYearID . "," . $prog . "," . $cls . ")";
+                    $enrol = $conn->query($sqle);
+
+                    echo "\n<br/>pupilsightStudentEnrolment: ".$sqle;
+                }
+
+
+                if (!empty($fat_id) || !empty($mot_id)) {
+                    
+
+                    $sqlfamily = 'INSERT INTO pupilsightFamily (name) VALUES ("' . $fmname . '")';
+
+                    echo "\n<br/>family: ".$sqlfamily;
+
+                    $conn->query($sqlfamily);
+                    $family_id = $conn->insert_id;
+                    if (!empty($family_id)) {
+                        if (!empty($fat_id)) {
+                            $sqlf1 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $fat_id . ",'Y','1','N','N','N','N')";
+                            $conn->query($sqlf1);
+                            echo "\n<br/>pupilsightFamilyAdult: ".$sqlf1;
+
+                            $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $fat_id . "," . $stu_id . ",'Father')";
+                            $conn->query($sqlf4);
+
+                            echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf4;
                         }
 
+                        if (!empty($mot_id)) {
+                            $sqlf2 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $mot_id . ",'Y','2','N','N','N','N')";
+                            $conn->query($sqlf2);
+
+                            //echo "\n<br/>pupilsightFamilyAdult: ".$sqlf2;
+
+                            $sqlf5 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $mot_id . "," . $stu_id . ",'Mother')";
+
+                            echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf5;
+                            $conn->query($sqlf5);
+                        }
+
+                        $sqlf3 = "INSERT INTO pupilsightFamilyChild (pupilsightFamilyID,pupilsightPersonID) VALUES (" . $family_id . "," . $stu_id . ")";
+                        $conn->query($sqlf3);
+
+                    }
+                }
+                       
 
 
                         $wdata = array('status'=> '1', 'submission_id' => $sid);

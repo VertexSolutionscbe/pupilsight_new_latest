@@ -7222,26 +7222,41 @@ $(document).on('click', '.sendButton_campaign_list', function () {
         $(".sendButton_campaign_list").removeClass('activestate');
         $(this).addClass('activestate');
         var noti = $(this).attr('data-noti');
-        $(".emailsmsFieldTitle").hide();
-        $(".emailFieldTitle").hide();
-        $(".emailField").hide();
-        $(".smsFieldTitle").hide();
-        $(".smsField").hide();
-        if (noti == '1') {
-            $(".emailFieldTitle").show();
-            $(".emailField").show();
-        } else if (noti == '2') {
-            $(".smsFieldTitle").show();
-            $(".smsField").show();
-        } else if (noti == '3') {
-            $(".emailsmsFieldTitle").show();
-            $(".emailField").show();
-            $(".smsField").show();
-        } else {
-            $(".emailsmsFieldTitle").show();
-            $(".emailField").show();
-            $(".smsField").show();
-        }
+        var cid = $(this).attr('data-cid');
+        var fid = $(this).attr('data-fid');
+        var type = 'chkCampaignFromField';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: cid, fid: fid, type: type },
+            dataType: "json",
+            async: true,
+            success: function (response) {
+                $("#showMobileField").html(response.mobile);
+                $("#showEmailField").html(response.email);
+                $(".emailsmsFieldTitle").hide();
+                $(".emailFieldTitle").hide();
+                $(".emailField").hide();
+                $(".smsFieldTitle").hide();
+                $(".smsField").hide();
+                if (noti == '1') {
+                    $(".emailFieldTitle").show();
+                    $(".emailField").show();
+                } else if (noti == '2') {
+                    $(".smsFieldTitle").show();
+                    $(".smsField").show();
+                } else if (noti == '3') {
+                    $(".emailsmsFieldTitle").show();
+                    $(".emailField").show();
+                    $(".smsField").show();
+                } else {
+                    $(".emailsmsFieldTitle").show();
+                    $(".emailField").show();
+                    $(".smsField").show();
+                }
+            }
+        });
+
     } else {
         alert('You Have to Select Applicants First');
         window.setTimeout(function () {

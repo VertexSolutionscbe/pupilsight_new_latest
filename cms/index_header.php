@@ -518,8 +518,10 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
                     <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                         <a href="#" class="tc-menu-inner">Registration</a>
                         <ul class="dropdown-content">
+                        <?php if (!empty($campaign)) { ?>
                             <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Registration</a>
                             </li>
+                        <?php } ?>
                             <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Registration Status</a>
                             </li>
 
@@ -955,12 +957,14 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
             <a href="#announcement" class="tc-menu-inner">Announcement</a></li>
         <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
             <a href="#contactus" class="tc-menu-inner">Contact us</a></li>
-        <?php if (!empty($campaign)) { ?>
+        
             <li id="menu-item-606" class=" dropdown menu-item show_list menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default">
                 <a href="#" class="tc-menu-inner">Registration</a>
                 <ul class="dropdown-content" style="position:inherit;">
+                <?php if (!empty($campaign)) { ?>
                     <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#application" class="tc-menu-inner" data-toggle="modal" data-target="#Application">Registration</a>
                     </li>
+                <?php } ?>
                     <li id="menu-item-606" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-606 tc-menu-item tc-menu-depth-0 tc-menu-align-left tc-menu-layout-default" style="padding:5px 10px !important;"><a href="#app_status" class="tc-menu-inner" data-toggle="modal" data-target="#app_status">Registration Status</a>
                     </li>
 
@@ -968,7 +972,7 @@ $data_target = $status==1 ? "#Application" : "#Login-reg"; */
                 </ul>
 
             </li>
-        <?php } ?>
+        
     </ul>
 </nav><!-- nav.mobile-menu-container -->
 
