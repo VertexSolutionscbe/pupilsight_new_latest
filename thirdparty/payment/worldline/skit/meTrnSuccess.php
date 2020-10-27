@@ -32,6 +32,45 @@ if ($response->getStatusCode() == 'S') {
 		$crtd =  date('Y-m-d H:i:s');
 		$cdt = date('Y-m-d H:i:s');
 
+		$sqlai = "SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = " . $cid . " ";
+        $resultai = database::doSelectOne($sqlai);
+
+        if (!empty($resultai['formatval'])) {
+            $seriesId = $resultai['id'];
+            $invformat = explode('$', $resultai['formatval']);
+            $iformat = '';
+            $orderwise = 0;
+            foreach ($invformat as $inv) {
+                if ($inv == '{AB}') {
+                    $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=' . $seriesId . ' AND type= "numberwise"';
+                    $formatvalues = database::doSelectOne($sqlfort);
+
+
+                    $str_length = $formatvalues['no_of_digit'];
+
+                    $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
+
+                    $lastnoadd = $formatvalues['last_no'] + 1;
+
+                    $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
+
+                    $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
+                    $result1 = database::doUpdate($sql1);
+                } else {
+                    $iformat .= $inv;
+                }
+                $orderwise++;
+            }
+            $application_id = $iformat;
+        } else {
+            $application_id = '';
+		}
+		
+		$datafort12 = array('application_id' => $application_id, 'id' => $sid);
+		$sqlfort12 = 'UPDATE wp_fluentform_submissions SET application_id=:application_id WHERE id=:id';
+		$resultfort12 = $connection2->prepare($sqlfort12);
+		$resultfort12->execute($datafort12);
+
 
 		$sqlfs = 'SELECT academic_id, pupilsightProgramID, fn_fee_structure_id, fn_fees_receipt_template_id  FROM campaign WHERE id = ' . $cid . ' ';
 		$resultfs = $connection2->query($sqlfs);
