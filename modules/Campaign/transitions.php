@@ -94,3 +94,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitions.php')
 
     echo $form->getOutput();
 }
+
+?>
+
+<style>
+    .select2-container--default .select2-selection--single{
+        border: 1px solid rgba(110, 117, 130, 0.2) !important;
+        height: 35px !important;
+
+    }
+</style>
+
+<script>
+    $(document).ready(function(){
+        $(".tableName select").select2();
+    });
+</script>

@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $stats = $resultval->fetchAll();
     
     echo '<input type="hidden" id="campId" value="'.$id.'"><input type="hidden" id="formId" value="'.$formId.'">';
-     echo '<span id="statusButton"></span>';
+    //  echo '<span id="statusButton"></span>';
      
     if(!empty($formId)){
         $sqlf = 'Select form_fields FROM wp_fluentform_forms WHERE id = '.$formId.' ';
@@ -139,74 +139,138 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     
    echo "<input type='hidden' name='form_id' data-cid='".$id."' id='form_id' value = '".$formId."' ";
   
+    $arrHeader = array();
+    foreach ($field as $fe) {
+        foreach ($fe as $f) {
+            if (!empty($f->attributes)) {
+                $arrHeader[] = $f->attributes->name;
+            }
+        }
+    }
 
 
-    if(!empty($formId)){
-        $table->addCheckboxColumn('sid',__(''))
-        ->addClass('chkbox')
-        ->context('Select')
-        ->notSortable()
-        ->width('10%');
+   if (!empty($formId)) {
+        $table->addCheckboxColumn('submission_id', __(''))
+            ->addClass('chkbox')
+            ->context('Select')
+            ->notSortable()
+            ->width('10%');
+
+        $table->addColumn('application_id', __('Application No'))
+            ->width('10%');
+
+
+
 
 
         $len = count($dataSet->data);
         $i = 0;
         $flag = TRUE;
-        while($i<$len){
-            $field = explode(",",$dataSet->data[$i]["field_name"]);
-            $fieldval = explode(",",$dataSet->data[$i]["field_value"]);
-        
+        while ($i < $len) {
+            $sid = $dataSet->data[$i]["submission_id"];
+            $sqlchk = 'Select ws.created_at, ws.pupilsightProgramID, ws.pupilsightYearGroupID FROM wp_fluentform_submissions AS ws WHERE ws.id = ' . $sid . ' AND  ws.form_id = ' . $formId . '';
+            $resultchk = $connection2->query($sqlchk);
+            $submited_formchk = $resultchk->fetch();
+
+            if (!empty($submited_formchk['pupilsightProgramID']) && !empty($submited_formchk['pupilsightYearGroupID'])) {
+                $sqlprog = 'Select name FROM pupilsightProgram WHERE pupilsightProgramID = ' . $submited_formchk['pupilsightProgramID'] . '  ';
+                $resultprog = $connection2->query($sqlprog);
+                $prog = $resultprog->fetch();
+                $progname = $prog['name'];
+
+                $sqlcls = 'Select name FROM pupilsightYearGroup WHERE pupilsightYearGroupID = ' . $submited_formchk['pupilsightYearGroupID'] . ' ';
+                $resultcls = $connection2->query($sqlcls);
+                $cls = $resultcls->fetch();
+                $clsname = $cls['name'];
+
+                $sqlname = 'Select GROUP_CONCAT(field_value) AS name FROM wp_fluentform_entry_details WHERE field_name = "names" AND submission_id = ' . $sid . ' ';
+                $resultname = $connection2->query($sqlname);
+                $aname = $resultname->fetch();
+                $usrname = str_replace(',', ' ', $aname['name']);
+
+                $pdfvalue = $progname . '-' . $clsname . '-' . $usrname;
+            } else {
+                $pdfvalue = $dataSet->data[$i]["submission_id"];
+            }
+            //$value = 
+            echo '<input type="hidden" id="' . $sid . '-subId" value="' . $pdfvalue . '" >';
+
+            $field = explode(",", $dataSet->data[$i]["field_name"]);
+            $fieldval = explode(",", $dataSet->data[$i]["field_value"]);
+
             $jlen = count($field);
             $j = 0;
-            if($dataSet->data[$i]["state"] == ''){
-                $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
-                $resultvals = $connection2->query($sqls);
-                $states = $resultvals->fetch();
-                $statename = $states['name'];
-                $dataSet->data[$i]["state"] = $statename;
+            if ($dataSet->data[$i]["workflowstate"] == '') {
+                // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
+                // $resultvals = $connection2->query($sqls);
+                // $states = $resultvals->fetch();
+                // $statename = $states['name'];
+                $dataSet->data[$i]["workflowstate"] = 'Submitted';
             }
 
-
-            if($dataSet->data[$i]["created_at"] == ''){
-                $sqls1 = 'Select ws.created_at FROM wp_fluentform_submissions AS ws WHERE ws.id = '.$dataSet->data[$i]["sid"].' AND  ws.form_id = '. $formId.'';
+            echo $dataSet->data[$i]["created_at"];
+            if ($dataSet->data[$i]["created_at"] == '') {
+                $sqls1 = 'Select ws.created_at FROM wp_fluentform_submissions AS ws WHERE ws.id = ' . $dataSet->data[$i]["submission_id"] . ' AND  ws.form_id = ' . $formId . '';
                 $resultvals1 = $connection2->query($sqls1);
                 $submited_form = $resultvals1->fetch();
                 //$created_at = date('d-m-Y H:i:s', datetotime($submited_form['created_at']));
                 $dt = new DateTime($submited_form['created_at']);
-                $created_at= $dt->format('d-m-Y H:i:s');
+                $created_at = $dt->format('d-m-Y H:i:s');
                 $dataSet->data[$i]["created_at"] = $created_at;
             }
 
 
-          // echo  $dataSet->data[$i]["submission_id"];
+            // echo  $dataSet->data[$i]["submission_id"];
 
 
 
             //$dt = array();
-            while($j<$jlen){
-                $dataSet->data[$i][$field[$j]]=$fieldval[$j];
-                if($flag){
-                    $headcol = ucwords(str_replace("_", " ", $field[$j]));
-                    $table->addColumn(''.$field[$j].'', __(''.$headcol.''))
-                    ->width('10%')
-                    ->notSortable()
-                    ->translatable();
 
+            $table->addColumn('workflowstate', __('Status'))
+                ->width('10%')
+                ->translatable();
+
+
+            while ($j < $jlen) {
+                $dataSet->data[$i][$field[$j]] = $fieldval[$j];
+                if ($flag) {
+                    foreach ($arrHeader as $ar) {
+                        $headcol = ucwords(str_replace("_", " ", $ar));
+                        if ($ar == 'file-upload') {
+                            $table->addColumn('' . $ar . '', __('' . $headcol . ''))
+                                ->format(function ($dataSet) {
+                                    if ($dataSet['file-upload'] != '') {
+                                        return '<a href="' . $dataSet['file-upload'] . '" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                    }
+                                });
+                        } elseif ($ar == 'image-upload') {
+                            $table->addColumn('' . $ar . '', __('' . $headcol . ''))
+                                ->format(function ($dataSet) {
+                                    if ($dataSet['image-upload'] != '') {
+                                        return '<a href="' . $dataSet['image-upload'] . '" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                    }
+                                });
+                        } else {
+                            $table->addColumn('' . $ar . '', __('' . $headcol . ''))
+                                ->width('10%')
+                                ->notSortable()
+                                ->translatable();
+                        }
+                    }
                 }
                 $j++;
             }
             $flag = FALSE;
-            unset($dataSet->data[$i]["field_name"],$dataSet->data[$i]["field_value"]);
+            unset($dataSet->data[$i]["field_name"], $dataSet->data[$i]["field_value"]);
             $i++;
         }
 
 
-        $table->addColumn('state', __('Status'))
-        ->width('10%')
-        ->translatable();
+
+
         $table->addColumn('created_at', __('Submitted Date and time'))
-        ->width('10%')
-        ->translatable();
+            ->width('10%')
+            ->translatable();
 
         
     }
@@ -223,7 +287,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 <script>
 $(document).on('click', "#saveApplicant", function() {
     var favorite = [];
-    $.each($("input[name='sid[]']:checked"), function() {
+    $.each($("input[name='submission_id[]']:checked"), function() {
         favorite.push($(this).val());
     });
     var submit_id = favorite.join(", ");
@@ -235,8 +299,8 @@ $(document).on('click', "#saveApplicant", function() {
             data: { subid: submit_id},
             async: true,
             success: function(response) {
-                alert('Your Applicant Admitted Successfully! Click Ok to Continue');
-                location.reload();
+                // alert('Your Applicant Admitted Successfully! Click Ok to Continue');
+                // location.reload();
             }
         });
     } else {

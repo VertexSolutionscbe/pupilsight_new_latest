@@ -27,6 +27,12 @@ $_POST = $validator->sanitize($_POST);
 $username = isset($_POST['username']) ? $_POST['username'] : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 
+if(!empty($_POST["rememberme"])) {
+	setcookie ("username",$_POST["username"],time()+ (86400 * 30));
+	setcookie ("password",$_POST["password"],time()+ (86400 * 30));
+	echo "Cookies Set Successfuly";
+}
+
 
 if (empty($username) or empty($password)) {
     $URL .= '?loginReturn=fail0b';

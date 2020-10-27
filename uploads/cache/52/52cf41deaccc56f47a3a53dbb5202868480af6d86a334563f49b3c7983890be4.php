@@ -24,9 +24,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -51,9 +51,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -78,9 +78,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -106,9 +106,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -133,9 +133,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -159,9 +159,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -185,9 +185,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -253,9 +253,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
         <div class=\"modal-content\">
             <form id=\"sendEmailSms_campaignForm\" enctype=\"multipart/form-data\">
                 <div class=\"modal-header\">
-                    <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                    <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                    <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                    <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                    <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                    <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                     <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                         <span aria-hidden=\"true\">&times;</span>
                     </button>
@@ -266,13 +266,23 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <input type=\"text\" name=\"email_sub\" id=\"emailSubjct_camp\">
                     <h3 class=\"font-semibold\">Email Message</h3>
                     <textarea name=\"email_quote\" id=\"emailQuote_camp\" rows=\"5\"></textarea>
-                    <h3 class=\"font-semibold\">Attachments</h3>
+                    <h3 class=\"font-semibold\" style=\"display:none;\">Attachments</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
-                    <input type='file' name=\"email_attach\" id=\"emailattach_camp\">
+                    <input type='file' name=\"email_attach\" id=\"emailattach_camp\" style=\"display:none;\">
+                    <div style=\"margin-top: 15px;\" id=\"showEmailField\">
+                        <!-- <input type='checkbox' name='father_email' value='1'> Father Email
+                        <input type='checkbox' name='mother_email' value='1'> Mother Email
+                        <input type='checkbox' name='guardian_email' value='1'> Guardian Email -->
+                    </div>
                 </div>
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_camp\"></textarea>
+                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
+                        <!-- <input type='checkbox' name='father_mobile' value='1'> Father Mobile
+                        <input type='checkbox' name='mother_mobile' value='1'> Mother Mobile
+                        <input type='checkbox' name='guardian_mobile' value='1'> Guardian Mobile -->
+                    </div>
                 </div>
                 <div class=\"modal-footer\">
                     <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
@@ -288,9 +298,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
         <div class=\"modal-content\">
             <form id=\"sendEmailSms_registerForm\" enctype=\"multipart/form-data\">
                 <div class=\"modal-header\">
-                    <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                    <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                    <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                    <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                    <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                    <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                     <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                         <span aria-hidden=\"true\">&times;</span>
                     </button>
@@ -335,9 +345,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -362,9 +372,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -389,9 +399,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -417,9 +427,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -444,9 +454,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -470,9 +480,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -496,9 +506,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
     <div class=\"modal-dialog modal-lg\" role=\"document\">
         <div class=\"modal-content\">
             <div class=\"modal-header\">
-                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                 <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
@@ -564,9 +574,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
         <div class=\"modal-content\">
             <form id=\"sendEmailSms_campaignForm\" enctype=\"multipart/form-data\">
                 <div class=\"modal-header\">
-                    <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                    <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                    <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                    <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                    <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                    <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                     <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                         <span aria-hidden=\"true\">&times;</span>
                     </button>
@@ -577,13 +587,23 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <input type=\"text\" name=\"email_sub\" id=\"emailSubjct_camp\">
                     <h3 class=\"font-semibold\">Email Message</h3>
                     <textarea name=\"email_quote\" id=\"emailQuote_camp\" rows=\"5\"></textarea>
-                    <h3 class=\"font-semibold\">Attachments</h3>
+                    <h3 class=\"font-semibold\" style=\"display:none;\">Attachments</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
-                    <input type='file' name=\"email_attach\" id=\"emailattach_camp\">
+                    <input type='file' name=\"email_attach\" id=\"emailattach_camp\" style=\"display:none;\">
+                    <div style=\"margin-top: 15px;\" id=\"showEmailField\">
+                        <!-- <input type='checkbox' name='father_email' value='1'> Father Email
+                        <input type='checkbox' name='mother_email' value='1'> Mother Email
+                        <input type='checkbox' name='guardian_email' value='1'> Guardian Email -->
+                    </div>
                 </div>
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_camp\"></textarea>
+                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
+                        <!-- <input type='checkbox' name='father_mobile' value='1'> Father Mobile
+                        <input type='checkbox' name='mother_mobile' value='1'> Mother Mobile
+                        <input type='checkbox' name='guardian_mobile' value='1'> Guardian Mobile -->
+                    </div>
                 </div>
                 <div class=\"modal-footer\">
                     <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
@@ -599,9 +619,9 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
         <div class=\"modal-content\">
             <form id=\"sendEmailSms_registerForm\" enctype=\"multipart/form-data\">
                 <div class=\"modal-header\">
-                    <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS Message</h5>
-                    <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email Message</h5>
-                    <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS Message</h5>
+                    <h5 class=\"modal-title emailsmsFieldTitle\" style=\"display:none;\">Email & SMS</h5>
+                    <h5 class=\"modal-title emailFieldTitle\" style=\"display:none;\">Email</h5>
+                    <h5 class=\"modal-title smsFieldTitle\" style=\"display:none;\">SMS</h5>
                     <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\">
                         <span aria-hidden=\"true\">&times;</span>
                     </button>

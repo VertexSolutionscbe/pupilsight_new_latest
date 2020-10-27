@@ -93,8 +93,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     $arrHeader = array();
     foreach($field as $fe){
         foreach($fe as $f){
-            if(!empty($f->attributes)){
-                $arrHeader[] = $f->attributes->name;
+            if (!empty($f->attributes) && !empty($f->attributes->class)) {
+                if ($f->attributes->class == 'show-in-grid') {
+                    $arrHeader[] = $f->attributes->name;
+                }
             }
         }
     }

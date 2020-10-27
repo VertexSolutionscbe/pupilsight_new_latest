@@ -209,8 +209,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $arrHeader = array();
         foreach ($field as $fe) {
             foreach ($fe as $f) {
-                if (!empty($f->attributes)) {
-                    $arrHeader[] = $f->attributes->name;
+                if (!empty($f->attributes) && !empty($f->attributes->class)) {
+                    if ($f->attributes->class == 'show-in-grid') {
+                        $arrHeader[] = $f->attributes->name;
+                    }
                 }
             }
         }
@@ -457,6 +459,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
     .converted {
         background-color: bisque;
+    }
+
+    .table-responsive {
+        height : 500px;
     }
 </style>
 
@@ -721,5 +727,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             alert('You Have to Select Applicant.');
         }
     });
+
+    $(document).on('keydown', '#applicationName', function(e) {
+        var key = e.which;
+        if(key == 13){
+            $("#offlinefilterCampaign").click();
+        }
+    });
+
+    $(document).on('keydown', '#applicationId', function(e) {
+        var key = e.which;
+        if(key == 13){
+            $("#offlinefilterCampaign").click();
+        }
+    });
+
+    // $(document).on('change', '#applicationStatus', function(e) {
+    //     $("#offlinefilterCampaign").click();
+    // });
 </script>
 <?php
