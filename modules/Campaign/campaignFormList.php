@@ -269,7 +269,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 // $resultvals = $connection2->query($sqls);
                 // $states = $resultvals->fetch();
                 // $statename = $states['name'];
-                $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = ".$sid."  ";
+                $resulttr = $connection2->query($sql2);
+                $stateChk = $resulttr->fetch();
+                if(!empty($stateChk['transaction_id'])){
+                    $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                } else {
+                    $dataSet->data[$i]["workflowstate"] = 'Created';
+                }
+                
             }
 
             echo $dataSet->data[$i]["created_at"];

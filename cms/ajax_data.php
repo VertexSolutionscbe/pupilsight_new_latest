@@ -133,43 +133,43 @@ if ($type == 'insertcampaigndetails') {
         $resultm = $connection2->query($sqlm);
         $rowdatm = $resultm->fetch();
 
-        if (!empty($emailquote) && !empty($body)) {
+        // if (!empty($emailquote) && !empty($body)) {
             
-            if(!empty($ft_email)){
-                $url = $base_url.'/cms/mailsend.php';
-                $url .= "?to=" . $ft_email;
-                $url .= "&subject=" . rawurlencode($subject);
-                $url .= "&body=" . rawurlencode($body);
-                sendEmail($ft_email, $subject, $body, $subid, $cuid, $connection2, $url);
-            }
-            if(!empty($mt_email)){
-                $url = $base_url.'/cms/mailsend.php';
-                $url .= "?to=" . $mt_email;
-                $url .= "&subject=" . rawurlencode($subject);
-                $url .= "&body=" . rawurlencode($body);
-                echo $url;
-                sendEmail($mt_email, $subject, $body, $subid, $cuid, $connection2, $url);
-            }
-            if(!empty($gt_email)){
-                $url = $base_url.'/cms/mailsend.php';
-                $url .= "?to=" . $gt_email;
-                $url .= "&subject=" . rawurlencode($subject);
-                $url .= "&body=" . rawurlencode($body);
-                sendEmail($gt_email, $subject, $body, $subid, $cuid, $connection2, $url);
-            }
-        }
+        //     if(!empty($ft_email)){
+        //         $url = $base_url.'/cms/mailsend.php';
+        //         $url .= "?to=" . $ft_email;
+        //         $url .= "&subject=" . rawurlencode($subject);
+        //         $url .= "&body=" . rawurlencode($body);
+        //         sendEmail($ft_email, $subject, $body, $subid, $cuid, $connection2, $url);
+        //     }
+        //     if(!empty($mt_email)){
+        //         $url = $base_url.'/cms/mailsend.php';
+        //         $url .= "?to=" . $mt_email;
+        //         $url .= "&subject=" . rawurlencode($subject);
+        //         $url .= "&body=" . rawurlencode($body);
+        //         echo $url;
+        //         sendEmail($mt_email, $subject, $body, $subid, $cuid, $connection2, $url);
+        //     }
+        //     if(!empty($gt_email)){
+        //         $url = $base_url.'/cms/mailsend.php';
+        //         $url .= "?to=" . $gt_email;
+        //         $url .= "&subject=" . rawurlencode($subject);
+        //         $url .= "&body=" . rawurlencode($body);
+        //         sendEmail($gt_email, $subject, $body, $subid, $cuid, $connection2, $url);
+        //     }
+        // }
 
-        if (!empty($smsquote) && !empty($msg)) {
-            if(!empty($ft_number)){
-                sendSMS($ft_number, $msg, $subid, $cuid, $connection2);
-            }
-            if(!empty($mt_number)){
-                sendSMS($mt_number, $msg, $subid, $cuid, $connection2);
-            }
-            if(!empty($gt_number)){
-                sendSMS($gt_number, $msg, $subid, $cuid, $connection2);
-            }
-        }
+        // if (!empty($smsquote) && !empty($msg)) {
+        //     if(!empty($ft_number)){
+        //         sendSMS($ft_number, $msg, $subid, $cuid, $connection2);
+        //     }
+        //     if(!empty($mt_number)){
+        //         sendSMS($mt_number, $msg, $subid, $cuid, $connection2);
+        //     }
+        //     if(!empty($gt_number)){
+        //         sendSMS($gt_number, $msg, $subid, $cuid, $connection2);
+        //     }
+        // }
 
 
 
