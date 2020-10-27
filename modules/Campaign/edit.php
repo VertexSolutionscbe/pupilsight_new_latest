@@ -83,6 +83,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             }
             $receiptTemplate = $receiptTemplate1 + $receiptTemplate2;
 
+            $sqle = 'SELECT pupilsightTemplateID, name, entities FROM pupilsightTemplate WHERE type = "Email" AND FIND_IN_SET("Admission",entities)';
+            $resulte = $connection2->query($sqle);
+            $eTempData = $resulte->fetchAll();
+
+            $emailTemplate=array();  
+            $emailTemplate2=array();  
+            $emailTemplate1=array(''=>'Select Email Template');
+            foreach ($eTempData as $key => $dt) {
+                $emailTemplate2[$dt['pupilsightTemplateID']] = $dt['name'];
+            }
+            $emailTemplate= $emailTemplate1 + $emailTemplate2; 
+
+            $sqls = 'SELECT pupilsightTemplateID, name, entities FROM pupilsightTemplate WHERE type = "Sms"  AND FIND_IN_SET("Admission",entities)';
+            $results = $connection2->query($sqls);
+            $sTempData = $results->fetchAll();
+
+            $smsTemplate=array();  
+            $smsTemplate2=array();  
+            $smsTemplate1=array(''=>'Select Sms Template');
+            foreach ($sTempData as $key => $dt) {
+                $smsTemplate2[$dt['pupilsightTemplateID']] = $dt['name'];
+            }
+            $smsTemplate= $smsTemplate1 + $smsTemplate2; 
+
             $sqlcs = 'SELECT id, series_name, type FROM fn_fee_series WHERE type IN ("Application","Admission")';
             $resultcs = $connection2->query($sqlcs);
             $seriesData = $resultcs->fetchAll();
@@ -241,14 +265,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $col->addSelect('fn_fees_receipt_template_id')->addClass('txtfield')->fromArray($receiptTemplate)->selected($values['fn_fees_receipt_template_id']);
 
             $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('email_template_id', __('Email Template'));
+            $col->addSelect('email_template_id')->fromArray($emailTemplate)->selected($values['email_template_id'])->addClass('txtfield');
+           
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('sms_template_id', __('Sms Template'));
+            $col->addSelect('sms_template_id')->fromArray($smsTemplate)->selected($values['sms_template_id'])->addClass('txtfield');
+
+            $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('is_publish_parent', __('Publish For Parent'));
             $col->addCheckBox('is_publish_parent')->addClass('txtfield')->setValue('1')->checked($values['is_publish_parent']);
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
-
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
+            
 
             $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes');

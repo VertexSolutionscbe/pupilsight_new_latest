@@ -2,7 +2,7 @@
 /*
 Pupilsight, Flexible & Open School System
 */
-include $_SERVER["DOCUMENT_ROOT"] .'/pupilsight/pupilsight.php';
+include $_SERVER["DOCUMENT_ROOT"] .'/pupilsight.php';
 
 use Pupilsight\Contracts\Comms\Mailer;
 
@@ -153,7 +153,7 @@ function sendSMS($number, $msg, $subid, $cuid, $connection2){
     $connection2->query($sq);
 }
 
-function sendEMail($to, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url){
+function sendEMail($to, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus){
    
     //sending attachment
     if ($attachmentStatus == "Yes") {
