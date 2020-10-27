@@ -51,6 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         $is_publish_parent = '0';
     }
 
+    $email_template_id = $_POST['email_template_id'];
+    $sms_template_id = $_POST['sms_template_id'];
+
     if ($name == '' or $status == ''  or $start_date == '' or $end_date == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -73,15 +76,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         } else {
             //Check for other currents
             
-                //Write to database
+                //Write to databas
                 $sqla = 'SELECT name FROM pupilsightSchoolYear WHERE pupilsightSchoolYearID = '.$academic_id.' ';
                 $resulta = $connection2->query($sqla);
                 $ayrdata = $resulta->fetch();
                 $academic_year = $ayrdata['name'];
 
                 try {
-                    $data = array('name' => $name, 'status' => $status, 'description' => $description, 'start_date' => $start_date, 'end_date' => $end_date, 'academic_id' => $academic_id, 'academic_year' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID, 'classes' => $classes, 'seats' => $seats,'limit_apply_form' => $limitusers,'cuid' => $cuid,'page_for'=> $reg_req, 'application_series_id' => $application_series_id, 'admission_series_id' => $admission_series_id, 'fn_fee_structure_id' => $fn_fee_structure_id, 'fn_fees_receipt_template_id' => $fn_fees_receipt_template_id, 'is_publish_parent' => $is_publish_parent);
-                    $sql = "INSERT INTO campaign SET name=:name, description=:description, academic_id=:academic_id,academic_year=:academic_year, pupilsightProgramID=:pupilsightProgramID,classes=:classes, start_date=:start_date, end_date=:end_date, status=:status,seats=:seats, limit_apply_form=:limit_apply_form, cuid=:cuid,page_for=:page_for, application_series_id=:application_series_id, admission_series_id=:admission_series_id, fn_fee_structure_id=:fn_fee_structure_id, fn_fees_receipt_template_id=:fn_fees_receipt_template_id, is_publish_parent=:is_publish_parent";
+                    $data = array('name' => $name, 'status' => $status, 'description' => $description, 'start_date' => $start_date, 'end_date' => $end_date, 'academic_id' => $academic_id, 'academic_year' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID, 'classes' => $classes, 'seats' => $seats,'limit_apply_form' => $limitusers,'cuid' => $cuid,'page_for'=> $reg_req, 'application_series_id' => $application_series_id, 'admission_series_id' => $admission_series_id, 'fn_fee_structure_id' => $fn_fee_structure_id, 'fn_fees_receipt_template_id' => $fn_fees_receipt_template_id, 'is_publish_parent' => $is_publish_parent, 'email_template_id' => $email_template_id, 'sms_template_id' => $sms_template_id);
+                    $sql = "INSERT INTO campaign SET name=:name, description=:description, academic_id=:academic_id,academic_year=:academic_year, pupilsightProgramID=:pupilsightProgramID,classes=:classes, start_date=:start_date, end_date=:end_date, status=:status,seats=:seats, limit_apply_form=:limit_apply_form, cuid=:cuid,page_for=:page_for, application_series_id=:application_series_id, admission_series_id=:admission_series_id, fn_fee_structure_id=:fn_fee_structure_id, fn_fees_receipt_template_id=:fn_fees_receipt_template_id, is_publish_parent=:is_publish_parent,email_template_id=:email_template_id,sms_template_id=:sms_template_id";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

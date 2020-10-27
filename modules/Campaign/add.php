@@ -43,6 +43,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     }
     $program= $program1 + $program2; 
 
+    $sqle = 'SELECT pupilsightTemplateID, name, entities FROM pupilsightTemplate WHERE type = "Email" AND FIND_IN_SET("Admission",entities)';
+    $resulte = $connection2->query($sqle);
+    $eTempData = $resulte->fetchAll();
+
+    $emailTemplate=array();  
+    $emailTemplate2=array();  
+    $emailTemplate1=array(''=>'Select Email Template');
+    foreach ($eTempData as $key => $dt) {
+        $emailTemplate2[$dt['pupilsightTemplateID']] = $dt['name'];
+    }
+    $emailTemplate= $emailTemplate1 + $emailTemplate2; 
+
+    $sqls = 'SELECT pupilsightTemplateID, name, entities FROM pupilsightTemplate WHERE type = "Sms"  AND FIND_IN_SET("Admission",entities)';
+    $results = $connection2->query($sqls);
+    $sTempData = $results->fetchAll();
+
+    $smsTemplate=array();  
+    $smsTemplate2=array();  
+    $smsTemplate1=array(''=>'Select Sms Template');
+    foreach ($sTempData as $key => $dt) {
+        $smsTemplate2[$dt['pupilsightTemplateID']] = $dt['name'];
+    }
+    $smsTemplate= $smsTemplate1 + $smsTemplate2; 
+
     $sqlrt = 'SELECT id, name FROM fn_fees_receipt_template_master ';
     $resultrt = $connection2->query($sqlrt);
     $templateData = $resultrt->fetchAll();
@@ -186,15 +210,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
             $col->addLabel('fn_fees_receipt_template_id', __('Receipt Template'));
             $col->addSelect('fn_fees_receipt_template_id')->addClass('txtfield')->fromArray($receiptTemplate); 
 
-    $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('is_publish_parent', __('Publish For Parent'));
-            $col->addCheckBox('is_publish_parent')->addClass('txtfield')->setValue('1'); 
+   
             
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
+            $col->addLabel('email_template_id', __('Email Template'));
+            $col->addSelect('email_template_id')->fromArray($emailTemplate)->addClass('txtfield');
            
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
+            $col->addLabel('sms_template_id', __('Sms Template'));
+            $col->addSelect('sms_template_id')->fromArray($smsTemplate)->addClass('txtfield');
+
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('is_publish_parent', __('Publish For Parent'));
+            $col->addCheckBox('is_publish_parent')->addClass('txtfield')->setValue('1'); 
            
     // $form->toggleVisibilityByClass('statusChange')->onSelect('status')->when('Current');
     // $direction = __('Past');
