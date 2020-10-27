@@ -471,7 +471,12 @@ if ($isLoggedIn) {
         $menuMainItems = array();
         $menuMainItems["Admission"] = $tm2;
         $menuMainItems["Reports"][0] = array('name' => "Reports", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/reports.php");
+    } else if ($_SESSION[$guid]['username'] == "Geesha") {
+        $tm2 = $menuMainItems["Admission"];
+        $menuMainItems = array();
+        $menuMainItems["Admission"] = $tm2;
     }
+
 
     $session->set('menuMainItems', $menuMainItems);
     $session->set('allmenu', $menuMainItems);

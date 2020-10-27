@@ -2,6 +2,13 @@
 include_once 'w2f/adminLib.php';
 $adminlib = new adminlib();
 session_start();
+$url_id = $_REQUEST['url_id'];
+if ($adminlib->isCampaignActive($url_id) == FALSE) {
+    echo "<h2>Campaign is no longer active.</h2>";
+    die();
+}
+
+
 $data = $adminlib->getPupilSightData();
 $section = $adminlib->getPupilSightSectionFrontendData();
 $campaign = $adminlib->getcampaign();
@@ -15,7 +22,7 @@ $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php
 
 
 $data_target = $status==1 ? "#Application" : "#Login-reg"; */
-$url_id = $_REQUEST['url_id'];
+
 $chkstatus = $adminlib->chkCampaignStatus($url_id);
 // echo $chkstatus;
 // die(0);
@@ -367,9 +374,28 @@ $app_links = array();
                 var diff_date = To_date - From_date;
 
 
+                var duration = moment.duration(diff_date, 'milliseconds');
+                var totDays = duration.asDays();
+                //console.log(totDays);
+                if (totDays > 1491 || totDays < 1035) {
+                    $(this).val("");
+                    alert("Kindly Note: 3 Years to be completed as on 31st May 2021");
+                }
+
+                /*
+                var ageMonths = Number(years * 12) + months;
+                //console.log("years: ", years, " months: ", months, " ageMonths: ", ageMonths);
+                if (ageMonths < 34 || ageMonths > 49) {
+                    $(this).val("");
+                    alert("Kindly Note: 3 Years to be completed as on 31st May 2021");
+                }*/
+
                 var years = Math.floor(diff_date / 31536000000);
                 var months = Math.floor((diff_date % 31536000000) / 2628000000);
                 var days = Math.floor(((diff_date % 31536000000) % 2628000000) / 86400000);
+
+
+
                 var ageval = years + " years " + months + " months and " + days + " days";
                 iframe.find("input[name=age_value]").val(ageval);
 

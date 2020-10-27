@@ -585,7 +585,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             } else {
                 alert('You Have to Select One Applicant at a time.');
             }
-            
+
         } else {
             alert('You Have to Select Applicant');
         }
