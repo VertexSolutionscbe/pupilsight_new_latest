@@ -1856,6 +1856,7 @@ if ($type == 'getCampaignStatusButton') {
             foreach ($stats as $s) {
                 $data .= '<button class="btn btn-primary statesButton"  data-formid = ' . $fid . ' data-name="' . $s['transition_display_name'] . '" data-sid=' . $s['id'] . ' data-cid=' . $cid . ' data-noti=' . $s['notification'] . ' data-remark="' . $s['enable_remark'] . '" style="margin:5px" >' . ucwords($s['transition_display_name']) . '</button>';
             }
+            $data .= "<a  data-href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Campaign/transitionImportProcess.php' class=' btn btn-primary' id='saveApplicant' style='margin:5px'>Admit</a>";
         }
 
         echo $data;
@@ -1909,6 +1910,23 @@ if ($type == 'getCampaignStatusButton') {
             foreach ($stats as $s) {
                 $data .= '<button class="btn btn-primary statesButton"  data-formid = ' . $fid . ' data-name="' . $s['transition_display_name'] . '" data-sid=' . $s['id'] . ' data-cid=' . $cid . ' data-noti=' . $s['notification'] . ' data-remark="' . $s['enable_remark'] . '" style="margin:5px" >' . ucwords($s['transition_display_name']) . '</button>';
             }
+        }
+
+        $sqll = 'SELECT id FROM workflow_transition WHERE campaign_id =' . $cid . ' ORDER BY id DESC LIMIT 0,1 ';
+        $resultl = $connection2->query($sqll);
+        $lastData = $resultl->fetch();
+        $lastId = $lastData['id'];
+
+        $sql = 'SELECT status FROM wp_fluentform_entry_details WHERE submission_id =' . $id . ' LIMIT 0,1 ';
+        $result = $connection2->query($sql);
+        $sts = $result->fetch();
+
+        $sql1 = 'SELECT state_id FROM campaign_form_status WHERE submission_id =' . $id . ' AND state_id = '.$lastId.' ';
+        $result1 = $connection2->query($sql1);
+        $chkSts = $result1->fetch();
+
+        if(!empty($chkSts) && $sts['status'] == '0'){
+            $data .= "<a  data-href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Campaign/transitionImportProcess.php' class=' btn btn-primary' id='saveApplicant' style='margin:5px'>Admit</a>";
         }
 
         echo $data;

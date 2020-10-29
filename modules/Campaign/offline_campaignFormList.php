@@ -210,9 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         foreach ($field as $fe) {
             foreach ($fe as $f) {
                 if (!empty($f->attributes)) {
-                    if ($f->attributes->name == 'student_name' || $f->attributes->class == 'show-in-grid') {
-                        $arrHeader[] = $f->attributes->name;
-                    }
+                    $arrHeader[] = $f->attributes->name;
                 }
             }
         }
@@ -227,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             $table->addColumn('application_id', __('Application No'))
                 ->width('10%');
 
-
+            
             $len = count($dataSet->data);
             $i = 0;
             $flag = TRUE;
@@ -261,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 echo '<input type="hidden" id="' . $sid . '-subId" value="' . $pdfvalue . '" >';
 
                 $field = explode(",", $dataSet->data[$i]["field_name"]);
-                $fieldval = explode(",", $dataSet->data[$i]["field_value"]);
+                $fieldval = explode("|$$|", $dataSet->data[$i]["field_value"]);
 
                 $jlen = count($field);
                 $j = 0;

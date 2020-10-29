@@ -201,8 +201,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $arrHeader = array();
     foreach ($field as $fe) {
         foreach ($fe as $f) {
-            if (!empty($f->attributes)) {
-                if ($f->attributes->name == 'student_name' || $f->attributes->class == 'show-in-grid') {
+            if ($f->attributes->name == 'student_name') {
+                $arrHeader[] = $f->attributes->name;
+            }
+            if (!empty($f->attributes) && !empty($f->attributes->class)) {
+                if ($f->attributes->class == 'show-in-grid') {
                     $arrHeader[] = $f->attributes->name;
                 }
             }
@@ -266,7 +269,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
             $jlen = count($field);
             $j = 0;
-            if ($dataSet->data[$i]["workflowstate"] == '') {
+            if($dataSet->data[$i]["status"] == '1'){
+                $dataSet->data[$i]["workflowstate"] = 'Admitted';
+            }else if ($dataSet->data[$i]["workflowstate"] == '') {
                 // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
                 // $resultvals = $connection2->query($sqls);
                 // $states = $resultvals->fetch();
@@ -664,6 +669,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
     $(document).on('change', '#applicationStatus', function(e) {
         $("#filterCampaign").click();
+    });
+
+    $(document).on('click', "#saveApplicant", function() {
+        var favorite = [];
+        $.each($("input[name='submission_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var submit_id = favorite.join(", ");
+        var url = $(this).attr('data-href');
+        if (submit_id) {
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: { subid: submit_id},
+                async: true,
+                success: function(response) {
+                    alert('Your Applicant Admitted Successfully! Click Ok to Continue');
+                    location.reload();
+                }
+            });
+        } else {
+            alert('You have to Select Applicant');
+        }
     });
 </script>
 <?php

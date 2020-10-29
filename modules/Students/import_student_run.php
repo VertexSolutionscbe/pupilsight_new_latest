@@ -384,3 +384,4 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
         header("Location: {$URL}");
     }
 }
+}
