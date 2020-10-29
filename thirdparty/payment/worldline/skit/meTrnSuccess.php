@@ -28,6 +28,13 @@ if ($response->getStatusCode() == 'S') {
 	$sid = $response->getAddField1();
 	$cid = $response->getAddField2();
 	if (!empty($sid) && !empty($cid)) {
+
+		$data = array('gateway' => 'Worldline', 'submission_id' => $sid, 'transaction_ref_no' => $response->getPgMeTrnRefNo(), 'order_id' => $response->getOrderId(), 'amount' => $response->getTrnAmt(), 'status' => $response->getStatusCode());
+
+		$sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+		$result = $connection2->prepare($sql);
+		$result->execute($data);
+
 		$stuId = $sid;
 		$crtd =  date('Y-m-d H:i:s');
 		$cdt = date('Y-m-d H:i:s');
