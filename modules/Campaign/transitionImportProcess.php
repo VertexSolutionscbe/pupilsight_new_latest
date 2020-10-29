@@ -4,7 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 
 include '../../pupilsight.php';
-//include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight/db.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight/db.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php';
 
@@ -46,6 +46,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
         $tabledata[$k]['tablesubdata'] = $subid;
         $tabledata[$k]['admission_series_id'] = $tbl['admission_series_id'];
     }    
+
+    // echo '<pre>';
+    // print_r($tabledata);
+    // echo '</pre>';
    
     
     $tdata = array();
@@ -58,7 +62,68 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
             $pupilsightSchoolYearID = $td['pupilsightSchoolYearID']; 
             foreach($td['tablesubdata'] as $ts=>$tsub){
                 foreach($td['tablecol'] as $t=>$tcol){
-                   
+                    
+                        $sqlf = "SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = ".$tsub." AND field_name = '".$tcol['fluent_form_column_name']."' AND status = '0' ";
+                        $resultf = $connection2->query($sqlf);
+                        $coldata = $resultf->fetch();
+
+                        $sqlcp = "SELECT pupilsightProgramID, pupilsightYearGroupID FROM wp_fluentform_submissions WHERE id = ".$tsub."  ";
+                        $resultcp = $connection2->query($sqlcp);
+                        $clspro = $resultcp->fetch();
+                        if(!empty($clspro)){
+                            $prog = $clspro['pupilsightProgramID'];
+                            $cls = $clspro['pupilsightYearGroupID'];
+                        } else {
+                            $prog = '';
+                            $cls = '';
+                        }
+                        //print_r($coldata);
+
+                        //echo $coldata->rowCount();
+                        
+                        if(!empty($coldata)){
+                            if(strpos($tcol['fluent_form_column_name'], 'father_') !== false){
+                                $colname = 'ft_'.$tcol['column_name'];
+                                $val = $coldata['field_value'];
+                                $tdata[$ts][$colname] = $val;
+                                $tdata[$ts]['ft_pupilsightRoleIDPrimary'] = '004';
+                                $tdata[$ts]['ft_pupilsightRoleIDAll'] = '004';
+                                $cname[$t] = $colname.'=:'.$colname;
+                            } else if(strpos($tcol['fluent_form_column_name'], 'mother_') !== false){
+                                $colname = 'mt_'.$tcol['column_name'];
+                                $val = $coldata['field_value'];
+                                $tdata[$ts][$colname] = $val;
+                                $tdata[$ts]['mt_pupilsightRoleIDPrimary'] = '004';
+                                $tdata[$ts]['mt_pupilsightRoleIDAll'] = '004';
+                                $cname[$t] = $colname.'=:'.$colname;
+                            } else {
+                                $colname = 'st_'.$tcol['column_name'];
+                                $val = $coldata['field_value'];
+                                $fid = $td['form_id'];
+                                $tablename = $td['tablename']; 
+                                $tdata[$ts][$colname] = $val;
+                                $tdata[$ts]['st_pupilsightRoleIDPrimary'] = '003';
+                                $tdata[$ts]['st_pupilsightRoleIDAll'] = '003';
+                                $tdata[$ts]['admission_series_id'] = $td['admission_series_id'];
+                                $tdata[$ts]['sid'] = $tsub;
+                                $cname[$t] = $colname.'=:'.$colname;
+                            }
+                            
+                            $chk = '1';
+                        } else {
+                            $chk = '2';
+                        }
+                }
+            }
+            // echo $chk;
+            // echo '<pre>';
+            // print_r($tdata);
+            // echo '</pre>';
+            //  die();
+          
+            if(!empty($tdata)){
+               
+                foreach($tdata as $td){
                     if(!empty($td['admission_series_id'])){
                         $seriesId = $td['admission_series_id'];
                         $sqlrec = 'SELECT id, formatval FROM fn_fee_series WHERE id = "'.$seriesId.'" ';
@@ -100,59 +165,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                     } else {
                         $admission_no = '';
                     }
-                    
-                        $sqlf = "SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = ".$tsub." AND field_name = '".$tcol['fluent_form_column_name']."' AND status = '0' ";
-                        $resultf = $connection2->query($sqlf);
-                        $coldata = $resultf->fetch();
-
-                        $sqlcp = "SELECT pupilsightProgramID, pupilsightYearGroupID FROM wp_fluentform_submissions WHERE id = ".$tsub."  ";
-                        $resultcp = $connection2->query($sqlcp);
-                        $clspro = $resultcp->fetch();
-                        if(!empty($clspro)){
-                            $prog = $clspro['pupilsightProgramID'];
-                            $cls = $clspro['pupilsightYearGroupID'];
-                        } else {
-                            $prog = '';
-                            $cls = '';
-                        }
-                        //print_r($coldata);
-
-                        //echo $coldata->rowCount();
-                        if(!empty($coldata)){
-                            if(strpos($tcol['fluent_form_column_name'], 'father_') !== false){
-                                $colname = 'ft_'.$tcol['column_name'];
-                                $val = $coldata['field_value'];
-                                $tdata[$k][$colname] = $val;
-                                $tdata[$k]['ft_pupilsightRoleIDPrimary'] = '004';
-                                $tdata[$k]['ft_pupilsightRoleIDAll'] = '004';
-                                $cname[$t] = $colname.'=:'.$colname;
-                            } else {
-                                $colname = 'st_'.$tcol['column_name'];
-                                $val = $coldata['field_value'];
-                                $fid = $td['form_id'];
-                                $tablename = $td['tablename']; 
-                                $tdata[$k][$colname] = $val;
-                                $tdata[$k]['st_pupilsightRoleIDPrimary'] = '003';
-                                $tdata[$k]['st_pupilsightRoleIDAll'] = '003';
-                                $tdata[$k]['st_admission_no'] = $admission_no;
-                                $tdata[$k]['sid'] = $tsub;
-                                $cname[$t] = $colname.'=:'.$colname;
-                            }
-                            
-                            $chk = '1';
-                        } else {
-                            $chk = '2';
-                        }
-                        
-               }
-            }
-            // echo $chk;
-            
-          
-            if(!empty($tdata)){
-               
-                foreach($tdata as $td){
-                  
                     $sql = "INSERT INTO pupilsightPerson (";
                     foreach ($td as $key => $ar) {
                         if (strpos($key, 'st_') !== false && !empty($ar)) {
@@ -161,24 +173,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                             $sql .= $clname . ',';
                         }
                     }
-                    $sql = rtrim($sql, ", ");
+                    $sql .= 'admission_no';
+                    //$sql = rtrim($sql, ", ");
                     $sql .= ") VALUES (";
                     foreach ($td as $k => $value) {
                         if (strpos($k, 'st_') !== false && !empty($value)) {
                             $val = str_replace('"', "", $value);
                             $sql .= '"' . $val . '",';
+
+                            if (!empty($value['st_officialName'])) {
+                                $fmname = $value['st_officialName'].' Family';
+                            } 
                         }
                     }
-                    $sql = rtrim($sql, ", ");
+                    $sql .= '"' . $admission_no . '"';
+                    //$sql = rtrim($sql, ", ");
                     $sql .= ")";
                     $sql = rtrim($sql, ", ");
-                    
-
                     $conn->query($sql);
                     $stu_id = $conn->insert_id;
-
-                // Father Entry
-                //if (!empty($alrow['ft_officialName'])) {
+                    // die();
+                    // Father Entry
+                
                     $sqlf = "INSERT INTO pupilsightPerson (";
                     foreach ($td as $key => $ar) {
                         if (strpos($key, 'ft_') !== false  && !empty($ar)) {
@@ -193,30 +209,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         if (strpos($k, 'ft_') !== false  && !empty($value)) {
                             $val = str_replace('"', "", $value);
                             $sqlf .= '"' . $val . '",';
-                            $chkf = true;
-
-                            if (!empty($value['ft_officialName'])) {
-                                $fmname = $value['ft_officialName'].' Family';
-                            } 
-
-                        } else {
-                            $chkf = false;
-                        }
+                        } 
                     }
                     $sqlf = rtrim($sqlf, ", ");
                     $sqlf .= ")";
                     $sqlf = rtrim($sqlf, ", ");
-
-                    echo "\n<br/>father ".$sqlf;
-                    if($chkf){
-                             echo "\n<br/>father ".$sqlf;
                     $conn->query($sqlf);
                     $fat_id = $conn->insert_id;
-                    }
-                //}
-
-                // Mother Entry
-                //if (!empty($alrow['mt_officialName'])) {
+                
+                    // Mother Entry
+                
                     $sqlm = "INSERT INTO pupilsightPerson (";
                     foreach ($td as $key => $ar) {
                         if (strpos($key, 'mt_') !== false  && !empty($ar)) {
@@ -231,95 +233,75 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         if (strpos($k, 'mt_') !== false  && !empty($value)) {
                             $val = str_replace('"', "", $value);
                             $sqlm .= '"' . $val . '",';
-
-                            if (!empty($value['mt_officialName'])) {
-                                $fmname = $value['mt_officialName'].' Family';
-                            } 
-
-                            $chkm = true;
-                        } else {
-                            $chkm = false;
-                        }
+                        } 
                     }
                     $sqlm = rtrim($sqlm, ", ");
                     $sqlm .= ")";
                     $sqlm = rtrim($sqlm, ", ");
-                    echo "\n<br/>mother ".$sqlm;
-                    if($chkm){
-                        echo "\n<br/>mother ".$sqlm;
+                   
+                    //echo "\n<br/>mother ".$sqlm;
                     $conn->query($sqlm);
                     $mot_id = $conn->insert_id;
+                
+                    if (!empty($stu_id) && !empty($pupilsightSchoolYearID)) {
+                        $sqle = "INSERT INTO pupilsightStudentEnrolment (pupilsightPersonID,pupilsightSchoolYearID,pupilsightProgramID,pupilsightYearGroupID) VALUES (" . $stu_id . "," . $pupilsightSchoolYearID . "," . $prog . "," . $cls . ")";
+                        $enrol = $conn->query($sqle);
+
+                        //echo "\n<br/>pupilsightStudentEnrolment: ".$sqle;
                     }
-                //}
-               
-                if (!empty($stu_id) && !empty($pupilsightSchoolYearID)) {
-                    $sqle = "INSERT INTO pupilsightStudentEnrolment (pupilsightPersonID,pupilsightSchoolYearID,pupilsightProgramID,pupilsightYearGroupID) VALUES (" . $stu_id . "," . $pupilsightSchoolYearID . "," . $prog . "," . $cls . ")";
-                    $enrol = $conn->query($sqle);
-
-                    echo "\n<br/>pupilsightStudentEnrolment: ".$sqle;
-                }
 
 
-                if (!empty($fat_id) || !empty($mot_id)) {
-                    
+                    if (!empty($fat_id) || !empty($mot_id)) {
+                        $sqlfamily = 'INSERT INTO pupilsightFamily (name) VALUES ("' . $fmname . '")';
+                        //echo "\n<br/>family: ".$sqlfamily;
+                        $conn->query($sqlfamily);
+                        $family_id = $conn->insert_id;
+                        if (!empty($family_id)) {
+                            if (!empty($fat_id)) {
+                                $sqlf1 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $fat_id . ",'Y','1','N','N','N','N')";
+                                $conn->query($sqlf1);
+                                //echo "\n<br/>pupilsightFamilyAdult: ".$sqlf1;
 
-                    $sqlfamily = 'INSERT INTO pupilsightFamily (name) VALUES ("' . $fmname . '")';
+                                $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $fat_id . "," . $stu_id . ",'Father')";
+                                $conn->query($sqlf4);
 
-                    echo "\n<br/>family: ".$sqlfamily;
+                                //echo "\n<br/>pupilsightFamilyRelationshipFther: ".$sqlf4;
+                            }
 
-                    $conn->query($sqlfamily);
-                    $family_id = $conn->insert_id;
-                    if (!empty($family_id)) {
-                        if (!empty($fat_id)) {
-                            $sqlf1 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $fat_id . ",'Y','1','N','N','N','N')";
-                            $conn->query($sqlf1);
-                            echo "\n<br/>pupilsightFamilyAdult: ".$sqlf1;
+                            if (!empty($mot_id)) {
+                                $sqlf2 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $mot_id . ",'Y','2','N','N','N','N')";
+                                $conn->query($sqlf2);
 
-                            $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $fat_id . "," . $stu_id . ",'Father')";
-                            $conn->query($sqlf4);
+                                //echo "\n<br/>pupilsightFamilyAdult: ".$sqlf2;
 
-                            echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf4;
+                                $sqlf5 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $mot_id . "," . $stu_id . ",'Mother')";
+
+                                //echo "\n<br/>pupilsightFamilyRelationshipMother: ".$sqlf5;
+                                $conn->query($sqlf5);
+                            }
+
+                            $sqlf3 = "INSERT INTO pupilsightFamilyChild (pupilsightFamilyID,pupilsightPersonID) VALUES (" . $family_id . "," . $stu_id . ")";
+                            //echo "\n<br/>familyChild: ".$sqlf3;
+                            $conn->query($sqlf3);
+
                         }
-
-                        if (!empty($mot_id)) {
-                            $sqlf2 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $mot_id . ",'Y','2','N','N','N','N')";
-                            $conn->query($sqlf2);
-
-                            //echo "\n<br/>pupilsightFamilyAdult: ".$sqlf2;
-
-                            $sqlf5 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $mot_id . "," . $stu_id . ",'Mother')";
-
-                            echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf5;
-                            $conn->query($sqlf5);
-                        }
-
-                        $sqlf3 = "INSERT INTO pupilsightFamilyChild (pupilsightFamilyID,pupilsightPersonID) VALUES (" . $family_id . "," . $stu_id . ")";
-                        $conn->query($sqlf3);
-
                     }
-                }
-                       
-
-
-                        $wdata = array('status'=> '1', 'submission_id' => $sid);
-                        $sqlupd = "UPDATE wp_fluentform_entry_details SET status=:status WHERE submission_id=:submission_id";
-                        $resultupd = $connection2->prepare($sqlupd);
-                        $resultupd->execute($wdata);
+                    $wdata = array('status'=> '1', 'submission_id' => $td['sid']);
+                    $sqlupd = "UPDATE wp_fluentform_entry_details SET status=:status WHERE submission_id=:submission_id";
+                    $resultupd = $connection2->prepare($sqlupd);
+                    $resultupd->execute($wdata);
                     
                 }
-                $tdata=[];
+                
             }    
             
         }
-        echo 'success';
+        
+           
+            echo 'success';
     }
-  
+  // die();
                
     //$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/transitionsList.php';
-    
-                
-    
-                
-       
     
 }

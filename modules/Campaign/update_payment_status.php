@@ -1,93 +1,24 @@
 <?php
+/*
+Pupilsight, Flexible & Open School System
+*/
+include '../../pupilsight.php';
+use Pupilsight\Forms\Form;
+use Pupilsight\Forms\DatabaseFormFactory;
 
-/**
- * This Is the Kit File To Be included For Transaction Request/Response
- */
-
-include 'AWLMEAPI.php';
-include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight.php';
-
-//create an Object of the above included class
-$obj = new AWLMEAPI();
-
-/* This is the response Object */
-$resMsgDTO = new ResMsgDTO();
-
-/* This is the request Object */
-$reqMsgDTO = new ReqMsgDTO();
-
-//This is the Merchant Key that is used for decryption also
-$enc_key = "4d6428bf5c91676b76bb7c447e6546b8";
-
-/* Get the Response from the WorldLine */
-$responseMerchant = $_REQUEST['merchantResponse'];
-
-$response = $obj->parseTrnResMsg($responseMerchant, $enc_key);
-
-if ($response->getStatusCode() == 'S') {
-	$sid = $response->getAddField1();
-	$cid = $response->getAddField2();
-	if (!empty($sid) && !empty($cid)) {
-
-		$data = array('gateway' => 'Worldline', 'submission_id' => $sid, 'transaction_ref_no' => $response->getPgMeTrnRefNo(), 'order_id' => $response->getOrderId(), 'amount' => $response->getTrnAmt(), 'status' => $response->getStatusCode());
-
-		$sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
-		$result = $connection2->prepare($sql);
-		$result->execute($data);
-
-
-
-		$stuId = $sid;
-		$crtd =  date('Y-m-d H:i:s');
-		$cdt = date('Y-m-d H:i:s');
-
-		$sqlrec = 'SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = "' . $cid . '" ';
-		$resultrec = $connection2->query($sqlrec);
-		$recptser = $resultrec->fetch();
-
-		$seriesId = $recptser['id'];
-
-		if (!empty($seriesId)) {
-			$invformat = explode('$', $recptser['formatval']);
-			$iformat = '';
-			$orderwise = 0;
-			foreach ($invformat as $inv) {
-				if ($inv == '{AB}') {
-					$datafort = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise');
-					$sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type';
-					$resultfort = $connection2->prepare($sqlfort);
-					$resultfort->execute($datafort);
-					$formatvalues = $resultfort->fetch();
-
-					$str_length = $formatvalues['no_of_digit'];
-
-					$iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
-
-					$lastnoadd = $formatvalues['last_no'] + 1;
-
-					$lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
-
-					$datafort1 = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise', 'last_no' => $lastno);
-					$sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type ';
-					$resultfort1 = $connection2->prepare($sqlfort1);
-					$resultfort1->execute($datafort1);
-				} else {
-					$iformat .= $inv;
-				}
-				$orderwise++;
-			}
-			$application_id = $iformat;
-		} else {
-			$application_id = '';
-		}
-		
-		$datafort12 = array('application_id' => $application_id, 'id' => $sid);
-		$sqlfort12 = 'UPDATE wp_fluentform_submissions SET application_id=:application_id WHERE id=:id';
-		$resultfort12 = $connection2->prepare($sqlfort12);
-		$resultfort12->execute($datafort12);
-
-
-		$sqlfs = 'SELECT academic_id, pupilsightProgramID, fn_fee_structure_id, fn_fees_receipt_template_id  FROM campaign WHERE id = ' . $cid . ' ';
+if (isActionAccessible($guid, $connection2, '/modules/Campaign/ajax_add_wf_transitions.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __('You do not have access to this action.');
+    echo '</div>';
+} else {  
+    $cid = '9';
+    $sid = $_GET['sid'];
+    $crtd =  date('Y-m-d H:i:s');
+	$cdt = date('Y-m-d H:i:s');
+// die();
+    // foreach($subID as $sid){
+        $sqlfs = 'SELECT academic_id, pupilsightProgramID, fn_fee_structure_id, fn_fees_receipt_template_id  FROM campaign WHERE id = ' . $cid . ' ';
 		$resultfs = $connection2->query($sqlfs);
 		$campData = $resultfs->fetch();
 
@@ -100,9 +31,24 @@ if ($response->getStatusCode() == 'S') {
 
 		$sqlchk = 'SELECT id  FROM fn_fee_invoice_applicant_assign WHERE submission_id = ' . $sid . ' ';
 		$resultchk = $connection2->query($sqlchk);
-		$chkInvoice = $resultchk->fetch();
+        $chkInvoice = $resultchk->fetch();
+        
+        if (!empty($chkInvoice['id'])) {
+            $data = array('submission_id' => $sid);
+            $sql = 'DELETE FROM fn_fee_invoice_applicant_assign WHERE submission_id=:submission_id';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
-		if (empty($chkInvoice['id'])) {
+            $sql1 = 'DELETE FROM fn_fees_collection WHERE submission_id=:submission_id';
+            $result1 = $connection2->prepare($sql1);
+            $result1->execute($data);
+
+            $sql2 = 'DELETE FROM fn_fees_applicant_collection WHERE submission_id=:submission_id';
+            $result2 = $connection2->prepare($sql2);
+            $result2->execute($data);
+        }
+
+		//if (empty($chkInvoice['id'])) {
 			if (!empty($campData['fn_fee_structure_id'])) {
 				$fn_fee_structure_id = $campData['fn_fee_structure_id'];
 				$id = $fn_fee_structure_id;
@@ -240,7 +186,7 @@ if ($response->getStatusCode() == 'S') {
 				$fn_fees_head_id = $values['fn_fees_head_id'];
 				$fn_fees_receipt_series_id = $values['recp_fee_series_id'];
 
-				$TrnAmt = ($response->getTrnAmt()) / 100;
+				$TrnAmt = 300;
 				$transcation_amount = $TrnAmt;
 				$amount_paying = $TrnAmt;
 
@@ -400,127 +346,6 @@ if ($response->getStatusCode() == 'S') {
 					}
 
 
-					$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-
-					$sqlet = "SELECT b.* FROM campaign AS a LEFT JOIN pupilsightTemplate AS b ON a.email_template_id = b.pupilsightTemplateID WHERE a.id = " . $cid . " ";
-					$resulte1 = $connection2->query($sqlet);
-					$resultet = $resulte1->fetch();
-
-					if(!empty($resultet)){
-						$emailSubjct_camp = $resultet['subject'];
-						$emailquote = $resultet['description'];
-					} else {
-						$emailSubjct_camp = 'Application Status';
-						$emailquote = 'Your Application Submitted Successfully';
-					}
-
-					$sqlst = "SELECT b.* FROM campaign AS a LEFT JOIN pupilsightTemplate AS b ON a.sms_template_id = b.pupilsightTemplateID WHERE a.id = " . $cid . " ";
-					$resultst1 = $connection2->query($sqlst);
-					$resultst = $resultst1->fetch();
-
-					if(!empty($resultst)){
-						$smsquote = $resultst['description'];
-					} else {
-						$smsquote = 'Your Application Submitted Successfully';
-					}
-
-					$subid = $sid;
-					$crtd =  date('Y-m-d H:i:s');
-					
-					
-					//$emailAttachment = $_FILES['emailAttachment'];
-					
-					$crtd =  date('Y-m-d H:i:s');
-
-					$cuid = '001';
-
-					$sqle = "SELECT response FROM wp_fluentform_submissions WHERE id = " . $subid . " ";
-					$resulte = $connection2->query($sqle);
-					$rowdata = $resulte->fetch();
-					$sd = json_decode($rowdata['response'], TRUE);
-					$email = "";
-					$names = "";
-					$ft_number = '';
-					$mt_number = '';
-					$gt_number = '';
-					$ft_email = '';
-					$mt_email = '';
-					$gt_email = '';
-
-					if ($sd) {
-						// $names = implode(' ', $sd['student_name']);
-						// $email = $sd['father_email'];
-						if (!empty($sd['father_mobile'])) {
-							$ft_number = $sd['father_mobile'];
-						} 
-						if (!empty($sd['mother_mobile'])) {
-							$mt_number = $sd['mother_mobile'];
-						} 
-						if (!empty($sd['guardian_mobile'])) {
-							$gt_number = $sd['guardian_mobile'];
-						} 
-
-						if (!empty($sd['father_email'])) {
-							$ft_email = $sd['father_email'];
-						} 
-						if (!empty($sd['mother_email'])) {
-							$mt_email = $sd['mother_email'];
-						} 
-						if (!empty($sd['guardian_email'])) {
-							$gt_email = $sd['guardian_email'];
-						} 
-					}
-
-					//$email = "it.rakesh@gmail.com";
-					$subject = nl2br($emailSubjct_camp);
-					$body = nl2br($emailquote);
-					$msg = $smsquote;
-
-					$sqlm = "SELECT field_name,field_value FROM wp_fluentform_entry_details WHERE submission_id = " . $subid . " And field_name = 'numeric-field_1' ";
-					$resultm = $connection2->query($sqlm);
-					$rowdatm = $resultm->fetch();
-
-					if (!empty($emailquote) && !empty($body)) {
-						
-						if(!empty($ft_email)){
-							$url = $base_url.'/cms/mailsend.php';
-							$url .= "?to=" . $ft_email;
-							$url .= "&subject=" . rawurlencode($subject);
-							$url .= "&body=" . rawurlencode($body);
-							sendEmail($ft_email, $subject, $body, $subid, $cuid, $connection2, $url);
-						}
-						if(!empty($mt_email)){
-							$url = $base_url.'/cms/mailsend.php';
-							$url .= "?to=" . $mt_email;
-							$url .= "&subject=" . rawurlencode($subject);
-							$url .= "&body=" . rawurlencode($body);
-							echo $url;
-							sendEmail($mt_email, $subject, $body, $subid, $cuid, $connection2, $url);
-						}
-						if(!empty($gt_email)){
-							$url = $base_url.'/cms/mailsend.php';
-							$url .= "?to=" . $gt_email;
-							$url .= "&subject=" . rawurlencode($subject);
-							$url .= "&body=" . rawurlencode($body);
-							sendEmail($gt_email, $subject, $body, $subid, $cuid, $connection2, $url);
-						}
-					}
-
-					if (!empty($smsquote) && !empty($msg)) {
-						if(!empty($ft_number)){
-							sendSMS($ft_number, $msg, $subid, $cuid, $connection2);
-						}
-						if(!empty($mt_number)){
-							sendSMS($mt_number, $msg, $subid, $cuid, $connection2);
-						}
-						if(!empty($gt_number)){
-							sendSMS($gt_number, $msg, $subid, $cuid, $connection2);
-						}
-					}
-
-
-
-
 					$_SESSION["dts_receipt_feeitem"] = $dts_receipt_feeitem;
 					$_SESSION["dts_receipt"] = $dts_receipt;
 					if (!empty($transactionId)) {
@@ -539,208 +364,7 @@ if ($response->getStatusCode() == 'S') {
 					header('Location: ' . $URL);
 				}
 			}
-		}
-	} else {
-	}
-} else {
-	$backUrl = $_SESSION[$guid]['absoluteURL'] . '/cms/index.php';
-	$responseLink = $_SESSION[$guid]['absoluteURL'] . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
-
-	$sid = $response->getAddField1();
-	$cid = $response->getAddField2();
-
-	$random_number = mt_rand(1000, 9999);
-	$today = time();
-	$orderId = $today . $random_number;
-
-	$sql = "SELECT SUM(b.total_amount) AS amt FROM campaign AS a LEFT JOIN fn_fee_structure_item AS b ON a.fn_fee_structure_id = b.fn_fee_structure_id WHERE a.id = " . $cid . " ";
-	$result = $connection2->query($sql);
-	$resultData = $result->fetch();
-	$applicationAmount = $resultData['amt'] * 100;
-?>
-	<div style="text-align:center;">
-		<div style='color:red;font-size:18px;border:1px red solid;padding:10px;'>Transcation is cancelled, please try again.</div>
-
-		<div style="display:inline-flex;">
-			<form id="admissionPay" action="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
-
-				<input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
-				<input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
-				<input type="hidden" value="INR" id="currencyName" name="currencyName">
-				<input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
-				<input type="hidden" name="mid" id="mid" value="WL0000000009424">
-				<input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
-				<input type="hidden" name="campaignid" value="<?php echo $cid; ?>">
-				<input type="hidden" name="sid" value="<?php echo $sid; ?>">
-				<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
-
-				<button type="submit" class="btnPay" id="payAdmissionFee">Pay</button>
-			</form>
-			<a class="btnBack" href="<?php echo $backUrl; ?>">Back</a>
-		</div>
-	</div>
-<?php
-}
-
-
-function sendSMS($number, $msg, $subid, $cuid, $connection2){
-    $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
-    $urls .= "&send_to=" . $number;
-    $urls .= "&msg=" . rawurlencode($msg);
-    $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
-    $resms = file_get_contents($urls);
-
-    $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
-    $connection2->query($sq);
-}
-
-function sendEMail($to, $subject, $body, $subid, $cuid, $connection2, $url){
-   
-    //sending attachment
-
-        $res = file_get_contents($url);
-        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
-        $connection2->query($sq);
-    
+        //} 
+    // }
 }
 ?>
-
-<style>
-	.btnBack {
-		display: inline-block;
-		font-weight: bold;
-		font-size: 20px;
-		width: 200px;
-		line-height: 1.4285714;
-		text-align: center;
-		vertical-align: middle;
-		cursor: pointer;
-		padding: 0.4375rem 1rem;
-		border-radius: 3px;
-		color: #ffffff !important;
-		background-color: #206bc4;
-		border-color: #206bc4;
-		margin: 20px 0 16px 0;
-		text-decoration: none;
-
-	}
-
-	.btnPay {
-		display: inline-block;
-		font-weight: bold;
-		font-size: 20px;
-		width: 200px;
-		line-height: 1.4285714;
-		text-align: center;
-		vertical-align: middle;
-		cursor: pointer;
-		padding: 0.4375rem 1rem;
-		border-radius: 3px;
-		color: #ffffff !important;
-		background-color: #206bc4;
-		border-color: #206bc4;
-		margin: 20px 20px 0 0px;
-	}
-</style>
-<?php
-
-/*
-?>
-<style>
-	body {
-		font-family: Verdana, sans-serif;
-		font-size: :12px;
-	}
-
-	.wrapper {
-		width: 980px;
-		margin: 0 auto;
-	}
-
-	table {}
-
-	tr {
-		padding: 5px
-	}
-
-	td {
-		padding: 5px;
-	}
-
-	input {
-		padding: 5px;
-	}
-</style>
-<form action="testTxnStatus.php" method="POST">
-	<center>
-		<H3>Transaction Status </H3>
-	</center>
-	<table>
-		<tr>
-			<!-- PG transaction reference number-->
-			<td><label for="txnRefNo">Transaction Ref No. :</label></td>
-			<td><?php echo $response->getPgMeTrnRefNo(); ?></td>
-			<!-- Merchant order number-->
-			<td><label for="orderId">Order No. :</label></td>
-			<td><?php echo $response->getOrderId(); ?> </td>
-			<!-- Transaction amount-->
-			<td><label for="amount">Amount :</label></td>
-			<td><?php echo $response->getTrnAmt(); ?></td>
-		</tr>
-		<tr>
-			<!-- Transaction status code-->
-			<td><label for="statusCode">Status Code :</label></td>
-			<td><?php echo $response->getStatusCode(); ?></td>
-
-			<!-- Transaction status description-->
-			<td><label for="statusDesc">Status Desc :</label></td>
-			<td><?php echo $response->getStatusDesc(); ?></td>
-
-			<!-- Transaction date time-->
-			<td><label for="txnReqDate">Transaction Request Date :</label></td>
-			<td><?php echo $response->getTrnReqDate(); ?></td>
-		</tr>
-		<tr>
-			<!-- Transaction response code-->
-			<td><label for="responseCode">Response Code :</label></td>
-			<td><?php echo $response->getResponseCode(); ?></td>
-
-			<!-- Bank reference number-->
-			<td><label for="statusDesc">RRN :</label></td>
-			<td><?php echo $response->getRrn(); ?></td>
-			<!-- Authzcode-->
-			<td><label for="authZStatus">AuthZCode :</label></td>
-			<td><?php echo $response->getAuthZCode(); ?></td>
-		</tr>
-		<tr>
-			<!-- Additional fields for merchant use-->
-			<td><label for="addField1">Add Field 1 :</label></td>
-			<td><?php echo $response->getAddField1(); ?></td>
-
-			<td><label for="addField2">Add Field 2 :</label></td>
-			<td><?php echo $response->getAddField2(); ?></td>
-
-			<td><label for="addField3">Add Field 3 :</label></td>
-			<td><?php echo $response->getAddField3(); ?></td>
-		</tr>
-		<tr>
-			<td><label for="addField4">Add Field 4 :</label></td>
-			<td><?php echo $response->getAddField4(); ?></td>
-
-			<td><label for="addField5">Add Field 5 :</label></td>
-			<td><?php echo $response->getAddField5(); ?></td>
-
-			<td><label for="addField6">Add Field 6 :</label></td>
-			<td><?php echo $response->getAddField6(); ?></td>
-		</tr>
-		<tr>
-			<td><label for="addField7">Add Field 7 :</label></td>
-			<td><?php echo $response->getAddField7(); ?></td>
-
-			<td><label for="addField8">Add Field 8 :</label></td>
-			<td><?php echo $response->getAddField8(); ?></td>
-		</tr>
-
-	</table>
-</form>
-<?php */

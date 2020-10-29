@@ -59,6 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $admissionGateway = $container->get(AdmissionGateway::class);
     $criteria = $admissionGateway->newQueryCriteria()
         ->searchBy($admissionGateway->getSearchableColumns(), $search)
+        ->pageSize(10)
         ->sortBy(['id'])
         ->fromPOST();
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
@@ -196,10 +197,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
 
     //    array_reverse($dataSet->data);
+
+    //  echo '<pre>';
+    // print_r($field);
+    // echo '</pre>';
     
     $arrHeader = array();
     foreach ($field as $fe) {
         foreach ($fe as $f) {
+            $arrHeader[] = $f->attributes->name;
+            if ($f->attributes->name == 'student_name') {
+                $arrHeader[] = $f->attributes->name;
+            }
             if (!empty($f->attributes) && !empty($f->attributes->class)) {
                 if ($f->attributes->class == 'show-in-grid') {
                     $arrHeader[] = $f->attributes->name;
@@ -208,9 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         }
     }
 
-    // echo '<pre>';
-    // print_r($arrHeader);
-    // echo '</pre>';
+  
 
 
     if (!empty($formId)) {
@@ -223,6 +230,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $table->addColumn('application_id', __('Application No'))
             ->width('10%');
 
+
+        $table->addColumn('submission_no', __('Submission No'))
+            ->width('10%');
 
 
 
@@ -247,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 $cls = $resultcls->fetch();
                 $clsname = $cls['name'];
 
-                $sqlname = 'Select GROUP_CONCAT(field_value) AS name FROM wp_fluentform_entry_details WHERE field_name = "names" AND submission_id = ' . $sid . ' ';
+                $sqlname = 'Select GROUP_CONCAT(field_value) AS name FROM wp_fluentform_entry_details WHERE field_name = "student_name" AND submission_id = ' . $sid . ' ';
                 $resultname = $connection2->query($sqlname);
                 $aname = $resultname->fetch();
                 $usrname = str_replace(',', ' ', $aname['name']);
@@ -260,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             echo '<input type="hidden" id="' . $sid . '-subId" value="' . $pdfvalue . '" >';
 
             $field = explode(",", $dataSet->data[$i]["field_name"]);
-            $fieldval = explode(",", $dataSet->data[$i]["field_value"]);
+            $fieldval = explode("----", $dataSet->data[$i]["field_value"]);
 
             $jlen = count($field);
             $j = 0;
@@ -306,6 +316,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             while ($j < $jlen) {
                 $dataSet->data[$i][$field[$j]] = $fieldval[$j];
                 if ($flag) {
+                   
                     foreach ($arrHeader as $ar) {
                         $headcol = ucwords(str_replace("_", " ", $ar));
                         if ($ar == 'file-upload') {
