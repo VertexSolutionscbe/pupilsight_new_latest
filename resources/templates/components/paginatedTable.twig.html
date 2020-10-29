@@ -1,118 +1,176 @@
-{#
-<!--
-Pupilsight, Flexible & Open School System
+{% if table.getTitle %}
+<h2>{{ table.getTitle }}</h2>
+{% endif %} {% if table.getDescription %}
+<p>{{ table.getDescription|raw }}</p>
+{% endif %} {% block table %}
 
-
-This is a Pupilsight template file, written in HTML and Twig syntax.
-For info about editing, see: https://twig.symfony.com/doc/2.x/
--->#} {% extends "components/dataTable.twig.html" %} {% block table %}
-<div id="{{ table.getID }}" style="width:100%">
-    <div class="dataTable" data-results="{{ dataSet.getResultCount }}">
-        {{ parent() }}
+<header class="relative">
+    {% block header %} {% if table.getHeader %}
+    <div class="linkTop">
+        {% for action in table.getHeader %} {{ action.getOutput|raw }} {% endfor %}
     </div>
+    {% endif %} {% endblock header %}
+</header>
+
+{% if not rows and not isFiltered and dataSet.getResultCount == 0 %}
+<!-- <div class="h-48 rounded-sm border bg-gray shadow-inner overflow-hidden">
+    {% block blankslate %}
+    <div class="w-full h-full flex flex-col items-center justify-center text-gray text-lg">
+        {% if isFiltered %} {{ __('No results matched your search.') }} {% elseif blankSlate %} {{ blankSlate|raw }} {% else %} {{ __('There are no records to display.') }} {% endif %}
+    </div>
+    {% endblock blankslate %}
+</div> -->
+<div class="table-responsive dataTables_wrapper ">
+    <table class="table" id="expore_tbls">
+        <!--<div class="overflow-x-auto overflow-y-visible">
+            <table class="{{ class }} w-full" cellspacing=0>-->
+        <thead>
+            {% for headerRow in headers %}
+            <tr>
+                {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
+                <th {{ th.getAttributeString|raw }}>
+                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }}
+                    {% endif %}
+                </th>
+                {% endif %} {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </thead>
+        <tbody>
+
+        </tbody>
+
+    </table>
+
+</div>
+{% else %} {% block tableInner %}
+
+{% if headers|length > 0 %}
+<style>
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+    }
+    tr {
+        border: 1px solid #ccc !important;
+    }
+    .p-2 {
+        padding: 0 !important;
+    }
+    .dataTables_wrapper .table tbody tr td, td {
+        /* Behave  like a "row" */
+        border: none !important;
+        border-bottom: 1px solid #eee;
+        position: relative !important;
+        padding-left: 50% !important;
+    }
+    td:before {
+        /* Now like a table header */
+        position: absolute !important;
+        /* Top/left values mimic padding */
+        top: 6px !important;
+        left: 6px !important;
+        width: 45% !important;
+        padding-right: 10px !important;
+        white-space: nowrap !important;
+    }
+
+    {% for headerRow in headers %}
+                {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
+                td:nth-of-type({{columnIndex+1}}):before {
+                    content: "{{ th.getOutput|raw }}";
+                }
+                {% endif %} {% endfor %}
+    {% endfor %}
+}
+</style>
+{% endif %}
+<div class="table-responsive dataTables_wrapper">
+    <table class="table" id="expore_tbl">
+        <!--<div class="overflow-x-auto overflow-y-visible">
+            <table class="{{ class }} w-full" cellspacing=0>-->
+        <thead>
+            {% for headerRow in headers %}
+            <tr>
+                {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
+                <th {{ th.getAttributeString|raw }}>
+                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }}
+                    {% endif %}
+                </th>
+                {% endif %} {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </thead>
+        <tbody>
+            {% if not rows and isFiltered %}
+            <tr class="h-48 bg-gray shadow-inner">
+                <td class="p-0" colspan="{{ columns|length }}">
+                    {{ block('blankslate') }}
+                </td>
+            </tr>
+            {% endif %} {% for rowIndex, rowData in rows %} {% set row = rowData.row %}
+
+            <tr {{ row.getAttributeString|raw }}>
+                {{ row.getPrepended|raw }} {% for columnIndex, column in columns %}
+                {% set cell = rowData.cells[columnIndex] %}
+
+                <td {{ cell.getAttributeString|raw }}>
+                    {{ cell.getPrepended|raw }} {% if column.getID == "actions" %}
+                    <nav class="relative group">
+                        {% do column.getOutput(rowData.data) %} {% set actions = column.getActions %}
+
+                        <div
+                            class="{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden-1 group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded  sm:shadow-none sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }}">
+                            {% for actionName, action in actions %} {% do action.addClass('') %}
+                            {{ action.getOutput(rowData.data, column.getParams)|raw }} {% endfor %}
+                        </div>
+
+                        {% if actions|length > 1 %}
+                        <!--
+<button class="block sm:hidden rounded mx-auto my-1 px-1 py-2 bg-gray text-2xl text-gray font-sans font-bold leading-none" onClick="event.preventDefault();" onTouchEnd="event.preventDefault();">
+                            <span class="block -mt-3">...</span>
+                        </button> 
+                        -->
+
+                        {% endif %}
+                    </nav>
+
+                    {% else %} {{ column.getOutput(rowData.data)|raw }}&nbsp; {% endif %} {{ cell.getAppended|raw }}
+                </td>
+                {% endfor %} {{ row.getAppended|raw }}
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
 </div>
 
-{{ block('bulkActions') }}
 
+
+{% endblock tableInner %} {% endif %}
+
+<footer>
+    {% block footer %} {% endblock footer %}
+</footer>
+
+{% endblock table %}
 <script>
-    $(function () {
-        $('#{{ table.getID }}').pupilsightDataTable('{{ path|raw }}', {{ jsonData| raw }}, '{{ identifier }}');
+    $(document).ready( function () {
+        $('#expore_tbl').DataTable({
+            "pageLength": 25,
+            "lengthMenu": [[10, 25, 50, 250, -1], [10, 25, 50, 250, "All"]],
+            "sDom": '<"top"lfp>rt<"bottom"ip><"clear">'
+        });
+        $(".dataTables_length" ).find("select").css("width","90px");
+        $(".dataTables_length" ).find("select").css("display","inline-block");
     });
 </script>
-{% endblock table %} {% block header %}
-<div class="flex items-end justify-between pb-2">
-    <div class="">
-        {{ block('pageCount') }}
-    </div>
-
-    {{ parent() }}
-</div>
-
-{% if dataSet.getTotalCount > 0 %}
-<div class="flex flex-wrap sm:flex-no-wrap items-stretch justify-between">
-    <div class="flex items-stretch h-full">
-        {% if pageSize %}
-        <div class="relative mr-1">
-            <div class="absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none"></div>
-            {{ pageSize|raw }}
-        </div>
-        {% endif %} {% if filterOptions %}
-        <div class="relative">
-            <div class="absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none"></div>
-            {{ filterOptions|raw }}
-        </div>
-        {% endif %} {% if filterCriteria and filterOptions %}
-        <nav class="flex cursor-default" style='height: 36px;line-height: 20px;margin-top: 16px;'>
-            {{ block('filters') }}
-        </nav>
-        {% endif %}
-    </div>
-
-    {{ block('pagination') }}
-</div>
-{% endif %} {% endblock header %} {% block footer %}
-<!-- {% if dataSet.getResultCount > dataSet.getPageSize %}
-    <div class="flex flex-col sm:flex-row sm:items-end justify-end mt-2">
-        {{ block('pagination') }}
-    </div>
-    {% endif %} -->
-{% endblock footer %} {% block filters %} {% for name, label in filterCriteria %}
-<a href="javascript:void()" class="filter -mx-px py-2 px-3 border border-blue bg-blue hover:bg-blue z-10   font-bold"
-    data-filter="{{ name }}">
-    {{ label|raw }}
-</a> {% endfor %}
-
-<a href="javascript:void()" class="filter p-2 rounded-r border border-gray   bg-gray font-bold hover:bg-gray clear">
-    {{ __('Clear') }}
-</a> {% endblock filters %} {% block pageCount %} {% if dataSet.getTotalCount > 0 %}
-<!-- <div class="text-xs">
-        {{ searchText ? __('Search') ~ " " }}
-
-        {{ dataSet.isSubset ? __('Results') : __('Records') }}
-
-        {% if dataSet.count > 0 %}
-            {{ dataSet.getPageFrom }}-{{ dataSet.getPageTo }} {{ __('of') }}
-        {% endif %} 
-        
-        {{ dataSet.getResultCount|number_format }}
-    </div> -->
-{% endif %} {% endblock pageCount %} {% block pagination %}
-{% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose' %}
-{% if dataSet.getResultCount > dataSet.getPageSize or filterOptions %}
-<div class="pagination mb-2">
-    <a href="javascript:void()"
-        class="ml-1 padipag2  prv paginate rounded-l   bg-gray border-gray {{ not dataSet.isFirstPage ? 'hover:bg-gray'}} {{ buttonStyle }}"
-        data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ?
-        'disabled'}}>
-        {{ __('Prev') }}
-    </a> {%- for page in dataSet.getPaginatedRange -%} {%- if page == '...' -%}
-    <a href="javascript:void()" class="ml-1 padipag2  prv {{ buttonStyle }}" disabled>...</a> {%- else -%}
-    <a href="javascript:void()"
-        class="ml-1 padipag2  prv paginate {{ buttonStyle }} {{ page == dataSet.getPage ? 'bg-blue border-blue  text-active relative z-10' : 'text-gray hover:bg-gray border-gray' }}"
-        data-page="{{ page }}">{{ page }}</a> {%- endif -%} {%- endfor -%}
-
-    <a href="javascript:void()"
-        class="ml-1 padipag2  prv paginate rounded-r text-gray border-gray {{ not dataSet.isLastPage ? 'hover:bg-gray'}} {{ buttonStyle }}"
-        data-page="{{ dataSet.getNextPageNumber }}" {{ dataSet.isLastPage ? 'disabled'}}>
-        {{ __('Next') }}
-    </a>
-</div>
-{% endif %} {% endblock pagination %} {% block bulkActions %} {% if bulkActions %}
-<div
-    class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple rounded-t z-20">
-    <div class="bulkActionCount flex-grow   text-sm text-right pr-3">
-        <span>0</span> {{ __('Selected') }}
-    </div>
-
-    {{ bulkActions.getOutput|raw }}
-
-    <script>
-        {
-            {
-                bulkActions.getValidationOutput | raw
-            }
-        }
-    </script>
-</div>
-<div class='float-none'></div>
-{% endif %} {% endblock bulkActions %}

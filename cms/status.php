@@ -15,11 +15,16 @@ $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php
 
 
 $data_target = $status==1 ? "#Application" : "#Login-reg"; */
+$sid = $_SESSION["appsubmitionid"];
+if (empty($sid)) {
+    $sid = 0;
+}
+/*
 if (!empty($_REQUEST['id'])) {
     $sid = $_REQUEST['id'];
 } else {
     $sid = 0;
-}
+}*/
 
 
 $chkstatus = $adminlib->getStatus($sid);

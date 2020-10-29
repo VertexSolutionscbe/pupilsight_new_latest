@@ -60,6 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $criteria = $admissionGateway->newQueryCriteria()
         ->searchBy($admissionGateway->getSearchableColumns(), $search)
         ->sortBy(['id'])
+        ->pageSize(5000)
         ->fromPOST();
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
@@ -83,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     <a style='display:none; ' href='" . $_SESSION[$guid]['absoluteURL'] . "/fullscreen.php?q=/modules/Campaign/fee_make_payment.php&cid=" . $id . "' class='thickbox btn btn-primary' id='clickAdmissionFeePayment'>Fee Payment</a>
     <a style='display:none; margin-bottom:10px;'  class='btn btn-primary' id='admissionFeePayment'>Fee Payment</a>
     &nbsp;&nbsp;<a id='offlineClick' style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/offline_campaignFormList.php&id=" . $id . "'   class=' btn btn-primary' >Offline Submitted List</a>
-    &nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=" . $id . "'   class=' btn btn-primary' id='' >Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' data-cid=".$id." data-fid=".$formId." id='sendSMS'>Send SMS</a>";
-    echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' data-cid=".$id."  data-fid=".$formId." id='sendEmail'>Send Email</a>";
+    &nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=" . $id . "'   class=' btn btn-primary' id='' >Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' data-cid=" . $id . " data-fid=" . $formId . " id='sendSMS'>Send SMS</a>";
+    echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' data-cid=" . $id . "  data-fid=" . $formId . " id='sendEmail'>Send Email</a>";
     //echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="index.php?q=/modules/Campaign/ajaxfile.php&cid='.$id.'&id=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
     echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="cms/ajaxfile.php?cid=' . $id . '&submissionId=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
@@ -196,12 +197,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
 
     //    array_reverse($dataSet->data);
-    
+
     $arrHeader = array();
     foreach ($field as $fe) {
         foreach ($fe as $f) {
-            if (!empty($f->attributes) && !empty($f->attributes->class)) {
-                if ($f->attributes->class == 'show-in-grid') {
+            if (!empty($f->attributes)) {
+                if ($f->attributes->name == 'student_name' || $f->attributes->class == 'show-in-grid') {
                     $arrHeader[] = $f->attributes->name;
                 }
             }
@@ -223,7 +224,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $table->addColumn('application_id', __('Application No'))
             ->width('10%');
 
-
+        $table->addColumn('submission_no', __('Submission No'))
+            ->width('10%');
 
 
 
@@ -260,7 +262,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             echo '<input type="hidden" id="' . $sid . '-subId" value="' . $pdfvalue . '" >';
 
             $field = explode(",", $dataSet->data[$i]["field_name"]);
-            $fieldval = explode(",", $dataSet->data[$i]["field_value"]);
+            $fieldval = explode("|$$|", $dataSet->data[$i]["field_value"]);
 
             $jlen = count($field);
             $j = 0;
@@ -269,15 +271,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 // $resultvals = $connection2->query($sqls);
                 // $states = $resultvals->fetch();
                 // $statename = $states['name'];
-                $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = ".$sid."  ";
+                $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $sid . "  ";
                 $resulttr = $connection2->query($sql2);
                 $stateChk = $resulttr->fetch();
-                if(!empty($stateChk['transaction_id'])){
+                if (!empty($stateChk['transaction_id'])) {
                     $dataSet->data[$i]["workflowstate"] = 'Submitted';
                 } else {
                     $dataSet->data[$i]["workflowstate"] = 'Created';
                 }
-                
             }
 
             echo $dataSet->data[$i]["created_at"];
@@ -460,7 +461,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     }
 
     .table-responsive {
-        height : 500px;
+        height: 500px;
     }
 </style>
 
@@ -649,14 +650,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
     $(document).on('keydown', '#applicationName', function(e) {
         var key = e.which;
-        if(key == 13){
+        if (key == 13) {
             $("#filterCampaign").click();
         }
     });
 
     $(document).on('keydown', '#applicationId', function(e) {
         var key = e.which;
-        if(key == 13){
+        if (key == 13) {
             $("#filterCampaign").click();
         }
     });
@@ -664,6 +665,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $(document).on('change', '#applicationStatus', function(e) {
         $("#filterCampaign").click();
     });
-
 </script>
 <?php

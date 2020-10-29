@@ -11,7 +11,7 @@ Pupilsight, Flexible & Open School System
 $databaseServer = '127.0.0.1';
 $databaseUsername = 'root';
 $databasePassword = '';
-$databaseName = 'pd_demo';
+$databaseName = 'pupilsight';
 
 // if (session_status() == PHP_SESSION_NONE) {
 //     session_start();
