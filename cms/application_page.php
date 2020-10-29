@@ -2,6 +2,13 @@
 include_once 'w2f/adminLib.php';
 $adminlib = new adminlib();
 session_start();
+$url_id = $_REQUEST['url_id'];
+if ($adminlib->isCampaignActive($url_id) == FALSE) {
+    echo "<h2>Campaign is no longer active.</h2>";
+    die();
+}
+
+
 $data = $adminlib->getPupilSightData();
 $section = $adminlib->getPupilSightSectionFrontendData();
 $campaign = $adminlib->getcampaign();
@@ -15,7 +22,7 @@ $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php
 
 
 $data_target = $status==1 ? "#Application" : "#Login-reg"; */
-$url_id = $_REQUEST['url_id'];
+
 $chkstatus = $adminlib->chkCampaignStatus($url_id);
 // echo $chkstatus;
 // die(0);
@@ -40,10 +47,10 @@ $app_links = array();
 // print_r($_SESSION['campaignuserdata']);
 // echo '</pre>';
 
-$sql = "SELECT id FROM campaign  WHERE id = ".$url_id." AND  status = '2' AND CURDATE() between start_date and end_date order by id DESC";
+$sql = "SELECT id FROM campaign  WHERE id = " . $url_id . " AND  status = '2' AND CURDATE() between start_date and end_date order by id DESC";
 $campaignStatus = database::doSelect($sql);
 
-if(empty($campaignStatus)){
+if (empty($campaignStatus)) {
     header("Location: index.php");
     exit;
 }
@@ -375,15 +382,34 @@ if(empty($campaignStatus)){
                 var diff_date = To_date - From_date;
 
 
+                var duration = moment.duration(diff_date, 'milliseconds');
+                var totDays = duration.asDays();
+                //console.log(totDays);
+                if (totDays > 1491 || totDays < 1035) {
+                    $(this).val("");
+                    alert("Kindly Note: 3 Years to be completed as on 31st May 2021");
+                }
+
+                /*
+                var ageMonths = Number(years * 12) + months;
+                //console.log("years: ", years, " months: ", months, " ageMonths: ", ageMonths);
+                if (ageMonths < 34 || ageMonths > 49) {
+                    $(this).val("");
+                    alert("Kindly Note: 3 Years to be completed as on 31st May 2021");
+                }*/
+
                 var years = Math.floor(diff_date / 31536000000);
                 var months = Math.floor((diff_date % 31536000000) / 2628000000);
                 var days = Math.floor(((diff_date % 31536000000) % 2628000000) / 86400000);
+
+
+
                 var ageval = years + " years " + months + " months and " + days + " days";
                 iframe.find("input[name=age_value]").val(ageval);
-                if(years < 3){
+                if (years < 3) {
                     iframe.find("input[name=dob_in_words]").after('<span class="dobval" style="color:red;font-size: 15px;font-weight: 600;">Kindly Note: 3 Years to be completed as on 31st May 2021<span>');
-                } 
-                
+                }
+
                 var dateTime = new Date(From_date);
                 var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                 var date = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-First', 'Twenty-Second', 'Twenty-Third', 'Twenty-Fourth', 'Twenty-Fifth', 'Twenty-Sixth', 'Twenty-Seventh', 'Twenty-Eighth', 'Twenty-Ninth', 'Thirtieth', 'Thirty-First'];

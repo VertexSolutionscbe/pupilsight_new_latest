@@ -72,10 +72,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
         $subId[] = $rd['submission_id'];
     }
 
-    // echo '<pre>';
-    // print_r($subId);
-    // echo '</pre>';
-
     if($applicationStatus == 'Submitted'){
         $chkcs = 'SELECT GROUP_CONCAT(submission_id) AS sids FROM campaign_form_status WHERE campaign_id = '.$cid.' AND form_id = '.$fid.' ';
         $resultchkcs = $connection2->query($chkcs);

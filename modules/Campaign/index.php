@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
 
     $page->breadcrumbs->add(__('Application List'));
 
-    
+
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -107,9 +107,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     //      ->setURL('/modules/Campaign/add.php')
     //      //->addParam('search', $search)
     //      ->displayLabel();
-    echo "<div style='height:50px;'><div class='float-right'><a href='index.php?q=/modules/Campaign/campaign_series_manage.php' class='btn btn-secondary mb-2 mr-2'>Master Campaign Series</a>";
-    echo "<a href='index.php?q=%2Fmodules%2FCampaign%2Fadd.php' class='btn btn-secondary mb-2 mr-2'>Add Campaign</a>";
-    echo "<a href='index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php' class='btn btn-secondary mb-2'>Transition</a></div><div class='float-none'></div></div>";
+    if ($_SESSION[$guid]['username'] != "Geesha") {
+        echo "<div style='height:50px;'><div class='float-right'><a href='index.php?q=/modules/Campaign/campaign_series_manage.php' class='btn btn-secondary mb-2 mr-2'>Master Campaign Series</a>";
+        echo "<a href='index.php?q=%2Fmodules%2FCampaign%2Fadd.php' class='btn btn-secondary mb-2 mr-2'>Add Campaign</a>";
+        echo "<a href='index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php' class='btn btn-secondary mb-2'>Transition</a></div><div class='float-none'></div></div>";
+    }
     // $table->addHeaderAction('Transition', __('Transition'))
     //      ->setURL('/modules/Campaign/transitions.php')
     //      //->addParam('search', $search)
@@ -192,36 +194,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
         ->addParam('id')
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($person, $actions) use ($guid) {
-            $actions->addAction('edit', __('Edit'))
-                ->setURL('/modules/Campaign/edit.php');
-            $actions->addAction('delete', __('Delete'))
-                ->setURL('/modules/Campaign/delete.php');
 
             $actions->addAction('list', __('Submitted Form'))
                 ->setURL('/modules/Campaign/campaignFormList.php');
 
-            $actions->addAction('View', __('View Application Form'))
-                ->setTitle('form')
-                ->setIcon('eye')
-                ->setURL('/modules/Campaign/view_selected_campaign_form.php')
-                ->modalWindow(1100, 550);
+            if ($_SESSION[$guid]['username'] != "Geesha") {
 
-            $actions->addAction('registereduser', __('Registered User'))
-                ->setURL('/modules/Campaign/register_user_list.php');
+                $actions->addAction('View', __('View Application Form'))
+                    ->setTitle('form')
+                    ->setIcon('eye')
+                    ->setURL('/modules/Campaign/view_selected_campaign_form.php')
+                    ->modalWindow(1100, 550);
 
-            $actions->addAction('applicationtemplate', __('Upload Template'))
-                ->setURL('/modules/Campaign/form_template_manage.php');
+                $actions->addAction('registereduser', __('Registered User'))
+                    ->setURL('/modules/Campaign/register_user_list.php');
+
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Campaign/edit.php');
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Campaign/delete.php');
+
+                $actions->addAction('applicationtemplate', __('Upload Template'))
+                    ->setURL('/modules/Campaign/form_template_manage.php');
+            }
         });
+    if ($_SESSION[$guid]['username'] != "Geesha") {
+        $table->addmultiActionColumn()
+            ->addParam('academic_year')
+            ->addParam('name')
+            ->addParam('id')
+            ->format(function ($person, $actions) use ($guid) {
 
-    $table->addmultiActionColumn()
-        ->addParam('academic_year')
-        ->addParam('name')
-        ->addParam('id')
-        ->format(function ($person, $actions) use ($guid) {
-            $actions->addmultiAction('view', __('Work Flow'))
-                ->setURL('/modules/Campaign/wf_manage.php')
-                ->setClass('center_algn');
-        });
+                $actions->addmultiAction('view', __('Work Flow'))
+                    ->setURL('/modules/Campaign/wf_manage.php')
+                    ->setClass('center_algn');
+            });
+    }
 
 
 

@@ -4,7 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 
 include '../../pupilsight.php';
-include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight/db.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php';
 
@@ -60,12 +60,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
         foreach($tabledata as $k=>$td){
             $fid = $td['form_id'];
             $pupilsightSchoolYearID = $td['pupilsightSchoolYearID']; 
+            $cid = $td['campaign_id'];
             foreach($td['tablesubdata'] as $ts=>$tsub){
                 foreach($td['tablecol'] as $t=>$tcol){
                     
                         $sqlf = "SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = ".$tsub." AND field_name = '".$tcol['fluent_form_column_name']."' AND status = '0' ";
                         $resultf = $connection2->query($sqlf);
                         $coldata = $resultf->fetch();
+
+                        $sqll = 'SELECT id FROM workflow_transition WHERE campaign_id =' . $cid . ' ORDER BY id DESC LIMIT 0,1 ';
+                        $resultl = $connection2->query($sqll);
+                        $lastData = $resultl->fetch();
+                        $lastId = $lastData['id'];
+                
+                        $sql1 = 'SELECT state_id FROM campaign_form_status WHERE submission_id =' . $tsub . ' AND state_id = '.$lastId.' ';
+                        $result1 = $connection2->query($sql1);
+                        $chkSts = $result1->fetch();
 
                         $sqlcp = "SELECT pupilsightProgramID, pupilsightYearGroupID FROM wp_fluentform_submissions WHERE id = ".$tsub."  ";
                         $resultcp = $connection2->query($sqlcp);
@@ -81,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
 
                         //echo $coldata->rowCount();
                         
-                        if(!empty($coldata)){
+                        if(!empty($chkSts) && !empty($coldata)){
                             if(strpos($tcol['fluent_form_column_name'], 'father_') !== false){
                                 $colname = 'ft_'.$tcol['column_name'];
                                 $val = $coldata['field_value'];

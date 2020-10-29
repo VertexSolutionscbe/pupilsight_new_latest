@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
-include($_SERVER['DOCUMENT_ROOT'] . '/pupilsight/config.php');
+include($_SERVER['DOCUMENT_ROOT'] . '/config.php');
 
 if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionsList.php') == false) {
     //Acess denied
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionsList.p
     echo '</h2>';
 
     echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=%2Fmodules%2FCampaign%2Ftransitions.php' class='btn btn-primary'>Add Transitions</a>";
-    echo "&nbsp;&nbsp;<a href='index.php?q=/modules/Campaign/applicantDetails.php' class=' btn btn-primary'>Import Student</a></div><div class='float-none'></div></div></div>";
+    echo "&nbsp;&nbsp;<a href='index.php?q=/modules/Campaign/applicantDetails.php' class=' btn btn-primary' style='display:none;'>Import Student</a></div><div class='float-none'></div></div></div>";
 
     $sqlt = "SELECT a.*, b.form_id FROM campaign_transitions_form_map AS a LEFT JOIN campaign AS b ON a.campaign_id = b.id ";
     $resultt = $connection2->query($sqlt);

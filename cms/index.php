@@ -207,7 +207,7 @@ if (isset($_SESSION["loginstatus"])) {
             $("#spnPhoneStatus").html("").hide();
             var val = $("#txtPhone").val();
             if (val != '' && val.length >= 10) {
-            // if (val != '') {
+                // if (val != '') {
                 // if (isEmail(val) == false) {
                 //     alert('Email is not Valid!');
                 //     return false;
@@ -2132,7 +2132,7 @@ if (isset($_SESSION["loginstatus"])) {
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <table cellspacing='0' class='table display data-table text-nowrap' style='width: 100%; font-size: 16px;'>
+                        <table cellspacing='0' class='table table-responsive-sm' style='width: 100%; font-size: 16px;'>
                             <thead>
                                 <tr class='head'>
                                     <th>
