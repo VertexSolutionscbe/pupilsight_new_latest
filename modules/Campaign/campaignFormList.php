@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $formId = '';
     if (isset($_REQUEST['id']) ? $id = $_REQUEST['id'] : $id = "");
 
-    $sql1 = 'Select form_id, name, classes FROM campaign WHERE id = ' . $id . ' ';
+    $sql1 = 'Select form_id, name, classes, pupilsightProgramID FROM campaign WHERE id = ' . $id . ' ';
     $resultval1 = $connection2->query($sql1);
     $formid = $resultval1->fetch();
     //  echo $formid['form_id'];
@@ -55,6 +55,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $formId = $formid['form_id'];
 
     $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+    $sqlp = 'SELECT pupilsightProgramID, name FROM  pupilsightProgram  WHERE pupilsightProgramID IN (' . $formid['pupilsightProgramID'] . ') ';
+    $resultp = $connection2->query($sqlp);
+    $progData = $resultp->fetchAll();
+
+   
+    $programs = '<select class="" id="applicationProg" ><option value="">Select Program</option>';
+    foreach ($progData as $pg) {
+        $programs .= '<option value="' . $pg['pupilsightProgramID'] . '" >' . $pg['name'] . '</option>';
+    }
+    $programs .= '</select>';
 
     $sql = 'SELECT pupilsightYearGroupID, name FROM  pupilsightYearGroup  WHERE pupilsightYearGroupID IN (' . $formid['classes'] . ') ';
     $result = $connection2->query($sql);
@@ -192,6 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         <input type="text" id="applicationName" style="height: 36px;" name="applicationName" class=""  placeholder="Application Name" >&nbsp;
         <input type="text" id="applicationId" style="height: 36px;" name="application_id" class=""  placeholder="Application No" >&nbsp;
         ' . $statefields . ' &nbsp;
+        ' . $programs . ' &nbsp;
         ' . $class . ' &nbsp;
         <button id="filterCampaign" style="height: 36px;" class="btn btn-primary">Search</button>
          
@@ -686,6 +698,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $("#filterCampaign").click();
     });
 
+    $(document).on('change', '#applicationProg', function(e) {
+        $("#filterCampaign").click();
+    });
+
     $(document).on('click', "#saveApplicant", function() {
         var favorite = [];
         $.each($("input[name='submission_id[]']:checked"), function() {
@@ -713,5 +729,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             alert('You have to Select Applicant');
         }
     });
+
+    $(document).on('change', '#applicationProg', function () {
+        var val = $(this).val();
+        var cid = $("#campId").val();
+        if (val != '') {
+            var type = 'getCampClass';
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {val: val,type: type, cid: cid},
+                async: true,
+                success: function(response) {
+                    $("#applicationClass").html('');
+                    $("#applicationClass").html(response);
+                }
+            });
+        }
+    });        
 </script>
 <?php

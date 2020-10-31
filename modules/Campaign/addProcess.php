@@ -28,9 +28,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     $description = $_POST['description'];
     //$academic_year = $_POST['ayear']; 
     $academic_id = $_POST['academic_id'];
-    $pupilsightProgramID = $_POST['pupilsightProgramID'];
+    //$pupilsightProgramID = $_POST['pupilsightProgramID'];
+    if(!empty($_POST['pupilsightProgramID'])){
+        $pupilsightProgramID = implode(',',$_POST['pupilsightProgramID']); 
+    } else {
+        $pupilsightProgramID = 0; 
+    }
+
     if(!empty($_POST['classes'])){
-        $classes = implode(',',$_POST['classes']); 
+        $cids = array();
+        foreach($_POST['classes'] as $v){
+            $arr = explode("-", $v, 2);
+            $first = $arr[0];
+            $cids[] = $first;
+        }
+        $classes = implode(',',$cids); 
     } else {
         $classes = 0; 
     }
@@ -59,6 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
 
     $email_template_id = $_POST['email_template_id'];
     $sms_template_id = $_POST['sms_template_id'];
+    $is_fee_generate = $_POST['is_fee_generate'];
+    $progseatname = $_POST['progname'];
 
     if ($name == '' or $status == ''  or $start_date == '' or $end_date == '') {
         $URL .= '&return=error1';
@@ -89,8 +103,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                 $academic_year = $ayrdata['name'];
 
                 try {
-                    $data = array('name' => $name, 'status' => $status, 'description' => $description, 'start_date' => $start_date, 'end_date' => $end_date, 'academic_id' => $academic_id, 'academic_year' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID, 'classes' => $classes, 'seats' => $seats,'limit_apply_form' => $limitusers,'cuid' => $cuid,'page_for'=> $reg_req, 'application_series_id' => $application_series_id, 'admission_series_id' => $admission_series_id, 'fn_fee_structure_id' => $fn_fee_structure_id, 'fn_fees_receipt_template_id' => $fn_fees_receipt_template_id, 'is_publish_parent' => $is_publish_parent, 'email_template_id' => $email_template_id, 'sms_template_id' => $sms_template_id, 'allow_multiple_submission' => $allow_multiple_submission);
-                    $sql = "INSERT INTO campaign SET name=:name, description=:description, academic_id=:academic_id,academic_year=:academic_year, pupilsightProgramID=:pupilsightProgramID,classes=:classes, start_date=:start_date, end_date=:end_date, status=:status,seats=:seats, limit_apply_form=:limit_apply_form, cuid=:cuid,page_for=:page_for, application_series_id=:application_series_id, admission_series_id=:admission_series_id, fn_fee_structure_id=:fn_fee_structure_id, fn_fees_receipt_template_id=:fn_fees_receipt_template_id, is_publish_parent=:is_publish_parent,email_template_id=:email_template_id,sms_template_id=:sms_template_id, allow_multiple_submission=:allow_multiple_submission";
+                    $data = array('name' => $name, 'status' => $status, 'description' => $description, 'start_date' => $start_date, 'end_date' => $end_date, 'academic_id' => $academic_id, 'academic_year' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID, 'classes' => $classes, 'seats' => $seats,'limit_apply_form' => $limitusers,'cuid' => $cuid,'page_for'=> $reg_req, 'application_series_id' => $application_series_id, 'admission_series_id' => $admission_series_id, 'fn_fee_structure_id' => $fn_fee_structure_id, 'fn_fees_receipt_template_id' => $fn_fees_receipt_template_id, 'is_publish_parent' => $is_publish_parent, 'email_template_id' => $email_template_id, 'sms_template_id' => $sms_template_id, 'allow_multiple_submission' => $allow_multiple_submission, 'is_fee_generate' => $is_fee_generate);
+                    $sql = "INSERT INTO campaign SET name=:name, description=:description, academic_id=:academic_id,academic_year=:academic_year, pupilsightProgramID=:pupilsightProgramID,classes=:classes, start_date=:start_date, end_date=:end_date, status=:status,seats=:seats, limit_apply_form=:limit_apply_form, cuid=:cuid,page_for=:page_for, application_series_id=:application_series_id, admission_series_id=:admission_series_id, fn_fee_structure_id=:fn_fee_structure_id, fn_fees_receipt_template_id=:fn_fees_receipt_template_id, is_publish_parent=:is_publish_parent,email_template_id=:email_template_id,sms_template_id=:sms_template_id, allow_multiple_submission=:allow_multiple_submission, is_fee_generate=:is_fee_generate";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -108,18 +122,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                 //     $_SESSION[$guid]['pupilsightSchoolYearNameCurrent'] = $name;
                 //     $_SESSION[$guid]['pupilsightSchoolYearSequenceNumberCurrent'] = $sequenceNumber;
                 // }
-                if(!empty($alloseatname)){
-                    foreach($alloseatname as $k=> $d){
-                        $sname = $d;
+
+                if(!empty($_POST['classes'])){
+                    foreach($_POST['classes'] as $v){
+                        $arr = explode("-", $v, 2);
+                        $cls = $arr[0];
+                        $prg = $arr[1];
+                        $data1 = array('campaign_id' => $AI, 'pupilsightProgramID' => $prg, 'pupilsightYearGroupID' => $cls);
+                        $sql1 = "INSERT INTO campaign_prog_class SET campaign_id=:campaign_id, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID";
+                        $result = $connection2->prepare($sql1);
+                        $result->execute($data1);
+                    }
+                }
+
+                if(!empty($progseatname)){
+                    foreach($progseatname as $k=> $d){
+                        $pname = $d;
+                        $sname = $alloseatname[$k];
                         $sno = $alloseatno[$k];
-                        if(!empty($sname) && !empty($sno)){
-                            $data1 = array('campaignid' => $AI, 'pupilsightYearGroupID' => $sname, 'seats' => $sno,'cuid' => $cuid);
-                            $sql1 = "INSERT INTO seatmatrix SET campaignid=:campaignid, pupilsightYearGroupID=:pupilsightYearGroupID, seats=:seats, cuid=:cuid";
+                        if(!empty($pname) && !empty($sname) && !empty($sno)){
+                            $data1 = array('campaignid' => $AI, 'pupilsightProgramID' => $pname, 'pupilsightYearGroupID' => $sname, 'seats' => $sno,'cuid' => $cuid);
+                            $sql1 = "INSERT INTO seatmatrix SET campaignid=:campaignid, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, seats=:seats, cuid=:cuid";
                             $result = $connection2->prepare($sql1);
                             $result->execute($data1);
                         }
                     }
                 }    
+                
                 // $URL .= "&return=success0&editID=$AI";
                 $session->set('campaignid', $lid);
                 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/wplogin.php';

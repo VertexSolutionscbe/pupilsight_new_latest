@@ -30,6 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     $applicationStatus = '';
     $applicantName = $_POST['aname'];
     $applicantClass = $_POST['clid'];
+    $applicantProg = $_POST['pid'];
 
     $admissionGateway = $container->get(AdmissionGateway::class);
     $criteria = $admissionGateway->newQueryCriteria()
@@ -84,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
         $submissionIds = implode(',',$subId);
     }
    
-    $dataSet = $admissionGateway->getSearchCampaignFormList($criteria, $submissionIds, $application_id, $applicationStatus, $applicantClass);
+    $dataSet = $admissionGateway->getSearchCampaignFormList($criteria, $submissionIds, $application_id, $applicationStatus, $applicantClass, $applicantProg);
     // echo '<pre>';
     // print_r($dataSet);
     // echo '</pre>';

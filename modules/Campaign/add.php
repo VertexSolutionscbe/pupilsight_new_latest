@@ -133,6 +133,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         '2'  => __('Yes'),   // private// page_for-2(db)
        
     );
+
+    $feechk = array(
+        '' => __('Select Setting'),
+        '1'     => __('Submit & Generate Application Fee'),
+        '2'  => __('Submit & Pay Application Fee'),
+    );
    
     echo '<h2>';
     echo __('Add Campaign');
@@ -148,8 +154,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                 $col->addSelect('academic_id')->addClass('txtfield')->fromArray($academic)->selected($pupilsightSchoolYearID)->required();
 
         $col = $row->addColumn()->setClass('newdes');
-                $col->addLabel('pupilsightProgramID', __('Program'));
-                $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProgCamp')->addClass('txtfield')->fromArray($program)->required();        
+                $col->addLabel('pupilsightProgramID', __('Program'))->addClass('dte');
+                $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProgCamp')->addClass('txtfield')->fromArray($program)->required()->selectMultiple();        
                 
         $col = $row->addColumn()->setClass('newdes showClass');
                 $col->addLabel('classes', __('Class'))->addClass('dte');
@@ -221,14 +227,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
             $col->addSelect('sms_template_id')->fromArray($smsTemplate)->addClass('txtfield');
 
             $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('is_fee_generate', __('Application Fee Settings'));
+            $col->addSelect('is_fee_generate')->fromArray($feechk)->addClass('txtfield');
+
+        $row = $form->addRow();
+
+            $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('is_publish_parent', __('Publish For Parent'));
             $col->addCheckBox('is_publish_parent')->addClass('txtfield')->setValue('1'); 
-
-            $row = $form->addRow();
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('allow_multiple_submission', __('Allow Multiple Submission'));
             $col->addCheckBox('allow_multiple_submission')->addClass('txtfield')->setValue('1');
+
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('', __(''))->addClass('dte');
+
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('', __(''))->addClass('dte');
            
     // $form->toggleVisibilityByClass('statusChange')->onSelect('status')->when('Current');
     // $direction = __('Past');
@@ -256,12 +272,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
            // $row->addButton('Add Seats')->addData('class', 'addSeats')->addClass('submt');
                   
     $row = $form->addRow()->setID('seatdiv');
-           $col = $row->addColumn()->setClass('newdes');
-               $col->addLabel('name', __('Class'));
+            $col = $row->addColumn()->setClass('newdes');
+                $col->addLabel('progname', __('Program'));
+                $col->addSelect('progname[1]')->setID('progSeat')->addClass('txtfield');
+            $col = $row->addColumn()->setClass('newdes');
+               $col->addLabel('seatname', __('Class'));
                $col->addSelect('seatname[1]')->setID('classSeat')->addClass('txtfield');
    
-           $col = $row->addColumn()->setClass('newdes');
-               $col->addLabel('seat', __('Campaign Seat'))->addClass('dte');
+            $col = $row->addColumn()->setClass('newdes');
+               $col->addLabel('seatallocation', __('Campaign Seat'))->addClass('dte');
                $col->addNumber('seatallocation[1]')->addClass('txtfield kountseat szewdt'); 
               // $col->addLabel('', __(''))->addClass('dte');
                
@@ -302,15 +321,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
         }
     });
     
-    // $(document).ready(function () {
-    //   	$('#showMultiClassByProg').selectize({
-    //   		plugins: ['remove_button'],
-    //   	});
-    // });
+    $(document).ready(function () {
+      	$('#getMultiClassByProgCamp').selectize({
+      		plugins: ['remove_button'],
+      	});
+    });
 
     $(document).on('change', '#getMultiClassByProgCamp', function () {
         var id = $(this).val();
-        var type = 'getClass';
+        var type = 'getClassforCampaign';
         $('#showMultiClassByProg').selectize()[0].selectize.destroy();
         $("#getFeeStructureByProgClass").html('');
         $.ajax({
@@ -346,15 +365,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                 $("#getFeeStructureByProgClass").html(response);
             }
         });
-        var type = 'getClassForSeats';
+        var type = 'getProgForSeats';
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
             data: { val: id, type: type, pid: pid, aid: aid },
             async: true,
             success: function (response) {
+                $("#progSeat").html('');
+                $("#progSeat").html(response);
+            }
+        });
+    });
+
+    $(document).on('change', '#progSeat', function () {
+        var id = $(this).val();
+        var aid = $('#academic_id').val();
+        var cid = $('#showMultiClassByProg').val();
+        var type = 'getClassForSeats';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, cid: cid, aid: aid },
+            async: true,
+            success: function (response) {
                 $("#classSeat").html('');
                 $("#classSeat").html(response);
+            }
+        });
+    });
+
+    $(document).on('change', '.seatProg', function () {
+        var rid = $(this).attr('data-id');
+        var id = $(this).val();
+        var aid = $('#academic_id').val();
+        var cid = $('#showMultiClassByProg').val();
+        var type = 'getClassForSeats';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, cid: cid, aid: aid },
+            async: true,
+            success: function (response) {
+                $("#seatclass"+rid).html('');
+                $("#seatclass"+rid).html(response);
             }
         });
     });

@@ -71,6 +71,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             }
             $program = $program1 + $program2;
 
+            $seatProgs = array();
+            if (!empty($values['pupilsightProgramID'])) {
+                $seatProgs = explode(',', $values['pupilsightProgramID']);
+            }
+
+            $seatsPro = array('' => 'Select Program');
+            if(!empty($program2)){
+                foreach($program2 as $k => $cls){
+                    if(in_array($k, $seatProgs)){
+                        $seatsPro[$k] = $cls;
+                    }
+                }
+            }
+
             $sqlrt = 'SELECT id, name FROM fn_fees_receipt_template_master ';
             $resultrt = $connection2->query($sqlrt);
             $templateData = $resultrt->fetchAll();
@@ -131,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
             $pid = $values['pupilsightProgramID'];
 
-            $sqlf = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "' . $values['academic_id'] . '" AND b.pupilsightProgramID = "' . $pid . '" AND b.pupilsightYearGroupID IN (' . $values['classes'] . ') GROUP BY a.id';
+            $sqlf = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "' . $values['academic_id'] . '" AND b.pupilsightProgramID IN (' . $pid . ') AND b.pupilsightYearGroupID IN (' . $values['classes'] . ') GROUP BY a.id';
             $resultf = $connection2->query($sqlf);
             $feeGroupData = $resultf->fetchAll();
             $feeGroups = array();
@@ -145,27 +159,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
 
 
-            $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+            $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
             $result = $connection2->query($sql);
             $classesdata = $result->fetchAll();
             $classes = array();
             foreach ($classesdata as $ke => $cl) {
-                $classes[$cl['pupilsightYearGroupID']] = $cl['name'];
+                $classes[(int)$cl['pupilsightYearGroupID'].'-'.(int)$cl['pupilsightProgramID']] = $cl['name'].' - '.$cl['progname'];
+                $classes2[$cl['pupilsightYearGroupID']] = $cl['name'];
             }
+
+            $sqlpc = 'SELECT * FROM campaign_prog_class WHERE campaign_id = "' . $id . '" ';
+            $resultpc = $connection2->query($sqlpc);
+            $campProClsData = $resultpc->fetchAll();
 
             $setclass = array();
-            if (!empty($values['classes'])) {
-                $setclass = explode(',', $values['classes']);
-            }
-
-            $seatsCls = array('' => 'Select Class');
-            if(!empty($classes)){
-                foreach($classes as $k => $cls){
-                    if(in_array($k, $setclass)){
-                        $seatsCls[$k] = $cls;
+            if(!empty($campProClsData)){
+                foreach($campProClsData as $cpc){
+                    $setclass[] = $cpc['pupilsightYearGroupID'].'-'.$cpc['pupilsightProgramID'];
+                }
+            } else {
+                if (!empty($values['classes'])) {
+                    $setclassnew = explode(',', $values['classes']);
+                    foreach($setclassnew as $sc){
+                        $setclass[] = (int)$sc.'-'.(int)$values['pupilsightProgramID'];
                     }
                 }
             }
+           
+            
+            $setclass2 = array();
+            if (!empty($values['classes'])) {
+                $setclass2 = explode(',', $values['classes']);
+            }
+
+            // $seatsCls = array('' => 'Select Class');
+            // if(!empty($classes2)){
+            //     foreach($classes2 as $k => $cls){
+            //         if(in_array($k, $setclass2)){
+            //             $seatsCls[$k] = $cls;
+            //         }
+            //     }
+            // }
             
             //print_r($seatsCls);
             $form = Form::create('Admission', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/editProcess.php?id=' . $id)->addClass('newform');
@@ -196,6 +230,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
             );
 
+            $feechk = array(
+                '' => __('Select Setting'),
+                '1'     => __('Submit & Generate Application Fee'),
+                '2'  => __('Submit & Pay Application Fee'),
+            );
+
             echo '<h2>';
             echo __('Edit Campaign');
             echo '</h2>';
@@ -212,8 +252,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $col->addSelect('academic_id')->addClass('txtfield')->fromArray($academic)->required()->selected($values['academic_id']);
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProgCamp')->addClass('txtfield')->fromArray($program)->required()->selected($values['pupilsightProgramID']);
+            $col->addLabel('pupilsightProgramID', __('Program'))->addClass('dte');
+            $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProgCamp')->addClass('txtfield')->fromArray($program)->required()->selected($seatProgs)->selectMultiple();
 
             $col = $row->addColumn()->setClass('newdes showClass');
             $col->addLabel('classes', __('Class'))->addClass('dte');
@@ -282,18 +322,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $col->addSelect('sms_template_id')->fromArray($smsTemplate)->selected($values['sms_template_id'])->addClass('txtfield');
 
             $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('is_fee_generate', __('Application Fee Settings'));
+            $col->addSelect('is_fee_generate')->fromArray($feechk)->addClass('txtfield')->selected($values['is_fee_generate'])->addClass('txtfield');
+
+        $row = $form->addRow();
+
+            $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('is_publish_parent', __('Publish For Parent'));
             $col->addCheckBox('is_publish_parent')->addClass('txtfield')->setValue('1')->checked($values['is_publish_parent']);
-
-            $row = $form->addRow();
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('allow_multiple_submission', __('Allow Multiple Submission'));
             $col->addCheckBox('allow_multiple_submission')->addClass('txtfield')->setValue('1')->checked($values['allow_multiple_submission']);
 
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('', __(''))->addClass('dte');
+
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('', __(''))->addClass('dte');
+
             
 
-            $row = $form->addRow();
+        $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('description', __('Description'));
             $col->addTextArea('description')->addClass('txtfield')->setRows(4)->setValue($values['description']);
@@ -328,23 +378,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             if (!empty($seatvalues)) {
                 $i = '1';
                 foreach ($seatvalues as $k => $sv) {
-                    $row = $form->addRow()->setClass('deltr' . $k);
+                    if(!empty($sv['pupilsightProgramID'])){
+                        $sqlpc = 'SELECT b.pupilsightYearGroupID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.campaign_id = "' . $id . '" AND a.pupilsightProgramID = '.$sv['pupilsightProgramID'].' ';
+                        $resultpc = $connection2->query($sqlpc);
+                        $campProClsSeatData = $resultpc->fetchAll();
+                        $setcls = array();
+                        foreach ($campProClsSeatData as $ke => $cl) {
+                        $setcls[$cl['pupilsightYearGroupID']] = $cl['name'];
+                        }
 
-                    $col = $row->addColumn()->setClass('newdes');
-                    if ($i == '1') {
-                        $col->addLabel('name', __('Class'));
+                        $row = $form->addRow()->setClass('deltr' . $k);
+
+                        $col = $row->addColumn()->setClass('newdes');
+                        if ($i == '1') {
+                            $col->addLabel('progname', __('Program'));
+                        }
+                        $col->addSelect('progname[' . $sv['id'] . ']')->fromArray($seatsPro)->addClass('progSeat txtfield')->selected($sv['pupilsightProgramID'])->addData('id',$k);
+
+                        $col = $row->addColumn()->setClass('newdes');
+                        if ($i == '1') {
+                            $col->addLabel('seatname', __('Class'));
+                        }
+                        $col->addSelect('seatname[' . $sv['id'] . ']')->setID('classSeat'.$k)->fromArray($setcls)->addClass(' txtfield')->selected($sv['pupilsightYearGroupID']);
+
+                        $col = $row->addColumn()->setClass('newdes');
+                        if ($i == '1') {
+                            $col->addLabel('seat', __('Campaign Seat
+                            '))->addClass('dte');
+                        }
+                        $col->addNumber('seatallocation[' . $sv['id'] . ']')->addClass('txtfield kountseat szewdt')->setValue($sv['seats']);
+                        $col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  6px 0 0px 4px"><i style="cursor:pointer" class="far fa-times-circle delSeattr " data-id="' . $k . '" data-sid="' . $sv['id'] . '"></i></div>');
+
+                        $i++;
                     }
-                    $col->addSelect('seatname[' . $k . ']')->fromArray($seatsCls)->addClass('classSeat txtfield')->selected($sv['pupilsightYearGroupID']);
-
-                    $col = $row->addColumn()->setClass('newdes');
-                    if ($i == '1') {
-                        $col->addLabel('seat', __('Campaign Seat
-                        '))->addClass('dte');
-                    }
-                    $col->addNumber('seatallocation[' . $k . ']')->addClass('txtfield kountseat szewdt')->setValue($sv['seats']);
-                    $col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  6px 0 0px 4px"><i style="cursor:pointer" class="far fa-times-circle delSeattr " data-id="' . $k . '" data-sid="' . $sv['id'] . '"></i></div>');
-
-                    $i++;
                 }
             }
             $row = $form->addRow()->setID('lastseatdiv');
@@ -377,6 +443,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
     });
 
     $(document).ready(function() {
+        $('#getMultiClassByProgCamp').selectize({
+            plugins: ['remove_button'],
+        });
+    });
+
+    $(document).ready(function() {
         $('#showMultiClassByProg').selectize({
             plugins: ['remove_button'],
         });
@@ -385,7 +457,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
   
     $(document).on('change', '#getMultiClassByProgCamp', function () {
         var id = $(this).val();
-        var type = 'getClass';
+        var type = 'getClassforCampaign';
         $('#showMultiClassByProg').selectize()[0].selectize.destroy();
         $("#getFeeStructureByProgClass").html('');
         $.ajax({
@@ -405,7 +477,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
         });
     });
 
-    $(document).on('change', '#showMultiClassByProg', function() {
+    $(document).on('change', '#showMultiClassByProg', function () {
         var id = $(this).val();
         var aid = $('#academic_id').val();
         var pid = $('#getMultiClassByProgCamp').val();
@@ -413,27 +485,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
-            data: {
-                val: id,
-                type: type,
-                pid: pid,
-                aid: aid
-            },
+            data: { val: id, type: type, pid: pid, aid: aid },
             async: true,
-            success: function(response) {
+            success: function (response) {
                 $("#getFeeStructureByProgClass").html('');
                 $("#getFeeStructureByProgClass").html(response);
             }
         });
-        var type = 'getClassForSeats';
+        var type = 'getProgForSeats';
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
             data: { val: id, type: type, pid: pid, aid: aid },
             async: true,
             success: function (response) {
-                $(".classSeat select").html('');
-                $(".classSeat select").html(response);
+                $("#progSeat").html('');
+                $("#progSeat").html(response);
+            }
+        });
+    });
+
+    $(document).on('change', '.progSeat', function () {
+        var rid = $(this).attr('data-id');
+        var id = $(this).val();
+        var aid = $('#academic_id').val();
+        var cid = $('#showMultiClassByProg').val();
+        var type = 'getClassForSeats';
+        if(id != ''){
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: { val: id, type: type, cid: cid, aid: aid },
+                async: true,
+                success: function (response) {
+                    $("#classSeat"+rid).html('');
+                    $("#classSeat"+rid).html(response);
+                }
+            });
+        }
+    });
+
+    $(document).on('change', '.seatProg', function () {
+        var rid = $(this).attr('data-id');
+        var id = $(this).val();
+        var aid = $('#academic_id').val();
+        var cid = $('#showMultiClassByProg').val();
+        var type = 'getClassForSeats';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, cid: cid, aid: aid },
+            async: true,
+            success: function (response) {
+                $("#seatclass"+rid).html('');
+                $("#seatclass"+rid).html(response);
             }
         });
     });

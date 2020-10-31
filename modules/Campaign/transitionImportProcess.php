@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                             $cls = '';
                         }
 
-                        $sqlchks = 'SELECT seats, used_seats FROM seatmatrix WHERE campaignid = '.$cid.' AND pupilsightYearGroupID = '.$cls.' ';
+                        $sqlchks = 'SELECT seats, used_seats FROM seatmatrix WHERE campaignid = '.$cid.' AND pupilsightProgramID = '.$prog.' AND pupilsightYearGroupID = '.$cls.' ';
                         $resultchks = $connection2->query($sqlchks);
                         $seatdata = $resultchks->fetch();
                         if(!empty($seatdata)){
@@ -320,7 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                     $resultupd = $connection2->prepare($sqlupd);
                     $resultupd->execute($wdata);
 
-                    $sqlchks = 'SELECT seats, used_seats FROM seatmatrix WHERE campaignid = '.$cid.' AND pupilsightYearGroupID = '.$cls.' ';
+                    $sqlchks = 'SELECT seats, used_seats FROM seatmatrix WHERE campaignid = '.$cid.' AND pupilsightProgramID = '.$prog.' AND pupilsightYearGroupID = '.$cls.' ';
                     $resultchks = $connection2->query($sqlchks);
                     $seatdata = $resultchks->fetch();
                     
@@ -333,8 +333,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         }
                         
                         $remaining_seats = $totalSeats - $used_seats;
-                        $wdata = array('used_seats' => $used_seats, 'remaining_seats'=> $remaining_seats, 'campaignid' => $cid, 'pupilsightYearGroupID' => $cls);
-                        $sqlupd = "UPDATE seatmatrix SET used_seats=:used_seats, remaining_seats=:remaining_seats WHERE campaignid=:campaignid AND pupilsightYearGroupID=:pupilsightYearGroupID";
+                        $wdata = array('used_seats' => $used_seats, 'remaining_seats'=> $remaining_seats, 'campaignid' => $cid, 'pupilsightProgramID' => $prog, 'pupilsightYearGroupID' => $cls);
+                        $sqlupd = "UPDATE seatmatrix SET used_seats=:used_seats, remaining_seats=:remaining_seats WHERE campaignid=:campaignid AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID";
                         $resultupd = $connection2->prepare($sqlupd);
                         $resultupd->execute($wdata);
                     } 

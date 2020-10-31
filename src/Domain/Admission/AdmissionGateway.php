@@ -146,7 +146,7 @@ class AdmissionGateway extends QueryableGateway
         return $res;
     }
 
-    public function getSearchCampaignFormList(QueryCriteria $criteria, $submissionIds, $application_id, $applicationStatus, $applicantClass)
+    public function getSearchCampaignFormList(QueryCriteria $criteria, $submissionIds, $application_id, $applicationStatus, $applicantClass, $applicantProg)
     {
 
         $query = $this
@@ -170,6 +170,9 @@ class AdmissionGateway extends QueryableGateway
         }
         if (!empty($application_id)) {
             $query->where('ws.application_id = "' . $application_id . '" ');
+        }
+        if (!empty($applicantProg)) {
+            $query->where('ws.pupilsightProgramID = "' . $applicantProg . '" ');
         }
         if (!empty($applicantClass)) {
             $query->where('ws.pupilsightYearGroupID = "' . $applicantClass . '" ');

@@ -32,11 +32,20 @@ if ($chkstatus == '2') {
 }
 $campaign_byid = $adminlib->getcampaign_byid($url_id);
 
-$program = $campaign_byid['progname'];
-if (!empty($campaign_byid['classes'])) {
-    $getClass = $adminlib->getCampaignClass($campaign_byid['classes']);
+$sqlchk = "SELECT a.id, b.pupilsightProgramID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightProgram AS b ON a.pupilsightProgramID = b.pupilsightProgramID  WHERE a.campaign_id = " . $url_id . " GROUP BY a.pupilsightProgramID ";
+$cmpProClsChkData = database::doSelect($sqlchk);
+
+$programData = array();
+if(!empty($cmpProClsChkData)){
+    $programData = $cmpProClsChkData;
+} else {
+    $program = $campaign_byid['progname'];
+    if (!empty($campaign_byid['classes'])) {
+        $getClass = $adminlib->getCampaignClass($campaign_byid['classes']);
+    }
 }
-//print_r($getClass);die();
+
+//print_r($programData);die();
 
 
 
@@ -97,10 +106,36 @@ if (empty($campaignStatus)) {
                                         style="height:2px; width:300px; background-color:#e1e1e1;  ">
 										
                                     </div>-->
-                                <input type="hidden" id="pid" value="<?php echo $campaign_byid['pupilsightProgramID']; ?>">
+                                <input type="hidden" id="chkemph" value="0">
+                                
                                 <input type="hidden" id="fid" value="<?php echo $campaign_byid['form_id']; ?>">
                                 <input type="hidden" id="allowms" value="<?php echo $campaign_byid['allow_multiple_submission']; ?>">
+                                <input type="hidden" id="chkfeesett" value="<?php echo $campaign_byid['is_fee_generate']; ?>">
+                                <input type="hidden" id="cid" value="<?php echo $url_id; ?>">
 
+                            <?php if(!empty($programData)){ ?>
+                                <div id="progClassDiv">
+                                    <span>Program<span style="color:red">* </span>: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <select id="pid">
+                                        <option value="">Select Program</option>
+                                        <?php if (!empty($programData)) {
+                                            foreach ($programData as $prg) {
+                                        ?>
+                                                <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                    <span>Class <span style="color:red">* </span>: </span>
+                                    <select id="class">
+                                        <option value="">Select Class</option>
+                                        
+                                    </select>
+                                    <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
+                                </div>
+                                <input type="hidden" id="chkProg" value="1">
+                            <?php } else { ?>
+                                <input type="hidden" id="chkProg" value="2">
+                                <input type="hidden" id="pid" value="<?php echo $campaign_byid['pupilsightProgramID']; ?>">
                                 <div id="progClassDiv">
                                     <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <span>Class <span style="color:red">* </span>: </span>
@@ -115,6 +150,7 @@ if (empty($campaignStatus)) {
                                     </select>
                                     <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
                                 </div>
+                            <?php } ?>
                             </div>
                             <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
                                 <div class="wpb_wrapper">
@@ -122,8 +158,8 @@ if (empty($campaignStatus)) {
                                     <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="100%" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
                                     </iframe>
 
-
-                                    <?php if (!empty($campaign_byid['fn_fee_structure_id'])) {
+                                    
+                                    <?php if (!empty($campaign_byid['fn_fee_structure_id']) && $campaign_byid['is_fee_generate'] == '2') {
                                         $sql = "SELECT SUM(total_amount) AS amt FROM fn_fee_structure_item WHERE fn_fee_structure_id = " . $campaign_byid['fn_fee_structure_id'] . " ";
                                         $result = database::doSelectOne($sql);
                                         $applicationAmount = $result['amt'] * 100;
@@ -420,7 +456,8 @@ if (empty($campaignStatus)) {
             var allms = $("#allowms").val();
             if(allms == '0'){
                 iframe.find("input[name=father_email], input[name=mother_email]").change(function() {
-                    val = $(this).val();
+                    var val = $(this).val();
+                    var ths = $(this);
                     if (val != '') {
                         var type = 'chkPreviousSubmission';
                         $.ajax({
@@ -432,15 +469,19 @@ if (empty($campaignStatus)) {
                                 if(response == '1'){
                                     alert('You are Already Applied');
                                     iframe.find(".ff-btn-submit").prop('disabled', true);
+                                    iframe.find(".ff-btn-submit").hide();
+                                    ths.val('');
                                 } else {
                                     iframe.find(".ff-btn-submit").prop('disabled', false);
+                                    iframe.find(".ff-btn-submit").show();
                                 }
                             }
                         });
                     }
                 });
                 iframe.find("input[name=father_mobile], input[name=mother_mobile]").change(function() {
-                    val = '+91'+$(this).val();
+                    var val = '+91'+$(this).val();
+                    var ths = $(this);
                     if (val != '') {
                         var type = 'chkPreviousSubmission';
                         $.ajax({
@@ -452,8 +493,11 @@ if (empty($campaignStatus)) {
                                 if(response == '1'){
                                     alert('You are Already Applied');
                                     iframe.find(".ff-btn-submit").prop('disabled', true);
+                                    iframe.find(".ff-btn-submit").hide();
+                                    ths.val('');
                                 } else {
                                     iframe.find(".ff-btn-submit").prop('disabled', false);
+                                    iframe.find(".ff-btn-submit").show();
                                 }
                             }
                         });
@@ -463,15 +507,42 @@ if (empty($campaignStatus)) {
 
             iframe.find(".ff-el-form-control").change(function() {
                 $.each($(this), function() {
-                    val = $("#class option:selected").val();
+                    chkprog = $("#chkProg").val();
+                    var val = $("#class option:selected").val();
                     if (val == '') {
                         $("#class").addClass('error').focus();
                         iframe.find(".ff-btn-submit").prop('disabled', true);
                         alert('You Have to Select Class');
+                        if(chkprog == '1'){
+                            var pval = $("#pid option:selected").val();
+                            if (pval == '') {
+                                $("#pid").addClass('error').focus();
+                                iframe.find(".ff-btn-submit").prop('disabled', true);
+                                alert('You Have to Select Program');
+                                return false;
+                            } else {
+                                $("#pid").removeClass('error');
+                                iframe.find(".ff-btn-submit").prop('disabled', false);
+                                return true;
+                            }
+                        }
                         return false;
                     } else {
                         $("#class").removeClass('error');
                         iframe.find(".ff-btn-submit").prop('disabled', false);
+                        if(chkprog == '1'){
+                            var pval = $("#pid option:selected").val();
+                            if (pval == '') {
+                                $("#pid").addClass('error').focus();
+                                iframe.find(".ff-btn-submit").prop('disabled', true);
+                                alert('You Have to Select Program');
+                                return false;
+                            } else {
+                                $("#pid").removeClass('error');
+                                iframe.find(".ff-btn-submit").prop('disabled', false);
+                                return true;
+                            }
+                        }
                         return true;
                     }
                 });
@@ -599,6 +670,7 @@ if (empty($campaignStatus)) {
             var pid = $("#pid").val();
             var fid = $("#fid").val();
             var clid = $("#class option:selected").val();
+            var chkfeeSett = $("#chkfeesett").val(); 
             if (val != '') {
                 var type = 'insertcampaigndetails';
                 setTimeout(function() {
@@ -610,19 +682,40 @@ if (empty($campaignStatus)) {
                             type: type,
                             pid: pid,
                             fid: fid,
-                            clid: clid
+                            clid: clid,
+                            chkfeeSett: chkfeeSett
                         },
                         async: true,
                         success: function(response) {
                             $("#progClassDiv").remove();
                             //$("#downloadLink")[0].click();
                             $("#application_view").addClass('iheight');
-                            $("#payAdmissionFee").show();
+                            if(chkfeeSett == '2'){
+                                $("#payAdmissionFee").show();
+                            }
                         }
                     });
                 }, 500);
             }
         }
+
+        $(document).on('change', '#pid', function () {
+            var val = $(this).val();
+            var cid = $("#cid").val();
+            if (val != '') {
+                var type = 'getCampClass';
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: {val: val,type: type, cid: cid},
+                    async: true,
+                    success: function(response) {
+                        $("#class").html('');
+                        $("#class").html(response);
+                    }
+                });
+            }
+        });        
     </script>
 
 

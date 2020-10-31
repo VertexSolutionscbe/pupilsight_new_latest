@@ -2843,10 +2843,18 @@ if ($type == 'getAllSchoolStaff') {
 }
 
 if ($type == 'getFeeStructure') {
-    $cid = implode(',', $val);
-    $pid = $_POST['pid'];
+    $cids = array();
+    if(!empty($val)){
+        foreach($val as $v){
+            $arr = explode("-", $v, 2);
+            $first = $arr[0];
+            $cids[] = $first;
+        }
+    }
+    $cid = implode(',', $cids);
+    $pid = implode(',', $_POST['pid']);
     $aid = $_POST['aid'];
-    $sql = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "' . $aid . '" AND b.pupilsightProgramID = "' . $pid . '" AND B.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.id';
+    echo $sql = 'SELECT a.* FROM fn_fee_structure AS a LEFT JOIN fn_fees_class_assign AS b ON a.id = b.fn_fee_structure_id WHERE a.pupilsightSchoolYearID = "' . $aid . '" AND b.pupilsightProgramID IN (' . $pid . ') AND B.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.id';
     $result = $connection2->query($sql);
     $structure = $result->fetchAll();
     $data = '<option value="">Select Fee Structure</option>';
@@ -3012,8 +3020,20 @@ if ($type == 'chkCampaignFromField') {
 }
 
 if ($type == 'getClassForSeats') {
-    $cid = implode(',', $val);
-    $pid = $_POST['pid'];
+    $pid = $val;
+    $cids = array();
+    if(!empty($_POST['cid'])){
+        foreach($_POST['cid'] as $v){
+            $arr = explode("-", $v, 2);
+            $first = $arr[0];
+            $second = $arr[1];
+            if($second == $pid){
+                $cids[] = $first;
+            }
+        }
+    }
+    $cid = implode(',', $cids);
+    
     $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND  a.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.pupilsightYearGroupID';
     $result = $connection2->query($sql);
     $classes = $result->fetchAll();
@@ -3031,18 +3051,72 @@ if ($type == 'getClassForSeats') {
 
 if ($type == 'getAjaxCampSeats') {
     $ncid = $val;
-    $cid = implode(',', $_POST['clid']);
-    $pid = $_POST['pid'];
-    $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND  a.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.pupilsightYearGroupID';
+    if(!empty($_POST['clid']) && $_POST['pid']){
+        $cid = implode(',', $_POST['clid']);
+        $pid = implode(',', $_POST['pid']);
+        $sql = 'SELECT * FROM pupilsightProgram WHERE pupilsightProgramID IN (' . $pid . ') ';
+        $result = $connection2->query($sql);
+        $programs = $result->fetchAll();
+
+        $data = '<div id="seatdiv" class=" row mb-1 deltr' . $ncid . '"><div class="col-sm  newdes " ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><select  name="progname[' . $ncid . ']" data-id="' . $ncid . '" class="w-full txtfield seatProg"><option value="">Select Program</option>';
+        if (!empty($programs)) {
+            foreach ($programs as $k => $cl) {
+                $data .= '<option value="' . $cl['pupilsightProgramID'] . '">' . $cl['name'] . '</option>';
+            }
+        }
+        $data .= '</select></div></div></div></div><div class="col-sm  newdes " ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><select id="seatclass' . $ncid . '" name="seatname[' . $ncid . ']" class="w-full txtfield seatClass"></select></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class="dte mb-1"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><input type="number" id="seatallocation" name="seatallocation[' . $ncid . ']" class="w-full txtfield kountseat szewdt"><i style="cursor:pointer;padding: 8px 10px;" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' . $ncid . '"></i></div></div></div></div></div>';
+        echo $data;
+    }
+}
+
+if ($type == 'getClassforCampaign') {
+    
+    if(!empty($_POST['val'])){
+        $pid = implode(',', $val);
+        $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
+        $result = $connection2->query($sql);
+        $classes = $result->fetchAll();
+        // echo '<pre>';
+        // print_r($classes);
+        // echo '</pre>';
+        $data = '<option value="">Select Class</option>';
+        if (!empty($classes)) {
+            foreach ($classes as $k => $cl) {
+                $data .= '<option data-id="'.$cl['pupilsightYearGroupID'].'" value="' . $cl['pupilsightYearGroupID'] .'-'.$cl['pupilsightProgramID']. '">' . $cl['name'] .' - '.$cl['progname']. '</option>';
+            }
+        }
+        echo $data;
+    }
+}
+
+if ($type == 'getProgForSeats') {
+    $pid = implode(',', $_POST['pid']);
+    $sql = 'SELECT * FROM pupilsightProgram WHERE pupilsightProgramID IN (' . $pid . ') ';
+    $result = $connection2->query($sql);
+    $programs = $result->fetchAll();
+    // echo '<pre>';
+    // print_r($classes);
+    // echo '</pre>';
+    $data = '<option value="">Select Program</option>';
+    if (!empty($programs)) {
+        foreach ($programs as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightProgramID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+if ($type == 'getCampClass') {
+    $val = $_POST['val'];
+    $cid = $_POST['cid'];
+    $sql = 'SELECT a.id, b.pupilsightYearGroupID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramId=' . $val . ' AND a.campaign_id = "'.$cid.'" ';
     $result = $connection2->query($sql);
     $classes = $result->fetchAll();
-
-    $data = '<div id="seatdiv" class=" row mb-1 deltr' . $ncid . '"><div class="col-sm  newdes " ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><select id="classSeat" name="seatname[' . $ncid . ']" class="w-full txtfield"><option value="">Select Class</option>';
+    $data = '<option value="">Select Class</option>';
     if (!empty($classes)) {
         foreach ($classes as $k => $cl) {
             $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
         }
     }
-    $data .= '</select></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class="dte mb-1"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><input type="number" id="seatallocation" name="seatallocation[' . $ncid . ']" class="w-full txtfield kountseat szewdt"><i style="cursor:pointer;padding: 8px 10px;" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' . $ncid . '"></i></div></div></div></div></div>';
     echo $data;
 }
