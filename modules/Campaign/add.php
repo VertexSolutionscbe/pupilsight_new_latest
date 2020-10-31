@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
 
         $col = $row->addColumn()->setClass('newdes');
                 $col->addLabel('pupilsightProgramID', __('Program'));
-                $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProg')->addClass('txtfield')->fromArray($program)->required();        
+                $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProgCamp')->addClass('txtfield')->fromArray($program)->required();        
                 
         $col = $row->addColumn()->setClass('newdes showClass');
                 $col->addLabel('classes', __('Class'))->addClass('dte');
@@ -223,6 +223,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('is_publish_parent', __('Publish For Parent'));
             $col->addCheckBox('is_publish_parent')->addClass('txtfield')->setValue('1'); 
+
+            $row = $form->addRow();
+
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('allow_multiple_submission', __('Allow Multiple Submission'));
+            $col->addCheckBox('allow_multiple_submission')->addClass('txtfield')->setValue('1');
            
     // $form->toggleVisibilityByClass('statusChange')->onSelect('status')->when('Current');
     // $direction = __('Past');
@@ -251,8 +257,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                   
     $row = $form->addRow()->setID('seatdiv');
            $col = $row->addColumn()->setClass('newdes');
-               $col->addLabel('name', __('Name'));
-               $col->addTextField('seatname[1]')->addClass('txtfield');
+               $col->addLabel('name', __('Class'));
+               $col->addSelect('seatname[1]')->setID('classSeat')->addClass('txtfield');
    
            $col = $row->addColumn()->setClass('newdes');
                $col->addLabel('seat', __('Campaign Seat'))->addClass('dte');
@@ -302,14 +308,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     //   	});
     // });
 
-    $(document).on('change', '#getMultiClassByProg', function () {
+    $(document).on('change', '#getMultiClassByProgCamp', function () {
+        var id = $(this).val();
+        var type = 'getClass';
+        $('#showMultiClassByProg').selectize()[0].selectize.destroy();
         $("#getFeeStructureByProgClass").html('');
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type },
+            async: true,
+            success: function (response) {
+                $("#showMultiClassByProg").html('');
+                $("#showMultiClassByProg").html(response);
+                $("#showMultiClassByProg").parent().children('.LV_validation_message').remove();
+                $('#showMultiClassByProg').selectize({
+                    plugins: ['remove_button'],
+                });
+                
+            }
+        });
     });
 
+    
     $(document).on('change', '#showMultiClassByProg', function () {
         var id = $(this).val();
         var aid = $('#academic_id').val();
-        var pid = $('#getMultiClassByProg').val();
+        var pid = $('#getMultiClassByProgCamp').val();
         var type = 'getFeeStructure';
         $.ajax({
             url: 'ajax_data.php',
@@ -319,6 +344,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
             success: function (response) {
                 $("#getFeeStructureByProgClass").html('');
                 $("#getFeeStructureByProgClass").html(response);
+            }
+        });
+        var type = 'getClassForSeats';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, pid: pid, aid: aid },
+            async: true,
+            success: function (response) {
+                $("#classSeat").html('');
+                $("#classSeat").html(response);
             }
         });
     });

@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
 include_once 'w2f/adminLib.php';
 include '../pupilsight.php';
 $adminlib = new adminlib();
@@ -66,6 +67,18 @@ if ($type == 'saveApplicantForm') {
     $data = base64_decode($_POST['pdf']);
     // print_r($data);
     file_put_contents("../public/applicationpdf/" . $submissionId . "-application.pdf", $data);
+}
+
+if ($type == 'chkPreviousSubmission') {
+    $val = $_POST['val'];
+    $form_id = $_POST['fid'];
+    $sql = 'SELECT id FROM wp_fluentform_entry_details WHERE form_id=' . $form_id . ' AND field_value = "'.$val.'" ';
+    $result = database::doSelectOne($sql);
+    if(!empty($result)){
+        echo '1';
+    } else {
+        echo '2';
+    }
 }
 //echo $msg;
 

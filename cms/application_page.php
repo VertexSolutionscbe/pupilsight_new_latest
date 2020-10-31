@@ -99,6 +99,7 @@ if (empty($campaignStatus)) {
                                     </div>-->
                                 <input type="hidden" id="pid" value="<?php echo $campaign_byid['pupilsightProgramID']; ?>">
                                 <input type="hidden" id="fid" value="<?php echo $campaign_byid['form_id']; ?>">
+                                <input type="hidden" id="allowms" value="<?php echo $campaign_byid['allow_multiple_submission']; ?>">
 
                                 <div id="progClassDiv">
                                     <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -126,10 +127,14 @@ if (empty($campaignStatus)) {
                                         $sql = "SELECT SUM(total_amount) AS amt FROM fn_fee_structure_item WHERE fn_fee_structure_id = " . $campaign_byid['fn_fee_structure_id'] . " ";
                                         $result = database::doSelectOne($sql);
                                         $applicationAmount = $result['amt'] * 100;
+
+                                        $random_number = mt_rand(1000, 9999);
+                                        $today = time();
+                                        $orderId = $today . $random_number;
                                     ?>
                                         <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 
-                                            <input type="hidden" value="" id="OrderId" name="OrderId">
+                                            <input type="hidden" value="<?php echo $orderId;?>" id="OrderId" name="OrderId">
                                             <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
                                             <input type="hidden" value="INR" id="currencyName" name="currencyName">
                                             <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
@@ -318,13 +323,6 @@ if (empty($campaignStatus)) {
         $(window).load(function() {
 
 
-
-            var d = new Date();
-            var n = d.getTime();
-            var orderID = n + '' + randomFromTo(0, 1000);
-
-            document.getElementById("OrderId").value = orderID;
-
             function randomFromTo(from, to) {
                 return Math.floor(Math.random() * (to - from + 1) + from);
             }
@@ -418,6 +416,50 @@ if (empty($campaignStatus)) {
             });
 
             var cls = iframe.find("#class").prop('readonly', true);
+            var fid = $("#fid").val();
+            var allms = $("#allowms").val();
+            if(allms == '0'){
+                iframe.find("input[name=father_email], input[name=mother_email]").change(function() {
+                    val = $(this).val();
+                    if (val != '') {
+                        var type = 'chkPreviousSubmission';
+                        $.ajax({
+                            url: 'ajax_data.php',
+                            type: 'post',
+                            data: {val: val,type: type, fid: fid},
+                            async: true,
+                            success: function(response) {
+                                if(response == '1'){
+                                    alert('You are Already Applied');
+                                    iframe.find(".ff-btn-submit").prop('disabled', true);
+                                } else {
+                                    iframe.find(".ff-btn-submit").prop('disabled', false);
+                                }
+                            }
+                        });
+                    }
+                });
+                iframe.find("input[name=father_mobile], input[name=mother_mobile]").change(function() {
+                    val = '+91'+$(this).val();
+                    if (val != '') {
+                        var type = 'chkPreviousSubmission';
+                        $.ajax({
+                            url: 'ajax_data.php',
+                            type: 'post',
+                            data: {val: val,type: type, fid: fid},
+                            async: true,
+                            success: function(response) {
+                                if(response == '1'){
+                                    alert('You are Already Applied');
+                                    iframe.find(".ff-btn-submit").prop('disabled', true);
+                                } else {
+                                    iframe.find(".ff-btn-submit").prop('disabled', false);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
 
             iframe.find(".ff-el-form-control").change(function() {
                 $.each($(this), function() {

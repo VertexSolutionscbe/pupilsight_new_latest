@@ -158,7 +158,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
                 $setclass = explode(',', $values['classes']);
             }
 
-            //print_r($classes);
+            $seatsCls = array('' => 'Select Class');
+            if(!empty($classes)){
+                foreach($classes as $k => $cls){
+                    if(in_array($k, $setclass)){
+                        $seatsCls[$k] = $cls;
+                    }
+                }
+            }
+            
+            //print_r($seatsCls);
             $form = Form::create('Admission', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/editProcess.php?id=' . $id)->addClass('newform');
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -204,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProg')->addClass('txtfield')->fromArray($program)->required()->selected($values['pupilsightProgramID']);
+            $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProgCamp')->addClass('txtfield')->fromArray($program)->required()->selected($values['pupilsightProgramID']);
 
             $col = $row->addColumn()->setClass('newdes showClass');
             $col->addLabel('classes', __('Class'))->addClass('dte');
@@ -276,6 +285,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $col->addLabel('is_publish_parent', __('Publish For Parent'));
             $col->addCheckBox('is_publish_parent')->addClass('txtfield')->setValue('1')->checked($values['is_publish_parent']);
 
+            $row = $form->addRow();
+
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('allow_multiple_submission', __('Allow Multiple Submission'));
+            $col->addCheckBox('allow_multiple_submission')->addClass('txtfield')->setValue('1')->checked($values['allow_multiple_submission']);
+
             
 
             $row = $form->addRow();
@@ -317,9 +332,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
                     $col = $row->addColumn()->setClass('newdes');
                     if ($i == '1') {
-                        $col->addLabel('name', __('Name'));
+                        $col->addLabel('name', __('Class'));
                     }
-                    $col->addTextField('seatname[' . $k . ']')->addClass('txtfield')->setValue($sv['name']);
+                    $col->addSelect('seatname[' . $k . ']')->fromArray($seatsCls)->addClass('classSeat txtfield')->selected($sv['pupilsightYearGroupID']);
 
                     $col = $row->addColumn()->setClass('newdes');
                     if ($i == '1') {
@@ -367,14 +382,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
         });
     });
 
-    $(document).on('change', '#getMultiClassByProg', function() {
+  
+    $(document).on('change', '#getMultiClassByProgCamp', function () {
+        var id = $(this).val();
+        var type = 'getClass';
+        $('#showMultiClassByProg').selectize()[0].selectize.destroy();
         $("#getFeeStructureByProgClass").html('');
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type },
+            async: true,
+            success: function (response) {
+                $("#showMultiClassByProg").html('');
+                $("#showMultiClassByProg").html(response);
+                $("#showMultiClassByProg").parent().children('.LV_validation_message').remove();
+                $('#showMultiClassByProg').selectize({
+                    plugins: ['remove_button'],
+                });
+                
+            }
+        });
     });
 
     $(document).on('change', '#showMultiClassByProg', function() {
         var id = $(this).val();
         var aid = $('#academic_id').val();
-        var pid = $('#getMultiClassByProg').val();
+        var pid = $('#getMultiClassByProgCamp').val();
         var type = 'getFeeStructure';
         $.ajax({
             url: 'ajax_data.php',
@@ -389,6 +423,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             success: function(response) {
                 $("#getFeeStructureByProgClass").html('');
                 $("#getFeeStructureByProgClass").html(response);
+            }
+        });
+        var type = 'getClassForSeats';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, pid: pid, aid: aid },
+            async: true,
+            success: function (response) {
+                $(".classSeat select").html('');
+                $(".classSeat select").html(response);
             }
         });
     });

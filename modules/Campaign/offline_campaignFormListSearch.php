@@ -29,6 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     $application_id = $_POST['aid'];
     $applicationStatus = '';
     $applicantName = $_POST['aname'];
+    $applicantClass = $_POST['clid'];
 
     $admissionGateway = $container->get(AdmissionGateway::class);
     $criteria = $admissionGateway->newQueryCriteria()
@@ -83,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
         $submissionIds = implode(',',$subId);
     }
    
-    $dataSet = $admissionGateway->getSearchCampaignFormList($criteria, $submissionIds, $application_id, $applicationStatus);
+    $dataSet = $admissionGateway->getSearchCampaignFormList($criteria, $submissionIds, $application_id, $applicationStatus, $applicantClass);
     // echo '<pre>';
     // print_r($dataSet);
     // echo '</pre>';
@@ -92,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     foreach($field as $fe){
         foreach($fe as $f){
             if(!empty($f->attributes)){
-                if (!empty($f->attributes)) {
+                if (!empty($f->attributes->name)) {
                     $arrHeader[] = $f->attributes->name;
                 }
             }
@@ -142,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
             
 
             $field = explode(",",$dataSet->data[$i]["field_name"]);
-            $fieldval = explode(",",$dataSet->data[$i]["field_value"]);
+            $fieldval = explode("|$$|",$dataSet->data[$i]["field_value"]);
             $jlen = count($field);
             $j = 0;
             if($dataSet->data[$i]["workflowstate"] == ''){

@@ -3011,4 +3011,38 @@ if ($type == 'chkCampaignFromField') {
     echo json_encode($response);
 }
 
+if ($type == 'getClassForSeats') {
+    $cid = implode(',', $val);
+    $pid = $_POST['pid'];
+    $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND  a.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.pupilsightYearGroupID';
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+    // echo '<pre>';
+    // print_r($classes);
+    // echo '</pre>';
+    $data = '<option value="">Select Class</option>';
+    if (!empty($classes)) {
+        foreach ($classes as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
 
+if ($type == 'getAjaxCampSeats') {
+    $ncid = $val;
+    $cid = implode(',', $_POST['clid']);
+    $pid = $_POST['pid'];
+    $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND  a.pupilsightYearGroupID IN (' . $cid . ') GROUP BY a.pupilsightYearGroupID';
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+
+    $data = '<div id="seatdiv" class=" row mb-1 deltr' . $ncid . '"><div class="col-sm  newdes " ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><select id="classSeat" name="seatname[' . $ncid . ']" class="w-full txtfield"><option value="">Select Class</option>';
+    if (!empty($classes)) {
+        foreach ($classes as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    $data .= '</select></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class="dte mb-1"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><input type="number" id="seatallocation" name="seatallocation[' . $ncid . ']" class="w-full txtfield kountseat szewdt"><i style="cursor:pointer;padding: 8px 10px;" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' . $ncid . '"></i></div></div></div></div></div>';
+    echo $data;
+}

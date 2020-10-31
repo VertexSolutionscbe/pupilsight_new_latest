@@ -59,14 +59,6 @@
         $(".showSeats").html('Total Seats : ' + tseat);
     });
 
-    $(document).on('click', '#addSeats', function () {
-        var cid = $(this).attr('data-cid');
-        var ncid = parseInt(cid) + 1;
-        $(this).attr('data-cid', ncid);
-        var design = ' <div id="seatdiv" class=" row mb-1 deltr' + ncid + '"><div class="col-sm  newdes " ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="seatname" name="seatname[' + ncid + ']" class="w-full txtfield"></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class="dte mb-1"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><input type="number" id="seatallocation" name="seatallocation[' + ncid + ']" class="w-full txtfield kountseat szewdt"><i style="cursor:pointer;padding: 8px 10px;" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div></div></div></div>';
-        $("#lastseatdiv").before(design);
-
-    });
 
     $(document).on('click', '#addTransportStops', function () {
         var cid = $(this).attr('data-cid');
@@ -827,15 +819,16 @@
         var aid = $("#applicationId").val();
         var stid = $("#applicationStatus option:selected").val();
         var aname = $("#applicationName").val();
+        var clid = $("#applicationClass option:selected").val();
         if (field != '' && searchby != '') {
             $.ajax({
                 url: 'modules/Campaign/campaignFormListSearch.php',
                 type: 'post',
-                data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid, aid: aid, stid: stid, aname: aname },
+                data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid, aid: aid, stid: stid, aname: aname, clid: clid },
                 async: true,
                 success: function (response) {
-                    $("#expore_tbls").html();
-                    $("#expore_tbls").html(response);
+                    $("#expore_tbl_wrapper").html();
+                    $("#expore_tbl_wrapper").html(response);
                 }
             });
         }
@@ -8407,4 +8400,27 @@ $(document).on('click', '#sendEmailSmsContent', function (e) {
         alert('You Have to Select User.');
 
     }
+});
+
+$(document).on('click', '#addSeats', function () {
+    var cid = $(this).attr('data-cid');
+    var pid = $('#getMultiClassByProgCamp').val();
+    var clid = $("#showMultiClassByProg").val();
+    var type = 'getAjaxCampSeats';
+    var ncid = parseInt(cid) + 1;
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: ncid, type: type, pid: pid, clid: clid },
+        async: true,
+        success: function (response) {
+            $('#addSeats').attr('data-cid', ncid);
+            $("#lastseatdiv").before(response);
+        }
+    });
+    // var ncid = parseInt(cid) + 1;
+    // $(this).attr('data-cid', ncid);
+    // var design = ' <div id="seatdiv" class=" row mb-1 deltr' + ncid + '"><div class="col-sm  newdes " ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="seatname" name="seatname[' + ncid + ']" class="w-full txtfield"></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class="dte mb-1"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><input type="number" id="seatallocation" name="seatallocation[' + ncid + ']" class="w-full txtfield kountseat szewdt"><i style="cursor:pointer;padding: 8px 10px;" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div></div></div></div>';
+    // $("#lastseatdiv").before(design);
+
 });
