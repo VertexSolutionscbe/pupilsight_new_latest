@@ -61,6 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
             $fid = $td['form_id'];
             $pupilsightSchoolYearID = $td['pupilsightSchoolYearID']; 
             $cid = $td['campaign_id'];
+
+            
             foreach($td['tablesubdata'] as $ts=>$tsub){
                 foreach($td['tablecol'] as $t=>$tcol){
                     
@@ -87,41 +89,58 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                             $prog = '';
                             $cls = '';
                         }
+
+                        $sqlchks = 'SELECT seats, used_seats FROM seatmatrix WHERE campaignid = '.$cid.' AND pupilsightYearGroupID = '.$cls.' ';
+                        $resultchks = $connection2->query($sqlchks);
+                        $seatdata = $resultchks->fetch();
+                        if(!empty($seatdata)){
+                            if($seatdata['seats'] == $seatdata['used_seats']){
+                                $chkseats = 1;
+                            } else {
+                                $chkseats = 2;
+                            }
+                        } else {
+                            $chkseats = 2;
+                        }
                         //print_r($coldata);
 
                         //echo $coldata->rowCount();
-                        
-                        if(!empty($chkSts) && !empty($coldata)){
-                            if(strpos($tcol['fluent_form_column_name'], 'father_') !== false){
-                                $colname = 'ft_'.$tcol['column_name'];
-                                $val = $coldata['field_value'];
-                                $tdata[$ts][$colname] = $val;
-                                $tdata[$ts]['ft_pupilsightRoleIDPrimary'] = '004';
-                                $tdata[$ts]['ft_pupilsightRoleIDAll'] = '004';
-                                $cname[$t] = $colname.'=:'.$colname;
-                            } else if(strpos($tcol['fluent_form_column_name'], 'mother_') !== false){
-                                $colname = 'mt_'.$tcol['column_name'];
-                                $val = $coldata['field_value'];
-                                $tdata[$ts][$colname] = $val;
-                                $tdata[$ts]['mt_pupilsightRoleIDPrimary'] = '004';
-                                $tdata[$ts]['mt_pupilsightRoleIDAll'] = '004';
-                                $cname[$t] = $colname.'=:'.$colname;
+                        if($chkseats == 2){
+                            if(!empty($chkSts) && !empty($coldata)){
+                                if(strpos($tcol['fluent_form_column_name'], 'father_') !== false){
+                                    $colname = 'ft_'.$tcol['column_name'];
+                                    $val = $coldata['field_value'];
+                                    $tdata[$ts][$colname] = $val;
+                                    $tdata[$ts]['ft_pupilsightRoleIDPrimary'] = '004';
+                                    $tdata[$ts]['ft_pupilsightRoleIDAll'] = '004';
+                                    $cname[$t] = $colname.'=:'.$colname;
+                                } else if(strpos($tcol['fluent_form_column_name'], 'mother_') !== false){
+                                    $colname = 'mt_'.$tcol['column_name'];
+                                    $val = $coldata['field_value'];
+                                    $tdata[$ts][$colname] = $val;
+                                    $tdata[$ts]['mt_pupilsightRoleIDPrimary'] = '004';
+                                    $tdata[$ts]['mt_pupilsightRoleIDAll'] = '004';
+                                    $cname[$t] = $colname.'=:'.$colname;
+                                } else {
+                                    $colname = 'st_'.$tcol['column_name'];
+                                    $val = $coldata['field_value'];
+                                    $fid = $td['form_id'];
+                                    $tablename = $td['tablename']; 
+                                    $tdata[$ts][$colname] = $val;
+                                    $tdata[$ts]['st_pupilsightRoleIDPrimary'] = '003';
+                                    $tdata[$ts]['st_pupilsightRoleIDAll'] = '003';
+                                    $tdata[$ts]['admission_series_id'] = $td['admission_series_id'];
+                                    $tdata[$ts]['sid'] = $tsub;
+                                    $cname[$t] = $colname.'=:'.$colname;
+                                }
+                                
+                                $chk = '1';
                             } else {
-                                $colname = 'st_'.$tcol['column_name'];
-                                $val = $coldata['field_value'];
-                                $fid = $td['form_id'];
-                                $tablename = $td['tablename']; 
-                                $tdata[$ts][$colname] = $val;
-                                $tdata[$ts]['st_pupilsightRoleIDPrimary'] = '003';
-                                $tdata[$ts]['st_pupilsightRoleIDAll'] = '003';
-                                $tdata[$ts]['admission_series_id'] = $td['admission_series_id'];
-                                $tdata[$ts]['sid'] = $tsub;
-                                $cname[$t] = $colname.'=:'.$colname;
+                                $chk = '2';
                             }
-                            
-                            $chk = '1';
                         } else {
-                            $chk = '2';
+                            echo 'fail';
+                            die();
                         }
                 }
             }
@@ -300,6 +319,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                     $sqlupd = "UPDATE wp_fluentform_entry_details SET status=:status WHERE submission_id=:submission_id";
                     $resultupd = $connection2->prepare($sqlupd);
                     $resultupd->execute($wdata);
+
+                    $sqlchks = 'SELECT seats, used_seats FROM seatmatrix WHERE campaignid = '.$cid.' AND pupilsightYearGroupID = '.$cls.' ';
+                    $resultchks = $connection2->query($sqlchks);
+                    $seatdata = $resultchks->fetch();
+                    
+                    if(!empty($seatdata)){
+                        $totalSeats = $seatdata['seats'];
+                        if(!empty($seatdata['used_seats'])){
+                            $used_seats = $seatdata['used_seats'] + 1;
+                        } else {
+                            $used_seats = 1;
+                        }
+                        
+                        $remaining_seats = $totalSeats - $used_seats;
+                        $wdata = array('used_seats' => $used_seats, 'remaining_seats'=> $remaining_seats, 'campaignid' => $cid, 'pupilsightYearGroupID' => $cls);
+                        $sqlupd = "UPDATE seatmatrix SET used_seats=:used_seats, remaining_seats=:remaining_seats WHERE campaignid=:campaignid AND pupilsightYearGroupID=:pupilsightYearGroupID";
+                        $resultupd = $connection2->prepare($sqlupd);
+                        $resultupd->execute($wdata);
+                    } 
+                    
+
+                    
+
                     
                 }
                 
@@ -310,7 +352,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
            
             echo 'success';
     }
-  // die();
+   //die();
                
     //$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/transitionsList.php';
     

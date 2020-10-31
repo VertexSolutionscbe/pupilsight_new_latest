@@ -29,10 +29,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     $application_id = $_POST['aid'];
     $applicationStatus = $_POST['stid'];
     $applicantName = $_POST['aname'];
+    $applicantClass = $_POST['clid'];
 
     $admissionGateway = $container->get(AdmissionGateway::class);
     $criteria = $admissionGateway->newQueryCriteria()
     //->searchBy($admissionGateway->getSearchableColumns(), $search)
+    ->pageSize(5000)
     ->sortBy(['id'])
     ->fromPOST();
 
@@ -85,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     }
     
    
-    $dataSet = $admissionGateway->getSearchCampaignFormList($criteria, $submissionIds, $application_id, $applicationStatus);
+    $dataSet = $admissionGateway->getSearchCampaignFormList($criteria, $submissionIds, $application_id, $applicationStatus, $applicantClass);
     // echo '<pre>';
     // print_r($dataSet);
     // echo '</pre>';
@@ -93,8 +95,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     $arrHeader = array();
     foreach($field as $fe){
         foreach($fe as $f){
-            if (!empty($f->attributes)) {
-                if ($f->attributes->name == 'student_name' || $f->attributes->class == 'show-in-grid') {
+            if (!empty($f->attributes) && $f->attributes->name == 'student_name') {
+                $arrHeader[] = $f->attributes->name;
+            }
+            if (!empty($f->attributes) && !empty($f->attributes->class)) {
+                if ($f->attributes->class == 'show-in-grid') {
                     $arrHeader[] = $f->attributes->name;
                 }
             }
@@ -148,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
             
 
             $field = explode(",",$dataSet->data[$i]["field_name"]);
-            $fieldval = explode(",",$dataSet->data[$i]["field_value"]);
+            $fieldval = explode("|$$|",$dataSet->data[$i]["field_value"]);
             $jlen = count($field);
             $j = 0;
             if($dataSet->data[$i]["workflowstate"] == ''){

@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $formId = '';
     if (isset($_REQUEST['id']) ? $id = $_REQUEST['id'] : $id = "");
 
-    $sql1 = 'Select form_id, name FROM campaign WHERE id = ' . $id . ' ';
+    $sql1 = 'Select form_id, name, classes FROM campaign WHERE id = ' . $id . ' ';
     $resultval1 = $connection2->query($sql1);
     $formid = $resultval1->fetch();
     //  echo $formid['form_id'];
@@ -55,6 +55,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $formId = $formid['form_id'];
 
     $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+    $sql = 'SELECT pupilsightYearGroupID, name FROM  pupilsightYearGroup  WHERE pupilsightYearGroupID IN (' . $formid['classes'] . ') ';
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+
+   
+    $class = '<select class="" id="applicationClass" ><option value="">Select Class</option>';
+    foreach ($classes as $st) {
+        $class .= '<option value="' . $st['pupilsightYearGroupID'] . '" >' . $st['name'] . '</option>';
+    }
+    $class .= '</select>';
 
     $admissionGateway = $container->get(AdmissionGateway::class);
     $criteria = $admissionGateway->newQueryCriteria()
@@ -181,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         <input type="text" id="applicationName" style="height: 36px;" name="applicationName" class=""  placeholder="Application Name" >&nbsp;
         <input type="text" id="applicationId" style="height: 36px;" name="application_id" class=""  placeholder="Application No" >&nbsp;
         ' . $statefields . ' &nbsp;
-        
+        ' . $class . ' &nbsp;
         <button id="filterCampaign" style="height: 36px;" class="btn btn-primary">Search</button>
          
         </div>
@@ -201,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $arrHeader = array();
     foreach ($field as $fe) {
         foreach ($fe as $f) {
-            if ($f->attributes->name == 'student_name') {
+            if (!empty($f->attributes) && $f->attributes->name == 'student_name') {
                 $arrHeader[] = $f->attributes->name;
             }
             if (!empty($f->attributes) && !empty($f->attributes->class)) {
@@ -671,6 +682,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         $("#filterCampaign").click();
     });
 
+    $(document).on('change', '#applicationClass', function(e) {
+        $("#filterCampaign").click();
+    });
+
     $(document).on('click', "#saveApplicant", function() {
         var favorite = [];
         $.each($("input[name='submission_id[]']:checked"), function() {
@@ -685,8 +700,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 data: { subid: submit_id},
                 async: true,
                 success: function(response) {
-                    alert('Your Applicant Admitted Successfully! Click Ok to Continue');
-                    location.reload();
+                    if(response == 'fail'){
+                        alert('Seats are Full!');
+                    } else {
+                        alert('Your Applicant Admitted Successfully! Click Ok to Continue');
+                        location.reload();
+                    }
+                    
                 }
             });
         } else {

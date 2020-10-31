@@ -49,12 +49,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
     if (isset($_REQUEST['tid']) ? $tid = $_REQUEST['tid'] : $tid = "");
 
-    $sql1 = 'Select offline_form_id, name, offline_template_filename FROM campaign WHERE id = ' . $id . ' ';
+    $sql1 = 'Select offline_form_id, name, offline_template_filename, classes FROM campaign WHERE id = ' . $id . ' ';
     $resultval1 = $connection2->query($sql1);
     $formid = $resultval1->fetch();
     //  echo $formid['form_id'];
     //  die();
     $formId = $formid['offline_form_id'];
+
+    $sql = 'SELECT pupilsightYearGroupID, name FROM  pupilsightYearGroup  WHERE pupilsightYearGroupID IN (' . $formid['classes'] . ') ';
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+
+   
+    $class = '<select class="" id="applicationClass" ><option value="">Select Class</option>';
+    foreach ($classes as $st) {
+        $class .= '<option value="' . $st['pupilsightYearGroupID'] . '" >' . $st['name'] . '</option>';
+    }
+    $class .= '</select>';
 
 
     $search = isset($_GET['search']) ? $_GET['search'] : '';
@@ -191,6 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             echo $showfields2 = '<select id="showfield2" class="filterCampaign" style="display:none;height: 36px;"><option>Select Search Criteria</option><option value="search">Search</option><option value="range">Range</option></select><input type="text" class="filterCampaign searchOpen searchby" name="searchby" id="" placeholder="Enter Your Search Data" style="display:none;height: 36px;"><input type="text" id="range1" name="rangestart" class="rangeOpen filterCampaign searchby" placeholder="Enter Your Start Range" style="display:none;height: 36px;"><input type="text" name="rangeend" class="rangeOpen filterCampaign searchby" id="range2" placeholder="Enter Your End Range" style="display:none;height: 36px;"><input type="hidden" id="campaignId" value=' . $id . '><input type="hidden" id="formId" value=' . $formId . '>
         <input type="text" id="applicationName" style="height: 36px;" name="applicationName" class=""  placeholder="Application Name" >&nbsp;
         <input type="text" id="applicationId" style="height: 36px;" name="application_id" class=""  placeholder="Application No" >&nbsp;
+        ' . $class . ' &nbsp;
         
         <button id="offlinefilterCampaign" style="height: 36px;" class="btn btn-primary">Search</button>
         
@@ -632,6 +644,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         var aid = $("#applicationId").val();
         var stid = $("#applicationStatus option:selected").val();
         var aname = $("#applicationName").val();
+        var clid = $("#applicationClass option:selected").val();
         if (field != '' && searchby != '') {
             $.ajax({
                 url: 'modules/Campaign/offline_campaignFormListSearch.php',
@@ -646,12 +659,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                     fid: fid,
                     aid: aid,
                     stid: stid,
-                    aname: aname
+                    aname: aname,
+                    clid: clid
                 },
                 async: true,
                 success: function(response) {
-                    $("#expore_tbls").html();
-                    $("#expore_tbls").html(response);
+                    $("#expore_tbl_wrapper").html();
+                    $("#expore_tbl_wrapper").html(response);
                 }
             });
         }
@@ -745,6 +759,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         if(key == 13){
             $("#offlinefilterCampaign").click();
         }
+    });
+
+    $(document).on('change', '#applicationClass', function(e) {
+        $("#offlinefilterCampaign").click();
     });
 
     // $(document).on('change', '#applicationStatus', function(e) {

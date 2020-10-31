@@ -11,352 +11,499 @@ class __TwigTemplate_0f9a892c2c5b014d6b8f3c7503ffdcba9f8836c013c367351ddd9a25c84
 
         $this->source = $this->getSourceContext();
 
-        // line 8
-        $this->parent = $this->loadTemplate("components/dataTable.twig.html", "components/paginatedTable.twig.html", 8);
+        $this->parent = false;
+
         $this->blocks = array(
             'table' => array($this, 'block_table'),
             'header' => array($this, 'block_header'),
+            'blankslate' => array($this, 'block_blankslate'),
+            'tableInner' => array($this, 'block_tableInner'),
             'footer' => array($this, 'block_footer'),
-            'filters' => array($this, 'block_filters'),
-            'pageCount' => array($this, 'block_pageCount'),
-            'pagination' => array($this, 'block_pagination'),
-            'bulkActions' => array($this, 'block_bulkActions'),
         );
-    }
-
-    protected function doGetParent(array $context)
-    {
-        return "components/dataTable.twig.html";
     }
 
     protected function doDisplay(array $context, array $blocks = array())
     {
-        $this->parent->display($context, array_merge($this->blocks, $blocks));
+        // line 1
+        if (twig_get_attribute($this->env, $this->source, ($context["table"] ?? null), "getTitle", array())) {
+            // line 2
+            echo "<h2>";
+            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["table"] ?? null), "getTitle", array()), "html", null, true);
+            echo "</h2>
+";
+        }
+        // line 3
+        echo " ";
+        if (twig_get_attribute($this->env, $this->source, ($context["table"] ?? null), "getDescription", array())) {
+            // line 4
+            echo "<p>";
+            echo twig_get_attribute($this->env, $this->source, ($context["table"] ?? null), "getDescription", array());
+            echo "</p>
+";
+        }
+        // line 5
+        echo " ";
+        $this->displayBlock('table', $context, $blocks);
+        // line 166
+        echo "<script>
+    \$(document).ready( function () {
+        \$('#expore_tbl').DataTable({
+            \"pageLength\": 25,
+            \"lengthMenu\": [[10, 25, 50, 250, -1], [10, 25, 50, 250, \"All\"]],
+            \"sDom\": '<\"top\"lfp>rt<\"bottom\"ip><\"clear\">'
+        });
+        \$(\".dataTables_length\" ).find(\"select\").css(\"width\",\"90px\");
+        \$(\".dataTables_length\" ).find(\"select\").css(\"display\",\"inline-block\");
+    });
+</script>";
     }
 
+    // line 5
     public function block_table($context, array $blocks = array())
     {
-        // line 9
-        echo "<div id=\"";
-        echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["table"] ?? null), "getID", array()), "html", null, true);
-        echo "\" style=\"width:100%\">
-    <div class=\"dataTable\" data-results=\"";
-        // line 10
-        echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getResultCount", array()), "html", null, true);
-        echo "\">
-        ";
-        // line 11
-        $this->displayParentBlock("table", $context, $blocks);
+        // line 6
         echo "
-    </div>
-</div>
+<header class=\"relative\">
+    ";
+        // line 8
+        $this->displayBlock('header', $context, $blocks);
+        // line 13
+        echo "</header>
 
 ";
         // line 15
-        $this->displayBlock("bulkActions", $context, $blocks);
-        echo "
-
-<script>
-    \$(function () {
-        \$('#";
-        // line 19
-        echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["table"] ?? null), "getID", array()), "html", null, true);
-        echo "').pupilsightDataTable('";
-        echo ($context["path"] ?? null);
-        echo "', ";
-        echo ($context["jsonData"] ?? null);
-        echo ", '";
-        echo twig_escape_filter($this->env, ($context["identifier"] ?? null), "html", null, true);
-        echo "');
-    });
-</script>
-";
-    }
-
-    // line 22
-    public function block_header($context, array $blocks = array())
-    {
-        // line 23
-        echo "<div class=\"flex items-end justify-between pb-2\">
-    <div class=\"\">
-        ";
-        // line 25
-        $this->displayBlock("pageCount", $context, $blocks);
-        echo "
-    </div>
-
+        if ((( !($context["rows"] ?? null) &&  !($context["isFiltered"] ?? null)) && (twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getResultCount", array()) == 0))) {
+            // line 16
+            echo "<!-- <div class=\"h-48 rounded-sm border bg-gray shadow-inner overflow-hidden\">
     ";
-        // line 28
-        $this->displayParentBlock("header", $context, $blocks);
-        echo "
-</div>
-
-";
-        // line 31
-        if ((twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getTotalCount", array()) > 0)) {
-            // line 32
-            echo "<div class=\"flex flex-wrap sm:flex-no-wrap items-stretch justify-between\">
-    <div class=\"flex items-stretch h-full\">
-        ";
-            // line 34
-            if (($context["pageSize"] ?? null)) {
-                // line 35
-                echo "        <div class=\"relative mr-1\">
-            <div class=\"absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none\"></div>
+            // line 17
+            $this->displayBlock('blankslate', $context, $blocks);
+            // line 22
+            echo "</div> -->
+<div class=\"table-responsive dataTables_wrapper \">
+    <table class=\"table\" id=\"expore_tbls\">
+        <!--<div class=\"overflow-x-auto overflow-y-visible\">
+            <table class=\"";
+            // line 26
+            echo twig_escape_filter($this->env, ($context["class"] ?? null), "html", null, true);
+            echo " w-full\" cellspacing=0>-->
+        <thead>
             ";
-                // line 37
-                echo ($context["pageSize"] ?? null);
-                echo "
-        </div>
-        ";
-            }
-            // line 39
-            echo " ";
-            if (($context["filterOptions"] ?? null)) {
-                // line 40
-                echo "        <div class=\"relative\">
-            <div class=\"absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none\"></div>
-            ";
-                // line 42
-                echo ($context["filterOptions"] ?? null);
-                echo "
-        </div>
-        ";
-            }
-            // line 44
-            echo " ";
-            if ((($context["filterCriteria"] ?? null) && ($context["filterOptions"] ?? null))) {
-                // line 45
-                echo "        <nav class=\"flex cursor-default\" style='height: 36px;line-height: 20px;margin-top: 16px;'>
-            ";
-                // line 46
-                $this->displayBlock("filters", $context, $blocks);
-                echo "
-        </nav>
-        ";
-            }
-            // line 49
-            echo "    </div>
-
-    ";
-            // line 51
-            $this->displayBlock("pagination", $context, $blocks);
-            echo "
-</div>
-";
-        }
-        // line 53
-        echo " ";
-    }
-
-    public function block_footer($context, array $blocks = array())
-    {
-        // line 54
-        echo "<!-- ";
-        if ((twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getResultCount", array()) > twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getPageSize", array()))) {
-            // line 55
-            echo "    <div class=\"flex flex-col sm:flex-row sm:items-end justify-end mt-2\">
-        ";
-            // line 56
-            $this->displayBlock("pagination", $context, $blocks);
-            echo "
-    </div>
-    ";
-        }
-        // line 58
-        echo " -->
-";
-    }
-
-    // line 59
-    public function block_filters($context, array $blocks = array())
-    {
-        echo " ";
-        $context['_parent'] = $context;
-        $context['_seq'] = twig_ensure_traversable(($context["filterCriteria"] ?? null));
-        foreach ($context['_seq'] as $context["name"] => $context["label"]) {
-            // line 60
-            echo "<a href=\"javascript:void()\" class=\"filter -mx-px py-2 px-3 border border-blue bg-blue hover:bg-blue z-10   font-bold\"
-    data-filter=\"";
-            // line 61
-            echo twig_escape_filter($this->env, $context["name"], "html", null, true);
-            echo "\">
-    ";
-            // line 62
-            echo $context["label"];
-            echo "
-</a> ";
-        }
-        $_parent = $context['_parent'];
-        unset($context['_seq'], $context['_iterated'], $context['name'], $context['label'], $context['_parent'], $context['loop']);
-        $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 64
-        echo "
-<a href=\"javascript:void()\" class=\"filter p-2 rounded-r border border-gray   bg-gray font-bold hover:bg-gray clear\">
-    ";
-        // line 66
-        echo twig_escape_filter($this->env, call_user_func_array($this->env->getFunction('__')->getCallable(), array("Clear")), "html", null, true);
-        echo "
-</a> ";
-    }
-
-    // line 67
-    public function block_pageCount($context, array $blocks = array())
-    {
-        echo " ";
-        if ((twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getTotalCount", array()) > 0)) {
-            // line 68
-            echo "<!-- <div class=\"text-xs\">
-        ";
-            // line 69
-            echo twig_escape_filter($this->env, ((($context["searchText"] ?? null)) ? ((call_user_func_array($this->env->getFunction('__')->getCallable(), array("Search")) . " ")) : ("")), "html", null, true);
-            echo "
-
-        ";
-            // line 71
-            echo twig_escape_filter($this->env, ((twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "isSubset", array())) ? (call_user_func_array($this->env->getFunction('__')->getCallable(), array("Results"))) : (call_user_func_array($this->env->getFunction('__')->getCallable(), array("Records")))), "html", null, true);
-            echo "
-
-        ";
-            // line 73
-            if ((twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "count", array()) > 0)) {
-                // line 74
-                echo "            ";
-                echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getPageFrom", array()), "html", null, true);
-                echo "-";
-                echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getPageTo", array()), "html", null, true);
-                echo " ";
-                echo twig_escape_filter($this->env, call_user_func_array($this->env->getFunction('__')->getCallable(), array("of")), "html", null, true);
-                echo "
-        ";
-            }
-            // line 75
-            echo " 
-        
-        ";
-            // line 77
-            echo twig_escape_filter($this->env, twig_number_format_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getResultCount", array())), "html", null, true);
-            echo "
-    </div> -->
-";
-        }
-        // line 79
-        echo " ";
-    }
-
-    public function block_pagination($context, array $blocks = array())
-    {
-        // line 80
-        $context["buttonStyle"] = "border -ml-px px-2 py-1 font-bold leading-loose";
-        // line 81
-        if (((twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getResultCount", array()) > twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getPageSize", array())) || ($context["filterOptions"] ?? null))) {
-            // line 82
-            echo "<div class=\"pagination mb-2\">
-    <a href=\"javascript:void()\"
-        class=\"ml-1 padipag2  prv paginate rounded-l   bg-gray border-gray ";
-            // line 84
-            echo (( !twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "isFirstPage", array())) ? ("hover:bg-gray") : (""));
-            echo " ";
-            echo twig_escape_filter($this->env, ($context["buttonStyle"] ?? null), "html", null, true);
-            echo "\"
-        data-page=\"";
-            // line 85
-            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getPrevPageNumber", array()), "html", null, true);
-            echo "\" ";
-            echo ((twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "isFirstPage", array())) ? ("disabled") : (""));
-            // line 86
-            echo ">
-        ";
-            // line 87
-            echo twig_escape_filter($this->env, call_user_func_array($this->env->getFunction('__')->getCallable(), array("Prev")), "html", null, true);
-            echo "
-    </a>";
-            // line 88
+            // line 28
             $context['_parent'] = $context;
-            $context['_seq'] = twig_ensure_traversable(twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getPaginatedRange", array()));
-            foreach ($context['_seq'] as $context["_key"] => $context["page"]) {
-                if (($context["page"] == "...")) {
-                    // line 89
-                    echo "<a href=\"javascript:void()\" class=\"ml-1 padipag2  prv ";
-                    echo twig_escape_filter($this->env, ($context["buttonStyle"] ?? null), "html", null, true);
-                    echo "\" disabled>...</a>";
-                } else {
-                    // line 90
-                    echo "<a href=\"javascript:void()\"
-        class=\"ml-1 padipag2  prv paginate ";
-                    // line 91
-                    echo twig_escape_filter($this->env, ($context["buttonStyle"] ?? null), "html", null, true);
+            $context['_seq'] = twig_ensure_traversable(($context["headers"] ?? null));
+            foreach ($context['_seq'] as $context["_key"] => $context["headerRow"]) {
+                // line 29
+                echo "            <tr>
+                ";
+                // line 30
+                $context['_parent'] = $context;
+                $context['_seq'] = twig_ensure_traversable(($context["columns"] ?? null));
+                foreach ($context['_seq'] as $context["columnIndex"] => $context["column"]) {
                     echo " ";
-                    echo ((($context["page"] == twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getPage", array()))) ? ("bg-blue border-blue  text-active relative z-10") : ("text-gray hover:bg-gray border-gray"));
-                    echo "\"
-        data-page=\"";
-                    // line 92
-                    echo twig_escape_filter($this->env, $context["page"], "html", null, true);
-                    echo "\">";
-                    echo twig_escape_filter($this->env, $context["page"], "html", null, true);
-                    echo "</a>";
+                    $context["th"] = (($__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5 = $context["headerRow"]) && is_array($__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5) || $__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5 instanceof ArrayAccess ? ($__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5[$context["columnIndex"]] ?? null) : null);
+                    echo " ";
+                    if (($context["th"] ?? null)) {
+                        // line 31
+                        echo "                <th ";
+                        echo twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getAttributeString", array());
+                        echo ">
+                    ";
+                        // line 32
+                        echo twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getOutput", array());
+                        echo " ";
+                        if (twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getData", array(0 => "description"), "method")) {
+                            echo " ";
+                            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getData", array(0 => "description"), "method"), "html", null, true);
+                            echo "
+                    ";
+                        }
+                        // line 34
+                        echo "                </th>
+                ";
+                    }
+                    // line 35
+                    echo " ";
                 }
+                $_parent = $context['_parent'];
+                unset($context['_seq'], $context['_iterated'], $context['columnIndex'], $context['column'], $context['_parent'], $context['loop']);
+                $context = array_intersect_key($context, $_parent) + $_parent;
+                // line 36
+                echo "            </tr>
+            ";
             }
             $_parent = $context['_parent'];
-            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['page'], $context['_parent'], $context['loop']);
+            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['headerRow'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 94
-            echo "<a href=\"javascript:void()\"
-        class=\"ml-1 padipag2  prv paginate rounded-r text-gray border-gray ";
-            // line 95
-            echo (( !twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "isLastPage", array())) ? ("hover:bg-gray") : (""));
-            echo " ";
-            echo twig_escape_filter($this->env, ($context["buttonStyle"] ?? null), "html", null, true);
-            echo "\"
-        data-page=\"";
-            // line 96
-            echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "getNextPageNumber", array()), "html", null, true);
-            echo "\" ";
-            echo ((twig_get_attribute($this->env, $this->source, ($context["dataSet"] ?? null), "isLastPage", array())) ? ("disabled") : (""));
-            echo ">
-        ";
-            // line 97
-            echo twig_escape_filter($this->env, call_user_func_array($this->env->getFunction('__')->getCallable(), array("Next")), "html", null, true);
+            // line 38
             echo "
-    </a>
+        </thead>
+        <tbody>
+
+        </tbody>
+
+    </table>
+
 </div>
 ";
+        } else {
+            // line 47
+            echo " ";
+            $this->displayBlock('tableInner', $context, $blocks);
+            // line 159
+            echo " ";
         }
-        // line 100
+        // line 160
+        echo "
+<footer>
+    ";
+        // line 162
+        $this->displayBlock('footer', $context, $blocks);
+        // line 163
+        echo "</footer>
+
+";
+    }
+
+    // line 8
+    public function block_header($context, array $blocks = array())
+    {
+        echo " ";
+        if (twig_get_attribute($this->env, $this->source, ($context["table"] ?? null), "getHeader", array())) {
+            // line 9
+            echo "    <div class=\"linkTop\">
+        ";
+            // line 10
+            $context['_parent'] = $context;
+            $context['_seq'] = twig_ensure_traversable(twig_get_attribute($this->env, $this->source, ($context["table"] ?? null), "getHeader", array()));
+            foreach ($context['_seq'] as $context["_key"] => $context["action"]) {
+                echo " ";
+                echo twig_get_attribute($this->env, $this->source, $context["action"], "getOutput", array());
+                echo " ";
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['action'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 11
+            echo "    </div>
+    ";
+        }
+        // line 12
         echo " ";
     }
 
-    public function block_bulkActions($context, array $blocks = array())
+    // line 17
+    public function block_blankslate($context, array $blocks = array())
     {
-        echo " ";
-        if (($context["bulkActions"] ?? null)) {
-            // line 101
-            echo "<div
-    class=\"bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple rounded-t z-20\">
-    <div class=\"bulkActionCount flex-grow   text-sm text-right pr-3\">
-        <span>0</span> ";
-            // line 104
-            echo twig_escape_filter($this->env, call_user_func_array($this->env->getFunction('__')->getCallable(), array("Selected")), "html", null, true);
-            echo "
-    </div>
+        // line 18
+        echo "    <div class=\"w-full h-full flex flex-col items-center justify-center text-gray text-lg\">
+        ";
+        // line 19
+        if (($context["isFiltered"] ?? null)) {
+            echo " ";
+            echo twig_escape_filter($this->env, call_user_func_array($this->env->getFunction('__')->getCallable(), array("No results matched your search.")), "html", null, true);
+            echo " ";
+        } elseif (($context["blankSlate"] ?? null)) {
+            echo " ";
+            echo ($context["blankSlate"] ?? null);
+            echo " ";
+        } else {
+            echo " ";
+            echo twig_escape_filter($this->env, call_user_func_array($this->env->getFunction('__')->getCallable(), array("There are no records to display.")), "html", null, true);
+            echo " ";
+        }
+        // line 20
+        echo "    </div>
+    ";
+    }
+
+    // line 47
+    public function block_tableInner($context, array $blocks = array())
+    {
+        // line 48
+        echo "
+";
+        // line 49
+        if ((twig_length_filter($this->env, ($context["headers"] ?? null)) > 0)) {
+            // line 50
+            echo "<style>
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+    }
+    tr {
+        border: 1px solid #ccc !important;
+    }
+    .p-2 {
+        padding: 0 !important;
+    }
+    .dataTables_wrapper .table tbody tr td, td {
+        /* Behave  like a \"row\" */
+        border: none !important;
+        border-bottom: 1px solid #eee;
+        position: relative !important;
+        padding-left: 50% !important;
+    }
+    td:before {
+        /* Now like a table header */
+        position: absolute !important;
+        /* Top/left values mimic padding */
+        top: 6px !important;
+        left: 6px !important;
+        width: 45% !important;
+        padding-right: 10px !important;
+        white-space: nowrap !important;
+    }
 
     ";
-            // line 107
-            echo twig_get_attribute($this->env, $this->source, ($context["bulkActions"] ?? null), "getOutput", array());
-            echo "
-
-    <script>
-        {
-            {
-                bulkActions.getValidationOutput | raw
+            // line 86
+            $context['_parent'] = $context;
+            $context['_seq'] = twig_ensure_traversable(($context["headers"] ?? null));
+            foreach ($context['_seq'] as $context["_key"] => $context["headerRow"]) {
+                // line 87
+                echo "                ";
+                $context['_parent'] = $context;
+                $context['_seq'] = twig_ensure_traversable(($context["columns"] ?? null));
+                foreach ($context['_seq'] as $context["columnIndex"] => $context["column"]) {
+                    echo " ";
+                    $context["th"] = (($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a = $context["headerRow"]) && is_array($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a) || $__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a instanceof ArrayAccess ? ($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a[$context["columnIndex"]] ?? null) : null);
+                    echo " ";
+                    if (($context["th"] ?? null)) {
+                        // line 88
+                        echo "                td:nth-of-type(";
+                        echo twig_escape_filter($this->env, ($context["columnIndex"] + 1), "html", null, true);
+                        echo "):before {
+                    content: \"";
+                        // line 89
+                        echo twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getOutput", array());
+                        echo "\";
+                }
+                ";
+                    }
+                    // line 91
+                    echo " ";
+                }
+                $_parent = $context['_parent'];
+                unset($context['_seq'], $context['_iterated'], $context['columnIndex'], $context['column'], $context['_parent'], $context['loop']);
+                $context = array_intersect_key($context, $_parent) + $_parent;
+                // line 92
+                echo "    ";
             }
-        }
-    </script>
-</div>
-<div class='float-none'></div>
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_iterated'], $context['_key'], $context['headerRow'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 93
+            echo "}
+</style>
 ";
         }
-        // line 118
+        // line 96
+        echo "<div class=\"table-responsive dataTables_wrapper\">
+    <table class=\"table\" id=\"expore_tbl\">
+        <!--<div class=\"overflow-x-auto overflow-y-visible\">
+            <table class=\"";
+        // line 99
+        echo twig_escape_filter($this->env, ($context["class"] ?? null), "html", null, true);
+        echo " w-full\" cellspacing=0>-->
+        <thead>
+            ";
+        // line 101
+        $context['_parent'] = $context;
+        $context['_seq'] = twig_ensure_traversable(($context["headers"] ?? null));
+        foreach ($context['_seq'] as $context["_key"] => $context["headerRow"]) {
+            // line 102
+            echo "            <tr>
+                ";
+            // line 103
+            $context['_parent'] = $context;
+            $context['_seq'] = twig_ensure_traversable(($context["columns"] ?? null));
+            foreach ($context['_seq'] as $context["columnIndex"] => $context["column"]) {
+                echo " ";
+                $context["th"] = (($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57 = $context["headerRow"]) && is_array($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57) || $__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57 instanceof ArrayAccess ? ($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57[$context["columnIndex"]] ?? null) : null);
+                echo " ";
+                if (($context["th"] ?? null)) {
+                    // line 104
+                    echo "                <th ";
+                    echo twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getAttributeString", array());
+                    echo ">
+                    ";
+                    // line 105
+                    echo twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getOutput", array());
+                    echo " ";
+                    if (twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getData", array(0 => "description"), "method")) {
+                        echo " ";
+                        echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, ($context["th"] ?? null), "getData", array(0 => "description"), "method"), "html", null, true);
+                        echo "
+                    ";
+                    }
+                    // line 107
+                    echo "                </th>
+                ";
+                }
+                // line 108
+                echo " ";
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_iterated'], $context['columnIndex'], $context['column'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 109
+            echo "            </tr>
+            ";
+        }
+        $_parent = $context['_parent'];
+        unset($context['_seq'], $context['_iterated'], $context['_key'], $context['headerRow'], $context['_parent'], $context['loop']);
+        $context = array_intersect_key($context, $_parent) + $_parent;
+        // line 111
+        echo "
+        </thead>
+        <tbody>
+            ";
+        // line 114
+        if (( !($context["rows"] ?? null) && ($context["isFiltered"] ?? null))) {
+            // line 115
+            echo "            <tr class=\"h-48 bg-gray shadow-inner\">
+                <td class=\"p-0\" colspan=\"";
+            // line 116
+            echo twig_escape_filter($this->env, twig_length_filter($this->env, ($context["columns"] ?? null)), "html", null, true);
+            echo "\">
+                    ";
+            // line 117
+            $this->displayBlock("blankslate", $context, $blocks);
+            echo "
+                </td>
+            </tr>
+            ";
+        }
+        // line 120
+        echo " ";
+        $context['_parent'] = $context;
+        $context['_seq'] = twig_ensure_traversable(($context["rows"] ?? null));
+        foreach ($context['_seq'] as $context["rowIndex"] => $context["rowData"]) {
+            echo " ";
+            $context["row"] = twig_get_attribute($this->env, $this->source, $context["rowData"], "row", array());
+            // line 121
+            echo "
+            <tr ";
+            // line 122
+            echo twig_get_attribute($this->env, $this->source, ($context["row"] ?? null), "getAttributeString", array());
+            echo ">
+                ";
+            // line 123
+            echo twig_get_attribute($this->env, $this->source, ($context["row"] ?? null), "getPrepended", array());
+            echo " ";
+            $context['_parent'] = $context;
+            $context['_seq'] = twig_ensure_traversable(($context["columns"] ?? null));
+            foreach ($context['_seq'] as $context["columnIndex"] => $context["column"]) {
+                // line 124
+                echo "                ";
+                $context["cell"] = (($__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9 = twig_get_attribute($this->env, $this->source, $context["rowData"], "cells", array())) && is_array($__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9) || $__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9 instanceof ArrayAccess ? ($__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9[$context["columnIndex"]] ?? null) : null);
+                // line 125
+                echo "
+                <td ";
+                // line 126
+                echo twig_get_attribute($this->env, $this->source, ($context["cell"] ?? null), "getAttributeString", array());
+                echo ">
+                    ";
+                // line 127
+                echo twig_get_attribute($this->env, $this->source, ($context["cell"] ?? null), "getPrepended", array());
+                echo " ";
+                if ((twig_get_attribute($this->env, $this->source, $context["column"], "getID", array()) == "actions")) {
+                    // line 128
+                    echo "                    <nav class=\"relative group\">
+                        ";
+                    // line 129
+                    twig_get_attribute($this->env, $this->source, $context["column"], "getOutput", array(0 => twig_get_attribute($this->env, $this->source, $context["rowData"], "data", array())), "method");
+                    echo " ";
+                    $context["actions"] = twig_get_attribute($this->env, $this->source, $context["column"], "getActions", array());
+                    // line 130
+                    echo "
+                        <div
+                            class=\"";
+                    // line 132
+                    echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["column"], "getClass", array(), "method"), "html", null, true);
+                    echo " ";
+                    echo (((twig_length_filter($this->env, ($context["actions"] ?? null)) == 1)) ? ("flex -m-2 sm:m-0") : ("hidden-1 group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded  sm:shadow-none sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10"));
+                    echo "\">
+                            ";
+                    // line 133
+                    $context['_parent'] = $context;
+                    $context['_seq'] = twig_ensure_traversable(($context["actions"] ?? null));
+                    foreach ($context['_seq'] as $context["actionName"] => $context["action"]) {
+                        echo " ";
+                        twig_get_attribute($this->env, $this->source, $context["action"], "addClass", array(0 => ""), "method");
+                        // line 134
+                        echo "                            ";
+                        echo twig_get_attribute($this->env, $this->source, $context["action"], "getOutput", array(0 => twig_get_attribute($this->env, $this->source, $context["rowData"], "data", array()), 1 => twig_get_attribute($this->env, $this->source, $context["column"], "getParams", array())), "method");
+                        echo " ";
+                    }
+                    $_parent = $context['_parent'];
+                    unset($context['_seq'], $context['_iterated'], $context['actionName'], $context['action'], $context['_parent'], $context['loop']);
+                    $context = array_intersect_key($context, $_parent) + $_parent;
+                    // line 135
+                    echo "                        </div>
+
+                        ";
+                    // line 137
+                    if ((twig_length_filter($this->env, ($context["actions"] ?? null)) > 1)) {
+                        // line 138
+                        echo "                        <!--
+<button class=\"block sm:hidden rounded mx-auto my-1 px-1 py-2 bg-gray text-2xl text-gray font-sans font-bold leading-none\" onClick=\"event.preventDefault();\" onTouchEnd=\"event.preventDefault();\">
+                            <span class=\"block -mt-3\">...</span>
+                        </button> 
+                        -->
+
+                        ";
+                    }
+                    // line 145
+                    echo "                    </nav>
+
+                    ";
+                } else {
+                    // line 147
+                    echo " ";
+                    echo twig_get_attribute($this->env, $this->source, $context["column"], "getOutput", array(0 => twig_get_attribute($this->env, $this->source, $context["rowData"], "data", array())), "method");
+                    echo "&nbsp; ";
+                }
+                echo " ";
+                echo twig_get_attribute($this->env, $this->source, ($context["cell"] ?? null), "getAppended", array());
+                echo "
+                </td>
+                ";
+            }
+            $_parent = $context['_parent'];
+            unset($context['_seq'], $context['_iterated'], $context['columnIndex'], $context['column'], $context['_parent'], $context['loop']);
+            $context = array_intersect_key($context, $_parent) + $_parent;
+            // line 149
+            echo " ";
+            echo twig_get_attribute($this->env, $this->source, ($context["row"] ?? null), "getAppended", array());
+            echo "
+            </tr>
+            ";
+        }
+        $_parent = $context['_parent'];
+        unset($context['_seq'], $context['_iterated'], $context['rowIndex'], $context['rowData'], $context['_parent'], $context['loop']);
+        $context = array_intersect_key($context, $_parent) + $_parent;
+        // line 152
+        echo "        </tbody>
+
+    </table>
+</div>
+
+
+
+";
+    }
+
+    // line 162
+    public function block_footer($context, array $blocks = array())
+    {
         echo " ";
     }
 
@@ -372,128 +519,186 @@ class __TwigTemplate_0f9a892c2c5b014d6b8f3c7503ffdcba9f8836c013c367351ddd9a25c84
 
     public function getDebugInfo()
     {
-        return array (  360 => 118,  345 => 107,  339 => 104,  334 => 101,  326 => 100,  319 => 97,  313 => 96,  307 => 95,  304 => 94,  294 => 92,  288 => 91,  285 => 90,  280 => 89,  275 => 88,  271 => 87,  268 => 86,  264 => 85,  258 => 84,  254 => 82,  252 => 81,  250 => 80,  244 => 79,  238 => 77,  234 => 75,  224 => 74,  222 => 73,  217 => 71,  212 => 69,  209 => 68,  204 => 67,  198 => 66,  194 => 64,  186 => 62,  182 => 61,  179 => 60,  172 => 59,  167 => 58,  161 => 56,  158 => 55,  155 => 54,  149 => 53,  143 => 51,  139 => 49,  133 => 46,  130 => 45,  127 => 44,  121 => 42,  117 => 40,  114 => 39,  108 => 37,  104 => 35,  102 => 34,  98 => 32,  96 => 31,  90 => 28,  84 => 25,  80 => 23,  77 => 22,  63 => 19,  56 => 15,  49 => 11,  45 => 10,  40 => 9,  15 => 8,);
+        return array (  505 => 162,  494 => 152,  484 => 149,  470 => 147,  465 => 145,  456 => 138,  454 => 137,  450 => 135,  442 => 134,  436 => 133,  430 => 132,  426 => 130,  422 => 129,  419 => 128,  415 => 127,  411 => 126,  408 => 125,  405 => 124,  399 => 123,  395 => 122,  392 => 121,  385 => 120,  378 => 117,  374 => 116,  371 => 115,  369 => 114,  364 => 111,  357 => 109,  351 => 108,  347 => 107,  338 => 105,  333 => 104,  325 => 103,  322 => 102,  318 => 101,  313 => 99,  308 => 96,  303 => 93,  297 => 92,  291 => 91,  285 => 89,  280 => 88,  271 => 87,  267 => 86,  229 => 50,  227 => 49,  224 => 48,  221 => 47,  216 => 20,  202 => 19,  199 => 18,  196 => 17,  192 => 12,  188 => 11,  177 => 10,  174 => 9,  169 => 8,  163 => 163,  161 => 162,  157 => 160,  154 => 159,  151 => 47,  139 => 38,  132 => 36,  126 => 35,  122 => 34,  113 => 32,  108 => 31,  100 => 30,  97 => 29,  93 => 28,  88 => 26,  82 => 22,  80 => 17,  77 => 16,  75 => 15,  71 => 13,  69 => 8,  65 => 6,  62 => 5,  48 => 166,  45 => 5,  39 => 4,  36 => 3,  30 => 2,  28 => 1,);
     }
 
     public function getSourceContext()
     {
-        return new Twig_Source("{#
-<!--
-Pupilsight, Flexible & Open School System
+        return new Twig_Source("{% if table.getTitle %}
+<h2>{{ table.getTitle }}</h2>
+{% endif %} {% if table.getDescription %}
+<p>{{ table.getDescription|raw }}</p>
+{% endif %} {% block table %}
 
-
-This is a Pupilsight template file, written in HTML and Twig syntax.
-For info about editing, see: https://twig.symfony.com/doc/2.x/
--->#} {% extends \"components/dataTable.twig.html\" %} {% block table %}
-<div id=\"{{ table.getID }}\" style=\"width:100%\">
-    <div class=\"dataTable\" data-results=\"{{ dataSet.getResultCount }}\">
-        {{ parent() }}
+<header class=\"relative\">
+    {% block header %} {% if table.getHeader %}
+    <div class=\"linkTop\">
+        {% for action in table.getHeader %} {{ action.getOutput|raw }} {% endfor %}
     </div>
+    {% endif %} {% endblock header %}
+</header>
+
+{% if not rows and not isFiltered and dataSet.getResultCount == 0 %}
+<!-- <div class=\"h-48 rounded-sm border bg-gray shadow-inner overflow-hidden\">
+    {% block blankslate %}
+    <div class=\"w-full h-full flex flex-col items-center justify-center text-gray text-lg\">
+        {% if isFiltered %} {{ __('No results matched your search.') }} {% elseif blankSlate %} {{ blankSlate|raw }} {% else %} {{ __('There are no records to display.') }} {% endif %}
+    </div>
+    {% endblock blankslate %}
+</div> -->
+<div class=\"table-responsive dataTables_wrapper \">
+    <table class=\"table\" id=\"expore_tbls\">
+        <!--<div class=\"overflow-x-auto overflow-y-visible\">
+            <table class=\"{{ class }} w-full\" cellspacing=0>-->
+        <thead>
+            {% for headerRow in headers %}
+            <tr>
+                {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
+                <th {{ th.getAttributeString|raw }}>
+                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }}
+                    {% endif %}
+                </th>
+                {% endif %} {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </thead>
+        <tbody>
+
+        </tbody>
+
+    </table>
+
+</div>
+{% else %} {% block tableInner %}
+
+{% if headers|length > 0 %}
+<style>
+@media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px)  {
+    /* Force table to not be like tables anymore */
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+    /* Hide table headers (but not display: none;, for accessibility) */
+    thead tr {
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+    }
+    tr {
+        border: 1px solid #ccc !important;
+    }
+    .p-2 {
+        padding: 0 !important;
+    }
+    .dataTables_wrapper .table tbody tr td, td {
+        /* Behave  like a \"row\" */
+        border: none !important;
+        border-bottom: 1px solid #eee;
+        position: relative !important;
+        padding-left: 50% !important;
+    }
+    td:before {
+        /* Now like a table header */
+        position: absolute !important;
+        /* Top/left values mimic padding */
+        top: 6px !important;
+        left: 6px !important;
+        width: 45% !important;
+        padding-right: 10px !important;
+        white-space: nowrap !important;
+    }
+
+    {% for headerRow in headers %}
+                {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
+                td:nth-of-type({{columnIndex+1}}):before {
+                    content: \"{{ th.getOutput|raw }}\";
+                }
+                {% endif %} {% endfor %}
+    {% endfor %}
+}
+</style>
+{% endif %}
+<div class=\"table-responsive dataTables_wrapper\">
+    <table class=\"table\" id=\"expore_tbl\">
+        <!--<div class=\"overflow-x-auto overflow-y-visible\">
+            <table class=\"{{ class }} w-full\" cellspacing=0>-->
+        <thead>
+            {% for headerRow in headers %}
+            <tr>
+                {% for columnIndex, column in columns %} {% set th = headerRow[columnIndex] %} {% if th %}
+                <th {{ th.getAttributeString|raw }}>
+                    {{ th.getOutput|raw }} {% if th.getData('description') %} {{ th.getData('description') }}
+                    {% endif %}
+                </th>
+                {% endif %} {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </thead>
+        <tbody>
+            {% if not rows and isFiltered %}
+            <tr class=\"h-48 bg-gray shadow-inner\">
+                <td class=\"p-0\" colspan=\"{{ columns|length }}\">
+                    {{ block('blankslate') }}
+                </td>
+            </tr>
+            {% endif %} {% for rowIndex, rowData in rows %} {% set row = rowData.row %}
+
+            <tr {{ row.getAttributeString|raw }}>
+                {{ row.getPrepended|raw }} {% for columnIndex, column in columns %}
+                {% set cell = rowData.cells[columnIndex] %}
+
+                <td {{ cell.getAttributeString|raw }}>
+                    {{ cell.getPrepended|raw }} {% if column.getID == \"actions\" %}
+                    <nav class=\"relative group\">
+                        {% do column.getOutput(rowData.data) %} {% set actions = column.getActions %}
+
+                        <div
+                            class=\"{{ column.getClass() }} {{ actions|length == 1 ? 'flex -m-2 sm:m-0' : 'hidden-1 group-hover:flex sm:flex absolute sm:static top-0 right-0 -mr-1 rounded  sm:shadow-none sm:bg-transparent px-1 -mt-3 sm:m-0 sm:p-0 z-10' }}\">
+                            {% for actionName, action in actions %} {% do action.addClass('') %}
+                            {{ action.getOutput(rowData.data, column.getParams)|raw }} {% endfor %}
+                        </div>
+
+                        {% if actions|length > 1 %}
+                        <!--
+<button class=\"block sm:hidden rounded mx-auto my-1 px-1 py-2 bg-gray text-2xl text-gray font-sans font-bold leading-none\" onClick=\"event.preventDefault();\" onTouchEnd=\"event.preventDefault();\">
+                            <span class=\"block -mt-3\">...</span>
+                        </button> 
+                        -->
+
+                        {% endif %}
+                    </nav>
+
+                    {% else %} {{ column.getOutput(rowData.data)|raw }}&nbsp; {% endif %} {{ cell.getAppended|raw }}
+                </td>
+                {% endfor %} {{ row.getAppended|raw }}
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
 </div>
 
-{{ block('bulkActions') }}
 
+
+{% endblock tableInner %} {% endif %}
+
+<footer>
+    {% block footer %} {% endblock footer %}
+</footer>
+
+{% endblock table %}
 <script>
-    \$(function () {
-        \$('#{{ table.getID }}').pupilsightDataTable('{{ path|raw }}', {{ jsonData| raw }}, '{{ identifier }}');
+    \$(document).ready( function () {
+        \$('#expore_tbl').DataTable({
+            \"pageLength\": 25,
+            \"lengthMenu\": [[10, 25, 50, 250, -1], [10, 25, 50, 250, \"All\"]],
+            \"sDom\": '<\"top\"lfp>rt<\"bottom\"ip><\"clear\">'
+        });
+        \$(\".dataTables_length\" ).find(\"select\").css(\"width\",\"90px\");
+        \$(\".dataTables_length\" ).find(\"select\").css(\"display\",\"inline-block\");
     });
-</script>
-{% endblock table %} {% block header %}
-<div class=\"flex items-end justify-between pb-2\">
-    <div class=\"\">
-        {{ block('pageCount') }}
-    </div>
-
-    {{ parent() }}
-</div>
-
-{% if dataSet.getTotalCount > 0 %}
-<div class=\"flex flex-wrap sm:flex-no-wrap items-stretch justify-between\">
-    <div class=\"flex items-stretch h-full\">
-        {% if pageSize %}
-        <div class=\"relative mr-1\">
-            <div class=\"absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none\"></div>
-            {{ pageSize|raw }}
-        </div>
-        {% endif %} {% if filterOptions %}
-        <div class=\"relative\">
-            <div class=\"absolute caret z-10 mt-3 right-0 mr-5 pointer-events-none\"></div>
-            {{ filterOptions|raw }}
-        </div>
-        {% endif %} {% if filterCriteria and filterOptions %}
-        <nav class=\"flex cursor-default\" style='height: 36px;line-height: 20px;margin-top: 16px;'>
-            {{ block('filters') }}
-        </nav>
-        {% endif %}
-    </div>
-
-    {{ block('pagination') }}
-</div>
-{% endif %} {% endblock header %} {% block footer %}
-<!-- {% if dataSet.getResultCount > dataSet.getPageSize %}
-    <div class=\"flex flex-col sm:flex-row sm:items-end justify-end mt-2\">
-        {{ block('pagination') }}
-    </div>
-    {% endif %} -->
-{% endblock footer %} {% block filters %} {% for name, label in filterCriteria %}
-<a href=\"javascript:void()\" class=\"filter -mx-px py-2 px-3 border border-blue bg-blue hover:bg-blue z-10   font-bold\"
-    data-filter=\"{{ name }}\">
-    {{ label|raw }}
-</a> {% endfor %}
-
-<a href=\"javascript:void()\" class=\"filter p-2 rounded-r border border-gray   bg-gray font-bold hover:bg-gray clear\">
-    {{ __('Clear') }}
-</a> {% endblock filters %} {% block pageCount %} {% if dataSet.getTotalCount > 0 %}
-<!-- <div class=\"text-xs\">
-        {{ searchText ? __('Search') ~ \" \" }}
-
-        {{ dataSet.isSubset ? __('Results') : __('Records') }}
-
-        {% if dataSet.count > 0 %}
-            {{ dataSet.getPageFrom }}-{{ dataSet.getPageTo }} {{ __('of') }}
-        {% endif %} 
-        
-        {{ dataSet.getResultCount|number_format }}
-    </div> -->
-{% endif %} {% endblock pageCount %} {% block pagination %}
-{% set buttonStyle = 'border -ml-px px-2 py-1 font-bold leading-loose' %}
-{% if dataSet.getResultCount > dataSet.getPageSize or filterOptions %}
-<div class=\"pagination mb-2\">
-    <a href=\"javascript:void()\"
-        class=\"ml-1 padipag2  prv paginate rounded-l   bg-gray border-gray {{ not dataSet.isFirstPage ? 'hover:bg-gray'}} {{ buttonStyle }}\"
-        data-page=\"{{ dataSet.getPrevPageNumber }}\" {{ dataSet.isFirstPage ?
-        'disabled'}}>
-        {{ __('Prev') }}
-    </a> {%- for page in dataSet.getPaginatedRange -%} {%- if page == '...' -%}
-    <a href=\"javascript:void()\" class=\"ml-1 padipag2  prv {{ buttonStyle }}\" disabled>...</a> {%- else -%}
-    <a href=\"javascript:void()\"
-        class=\"ml-1 padipag2  prv paginate {{ buttonStyle }} {{ page == dataSet.getPage ? 'bg-blue border-blue  text-active relative z-10' : 'text-gray hover:bg-gray border-gray' }}\"
-        data-page=\"{{ page }}\">{{ page }}</a> {%- endif -%} {%- endfor -%}
-
-    <a href=\"javascript:void()\"
-        class=\"ml-1 padipag2  prv paginate rounded-r text-gray border-gray {{ not dataSet.isLastPage ? 'hover:bg-gray'}} {{ buttonStyle }}\"
-        data-page=\"{{ dataSet.getNextPageNumber }}\" {{ dataSet.isLastPage ? 'disabled'}}>
-        {{ __('Next') }}
-    </a>
-</div>
-{% endif %} {% endblock pagination %} {% block bulkActions %} {% if bulkActions %}
-<div
-    class=\"bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between p-1 pt-2 bg-purple rounded-t z-20\">
-    <div class=\"bulkActionCount flex-grow   text-sm text-right pr-3\">
-        <span>0</span> {{ __('Selected') }}
-    </div>
-
-    {{ bulkActions.getOutput|raw }}
-
-    <script>
-        {
-            {
-                bulkActions.getValidationOutput | raw
-            }
-        }
-    </script>
-</div>
-<div class='float-none'></div>
-{% endif %} {% endblock bulkActions %}", "components/paginatedTable.twig.html", "C:\\xampp\\htdocs\\pupilsight\\resources\\templates\\components\\paginatedTable.twig.html");
+</script>", "components/paginatedTable.twig.html", "C:\\xampp\\htdocs\\pupilsight\\resources\\templates\\components\\paginatedTable.twig.html");
     }
 }
