@@ -66,21 +66,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
         echo "<div class='text-danger'>Form is not attached.</div>";
     } else {
 
-        $program = $rowdata['progname'];
-        if (!empty($rowdata['classes'])) {
-            $sql = "SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup WHERE pupilsightYearGroupID IN (" . $rowdata['classes'] . ") ";
-            $result = $connection2->query($sql);
-            $getClass = $result->fetchAll();
+        $sqlchk = "SELECT a.id, b.pupilsightProgramID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightProgram AS b ON a.pupilsightProgramID = b.pupilsightProgramID  WHERE a.campaign_id = " . $id . " GROUP BY a.pupilsightProgramID ";
+        $resultchk = $connection2->query($sqlchk);
+        $cmpProClsChkData = $resultchk->fetchAll();
+        
+        $programData = array();
+        if(!empty($cmpProClsChkData)){
+            $programData = $cmpProClsChkData;
+        } else {
+            $program = $rowdata['progname'];
+            if (!empty($rowdata['classes'])) {
+                $sql = "SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup WHERE pupilsightYearGroupID IN (" . $rowdata['classes'] . ") ";
+                $result = $connection2->query($sql);
+                $getClass = $result->fetchAll();
+            }
         }
+
+        
 ?>
         <center>
             <div style="display:inline-flex; font-weight: 700; font-size:15px; width: 50%; margin-bottom:10px;" class="">
                 <input type="hidden" id="chkFees" value="<?php echo $rowdata['fn_fee_structure_id']; ?>">
                 <input type="hidden" id="cmpid" value="<?php echo $id; ?>">
-                <input type="hidden" id="pid" value="<?php echo $rowdata['pupilsightProgramID']; ?>">
+                
                 <input type="hidden" id="fid" value="<?php echo $rowdata['offline_form_id']; ?>">
                 <input type="hidden" id="pupilsightPersonID" value="<?php echo $pupilsightPersonID; ?>">
 
+            <?php if(!empty($programData)){ ?>
+                <span style="width: 40%;">Program<span style="color:red;">*</span> : </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <select id="pid">
+                    <option value="">Select Program</option>
+                    <?php if (!empty($programData)) {
+                        foreach ($programData as $prg) {
+                    ?>
+                            <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
+                    <?php }
+                    } ?>
+                </select>
+                <span style="width: 40%;">Class <span style="color:red;">*</span> : </span>
+                <select id="class">
+                    <option value="">Select Class</option>
+                </select>
+                <input type="hidden" id="chkProg" value="1">
+            <?php } else { ?>
+                <input type="hidden" id="chkProg" value="2">
+                <input type="hidden" id="pid" value="<?php echo $rowdata['pupilsightProgramID']; ?>">
                 <span style="width: 40%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <span style="width: 20%;">Class <span style="color:red;">*</span> : </span>
                 <select id="class">
@@ -92,6 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                     <?php }
                     } ?>
                 </select>
+            <?php } ?>
                 <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
             </div>
         </center>
@@ -172,15 +203,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
 
             iframe.find(".ff-el-form-control").change(function() {
                 $.each($(this), function() {
-                    val = $("#class option:selected").val();
+                    chkprog = $("#chkProg").val();
+                    var val = $("#class option:selected").val();
                     if (val == '') {
                         $("#class").addClass('error').focus();
                         iframe.find(".ff-btn-submit").prop('disabled', true);
                         alert('You Have to Select Class');
+                        if(chkprog == '1'){
+                            var pval = $("#pid option:selected").val();
+                            if (pval == '') {
+                                $("#pid").addClass('error').focus();
+                                iframe.find(".ff-btn-submit").prop('disabled', true);
+                                alert('You Have to Select Program');
+                                return false;
+                            } else {
+                                $("#pid").removeClass('error');
+                                iframe.find(".ff-btn-submit").prop('disabled', false);
+                                return true;
+                            }
+                        }
                         return false;
                     } else {
                         $("#class").removeClass('error');
                         iframe.find(".ff-btn-submit").prop('disabled', false);
+                        if(chkprog == '1'){
+                            var pval = $("#pid option:selected").val();
+                            if (pval == '') {
+                                $("#pid").addClass('error').focus();
+                                iframe.find(".ff-btn-submit").prop('disabled', true);
+                                alert('You Have to Select Program');
+                                return false;
+                            } else {
+                                $("#pid").removeClass('error');
+                                iframe.find(".ff-btn-submit").prop('disabled', false);
+                                return true;
+                            }
+                        }
                         return true;
                     }
                 });
@@ -341,6 +399,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                 }, 500);
             }
         }
+
+        $(document).on('change', '#pid', function () {
+            var val = $(this).val();
+            var cid = $("#cmpid").val();
+            if (val != '') {
+                var type = 'getCampClass';
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: {val: val,type: type, cid: cid},
+                    async: true,
+                    success: function(response) {
+                        $("#class").html('');
+                        $("#class").html(response);
+                    }
+                });
+            }
+        });        
     </script>
 <?php
 }

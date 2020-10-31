@@ -820,11 +820,12 @@
         var stid = $("#applicationStatus option:selected").val();
         var aname = $("#applicationName").val();
         var clid = $("#applicationClass option:selected").val();
+        var pid = $("#applicationProg option:selected").val();
         if (field != '' && searchby != '') {
             $.ajax({
                 url: 'modules/Campaign/campaignFormListSearch.php',
                 type: 'post',
-                data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid, aid: aid, stid: stid, aname: aname, clid: clid },
+                data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid, aid: aid, stid: stid, aname: aname, clid: clid, pid: pid },
                 async: true,
                 success: function (response) {
                     $("#expore_tbl_wrapper").html();
