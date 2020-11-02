@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $resultp = $connection2->query($sqlp);
     $progData = $resultp->fetchAll();
 
-   
+
     $programs = '<select class="" id="applicationProg" ><option value="">Select Program</option>';
     foreach ($progData as $pg) {
         $programs .= '<option value="' . $pg['pupilsightProgramID'] . '" >' . $pg['name'] . '</option>';
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $result = $connection2->query($sql);
     $classes = $result->fetchAll();
 
-   
+
     $class = '<select class="" id="applicationClass" ><option value="">Select Class</option>';
     foreach ($classes as $st) {
         $class .= '<option value="' . $st['pupilsightYearGroupID'] . '" >' . $st['name'] . '</option>';
@@ -292,9 +292,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
             $jlen = count($field);
             $j = 0;
-            if($dataSet->data[$i]["status"] == '1'){
+            if ($dataSet->data[$i]["status"] == '1') {
                 $dataSet->data[$i]["workflowstate"] = 'Admitted';
-            }else if ($dataSet->data[$i]["workflowstate"] == '') {
+            } else if ($dataSet->data[$i]["workflowstate"] == '') {
                 // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
                 // $resultvals = $connection2->query($sqls);
                 // $states = $resultvals->fetch();
@@ -713,16 +713,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             $.ajax({
                 url: url,
                 type: 'post',
-                data: { subid: submit_id},
+                data: {
+                    subid: submit_id
+                },
                 async: true,
                 success: function(response) {
-                    if(response == 'fail'){
+                    if (response == 'fail') {
                         alert('Seats are Full!');
                     } else {
                         alert('Your Applicant Admitted Successfully! Click Ok to Continue');
                         location.reload();
                     }
-                    
+
                 }
             });
         } else {
@@ -730,7 +732,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         }
     });
 
-    $(document).on('change', '#applicationProg', function () {
+    $(document).on('change', '#applicationProg', function() {
         var val = $(this).val();
         var cid = $("#campId").val();
         if (val != '') {
@@ -738,7 +740,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
-                data: {val: val,type: type, cid: cid},
+                data: {
+                    val: val,
+                    type: type,
+                    cid: cid
+                },
                 async: true,
                 success: function(response) {
                     $("#applicationClass").html('');
@@ -746,6 +752,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 }
             });
         }
-    });        
+    });
 </script>
 <?php
