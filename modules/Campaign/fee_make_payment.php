@@ -68,6 +68,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
     $cid = $_GET['cid'];
     $sid = $_GET['sid'];
     $stuId = $sid;
+
+    // $sqlp = 'SELECT b.fn_fee_admission_setting_ids FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id ';
+    // $resultp = $connection2->query($sqlp);
+    // $rowdataprog = $resultp->fetchAll();
     
 
         $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid,g.is_fine_editable, g.fine_type, g.rule_type, fn_fee_invoice_applicant_assign.id as invid, fn_fee_invoice_applicant_assign.invoice_no as stu_invoice_no FROM fn_fee_invoice LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN fn_fee_invoice_applicant_assign ON fn_fee_invoice.id = fn_fee_invoice_applicant_assign.fn_fee_invoice_id  WHERE fn_fee_invoice.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND fn_fee_invoice_applicant_assign.submission_id = "'.$sid.'"';

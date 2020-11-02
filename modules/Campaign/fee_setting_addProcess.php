@@ -25,6 +25,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
     $pupilsightProgramID = $_POST['pupilsightProgramID'];
     $amounts = $_POST['amount'];
     $form_id = $_POST['form_id'];
+    $no_of_invoices = $_POST['no_of_invoices'];
+    $state_id = $_POST['state_id'];
     $cdt = date('Y-m-d H:i:s');
     
     if ($fee_structure_id == '' or $class == ''  or $pupilsightSchoolYearID == '' or $pupilsightProgramID == '') {
@@ -47,8 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
                     }
                 }
 
-            $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'fn_fee_structure_id' => $fn_fee_structure_id, 'classes' => $classes, 'amount' => $amount);
-            $sql = "INSERT INTO fn_fee_admission_settings SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, fn_fee_structure_id=:fn_fee_structure_id,classes=:classes, amount=:amount";
+            $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'fn_fee_structure_id' => $fn_fee_structure_id, 'classes' => $classes, 'amount' => $amount, 'no_of_invoices' => $no_of_invoices, 'state_id' => $state_id);
+            $sql = "INSERT INTO fn_fee_admission_settings SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, fn_fee_structure_id=:fn_fee_structure_id,classes=:classes, amount=:amount,no_of_invoices=:no_of_invoices, state_id=:state_id";
             $result = $connection2->prepare($sql);
             $result->execute($data);
 

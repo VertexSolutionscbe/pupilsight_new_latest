@@ -99,8 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
             if (!empty($f->attributes) && $f->attributes->name == 'student_name') {
                 $arrHeader[] = $f->attributes->name;
             }
-            if (!empty($f->attributes) && !empty($f->attributes->class)) {
-                if ($f->attributes->class == 'show-in-grid') {
+            if (!empty($f->settings) && !empty($f->settings->container_class)) {
+                if ($f->settings->container_class == 'show-in-grid') {
                     $arrHeader[] = $f->attributes->name;
                 }
             }

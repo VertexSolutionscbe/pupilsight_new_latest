@@ -221,14 +221,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
     //    array_reverse($dataSet->data);
 
+   
+
     $arrHeader = array();
     foreach ($field as $fe) {
         foreach ($fe as $f) {
             if (!empty($f->attributes) && $f->attributes->name == 'student_name') {
                 $arrHeader[] = $f->attributes->name;
             }
-            if (!empty($f->attributes) && !empty($f->attributes->class)) {
-                if ($f->attributes->class == 'show-in-grid') {
+            if (!empty($f->settings) && !empty($f->settings->container_class)) {
+                if ($f->settings->container_class == 'show-in-grid') {
                     $arrHeader[] = $f->attributes->name;
                 }
             }
