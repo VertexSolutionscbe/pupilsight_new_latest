@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
                         if(!empty($_POST['classes'])){
                             $campaignid = $id;
-                            $data2 = array('campaign_id' => $id);
+                            $data2 = array('campaign_id' => $campaignid);
                             $sql2 = 'DELETE FROM campaign_prog_class WHERE campaign_id=:campaign_id';
                             $result2 = $connection2->prepare($sql2);
                             $result2->execute($data2);

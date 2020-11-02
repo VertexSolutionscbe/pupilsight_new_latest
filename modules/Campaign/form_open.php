@@ -52,10 +52,27 @@ $campId = $forms['campId'];
         iframe.find(".el-dropdown-selfdefine").remove();
         iframe.find("#wpcontent").append($("<style type='text/css'> #wpcontent {margin-left:0px !important;margin-top: -50px;}  </style>"));
         
+       
         iframe.find("#saveFormData").click(function() {
             var fformid = $(this).parent().children().attr('data-clipboard-text');
             
         });
+
+       
+        iframe.find(".el-icon-edit").click(function() {
+            setTimeout(function(){
+                $.each(iframe.find(".el-form-item__label"), function() {
+                    console.log('work');
+                    var hidden = $(this).text();
+                    if(hidden == 'input_hidden' ){
+                        alert('find');
+                        $(this).parent().hide();
+                    }
+                });
+            },1000);
+        });
+
+        
     });
 </script>    
 

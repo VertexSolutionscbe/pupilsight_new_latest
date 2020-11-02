@@ -261,28 +261,34 @@ class AdmissionGateway extends QueryableGateway
                         ->newQuery()
                         ->from('fn_fee_admission_settings')
                         ->cols([
-                            'fn_fee_admission_settings.id as settingid', 'fn_fee_admission_settings.classes'
+                            'fn_fee_admission_settings.id as settingid', 'fn_fee_admission_settings.classes','fn_fee_admission_settings.no_of_invoices', 'fn_fee_admission_settings.state_id'
                         ])
                         ->where('fn_fee_admission_settings.id IN (' . $feestgId . ') ')
                         ->where('fn_fee_admission_settings.fn_fee_structure_id = "' . $cd['id'] . '" ')
-                        ->where('fn_fee_admission_settings.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
+                        ->where('fn_fee_admission_settings.pupilsightProgramID = "' . $pupilsightProgramID . '" ')
+                        ->orderBy(['fn_fee_admission_settings.id DESC']);;
 
                     $newdata = $this->runQuery($query2, $criteria);
                     if (!empty($newdata->data[0]['classes'])) {
                         $data[$k]['classes'] = $newdata->data[0]['classes'];
                         $data[$k]['settingid'] = $newdata->data[0]['settingid'];
+                        $data[$k]['no_of_invoices'] = $newdata->data[0]['no_of_invoices'];
+                        $data[$k]['state_id'] = $newdata->data[0]['state_id'];
                     } else {
                         $data[$k]['classes'] = '';
-                        $data[$k]['settingid'] = '';
+                        $data[$k]['settingid'] = ''; 
+                        $data[$k]['no_of_invoices'] = '';
+                        $data[$k]['state_id'] = '';
                     }
                 }
             }
-            $res->data = $data;
-            return $res;
-            // echo '<pre>';
+            //  echo '<pre>';
             // print_r($data);
             // echo '</pre>';
             // die();
+            $res->data = $data;
+            return $res;
+           
         } else {
             $query = $this
                 ->newQuery()

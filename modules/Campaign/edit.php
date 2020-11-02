@@ -352,7 +352,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('', __('Application Forms'));
             if (!empty($values['form_id'])) {
-                $col->addContent('<b>Online Form : </b><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/view_selected_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="View Online Form" class="mdi mdi-eye-outline mdi-24px  px-1"></i></a><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/edit_selected_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="Edit Online Form" class="mdi mdi-pencil-box-outline mdi-24px"></i></a>');
+                $col->addContent('<b>Online Form : </b><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/view_selected_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="View Online Form" class="mdi mdi-eye-outline mdi-24px  px-1"></i></a><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/edit_selected_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="Edit Online Form" class="mdi mdi-pencil-box-outline mdi-24px"></i></a><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/change_online_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="Edit Online Form" class="mdi mdi-content-copy mdi-24px"></i></a>');
             } else {
                 $col->addContent('<b>Online Form : </b><a href="index.php?q=/modules/Campaign/online_wplogin.php&id=' . $id . '"><i title="Add Online Form" class="mdi mdi-plus-outline mdi-24px"></i></a>');
             }
@@ -361,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('', __(''));
             if (!empty($values['offline_form_id'])) {
-                $col->addContent('<b>Offline Form : </b><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/view_offline_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="View Offline Form" class="mdi mdi-eye-outline mdi-24px  px-1"></i></a><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/edit_offline_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="Edit Offline Form" class="mdi mdi-pencil-box-outline mdi-24px"></i></a>');
+                $col->addContent('<b>Offline Form : </b><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/view_offline_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="View Offline Form" class="mdi mdi-eye-outline mdi-24px  px-1"></i></a><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/edit_offline_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="Edit Offline Form" class="mdi mdi-pencil-box-outline mdi-24px"></i></a><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/change_offline_campaign_form.php&id=' . $id . '&width=1100&amp;height=550"><i title="Edit Offline Form" class="mdi mdi-content-copy mdi-24px"></i></a>');
             } else {
                 $col->addContent('<b>Offline Form : </b><a href="index.php?q=/modules/Campaign/offline_wplogin.php&id=' . $id . '"><i title="Add Offline Form" class="mdi mdi-plus-outline mdi-24px"></i></a>');
             }

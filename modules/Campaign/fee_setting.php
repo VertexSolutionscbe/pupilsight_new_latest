@@ -21,6 +21,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
     $transId = $_GET['kid'];
     $campId = $_GET['cid'];
 
+    $sqlst = 'SELECT a.id, a.name FROM workflow_state AS a LEFT JOIN workflow_map AS b ON a.workflowid = b.workflow_id WHERE b.campaign_id = '.$campId.' ';
+    $resultst = $connection2->query($sqlst);
+    $stateData = $resultst->fetchAll();
+
     $sqlcam = 'SELECT a.pupilsightProgramID,a.classes, b.name FROM campaign AS a LEFT JOIN pupilsightProgram AS b ON a.pupilsightProgramID = b.pupilsightProgramID WHERE a.id = '.$campId.' ';
     $resultcam = $connection2->query($sqlcam);
     $camData = $resultcam->fetch();
@@ -159,6 +163,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
                         $checked = '';
                         $classes = array();
                     }
+
+                    $no_of_invoices = '';
+                    $state_id = '';
+
+                    if(!empty($fg['no_of_invoices'])){
+                        echo $no_of_invoices = $fg['no_of_invoices'];
+                    }
+
+                    if(!empty($fg['state_id'])){
+                       echo $state_id = $fg['state_id'];
+                    }
             ?>
                 <tr>
                     <td><?php echo $i;?></td>
@@ -184,6 +199,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
             <?php $i++; } } ?>
         </tbody>
     </table>
+
+    <div style="display:inline-flex;">
+        <span style="width:25%;font-size: 14px;line-height: 30px;">Select the No of Invoices :  </span>
+        <input style="width:10%" type="text" name="no_of_invoices" class="form-control" value="<?php echo $no_of_invoices;?>">&nbsp;&nbsp;
+        <span style="width:30%;font-size: 14px;line-height: 30px;" > Select the State After Payment : </span>
+        <select style="width:25%" name="state_id"  class="form-control">
+            <option value="" >Select State</option>
+            <?php if(!empty($stateData)){
+                foreach($stateData as $cd){    
+                    if($cd['id'] == $state_id){
+                        $selected = 'selected';
+                    } else {
+                        $selected = '';
+                    }
+            ?>
+                <option value="<?php echo $cd['id'];?>" <?php echo $selected;?> ><?php echo $cd['name'];?></option>
+            <?php } } ?>
+            </select>
+    </div>
 </form>
 <style>
     .mb-1 label {

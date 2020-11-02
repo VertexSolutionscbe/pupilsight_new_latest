@@ -46,8 +46,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                 $names = implode(' ', $sd['student_name']);
                 $email = $sd['father_email'];
                 $number = $sd['father_mobile'];
+                $father_name = $sd['father_name'];
+                $mother_email = $sd['mother_email'];
+                $mother_name = $sd['mother_name'];
+                $application_no = $sd['application_id'];
                 $pupilsightProgramID = $rowdata['pupilsightProgramID'];
                 $pupilsightYearGroupID = $rowdata['pupilsightYearGroupID'];
+
+                
             }
             
             $sqlchk = "SELECT COUNT(id) AS kount FROM campaign_form_status WHERE submission_id = ".$sub." AND campaign_id = ".$campaignId." AND form_id = ".$formId." AND state_id = ".$stateid." ";
@@ -168,8 +174,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                             
                                             // $invoiceno =  rtrim($iformat, "/");
                                             $invoiceno =  $iformat;
-                                            $dataistu = array('fn_fee_invoice_id'=>$invId, 'invoice_no' => $invoiceno,'submission_id' => $sub);
-                                            $sqlstu1 = 'INSERT INTO fn_fee_invoice_applicant_assign SET fn_fee_invoice_id=:fn_fee_invoice_id,invoice_no=:invoice_no, submission_id=:submission_id';
+                                            $dataistu = array('fn_fee_invoice_id'=>$invId, 'invoice_no' => $invoiceno,'submission_id' => $sub, 'state_id' => $stateid);
+                                            $sqlstu1 = 'INSERT INTO fn_fee_invoice_applicant_assign SET fn_fee_invoice_id=:fn_fee_invoice_id,invoice_no=:invoice_no, submission_id=:submission_id,state_id=:state_id';
                                             $resultstu1 = $connection2->prepare($sqlstu1);
                                             $resultstu1->execute($dataistu);
                                             
@@ -192,6 +198,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                             $description = $td['description'];
                             $body = str_replace('@student_name',$names , $description);
                             $body = str_replace('@student_email',$email , $body);
+                            $body = str_replace('@father_email',$email , $body);
+                            $body = str_replace('@father_name',$father_name , $body);
+                            $body = str_replace('@mother_email',$mother_email , $body);
+                            $body = str_replace('@mother_name',$mother_name , $body);
+                            $body = str_replace('@application_no',$application_no , $body);
                             if($td['type'] == 'Email'){
                                 if(!empty($body)){ 
                                     $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/mailsend.php';

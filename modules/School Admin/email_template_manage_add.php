@@ -77,6 +77,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/email_templat
                 <h5 style="text-align:center;">Select Show Field <i id="hideSelDiv" class="mdi mdi-close-circle" style="float: right;margin-right: 5px;"></i></h5>
                 <span  class="selType studentShow hidediv" data-val="student_name">Student Name</span>
                 <span  class="selType studentShow hidediv" data-val="student_email">Student Email</span>
+                <span  class="selType studentShow hidediv" data-val="father_name">Father Name</span>
+                <span  class="selType studentShow hidediv" data-val="father_email">Father Email</span>
+                <span  class="selType studentShow hidediv" data-val="mother_name">Mother Name</span>
+                <span  class="selType studentShow hidediv" data-val="mother_email">Mother Email</span>
+                <span  class="selType studentShow hidediv" data-val="application_no">Application No</span>
+                <span  class="selType studentShow hidediv" data-val="admission_no">Admission No</span>
                 <span  class="selType parentShow hidediv" data-val="parent_name">Parent Name</span>
                 <span  class="selType parentShow hidediv" data-val="parent_email">Parent Email</span>
                 <span  class="selType staffShow hidediv" data-val="staff_name">Staff Name</span>
