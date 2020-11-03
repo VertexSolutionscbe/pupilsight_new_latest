@@ -1855,7 +1855,7 @@ if ($type == 'getCampaignStatusButton') {
         if (!empty($stats)) {
             foreach ($stats as $s) {
                 if($s['transition_display_name'] == 'Admit'){
-                    $data .= "<a  data-href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Campaign/transitionImportProcess.php' class=' btn btn-primary' id='saveApplicant' style='margin:5px'>Admit</a>";
+                    $data .= '<a  data-href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/transitionImportProcess.php" data-formid = ' . $fid . ' data-name="' . $s['transition_display_name'] . '" data-sid=' . $s['id'] . ' data-cid=' . $cid . ' data-noti=' . $s['notification'] . ' data-remark="' . $s['enable_remark'] . '" class=" btn btn-primary" id="saveApplicant" style="margin:5px">Admit</a>';
                 } else {
                     $data .= '<button class="btn btn-primary statesButton"  data-formid = ' . $fid . ' data-name="' . $s['transition_display_name'] . '" data-sid=' . $s['id'] . ' data-cid=' . $cid . ' data-noti=' . $s['notification'] . ' data-remark="' . $s['enable_remark'] . '" style="margin:5px" >' . ucwords($s['transition_display_name']) . '</button>';
                 }
@@ -1913,7 +1913,7 @@ if ($type == 'getCampaignStatusButton') {
         if (!empty($stats)) {
             foreach ($stats as $s) {
                 if($s['transition_display_name'] == 'Admit'){
-                    $data .= "<a  data-href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Campaign/transitionImportProcess.php' class=' btn btn-primary' id='saveApplicant' style='margin:5px'>Admit</a>";
+                    $data .= '<a  data-href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/transitionImportProcess.php" data-formid = ' . $fid . ' data-name="' . $s['transition_display_name'] . '" data-sid=' . $s['id'] . ' data-cid=' . $cid . ' data-noti=' . $s['notification'] . ' data-remark="' . $s['enable_remark'] . '"  class=" btn btn-primary" id="saveApplicant" style="margin:5px">Admit</a>';
                 } else {
                     $data .= '<button class="btn btn-primary statesButton"  data-formid = ' . $fid . ' data-name="' . $s['transition_display_name'] . '" data-sid=' . $s['id'] . ' data-cid=' . $cid . ' data-noti=' . $s['notification'] . ' data-remark="' . $s['enable_remark'] . '" style="margin:5px" >' . ucwords($s['transition_display_name']) . '</button>';
                 }

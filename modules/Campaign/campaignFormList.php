@@ -47,12 +47,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $formId = '';
     if (isset($_REQUEST['id']) ? $id = $_REQUEST['id'] : $id = "");
 
-    $sql1 = 'Select form_id, name, classes, pupilsightProgramID FROM campaign WHERE id = ' . $id . ' ';
+    $sql1 = 'Select form_id, name, classes, pupilsightProgramID, is_fee_generate FROM campaign WHERE id = ' . $id . ' ';
     $resultval1 = $connection2->query($sql1);
     $formid = $resultval1->fetch();
     //  echo $formid['form_id'];
     //  die();
     $formId = $formid['form_id'];
+    $isFeeGenerate = $formid['is_fee_generate'];
 
     $search = isset($_GET['search']) ? $_GET['search'] : '';
 
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $resultp = $connection2->query($sqlp);
     $progData = $resultp->fetchAll();
 
-   
+
     $programs = '<select class="" id="applicationProg" ><option value="">Select Program</option>';
     foreach ($progData as $pg) {
         $programs .= '<option value="' . $pg['pupilsightProgramID'] . '" >' . $pg['name'] . '</option>';
@@ -71,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $result = $connection2->query($sql);
     $classes = $result->fetchAll();
 
-   
+
     $class = '<select class="" id="applicationClass" ><option value="">Select Class</option>';
     foreach ($classes as $st) {
         $class .= '<option value="' . $st['pupilsightYearGroupID'] . '" >' . $st['name'] . '</option>';
@@ -95,7 +96,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     echo __('Online Campaign Submitted Form List  ');
     echo '(' . $formid['name'] . ')';
     echo '</h2>';
-    echo '<input type="hidden" id="cmpId" value="'.$id.'">';
+
+    echo '<input type="hidden" id="cmpId" value="' . $id . '">';
+
     echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" checked><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
 
     echo "<a style='display:none;' href='' class='thickbox' id='clickStateRemark'>Remark</a>";
@@ -221,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
     //    array_reverse($dataSet->data);
 
-   
+
 
     $arrHeader = array();
     foreach ($field as $fe) {
@@ -294,21 +297,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
             $jlen = count($field);
             $j = 0;
-            if($dataSet->data[$i]["status"] == '1'){
+            if ($dataSet->data[$i]["status"] == '1') {
                 $dataSet->data[$i]["workflowstate"] = 'Admitted';
-            }else if ($dataSet->data[$i]["workflowstate"] == '') {
+            } else if ($dataSet->data[$i]["workflowstate"] == '') {
                 // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
                 // $resultvals = $connection2->query($sqls);
                 // $states = $resultvals->fetch();
                 // $statename = $states['name'];
-                $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $sid . "  ";
-                $resulttr = $connection2->query($sql2);
-                $stateChk = $resulttr->fetch();
-                if (!empty($stateChk['transaction_id'])) {
-                    $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                if($isFeeGenerate == '2'){
+                    $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $sid . "  ";
+                    $resulttr = $connection2->query($sql2);
+                    $stateChk = $resulttr->fetch();
+                    if (!empty($stateChk['transaction_id'])) {
+                        $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                    } else {
+                        $dataSet->data[$i]["workflowstate"] = 'Created';
+                    }
                 } else {
-                    $dataSet->data[$i]["workflowstate"] = 'Created';
+                    $dataSet->data[$i]["workflowstate"] = 'Submitted';
                 }
+                
             }
 
             echo $dataSet->data[$i]["created_at"];
@@ -711,21 +719,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         });
         var submit_id = favorite.join(", ");
         var url = $(this).attr('data-href');
-        var cid = $("#cmpId").val();
         if (submit_id) {
+            var cid = $("#cmpId").val();
+            var fid = $(this).attr('data-formid');
+            var sid = $(this).attr('data-sid');
+            var sname = $(this).attr('data-name');
+            var noti = $(this).attr('data-noti');
+            var remrk = $(this).attr('data-remark');
             $.ajax({
                 url: url,
                 type: 'post',
-                data: { subid: submit_id, cid:cid},
+                data: {
+                    subid: submit_id,
+                    campaign_id: cid,
+                    fid: fid,
+                    sid: sid,
+                    sname: sname,
+                    noti: noti,
+                    remrk: remrk
+                },
                 async: true,
                 success: function(response) {
-                    if(response == 'fail'){
+                    if (response == 'fail') {
                         alert('Seats are Full!');
                     } else {
                         alert('Your Applicant Admitted Successfully! Click Ok to Continue');
-                        location.reload();
+                         location.reload();
                     }
-                    
+
                 }
             });
         } else {
@@ -733,7 +754,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         }
     });
 
-    $(document).on('change', '#applicationProg', function () {
+    $(document).on('change', '#applicationProg', function() {
         var val = $(this).val();
         var cid = $("#campId").val();
         if (val != '') {
@@ -741,7 +762,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
-                data: {val: val,type: type, cid: cid},
+                data: {
+                    val: val,
+                    type: type,
+                    cid: cid
+                },
                 async: true,
                 success: function(response) {
                     $("#applicationClass").html('');
@@ -749,6 +774,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 }
             });
         }
-    });        
+    });
 </script>
 <?php

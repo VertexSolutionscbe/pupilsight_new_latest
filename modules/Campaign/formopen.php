@@ -66,9 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
         $sqlchk = "SELECT a.id, b.pupilsightProgramID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightProgram AS b ON a.pupilsightProgramID = b.pupilsightProgramID  WHERE a.campaign_id = " . $id . " GROUP BY a.pupilsightProgramID ";
         $resultchk = $connection2->query($sqlchk);
         $cmpProClsChkData = $resultchk->fetchAll();
-        
+
         $programData = array();
-        if(!empty($cmpProClsChkData)){
+        if (!empty($cmpProClsChkData)) {
             $programData = $cmpProClsChkData;
         } else {
             $program = $rowdata['progname'];
@@ -79,49 +79,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             }
         }
 
-        
-?>
-        <a id="downloadLink" href="index.php?q=/modules/Campaign/ajaxfile_parent.php&cid=<?php echo $id;?>" class="" style="display:none;">Download Receipts</a>
-        <div style="display:inline-flex; font-weight: 700; font-size:15px; width: 50%; margin-bottom:10px;" class="">
-            <input type="hidden" id="fid" value="<?php echo $rowdata['form_id']; ?>">
-            <input type="hidden" id="pupilsightPersonID" value="<?php echo $pupilsightPersonID; ?>">
-            <input type="hidden" id="cmpid" value="<?php echo $id; ?>">
 
-            <?php if(!empty($programData)){ ?>
-                <span style="width: 40%;">Program<span style="color:red;">*</span> : </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <select id="pid">
-                    <option value="">Select Program</option>
-                    <?php if (!empty($programData)) {
-                        foreach ($programData as $prg) {
-                    ?>
-                            <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
-                    <?php }
-                    } ?>
-                </select>
-                <span style="width: 40%;">Class <span style="color:red;">*</span> : </span>
-                <select id="class">
-                    <option value="">Select Class</option>
-                </select>
-                <input type="hidden" id="chkProg" value="1">
-            <?php } else { ?>
-                <input type="hidden" id="chkProg" value="2">
-                <input type="hidden" id="pid" value="<?php echo $rowdata['pupilsightProgramID']; ?>">
-                <span style="width: 40%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <span style="width: 20%;">Class <span style="color:red;">*</span> : </span>
-                <select id="class">
-                    <option value="">Select Class</option>
-                    <?php if (!empty($getClass)) {
-                        foreach ($getClass as $cls) {
-                    ?>
-                            <option value="<?php echo  $cls['pupilsightYearGroupID']; ?>"><?php echo  $cls['name']; ?></option>
-                    <?php }
-                    } ?>
-                </select>
-            <?php } ?>
-            <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
-        </div>
+?>
+        <a id="downloadLink" href="index.php?q=/modules/Campaign/ajaxfile_parent.php&cid=<?php echo $id; ?>" class="" style="display:none;">Download Receipts</a>
+        <center>
+            <!--<div  >-->
+            <div style="display:inline-flex; font-weight: 700; font-size:15px; width: 50%; margin-bottom:10px;">
+                <input type="hidden" id="cmpid" value="<?php echo $id; ?>">
+                <input type="hidden" id="fid" value="<?php echo $rowdata['form_id']; ?>">
+                <input type="hidden" id="pupilsightPersonID" value="<?php echo $pupilsightPersonID; ?>">
+
+                <?php if (!empty($programData)) { ?>
+                    <span style="width: 40%;">Program<span style="color:red;">*</span> : </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <select id="pid">
+                        <option value="">Select Program</option>
+                        <?php if (!empty($programData)) {
+                            foreach ($programData as $prg) {
+                        ?>
+                                <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
+                        <?php }
+                        } ?>
+                    </select>
+                    <span style="width: 40%;" class="ml-2">Class <span style="color:red;">*</span> : </span>
+                    <select id="class">
+                        <option value="">Select Class</option>
+                    </select>
+                    <input type="hidden" id="chkProg" value="1">
+                <?php } else { ?>
+                    <input type="hidden" id="chkProg" value="2">
+                    <input type="hidden" id="pid" value="<?php echo $rowdata['pupilsightProgramID']; ?>">
+                    <span style="width: 40%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <span style="width: 20%;">Class <span style="color:red;">*</span> : </span>
+                    <select id="class">
+                        <option value="">Select Class</option>
+                        <?php if (!empty($getClass)) {
+                            foreach ($getClass as $cls) {
+                        ?>
+                                <option value="<?php echo  $cls['pupilsightYearGroupID']; ?>"><?php echo  $cls['name']; ?></option>
+                        <?php }
+                        } ?>
+                    </select>
+                <?php } ?>
+                <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
+
+            </div>
+        </center>
     <?php
-        echo  '<iframe id="innerForm" data-campid=' . $id . ' src=' . $rowdata['page_link'] . ' style="width:100%;height:120vh;" allowtransparency="true"></iframe>';
+        echo  '<iframe id="innerForm" class="mt-4" data-campid=' . $id . ' src=' . $rowdata['page_link'] . ' style="width:100%;height:120vh;border:0;" allowtransparency="true"></iframe>';
         //echo "<script>setTimeout(function(){iframeLoaded('innerForm');},1000);</script>";
     }
     ?>
@@ -135,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
         //     iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
         // }
 
-        
+
 
         $('#innerForm').load(function() {
             var iframe = $('#innerForm').contents();
@@ -146,8 +150,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             iframe.find("input[name=dob_in_words]").prop('readonly', true);
             iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-90px;}  </style>"));
 
-            iframe.find("input[name=date_of_birth]").change(function(){
-           
+            iframe.find("input[name=date_of_birth]").change(function() {
+
                 var userDate = $(this).val();
                 var date_string = moment(userDate, "DD/MM/YYYY").format("MM/DD/YYYY");
                 var From_date = new Date(date_string);
@@ -156,21 +160,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                 var date_string2 = moment(userDate2, "DD/MM/YYYY").format("MM/DD/YYYY");
                 var To_date = new Date(date_string2);
 
-                var diff_date =  To_date - From_date;
+                var diff_date = To_date - From_date;
 
-                
-                var years = Math.floor(diff_date/31536000000);
-                var months = Math.floor((diff_date % 31536000000)/2628000000);
-                var days = Math.floor(((diff_date % 31536000000) % 2628000000)/86400000);
-                var ageval = years+" years "+months+" months and "+days+" days";
+
+                var years = Math.floor(diff_date / 31536000000);
+                var months = Math.floor((diff_date % 31536000000) / 2628000000);
+                var days = Math.floor(((diff_date % 31536000000) % 2628000000) / 86400000);
+                var ageval = years + " years " + months + " months and " + days + " days";
                 iframe.find("input[name=age_value]").val(ageval);
 
                 var dateTime = new Date(From_date);
                 var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                 var date = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-First', 'Twenty-Second', 'Twenty-Third', 'Twenty-Fourth', 'Twenty-Fifth', 'Twenty-Sixth', 'Twenty-Seventh', 'Twenty-Eighth', 'Twenty-Ninth', 'Thirtieth', 'Thirty-First'];
-                var strDateTime =  date[dateTime.getDate()-1] + " " + month[dateTime.getMonth()] + " " +  toWords(dateTime.getFullYear());
+                var strDateTime = date[dateTime.getDate() - 1] + " " + month[dateTime.getMonth()] + " " + toWords(dateTime.getFullYear());
                 iframe.find("input[name=dob_in_words]").val(strDateTime);
-                
+
             });
 
             iframe.find(".ff-el-form-control").change(function() {
@@ -181,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                         $("#class").addClass('error').focus();
                         iframe.find(".ff-btn-submit").prop('disabled', true);
                         alert('You Have to Select Class');
-                        if(chkprog == '1'){
+                        if (chkprog == '1') {
                             var pval = $("#pid option:selected").val();
                             if (pval == '') {
                                 $("#pid").addClass('error').focus();
@@ -198,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                     } else {
                         $("#class").removeClass('error');
                         iframe.find(".ff-btn-submit").prop('disabled', false);
-                        if(chkprog == '1'){
+                        if (chkprog == '1') {
                             var pval = $("#pid option:selected").val();
                             if (pval == '') {
                                 $("#pid").addClass('error').focus();
@@ -214,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                         return true;
                     }
                 });
-            });   
+            });
 
             var pid = iframe.find(".fluentform");
             iframe.find("form").submit(function() {
@@ -233,13 +237,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             });
         });
 
-        function toWords(s){
-            var th = ['','Thousand','Million', 'Billion','Trillion'];
-            var dg = ['Zero','One','Two','Three','Four', 'Five','Six','Seven','Eight','Nine'];
-            var tn = ['Ten','Eleven','Twelve','Thirteen', 'Fourteen','Fifteen','Sixteen', 'Seventeen','Eighteen','Nineteen'];
-            var tw = ['Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety'];
+        function toWords(s) {
+            var th = ['', 'Thousand', 'Million', 'Billion', 'Trillion'];
+            var dg = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+            var tn = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            var tw = ['Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
             s = s.toString();
-            s = s.replace(/[\, ]/g,'');
+            s = s.replace(/[\, ]/g, '');
             if (s != parseFloat(s)) {
                 return 'not a number';
             }
@@ -249,32 +253,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             var n = s.split('');
             var str = '';
             var sk = 0;
-            for (var i=0; i < x; i++) {
-                if ((x-i)%3==2) {
+            for (var i = 0; i < x; i++) {
+                if ((x - i) % 3 == 2) {
                     if (n[i] == '1') {
-                        str += tn[Number(n[i+1])] + ' ';
+                        str += tn[Number(n[i + 1])] + ' ';
                         i++;
-                        sk=1;
-                    } else if (n[i]!=0) {
-                        str += tw[n[i]-2] + ' ';
-                        sk=1;
+                        sk = 1;
+                    } else if (n[i] != 0) {
+                        str += tw[n[i] - 2] + ' ';
+                        sk = 1;
                     }
-                } else if (n[i]!=0) {
-                    str += dg[n[i]] +' ';
-                    if ((x-i)%3==0) str += 'hundred ';
-                    sk=1;
+                } else if (n[i] != 0) {
+                    str += dg[n[i]] + ' ';
+                    if ((x - i) % 3 == 0) str += 'hundred ';
+                    sk = 1;
                 }
-                if ((x-i)%3==1) {
-                    if (sk) str += th[(x-i-1)/3] + ' ';
-                    sk=0;
+                if ((x - i) % 3 == 1) {
+                    if (sk) str += th[(x - i - 1) / 3] + ' ';
+                    sk = 0;
                 }
             }
             if (x != s.length) {
                 var y = s.length;
                 str += 'point ';
-                for (var i=x+1;    i<y; i++) str += dg[n[i]] +' ';
+                for (var i = x + 1; i < y; i++) str += dg[n[i]] + ' ';
             }
-            return str.replace(/\s+/g,' ');
+            return str.replace(/\s+/g, ' ');
         }
 
         function getPDF(pid) {
@@ -367,7 +371,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             }
         }
 
-        $(document).on('change', '#pid', function () {
+        $(document).on('change', '#pid', function() {
             var val = $(this).val();
             var cid = $("#cmpid").val();
             if (val != '') {
@@ -375,7 +379,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                 $.ajax({
                     url: 'ajax_data.php',
                     type: 'post',
-                    data: {val: val,type: type, cid: cid},
+                    data: {
+                        val: val,
+                        type: type,
+                        cid: cid
+                    },
                     async: true,
                     success: function(response) {
                         $("#class").html('');
@@ -383,7 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                     }
                 });
             }
-        });        
+        });
     </script>
 <?php
 }

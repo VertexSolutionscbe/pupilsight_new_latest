@@ -120,8 +120,7 @@ if (!empty($file)) {
 
             header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
             readfile($pdfFilename);
-            //unlink($savedocsx);
-
+            unlink($savedocsx);
         } catch (Exception $ex) {
         }
     }
