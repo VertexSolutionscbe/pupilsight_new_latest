@@ -1,4 +1,5 @@
 <?php
+
 include_once 'database.php';
 $connection = new database();
 $connection->init();
@@ -180,7 +181,7 @@ class adminlib
 		return $result;
 	}
 
-
+	/*
 	public function getApp_status(QueryCriteria $criteria)
 	{
 		$query = $this
@@ -191,13 +192,13 @@ class adminlib
 			]);
 
 		return $this->runQuery($query, $criteria);
-	}
+	}*/
 
 	public function getApplist($val)
 	{
 		// 
 		// $sql = "SELECT cs.id, cs.campaign_id, cm.form_id,cs.submission_id,cs.state,cs.state_id,cs.status,cm.name, ws.created_at FROM wp_fluentform_entry_details as we LEFT JOIN campaign AS cm ON we.form_id=cm.form_id LEFT JOIN campaign_form_status AS cs ON cm.id=cs.campaign_id LEFT JOIN wp_fluentform_submissions AS ws ON we.submission_id=ws.id WHERE we.field_value = '".$val."' GROUP BY we.form_id";		
-		$sql = "SELECT  cm.id, cm.form_id,cm.name, we.submission_id, ws.created_at, ws.application_id FROM wp_fluentform_entry_details as we LEFT JOIN campaign AS cm ON we.form_id=cm.form_id LEFT JOIN wp_fluentform_submissions AS ws ON we.submission_id=ws.id WHERE we.field_value LIKE '%" . $val . "%' AND (we.field_name = 'email' OR we.field_name = 'father_email' OR we.field_name = 'mother_email' OR we.field_name = 'father_mobile' OR we.field_name = 'mother_mobile') GROUP BY we.submission_id";
+		$sql = "SELECT  cm.id, cm.form_id,cm.name, cm.is_fee_generate, we.submission_id, ws.created_at, ws.application_id FROM wp_fluentform_entry_details as we LEFT JOIN campaign AS cm ON we.form_id=cm.form_id LEFT JOIN wp_fluentform_submissions AS ws ON we.submission_id=ws.id WHERE we.field_value LIKE '%" . $val . "%' AND (we.field_name = 'email' OR we.field_name = 'father_email' OR we.field_name = 'mother_email' OR we.field_name = 'father_mobile' OR we.field_name = 'mother_mobile') GROUP BY we.submission_id";
 		$result = database::doSelect($sql);
 
 		foreach ($result as $k => $rs) {
@@ -322,10 +323,11 @@ class adminlib
 		$cresult = database::doInsert($csql);
 	}
 
-	function updateApplicantData2($submissionId, $pupilsightProgramID, $pupilsightYearGroupID, $application_id){
-		$sql1 = "UPDATE wp_fluentform_submissions SET pupilsightProgramID=".$pupilsightProgramID.", pupilsightYearGroupID=".$pupilsightYearGroupID.", application_id = '".$application_id."'  WHERE id= ".$submissionId." ";
+	function updateApplicantData2($submissionId, $pupilsightProgramID, $pupilsightYearGroupID, $application_id)
+	{
+		$sql1 = "UPDATE wp_fluentform_submissions SET pupilsightProgramID=" . $pupilsightProgramID . ", pupilsightYearGroupID=" . $pupilsightYearGroupID . ", application_id = '" . $application_id . "'  WHERE id= " . $submissionId . " ";
 		$result1 = database::doUpdate($sql1);
-	}	
+	}
 
 	function updateApplicantData($submissionId, $pupilsightProgramID, $pupilsightYearGroupID)
 	{

@@ -182,7 +182,7 @@ class AdmissionGateway extends QueryableGateway
         }
 
         $query->groupBy(['fd.submission_id'])
-        ->orderBy(['fd.submission_id DESC']);
+            ->orderBy(['fd.submission_id DESC']);
 
         //echo $query;
 
@@ -261,7 +261,7 @@ class AdmissionGateway extends QueryableGateway
                         ->newQuery()
                         ->from('fn_fee_admission_settings')
                         ->cols([
-                            'fn_fee_admission_settings.id as settingid', 'fn_fee_admission_settings.classes','fn_fee_admission_settings.no_of_invoices', 'fn_fee_admission_settings.state_id'
+                            'fn_fee_admission_settings.id as settingid', 'fn_fee_admission_settings.classes', 'fn_fee_admission_settings.no_of_invoices', 'fn_fee_admission_settings.state_id'
                         ])
                         ->where('fn_fee_admission_settings.id IN (' . $feestgId . ') ')
                         ->where('fn_fee_admission_settings.fn_fee_structure_id = "' . $cd['id'] . '" ')
@@ -276,7 +276,7 @@ class AdmissionGateway extends QueryableGateway
                         $data[$k]['state_id'] = $newdata->data[0]['state_id'];
                     } else {
                         $data[$k]['classes'] = '';
-                        $data[$k]['settingid'] = ''; 
+                        $data[$k]['settingid'] = '';
                         $data[$k]['no_of_invoices'] = '';
                         $data[$k]['state_id'] = '';
                     }
@@ -288,7 +288,6 @@ class AdmissionGateway extends QueryableGateway
             // die();
             $res->data = $data;
             return $res;
-           
         } else {
             $query = $this
                 ->newQuery()

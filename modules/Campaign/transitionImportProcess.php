@@ -18,6 +18,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
         echo "fail";
         die();
     }
+    
+    $stateid = $_POST['sid'];
+    $statename = $_POST['sname'];
+    $formId = $_POST['fid'];
+    $crtd =  date('Y-m-d H:i:s');
+    $cdt = date('Y-m-d H:i:s');
+    $cuid = $_SESSION[$guid]['pupilsightPersonID'];
+
+    
+
     try {
         $sql = "SELECT a.*, b.form_id, b.academic_id, b.admission_series_id FROM campaign_transitions_form_map AS a LEFT JOIN campaign AS b ON a.campaign_id = b.id where b.id='" . $campaign_id . "' GROUP BY table_name";
         $result = $connection2->query($sql);
@@ -161,17 +171,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
             }
 
             //echo $chk;
-            echo '<pre> tdata';
-            print_r($tdata);
-            echo '</pre>';
-            //die();
+            // echo '<pre> tdata';
+            // print_r($tdata);
+            // echo '</pre>';
+            // die();
 
 
             if (!empty($tdata)) {
                 try {
-                    print_r($tdata);
+                    //print_r($tdata);
                     foreach ($tdata as $td) {
-                        print_r($td);
+                        //print_r($td);
                         if (!empty($td['admission_series_id'])) {
                             $seriesId = $td['admission_series_id'];
                             $sqlrec = 'SELECT id, formatval FROM fn_fee_series WHERE id = "' . $seriesId . '" ';
@@ -237,7 +247,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         $sql .= ")";
                         $sql = rtrim($sql, ", ");
 
-
+                        // echo $sql;
+                        // die();
                         $conn->query($sql);
                         $stu_id = $conn->insert_id;
 
@@ -337,6 +348,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         $sqlupd = "UPDATE wp_fluentform_entry_details SET status=:status WHERE submission_id=:submission_id";
                         $resultupd = $connection2->prepare($sqlupd);
                         $resultupd->execute($wdata);
+
+                        $data = array('campaign_id' => $campaign_id,'form_id' => $formId, 'submission_id' => $td['sid'], 'state' => $statename,  'state_id' => $stateid, 'status' => '1', 'pupilsightPersonID' => $cuid, 'cdt' => $cdt);
+                
+                        $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, cdt=:cdt";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
 
                         $sqlchks = 'SELECT seats, used_seats FROM seatmatrix WHERE campaignid = ' . $cid . ' AND pupilsightProgramID = ' . $prog . ' AND pupilsightYearGroupID = ' . $cls . ' ';
                         $resultchks = $connection2->query($sqlchks);
