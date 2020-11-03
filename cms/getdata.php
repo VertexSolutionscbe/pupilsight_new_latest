@@ -30,7 +30,11 @@ if (!empty($camdata)) {
 			if (!empty($row['transaction_id'])) {
 				echo $statedata;
 			} else {
-				echo "Created";
+				if ($row['is_fee_generate'] == '2') {
+					echo "Created";
+				} else {
+					echo "Submitted";
+				}
 			}
 
 			echo '</td>';
