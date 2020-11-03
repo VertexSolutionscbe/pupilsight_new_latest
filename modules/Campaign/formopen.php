@@ -85,6 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
         <div style="display:inline-flex; font-weight: 700; font-size:15px; width: 50%; margin-bottom:10px;" class="">
             <input type="hidden" id="fid" value="<?php echo $rowdata['form_id']; ?>">
             <input type="hidden" id="pupilsightPersonID" value="<?php echo $pupilsightPersonID; ?>">
+            <input type="hidden" id="cmpid" value="<?php echo $id; ?>">
 
             <?php if(!empty($programData)){ ?>
                 <span style="width: 40%;">Program<span style="color:red;">*</span> : </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

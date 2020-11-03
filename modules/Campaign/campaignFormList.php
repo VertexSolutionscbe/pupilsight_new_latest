@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     echo __('Online Campaign Submitted Form List  ');
     echo '(' . $formid['name'] . ')';
     echo '</h2>';
-
+    echo '<input type="hidden" id="cmpId" value="'.$id.'">';
     echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" checked><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
 
     echo "<a style='display:none;' href='' class='thickbox' id='clickStateRemark'>Remark</a>";
@@ -711,11 +711,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         });
         var submit_id = favorite.join(", ");
         var url = $(this).attr('data-href');
+        var cid = $("#cmpId").val();
         if (submit_id) {
             $.ajax({
                 url: url,
                 type: 'post',
-                data: { subid: submit_id},
+                data: { subid: submit_id, cid:cid},
                 async: true,
                 success: function(response) {
                     if(response == 'fail'){
