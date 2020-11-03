@@ -96,6 +96,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     echo '(' . $formid['name'] . ')';
     echo '</h2>';
 
+    echo '<input type="hidden" id="cmpId" value="' . $id . '">';
+
     echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" checked><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
 
     echo "<a style='display:none;' href='' class='thickbox' id='clickStateRemark'>Remark</a>";
@@ -221,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
     //    array_reverse($dataSet->data);
 
-   
+
 
     $arrHeader = array();
     foreach ($field as $fe) {
@@ -712,11 +714,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         var submit_id = favorite.join(", ");
         var url = $(this).attr('data-href');
         if (submit_id) {
+            var cid = $("#cmpId").val();
             $.ajax({
                 url: url,
                 type: 'post',
                 data: {
-                    subid: submit_id
+                    subid: submit_id,
+                    campaign_id: cid
                 },
                 async: true,
                 success: function(response) {
@@ -724,7 +728,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                         alert('Seats are Full!');
                     } else {
                         alert('Your Applicant Admitted Successfully! Click Ok to Continue');
-                        location.reload();
+                        // location.reload();
                     }
 
                 }

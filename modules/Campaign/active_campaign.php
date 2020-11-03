@@ -40,6 +40,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 use Pupilsight\Services\Format;
 
 use Pupilsight\Forms\Form;
@@ -56,105 +57,104 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/application_statu
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    
-    $search = isset($_GET['search'])? $_GET['search'] : '';    
+
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
     $admissionGateway = $container->get(AdmissionGateway::class);
-     $criteria = $admissionGateway->newQueryCriteria()
+    $criteria = $admissionGateway->newQueryCriteria()
         ->searchBy($admissionGateway->getSearchableColumns(), $search)
         ->sortBy(['id'])
         ->fromPOST();
-        $uid = ltrim($_SESSION[$guid]['pupilsightPersonID'], '0');
-      
+    $uid = ltrim($_SESSION[$guid]['pupilsightPersonID'], '0');
+
     //  $sqlq = 'select c.id,c.name,c.end_date from campaign as c left join campaign_parent_registration as cp on c.id=cp.campaign_id where c.id not in(select campaign_id from campaign_parent_registration where pupilsightPersonID='.$uid.')  and CURDATE() between start_date and end_date   AND c.status = "2" GROUP BY c.id ';
 
-      $sqlq = 'select c.id,c.name,c.end_date,c.allow_multiple_submission, c.form_id from campaign as c left join campaign_parent_registration as cp on c.id=cp.campaign_id where CURDATE() between start_date and end_date   AND c.status = "2" GROUP BY c.id ';
+    $sqlq = 'select c.id,c.name,c.end_date,c.allow_multiple_submission, c.form_id from campaign as c left join campaign_parent_registration as cp on c.id=cp.campaign_id where CURDATE() between start_date and end_date   AND c.status = "2" and c.form_id is not null GROUP BY c.id ';
+    //   $sqlq = 'select c.id,c.name from campaign as c left join campaign_parent_registration as cp on c.id=cp.campaign_id where c.id not in(select campaign_id from campaign_parent_registration where pupilsightPersonID='.$uid.') and c.page_for="2"  AND c.status = "2" GROUP BY c.id ';
+    //$sqlq = 'SELECT a.id, a.name FROM campaign AS a JOIN campaign_parent_registration AS b ON a.id = b.campaign_id where a.page_for = "2" AND a.status = "2" AND b.pupilsightPersonID != '.$uid.' ';
+    $resultval = $connection2->query($sqlq);
+    $rowdata = $resultval->fetchAll();
+    $arr = array();
+    foreach ($rowdata as $dt) {
+        $arr[] = $dt;
+    }
 
-     //   $sqlq = 'select c.id,c.name from campaign as c left join campaign_parent_registration as cp on c.id=cp.campaign_id where c.id not in(select campaign_id from campaign_parent_registration where pupilsightPersonID='.$uid.') and c.page_for="2"  AND c.status = "2" GROUP BY c.id ';
-        //$sqlq = 'SELECT a.id, a.name FROM campaign AS a JOIN campaign_parent_registration AS b ON a.id = b.campaign_id where a.page_for = "2" AND a.status = "2" AND b.pupilsightPersonID != '.$uid.' ';
-        $resultval = $connection2->query($sqlq);
-        $rowdata = $resultval->fetchAll();
-        $arr=array();
-        foreach ($rowdata as $dt) {
-
-            $arr[] = $dt;
-        }
-            
-     // QUERY
-     echo '<h2>';
-     echo __('Campaign List');
-     echo '</h2>';
-    //  print_r($criteria);
-    //  die();
+    // QUERY
+    echo '<h2>';
+    echo __('Campaign List');
+    echo '</h2>';
+    //print_r($criteria);
+    //die();
     //$dataSet = $admissionGateway->getAllCampaign($criteria);
     // echo "<div class='row' >";  
-  
+
     //  print_r(json_encode($obj->name);
-    
+
     //$result = json_decode($dataSet);
-  
+
     $len = count($arr);
 
     $i = 0;
     $ic = 1;
     $isactive = FALSE;
-    if($len){
-        while ($i < $len) {
-                if (($i % 4) == 0) {
-                    if ($i > 0) {
-                        echo "</div>";
-                        $isactive = FALSE;
+    if ($len) {
+        try {
+            while ($i < $len) {
+                if ($arr[$i]['form_id']) {
+                    if (($i % 4) == 0) {
+                        if ($i > 0) {
+                            echo "</div>";
+                            $isactive = FALSE;
+                        }
+                        echo "<div class='row '>";
+                        $isactive = TRUE;
                     }
-                    echo "<div class='row '>";
-                    $isactive = TRUE;
-                }
 
-            $sqlchk = 'SELECT a.id, b.id as campid FROM wp_fluentform_submissions AS a LEFT JOIN campaign AS b ON a.form_id = b.form_id where a.pupilsightPersonID = '.$uid.' AND a.form_id = '.$arr[$i]['form_id'].' AND b.id = '.$arr[$i]['id'].' GROUP BY a.form_id ';
-            $resultchk = $connection2->query($sqlchk);
-            $rowdatachk = $resultchk->fetch();
-                // print_r($rowdatachk);
-                
-            echo "<div class='col-sm-3 col-lg-3' >";
-            echo "<div class='card card_custom' >";
-            echo '<span class="campaign_name">';
-            
-            echo $arr[$i]['name'];
-            echo '</span>';
-            //echo $arr[$i]['name'].'----'.$arr[$i]['allow_multiple_submission'];
-            if($arr[$i]['allow_multiple_submission'] == '1'){
-                echo "<center><a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/popup.php&id='.$arr[$i]['id'].''."&width=500&height=250'> ";   
-                echo '<button class="btn btn-primary my-2">Apply Here</button></a>';
-            } else {
-                if(!empty($rowdatachk)){
-                    echo '<center><button class="btn btn-primary my-2">Already Applied</button>';
-                } else {
-                    echo "<center><a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/popup.php&id='.$arr[$i]['id'].''."&width=500&height=250'> ";   
-                    echo '<button class="btn btn-primary my-2">Apply Here</button></a>';
+                    $sqlchk = 'SELECT a.id, b.id as campid FROM wp_fluentform_submissions AS a LEFT JOIN campaign AS b ON a.form_id = b.form_id where a.pupilsightPersonID = ' . $uid . ' AND a.form_id = ' . $arr[$i]['form_id'] . ' AND b.id = ' . $arr[$i]['id'] . ' GROUP BY a.form_id ';
+                    //echo $sqlchk;
+                    $resultchk = $connection2->query($sqlchk);
+                    $rowdatachk = $resultchk->fetch();
+                    // print_r($rowdatachk);
+
+                    echo "<div class='col-sm-3 col-lg-3' >";
+                    echo "<div class='card card_custom' >";
+                    echo '<span class="campaign_name">';
+
+                    echo $arr[$i]['name'];
+                    echo '</span>';
+                    //echo $arr[$i]['name'].'----'.$arr[$i]['allow_multiple_submission'];
+                    if ($arr[$i]['allow_multiple_submission'] == '1') {
+                        echo "<center><a class='thickbox' href='" . $_SESSION[$guid]['absoluteURL'] . '/fullscreen.php?q=/modules/' . $_SESSION[$guid]['module'] . '/popup.php&id=' . $arr[$i]['id'] . '' . "&width=500&height=250'> ";
+                        echo '<button class="btn btn-primary my-2">Apply Here</button></a>';
+                    } else {
+                        if (!empty($rowdatachk)) {
+                            echo '<center><button class="btn btn-primary my-2">Already Applied</button>';
+                        } else {
+                            echo "<center><a class='thickbox' href='" . $_SESSION[$guid]['absoluteURL'] . '/fullscreen.php?q=/modules/' . $_SESSION[$guid]['module'] . '/popup.php&id=' . $arr[$i]['id'] . '' . "&width=500&height=250'> ";
+                            echo '<button class="btn btn-primary my-2">Apply Here</button></a>';
+                        }
+                    }
+
+
+                    echo '<p style="text-align:center pb-2">Application ends on ';
+                    $dt = new DateTime($arr[$i]['end_date']);
+                    echo $dt->format('d-m-Y');
+                    // echo $arr[$i]['end_date'];
+                    echo '</p></center>';
+
+                    echo "</div>";
+                    echo "</div>";
                 }
+                $i++;
+                $ic++;
             }
-            
-            
-            echo '<p style="text-align:center pb-2">Application ends on ';
-            $dt = new DateTime($arr[$i]['end_date']);
-            echo $dt->format('d-m-Y');
-           // echo $arr[$i]['end_date'];
-            echo'</p></center>';
-
-            echo "</div>";
-            echo "</div>";
-            $i++;
-            $ic++;
-
+        } catch (Exception $ex) {
+            print_r($ex);
         }
     } else {
         echo '<p>No Active Campaign Available Here</p>';
     }
-if ($isactive) {
-    // echo "</div>";
-    $isactive = FALSE;
-}
-
- 
- 
- 
-
+    if ($isactive) {
+        // echo "</div>";
+        $isactive = FALSE;
+    }
 }

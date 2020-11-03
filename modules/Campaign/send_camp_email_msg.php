@@ -2,7 +2,7 @@
 /*
 Pupilsight, Flexible & Open School System
 */
-include $_SERVER["DOCUMENT_ROOT"] .'/pupilsight.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight.php';
 
 use Pupilsight\Contracts\Comms\Mailer;
 
@@ -74,23 +74,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
                 $email = $sd['father_email'];
                 if (!empty($sd['father_mobile'])) {
                     $ft_number = $sd['father_mobile'];
-                } 
+                }
                 if (!empty($sd['mother_mobile'])) {
                     $mt_number = $sd['mother_mobile'];
-                } 
+                }
                 if (!empty($sd['guardian_mobile'])) {
                     $gt_number = $sd['guardian_mobile'];
-                } 
+                }
 
                 if (!empty($sd['father_email'])) {
                     $ft_email = $sd['father_email'];
-                } 
+                }
                 if (!empty($sd['mother_email'])) {
                     $mt_email = $sd['mother_email'];
-                } 
+                }
                 if (!empty($sd['guardian_email'])) {
                     $gt_email = $sd['guardian_email'];
-                } 
+                }
             }
 
             //$email = "it.rakesh@gmail.com";
@@ -103,22 +103,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
             $rowdatm = $resultm->fetch();
 
             if (!empty($emailquote) && !empty($body)) {
-                
-                if(!empty($ft_email)){
+
+                if (!empty($ft_email)) {
                     $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
                     $url .= "&to=" . $ft_email;
                     $url .= "&subject=" . rawurlencode($subject);
                     $url .= "&body=" . rawurlencode($body);
                     sendEmail($ft_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
                 }
-                if(!empty($mt_email)){
+                if (!empty($mt_email)) {
                     $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
                     $url .= "&to=" . $mt_email;
                     $url .= "&subject=" . rawurlencode($subject);
                     $url .= "&body=" . rawurlencode($body);
                     sendEmail($mt_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
                 }
-                if(!empty($gt_email)){
+                if (!empty($gt_email)) {
                     $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
                     $url .= "&to=" . $gt_email;
                     $url .= "&subject=" . rawurlencode($subject);
@@ -128,13 +128,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
             }
 
             if (!empty($smsquote) && !empty($msg)) {
-                if(!empty($ft_number)){
+                if (!empty($ft_number)) {
                     sendSMS($ft_number, $msg, $subid, $cuid, $connection2);
                 }
-                if(!empty($mt_number)){
+                if (!empty($mt_number)) {
                     sendSMS($mt_number, $msg, $subid, $cuid, $connection2);
                 }
-                if(!empty($gt_number)){
+                if (!empty($gt_number)) {
                     sendSMS($gt_number, $msg, $subid, $cuid, $connection2);
                 }
             }
@@ -142,7 +142,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
     }
 }
 
-function sendSMS($number, $msg, $subid, $cuid, $connection2){
+function sendSMS($number, $msg, $subid, $cuid, $connection2)
+{
     $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
     $urls .= "&send_to=" . $number;
     $urls .= "&msg=" . rawurlencode($msg);
@@ -153,8 +154,9 @@ function sendSMS($number, $msg, $subid, $cuid, $connection2){
     $connection2->query($sq);
 }
 
-function sendEMail($to, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus){
-   
+function sendEMail($to, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus)
+{
+
     //sending attachment
     if ($attachmentStatus == "Yes") {
         $from = $_SESSION[$guid]['organisationAdministratorEmail'];

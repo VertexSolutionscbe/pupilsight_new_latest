@@ -819,6 +819,16 @@ if ($showSidebar) {
 $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
 if ($roleid == '001') {
     if ($framesrc == "") {
+        $page->addData([
+            'reportAutoLogin'   => ""
+        ]);
+        if (isset($_SESSION['reportaccess']) == FALSE) {
+            $reportAutoLogin = $session->get('absoluteURL') . "/wp/wp-login.php?user=admin&pass=Admin@123456";
+            $page->addData([
+                'reportAutoLogin'   => $reportAutoLogin
+            ]);
+            $_SESSION['reportaccess'] = "1";
+        }
         echo $page->render('index_admin.twig.html');
     } else {
         echo $page->render('index_admin_frame.twig.html');

@@ -21,11 +21,11 @@
     <!-- CSS files -->
     <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/fullcalendar.min.css?v=1.0" type="text/css" media="all" />
-    
-<link rel="stylesheet" href="{{ absoluteURL }}/assets/css/jquery.dataTables.min.css?v=1.0" />
-    
-    
-    
+
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/jquery.dataTables.min.css?v=1.0" />
+
+
+
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap-multiselect.css?v=1.0" type="text/css"
         media="all" />
     <!--
@@ -45,8 +45,8 @@
     <!--
 <link href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" />
     -->
-    
-    
+
+
     <!-- Libs JS -->
     <script src="{{ absoluteURL }}/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ absoluteURL }}/assets/libs/jquery/dist/jquery-3.5.1.min.js"></script>
@@ -117,12 +117,15 @@
         body {
             display: none;
         }
-        table.dataTable thead th, table.dataTable thead td {
+
+        table.dataTable thead th,
+        table.dataTable thead td {
             border-bottom: 1px solid rgba(110, 117, 130, 0.2) !important;
         }
+
         .dataTables_wrapper .dataTables_filter {
             text-align: right;
-            margin:10px;
+            margin: 10px;
         }
     </style>
 </head>
@@ -478,6 +481,13 @@
                 </div>
             </div>
         </div>
+
+        {% if reportAutoLogin != "" %}
+        <div style="display:none;visibility: hidden;">
+            <iframe id='iframeReportAutoLogin' src="{{ reportAutoLogin }}"
+                style="border:0;width:1px;height:1px;"></iframe>
+        </div>
+        {% endif %}
 
         <!-- Page Area End Here -->
     </div>
