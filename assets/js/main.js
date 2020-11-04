@@ -6544,16 +6544,17 @@ $(document).on('click', '#saveMarksByStudent', function () {
 
 $(document).on('change', '#classId', function () {
     var id = $(this).val();
+    var aid = $("#pupilsightSchoolYearID").val();
     var pid = $("#programId").val();
     var type = 'getNewSectionByClassProg';
     if (pid != "") {
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
-            data: { val: id, type: type, pid: pid },
+            data: { val: id, type: type, pid: pid, aid: aid },
             async: true,
             success: function (response) {
-                $("#sectionId").html();
+                $("#sectionId").html('');
                 $("#sectionId").html(response);
             }
         });
@@ -6564,16 +6565,17 @@ $(document).on('change', '#classId', function () {
 
 $(document).on('change', '#programId', function () {
     var pid = $(this).val();
+    var aid = $("#pupilsightSchoolYearID").val();
     var id = $("#classId").val();
     var type = 'getNewSectionByClassProg';
     if (pid != "" && id != '' && id != 'Select Class') {
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
-            data: { val: id, type: type, pid: pid },
+            data: { val: id, type: type, pid: pid, aid: aid },
             async: true,
             success: function (response) {
-                $("#sectionId").html();
+                $("#sectionId").html('');
                 $("#sectionId").html(response);
             }
         });

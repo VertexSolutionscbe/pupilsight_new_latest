@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     }
     $program = $program1 + $program2;
 
-    if ($_POST['pupilsightProgramID']) {
+    if ($_POST['pupilsightSchoolYearID']) {
         $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
         $pupilsightProgramID =  $_POST['pupilsightProgramID'];
         $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
@@ -73,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     $MappingGateway = $container->get(MappingGateway::class);
     $criteria = $MappingGateway->newQueryCriteria()
         ->searchBy($MappingGateway->getSearchableColumns(), $search)
+        ->pageSize(1000)
         ->sortBy(['pupilsightMappingID'])
         ->fromPOST();
 
@@ -89,11 +90,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
-    $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder('Select Program');
+    $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'));
-    $col->addSelect('pupilsightYearGroupID')->required()->fromArray($classes)->selected($pupilsightYearGroupID);
+    $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($pupilsightYearGroupID);
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightRollGroupID', __('Section'));
@@ -111,6 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     $table = DataTable::createPaginated('programManage', $criteria);
 
     $table->addHeaderAction('add', __('Add'))
+        ->setID('btnRight')
         ->setURL('/modules/School Admin/mapping_manage_add.php')
         ->displayLabel();
 

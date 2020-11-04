@@ -62,32 +62,32 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Needs to be unique in school year.'));
-                $row->addTextField('name')->required()->maxLength(20);
+                $row->addTextField('name')->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Needs to be unique in school year.'));
-                $row->addTextField('nameShort')->required()->maxLength(8);
+                $row->addTextField('nameShort')->required();
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('hiddencol');
                 $row->addLabel('tutors', __('Tutors'))->description(__('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".'));
                 $column = $row->addColumn()->addClass('stacked');
                 $column->addSelectStaff('pupilsightPersonIDTutor')->placeholder()->photo(false);
                 $column->addSelectStaff('pupilsightPersonIDTutor2')->placeholder()->photo(false);
                 $column->addSelectStaff('pupilsightPersonIDTutor3')->placeholder()->photo(false);
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('hiddencol');
                 $row->addLabel('EAs', __('Educational Assistant'))->description(__('Up to 3 per roll group.'));
                 $column = $row->addColumn()->addClass('stacked');
                 $column->addSelectStaff('pupilsightPersonIDEA')->placeholder()->photo(false);
                 $column->addSelectStaff('pupilsightPersonIDEA2')->placeholder()->photo(false);
                 $column->addSelectStaff('pupilsightPersonIDEA3')->placeholder()->photo(false);
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('hiddencol');
                 $row->addLabel('pupilsightSpaceID', __('Location'));
                 $row->addSelectSpace('pupilsightSpaceID');
 
             $nextYear = getNextSchoolYearID($pupilsightSchoolYearID, $connection2);
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('hiddencol');
                 $row->addLabel('pupilsightRollGroupIDNext', __('Next Roll Group'))->description(__('Sets student progression on rollover.'));
                 if (empty($nextYear)) {
                     $row->addAlert(__('The next school year cannot be determined, so this value cannot be set.'));
@@ -95,11 +95,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
                     $row->addSelectRollGroup('pupilsightRollGroupIDNext', $nextYear);
                 }
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('hiddencol');
                 $row->addLabel('attendance', __('Track Attendance?'))->description(__('Should this class allow attendance to be taken?'));
                 $row->addYesNo('attendance');
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('hiddencol');
                 $row->addLabel('website', __('Website'))->description(__('Include http://'));
                 $row->addURL('website')->maxLength(255);
 

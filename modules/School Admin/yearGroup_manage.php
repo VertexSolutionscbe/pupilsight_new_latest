@@ -24,6 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 
     // QUERY
     $criteria = $yearGroupGateway->newQueryCriteria()
+        ->pageSize(1000)
         ->sortBy(['sequenceNumber'])
         ->fromPOST();
 
@@ -33,18 +34,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     $table = DataTable::createPaginated('yearGroupManage', $criteria);
 
     $table->addHeaderAction('add', __('Add'))
+        ->setID('btnRight')
         ->setURL('/modules/School Admin/yearGroup_manage_add.php')
         ->displayLabel();
 
     $table->addColumn('sequenceNumber', __('sequenceNumber'));
     $table->addColumn('name', __('Name'));
     $table->addColumn('nameShort', __('Short Name'));
-    $table->addColumn('pupilsightPersonIDHOY', __('Head of Year'))
-        ->format(function($values) {
-            if (!empty($values['preferredName']) && !empty($values['surname'])) {
-                return Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
-            }
-        });
+    // $table->addColumn('pupilsightPersonIDHOY', __('Head of Year'))
+    //     ->format(function($values) {
+    //         if (!empty($values['preferredName']) && !empty($values['surname'])) {
+    //             return Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
+    //         }
+    //     });
         
     // ACTIONS
     $table->addActionColumn()

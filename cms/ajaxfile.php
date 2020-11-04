@@ -50,7 +50,7 @@ if (!empty($file)) {
             chmod($file, 0777);
             $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
 
-            $sqla = "select application_id FROM wp_fluentform_submissions  where id = " . $aid . " ";
+            $sqla = "select application_id, created_at FROM wp_fluentform_submissions  where id = " . $aid . " ";
             $applicationData = database::doSelectOne($sqla);
 
 
@@ -97,7 +97,7 @@ if (!empty($file)) {
                 $fname = $aid;
             }
 
-            $date = date('d-m-Y');
+            $date = date('d-m-Y', strtotime($applicationData['created_at']));
             $phpword->setValue('application_no', $fname);
             $phpword->setValue('application_date', $date);
 
