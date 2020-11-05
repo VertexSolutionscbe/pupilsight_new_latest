@@ -60,6 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     // QUERY
     $criteria = $rollGroupGateway->newQueryCriteria()
+        ->pageSize(1000)
         ->sortBy(['sequenceNumber', 'pupilsightRollGroup.name'])
         ->fromPOST();
 
@@ -102,6 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     }
 
     $table->addHeaderAction('add', __('Add'))
+        ->setID('btnRight')
         ->setURL('/modules/School Admin/rollGroup_manage_add.php')
         ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
         ->displayLabel();
@@ -111,16 +113,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         ->setClass("chkbox")
         ->notSortable();
 
-    $table->addColumn('name', __('Name'))
-        ->description(__('Short Name'))
-        ->format(function ($rollGroup) {
-            return '<strong>' . $rollGroup['name'] . '</strong><br/><small><i>' . $rollGroup['nameShort'] . '</i></small>';
-        });
+    $table->addColumn('name', __('Name'));
 
-    $table->addColumn('tutors', __('Form Tutors'))->sortable(false)->format($formatTutorsList);
-    $table->addColumn('space', __('Location'));
-    $table->addColumn('website', __('Website'))
-        ->format(Format::using('link', ['website']));
+    $table->addColumn('nameShort', __('Short Name'));
+        // ->description(__('Short Name'))
+        // ->format(function ($rollGroup) {
+        //     return '<strong>' . $rollGroup['nameShort'] . '</strong><br/><small><i>' . $rollGroup['nameShort'] . '</i></small>';
+        // });
+
+    // $table->addColumn('tutors', __('Form Tutors'))->sortable(false)->format($formatTutorsList);
+    // $table->addColumn('space', __('Location'));
+    // $table->addColumn('website', __('Website'))
+    //     ->format(Format::using('link', ['website']));
 
     // ACTIONS
     $table->addActionColumn()

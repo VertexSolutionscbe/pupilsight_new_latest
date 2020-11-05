@@ -1747,7 +1747,8 @@ if ($type == 'getSubjectbasedonclass') {
 if ($type == 'getNewSectionByClassProg') {
     $cid = $val;
     $pid = $_POST['pid'];
-    $sqlsec = 'SELECT GROUP_CONCAT(pupilsightRollGroupID) AS secId FROM pupilsightProgramClassSectionMapping  WHERE pupilsightProgramID = "' . $pid . '" AND pupilsightYearGroupID = "' . $cid . '" ';
+    $aid = $_POST['aid'];
+    $sqlsec = 'SELECT GROUP_CONCAT(pupilsightRollGroupID) AS secId FROM pupilsightProgramClassSectionMapping  WHERE pupilsightSchoolYearID = '.$aid.' AND pupilsightProgramID = "' . $pid . '" AND pupilsightYearGroupID = "' . $cid . '" ';
     $resultsec = $connection2->query($sqlsec);
     $secdata = $resultsec->fetch();
     $sqlId = $secdata['secId'];
@@ -1757,7 +1758,7 @@ if ($type == 'getNewSectionByClassProg') {
         $sqlId = '0';
     }
 
-    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
+    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE pupilsightSchoolYearID = '.$aid.' AND pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
@@ -2373,7 +2374,7 @@ if ($type == 'getSectionByClassProgForMapping') {
         $sqlId = '0';
     }
 
-    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
+    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE  pupilsightSchoolYearID = "' . $aid . '" AND pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';

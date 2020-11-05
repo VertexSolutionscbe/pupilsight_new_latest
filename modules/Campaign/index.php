@@ -37,6 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     }
 
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+    $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
+    $roleID = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
 
     // Proceed!
     //echo 'wdcwc';die();
@@ -87,31 +89,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     //  die();
     $dataSet = $admissionGateway->getAllCampaign($criteria, $pupilsightSchoolYearID);
 
-
-    // Join a set of family data per user
-    //$people = $dataSet->getColumn('pupilsightPersonID');
-
-    // DATA TABLE
+    
     $table = DataTable::createPaginated('userManage', $criteria);
-    //  $table->addHeaderAction('Work Flow Transitions List', __('Work Flow Transitions List'))
-    //  ->setURL('/modules/Campaign/add_wf_transitionsList.php')
-    //  //->addParam('search', $search)
-    //  ->displayLabel();
-    //  $table->addHeaderAction('Work Flow Transitions List', __('Apply here'))
-    //  ->setURL('/modules/Campaign/active_campaign.php')
-    //  //->addParam('search', $search)
-    //  ->displayLabel();	
+    
 
+    $sqlchk = 'SELECT GROUP_CONCAT(pupilsightModuleButtonID) as buttonIDS FROM pupilsightModuleButtonPermission WHERE pupilsightModuleID = 178 AND pupilsightPersonID = '.$pupilsightPersonID.' ';
+    $resultchk = $connection2->query($sqlchk);
+    $buttPermisionData = $resultchk->fetch();
+    $permissionChk = explode(',',$buttPermisionData['buttonIDS']);
+    // echo '<pre>';
+    // print_r($permissionChk);
+    // echo '</pre>';
 
-    //  $table->addHeaderAction('add', __('Add'))
-    //      ->setURL('/modules/Campaign/add.php')
-    //      //->addParam('search', $search)
-    //      ->displayLabel();
-    if ($_SESSION[$guid]['username'] != "Geesha") {
-        echo "<div style='height:50px;'><div class='float-right'><a href='index.php?q=/modules/Campaign/campaign_series_manage.php' class='btn btn-secondary mb-2 mr-2'>Master Campaign Series</a>";
+    if($roleID == '001'){
+        echo "<div style='height:50px;'><div class='float-right'>";
+        echo "<a href='index.php?q=/modules/Campaign/campaign_series_manage.php' class='btn btn-secondary mb-2 mr-2'>Master Campaign Series</a>";
         echo "<a href='index.php?q=%2Fmodules%2FCampaign%2Fadd.php' class='btn btn-secondary mb-2 mr-2'>Add Campaign</a>";
-        echo "<a href='index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php' class='btn btn-secondary mb-2'>Transition</a></div><div class='float-none'></div></div>";
+        echo "<a href='index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php' class='btn btn-secondary mb-2 mr-2'>Transition</a>";
+        echo "<a href='index.php?q=/modules/Campaign/button_permission.php' class='btn btn-secondary mb-2'>Button Permission</a>";
+        echo "</div><div class='float-none'></div></div>";
+    } else {
+        if(!empty($permissionChk)){
+            echo "<div style='height:50px;'><div class='float-right'>";
+            if(in_array(8, $permissionChk)){
+                echo "<a href='index.php?q=/modules/Campaign/campaign_series_manage.php' class='btn btn-secondary mb-2 mr-2'>Master Campaign Series</a>";
+            }
+            if(in_array(1, $permissionChk)){
+                echo "<a href='index.php?q=%2Fmodules%2FCampaign%2Fadd.php' class='btn btn-secondary mb-2 mr-2'>Add Campaign</a>";
+            }
+            if(in_array(9, $permissionChk)){
+                echo "<a href='index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php' class='btn btn-secondary mb-2 mr-2'>Transition</a>";
+            }
+            if(in_array(10, $permissionChk)){
+                echo "<a href='index.php?q=/modules/Campaign/button_permission.php' class='btn btn-secondary mb-2'>Button Permission</a>";
+            }
+            echo "</div><div class='float-none'></div></div>";
+        }
     }
+    
+    
     // $table->addHeaderAction('Transition', __('Transition'))
     //      ->setURL('/modules/Campaign/transitions.php')
     //      //->addParam('search', $search)
@@ -190,16 +206,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
         });
 
     // ACTIONS
-    $table->addActionColumn()
-        ->addParam('id')
-        ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($person, $actions) use ($guid) {
+
+    if($roleID == '001'){
+        $table->addActionColumn()
+            ->addParam('id')
+            ->addParam('search', $criteria->getSearchText(true))
+            ->format(function ($person, $actions) use ($guid) {
 
             $actions->addAction('list', __('Submitted Form'))
                 ->setURL('/modules/Campaign/campaignFormList.php');
 
-            if ($_SESSION[$guid]['username'] != "Geesha") {
-
+            
                 $actions->addAction('View', __('View Application Form'))
                     ->setTitle('form')
                     ->setIcon('eye')
@@ -216,9 +233,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
 
                 $actions->addAction('applicationtemplate', __('Upload Template'))
                     ->setURL('/modules/Campaign/form_template_manage.php');
-            }
         });
-    if ($_SESSION[$guid]['username'] != "Geesha") {
+    
         $table->addmultiActionColumn()
             ->addParam('academic_year')
             ->addParam('name')
@@ -229,8 +245,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
                     ->setURL('/modules/Campaign/wf_manage.php')
                     ->setClass('center_algn');
             });
-    }
+   
+    } else {
+        if(!empty($permissionChk)){
+            $table->addActionColumn()
+            ->addParam('id')
+            ->addParam('search', $criteria->getSearchText(true))
+            ->format(function ($person, $actions) use ($permissionChk) {
 
+                if(in_array(11, $permissionChk)){
+                $actions->addAction('list', __('Submitted Form'))
+                    ->setURL('/modules/Campaign/campaignFormList.php');
+                }
+
+                if(in_array(4, $permissionChk)){
+                    $actions->addAction('View', __('View Application Form'))
+                        ->setTitle('form')
+                        ->setIcon('eye')
+                        ->setURL('/modules/Campaign/view_selected_campaign_form.php')
+                        ->modalWindow(1100, 550);
+                }
+                if(in_array(5, $permissionChk)){
+                    $actions->addAction('registereduser', __('Registered User'))
+                        ->setURL('/modules/Campaign/register_user_list.php');
+                }
+
+                if(in_array(2, $permissionChk)){
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Campaign/edit.php');
+                }
+                if(in_array(3, $permissionChk)){
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Campaign/delete.php');
+                }
+                if(in_array(6, $permissionChk)){
+                    $actions->addAction('applicationtemplate', __('Upload Template'))
+                        ->setURL('/modules/Campaign/form_template_manage.php');
+                }
+            });
+
+            
+                $table->addmultiActionColumn()
+                    ->addParam('academic_year')
+                    ->addParam('name')
+                    ->addParam('id')
+                    ->format(function ($person, $actions) use ($permissionChk) {
+                        if(in_array(7, $permissionChk)){
+                        $actions->addmultiAction('view', __('Work Flow'))
+                            ->setURL('/modules/Campaign/wf_manage.php')
+                            ->setClass('center_algn');
+                        }
+                    });
+            
+        }
+   
+    }
 
 
     echo $table->render($dataSet);
