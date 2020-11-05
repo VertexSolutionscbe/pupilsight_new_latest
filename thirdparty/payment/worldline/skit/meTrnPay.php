@@ -66,7 +66,7 @@ if ($reqMsgDTO->getStatusDesc() == "Success") {
 }
 ?>
 
-
+<?php if(!empty($submissionId)) { ?>
 <form action="https://ipg.in.worldline.com/doMEPayRequest" method="post" name="txnSubmitFrm">
 	<h4 align="center">Redirecting To Payment Please Wait..</h4>
 	<h4 align="center">Please Do Not Press Back Button OR Refresh Page</h4>
@@ -77,3 +77,7 @@ if ($reqMsgDTO->getStatusDesc() == "Success") {
 	//submit the form to the worldline
 	document.txnSubmitFrm.submit();
 </script>
+
+<?php } else { ?>
+	<h2>Your Application is Not Saved, Please Try Again</h2>
+<?php } ?>

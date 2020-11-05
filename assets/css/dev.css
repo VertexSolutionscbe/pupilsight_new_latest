@@ -848,3 +848,7 @@ select[multiple] {
     z-index: 9999999;
     opacity: 0.9;
 }
+
+#btnRight{
+    float: right;
+}

@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/program_manag
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-                $row->addTextField('name')->required()->maxLength(15)->setValue($values['name']);
+                $row->addTextField('name')->required()->setValue($values['name']);
 
             // $row = $form->addRow();
             //     $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));

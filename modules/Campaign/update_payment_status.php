@@ -182,7 +182,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/ajax_add_wf_trans
 
 				$dd_cheque_amount = '';
 				$payment_status = 'Payment Received';
-				$payment_date  = date('Y-m-d');
+				// $payment_date  = date('Y-m-d');
+				$payment_date  = '2020-10-28';
 				$fn_fees_head_id = $values['fn_fees_head_id'];
 				$fn_fees_receipt_series_id = $values['recp_fee_series_id'];
 
@@ -293,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/ajax_add_wf_trans
 					$dts_receipt = array(
 						"application_no" => $valuestu["application_id"],
 						"receipt_no" => $receipt_number,
-						"date" => date("d-M-Y"),
+						"date" => '28-Oct-2020',
 						"student_name" => $studetails['field_value'],
 						"student_id" => $submission_id,
 						"class_section" => $class_section,
