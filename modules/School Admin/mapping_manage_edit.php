@@ -102,8 +102,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
             $row = $form->addRow();
                 $row->addLabel('pupilsightRollGroupID', __('Section'));
                 $row->addSelectRollGroup('pupilsightRollGroupID', $pupilsightSchoolYearID)->setId('sectionId')->selected($values['pupilsightRollGroupID'])->required();
-
-            
            
             $row = $form->addRow();
                 $row->addFooter();

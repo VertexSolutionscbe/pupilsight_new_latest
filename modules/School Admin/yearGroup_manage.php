@@ -61,5 +61,5 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 
     echo $table->render($yearGroups);
 
-    //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+   
 }
