@@ -6729,6 +6729,11 @@ function CustomField() {
                 }
                 i++;
             }
+
+            if (_this.isRowActive) {
+                $("#" + _this.activeElement).append(_this.colActiveStr);
+                _this.colActiveStr = "";
+            }
             //console.log("deactivateIds: ",deactivateIds);
             if (deactivateIds) {
                 if (obj.view) {
@@ -6912,7 +6917,10 @@ function CustomField() {
             (value.constructor === Object && Object.keys(value).length === 0)
         )
     }
-
+    _this.colCurrent = 0;
+    _this.isRowActive = false;
+    _this.colActiveStr = "";
+    _this.activeElement = "";
     this.createView = function (obj) {
         var fieldTitle = "";
         var fieldName = "";
@@ -6947,16 +6955,30 @@ function CustomField() {
             if (document.getElementById(element).rows.length > 0) {
                 colCount = document.getElementById(element).rows[0].cells.length;
             }
-            var str = `<tr>
-                <td id="` + fieldName + `" style="width: 34%; vertical-align: top" colspan="` + colCount + `">
-                <span style="font-size: 115%; font-weight: bold">` + fieldTitle + `</span>
-                <br>` + elementVal + `</td>
-                </tr>`;
-            $("#" + element).append(str);
+            _this.activeElement = element;
+            //console.log(colCount);
+            var str = "";
+            if (!_this.isRowActive) {
+                str += "<tr>";
+                _this.isRowActive = true;
+            }
+            str += `<td id="` + fieldName + `" style="width: 34%; vertical-align: top">
+                <span class="form-label">` + fieldTitle + `</span>
+                <br>` + elementVal + `</td>`;
+            _this.colCurrent++;
+            if (_this.colCurrent > colCount) {
+                str += "</tr>";
+                _this.isRowActive = false;
+                $("#" + _this.activeElement).append(_this.colActiveStr);
+                str = "";
+            }
+
+            _this.colActiveStr += str;
+
         } else {
             var str = `<table class="smallIntBorder" cellspacing="0" style="width: 100%"><tr>
                 <td id="` + fieldName + `" style="width: 34%; vertical-align: top" colspan="` + colCount + `">
-                <span style="font-size: 115%; font-weight: bold">` + fieldTitle + `</span>
+                <span class="form-label">` + fieldTitle + `</span>
                 <br>` + elementVal + `</td>
                 </tr></table>`;
             $("#" + element).append(str);
@@ -6984,7 +7006,7 @@ function CustomField() {
         var requiredStr = "";
         if (obj.required == "Y") {
             required = " required ";
-            requiredStr = " * ";
+            requiredStr = "<span class='ml-1'> * </span>";
         }
 
         var tfVal = "";
@@ -7000,19 +7022,20 @@ function CustomField() {
             description = obj.field_description;
         }
 
-        var str = `<tr class="flex flex-col sm:flex-row justify-between content-center p-0">
-            <td class="flex flex-col flex-grow justify-center -mb-1 sm:mb-0  px-2 border-b-0 sm:border-b border-t-0 ">
-            <div class="input-group stylish-input-group">
-            <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + ` <br><span class="text-xxs text-gray-600 italic font-normal mt-1 sm:mt-0">` + description + `</span></label>
-            </div>
-            </td>                                                   
-            <td class="w-full max-w-full sm:max-w-xs flex justify-end items-center px-2 border-b-0 sm:border-b border-t-0 ">
-            <div class="input-group stylish-input-group">
-            <div class="flex-1 relative"><input type="text" id="` + obj.field_name + `" name="custom[` + obj.table_name + `][` + obj.field_name + `]" class="w-full" maxlength="256" value="` + tfVal + `" ` + required + `></div>
-            </div>          
-            </td>
-            </tr>`;
-        //<div class="flex-1 relative"><input type="text" id="` + obj.field_name + `" name="custom_` + obj.table_name + `_` + obj.field_name + `" class="w-full" maxlength="256" value="` + tfVal + `" ` + required + `></div>
+        var str = `<div class="row mb-1 ">                            
+        <div class="col-sm  ">
+        <div>
+            <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + ` 
+            <span class="text-xxs text-gray italic font-normal mt-1 sm:mt-0">` + description + `</span>
+            </label>
+        </div>
+        </div>                                                          
+        <div class="col-sm  standardWidth">
+        <div>
+            <div class="flex-1 relative"><input type="text" id="` + obj.field_name + `" name="custom[` + obj.table_name + `][` + obj.field_name + `]" class="w-full" value="` + tfVal + `" ` + required + `></div>
+        </div>
+        </div></div>`;
+
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);
         }
@@ -7039,22 +7062,20 @@ function CustomField() {
             description = obj.field_description;
         }
 
-        var str = `<tr class=" flex flex-col sm:flex-row justify-between content-center p-0">
-            <td class="flex flex-col flex-grow justify-center -mb-1 sm:mb-0  px-2 border-b-0 sm:border-b border-t-0 ">
-            <div class="input-group stylish-input-group">
-            <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `<br><span class="text-xxs text-gray-600 italic font-normal mt-1 sm:mt-0">` + description + `</span></label>
+        var str = `<div class="row mb-1">            
+            <div class="col-sm">
+                <div>
+                    <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `
+                    <span class="text-xxs text-gray italic font-normal mt-1 sm:mt-0">` + description + `</span>
+                    </label>
+                </div>
+            </div>                                          
+            <div class="col-sm  standardWidth">
+                <div>
+                    <textarea rows="4" id="` + obj.field_name + `" name="custom[` + obj.table_name + `][` + obj.field_name + `]" class="w-full" ` + required + `>` + tfVal + `</textarea>
+                </div>
             </div>
-            </td>                                                          
-            <td class="w-full max-w-full sm:max-w-xs flex justify-end items-center px-2 border-b-0 sm:border-b border-t-0 ">
-            <div class="input-group stylish-input-group">
-            <div class="flex-1 relative">
-            <textarea rows="4" id="` + obj.field_name + `" name="custom[` + obj.table_name + `][` + obj.field_name + `]" class="w-full" ` + required + `>` + tfVal + `</textarea>
-            </div>
-            </div>
-            </td>
-            </tr>`;
-
-        //<textarea rows="4" id="` + obj.field_name + `" name="custom_` + obj.table_name + `_` + obj.field_name + `" class="w-full" ` + required + `>` + tfVal + `</textarea>
+        </div>`;
 
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);

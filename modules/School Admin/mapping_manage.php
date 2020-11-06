@@ -143,5 +143,5 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
         });
 
     echo $table->render($yearGroups);
-    //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+    
 }

@@ -29,13 +29,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 	$sqlp = 'SELECT id,name FROM fee_category WHERE status="1"';
 	$resultp = $connection2->query($sqlp);
 	$rowdataprog = $resultp->fetchAll();
-	$fee_category=array();  
-	$fee_category2=array();  
-	$fee_category1=array(''=>'Select fee category');
+	$fee_category = array();
+	$fee_category2 = array();
+	$fee_category1 = array('' => 'Select fee category');
 	foreach ($rowdataprog as $dt) {
-	$fee_category2[$dt['id']] = $dt['name'];
+		$fee_category2[$dt['id']] = $dt['name'];
 	}
-	$fee_category= $fee_category1 + $fee_category2; 
+	$fee_category = $fee_category1 + $fee_category2;
 	//Check if school year specified
 	$pupilsightPersonID = $_GET['pupilsightPersonID'];
 	if ($pupilsightPersonID == '') {
@@ -96,13 +96,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			echo __('Note that certain fields are hidden or revealed depending on the role categories (Staff, Student, Parent) that a user is assigned to. For example, parents do not get Emergency Contact fields, and students/staff do not get Employment fields.');
 			echo '</div>';
 
-			
-			echo "<div style='height:50px;'><div class='float-left mb-2'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=".$pupilsightPersonID."&search=' class='btn btn-primary active'>Student</a>";  
-			
-			foreach($parents as $par){
-				echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=".$par['pupilsightPersonID1']."&child_id=".$pupilsightPersonID."&search=' class='btn btn-primary'>".$par['relationship']."</a>"; 
+
+			echo "<div style='height:50px;'><div class='float-left mb-2'><a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=" . $pupilsightPersonID . "&search=' class='btn btn-primary active'>Student</a>";
+
+			foreach ($parents as $par) {
+				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=" . $par['pupilsightPersonID1'] . "&child_id=" . $pupilsightPersonID . "&search=' class='btn btn-primary'>" . $par['relationship'] . "</a>";
 			}
-			echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=".$parents[0]['pupilsightFamilyID']."&child_id=".$pupilsightPersonID."' class='btn btn-primary'>Family</a></div><div class='float-none'></div></div>"; 
+			echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=" . $parents[0]['pupilsightFamilyID'] . "&child_id=" . $pupilsightPersonID . "' class='btn btn-primary'>Family</a></div><div class='float-none'></div></div>";
 
 			$form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'] . '/modules/User Admin' . '/student_editProcess.php?pupilsightPersonID=' . $pupilsightPersonID . '&search=' . $search);
 			$form->setFactory(DatabaseFormFactory::create($pdo));
@@ -677,14 +677,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			</script>
 
 			<style>
-				.yscroll 
-				{
-					overflow-y: auto!important;
+				.yscroll {
+					overflow-y: auto !important;
 					min-height: 142px !important;
-					height: 157px!important;
+					height: 157px !important;
 				}
-				
-				</style>
+			</style>
 
 <?php
 		}
