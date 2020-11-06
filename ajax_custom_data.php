@@ -122,6 +122,32 @@ if ($type == 'subjectSortTab') {
         }
         
     }*/
+} else if ($type == 'showCustomControl') {
+    if ($val) {
+        $res = array();
+        try {
+            $fields = $_POST["fields"];
+            $len = count($fields);
+            $i = 0;
+            while ($i < $len) {
+                $sqs = "select id from custom_field where field_name='" . $fields[$i] . "' and table_name='" . $val . "'";
+                $result = $connection2->query($sqs);
+                $row = $result->fetchAll();
+                if (isset($row[0]["id"])) {
+                    $squ = "update custom_field set active='Y' where id='" . $row[0]["id"] . "' ";
+                    $connection2->query($squ);
+                }
+                $i++;
+            }
+            $res["status"] = 1;
+        } catch (Exception $ex) {
+            $res["status"] = 2;
+            $res["message"] = $ex->getMessage();
+        }
+        if ($result) {
+            echo json_encode($res);
+        }
+    }
 } else if ($type == 'switchCustomControlTab') {
     if ($val) {
         $result = array();

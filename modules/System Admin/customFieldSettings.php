@@ -44,11 +44,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
         if ($newPostFlag) {
             $_SESSION["customFieldKey"] = $customFieldKey;
-            $_POST["modules"] = implode(",",$_POST["modules"]);
+            $_POST["modules"] = implode(",", $_POST["modules"]);
 
-            if($_POST["field_type"]=="tab"){
+            if ($_POST["field_type"] == "tab") {
                 $flag = $customField->addCustomTab($_POST);
-            }else{
+            } else {
                 $flag = $customField->addCustomField($_POST);
             }
 
@@ -63,7 +63,6 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 header("Location: {$URL}");
                 die();
             }
-            
         }
     }
 
@@ -108,12 +107,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('submitInvoice', __(''));
     $col->addContent('<button type=\'submit\' id="submitInvoice"  class=" btn btn-primary">Go</button>');
-    
+
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('addCustomField', __(''));
     $col->addContent('<button type=\'button\' id="addCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldModal();\'>Add Custom Field</button>');
 
     $row = $form->addRow();
+
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('sortableBtn', __(''));
@@ -122,7 +122,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('addCustomField', __(''));
     $col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'deactivateField();\'>Hide Field</button>');
-    
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('addCustomField', __(''));
+    $col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'activateField();\'>Show Field</button>');
+
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('addCustomField', __(''));
     $col->addContent('<button type=\'button\' id="listCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldList();\'>Custom Field List</button>');
@@ -140,7 +144,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     $customModel = $customField->loadCustomFieldModal($tableID);
     $cuModules = $customModel[0]["modules"];
     $cuTabs = $customModel[0]["tabs"];
-    
+
 
 ?>
 
@@ -149,6 +153,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             <tr class="flex flex-col sm:flex-row justify-between content-center p-0">
                 <thead>
                     <th class='column' style='width:80px;'>Serial No</th>
+                    <th class='column'>Status</th>
                     <th class='column'>Field Name</th>
                     <th class='column' style='max-width:200px;'>Field Type</th>
                     <th class='column'>Key</th>
@@ -163,16 +168,24 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 $cnt = 1;
                 $cls = "odd";
                 while ($i < $len) {
+                    $isFieldActive = TRUE;
+                    $fieldStr = "&nbsp;"; //show or active
+                    if (in_array($cd[$i]["Field"], $inactiveCol)) {
+                        $isFieldActive = FALSE;
+                        $fieldStr = "Hidden";
+                    }
                     $cls = "odd";
                     if ($i % 2 == 0) {
                         $cls = "even";
                     }
                     echo "\n<tr class='" . $cls . "'>";
                     echo "\n<td>" . $cnt . "</td>";
+                    echo "\n<td>" . $fieldStr . "</td>";
+
                     if ($cd[$i]["Key"]) {
                         echo "\n<td><i class=\"mdi mdi-lock\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
-                    }else if (in_array($cd[$i]["Field"], $inactiveCol)) {
-                        echo "\n<td><i class=\"fa fa-eye-slash\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
+                        //} else if ($isFieldActive == FALSE) {
+                        //echo "\n<td><i class=\"mdi mdi-eye-off\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
                     } else {
                         echo "\n<td><input type='checkbox' name='fields[]' value='" . $cd[$i]["Field"] . "' id='" . $cd[$i]["Field"] . "'><label for='" . $cd[$i]["Field"] . "'>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</label></td>";
                     }
@@ -187,7 +200,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 ?>
             </tbody>
         </table>
-        <input type="hidden" name="type" value="hideCustomControl">
+        <input type="hidden" name="type" value="hideCustomControl" id="ajaxCustomFieldType">
         <input type="hidden" name="val" value="" id='hideCustomControlTable'>
     </form>
 
@@ -201,17 +214,17 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <div class="col-sm">Modules</div>
                 <div class="col-sm">
                     <?php
-                        $cust = explode(",",$cuModules);
-                        $clen = count($cust);
-                        $ci = 0;
-                        $strChecked = "checked";
-                        while($ci<$clen){
-                            $moduleName = trim($cust[$ci]);
-                            echo "\n<input type='checkbox' name='modules[]' id='cuh_".$ci."' value='".$moduleName."' ".$strChecked.">";
-                            echo "<label for='cuh_".$ci."' class='ml-2 mr-2'>".ucwords($moduleName)."</label>";
-                            $strChecked = "";
-                            $ci++;
-                        }
+                    $cust = explode(",", $cuModules);
+                    $clen = count($cust);
+                    $ci = 0;
+                    $strChecked = "checked";
+                    while ($ci < $clen) {
+                        $moduleName = trim($cust[$ci]);
+                        echo "\n<input type='checkbox' name='modules[]' id='cuh_" . $ci . "' value='" . $moduleName . "' " . $strChecked . ">";
+                        echo "<label for='cuh_" . $ci . "' class='ml-2 mr-2'>" . ucwords($moduleName) . "</label>";
+                        $strChecked = "";
+                        $ci++;
+                    }
                     ?>
                 </div>
             </div>
@@ -221,18 +234,18 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <div class="col-sm" id='tabId'>Tab / Section / Tile</div>
                 <div class="col-sm">
                     <?php
-                        $cust = explode(",",$cuTabs);
-                        $clen = count($cust);
-                        $ci = 0;
-                        $strChecked = "checked";
-                        while($ci<$clen){
-                            $tabName = trim($cust[$ci]);
-                            $tabTitle = str_replace("_"," ",$tabName);
-                            echo "\n<div class='float-left mr-2'><input type='radio' name='tab' id='rdh_".$ci."' value='".$tabName."' ".$strChecked.">";
-                            echo "<label for='rdh_".$ci."' class='ml-2 mr-2'>".ucwords($tabTitle)."</label></div>";
-                            $ci++;
-                            $strChecked = "";
-                        }
+                    $cust = explode(",", $cuTabs);
+                    $clen = count($cust);
+                    $ci = 0;
+                    $strChecked = "checked";
+                    while ($ci < $clen) {
+                        $tabName = trim($cust[$ci]);
+                        $tabTitle = str_replace("_", " ", $tabName);
+                        echo "\n<div class='float-left mr-2'><input type='radio' name='tab' id='rdh_" . $ci . "' value='" . $tabName . "' " . $strChecked . ">";
+                        echo "<label for='rdh_" . $ci . "' class='ml-2 mr-2'>" . ucwords($tabTitle) . "</label></div>";
+                        $ci++;
+                        $strChecked = "";
+                    }
                     ?>
                     <div class='float-none'></div>
                 </div>
@@ -249,10 +262,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                         $len1 = $len - 1;
                         $selected = "";
                         while ($i < $len) {
-                            if($i==$len1){
+                            if ($i == $len1) {
                                 $selected = "selected";
                             }
-                            echo "\n<option value='" . $cd[$i]["Field"] . "' ".$selected.">" . $cd[$i]["Field"] . "</option>";
+                            echo "\n<option value='" . $cd[$i]["Field"] . "' " . $selected . ">" . $cd[$i]["Field"] . "</option>";
                             $cols[$i] = strtolower($cd[$i]["Field"]);
                             $i++;
                             $cnt++;
@@ -262,7 +275,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 </div>
             </div>
 
-            
+
             <div class="row mb-2">
                 <div class="col-sm">Field Type</div>
                 <div class="col-sm">
@@ -270,6 +283,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                         <option value='varchar'>Text Field</option>
                         <option value='text'>Text Area</option>
                         <option value='dropdown'>Dropdown</option>
+                        <option value='email'>EMAIL</option>
+                        <option value='mobile'>MOBILE</option>
+                        <option value='date'>Date</option>
+                        <option value='image'>Image</option>
+                        <option value='file'>File Upload</option>
                         <option value='tab'>Tab / Section / Tile</option>
                         <!--
                         <option value='date'>Date</option>
@@ -288,7 +306,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 </div>
             </div>
 
-            
+
 
             <div class="row mb-2">
                 <div class="col-sm">Element Field ID* (must be unique, no special char and no space)</div>
@@ -319,51 +337,51 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             </div>
 
             <div class='notab'>
-            <br />
-            <div class="row mb-2">
-                <div class="col-sm">Should this field unique</div>
-                <div class="col-sm">
-                    <input type='radio' name='isunique' id='rdUYes' value='Y'>
-                    <label for='rdUYes' class='ml-2 mr-2'>Yes</label>
+                <br />
+                <div class="row mb-2">
+                    <div class="col-sm">Should this field unique</div>
+                    <div class="col-sm">
+                        <input type='radio' name='isunique' id='rdUYes' value='Y'>
+                        <label for='rdUYes' class='ml-2 mr-2'>Yes</label>
 
-                    <input type='radio' name='isunique' id='rdUNo' value='N' checked>
-                    <label for='rdUNo' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='isunique' id='rdUNo' value='N' checked>
+                        <label for='rdUNo' class='ml-2 mr-2'>No</label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mb-2">
-                <div class="col-sm">Should this field searchable</div>
-                <div class="col-sm">
-                    <input type='radio' name='search' id='rdSYes' value='Y'>
-                    <label for='rdSYes' class='ml-2 mr-2'>Yes</label>
+                <div class="row mb-2">
+                    <div class="col-sm">Should this field searchable</div>
+                    <div class="col-sm">
+                        <input type='radio' name='search' id='rdSYes' value='Y'>
+                        <label for='rdSYes' class='ml-2 mr-2'>Yes</label>
 
-                    <input type='radio' name='search' id='rdSNo' value='N' checked>
-                    <label for='rdSNo' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='search' id='rdSNo' value='N' checked>
+                        <label for='rdSNo' class='ml-2 mr-2'>No</label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mb-2">
-                <div class="col-sm">Should this field required</div>
-                <div class="col-sm">
-                    <input type='radio' name='required' id='rdRYes' value='Y' checked>
-                    <label for='rdRYes' class='ml-2 mr-2'>Yes</label>
+                <div class="row mb-2">
+                    <div class="col-sm">Should this field required</div>
+                    <div class="col-sm">
+                        <input type='radio' name='required' id='rdRYes' value='Y' checked>
+                        <label for='rdRYes' class='ml-2 mr-2'>Yes</label>
 
-                    <input type='radio' name='required' id='rdRNo' value='N'>
-                    <label for='rdRNo' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='required' id='rdRNo' value='N'>
+                        <label for='rdRNo' class='ml-2 mr-2'>No</label>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mb-2">
-                <div class="col-sm">Should this field active</div>
-                <div class="col-sm">
-                    <input type='radio' name='active' id='rdAYes' value='Y' checked>
-                    <label for='rdAYes' class='ml-2 mr-2'>Yes</label>
+                <div class="row mb-2">
+                    <div class="col-sm">Should this field active</div>
+                    <div class="col-sm">
+                        <input type='radio' name='active' id='rdAYes' value='Y' checked>
+                        <label for='rdAYes' class='ml-2 mr-2'>Yes</label>
 
-                    <input type='radio' name='active' id='rdANo' value='N'>
-                    <label for='rdANo' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='active' id='rdANo' value='N'>
+                        <label for='rdANo' class='ml-2 mr-2'>No</label>
+                    </div>
                 </div>
-            </div>
-            
+
                 <br />
                 <h3>In Manage Console</h3>
                 <div class="row mb-2">
@@ -425,12 +443,12 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     </form>
 
     <style>
-        .sortDiv{
+        .sortDiv {
             margin-bottom: 4px;
             padding: 10px 20px;
             font-size: 16px;
             background-color: #f3f3f3;
-            cursor:move;
+            cursor: move;
         }
     </style>
     <div id='tabSortPanel'>
@@ -442,17 +460,17 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             <div class='clearfix'></div>
         </div>
         <form id='sortForm' method='post'>
-            <div class="row mb-2" id='tabSortId' style='margin:0;' >
+            <div class="row mb-2" id='tabSortId' style='margin:0;'>
                 <?php
-                    $cust = explode(",",$cuTabs);
-                    $clen = count($cust);
-                    $ci = 0;
-                    while($ci<$clen){
-                        $tabName = trim($cust[$ci]);
-                        $tabTitle = str_replace("_"," ",$tabName);
-                        echo "\n<div class='sortDiv w-100'><input type='hidden' name='tabs[]' value='".$tabName."' >".ucwords($tabTitle)."</div>";
-                        $ci++;
-                    }
+                $cust = explode(",", $cuTabs);
+                $clen = count($cust);
+                $ci = 0;
+                while ($ci < $clen) {
+                    $tabName = trim($cust[$ci]);
+                    $tabTitle = str_replace("_", " ", $tabName);
+                    echo "\n<div class='sortDiv w-100'><input type='hidden' name='tabs[]' value='" . $tabName . "' >" . ucwords($tabTitle) . "</div>";
+                    $ci++;
+                }
                 ?>
             </div>
             <input type="hidden" name="type" value="sortTab">
@@ -462,10 +480,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             <button type="button" class="btn btn-primary ml-2" onclick="saveSorting();">Save</button>
         </div>
     </div>
-    
-    <!-- Sotable Column -->       
+
+    <!-- Sotable Column -->
     <script>
-        function sortableTile(){
+        function sortableTile() {
             alert("Sortbale ");
         }
         $(function() {
@@ -488,10 +506,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     console.log(msg);
                     if (msg) {
                         var obj = jQuery.parseJSON(msg);
-                        if(obj.status==1){
+                        if (obj.status == 1) {
                             alert("Your request has been successfully executed");
-                        }else{
-                            if(obj.message){
+                        } else {
+                            if (obj.message) {
                                 alert(obj.message);
                             }
                         }
@@ -502,13 +520,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             }
         }
     </script>
-    <!-- Custom Field Panel Close -->                    
+    <!-- Custom Field Panel Close -->
     <script>
         //tab example
-        function isTabSelectActive(flag){
-            if(flag){
+        function isTabSelectActive(flag) {
+            if (flag) {
                 $(".notab").hide();
-            }else{
+            } else {
                 $(".notab").show();
             }
         }
@@ -516,9 +534,21 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
     <script>
         //hide and show form
+        //ajaxCustomFieldType
+        function activateField() {
+            var len = document.querySelectorAll('input[name="fields[]"]:checked').length;
+            if (len > 0) {
+                $("#ajaxCustomFieldType").val("showCustomControl");
+                hideShowFormSubmit();
+            } else {
+                alert("You have not selected any field to hide.");
+            }
+        }
+
         function deactivateField() {
             var len = document.querySelectorAll('input[name="fields[]"]:checked').length;
             if (len > 0) {
+                $("#ajaxCustomFieldType").val("hideCustomControl");
                 hideShowFormSubmit();
             } else {
                 alert("You have not selected any field to hide.");
@@ -538,13 +568,14 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     console.log(msg);
                     if (msg) {
                         var obj = jQuery.parseJSON(msg);
-                        if(obj.status==1){
+                        if (obj.status == 1) {
                             alert("Your request has been successfully executed");
-                            $("input:checkbox[name='fields[]']:checked").each(function () {
+                            /*$("input:checkbox[name='fields[]']:checked").each(function() {
                                 $(this).remove();
-                            });
-                        }else{
-                            if(obj.message){
+                            });*/
+                            location.reload();
+                        } else {
+                            if (obj.message) {
                                 alert(obj.message);
                             }
                         }
@@ -571,9 +602,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 var dbcols = <?php echo json_encode($cols); ?>;
                 var len = dbcols.length;
                 var fieldType = $("#fieldTypeSelect").val();
-                if(fieldType=="tab"){
+                if (fieldType == "tab") {
                     flag = isUniqueTab();
-                }else{
+                } else {
                     var i = 0;
                     newcol = newcol.toLowerCase();
                     while (i < len) {
@@ -623,12 +654,12 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             return true;
         }
 
-        function isUniqueTab(){
+        function isUniqueTab() {
             var newTab = $("#dbFieldName").val();
-            var tabs = "<?php echo str_replace(","," ",$cuTabs); ?>";
-            if(tabs.search(newTab)==-1){
+            var tabs = "<?php echo str_replace(",", " ", $cuTabs); ?>";
+            if (tabs.search(newTab) == -1) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
@@ -656,11 +687,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 $("#optionPanel").show();
                 isTabSelectActive(false);
                 $("#tabId").html("Tab / Section / Tile");
-            } else if(element == "tab") {
+            } else if (element == "tab") {
                 $("#optionPanel").hide();
                 isTabSelectActive(true);
                 $("#tabId").html("<b>After</b> Tab / Section / Tile ");
-            }else{
+            } else {
                 $("#optionPanel").hide();
                 $("#tabId").html("Tab / Section / Tile");
                 isTabSelectActive(false);
@@ -733,19 +764,21 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             }
         }*/
     </script>
-<?php
+    <?php
     $customFieldList = $customField->getCustomFieldList();
     $len = count($customFieldList);
-?>    
- <!----Custom Field List----->
+    ?>
+    <!----Custom Field List----->
 
     <table class="table display text-nowrap" cellspacing="0" id='customFieldList'>
         <tr>
             <thead>
                 <th colspan='4' style='line-height: 28px;'>Total Custom Fields : <b><?= $len; ?></b></th>
-                <th colspan='4' style='text-align:right;line-height: 28px;'>
+                <th colspan='3' style='text-align:right;line-height: 28px;'>
                     To change tab or section use dropdown
-                    <span onclick="cancelCustomFieldList();" style='width:40px;cursor:pointer;margin-left:20px;'><i class="mdi mdi-close-thick-circle" style='font-size:24px;'></i></span>
+                </th>
+                <th colspan='2' style='text-align:right;line-height: 28px;'>
+                    <span onclick="cancelCustomFieldList();" style='width:40px;cursor:pointer;margin-left:20px;'><i class="mdi mdi-close" style='font-size:24px;'></i></span>
                 </th>
             </thead>
         </tr>
@@ -759,125 +792,129 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <th class='column'>Active</th>
                 <th class='column'>Page View</th>
                 <th class='column'>Page Edit</th>
+                <th class='column'>Action</th>
             </thead>
         </tr>
-        
-<?php
-        $i = 0;
-        $str = "";
-        while($i<$len){
-            $fieldTitle = $customFieldList[$i]["field_title"];
-            $fieldName = $customFieldList[$i]["field_name"];
-            if(empty($fieldTitle)){
-                $fieldTitle = $fieldName;
-            }
-            $str .= "\n<tr>";
-            $str .="<td>".$customFieldList[$i]["table_tag"]."</td>";
-            $str .="<td>".$fieldTitle."</td>";
-            $str .="<td>".$customField->getInputTag($customFieldList[$i]["field_type"])."</td>";
-            $mod = "<div>".str_replace(",","</div><div>",$customFieldList[$i]["modules"])."</div>";
-            $str .="<td>".$mod."</td>";
 
-            $tabs = explode(",",$customFieldList[$i]["tabs"]);
-            $jlen = count($tabs);
-            $j = 0;
-            $opt ="<input type='hidden' id='fieldid_".$fieldName."' value='".$customFieldList[$i]["id"]."'>";
-            $opt .="<input type='hidden' id='tabSelect_".$fieldName."' value='".$customFieldList[$i]["tab"]."'>";
-            $opt .= "<select id='switchTab_".$fieldName."' onchange=\"changeTab('".$fieldName."');\">";
-            $opt .="\n<option value=''>Select</option>";
+    <?php
+    $i = 0;
+    $str = "";
+    //print_r($customFieldList);
+    while ($i < $len) {
+        $fieldTitle = $customFieldList[$i]["field_title"];
+        $fieldName = $customFieldList[$i]["field_name"];
+        if (empty($fieldTitle)) {
+            $fieldTitle = $fieldName;
+        }
+        $id = $customFieldList[$i]["id"];
+        $str .= "\n<tr id='custom_row_" . $id . "'>";
+        $str .= "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
+        $str .= "<td>" . $fieldTitle . "</td>";
+        $str .= "<td>" . $customField->getInputTag($customFieldList[$i]["field_type"]) . "</td>";
+        $mod = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["modules"]) . "</div>";
+        $str .= "<td>" . $mod . "</td>";
+
+        $tabs = explode(",", $customFieldList[$i]["tabs"]);
+        $jlen = count($tabs);
+        $j = 0;
+        $opt = "<input type='hidden' id='fieldid_" . $fieldName . "' value='" . $customFieldList[$i]["id"] . "'>";
+        $opt .= "<input type='hidden' id='tabSelect_" . $fieldName . "' value='" . $customFieldList[$i]["tab"] . "'>";
+        $opt .= "<select id='switchTab_" . $fieldName . "' onchange=\"changeTab('" . $fieldName . "');\">";
+        $opt .= "\n<option value=''>Select</option>";
+        $optse = "";
+        while ($j < $jlen) {
             $optse = "";
-            while($j<$jlen){
-                $optse = "";
-                if($tabs[$j]==$customFieldList[$i]["tab"]){
-                    $optse=" selected";
-                }
-                $opt .="\n<option value='".$tabs[$j]."' ".$optse.">".$tabs[$j]."</option>";
-                $j++;
+            if ($tabs[$j] == $customFieldList[$i]["tab"]) {
+                $optse = " selected";
             }
-            $opt .= "</select>";
-
-            $str .="<td>".$opt."</td>";
-
-            $str .="<td>".$customFieldList[$i]["active"]."</td>";
-            $pv = "<div>".str_replace(",","</div><div>",$customFieldList[$i]["page_view"])."</div>";
-            $str .="<td>".$pv."</td>";
-            $pe = "<div>".str_replace(",","</div><div>",$customFieldList[$i]["page_edit"])."</div>";
-            $str .="<td>".$pe."</td>";
-            $str .= "</tr>";
-            $i++;
+            $opt .= "\n<option value='" . $tabs[$j] . "' " . $optse . ">" . $tabs[$j] . "</option>";
+            $j++;
         }
-        echo $str;
+        $opt .= "</select>";
 
-}?>
-</table>
-<script>
-    $(function() {
-        $("#customFieldList").hide();
-    });
+        $str .= "<td>" . $opt . "</td>";
 
-    function tabSortPanel(flag){
-        hideAllPanel();
-        if(flag){
-            $("#tabSortPanel").show();
-        }else{
-            cancelCustomFieldList();
+        $str .= "<td>" . $customFieldList[$i]["active"] . "</td>";
+        $pv = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_view"]) . "</div>";
+        $str .= "<td>" . $pv . "</td>";
+        $pe = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_edit"]) . "</div>";
+        $str .= "<td>" . $pe . "</td>";
+
+        $str .= "<td><button class='btn btn-secondary' onclick=\"deleteCustomField('" . $id . "');\">Delete</button></td>";
+        $str .= "</tr>";
+        $i++;
+    }
+    echo $str;
+} ?>
+    </table>
+    <script>
+        $(function() {
+            $("#customFieldList").hide();
+        });
+
+        function tabSortPanel(flag) {
+            hideAllPanel();
+            if (flag) {
+                $("#tabSortPanel").show();
+            } else {
+                cancelCustomFieldList();
+            }
         }
-    }
 
-    function hideAllPanel(){
-        $("#tabSortPanel").hide();
-        $("#customFieldList").hide();
-        $("#customFieldSearchForm").hide();
-        $('#customFieldTable').hide();
-        $("#customFieldPanel").hide();
-    }
+        function hideAllPanel() {
+            $("#tabSortPanel").hide();
+            $("#customFieldList").hide();
+            $("#customFieldSearchForm").hide();
+            $('#customFieldTable').hide();
+            $("#customFieldPanel").hide();
+        }
 
-    function loadCustomFieldList(){
-        hideAllPanel();
-        $("#customFieldList").show();
-    }
+        function loadCustomFieldList() {
+            hideAllPanel();
+            $("#customFieldList").show();
+        }
 
-    function cancelCustomFieldList(){
-        hideAllPanel();
-        $("#customFieldSearchForm").show();
-        $('#customFieldTable').show();
-    }
+        function cancelCustomFieldList() {
+            hideAllPanel();
+            $("#customFieldSearchForm").show();
+            $('#customFieldTable').show();
+        }
 
-    function changeTab(fieldName){
-        var sv = $("#tabSelect_"+fieldName).val();
-        var nv = $("#switchTab_"+fieldName).val();
-        var fieldid = $("#fieldid_"+fieldName).val();
-        if(confirm("Are you sure you want to switch tab from "+sv+" to other tab "+nv)){
-            try {
-                var link = "ajax_custom_data.php";
-                var type = "switchCustomControlTab";
-                $.ajax({
-                    type: "POST",
-                    url: link,
-                    data: {
-                        val: nv,
-                        type: type,
-                        fieldid: fieldid 
-                    },
-                }).done(function(msg) {
-                    console.log(msg);
-                    if (msg != "") {
-                        var obj = jQuery.parseJSON(msg);
-                        if(obj.status==1){
-                            $("#tabSelect_"+fieldName).val(nv);
-                            alert("Your request has been successfully executed");
-                        }else{
-                            alert("Error : "+obj.message);
+        function changeTab(fieldName) {
+            var sv = $("#tabSelect_" + fieldName).val();
+            var nv = $("#switchTab_" + fieldName).val();
+            var fieldid = $("#fieldid_" + fieldName).val();
+            if (confirm("Are you sure you want to switch tab from " + sv + " to other tab " + nv)) {
+                try {
+                    var link = "ajax_custom_data.php";
+                    var type = "switchCustomControlTab";
+                    $.ajax({
+                        type: "POST",
+                        url: link,
+                        data: {
+                            val: nv,
+                            type: type,
+                            fieldid: fieldid
+                        },
+                    }).done(function(msg) {
+                        console.log(msg);
+                        if (msg != "") {
+                            var obj = jQuery.parseJSON(msg);
+                            if (obj.status == 1) {
+                                $("#tabSelect_" + fieldName).val(nv);
+                                alert("Your request has been successfully executed");
+                            } else {
+                                alert("Error : " + obj.message);
+                            }
                         }
-                    }
-                });
-            } catch (ex) {
-                console.log(ex);
+                    });
+                } catch (ex) {
+                    console.log(ex);
+                }
+            } else {
+                var fieldNameVal = $("#tabSelect_" + fieldName).val();
+                $("#switchTab_" + fieldName).val(fieldNameVal);
             }
-        }else{
-            var fieldNameVal = $("#tabSelect_"+fieldName).val();
-            $("#switchTab_"+fieldName).val(fieldNameVal);
         }
-    }
-</script>
-<?php
+    </script>
+    <?php

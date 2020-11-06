@@ -64,18 +64,19 @@ class CustomField extends QueryableGateway
         return $db->selectRaw($sq);
     }
 
-    public function addCustomTab($dt){
-        try{
+    public function addCustomTab($dt)
+    {
+        try {
             $db = new DBQuery();
             $dt["table_column_after"] = "";
             $flag = $db->insertArray('custom_field', $dt);
-            if($flag){
-                $sq = "update custom_field_modal set tabs=concat(tabs, ',".$dt["field_name"]."') where table_name='".$dt["table_name"]."'";
+            if ($flag) {
+                $sq = "update custom_field_modal set tabs=concat(tabs, '," . $dt["field_name"] . "') where table_name='" . $dt["table_name"] . "'";
                 //echo $sq;
                 $db->query($sq);
                 $flag = TRUE;
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             echo 'CustomField->addCustomFieldToTable(): exception: ',  $e->getMessage(), "\n";
             $flag = FALSE;
         }
@@ -91,8 +92,12 @@ class CustomField extends QueryableGateway
             if ($flag) {
                 $colType = "TEXT NULL ";
                 $default_value = "NULL ";
-                if ($dt["field_type"] == "varchar") {
-                    $colType = "VARCHAR(256) NULL ";
+                if ($dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "image" || $dt["field_type"] == "file") {
+                    $colType = "VARCHAR(255) NULL ";
+                } else if ($dt["field_type"] == "mobile") {
+                    $colType = "VARCHAR(12) NULL ";
+                } else if ($dt["field_type"] == "date") {
+                    $colType = "DATE NULL ";
                 }
                 if ($dt["default_value"]) {
                     $default_value = $dt["default_value"];
@@ -136,11 +141,10 @@ class CustomField extends QueryableGateway
     {
         $db = new DBQuery();
         $result = array();
-        try{
-            $sq = "select * from custom_field where table_name = '".$table."' ";
+        try {
+            $sq = "select * from custom_field where table_name = '" . $table . "' ";
             $result = $db->selectRaw($sq);
-
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             echo 'CustomField->loadCustomField(): exception: ',  $ex->getMessage(), "\n";
         }
         return $result;
@@ -150,11 +154,10 @@ class CustomField extends QueryableGateway
     {
         $db = new DBQuery();
         $result = array();
-        try{
-            $sq = "select * from custom_field_modal where table_name = '".$table."' ";
+        try {
+            $sq = "select * from custom_field_modal where table_name = '" . $table . "' ";
             $result = $db->selectRaw($sq);
-
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             echo 'CustomField->loadCustomFieldModal(): exception: ',  $ex->getMessage(), "\n";
         }
         return $result;
@@ -164,16 +167,16 @@ class CustomField extends QueryableGateway
     {
         $db = new DBQuery();
         $result = array();
-        try{
-            $sq = "select field_name from custom_field where table_name = '".$table."' and active='N' ";
+        try {
+            $sq = "select field_name from custom_field where table_name = '" . $table . "' and active='N' ";
             $res = $db->selectRaw($sq);
             $len = count($res);
             $i = 0;
-            while($i<$len){
-                $result[$i]= $res[$i]["field_name"];
+            while ($i < $len) {
+                $result[$i] = $res[$i]["field_name"];
                 $i++;
             }
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             echo 'CustomField->loadCustomField(): exception: ',  $ex->getMessage(), "\n";
         }
         return $result;
@@ -182,109 +185,106 @@ class CustomField extends QueryableGateway
     //only update query
     public function postCustomField($dt, $colName, $colVal)
     {
-        try{
+        try {
             $tbl = "";
-            $sq ="";
-            $squ ="";
-            foreach($dt as $table => $st ) {
+            $sq = "";
+            $squ = "";
+            foreach ($dt as $table => $st) {
                 //echo $data." - ".$val;
                 $tbl = $table;
-                foreach($st as $key => $val ) {
-                    if($squ){
-                        $squ .=", ";
+                foreach ($st as $key => $val) {
+                    if ($squ) {
+                        $squ .= ", ";
                     }
-                    $squ .=$key."='".$val."'";
+                    $squ .= $key . "='" . $val . "'";
                 }
             }
-            if($squ){
-                $sq ="update ".$tbl." set ".$squ. " where ".$colName."='".$colVal."'";
+            if ($squ) {
+                $sq = "update " . $tbl . " set " . $squ . " where " . $colName . "='" . $colVal . "'";
                 $db = new DBQuery();
                 $db->query($sq);
             }
-            
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             echo 'CustomField->updateCustomField(): exception: ',  $ex->getMessage(), "\n";
         }
-        
     }
 
     public function postCustomFieldQuery($dt, $colName, $colVal)
     {
-        $sq ="";
-        try{
+        $sq = "";
+        try {
             $tbl = "";
-            $squ ="";
-            foreach($dt as $table => $st ) {
+            $squ = "";
+            foreach ($dt as $table => $st) {
                 //echo $data." - ".$val;
                 $tbl = $table;
-                foreach($st as $key => $val ) {
-                    if($squ){
-                        $squ .=", ";
+                foreach ($st as $key => $val) {
+                    if ($squ) {
+                        $squ .= ", ";
                     }
-                    $squ .=$key."='".$val."'";
+                    $squ .= $key . "='" . $val . "'";
                 }
             }
-            if($squ){
-                $sq ="update ".$tbl." set ".$squ. " where ".$colName."='".$colVal."'";
+            if ($squ) {
+                $sq = "update " . $tbl . " set " . $squ . " where " . $colName . "='" . $colVal . "'";
             }
-            
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             echo 'CustomField->updateCustomField(): exception: ',  $ex->getMessage(), "\n";
         }
         return $sq;
     }
 
-    public function getPostData($tableName, $primaryCol, $primaryColVal){
-        try{
-            $sq = "select group_concat(field_name) as fields from custom_field where table_name='".$tableName."' and active='Y' and field_type in('varchar','text','dropdown')";
+    public function getPostData($tableName, $primaryCol, $primaryColVal)
+    {
+        try {
+            $sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' and active='Y' and field_type in('varchar','text','dropdown')";
             //echo $sq;
             $db = new DBQuery();
             $res = $db->selectRaw($sq);
-            
-            if($res){
-                $sq = "select ".$res[0]["fields"]." from ".$tableName." where ".$primaryCol."='".$primaryColVal."' ";
+
+            if ($res) {
+                $sq = "select " . $res[0]["fields"] . " from " . $tableName . " where " . $primaryCol . "='" . $primaryColVal . "' ";
                 //echo $sq;
                 $st = $db->selectRaw($sq);
-                if($st){
+                if ($st) {
                     $result["t"] = $tableName;
                     $result["pc"] = $primaryCol;
                     $result["pcv"] = $primaryColVal;
                     $result["dt"] = $st[0];
-                    echo "\n<script>pcdt=".json_encode($result).";</script>";
-                }else{
+                    echo "\n<script>pcdt=" . json_encode($result) . ";</script>";
+                } else {
                     echo "\n<script>pcdt=\"\";</script>";
                 }
-                
             }
-
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             echo 'CustomField->updateCustomField(): exception: ',  $ex->getMessage(), "\n";
         }
     }
 
-    public function getCustomFieldList(){
+    public function getCustomFieldList()
+    {
         $db = new DBQuery();
         $result = array();
-        try{
+        try {
             $sq = "select c.id, c.field_name, c.field_title, c.field_type, c.modules, c.tab, c.active, cm.tabs, cm.table_tag, cm.page_view, cm.page_edit from custom_field as c left join custom_field_modal as cm on c.table_name = cm.table_name";
             $result = $db->selectRaw($sq);
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             echo 'CustomField->getCustomFieldList(): exception: ',  $ex->getMessage(), "\n";
         }
         return $result;
     }
 
-    public function getInputTag($tag){
-        if($tag=="varchar"){
+    public function getInputTag($tag)
+    {
+        if ($tag == "varchar") {
             return "textfield";
-        }else if($tag=="text"){
+        } else if ($tag == "text") {
             return "textarea";
-        }else if($tag=="dropdown"){
+        } else if ($tag == "dropdown") {
             return "dropdown";
-        }else if($tag=="tab"){
+        } else if ($tag == "tab") {
             return "tab";
         }
         return $tag;
     }
-
 }
