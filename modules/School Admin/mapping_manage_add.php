@@ -80,7 +80,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
         $row->addLabel('pupilsightRollGroupID', __('Section'));
         $row->addSelect('pupilsightRollGroupID')->setId('sectionIdMapping')->selectMultiple()->required();
 
-        
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

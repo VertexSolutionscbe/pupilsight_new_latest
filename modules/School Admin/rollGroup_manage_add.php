@@ -12,7 +12,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    //Proceed!
+    
     $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'] ?? '';
     $pupilsightRollGroupID = $_GET['pupilsightRollGroupID'] ?? '';
 

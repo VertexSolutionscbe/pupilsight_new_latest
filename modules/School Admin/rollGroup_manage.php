@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     $pupilsightSchoolYearID = isset($_REQUEST['pupilsightSchoolYearID']) ? $_REQUEST['pupilsightSchoolYearID'] : $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-    // School Year Picker
+    
     if (!empty($pupilsightSchoolYearID)) {
         $schoolYearGateway = $container->get(SchoolYearGateway::class);
         $targetSchoolYear = $schoolYearGateway->getSchoolYearByID($pupilsightSchoolYearID);

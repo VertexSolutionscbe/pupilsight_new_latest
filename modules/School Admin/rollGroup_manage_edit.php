@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
-            //Let's go!
+            
             $values = $result->fetch();
 
             $form = Form::create('rollGroupEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rollGroup_manage_editProcess.php?pupilsightRollGroupID='.$pupilsightRollGroupID);

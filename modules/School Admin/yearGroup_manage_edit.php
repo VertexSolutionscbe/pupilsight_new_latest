@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
             echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
-            //Let's go!
+            
             $values = $result->fetch();
 
             $form = Form::create('yearGroup', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/yearGroup_manage_editProcess.php?pupilsightYearGroupID='.$pupilsightYearGroupID);

@@ -12,7 +12,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    //Proceed!
+    
     $page->breadcrumbs
         ->add(__('Manage Year Groups'), 'yearGroup_manage.php')
         ->add(__('Add Year Group'));
