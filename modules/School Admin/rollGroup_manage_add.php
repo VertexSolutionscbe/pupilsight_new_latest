@@ -17,8 +17,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $pupilsightRollGroupID = $_GET['pupilsightRollGroupID'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Manage Roll Groups'), 'rollGroup_manage.php', ['pupilsightSchoolYearID' => $pupilsightSchoolYearID])
-        ->add(__('Add Roll Group'));
+        ->add(__('Manage Sections'), 'rollGroup_manage.php', ['pupilsightSchoolYearID' => $pupilsightSchoolYearID])
+        ->add(__('Add Section'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {

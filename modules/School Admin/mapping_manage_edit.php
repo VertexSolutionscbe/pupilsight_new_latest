@@ -66,6 +66,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
                 $academicData[$dt['pupilsightSchoolYearID']] = $dt['name'];
             }
 
+            $sql = 'SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=' . $pupilsightSchoolYearID . '  ';
+            $result = $connection2->query($sql);
+            $classes = $result->fetchAll();
+        
+            $classData = array();
+            foreach ($classes as $dt) {
+                $classData[$dt['pupilsightYearGroupID']] = $dt['name'];
+            }
+
             $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID);
             $sql = 'SELECT name FROM pupilsightSchoolYear WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID';
             $result = $pdo->executeQuery($data, $sql);
@@ -97,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
 
             $row = $form->addRow();
                 $row->addLabel('pupilsightYearGroupID', __('Class'));
-                $row->addSelectYearGroup('pupilsightYearGroupID')->setId('classId')->selected($values['pupilsightYearGroupID'])->required();
+                $row->addSelect('pupilsightYearGroupID')->setId('classId')->fromArray($classData)->selected($values['pupilsightYearGroupID'])->required()->placeholder('Select Class');
 
             $row = $form->addRow();
                 $row->addLabel('pupilsightRollGroupID', __('Section'));
@@ -111,3 +120,28 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
         }
     }
 }
+
+?>
+
+<script>
+
+    $(document).on('change', '#pupilsightSchoolYearID', function() {
+        var id = $(this).val();
+        var type = 'getClassByAcademicYear';
+        if (id != "") {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: { val: id, type: type},
+                async: true,
+                success: function(response) {
+                    $("#classId").html();
+                    $("#classId").html(response);
+                }
+            });
+        } else {
+            alert('Please Select Academic Year');
+        }
+    });
+
+</script>
