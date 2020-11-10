@@ -28,6 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/assign_student_su
         $pupilsightYearGroupID = isset($_GET['pupilsightYearGroupID']) ? $_GET['pupilsightYearGroupID']  : '';
 
         $studentGateway = $container->get(StudentGateway::class);
+
         $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
         $result = $studentGateway->selectActiveStudentByPerson($pupilsightSchoolYearID, $pupilsightPersonID);
@@ -122,6 +123,7 @@ $program= $program1 + $program2;
     
 
     echo $form->getOutput();
+    
     
    // echo '<script>$("#oneway_bl,#oneway_bl1,#oneway_bl2,#twoway_bl1,#twoway_bl2,#twoway_bl3").hide();</script>';
    $criteria = $studentGateway->newQueryCriteria()

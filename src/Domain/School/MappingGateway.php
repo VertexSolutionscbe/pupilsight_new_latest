@@ -30,11 +30,13 @@ class MappingGateway extends QueryableGateway
         ->newQuery()
         ->distinct()
         ->from('pupilsightProgramClassSectionMapping')
-        ->cols(['pupilsightProgramClassSectionMapping.pupilsightMappingID','pupilsightSchoolYear.name AS academicyear','pupilsightProgram.name AS program', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup'])
+        ->cols(['pupilsightProgramClassSectionMapping.pupilsightMappingID','pupilsightSchoolYear.name AS academicyear','pupilsightProgram.name AS program', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightPerson.officialName', 'pupilsightSchoolYear.pupilsightSchoolYearID','pupilsightProgram.pupilsightProgramID', 'pupilsightYearGroup.pupilsightYearGroupID', 'pupilsightRollGroup.pupilsightRollGroupID', ])
         ->leftJoin('pupilsightSchoolYear', 'pupilsightProgramClassSectionMapping.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
         ->leftJoin('pupilsightProgram', 'pupilsightProgramClassSectionMapping.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
         ->leftJoin('pupilsightYearGroup', 'pupilsightProgramClassSectionMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
-        ->leftJoin('pupilsightRollGroup', 'pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID');
+        ->leftJoin('pupilsightRollGroup', 'pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+        ->leftJoin('assign_class_teacher_section', 'pupilsightProgramClassSectionMapping.pupilsightMappingID=assign_class_teacher_section.pupilsightMappingID')
+        ->leftJoin('pupilsightPerson', 'assign_class_teacher_section.pupilsightPersonID=pupilsightPerson.pupilsightPersonID');
         if(!empty($pupilsightSchoolYearID))
         {
             $query->where('pupilsightProgramClassSectionMapping.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ');

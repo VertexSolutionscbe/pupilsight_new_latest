@@ -3118,7 +3118,7 @@ if ($type == 'getProgForSeats') {
 if ($type == 'getCampClass') {
     $val = $_POST['val'];
     $cid = $_POST['cid'];
-    $sql = 'SELECT a.id, b.pupilsightYearGroupID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramId=' . $val . ' AND a.campaign_id = "'.$cid.'" ';
+    $sql = 'SELECT a.id, b.pupilsightYearGroupID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID=' . $val . ' AND a.campaign_id = "'.$cid.'" ';
     $result = $connection2->query($sql);
     $classes = $result->fetchAll();
     $data = '<option value="">Select Class</option>';
@@ -3128,4 +3128,55 @@ if ($type == 'getCampClass') {
         }
     }
     echo $data;
+}
+
+if ($type == 'getClassByAcademicYear') {
+    $aid = $_POST['val'];
+    $sql = 'SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=' . $val . '  ';
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+    $data = '<option value="">Select Class</option>';
+    if (!empty($classes)) {
+        foreach ($classes as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+if ($type == 'getSequenceNoByAcademicYear') {
+    $aid = $_POST['val'];
+    $sql = 'SELECT sequenceNumber FROM pupilsightYearGroup WHERE pupilsightSchoolYearID = '.$aid.' ORDER BY pupilsightYearGroupID DESC LIMIT 0,1 ';
+    $result = $connection2->query($sql);
+    $sqNoData = $result->fetch();
+    if(!empty($sqNoData)){
+        $newSqNo = $sqNoData['sequenceNumber'] + 1;
+    } else {
+        $newSqNo = 1;
+    }
+    echo $newSqNo;
+}
+
+if ($type == 'assignClassTeacher') {
+    $pupilsightPersonID = $val;
+    $mid = $_POST['mid'];
+    $aid = $_POST['aid'];
+    $pid = $_POST['pid'];
+    $cid = $_POST['cid'];
+    $sid = $_POST['sid'];
+    
+    $data1 = array('pupilsightMappingID' => $mid, 'pupilsightSchoolYearID' => $aid, 'pupilsightProgramID' => $pid, 'pupilsightYearGroupID' => $cid, 'pupilsightRollGroupID' => $sid, 'pupilsightPersonID' => $pupilsightPersonID);
+    $sql1 = "INSERT INTO assign_class_teacher_section SET pupilsightMappingID=:pupilsightMappingID, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID, pupilsightPersonID=:pupilsightPersonID";
+    $result = $connection2->prepare($sql1);
+    $result->execute($data1);
+}
+
+if ($type == 'deleteBulkSection') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data2 = array('pupilsightRollGroupID' => $st);
+        $sql2 = 'DELETE FROM pupilsightRollGroup WHERE pupilsightRollGroupID=:pupilsightRollGroupID';
+        $result2 = $connection2->prepare($sql2);
+        $result2->execute($data2);
+    }
 }

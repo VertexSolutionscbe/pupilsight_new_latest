@@ -6922,6 +6922,7 @@ function CustomField() {
     _this.colActiveStr = "";
     _this.activeElement = "";
     this.createView = function (obj) {
+
         var fieldTitle = "";
         var fieldName = "";
         if (obj.field_title) {
@@ -6970,6 +6971,7 @@ function CustomField() {
                 str += "</tr>";
                 _this.isRowActive = false;
                 $("#" + _this.activeElement).append(_this.colActiveStr);
+                _this.colActiveStr = "";
                 str = "";
             }
 
@@ -7148,7 +7150,28 @@ function CustomField() {
         if (obj.field_description) {
             description = obj.field_description;
         }
+        var str = `<div id="" class="row mb-1 ">                       
+            <div class="col-sm  ">
+                <div>
+                    <label for='` + obj.field_name + `' class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">'` + obj.field_title + requiredStr + `'</label>
+                </div>
+            </div>                                          
+            <div class="col-sm  standardWidth">
+                <div>
+                    <div class="flex-1 relative">
+                    <select id='`+ obj.field_name + `' name='custom_` + obj.field_name + `' class="w-full">`
+        while (i < len) {
+            str += `<option value='` + opt[i] + `'>` + opt[i] + `</option>`;
+            i++;
+        }
+        `</select>
+                    </div>
+                </div>
+            </div>
+        </div>`;
 
+
+        /*
         var str = '<tr class="flex flex-col sm:flex-row justify-between content-center p-0">';
         str += '<td class="flex flex-col flex-grow justify-center -mb-1 sm:mb-0  px-2 border-b-0 sm:border-b border-t-0 ">';
         str += '<div class="input-group stylish-input-group">'
@@ -7169,6 +7192,9 @@ function CustomField() {
         str += '</div>';
         str += '</td>';
         str += '</tr>';
+        */
+
+
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);
         }

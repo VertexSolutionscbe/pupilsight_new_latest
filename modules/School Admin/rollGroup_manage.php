@@ -19,7 +19,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'] ?? '';
     $pupilsightRollGroupID = $_GET['pupilsightRollGroupID'] ?? '';
 
-    $page->breadcrumbs->add(__('Manage Roll Groups'));
+    $page->breadcrumbs->add(__('Manage Section'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
 
     if (isset($_GET["nameAlreadyExists"]) && $_GET["nameAlreadyExists"]) {
-        echo "<script>alert('Duplicate section names were not copied.')</script>";
+        echo "<script>alert('Duplicate section names were not Copied.')</script>";
     }
 
     $pupilsightSchoolYearID = isset($_REQUEST['pupilsightSchoolYearID']) ? $_REQUEST['pupilsightSchoolYearID'] : $_SESSION[$guid]['pupilsightSchoolYearID'];
@@ -53,6 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
         } else {
             echo __('Next Year') . ' ';
         }
+        echo '<a style="margin-left:5px;float:right;cursor:pointer;" class="btn btn-primary" id="deleteBulkSection">Delete</a>
+        <a class="btn btn-primary" id="btnRight" href="index.php?q=%2Fmodules%2FSchool+Admin%2FrollGroup_manage_add.php&amp;pupilsightSchoolYearID=028">Add </a>
+        ';
         echo '</div>';
     }
 
@@ -86,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     $col->addSubmit(__('Go'));
     //END: bulk action
     */
-
+    
     // DATA TABLE
     $table = DataTable::createPaginated('rollGroupManage', $criteria);
 
@@ -98,15 +101,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             ->setIcon('copy')
             ->onClick('return confirm("' . __('Are you sure you want to continue?') . ' ' . __('This operation cannot be undone.') . '");')
             ->displayLabel()
-            ->directLink()
-            ->append('&nbsp;|&nbsp;');
+            ->directLink();
     }
 
-    $table->addHeaderAction('add', __('Add'))
-        ->setID('btnRight')
-        ->setURL('/modules/School Admin/rollGroup_manage_add.php')
-        ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
-        ->displayLabel();
+    // $table->addHeaderAction('add', __('Add'))
+    //     ->setID('btnRight')
+    //     ->setURL('/modules/School Admin/rollGroup_manage_add.php')
+    //     ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
+    //     ->displayLabel();
+
+    
 
 
     $table->addCheckboxColumn("pupilsightRollGroupID", __(""))
@@ -141,3 +145,34 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
     echo $table->render($rollGroups);
 }
+
+?>
+
+<script>
+    $(document).on('click', '#deleteBulkSection', function () {
+        var favorite = [];
+        $.each($("input[name='pupilsightRollGroupID[]']:checked"), function () {
+            favorite.push($(this).val());
+        });
+        var feeId = favorite.join(",");
+        //alert(subid);
+        if (feeId) {
+            var val = feeId;
+            var type = 'deleteBulkSection';
+            if (val != '') {
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: val, type: type },
+                    async: true,
+                    success: function (response) {
+                        alert('Sections Deleted Successfully!');
+                        location.reload();
+                    }
+                });
+            }
+        } else {
+            alert('You Have to Select Section.');
+        }
+    });
+</script>
