@@ -129,17 +129,32 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     $table->addColumn('program', __('Program'));
     $table->addColumn('yearGroup', __('Class'));
     $table->addColumn('rollGroup', __('Section'));
+    $table->addColumn('officialName', __('Class Teacher'))
+        ->format(function ($yearGroups) {
+            if (!empty($yearGroups['officialName'])) {
+                return $yearGroups['officialName'];
+            } else {
+                $data = '<a class="thickbox btn btn-primary" href="fullscreen.php/?q=/modules/School Admin/assign_class_teacher.php&mid='.$yearGroups['pupilsightMappingID'].'&aid='.$yearGroups['pupilsightSchoolYearID'].'&pid='.$yearGroups['pupilsightProgramID'].'&cid='.$yearGroups['pupilsightYearGroupID'].'&sid='.$yearGroups['pupilsightRollGroupID'].'">Assign</a>';
+                return $data;
+            }
+            return $yearGroups['officialName'];
+        });
 
 
     // ACTIONS
     $table->addActionColumn()
         ->addParam('pupilsightMappingID')
-        ->format(function ($facilities, $actions) use ($guid) {
+        ->format(function ($yearGroups, $actions) use ($guid) {
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/School Admin/mapping_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/School Admin/mapping_manage_delete.php');
+
+            if(!empty($yearGroups['officialName'])){
+                $actions->addAction('deletenew', __('DeleteNew'))
+                ->setURL('/modules/School Admin/mapping_manage_delete_class_teacher.php');
+            }
         });
 
     echo $table->render($yearGroups);

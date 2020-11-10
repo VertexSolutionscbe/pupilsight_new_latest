@@ -14,8 +14,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Year Groups'), 'yearGroup_manage.php')
-        ->add(__('Edit Year Group'));
+        ->add(__('Manage Class'), 'yearGroup_manage.php')
+        ->add(__('Edit Class'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -45,10 +45,23 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
             
             $values = $result->fetch();
 
+            $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
+            $resulta = $connection2->query($sqla);
+            $academic = $resulta->fetchAll();
+
+            $academicData = array();
+            foreach ($academic as $dt) {
+                $academicData[$dt['pupilsightSchoolYearID']] = $dt['name'];
+            }
+
             $form = Form::create('yearGroup', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/yearGroup_manage_editProcess.php?pupilsightYearGroupID='.$pupilsightYearGroupID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addLabel('pupilsightSchoolYearID', __('Academic Year'));
+                $row->addSelect('pupilsightSchoolYearID')->fromArray($academicData)->selected($values['pupilsightSchoolYearID'])->required()->placeholder()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
@@ -60,10 +73,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 
             $row = $form->addRow();
                 $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
-                $row->addSequenceNumber('sequenceNumber', 'pupilsightYearGroup', $values['sequenceNumber'])
-                    ->required()
-                    ->maxLength(3)
-                    ->setValue($values['sequenceNumber']);
+                // $row->addSequenceNumber('sequenceNumber', 'pupilsightYearGroup', $values['sequenceNumber'])
+                //     ->required()
+                //     ->maxLength(3)
+                //     ->setValue($values['sequenceNumber']);
+
+                $row->addTextField('sequenceNumber')->required()->maxLength(3)->setValue($values['sequenceNumber']);
+                
             
             $row = $form->addRow()->setClass('hiddencol');
                 $row->addLabel('pupilsightPersonIDHOY', __('Head of Year'));
@@ -77,3 +93,5 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         }
     }
 }
+?>
+

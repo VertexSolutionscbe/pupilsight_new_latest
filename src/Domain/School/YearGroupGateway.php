@@ -22,7 +22,7 @@ class YearGroupGateway extends QueryableGateway
     private static $tableName = 'pupilsightYearGroup';
     private static $searchableColumns = [];
 
-    public function queryYearGroups(QueryCriteria $criteria)
+    public function queryYearGroups(QueryCriteria $criteria, $pupilsightSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -30,7 +30,9 @@ class YearGroupGateway extends QueryableGateway
             ->cols([
                 'pupilsightYearGroupID', 'name', 'nameShort', 'sequenceNumber', 'pupilsightPersonIDHOY', 'preferredName', 'surname'
             ])
-            ->leftJoin('pupilsightPerson', 'pupilsightYearGroup.pupilsightPersonIDHOY=pupilsightPerson.pupilsightPersonID');
+            ->leftJoin('pupilsightPerson', 'pupilsightYearGroup.pupilsightPersonIDHOY=pupilsightPerson.pupilsightPersonID')
+            ->where('pupilsightYearGroup.pupilsightSchoolYearID = :pupilsightSchoolYearID')
+            ->bindValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
 
         return $this->runQuery($query, $criteria);
     }

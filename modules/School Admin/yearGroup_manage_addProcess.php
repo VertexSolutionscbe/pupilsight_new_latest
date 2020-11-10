@@ -17,6 +17,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     $nameShort = $_POST['nameShort'];
     $sequenceNumber = $_POST['sequenceNumber'];
     $pupilsightPersonIDHOY = $_POST['pupilsightPersonIDHOY'];
+    $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
 
     if ($name == '' or $nameShort == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false) {
         $URL .= '&return=error1';
@@ -24,8 +25,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     } else {
         //Check unique inputs for uniquness
         try {
-            $data = array('name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber);
-            $sql = 'SELECT * FROM pupilsightYearGroup WHERE name=:name OR nameShort=:nameShort OR sequenceNumber=:sequenceNumber';
+            $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber);
+            $sql = 'SELECT * FROM pupilsightYearGroup WHERE (name=:name OR nameShort=:nameShort OR sequenceNumber=:sequenceNumber) AND pupilsightSchoolYearID=:pupilsightSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -40,8 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         } else {
             //Write to database
             try {
-                $data = array('name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber, 'pupilsightPersonIDHOY' => $pupilsightPersonIDHOY);
-                $sql = 'INSERT INTO pupilsightYearGroup SET name=:name, nameShort=:nameShort, sequenceNumber=:sequenceNumber, pupilsightPersonIDHOY=:pupilsightPersonIDHOY';
+                $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber, 'pupilsightPersonIDHOY' => $pupilsightPersonIDHOY);
+                $sql = 'INSERT INTO pupilsightYearGroup SET pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, nameShort=:nameShort, sequenceNumber=:sequenceNumber, pupilsightPersonIDHOY=:pupilsightPersonIDHOY';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
