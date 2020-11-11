@@ -9,7 +9,6 @@ use Pupilsight\Domain\Traits\TableAware;
 use Pupilsight\Domain\QueryCriteria;
 use Pupilsight\Domain\QueryableGateway;
 
-
 /**
  * School Year Gateway
  *
@@ -335,6 +334,36 @@ class HelperGateway extends QueryableGateway
         $subjects = $subjects1 + $subjects2;
         return $subjects;
 
+    }
+
+    public function getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid) {
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "'.$uid.'" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
+        $result = $connection2->query($sql);
+        $classesdata = $result->fetchAll();
+
+        $classes = array();
+        $classes2 = array();
+        $classes1 = array('' => 'Select Class');
+        foreach ($classesdata as $ct) {
+            $classes2[$ct['pupilsightYearGroupID']] = $ct['name'];
+        }
+        $classes = $classes1 + $classes2;
+        return $classes;
+    }
+
+    public function getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID, $pupilsightProgramID, $uid) {
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightPersonID = "'.$uid.'" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" GROUP BY a.pupilsightRollGroupID';
+        $result = $connection2->query($sql);
+        $sectionsdata = $result->fetchAll();
+
+        $sections = array();
+        $sections2 = array();
+        $sections1 = array('' => 'Select Section');
+        foreach ($sectionsdata as $ct) {
+            $sections2[$ct['pupilsightRollGroupID']] = $ct['name'];
+        }
+        $sections = $sections1 + $sections2;
+        return $sections;
     }
 
 }

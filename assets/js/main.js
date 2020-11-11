@@ -6991,7 +6991,8 @@ function CustomField() {
     this.createInput = function (obj) {
         if (obj.field_type) {
             //'varchar','text','date','url','select','checkboxes','radioboxes'
-            if (obj.field_type == "varchar") {
+            console.log("obj.field_type: ", obj.field_type);
+            if (obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file") {
                 _this.createTextField(obj);
             } else if (obj.field_type == "text") {
                 _this.createTextArea(obj);
@@ -7002,6 +7003,10 @@ function CustomField() {
             }
         }
     };
+
+    this.createName = function (obj) {
+        return " name ='custom[ " + obj.table_name + "][ " + obj.field_type + "][" + obj.field_name + "]'";
+    }
 
     this.createTextField = function (obj) {
         var required = "";
@@ -7023,7 +7028,22 @@ function CustomField() {
         if (obj.field_description) {
             description = obj.field_description;
         }
+        var file_type = "text";
+        if (obj.field_type == "email") {
+            file_type = "email";
+        } else if (obj.field_type == "date") {
+            file_type = "date";
+        } else if (obj.field_type == "file") {
+            file_type = "file";
+        }
 
+        mobile = "";
+        if (obj.field_type == "mobile") {
+            mobile = " maxlength=10; minlength=10; pattern='[6789][0-9]{9}'";
+        }
+
+        //console.log("file_type: ", file_type);
+        var elementName = _this.createName(obj);
         var str = `<div class="row mb-1 ">                            
         <div class="col-sm  ">
         <div>
@@ -7034,9 +7054,9 @@ function CustomField() {
         </div>                                                          
         <div class="col-sm  standardWidth">
         <div>
-            <div class="flex-1 relative"><input type="text" id="` + obj.field_name + `" name="custom[` + obj.table_name + `][` + obj.field_name + `]" class="w-full" value="` + tfVal + `" ` + required + `></div>
-        </div>
-        </div></div>`;
+            <div class="flex-1 relative"><input type="`+ file_type + `" id="` + obj.field_name + elementName + ` class="w-full form-control" value = "` + tfVal + `" ` + required + ` ` + mobile + ` ></div >
+        </div >
+        </div ></div > `;
 
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);
@@ -7063,8 +7083,9 @@ function CustomField() {
         if (obj.field_description) {
             description = obj.field_description;
         }
+        var elementName = _this.createName(obj);
 
-        var str = `<div class="row mb-1">            
+        var str = `< div class="row mb-1" >            
             <div class="col-sm">
                 <div>
                     <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `
@@ -7074,10 +7095,10 @@ function CustomField() {
             </div>                                          
             <div class="col-sm  standardWidth">
                 <div>
-                    <textarea rows="4" id="` + obj.field_name + `" name="custom[` + obj.table_name + `][` + obj.field_name + `]" class="w-full" ` + required + `>` + tfVal + `</textarea>
+                    <textarea rows="4" id="` + obj.field_name + elementName + ` class="w-full" ` + required + `>` + tfVal + `</textarea>
                 </div>
-            </div>
-        </div>`;
+            </div >
+        </div > `;
 
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);
@@ -7100,18 +7121,18 @@ function CustomField() {
             }
         }
 
-        var str = `<tr id="" class=" flex flex-col sm:flex-row justify-between content-center p-0">
-        <td class="flex flex-col flex-grow justify-center -mb-1 sm:mb-0  px-2 border-b-0 sm:border-b border-t-0 ">
-        <div class="input-group stylish-input-group">
-        <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `<br><span class="text-xxs text-gray-600 italic font-normal mt-1 sm:mt-0">` + obj.field_description + `</span></label>
+        var str = `< tr id = "" class=" flex flex-col sm:flex-row justify-between content-center p-0" >
+            <td class="flex flex-col flex-grow justify-center -mb-1 sm:mb-0  px-2 border-b-0 sm:border-b border-t-0 ">
+                <div class="input-group stylish-input-group">
+                    <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `<br><span class="text-xxs text-gray-600 italic font-normal mt-1 sm:mt-0">` + obj.field_description + `</span></label>
         </div>
         </td>
-        <td class="w-full max-w-full sm:max-w-xs flex justify-end items-center px-2 border-b-0 sm:border-b border-t-0 ">
-        <div class="input-group stylish-input-group">
-        <div class="flex-1 relative"><input type="text" id="` + obj.field_name + `" name="custom[][` + obj.table_name + `][` + obj.field_name + `]" class="w-full hasDatepicker" value="` + tfVal + `" ` + required + ` autocomplete="off" maxlength="10"><span class=" LV_validation_message LV_valid"></span>
-        </div>
-        </div>
-        </td>
+                <td class="w-full max-w-full sm:max-w-xs flex justify-end items-center px-2 border-b-0 sm:border-b border-t-0 ">
+                    <div class="input-group stylish-input-group">
+                        <div class="flex-1 relative"><input type="text" id="` + obj.field_name + `" name="custom[][` + obj.table_name + `][` + obj.field_name + `]" class="w-full hasDatepicker" value="` + tfVal + `" ` + required + ` autocomplete="off" maxlength="10"><span class=" LV_validation_message LV_valid"></span>
+                        </div>
+                    </div>
+                </td>
         </tr>`;
         //<div class="flex-1 relative"><input type="text" id="` + obj.field_name + `" name="custom_` + obj.table_name + `_` + obj.field_name + `" class="w-full hasDatepicker" value="` + tfVal + `" ` + required + ` autocomplete="off" maxlength="10"><span class=" LV_validation_message LV_valid"></span>
 
@@ -7150,7 +7171,9 @@ function CustomField() {
         if (obj.field_description) {
             description = obj.field_description;
         }
-        var str = `<div id="" class="row mb-1 ">                       
+
+        var elementName = _this.createName(obj);
+        var str = `< div id = "" class="row mb-1 " >                       
             <div class="col-sm  ">
                 <div>
                     <label for='` + obj.field_name + `' class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">'` + obj.field_title + requiredStr + `'</label>
@@ -7159,7 +7182,7 @@ function CustomField() {
             <div class="col-sm  standardWidth">
                 <div>
                     <div class="flex-1 relative">
-                    <select id='`+ obj.field_name + `' name='custom_` + obj.field_name + `' class="w-full">`
+                    <select id='`+ obj.field_name + elementName + `' class="w-full">`
         while (i < len) {
             str += `<option value='` + opt[i] + `'>` + opt[i] + `</option>`;
             i++;
@@ -7168,7 +7191,7 @@ function CustomField() {
                     </div>
                 </div>
             </div>
-        </div>`;
+        </div > `;
 
 
         /*

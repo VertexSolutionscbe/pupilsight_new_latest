@@ -76,7 +76,8 @@ if (!empty($file)) {
                         }
                     } else {
                         try {
-                            $phpword->setValue($ah, $arr[$ah]);
+                            $pv = str_replace('&', ' and ', $arr[$ah]);
+                            $phpword->setValue($ah, $pv);
                         } catch (Exception $ex) {
                         }
                     }
