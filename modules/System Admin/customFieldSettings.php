@@ -434,9 +434,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             <br />
             <hr />
             <div class="row mb-2 mt-4">
-                <button type="button" class="btn btn-secondary ml-4" onclick="cancelCustomField();">Cancel</button>
-                <button type="button" class="btn btn-primary ml-2" onclick="validate();">Save</button>
-                <button type="submit" id='btnSubmit' style="display:none;visibility:hidden;"></button>
+                <div class="col-sm-auto">
+                    <button type="button" class="btn btn-secondary ml-4" onclick="cancelCustomField();">Cancel</button>
+                </div>
+                <div class="col-sm-auto ml-auto">
+                    <button type="button" class="btn btn-primary ml-2" onclick="validate();">Save</button>
+                    <button type="submit" id='btnSubmit' style="display:none;visibility:hidden;"></button>
+                </div>
             </div>
             <br />
         </div>
