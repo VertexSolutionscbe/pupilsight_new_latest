@@ -194,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
                     foreach($coreSubjects as $core){
                         if(!empty($core['subject_type']) && $core['subject_type'] == 'Core'){
                     ?>
-                        <td style="text-align:center;"><i class="fas fa-1x fa-check px-4 greenicon"></i></td>
+                        <td style="text-align:center;"><i class="mdi mdi-checkbox-marked-circle mdi-24px greenicon"  style="cursor:pointer;"></i></td>
                 <?php } } }?>   
                 <?php if(!empty($electiveSubjects)){
                     foreach($electiveSubjects as $elect){
@@ -208,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
                             $chkcls = 'greyicon';
                         }
                     ?>
-                    <td style="text-align:center;"><i data-maxsel="<?php echo $elect['max_selection'];?>" data-eid="<?php echo $elect['id'];?>" data-sid="<?php echo $el['pupilsightDepartmentID'];?>" data-stid="<?php echo $stu['pupilsightPersonID'];?>" class="chkcls<?php echo $elect['id'].'-'.$stu['pupilsightPersonID'];?>  fas fa-1x fa-check px-4 <?php echo $chkcls;?> tick_icon"></i></td>
+                    <td style="text-align:center;"><i data-maxsel="<?php echo $elect['max_selection'];?>" data-eid="<?php echo $elect['id'];?>" data-sid="<?php echo $el['pupilsightDepartmentID'];?>" data-stid="<?php echo $stu['pupilsightPersonID'];?>" class="chkcls<?php echo $elect['id'].'-'.$stu['pupilsightPersonID'];?>  mdi mdi-checkbox-marked-circle mdi-24px <?php echo $chkcls;?> tick_icon" style="cursor:pointer;"></i></td>
                 <?php } } } ?>    
             </tr>
         <?php } } ?>
