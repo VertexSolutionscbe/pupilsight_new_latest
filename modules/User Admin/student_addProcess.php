@@ -205,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_add.php
                         $sql = 'LOCK TABLES pupilsightPerson WRITE, pupilsightFileExtension WRITE';
                         $result = $connection2->query($sql);
                     } catch (PDOException $e) {
-                        $URL .= '&return=error2';
+                        $URL .= '&return=error21';
                         header("Location: {$URL}");
                         exit();
                     }
@@ -215,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_add.php
                         $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightPerson'";
                         $resultAI = $connection2->query($sqlAI);
                     } catch (PDOException $e) {
-                        $URL .= '&return=error2';
+                        $URL .= '&return=error22';
                         header("Location: {$URL}");
                         exit();
                     }
@@ -341,7 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_add.php
                         //print_r($studentId);
 
                     } catch (PDOException $e) {
-                        $URL .= '&return=error2';
+                        $URL .= '&return=error23';
                         header("Location: {$URL}");
                         exit();
                     }

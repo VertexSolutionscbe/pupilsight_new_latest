@@ -82,39 +82,38 @@ $classes = $classes1 + $classes2;
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('old_pupilsightSchoolYearID', $pupilsightSchoolYearID);
   
     $form->addHiddenValue('stu_id', $studentids);
 
   
      
   $row = $form->addRow();
-            $col = $row->addColumn()->setClass('newdes');
+
+        $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
+            $col->addSelect('pupilsightSchoolYearID')->fromArray($academicData)->selected($pupilsightSchoolYearID)->placeholder('Select Academic Year');
+            
+        $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
             $col->addSelect('pupilsightProgramID')->fromArray($program)->required()->placeholder();
-
-
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
-            $col->addSelect('pupilsightSchoolYearID')->fromArray($academicData)->selected($pupilsightSchoolYearID)->placeholder();
-            
-    
+        
             $col = $row->addColumn()->setClass('hiddencol nobrdbtm');
-            
             $col->addTextField('');    
            
     
            
  $row = $form->addRow();
 
-            $col = $row->addColumn()->setClass('newdes');
+        $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('studentByClass', __('Class'));
             $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($firstClassId)->placeholder();
-            $col = $row->addColumn()->setClass('newdes');           
+           
+        $col = $row->addColumn()->setClass('newdes');           
             $col->addLabel('remarks', __('Remarks'));
             $col->addTextArea('remarks')->setRows(2);    
 
-            $col = $row->addColumn()->setClass('hiddencol nobrdbtm');
-            
+        $col = $row->addColumn()->setClass('hiddencol nobrdbtm');
             $col->addTextField('');    
               
             
