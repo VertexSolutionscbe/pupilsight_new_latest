@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         $canViewFullProfile = ($highestAction == 'Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes');
         $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
 
+
         if ($highestAction == 'View Student Profile_myChildren' or $highestAction == 'View Student Profile_my') {
 
             if ($highestAction == 'View Student Profile_myChildren') {
@@ -79,7 +80,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
         if ($canViewBriefProfile || $canViewFullProfile) {
             //Proceed!
-
             $classes = array('' => 'Select Class');
             $sections = array('' => 'Select Section');
 
@@ -122,14 +122,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
                 $uid = $_SESSION[$guid]['pupilsightPersonID'];
 
-                if($roleId == '2'){
+                if ($roleId == '2') {
                     $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
                     $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
                 } else {
                     $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
                     $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
-                }    
-                
+                }
             } else {
                 $classes = array('' => 'Select Class');
                 $sections = array('' => 'Select Section');
@@ -203,8 +202,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='visitorHistory'>Visitor History</a>";
 
 
-            echo "<a style='display:none' id='clickStudentsection' href='fullscreen.php?q=/modules/Students/assign_student_section.php&pupilsightYearGroupID=$pupilsightYearGroupID&pupilsightProgramID=$pupilsightProgramID&width=1000'  class='thickbox '>Assign Students Section</a>";
-            echo "&nbsp;&nbsp;<a style=' ' data-type='student' class='btn btn-primary' href='#'  id='assignStuSec'>Assign Students Section</a>";
+            echo "<a style='display:none' id='clickStudentsection' href='fullscreen.php?q=/modules/Students/assign_student_section.php&pupilsightYearGroupID=$pupilsightYearGroupID&pupilsightProgramID=$pupilsightProgramID&width=1000'  class='thickbox '>Assign Students to Section</a>";
+            echo "&nbsp;&nbsp;<a style=' ' data-type='student' class='btn btn-primary' href='#'  id='assignStuSec'>Assign Students to Section</a>";
 
             // echo "<a style='display:none' id='click_bulkStudentregister' href='fullscreen.php?q=/modules/Students/register_student_bulk.php&width=1000'  class='thickbox '>Register Students</a>";
             // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-primary' href='#'  id='bulk_student_reg'>Register Students</a>";
@@ -215,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             // echo "<a style='display:none' id='clickStudent_elect_subject' href='fullscreen.php?q=/modules/Students/assign_student_elective_subjects.php&width=1000'  class='thickbox '>Assign Elective Subjects to Students</a>";
             // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-primary' href='#'  id='assignStu_elesub'>Assign Elective Subjects to Students</a>";
 
-            echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-primary'>Student Enrollment</a>&nbsp;&nbsp;<a   class='btn btn-primary' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>";
+            echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-primary'>Student Enrollment</a>&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-primary'>Remove Enrollment</a>&nbsp;&nbsp;<a   class='btn btn-primary' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>";
             // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='changeStuStatus'>Change Status</a>";
             // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='export'>Export</a>";
             echo "&nbsp;&nbsp;<i id='expore_student_xl' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
@@ -223,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             echo "</div><div class='float-none'></div></div>";
 
 
-            if($_POST){
+            if ($_POST) {
                 echo '<div class="float-left"><h2>Choose A Student</h2></div>';
             }
 
@@ -267,7 +266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
 
                     if (!empty($person['yearGroup'])) {
-                        return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "'>";
+                        return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='enrollstuid'>";
                     } else {
                         return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='stuid'>";
                     }
@@ -333,9 +332,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             //             ->setURL('/modules/Students/student_view_details.php');
             //     });
 
-            if($_POST){
+            if ($_POST) {
+                //echo "test dhfhd";
                 echo $table->render($students);
             } else {
+                //echo "test 234";
                 echo '<h2>Please Filter the Data</h2>';
             }
         }
@@ -380,9 +381,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         $(this).nextAll('span:first').attr("title", dis);
     });
 
-    $(document).on('click', '#deleteBulkStudent', function () {
+    $(document).on('click', '#deleteBulkStudent', function() {
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function () {
+        $.each($("input[name='student_id[]']:checked"), function() {
             favorite.push($(this).val());
         });
         var stuId = favorite.join(",");
@@ -394,9 +395,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $.ajax({
                     url: 'ajax_data.php',
                     type: 'post',
-                    data: { val: val, type: type },
+                    data: {
+                        val: val,
+                        type: type
+                    },
                     async: true,
-                    success: function (response) {
+                    success: function(response) {
                         alert('Student Deleted Successfully!');
                         location.reload();
                     }
@@ -404,6 +408,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             }
         } else {
             alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click', '#removeStudentEnrolment', function () {
+        var favorite = [];
+        $.each($(".enrollstuid:checked"), function () {
+            favorite.push($(this).val());
+        });
+
+        var stuid = favorite.join(",");
+
+        var checked = $(".stuid:checked").length;
+        if (checked >= 1) {
+            alert('You Have to Select Enrolled Student.');
+            return false;
+        } else {
+            if (stuid) {
+                var val = stuid;
+                var type = 'removeStudentEnrollment';
+                if (val != '') {
+                    $.ajax({
+                        url: 'ajax_data.php',
+                        type: 'post',
+                        data: { val: val, type: type },
+                        async: true,
+                        success: function (response) {
+                            alert('Student Enrollment Removed Successfuliy!.');
+                            location.reload();
+                        }
+                    });
+                }
+            } else {
+                alert('You Have to Select Enrolled Student.');
+            }
         }
     });
 </script>

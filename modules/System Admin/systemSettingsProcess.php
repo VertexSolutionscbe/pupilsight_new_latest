@@ -183,10 +183,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         }
         //Update session variables
         try {
-            $data = array('pupilsightPersonID' => $organisationAdministrator);
-            $sql = 'SELECT surname, preferredName, email FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+            // $data = array('pupilsightPersonID' => $organisationAdministrator);
+            // $sql = 'SELECT surname, preferredName, email FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+            // $result = $connection2->prepare($sql);
+            // $result->execute($data);
+
+            $data = array('name' => 'organisationName');
+            $sql = 'SELECT value FROM pupilsightSetting WHERE name=:name';
             $result = $connection2->prepare($sql);
             $result->execute($data);
+
+            $data1 = array('name' => 'organisationEmail');
+            $sql1 = 'SELECT value FROM pupilsightSetting WHERE name=:name';
+            $result1 = $connection2->prepare($sql1);
+            $result1->execute($data1);
         } catch (PDOException $e) {
             $fail = true;
         }
@@ -194,8 +204,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         } else {
             $row = $result->fetch();
-            $_SESSION[$guid]['organisationAdministratorName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-            $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
+            $row1 = $result1->fetch();
+            // $_SESSION[$guid]['organisationAdministratorName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            // $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
+            $_SESSION[$guid]['organisationAdministratorName'] = $row['value'];
+            $_SESSION[$guid]['organisationAdministratorEmail'] = $row1['value'];
         }
 
         try {

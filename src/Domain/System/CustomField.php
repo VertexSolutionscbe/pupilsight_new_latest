@@ -189,16 +189,25 @@ class CustomField extends QueryableGateway
             $tbl = "";
             $sq = "";
             $squ = "";
-            foreach ($dt as $table => $st) {
+            foreach ($dt as $table => $field_type) {
                 //echo $data." - ".$val;
                 $tbl = $table;
-                foreach ($st as $key => $val) {
-                    if ($squ) {
-                        $squ .= ", ";
+                foreach ($field_type as $ft => $fields) {
+                    //echo $tbl . "=>" . $ft;
+                    //print_r($fields);
+                    if ($ft == "image") {
+                        //handle image 
+                    } else {
+                        foreach ($fields as $key => $val) {
+                            if ($squ) {
+                                $squ .= ", ";
+                            }
+                            $squ .= $key . "='" . $val . "'";
+                        }
                     }
-                    $squ .= $key . "='" . $val . "'";
                 }
             }
+
             if ($squ) {
                 $sq = "update " . $tbl . " set " . $squ . " where " . $colName . "='" . $colVal . "'";
                 $db = new DBQuery();
@@ -237,7 +246,7 @@ class CustomField extends QueryableGateway
     public function getPostData($tableName, $primaryCol, $primaryColVal)
     {
         try {
-            $sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' and active='Y' and field_type in('varchar','text','dropdown')";
+            $sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' and active='Y' and field_type in('varchar','text','email','mobile','image','date','file','url','dropdown','checkboxes','radioboxes','tab')";
             //echo $sq;
             $db = new DBQuery();
             $res = $db->selectRaw($sq);

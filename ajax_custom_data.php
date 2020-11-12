@@ -48,6 +48,7 @@ if ($type == 'subjectSortTab') {
         //echo $sq;
         $result = $connection2->query($sq);
         $rs = $result->fetchAll();
+        //print_r($rs);
         if (empty($rs)) {
             $sq = "select c.*,m.tabs  from custom_field_modal as m, custom_field as c where m.table_name = c.table_name and FIND_IN_SET('" . $val . "',page_edit) ";
             //echo "\n".$sq;

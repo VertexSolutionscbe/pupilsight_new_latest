@@ -124,7 +124,7 @@ $sections_arr = $sections1 + $sections2;
     $col->addLabel('pupilsightRollGroupID', __('Section'));
     $col->addSelect('pupilsightRollGroupID')->required()->setId('pupilsightRollGroupID_sel')->setClass(' new_width')->fromArray($sections_arr)->placeholder();
    // $col->addSelectRollGroup('pupilsightRollGroupID', $pupilsightSchoolYearID)->required()->setClass(' new_width');
-    $col = $row->addColumn()->setClass('');
+    $col = $row->addColumn()->setClass('btnDisplay');
     
     $col->addSubmit(__('Assign Section'))->setClass(' submt new_margin assign_section ');   
     
@@ -141,55 +141,71 @@ $sections_arr = $sections1 + $sections2;
    
    $students = $studentGateway->queryStudentsBySchoolYearandID($criteria, $pupilsightSchoolYearID,$studentids);
    // DATA TABLE
+   /*
    $table = DataTable::createPaginated('students', $criteria);
 
    $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
-  /* if ($canViewFullProfile) {
-       $table->addMetaData('filterOptions', [
-           'all:on'        => __('All Students')
-       ]);*/
-
-       if ($criteria->hasFilter('all')) {
-           $table->addMetaData('filterOptions', [
-               'status:full'     => __('Status').': '.__('Full'),
-               'status:expected' => __('Status').': '.__('Expected'),
-               'date:starting'   => __('Before Start Date'),
-               'date:ended'      => __('After End Date'),
-           ]);
-       }
-  // }
-   // COLUMNS
+  
    $table->addCheckboxColumn('student_id',__(''))
    ->setClass('chkbox')
    ->notSortable();
-   $table->addColumn('student', __('Student'))
-   
-    ->sortable(['surname', 'preferredName'])
-    ->format(function ($person) {
-        return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
-    });
+   $table->addColumn('studentName', __('Student'));
    $table->addColumn('pupilsightPersonID', __('Student Id'));    
    
    $table->addColumn('classname', __('Class'));
    $table->addColumn('rollGroup', __('Section'));
 
-  $table->addActionColumn()
-  ->addParam('student_id')
-  ->addParam('search', $criteria->getSearchText(true))
-  ->format(function ($person, $actions) use ($guid) {
+//   $table->addActionColumn()
+//   ->addParam('student_id')
+//   ->addParam('search', $criteria->getSearchText(true))
+//   ->format(function ($person, $actions) use ($guid) {
 
-    $sectn = $person['rollGroup'];
-    if($sectn != ""){
-      $actions->addAction('Remove', __('Remove'))
-              ->setURL('/modules/Students/removesection.php');
-    }
-  });
+//     $sectn = $person['rollGroup'];
+//     if($sectn != ""){
+//       $actions->addAction('Remove', __('Remove'))
+//               ->setURL('/modules/Students/removesection.php');
+//     }
+//   });
 
    echo $table->render($students);
+   */
 }
 ?>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th><input type="checkbox" class="chkAll" ></th>
+            <th>Student Id</th>
+            <th>Student Name</th>
+            <th>Class</th>
+            <th>Section</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if(!empty($students)){
+            foreach($students as $st){     
+        ?>
+        <tr>
+            <td><input type="checkbox" class="chkChild" name="student_id[]" value="<?php echo $st['pupilsightPersonID'];?>"></td>
+            <td><?php echo $st['pupilsightPersonID'];?></td>
+            <td><?php echo $st['studentName'];?></td>
+            <td><?php echo $st['classname'];?></td>
+            <td><?php echo $st['rollGroup'];?></td>
+        </tr>
+        <?php } } ?>
+    </tbody>
+</table>
 <style>
+.btnDisplay > div {
+    display: inline-flex;
+}
+
+.remove_section {
+    margin-left: 10px;
+}
+
 .new_width 
 {
     width: 400px;

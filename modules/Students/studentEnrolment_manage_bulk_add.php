@@ -8,7 +8,7 @@ use Pupilsight\Forms\DatabaseFormFactory;
 $session = $container->get('session');
 $studentids = $session->get('student_ids');
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_bulk_add.php') != false) {
+if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php') == false) {
     //Acess denied
     echo "<div class='alert alert-danger'>";
     echo __('You do not have access to this action.');

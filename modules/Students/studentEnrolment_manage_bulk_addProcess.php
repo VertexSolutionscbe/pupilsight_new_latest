@@ -12,8 +12,9 @@ $search = $_GET['search'];
 if ($pupilsightSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/studentEnrolment_manage.php";
+    $RURL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/student_view.php";
 
-    if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_add.php') == false) {
+    if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php') == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;
@@ -45,12 +46,12 @@ if ($pupilsightSchoolYearID == '') { echo 'Fatal error loading this page!';
                 //Last insert ID
                 $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
-                if(isset($_SERVER['HTTP_REFERER'])) {
-                    $previous = $_SERVER['HTTP_REFERER'].'&return=success0';
-                }
-                    header("location:{$previous}");
-              //  $URL .= "&return=success0&editID=$AI";
-              //  header("Location: {$URL}");
+                // if(isset($_SERVER['HTTP_REFERER'])) {
+                //     $previous = $_SERVER['HTTP_REFERER'].'&return=success0';
+                // }
+                //     header("location:{$previous}");
+               $RURL .= "&return=success0";
+               header("Location: {$RURL}");
                 exit;
         }
     }

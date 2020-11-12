@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             echo __('Next Year') . ' ';
         }
         echo '<a style="margin-left:5px;float:right;cursor:pointer;" class="btn btn-primary" id="deleteBulkSection">Delete</a>
-        <a class="btn btn-primary" id="btnRight" href="index.php?q=%2Fmodules%2FSchool+Admin%2FrollGroup_manage_add.php&amp;pupilsightSchoolYearID=028">Add </a>
+        <a class="btn btn-primary" id="btnRight" href="index.php?q=%2Fmodules%2FSchool+Admin%2FrollGroup_manage_add.php&amp;pupilsightSchoolYearID='.$pupilsightSchoolYearID.'">Add </a>
         ';
         echo '</div>';
     }

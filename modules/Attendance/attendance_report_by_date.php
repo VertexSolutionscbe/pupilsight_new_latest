@@ -472,8 +472,8 @@ print_r($result->fetch());*/
 
 //change gateway
 /*
-    $highestAction='View Student Profile_full';
-    $canViewFullProfile = ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes');
+    $highestAction='Student Profile_full';
+    $canViewFullProfile = ($highestAction == 'Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes');
     $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
 
     $studentGateway = $container->get(StudentGateway::class);

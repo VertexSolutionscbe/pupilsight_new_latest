@@ -4987,22 +4987,29 @@
         });
 
         var stuid = favorite.join(",");
-        if (stuid) {
-            var val = stuid;
-            var type = 'addstudentidInSession';
-            if (val != '') {
-                $.ajax({
-                    url: 'ajax_data.php',
-                    type: 'post',
-                    data: { val: val, type: type },
-                    async: true,
-                    success: function (response) {
-                        $("#submitBulkStudentEnrolment").click();
-                    }
-                });
-            }
-        } else {
+
+        var checked = $(".enrollstuid:checked").length;
+        if (checked >= 1) {
             alert('You Have to Select Students Not Enrolled.');
+            return false;
+        } else {
+            if (stuid) {
+                var val = stuid;
+                var type = 'addstudentidInSession';
+                if (val != '') {
+                    $.ajax({
+                        url: 'ajax_data.php',
+                        type: 'post',
+                        data: { val: val, type: type },
+                        async: true,
+                        success: function (response) {
+                            $("#submitBulkStudentEnrolment").click();
+                        }
+                    });
+                }
+            } else {
+                alert('You Have to Select Students Not Enrolled.');
+            }
         }
     });
 
@@ -7005,7 +7012,7 @@ function CustomField() {
     };
 
     this.createName = function (obj) {
-        return " name ='custom[ " + obj.table_name + "][ " + obj.field_type + "][" + obj.field_name + "]'";
+        return " name =\"custom[" + obj.table_name + "][" + obj.field_type + "][" + obj.field_name + "]\" ";
     }
 
     this.createTextField = function (obj) {
@@ -7054,7 +7061,8 @@ function CustomField() {
         </div>                                                          
         <div class="col-sm  standardWidth">
         <div>
-            <div class="flex-1 relative"><input type="`+ file_type + `" id="` + obj.field_name + elementName + ` class="w-full form-control" value = "` + tfVal + `" ` + required + ` ` + mobile + ` ></div >
+            <div class="flex-1 relative">
+            <input type="`+ file_type + `" id='` + obj.field_name + `' ` + elementName + `' class="w-full form-control" value = "` + tfVal + `" ` + required + ` ` + mobile + ` ></div >
         </div >
         </div ></div > `;
 
@@ -7083,9 +7091,9 @@ function CustomField() {
         if (obj.field_description) {
             description = obj.field_description;
         }
-        var elementName = _this.createName(obj);
 
-        var str = `< div class="row mb-1" >            
+        var elementName = _this.createName(obj);
+        var str = `<div class="row mb-1" >            
             <div class="col-sm">
                 <div>
                     <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `
@@ -7095,7 +7103,7 @@ function CustomField() {
             </div>                                          
             <div class="col-sm  standardWidth">
                 <div>
-                    <textarea rows="4" id="` + obj.field_name + elementName + ` class="w-full" ` + required + `>` + tfVal + `</textarea>
+                    <textarea rows="4" id='`+ obj.field_name + `' ` + elementName + `' class="w-full" ` + required + `>` + tfVal + `</textarea>
                 </div>
             </div >
         </div > `;
@@ -7173,16 +7181,16 @@ function CustomField() {
         }
 
         var elementName = _this.createName(obj);
-        var str = `< div id = "" class="row mb-1 " >                       
-            <div class="col-sm  ">
+        var str = `<div id ='' class="row mb-1">                       
+            <div class="col-sm">
                 <div>
-                    <label for='` + obj.field_name + `' class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">'` + obj.field_title + requiredStr + `'</label>
+                    <label for='` + obj.field_name + `' class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `</label>
                 </div>
             </div>                                          
             <div class="col-sm  standardWidth">
                 <div>
                     <div class="flex-1 relative">
-                    <select id='`+ obj.field_name + elementName + `' class="w-full">`
+                    <select id='`+ obj.field_name + `' ` + elementName + `' class="w-full">`
         while (i < len) {
             str += `<option value='` + opt[i] + `'>` + opt[i] + `</option>`;
             i++;

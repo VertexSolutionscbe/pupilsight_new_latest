@@ -58,7 +58,7 @@ class MappingGateway extends QueryableGateway
         //                 ->bindValue('type', ucfirst($type));
         //     },
         // ]);
-        $query->orderBy(['pupilsightProgramClassSectionMapping.pupilsightProgramID ASC, pupilsightProgramClassSectionMapping.pupilsightYearGroupID ASC']);
+        $query->orderBy(['pupilsightProgramClassSectionMapping.pupilsightProgramID ASC, pupilsightProgramClassSectionMapping.pupilsightYearGroupID ASC, pupilsightProgramClassSectionMapping.pupilsightRollGroupID ASC']);
 
         return $this->runQuery($query, $criteria);
     }
