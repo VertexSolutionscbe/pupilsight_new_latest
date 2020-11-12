@@ -454,56 +454,56 @@ if (empty($campaignStatus)) {
             var cls = iframe.find("#class").prop('readonly', true);
             var fid = $("#fid").val();
             var allms = $("#allowms").val();
-            if(allms == '0'){
-                iframe.find("input[name=father_email], input[name=mother_email]").change(function() {
-                    var val = $(this).val();
-                    var ths = $(this);
-                    if (val != '') {
-                        var type = 'chkPreviousSubmission';
-                        $.ajax({
-                            url: 'ajax_data.php',
-                            type: 'post',
-                            data: {val: val,type: type, fid: fid},
-                            async: true,
-                            success: function(response) {
-                                if(response == '1'){
-                                    alert('You are Already Applied');
-                                    iframe.find(".ff-btn-submit").prop('disabled', true);
-                                    iframe.find(".ff-btn-submit").hide();
-                                    ths.val('');
-                                } else {
-                                    iframe.find(".ff-btn-submit").prop('disabled', false);
-                                    iframe.find(".ff-btn-submit").show();
-                                }
-                            }
-                        });
-                    }
-                });
-                iframe.find("input[name=father_mobile], input[name=mother_mobile]").change(function() {
-                    var val = '+91'+$(this).val();
-                    var ths = $(this);
-                    if (val != '') {
-                        var type = 'chkPreviousSubmission';
-                        $.ajax({
-                            url: 'ajax_data.php',
-                            type: 'post',
-                            data: {val: val,type: type, fid: fid},
-                            async: true,
-                            success: function(response) {
-                                if(response == '1'){
-                                    alert('You are Already Applied');
-                                    iframe.find(".ff-btn-submit").prop('disabled', true);
-                                    iframe.find(".ff-btn-submit").hide();
-                                    ths.val('');
-                                } else {
-                                    iframe.find(".ff-btn-submit").prop('disabled', false);
-                                    iframe.find(".ff-btn-submit").show();
-                                }
-                            }
-                        });
-                    }
-                });
-            }
+            // if(allms == '0'){
+            //     iframe.find("input[name=father_email], input[name=mother_email]").change(function() {
+            //         var val = $(this).val();
+            //         var ths = $(this);
+            //         if (val != '') {
+            //             var type = 'chkPreviousSubmission';
+            //             $.ajax({
+            //                 url: 'ajax_data.php',
+            //                 type: 'post',
+            //                 data: {val: val,type: type, fid: fid},
+            //                 async: true,
+            //                 success: function(response) {
+            //                     if(response == '1'){
+            //                         alert('You are Already Applied');
+            //                         iframe.find(".ff-btn-submit").prop('disabled', true);
+            //                         iframe.find(".ff-btn-submit").hide();
+            //                         ths.val('');
+            //                     } else {
+            //                         iframe.find(".ff-btn-submit").prop('disabled', false);
+            //                         iframe.find(".ff-btn-submit").show();
+            //                     }
+            //                 }
+            //             });
+            //         }
+            //     });
+            //     iframe.find("input[name=father_mobile], input[name=mother_mobile]").change(function() {
+            //         var val = '+91'+$(this).val();
+            //         var ths = $(this);
+            //         if (val != '') {
+            //             var type = 'chkPreviousSubmission';
+            //             $.ajax({
+            //                 url: 'ajax_data.php',
+            //                 type: 'post',
+            //                 data: {val: val,type: type, fid: fid},
+            //                 async: true,
+            //                 success: function(response) {
+            //                     if(response == '1'){
+            //                         alert('You are Already Applied');
+            //                         iframe.find(".ff-btn-submit").prop('disabled', true);
+            //                         iframe.find(".ff-btn-submit").hide();
+            //                         ths.val('');
+            //                     } else {
+            //                         iframe.find(".ff-btn-submit").prop('disabled', false);
+            //                         iframe.find(".ff-btn-submit").show();
+            //                     }
+            //                 }
+            //             });
+            //         }
+            //     });
+            // }
 
             iframe.find(".ff-el-form-control").change(function() {
                 $.each($(this), function() {

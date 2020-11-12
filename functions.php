@@ -1015,7 +1015,7 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
     $alerts = [];
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
-    if ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes') {
+    if ($highestAction == 'Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes') {
 
         // Individual Needs
         try {
@@ -1199,16 +1199,31 @@ function getSystemSettings($guid, $connection2)
     //Get names and emails for administrator, dba, admissions
     //System Administrator
     try {
-        $data = array('pupilsightPersonID' => $_SESSION[$guid]['organisationAdministrator']);
-        $sql = 'SELECT surname, preferredName, email FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+        // $data = array('pupilsightPersonID' => $_SESSION[$guid]['organisationAdministrator']);
+        // $sql = 'SELECT surname, preferredName, email FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+        // $result = $connection2->prepare($sql);
+        // $result->execute($data);
+
+        $data = array('name' => 'organisationName');
+        $sql = 'SELECT value FROM pupilsightSetting WHERE name=:name';
         $result = $connection2->prepare($sql);
         $result->execute($data);
+
+        $data1 = array('name' => 'organisationEmail');
+        $sql1 = 'SELECT value FROM pupilsightSetting WHERE name=:name';
+        $result1 = $connection2->prepare($sql1);
+        $result1->execute($data1);
     } catch (PDOException $e) {
     }
     if ($result->rowCount() == 1) {
+        // $row = $result->fetch();
+        // $_SESSION[$guid]['organisationAdministratorName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+        // $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
+
         $row = $result->fetch();
-        $_SESSION[$guid]['organisationAdministratorName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-        $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
+        $row1 = $result1->fetch();
+        $_SESSION[$guid]['organisationAdministratorName'] = $row['value'];
+        $_SESSION[$guid]['organisationAdministratorEmail'] = $row1['value'];
     }
     //DBA
     try {

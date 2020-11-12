@@ -492,7 +492,6 @@ if ($response->getStatusCode() == 'S') {
 							$url .= "?to=" . $mt_email;
 							$url .= "&subject=" . rawurlencode($subject);
 							$url .= "&body=" . rawurlencode($body);
-							echo $url;
 							sendEmail($mt_email, $subject, $body, $subid, $cuid, $connection2, $url);
 						}
 						if (!empty($gt_email)) {

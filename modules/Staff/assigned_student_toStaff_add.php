@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assigned_student_toS
     echo __('Select Staff');
     echo '</h2>';
 
-    $sqlp = 'SELECT  b.pupilsightPersonID AS staff_id , b.firstName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID';
+    $sqlp = 'SELECT  b.pupilsightPersonID AS staff_id , b.officialName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID';
     $resultp = $connection2->query($sqlp);
     $getstaffs= $resultp->fetchAll();
     //$rowdataprog = $resultp->fetchAll();
@@ -58,12 +58,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assigned_student_toS
                
                     $col = $row->addColumn()->setClass('newdes');   
                     
-                    $col->addContent(' <button id="simplesubmitInvoice" style="height: 34px; margin-left: 74px;  margin-top: 6px;"class=" btn btn-primary">Assign</button>');  
+                    $col->addLabel('', __(''));
+                    $col->addContent(' <button id="simplesubmitInvoice" style=""class=" btn btn-primary">Assign</button>');  
                     
                     $col = $row->addColumn()->setClass('newdes')->setID('TB_closeAjaxWindow');   
                     
-                    
-                    $col->addContent('<a  href="#" id="TB_closeWindowButton"  <button style="height: 34px;  margin-top: 6px;line-height: 30px;" class=" btn btn-primary" onclick="history.go(0);" >Cancel</button></a>');  
+                    $col->addLabel('', __(''));
+                    $col->addContent('<a  href="#" id="TB_closeWindowButton"  <button style="margin: 0 0 0 -175px;" class=" btn btn-primary" onclick="history.go(0);" >Cancel</button></a>');  
                     $col = $row->addColumn()->setClass('hiddencol nobrdbtm');
                     
                     $col->addTextField(''); 

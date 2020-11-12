@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             $skipBrief = false;
 
             //Skip brief for those with _full or _fullNoNotes, and _brief
-            if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+            if ($highestAction == 'Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                 $skipBrief = true;
             }
 
@@ -299,7 +299,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             WHERE pupilsightPerson.pupilsightPersonID=:pupilsightPersonID
                             AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightPerson.status='Full'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
-                    } else if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                    } else if ($highestAction == 'Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         if ($allStudents != 'on') {
                             $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $pupilsightPersonID, 'today' => date('Y-m-d'));
                             $sql = "SELECT * FROM pupilsightPerson

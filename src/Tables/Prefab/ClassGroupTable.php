@@ -42,8 +42,8 @@ class ClassGroupTable extends DataTable
         $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
 
         $canViewStaff = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php');
-        $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
-        $canViewConfidential = $highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes';
+        $canViewStudents = ($highestAction == 'View Student Profile_brief' || $highestAction == 'Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes');
+        $canViewConfidential = $highestAction == 'Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes';
 
         $criteria = $this->enrolmentGateway
             ->newQueryCriteria()

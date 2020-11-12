@@ -4987,22 +4987,29 @@
         });
 
         var stuid = favorite.join(",");
-        if (stuid) {
-            var val = stuid;
-            var type = 'addstudentidInSession';
-            if (val != '') {
-                $.ajax({
-                    url: 'ajax_data.php',
-                    type: 'post',
-                    data: { val: val, type: type },
-                    async: true,
-                    success: function (response) {
-                        $("#submitBulkStudentEnrolment").click();
-                    }
-                });
-            }
-        } else {
+
+        var checked = $(".enrollstuid:checked").length;
+        if (checked >= 1) {
             alert('You Have to Select Students Not Enrolled.');
+            return false;
+        } else {
+            if (stuid) {
+                var val = stuid;
+                var type = 'addstudentidInSession';
+                if (val != '') {
+                    $.ajax({
+                        url: 'ajax_data.php',
+                        type: 'post',
+                        data: { val: val, type: type },
+                        async: true,
+                        success: function (response) {
+                            $("#submitBulkStudentEnrolment").click();
+                        }
+                    });
+                }
+            } else {
+                alert('You Have to Select Students Not Enrolled.');
+            }
         }
     });
 
