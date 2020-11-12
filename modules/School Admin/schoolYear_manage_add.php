@@ -61,11 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
     $row = $form->addRow();
         $row->addLabel('firstDay', __('Start Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('firstDay')->required();
+        $row->addDate('firstDay')->required()->readonly();
 
     $row = $form->addRow();
         $row->addLabel('lastDay', __('End Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('lastDay')->required();
+        $row->addDate('lastDay')->required()->readonly();
 
     $row = $form->addRow();
         $row->addFooter();
@@ -73,3 +73,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
     echo $form->getOutput();
 }
+
+?>
+
+<script>
+    $("#firstDay").datepicker({
+        //minDate: 0,
+        onClose: function (selectedDate) {
+            $("#lastDay").datepicker("option", "minDate", selectedDate);
+        }
+    });
+</script>

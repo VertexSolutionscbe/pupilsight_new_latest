@@ -11,7 +11,7 @@ include './moduleFunctions.php';
 $pupilsightCourseClassID = $_GET['pupilsightCourseClassID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_course_class.php&pupilsightCourseClassID=$pupilsightCourseClassID";
 
-if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false or getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) != 'View Student Profile_full') {
+if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false or getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) != 'Student Profile_full') {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
