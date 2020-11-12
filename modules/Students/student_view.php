@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         $canViewFullProfile = ($highestAction == 'Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes');
         $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
 
+
         if ($highestAction == 'View Student Profile_myChildren' or $highestAction == 'View Student Profile_my') {
 
             if ($highestAction == 'View Student Profile_myChildren') {
@@ -79,7 +80,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
         if ($canViewBriefProfile || $canViewFullProfile) {
             //Proceed!
-
             $classes = array('' => 'Select Class');
             $sections = array('' => 'Select Section');
 
@@ -122,14 +122,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
                 $uid = $_SESSION[$guid]['pupilsightPersonID'];
 
-                if($roleId == '2'){
+                if ($roleId == '2') {
                     $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
                     $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
                 } else {
                     $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
                     $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
-                }    
-                
+                }
             } else {
                 $classes = array('' => 'Select Class');
                 $sections = array('' => 'Select Section');
@@ -223,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             echo "</div><div class='float-none'></div></div>";
 
 
-            if($_POST){
+            if ($_POST) {
                 echo '<div class="float-left"><h2>Choose A Student</h2></div>';
             }
 
@@ -333,9 +332,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             //             ->setURL('/modules/Students/student_view_details.php');
             //     });
 
-            if($_POST){
+            if ($_POST) {
+                //echo "test dhfhd";
                 echo $table->render($students);
             } else {
+                //echo "test 234";
                 echo '<h2>Please Filter the Data</h2>';
             }
         }
@@ -380,9 +381,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         $(this).nextAll('span:first').attr("title", dis);
     });
 
-    $(document).on('click', '#deleteBulkStudent', function () {
+    $(document).on('click', '#deleteBulkStudent', function() {
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function () {
+        $.each($("input[name='student_id[]']:checked"), function() {
             favorite.push($(this).val());
         });
         var stuId = favorite.join(",");
@@ -394,9 +395,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $.ajax({
                     url: 'ajax_data.php',
                     type: 'post',
-                    data: { val: val, type: type },
+                    data: {
+                        val: val,
+                        type: type
+                    },
                     async: true,
-                    success: function (response) {
+                    success: function(response) {
                         alert('Student Deleted Successfully!');
                         location.reload();
                     }

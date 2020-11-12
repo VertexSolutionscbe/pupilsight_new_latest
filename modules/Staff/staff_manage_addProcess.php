@@ -2,6 +2,7 @@
 /*
 Pupilsight, Flexible & Open School System
 */
+
 use Pupilsight\Domain\System\CustomField;
 
 include '../../pupilsight.php';
@@ -14,7 +15,7 @@ $search = '';
 if (isset($_GET['search'])) {
     $search = $_GET['search'];
 }
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/staff_manage_add.php&search=$search&allStaff=$allStaff";
+$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . "/staff_manage_add.php&search=$search&allStaff=$allStaff";
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -39,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $biographicalGroupingPriority = $_POST['biographicalGroupingPriority'];
     $biography = $_POST['biography'];
     $is_principle = $_POST['is_principle'];
-    if(!empty($is_principle)){
+    if (!empty($is_principle)) {
         $is_principle = $is_principle;
 
         $allotherprinciple = '0';
@@ -80,23 +81,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
             //Write to database
             try {
 
-                if(isset($_FILES["file"]) && $_FILES["file"]["error"] == 0){
+                if (isset($_FILES["file"]) && $_FILES["file"]["error"] == 0) {
                     $filename = $_FILES["file"]["name"];
                     $filetype = $_FILES["file"]["type"];
                     $filesize = $_FILES["file"]["size"];
-                   
+
                     // Verify file extension
                     $ext = pathinfo($filename, PATHINFO_EXTENSION);
-                    
 
-                    $filename = time() . '_' .$_FILES["file"]["name"];
-                    $fileTarget = $_SERVER['DOCUMENT_ROOT']."/public/staff_signature/" . $filename;	
-                    if(move_uploaded_file($_FILES["file"]["tmp_name"], $fileTarget)){
+
+                    $filename = time() . '_' . $_FILES["file"]["name"];
+                    $fileTarget = $_SERVER['DOCUMENT_ROOT'] . "/public/staff_signature/" . $filename;
+                    if (move_uploaded_file($_FILES["file"]["tmp_name"], $fileTarget)) {
                         echo "Signature updated successfully";
                     } else {
-                            echo "No";
+                        echo "No";
                     }
-                } else{
+                } else {
                     // echo "Error: " . $_FILES["file"]["error"];
                     $fileTarget = '';
                 }
@@ -109,8 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
                 $staffId = $connection2->lastInsertID();
                 //custom Field Added
                 $customField  = $container->get(CustomField::class);
-                $customField->postCustomField($_POS["custom"], 'pupilsightPersonID', $staffId);
-
+                $customField->postCustomField($_POST["custom"], 'pupilsightPersonID', $staffId);
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
