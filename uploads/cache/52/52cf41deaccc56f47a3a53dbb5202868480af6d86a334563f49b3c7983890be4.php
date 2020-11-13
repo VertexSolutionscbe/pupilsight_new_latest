@@ -86,12 +86,32 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                 </button>
             </div>
             <div class=\"modal-body emailField\" style=\"display:none;\">
+                <h3 class=\"font-semibold\">Subject</h3>
+                <textarea name=\"email_quote\" id=\"emailSubjectQuote_stud\" rows=\"1\"></textarea></br>
                 <h3 class=\"font-semibold\">Email Message</h3>
                 <textarea name=\"email_quote\" id=\"emailQuote_stud\" rows=\"5\"></textarea>
+                <div style=\"margin-top: 15px;\" id=\"showEmailField\">
+                    <input type='checkbox' class='chkType' data-type=\"fatherEmail\" name='father_email' value='1'> Father
+                    Email
+                    <input type='checkbox' class='chkType' data-type=\"motherEmail\" name='mother_email' value='1'> Mother
+                    Email
+                    <input type='checkbox' class='chkType' data-type=\"guardianEmail\" name='guardian_email' value='1'>
+                    Guardian Email
+                </div>
             </div>
             <div class=\"modal-body smsField\" style=\"display:none;\">
                 <h3 class=\"font-semibold\">SMS Message</h3>
                 <textarea name=\"sms_quote\" id=\"smsQuote_stud\" class=\"smsQuote_stud\"></textarea>
+                <div style=\"margin-top: 15px;\" id=\"showMobileField\">
+                    <input type='checkbox' class='chkType' data-type=\"fatherMobile\" name='father_mobile' value='1'>
+                    Father
+                    Mobile
+                    <input type='checkbox' class='chkType' data-type=\"motherMobile\" name='mother_mobile' value='1'>
+                    Mother
+                    Mobile
+                    <input type='checkbox' class='chkType' data-type=\"guardianMobile\" name='guardian_mobile' value='1'>
+                    Guardian Mobile
+                </div>
                 <span></span>
             </div>
             <div class=\"modal-footer\">
@@ -407,12 +427,32 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                 </button>
             </div>
             <div class=\"modal-body emailField\" style=\"display:none;\">
+                <h3 class=\"font-semibold\">Subject</h3>
+                <textarea name=\"email_quote\" id=\"emailSubjectQuote_stud\" rows=\"1\"></textarea></br>
                 <h3 class=\"font-semibold\">Email Message</h3>
                 <textarea name=\"email_quote\" id=\"emailQuote_stud\" rows=\"5\"></textarea>
+                <div style=\"margin-top: 15px;\" id=\"showEmailField\">
+                    <input type='checkbox' class='chkType' data-type=\"fatherEmail\" name='father_email' value='1'> Father
+                    Email
+                    <input type='checkbox' class='chkType' data-type=\"motherEmail\" name='mother_email' value='1'> Mother
+                    Email
+                    <input type='checkbox' class='chkType' data-type=\"guardianEmail\" name='guardian_email' value='1'>
+                    Guardian Email
+                </div>
             </div>
             <div class=\"modal-body smsField\" style=\"display:none;\">
                 <h3 class=\"font-semibold\">SMS Message</h3>
                 <textarea name=\"sms_quote\" id=\"smsQuote_stud\" class=\"smsQuote_stud\"></textarea>
+                <div style=\"margin-top: 15px;\" id=\"showMobileField\">
+                    <input type='checkbox' class='chkType' data-type=\"fatherMobile\" name='father_mobile' value='1'>
+                    Father
+                    Mobile
+                    <input type='checkbox' class='chkType' data-type=\"motherMobile\" name='mother_mobile' value='1'>
+                    Mother
+                    Mobile
+                    <input type='checkbox' class='chkType' data-type=\"guardianMobile\" name='guardian_mobile' value='1'>
+                    Guardian Mobile
+                </div>
                 <span></span>
             </div>
             <div class=\"modal-footer\">

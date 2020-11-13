@@ -8,6 +8,7 @@ use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
 use Pupilsight\Domain\Students\FirstAidGateway;
+use Pupilsight\Domain\Helper\HelperGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -31,36 +32,114 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             returnProcess($guid, $_GET['return'], null, null);
         }
 
-        $pupilsightPersonID = isset($_GET['pupilsightPersonID'])? $_GET['pupilsightPersonID'] : null;
-        $pupilsightRollGroupID = isset($_GET['pupilsightRollGroupID'])? $_GET['pupilsightRollGroupID'] : null;
-        $pupilsightYearGroupID = isset($_GET['pupilsightYearGroupID'])? $_GET['pupilsightYearGroupID'] : null;
+        // $pupilsightPersonID = isset($_GET['pupilsightPersonID'])? $_GET['pupilsightPersonID'] : null;
+        // $pupilsightRollGroupID = isset($_GET['pupilsightRollGroupID'])? $_GET['pupilsightRollGroupID'] : null;
+        // $pupilsightYearGroupID = isset($_GET['pupilsightYearGroupID'])? $_GET['pupilsightYearGroupID'] : null;
 
         echo '<h3>';
         echo __('Filter');
         echo '</h3>';
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $classes = array('' => 'Select Class');
+        $sections = array('' => 'Select Section');
+
+        $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
+        $resultp = $connection2->query($sqlp);
+        $rowdataprog = $resultp->fetchAll();
+
+        $program = array();
+        $program2 = array();
+        $program1 = array('' => 'Select Program');
+        foreach ($rowdataprog as $dt) {
+            $program2[$dt['pupilsightProgramID']] = $dt['name'];
+        }
+        $program = $program1 + $program2;
+
+        $HelperGateway = $container->get(HelperGateway::class);
+        if ($_POST) {
+            $input = $_POST;
+            $pupilsightProgramID = $_POST['pupilsightProgramID'];
+            $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
+            $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
+            $search = $_POST['search'];
+
+            $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+            $uid = $_SESSION[$guid]['pupilsightPersonID'];
+
+            if($roleId == '2'){
+                $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
+                $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
+            } else {
+                $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            }    
+            if(empty($pupilsightProgramID)){
+                unset($_SESSION['firstAid_search']);
+            }
+
+            
+        } else {
+            $classes = array('' => 'Select Class');
+            $sections = array('' => 'Select Section');
+            $pupilsightProgramID = '';
+            $pupilsightYearGroupID =  '';
+            $pupilsightRollGroupID = '';
+            $search = '';
+            $input = '';
+            unset($_SESSION['firstAid_search']);
+        }
+
+        if (!empty($pupilsightProgramID)) {
+            $_SESSION['firstAid_search'] = $input;
+        }
+
+        $form = Form::create('filter', '');
 
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/firstAidRecord.php");
 
-        $row = $form->addRow();
-            $row->addLabel('pupilsightPersonID', __('Student'));
-            $row->addSelectStudent('pupilsightPersonID', $_SESSION[$guid]['pupilsightSchoolYearID'])->placeholder()->selected($pupilsightPersonID);
+        // $row = $form->addRow();
+        //     $row->addLabel('pupilsightPersonID', __('Student'));
+        //     $row->addSelectStudent('pupilsightPersonID', $_SESSION[$guid]['pupilsightSchoolYearID'])->placeholder()->selected($pupilsightPersonID);
+
+        // $row = $form->addRow();
+        //     $row->addLabel('pupilsightRollGroupID', __('Roll Group'));
+        //     $row->addSelectRollGroup('pupilsightRollGroupID', $_SESSION[$guid]['pupilsightSchoolYearID'])->selected($pupilsightRollGroupID);
+
+        // $row = $form->addRow();
+        //     $row->addLabel('pupilsightYearGroupID', __('Year Group'));
+        //     $row->addSelectYearGroup('pupilsightYearGroupID')->selected($pupilsightYearGroupID);
+
+        // $row = $form->addRow();
+        //     $row->addFooter();
+        //     $row->addSearchSubmit($pupilsight->session);
 
         $row = $form->addRow();
-            $row->addLabel('pupilsightRollGroupID', __('Roll Group'));
-            $row->addSelectRollGroup('pupilsightRollGroupID', $_SESSION[$guid]['pupilsightSchoolYearID'])->selected($pupilsightRollGroupID);
 
-        $row = $form->addRow();
-            $row->addLabel('pupilsightYearGroupID', __('Year Group'));
-            $row->addSelectYearGroup('pupilsightYearGroupID')->selected($pupilsightYearGroupID);
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('pupilsightProgramID', __('Program'));
+        $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
-        $row = $form->addRow();
-            $row->addFooter();
-            $row->addSearchSubmit($pupilsight->session);
+
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('pupilsightYearGroupID', __('Class'));
+        $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
+
+
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('pupilsightRollGroupID', __('Section'));
+        $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section');
+
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('search', __('Search By Name & Admission No'))
+            ->description($searchDescription);
+        $col->addTextField('search')->setValue($search);
+
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('', __(''));
+        $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
         echo $form->getOutput();
 
@@ -72,12 +151,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
 
         $criteria = $firstAidGateway->newQueryCriteria()
             ->sortBy(['date', 'timeIn'], 'DESC')
-            ->filterBy('student', $pupilsightPersonID)
-            ->filterBy('rollGroup', $pupilsightRollGroupID)
-            ->filterBy('yearGroup', $pupilsightYearGroupID)
+            //->filterBy('student', $pupilsightPersonID)
+            //->filterBy('program', $pupilsightProgramID)
+            //->filterBy('rollGroup', $pupilsightRollGroupID)
+            //->filterBy('yearGroup', $pupilsightYearGroupID)
             ->fromPOST();
 
-        $firstAidRecords = $firstAidGateway->queryFirstAidBySchoolYear($criteria, $_SESSION[$guid]['pupilsightSchoolYearID']);
+        $firstAidRecords = $firstAidGateway->queryFirstAidBySchoolYear($criteria, $_SESSION[$guid]['pupilsightSchoolYearID'], $pupilsightProgramID, $pupilsightRollGroupID, $pupilsightYearGroupID, $search);
+
+        // echo '<pre>';
+        // print_r($firstAidRecords);
+        // echo '</pre>';
+        // die();
 
         // DATA TABLE
         $table = DataTable::createPaginated('firstAidRecords', $criteria);

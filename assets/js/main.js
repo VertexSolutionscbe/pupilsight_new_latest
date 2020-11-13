@@ -3315,6 +3315,8 @@
     $(document).on('click', '#sendEmailSms_stud', function () {
 
         var emailquote = $("#emailQuote_stud").val();
+        var subjectquote = $("#emailSubjectQuote_stud").val();
+
         var smsquote = $("#smsQuote_stud").val();
         var favorite = [];
         $.each($("input[name='student_id[]']:checked"), function () {
@@ -3322,21 +3324,31 @@
         });
         var stuid = favorite.join(", ");
 
+        var types = [];
+        $.each($(".chkType:checked"), function () {
+            types.push($(this).attr('data-type'));
+        });
+        var type = types.join(",");
+
         if (stuid) {
-            if (emailquote != '' || smsquote != '') {
-                $("#preloader").show();
-                $.ajax({
-                    url: 'modules/Students/send_stud_email_msg.php',
-                    type: 'post',
-                    data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
-                    async: true,
-                    success: function (response) {
-                        alert('Your Message Sent Successfully! click Ok to continue ');
-                        location.reload();
-                    }
-                });
+            if (type != '') {
+                if (emailquote != '' || smsquote != '') {
+                    $("#preloader").show();
+                    $.ajax({
+                        url: 'modules/Students/send_stud_email_msg.php',
+                        type: 'post',
+                        data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote, type: type, subjectquote: subjectquote },
+                        async: true,
+                        success: function (response) {
+                            alert('Your Message Sent Successfully! click Ok to continue ');
+                            location.reload();
+                        }
+                    });
+                } else {
+                    alert('You Have to Enter Message.');
+                }
             } else {
-                alert('You Have to Enter Quote.');
+                alert('You Have to Select Recipient.');
             }
         } else {
             alert('You Have to Select Applicants.');
@@ -8480,4 +8492,39 @@ $(document).on('click', '#addSeats', function () {
     // var design = ' <div id="seatdiv" class=" row mb-1 deltr' + ncid + '"><div class="col-sm  newdes " ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="seatname" name="seatname[' + ncid + ']" class="w-full txtfield"></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class="dte mb-1"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><input type="number" id="seatallocation" name="seatallocation[' + ncid + ']" class="w-full txtfield kountseat szewdt"><i style="cursor:pointer;padding: 8px 10px;" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div></div></div></div>';
     // $("#lastseatdiv").before(design);
 
+});
+
+
+$(document).on('change', '#progID', function () {
+    var aid = $("#pupilsightSchoolYearID").val();
+    var id = $(this).val();
+    var type = 'getSchoolClass';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, aid: aid },
+        async: true,
+        success: function (response) {
+
+            $("#clsID").html();
+            $("#clsID").html(response);
+        }
+    });
+});
+
+$(document).on('change', '#clsID', function () {
+    var aid = $("#pupilsightSchoolYearID").val();
+    var id = $(this).val();
+    var pid = $('#progID').val();
+    var type = 'getSchoolSection';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, pid: pid, aid: aid },
+        async: true,
+        success: function (response) {
+            $("#secID").html();
+            $("#secID").html(response);
+        }
+    });
 });
