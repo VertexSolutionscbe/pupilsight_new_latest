@@ -181,4 +181,26 @@ if ($type == 'subjectSortTab') {
             echo json_encode($result);
         }
     }
+} else if ($type == 'deleteField') {
+    if ($val) {
+        $result = array();
+        try {
+            $id = $_POST['id'];
+            $table_name = $_POST['table_name'];
+            if ($id && $table_name) {
+                $sq = "delete from custom_field  where id='" . $id . "'; ";
+                $connection2->query($sq);
+
+                $sq = "ALTER TABLE " . $table_name . " DROP " . $val . "; ";
+                $connection2->query($sq);
+            }
+            $result["status"] = 1;
+        } catch (Exception $ex) {
+            $result["status"] = 2;
+            $result["message"] = $ex->getMessage();
+        }
+        if ($result) {
+            echo json_encode($result);
+        }
+    }
 }

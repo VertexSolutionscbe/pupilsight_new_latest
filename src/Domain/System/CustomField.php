@@ -88,6 +88,7 @@ class CustomField extends QueryableGateway
         $db = new DBQuery();
         $flag = FALSE;
         if ($dt["table_name"]) {
+            $dt['field_title'] = htmlspecialchars($dt['field_title']);
             $flag = $db->insertArray('custom_field', $dt);
             if ($flag) {
                 $colType = "TEXT NULL ";
@@ -333,7 +334,7 @@ class CustomField extends QueryableGateway
         $db = new DBQuery();
         $result = array();
         try {
-            $sq = "select c.id, c.field_name, c.field_title, c.field_type, c.modules, c.tab, c.active, cm.tabs, cm.table_tag, cm.page_view, cm.page_edit from custom_field as c left join custom_field_modal as cm on c.table_name = cm.table_name";
+            $sq = "select c.id, c.field_name, c.field_title, c.field_type, c.modules, c.tab, c.active, c.table_name, cm.tabs, cm.table_tag, cm.page_view, cm.page_edit from custom_field as c left join custom_field_modal as cm on c.table_name = cm.table_name";
             $result = $db->selectRaw($sq);
         } catch (Exception $ex) {
             echo 'CustomField->getCustomFieldList(): exception: ',  $ex->getMessage(), "\n";

@@ -805,47 +805,50 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     $str = "";
     //print_r($customFieldList);
     while ($i < $len) {
-        $fieldTitle = $customFieldList[$i]["field_title"];
-        $fieldName = $customFieldList[$i]["field_name"];
-        if (empty($fieldTitle)) {
-            $fieldTitle = $fieldName;
-        }
-        $id = $customFieldList[$i]["id"];
-        $str .= "\n<tr id='custom_row_" . $id . "'>";
-        $str .= "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
-        $str .= "<td>" . $fieldTitle . "</td>";
-        $str .= "<td>" . $customField->getInputTag($customFieldList[$i]["field_type"]) . "</td>";
-        $mod = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["modules"]) . "</div>";
-        $str .= "<td>" . $mod . "</td>";
-
-        $tabs = explode(",", $customFieldList[$i]["tabs"]);
-        $jlen = count($tabs);
-        $j = 0;
-        $opt = "<input type='hidden' id='fieldid_" . $fieldName . "' value='" . $customFieldList[$i]["id"] . "'>";
-        $opt .= "<input type='hidden' id='tabSelect_" . $fieldName . "' value='" . $customFieldList[$i]["tab"] . "'>";
-        $opt .= "<select id='switchTab_" . $fieldName . "' onchange=\"changeTab('" . $fieldName . "');\">";
-        $opt .= "\n<option value=''>Select</option>";
-        $optse = "";
-        while ($j < $jlen) {
-            $optse = "";
-            if ($tabs[$j] == $customFieldList[$i]["tab"]) {
-                $optse = " selected";
+        $field_type = $customFieldList[$i]["field_type"];
+        if ($field_type) {
+            $fieldTitle = $customFieldList[$i]["field_title"];
+            $fieldName = $customFieldList[$i]["field_name"];
+            if (empty($fieldTitle)) {
+                $fieldTitle = $fieldName;
             }
-            $opt .= "\n<option value='" . $tabs[$j] . "' " . $optse . ">" . $tabs[$j] . "</option>";
-            $j++;
+            $id = $customFieldList[$i]["id"];
+            $str .= "\n<tr id='custom_row_" . $id . "'>";
+            $str .= "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
+            $str .= "<td>" . $fieldTitle . "</td>";
+            $str .= "<td>" . $customField->getInputTag($customFieldList[$i]["field_type"]) . "</td>";
+            $mod = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["modules"]) . "</div>";
+            $str .= "<td>" . $mod . "</td>";
+
+            $tabs = explode(",", $customFieldList[$i]["tabs"]);
+            $jlen = count($tabs);
+            $j = 0;
+            $opt = "<input type='hidden' id='fieldid_" . $fieldName . "' value='" . $customFieldList[$i]["id"] . "'>";
+            $opt .= "<input type='hidden' id='tabSelect_" . $fieldName . "' value='" . $customFieldList[$i]["tab"] . "'>";
+            $opt .= "<select id='switchTab_" . $fieldName . "' onchange=\"changeTab('" . $fieldName . "');\">";
+            $opt .= "\n<option value=''>Select</option>";
+            $optse = "";
+            while ($j < $jlen) {
+                $optse = "";
+                if ($tabs[$j] == $customFieldList[$i]["tab"]) {
+                    $optse = " selected";
+                }
+                $opt .= "\n<option value='" . $tabs[$j] . "' " . $optse . ">" . $tabs[$j] . "</option>";
+                $j++;
+            }
+            $opt .= "</select>";
+
+            $str .= "<td>" . $opt . "</td>";
+
+            $str .= "<td>" . $customFieldList[$i]["active"] . "</td>";
+            $pv = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_view"]) . "</div>";
+            $str .= "<td>" . $pv . "</td>";
+            $pe = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_edit"]) . "</div>";
+            $str .= "<td>" . $pe . "</td>";
+
+            $str .= "<td><button class='btn btn-secondary' onclick=\"deleteCustomField('" . $id . "','" . $customFieldList[$i]["table_name"] . "','" . $fieldName . "');\">Delete</button></td>";
+            $str .= "</tr>";
         }
-        $opt .= "</select>";
-
-        $str .= "<td>" . $opt . "</td>";
-
-        $str .= "<td>" . $customFieldList[$i]["active"] . "</td>";
-        $pv = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_view"]) . "</div>";
-        $str .= "<td>" . $pv . "</td>";
-        $pe = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_edit"]) . "</div>";
-        $str .= "<td>" . $pe . "</td>";
-
-        $str .= "<td><button class='btn btn-secondary' onclick=\"deleteCustomField('" . $id . "');\">Delete</button></td>";
-        $str .= "</tr>";
         $i++;
     }
     echo $str;
@@ -855,6 +858,42 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
         $(function() {
             $("#customFieldList").hide();
         });
+
+
+        function deleteCustomField(id, tableName, fieldName) {
+            if (confirm("Are you sure you want to delete this field ")) {
+                try {
+                    var link = "ajax_custom_data.php";
+                    var type = "deleteField";
+                    $.ajax({
+                        type: "POST",
+                        url: link,
+                        data: {
+                            val: fieldName,
+                            type: type,
+                            id: id,
+                            table_name: tableName
+                        },
+                    }).done(function(msg) {
+                        console.log(msg);
+                        if (msg != "") {
+                            var obj = jQuery.parseJSON(msg);
+                            if (obj.status == 1) {
+                                alert("Your request has been successfully executed");
+                                $("#custom_row_" + id).remove();
+                            } else {
+                                alert("Error : " + obj.message);
+                            }
+                        }
+                    });
+                } catch (ex) {
+                    console.log(ex);
+                }
+            } else {
+                var fieldNameVal = $("#tabSelect_" + fieldName).val();
+                $("#switchTab_" + fieldName).val(fieldNameVal);
+            }
+        }
 
         function tabSortPanel(flag) {
             hideAllPanel();
