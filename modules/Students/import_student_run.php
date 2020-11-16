@@ -154,6 +154,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                 }
                 //}
             }
+        }
 
             $hders = $headers;
 
@@ -183,7 +184,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                 // echo '<pre>';
                 //     print_r($all_rows);
                 //     echo '</pre>';
-                //    die();
+                   //die();
 
                 foreach ($all_rows as  $alrow) {
 
@@ -384,6 +385,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
             //die();
             $URL .= '&return=success0';
             header("Location: {$URL}");
-        }
+        
     }
 }

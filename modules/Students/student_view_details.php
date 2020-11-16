@@ -1398,7 +1398,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '</td>';
                                     echo "<td $class style='width: 33%; vertical-align: top'>";
                                     echo "<span class='form-label'>" . __('Name') . '</span>';
-                                    echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                                    // echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                                    echo $rowMember['officialName'];
                                     if ($rowMember['status'] != 'Full') {
                                         echo "<span style='font-weight: normal; font-style: italic'> (" . $rowMember['status'] . ')</span>';
                                     }

@@ -7,7 +7,7 @@ class DBQuery
     private $conn;
     private function connect()
     {
-        include($_SERVER['DOCUMENT_ROOT'] .'/config.php');
+        include($_SERVER['DOCUMENT_ROOT'] . '/config.php');
         $this->conn = new \MySQLi($databaseServer, $databaseUsername, $databasePassword, $databaseName);
         if ($this->conn->connect_errno) {
             echo "Failed to connect to MySQL: " . $this->conn->connect_error;
@@ -147,5 +147,11 @@ class DBQuery
             }
         }
         return "";
+    }
+
+    public function cleanString($string)
+    {
+        $string = str_replace(' ', '_', $string); // Replaces all spaces with hyphens.
+        return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
     }
 }

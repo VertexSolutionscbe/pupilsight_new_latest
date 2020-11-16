@@ -17,7 +17,7 @@ include './moduleFunctions.php';
 $pupilsightPersonID = $_GET['pupilsightPersonID'];
 $child_id = $_GET['child_id'];
 // print_r($child_id);die();
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/parent_edit.php&pupilsightPersonID=$pupilsightPersonID&child_id=$child_id&search=".$_GET['search'];
+$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . "/parent_edit.php&pupilsightPersonID=$pupilsightPersonID&child_id=$child_id&search=" . $_GET['search'];
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php') == false) {
     $URL .= '&return=error0';
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
             $officialName = trim($_POST['officialName']);
             $nameInCharacters = $_POST['nameInCharacters'];
             $gender = $_POST['gender'];
-            $username = isset($_POST['username'])? $_POST['username'] : $values['username'];
+            $username = isset($_POST['username']) ? $_POST['username'] : $values['username'];
             $status = $_POST['status'];
             $canLogin = $_POST['canLogin'];
             $passwordForceReset = $_POST['passwordForceReset'];
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
                 $resultRoles = $connection2->prepare($sqlRoles);
                 $resultRoles->execute($dataRoles);
             } catch (PDOException $e) {
-                echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
             }
 
             $pupilsightRoleIDAll = array();
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
                 $pupilsightRoleIDAll[] = $pupilsightRoleIDPrimary;
             }
 
-            $pupilsightRoleIDAll = (is_array($pupilsightRoleIDAll))? implode(',', array_unique($pupilsightRoleIDAll)) : $row['pupilsightRoleIDAll'];
+            $pupilsightRoleIDAll = (is_array($pupilsightRoleIDAll)) ? implode(',', array_unique($pupilsightRoleIDAll)) : $row['pupilsightRoleIDAll'];
 
             $dob = $_POST['dob'];
             if ($dob == '') {
@@ -319,7 +319,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
                 $privacyOptions = $_POST['privacyOptions'];
                 foreach ($privacyOptions as $privacyOption) {
                     if ($privacyOption != '') {
-                        $privacy .= $privacyOption.',';
+                        $privacy .= $privacyOption . ',';
                     }
                 }
             }
@@ -336,7 +336,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
                 $studentAgreements = $_POST['studentAgreements'];
                 foreach ($studentAgreements as $studentAgreement) {
                     if ($studentAgreement != '') {
-                        $agreements .= $studentAgreement.',';
+                        $agreements .= $studentAgreement . ',';
                     }
                 }
             }
@@ -352,7 +352,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
             }
 
             //Validate Inputs
-           // if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $username == '' or $status == '' or $pupilsightRoleIDPrimary == '') 
+            // if ($surname == '' or $firstName == '' or $preferredName == '' or $officialName == '' or $gender == '' or $username == '' or $status == '' or $pupilsightRoleIDPrimary == '') 
             if ($officialName == ''  or $username == '' or $status == '' or $pupilsightRoleIDPrimary == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
@@ -378,24 +378,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
                     header("Location: {$URL}");
                 } else {
                     $imageFail = false;
-                    if (!empty($_FILES['file1']['tmp_name']) or !empty($_FILES['birthCertificateScan']['tmp_name']) or !empty($_FILES['nationalIDCardScan']['tmp_name']) or !empty($_FILES['citizenship1PassportScan']['tmp_name']))
-                    {
+                    if (!empty($_FILES['file1']['tmp_name']) or !empty($_FILES['birthCertificateScan']['tmp_name']) or !empty($_FILES['nationalIDCardScan']['tmp_name']) or !empty($_FILES['citizenship1PassportScan']['tmp_name'])) {
                         $path = $_SESSION[$guid]['absolutePath'];
                         $fileUploader = new Pupilsight\FileUploader($pdo, $pupilsight->session);
 
                         //Move 240 attached file, if there is one
                         if (!empty($_FILES['file1']['tmp_name'])) {
-                            $file = (isset($_FILES['file1']))? $_FILES['file1'] : null;
+                            $file = (isset($_FILES['file1'])) ? $_FILES['file1'] : null;
 
                             // Upload the file, return the /uploads relative path
                             $fileUploader->setFileSuffixType(Pupilsight\FileUploader::FILE_SUFFIX_INCREMENTAL);
-                            $attachment1 = $fileUploader->uploadFromPost($file, $username.'_240');
+                            $attachment1 = $fileUploader->uploadFromPost($file, $username . '_240');
 
                             if (empty($attachment1)) {
                                 $imageFail = true;
                             } else {
                                 //Check image sizes
-                                $size1 = getimagesize($path.'/'.$attachment1);
+                                $size1 = getimagesize($path . '/' . $attachment1);
                                 $width1 = $size1[0];
                                 $height1 = $size1[1];
                                 $aspect1 = $height1 / $width1;
@@ -408,18 +407,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 
                         //Move birth certificate scan if there is one
                         if (!empty($_FILES['birthCertificateScan']['tmp_name'])) {
-                            $file = (isset($_FILES['birthCertificateScan']))? $_FILES['birthCertificateScan'] : null;
+                            $file = (isset($_FILES['birthCertificateScan'])) ? $_FILES['birthCertificateScan'] : null;
 
                             // Upload the file, return the /uploads relative path
                             $fileUploader->setFileSuffixType(Pupilsight\FileUploader::FILE_SUFFIX_ALPHANUMERIC);
-                            $birthCertificateScan = $fileUploader->uploadFromPost($file, $username.'_birthCertificate');
+                            $birthCertificateScan = $fileUploader->uploadFromPost($file, $username . '_birthCertificate');
 
                             if (empty($birthCertificateScan)) {
                                 $imageFail = true;
                             } else {
                                 if (stripos($file['tmp_name'], 'pdf') === false) {
                                     //Check image sizes
-                                    $size2 = getimagesize($path.'/'.$birthCertificateScan);
+                                    $size2 = getimagesize($path . '/' . $birthCertificateScan);
                                     $width2 = $size2[0];
                                     $height2 = $size2[1];
                                     if ($width2 > 1440 or $height2 > 900) {
@@ -432,18 +431,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 
                         //Move ID Card scan file, if there is one
                         if (!empty($_FILES['nationalIDCardScan']['tmp_name'])) {
-                            $file = (isset($_FILES['nationalIDCardScan']))? $_FILES['nationalIDCardScan'] : null;
+                            $file = (isset($_FILES['nationalIDCardScan'])) ? $_FILES['nationalIDCardScan'] : null;
 
                             // Upload the file, return the /uploads relative path
                             $fileUploader->setFileSuffixType(Pupilsight\FileUploader::FILE_SUFFIX_ALPHANUMERIC);
-                            $nationalIDCardScan = $fileUploader->uploadFromPost($file, $username.'_idscan');
+                            $nationalIDCardScan = $fileUploader->uploadFromPost($file, $username . '_idscan');
 
                             if (empty($nationalIDCardScan)) {
                                 $imageFail = true;
                             } else {
                                 if (stripos($file['tmp_name'], 'pdf') === false) {
                                     //Check image sizes
-                                    $size3 = getimagesize($path.'/'.$nationalIDCardScan);
+                                    $size3 = getimagesize($path . '/' . $nationalIDCardScan);
                                     $width3 = $size3[0];
                                     $height3 = $size3[1];
                                     if ($width3 > 1440 or $height3 > 900) {
@@ -456,18 +455,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 
                         //Move passport scan file, if there is one
                         if (!empty($_FILES['citizenship1PassportScan']['tmp_name'])) {
-                            $file = (isset($_FILES['citizenship1PassportScan']))? $_FILES['citizenship1PassportScan'] : null;
+                            $file = (isset($_FILES['citizenship1PassportScan'])) ? $_FILES['citizenship1PassportScan'] : null;
 
                             // Upload the file, return the /uploads relative path
                             $fileUploader->setFileSuffixType(Pupilsight\FileUploader::FILE_SUFFIX_ALPHANUMERIC);
-                            $citizenship1PassportScan = $fileUploader->uploadFromPost($file, $username.'_passportscan');
+                            $citizenship1PassportScan = $fileUploader->uploadFromPost($file, $username . '_passportscan');
 
                             if (empty($citizenship1PassportScan)) {
                                 $imageFail = true;
                             } else {
                                 if (stripos($file['tmp_name'], 'pdf') === false) {
                                     //Check image sizes
-                                    $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
+                                    $size4 = getimagesize($path . '/' . $citizenship1PassportScan);
                                     $width4 = $size4[0];
                                     $height4 = $size4[1];
                                     if ($width4 > 1440 or $height4 > 900) {
@@ -486,17 +485,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
                     $fields = array();
                     if ($resultFields->rowCount() > 0) {
                         while ($rowFields = $resultFields->fetch()) {
-                            if (isset($_POST['custom'.$rowFields['pupilsightPersonFieldID']])) {
+                            if (isset($_POST['custom' . $rowFields['pupilsightPersonFieldID']])) {
                                 if ($rowFields['type'] == 'date') {
-                                    $fields[$rowFields['pupilsightPersonFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['pupilsightPersonFieldID']]);
+                                    $fields[$rowFields['pupilsightPersonFieldID']] = dateConvert($guid, $_POST['custom' . $rowFields['pupilsightPersonFieldID']]);
                                 } else {
-                                    $fields[$rowFields['pupilsightPersonFieldID']] = $_POST['custom'.$rowFields['pupilsightPersonFieldID']];
+                                    $fields[$rowFields['pupilsightPersonFieldID']] = $_POST['custom' . $rowFields['pupilsightPersonFieldID']];
                                 }
                             }
                             if ($rowFields['required'] == 'Y') {
-                                if (isset($_POST['custom'.$rowFields['pupilsightPersonFieldID']]) == false) {
+                                if (isset($_POST['custom' . $rowFields['pupilsightPersonFieldID']]) == false) {
                                     $customRequireFail = true;
-                                } elseif ($_POST['custom'.$rowFields['pupilsightPersonFieldID']] == '') {
+                                } elseif ($_POST['custom' . $rowFields['pupilsightPersonFieldID']] == '') {
                                     $customRequireFail = true;
                                 }
                             }
@@ -547,10 +546,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
                                     $studentName = Format::name('', $preferredName, $surname, 'Student', false);
                                     $actionLink = "/index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID=$pupilsightPersonID&search=";
 
-                                    $privacyText = __('Privacy').' (<i>'.__('New Value').'</i>): ';
+                                    $privacyText = __('Privacy') . ' (<i>' . __('New Value') . '</i>): ';
                                     $privacyText .= !empty($privacy) ? $privacy : __('None');
 
-                                    $notificationText = sprintf(__('%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName).'<br/><br/>';
+                                    $notificationText = sprintf(__('%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName) . '<br/><br/>';
                                     $notificationText .= $privacyText;
 
                                     $event->setNotificationText($notificationText);
@@ -564,7 +563,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 
                                     // Add direct notifications to roll group tutors
                                     if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                                        $notificationText = sprintf(__('Your tutee, %1$s, has had their privacy settings altered.'), $studentName).'<br/><br/>';
+                                        $notificationText = sprintf(__('Your tutee, %1$s, has had their privacy settings altered.'), $studentName) . '<br/><br/>';
                                         $notificationText .= $privacyText;
 
                                         if ($rowDetail['pupilsightPersonIDTutor'] != null and $rowDetail['pupilsightPersonIDTutor'] != $_SESSION[$guid]['pupilsightPersonID']) {
@@ -583,11 +582,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
                                 }
 
                                 //Set log
-                                $pupilsightModuleID=getModuleIDFromName($connection2, 'User Admin') ;
-                                $privacyValues=array() ;
-                                $privacyValues['oldValue'] = $privacy_old ;
-                                $privacyValues['newValue'] = $privacy ;
-                                setLog($connection2, $_SESSION[$guid]["pupilsightSchoolYearID"], $pupilsightModuleID, $_SESSION[$guid]["pupilsightPersonID"], 'Privacy - Value Changed', $privacyValues, $_SERVER['REMOTE_ADDR']) ;
+                                $pupilsightModuleID = getModuleIDFromName($connection2, 'User Admin');
+                                $privacyValues = array();
+                                $privacyValues['oldValue'] = $privacy_old;
+                                $privacyValues['newValue'] = $privacy;
+                                setLog($connection2, $_SESSION[$guid]["pupilsightSchoolYearID"], $pupilsightModuleID, $_SESSION[$guid]["pupilsightPersonID"], 'Privacy - Value Changed', $privacyValues, $_SERVER['REMOTE_ADDR']);
                             }
                         }
 
@@ -599,9 +598,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
                         }
                         if ($matchAddressCount > 0) {
                             for ($i = 0; $i < $matchAddressCount; ++$i) {
-                                if (!empty($_POST[$i.'-matchAddress'])) {
+                                if (!empty($_POST[$i . '-matchAddress'])) {
                                     try {
-                                        $dataAddress = array('address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'pupilsightPersonID' => $_POST[$i.'-matchAddress']);
+                                        $dataAddress = array('address1' => $address1, 'address1District' => $address1District, 'address1Country' => $address1Country, 'pupilsightPersonID' => $_POST[$i . '-matchAddress']);
                                         $sqlAddress = 'UPDATE pupilsightPerson SET address1=:address1, address1District=:address1District, address1Country=:address1Country WHERE pupilsightPersonID=:pupilsightPersonID';
                                         $resultAddress = $connection2->prepare($sqlAddress);
                                         $resultAddress->execute($dataAddress);

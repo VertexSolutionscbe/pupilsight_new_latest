@@ -3312,40 +3312,69 @@
 
     });
 
-    $(document).on('click', '#sendEmailSms_stud', function () {
+    $(document).on('click', '#sendEmailSms_stud', function (e) {
+        e.preventDefault();
+        $("#preloader").show();
+        window.setTimeout(function () {
+            var formData = new FormData(document.getElementById("sendEmailSms_Student"));
 
-        var emailquote = $("#emailQuote_stud").val();
-        var smsquote = $("#smsQuote_stud").val();
-        var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function () {
-            favorite.push($(this).val());
-        });
-        var stuid = favorite.join(", ");
+            var emailquote = $("#emailQuote_stud").val();
+            var subjectquote = $("#emailSubjectQuote_stud").val();
 
-        if (stuid) {
-            if (emailquote != '' || smsquote != '') {
-                $("#preloader").show();
-                $.ajax({
-                    url: 'modules/Students/send_stud_email_msg.php',
-                    type: 'post',
-                    data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
-                    async: true,
-                    success: function (response) {
-                        alert('Your Message Sent Successfully! click Ok to continue ');
-                        location.reload();
+            var smsquote = $("#smsQuote_stud").val();
+            var favorite = [];
+            $.each($("input[name='student_id[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var stuid = favorite.join(", ");
+
+            var types = [];
+            $.each($(".chkType:checked"), function () {
+                types.push($(this).attr('data-type'));
+            });
+            var type = types.join(",");
+
+            if (stuid) {
+                if (type != '') {
+                    if (emailquote != '' || smsquote != '') {
+
+                        formData.append('stuid', stuid);
+                        formData.append('emailquote', emailquote);
+                        formData.append('smsquote', smsquote);
+                        formData.append('type', type);
+                        formData.append('subjectquote', subjectquote);
+                        $.ajax({
+                            url: 'modules/Students/send_stud_email_msg.php',
+                            type: 'post',
+                            //data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote, type: type, subjectquote: subjectquote },
+                            data: formData,
+                            contentType: false,
+                            cache: false,
+                            processData: false,
+                            async: false,
+                            success: function (response) {
+                                $("#preloader").hide();
+                                alert('Your Message Sent Successfully! click Ok to continue ');
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        $("#preloader").hide();
+                        alert('You Have to Enter Message.');
                     }
-                });
+                } else {
+                    $("#preloader").hide();
+                    alert('You Have to Select Recipient.');
+                }
             } else {
-                alert('You Have to Enter Quote.');
-            }
-        } else {
-            alert('You Have to Select Applicants.');
+                $("#preloader").hide();
+                alert('You Have to Select Applicants.');
 
-        }
+            }
+        }, 100);
 
 
     });
-
 
 
     $(document).on('click', '.sendButton_staff', function () {
@@ -6943,11 +6972,16 @@ function CustomField() {
                 elementVal = pcdt.dt[obj.field_name];
                 if (!elementVal) {
                     elementVal = "&nbsp;";
+                } else if (obj.field_type == "file") {
+                    elementVal = "<a href='" + pcdt.dt[obj.field_name] + "' download>Download</a>";
+                } else if (obj.field_type == "image") {
+                    elementVal = "<a href='" + pcdt.dt[obj.field_name] + "' download title='download image'><img src='" + pcdt.dt[obj.field_name] + "' class='img-thumbnail'/></a>";
                 }
             }
         } catch (ex) {
             console.log(ex);
         }
+
 
         var validElement = false;
         var element = "content";
@@ -6959,9 +6993,12 @@ function CustomField() {
         }
 
         if (validElement) {
+
+            //console.log(obj.field_name, " : ", elementVal);
+
             var colCount = 0;
             if (document.getElementById(element).rows.length > 0) {
-                colCount = document.getElementById(element).rows[0].cells.length;
+                colCount = (document.getElementById(element).rows[0].cells.length) - 1;
             }
             _this.activeElement = element;
             //console.log(colCount);
@@ -6973,16 +7010,17 @@ function CustomField() {
             str += `<td id="` + fieldName + `" style="width: 34%; vertical-align: top">
                 <span class="form-label">` + fieldTitle + `</span>
                 <br>` + elementVal + `</td>`;
+
             _this.colCurrent++;
+            _this.colActiveStr += str;
             if (_this.colCurrent > colCount) {
                 str += "</tr>";
                 _this.isRowActive = false;
                 $("#" + _this.activeElement).append(_this.colActiveStr);
                 _this.colActiveStr = "";
                 str = "";
+                _this.colCurrent = 0;
             }
-
-            _this.colActiveStr += str;
 
         } else {
             var str = `<table class="smallIntBorder" cellspacing="0" style="width: 100%"><tr>
@@ -6999,7 +7037,7 @@ function CustomField() {
         if (obj.field_type) {
             //'varchar','text','date','url','select','checkboxes','radioboxes'
             console.log("obj.field_type: ", obj.field_type);
-            if (obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file") {
+            if (obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file" || obj.field_type == "image") {
                 _this.createTextField(obj);
             } else if (obj.field_type == "text") {
                 _this.createTextArea(obj);
@@ -7035,13 +7073,18 @@ function CustomField() {
         if (obj.field_description) {
             description = obj.field_description;
         }
+
         var file_type = "text";
+        var acceptType = "";
         if (obj.field_type == "email") {
             file_type = "email";
         } else if (obj.field_type == "date") {
             file_type = "date";
         } else if (obj.field_type == "file") {
             file_type = "file";
+        } else if (obj.field_type == "image") {
+            file_type = "file";
+            acceptType = " accept='image/x-png,image/jpeg,image/jpg' ";
         }
 
         mobile = "";
@@ -7049,22 +7092,34 @@ function CustomField() {
             mobile = " maxlength=10; minlength=10; pattern='[6789][0-9]{9}'";
         }
 
+        var fileDownloadStr = "";
+        if (file_type == "file" && (tfVal != "")) {
+            fileDownloadStr = '<div class="col-sm-auto"><a href="' + tfVal + '" class="btn btn-secondary" download><span class="mdi mdi-download"></span></a></div>';
+            tfVal = "";
+            required = "";
+            requiredStr = "";
+        }
+
+
+
         //console.log("file_type: ", file_type);
         var elementName = _this.createName(obj);
-        var str = `<div class="row mb-1 ">                            
-        <div class="col-sm  ">
+        var str = `<div class="row mb-1">                            
+        <div class="col-sm">
         <div>
             <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + ` 
             <span class="text-xxs text-gray italic font-normal mt-1 sm:mt-0">` + description + `</span>
             </label>
         </div>
-        </div>                                                          
+        </div>
+        `+ fileDownloadStr + `
         <div class="col-sm  standardWidth">
         <div>
             <div class="flex-1 relative">
-            <input type="`+ file_type + `" id='` + obj.field_name + `' ` + elementName + `' class="w-full form-control" value = "` + tfVal + `" ` + required + ` ` + mobile + ` ></div >
-        </div >
-        </div ></div > `;
+            <input type="`+ file_type + `" id="` + obj.field_name + `" ` + elementName + ` class="w-full form-control" value = "` + tfVal + `" ` + required + ` ` + mobile + `  ` + acceptType + `>
+            </div>
+        </div>
+        </div></div> `;
 
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);
@@ -7093,7 +7148,7 @@ function CustomField() {
         }
 
         var elementName = _this.createName(obj);
-        var str = `<div class="row mb-1" >            
+        var str = `< div class="row mb-1" >            
             <div class="col-sm">
                 <div>
                     <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `
@@ -7181,25 +7236,25 @@ function CustomField() {
         }
 
         var elementName = _this.createName(obj);
-        var str = `<div id ='' class="row mb-1">                       
+        var str = `<div class="row mb-1">                       
             <div class="col-sm">
                 <div>
-                    <label for='` + obj.field_name + `' class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `</label>
+                    <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `</label>
                 </div>
             </div>                                          
             <div class="col-sm  standardWidth">
                 <div>
                     <div class="flex-1 relative">
-                    <select id='`+ obj.field_name + `' ` + elementName + `' class="w-full">`
+                    <select id="`+ obj.field_name + `" ` + elementName + ` class="w-full">`
         while (i < len) {
-            str += `<option value='` + opt[i] + `'>` + opt[i] + `</option>`;
+            str += `<option value="` + opt[i] + `">` + opt[i] + `</option>`;
             i++;
         }
         `</select>
                     </div>
                 </div>
             </div>
-        </div > `;
+        </div>`;
 
 
         /*
@@ -8504,4 +8559,39 @@ $(document).on('click', '#addSeats', function () {
     // var design = ' <div id="seatdiv" class=" row mb-1 deltr' + ncid + '"><div class="col-sm  newdes " ><div class=""><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="seatname" name="seatname[' + ncid + ']" class="w-full txtfield"></div></div></div></div><div class="col-sm  newdes" colspan="2"><div class=""><div class="dte mb-1"></div><div class=" txtfield kountseat mb-1"><div class="flex-1 relative" style="display:inline-flex;"><input type="number" id="seatallocation" name="seatallocation[' + ncid + ']" class="w-full txtfield kountseat szewdt"><i style="cursor:pointer;padding: 8px 10px;" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div></div></div></div>';
     // $("#lastseatdiv").before(design);
 
+});
+
+
+$(document).on('change', '#progID', function () {
+    var aid = $("#pupilsightSchoolYearID").val();
+    var id = $(this).val();
+    var type = 'getSchoolClass';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, aid: aid },
+        async: true,
+        success: function (response) {
+
+            $("#clsID").html();
+            $("#clsID").html(response);
+        }
+    });
+});
+
+$(document).on('change', '#clsID', function () {
+    var aid = $("#pupilsightSchoolYearID").val();
+    var id = $(this).val();
+    var pid = $('#progID').val();
+    var type = 'getSchoolSection';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, pid: pid, aid: aid },
+        async: true,
+        success: function (response) {
+            $("#secID").html();
+            $("#secID").html(response);
+        }
+    });
 });

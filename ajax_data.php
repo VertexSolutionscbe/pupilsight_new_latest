@@ -3215,3 +3215,52 @@ if ($type == 'removeStudentEnrollment') {
         $result->execute($data);
     }
 }
+
+
+if ($type == 'getSchoolClass') {
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    $pid = $val;
+    $pupilsightSchoolYearID = $_POST['aid'];
+    if($roleId == '2'){
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "'.$uid.'" AND a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+    } else {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+    }
+    
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+    // echo '<pre>';
+    // print_r($classes);
+    // echo '</pre>';
+    $data = '<option value="">Select Class</option>';
+    if (!empty($classes)) {
+        foreach ($classes as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+if ($type == 'getSchoolSection') {
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    $pupilsightSchoolYearID = $_POST['aid'];
+
+    $cid = $val;
+    $pid = $_POST['pid'];
+    if($roleId == '2'){
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightPersonID = "'.$uid.'" AND a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND b.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" GROUP BY a.pupilsightRollGroupID';
+    } else {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND b.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" GROUP BY a.pupilsightRollGroupID';
+    }
+    $result = $connection2->query($sql);
+    $sections = $result->fetchAll();
+    $data = '<option value="">Select Section</option>';
+    if (!empty($sections)) {
+        foreach ($sections as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightRollGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
