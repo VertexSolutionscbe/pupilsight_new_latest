@@ -56,6 +56,10 @@ public/receipts/*
 uploads/cache/
 public/receipts/*
 public/receipts/
+public/custom_files/*
+public/custom_images/*
+public/custom_files/
+public/custom_images/
 
 # Tests Folder
 tests/log/*
