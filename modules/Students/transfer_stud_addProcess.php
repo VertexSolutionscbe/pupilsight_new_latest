@@ -26,6 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/transfer_student_
     $pupilsightProgramID = $_POST['pupilsightProgramID'];
     $remarks = $_POST['remarks'];
     $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
+    $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
     $cdt = date('Y-m-d H:i:s');
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];          
 
@@ -47,9 +48,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/transfer_student_
             
             $prevdata=  $result->fetch();
             
-            $data1 = array('pupilsightPersonID' => $stu_id, 'pupilsightSchoolYearID' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID);
+            $data1 = array('pupilsightPersonID' => $stu_id, 'pupilsightSchoolYearID' => $academic_year, 'pupilsightProgramID' => $pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID);
             
-            $sql1 = 'UPDATE pupilsightStudentEnrolment SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID WHERE pupilsightPersonID=:pupilsightPersonID';
+            $sql1 = 'UPDATE pupilsightStudentEnrolment SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID WHERE pupilsightPersonID=:pupilsightPersonID';
             $result1 = $connection2->prepare($sql1);
             $result1->execute($data1);
 

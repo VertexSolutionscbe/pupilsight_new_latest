@@ -60,6 +60,7 @@ public/custom_files/*
 public/custom_images/*
 public/custom_files/
 public/custom_images/
+public/attachments/*
 
 # Tests Folder
 tests/log/*

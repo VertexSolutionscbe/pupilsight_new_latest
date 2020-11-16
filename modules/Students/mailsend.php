@@ -9,7 +9,7 @@ use Pupilsight\Contracts\Comms\Mailer;
 $input = json_decode($data, true);
 
 $to = $_GET['to'];
-$subject = $_GET['subject'];
+$subject = $_GET['sub'];
 $body = $_GET['body'];
 //die();
 
@@ -20,7 +20,7 @@ $mail->AddAddress($to);
 $mail->CharSet = 'UTF-8';
 $mail->Encoding = 'base64';
 $mail->IsHTML(true);
-$mail->Subject = 'Student Notification';
+$mail->Subject = $subject;
 $mail->Body = $body;
 $mail->Send();
 

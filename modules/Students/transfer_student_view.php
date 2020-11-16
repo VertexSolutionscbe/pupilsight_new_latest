@@ -88,7 +88,7 @@ $classes = $classes1 + $classes2;
 
   
      
-  $row = $form->addRow();
+    $row = $form->addRow();
 
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
@@ -96,19 +96,24 @@ $classes = $classes1 + $classes2;
             
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->fromArray($program)->required()->placeholder();
+            $col->addSelect('pupilsightProgramID')->setID('progID')->fromArray($program)->required()->placeholder();
         
             $col = $row->addColumn()->setClass('hiddencol nobrdbtm');
             $col->addTextField('');    
            
     
            
- $row = $form->addRow();
+    $row = $form->addRow();
 
         $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('studentByClass', __('Class'));
-            $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($firstClassId)->placeholder();
-           
+            $col->addLabel('pupilsightYearGroupID', __('Class'));
+            $col->addSelect('pupilsightYearGroupID')->setID('clsID')->placeholder('Select Class');
+
+        $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('pupilsightRollGroupID', __('Section'));
+            $col->addSelect('pupilsightRollGroupID')->setID('secID')->placeholder('Select Section');
+    
+    $row = $form->addRow();           
         $col = $row->addColumn()->setClass('newdes');           
             $col->addLabel('remarks', __('Remarks'));
             $col->addTextArea('remarks')->setRows(2);    

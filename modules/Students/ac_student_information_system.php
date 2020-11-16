@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
 
     $col = $row->addColumn()->setClass('newdes');
     
-
+    $col->addLabel('', __(''));
     $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');
     echo $searchform->getOutput();
 

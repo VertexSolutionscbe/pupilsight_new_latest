@@ -129,6 +129,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
                     $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
                 }
+
+                if (empty($pupilsightProgramID)) {
+                    unset($_SESSION['student_search']);
+                }
             } else {
                 $classes = array('' => 'Select Class');
                 $sections = array('' => 'Select Section');
@@ -142,6 +146,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             if (!empty($pupilsightProgramID)) {
                 $_SESSION['student_search'] = $input;
             }
+            echo '<pre>';
+            print_r($_SESSION['student_search']);
+            echo '</pre>';
 
             $criteria = $studentGateway->newQueryCriteria()
                 ->searchBy($searchColumns, $search)
@@ -316,6 +323,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                       <li><a class="dropdown-item" href="index.php?q=/modules/User Admin/user_manage_password.php&pupilsightPersonID=' . $person['pupilsightPersonID'] . '">Change Password</a></li>
                       <li><a class="dropdown-item" href="#" id="transfer_student" data-id=' . $person['pupilsightPersonID'] . ' data-type="student">Transfer</a></li>
                       <li><a class="dropdown-item" href="#" id="register_deregister" data-id=' . $person['pupilsightPersonID'] . ' data-type="student">Register / De-register</a></li>
+                      <li><a class="dropdown-item thickbox" href="fullscreen.php?q=/modules/Students/history.php&pupilsightPersonID=' . $person['pupilsightPersonID'] . '&width=800">History</a></li>
                     </ul>
                   </div>';
                 });
@@ -411,9 +419,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         }
     });
 
-    $(document).on('click', '#removeStudentEnrolment', function () {
+    $(document).on('click', '#removeStudentEnrolment', function() {
         var favorite = [];
-        $.each($(".enrollstuid:checked"), function () {
+        $.each($(".enrollstuid:checked"), function() {
             favorite.push($(this).val());
         });
 
@@ -431,9 +439,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     $.ajax({
                         url: 'ajax_data.php',
                         type: 'post',
-                        data: { val: val, type: type },
+                        data: {
+                            val: val,
+                            type: type
+                        },
                         async: true,
-                        success: function (response) {
+                        success: function(response) {
                             alert('Student Enrollment Removed Successfuliy!.');
                             location.reload();
                         }
