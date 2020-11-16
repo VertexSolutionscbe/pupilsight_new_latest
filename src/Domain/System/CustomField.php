@@ -342,6 +342,23 @@ class CustomField extends QueryableGateway
         return $result;
     }
 
+    public function isActiveField($customlist, $fieldName)
+    {
+        $flag = TRUE;
+        $len = count($customlist);
+        $i = 0;
+        while ($i < $len) {
+            if ($customlist[$i]["field_name"] == $fieldName) {
+                if ($customlist[$i]["active"] == "N") {
+                    $flag = FALSE;
+                }
+                break;
+            }
+            $i++;
+        }
+        return $flag;
+    }
+
     public function getInputTag($tag)
     {
         if ($tag == "varchar") {

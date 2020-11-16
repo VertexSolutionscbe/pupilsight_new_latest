@@ -7148,7 +7148,7 @@ function CustomField() {
         }
 
         var elementName = _this.createName(obj);
-        var str = `< div class="row mb-1" >            
+        var str = `<div class="row mb-1">            
             <div class="col-sm">
                 <div>
                     <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `
@@ -7158,10 +7158,10 @@ function CustomField() {
             </div>                                          
             <div class="col-sm  standardWidth">
                 <div>
-                    <textarea rows="4" id='`+ obj.field_name + `' ` + elementName + `' class="w-full" ` + required + `>` + tfVal + `</textarea>
+                    <textarea rows="4" id="`+ obj.field_name + `" ` + elementName + ` class="w-full" ` + required + `>` + tfVal + `</textarea>
                 </div>
-            </div >
-        </div > `;
+            </div>
+        </div> `;
 
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);
