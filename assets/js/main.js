@@ -6943,11 +6943,16 @@ function CustomField() {
                 elementVal = pcdt.dt[obj.field_name];
                 if (!elementVal) {
                     elementVal = "&nbsp;";
+                } else if (obj.field_type == "file") {
+                    elementVal = "<a href='" + pcdt.dt[obj.field_name] + "' download>Download</a>";
+                } else if (obj.field_type == "image") {
+                    elementVal = "<a href='" + pcdt.dt[obj.field_name] + "' download title='download image'><img src='" + pcdt.dt[obj.field_name] + "' class='img-thumbnail'/></a>";
                 }
             }
         } catch (ex) {
             console.log(ex);
         }
+
 
         var validElement = false;
         var element = "content";
@@ -6959,9 +6964,12 @@ function CustomField() {
         }
 
         if (validElement) {
+
+            //console.log(obj.field_name, " : ", elementVal);
+
             var colCount = 0;
             if (document.getElementById(element).rows.length > 0) {
-                colCount = document.getElementById(element).rows[0].cells.length;
+                colCount = (document.getElementById(element).rows[0].cells.length) - 1;
             }
             _this.activeElement = element;
             //console.log(colCount);
@@ -6973,16 +6981,17 @@ function CustomField() {
             str += `<td id="` + fieldName + `" style="width: 34%; vertical-align: top">
                 <span class="form-label">` + fieldTitle + `</span>
                 <br>` + elementVal + `</td>`;
+
             _this.colCurrent++;
+            _this.colActiveStr += str;
             if (_this.colCurrent > colCount) {
                 str += "</tr>";
                 _this.isRowActive = false;
                 $("#" + _this.activeElement).append(_this.colActiveStr);
                 _this.colActiveStr = "";
                 str = "";
+                _this.colCurrent = 0;
             }
-
-            _this.colActiveStr += str;
 
         } else {
             var str = `<table class="smallIntBorder" cellspacing="0" style="width: 100%"><tr>
@@ -6999,7 +7008,7 @@ function CustomField() {
         if (obj.field_type) {
             //'varchar','text','date','url','select','checkboxes','radioboxes'
             console.log("obj.field_type: ", obj.field_type);
-            if (obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file") {
+            if (obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file" || obj.field_type == "image") {
                 _this.createTextField(obj);
             } else if (obj.field_type == "text") {
                 _this.createTextArea(obj);
@@ -7035,13 +7044,18 @@ function CustomField() {
         if (obj.field_description) {
             description = obj.field_description;
         }
+
         var file_type = "text";
+        var acceptType = "";
         if (obj.field_type == "email") {
             file_type = "email";
         } else if (obj.field_type == "date") {
             file_type = "date";
         } else if (obj.field_type == "file") {
             file_type = "file";
+        } else if (obj.field_type == "image") {
+            file_type = "file";
+            acceptType = " accept='image/x-png,image/jpeg,image/jpg' ";
         }
 
         mobile = "";
@@ -7049,22 +7063,34 @@ function CustomField() {
             mobile = " maxlength=10; minlength=10; pattern='[6789][0-9]{9}'";
         }
 
+        var fileDownloadStr = "";
+        if (file_type == "file" && (tfVal != "")) {
+            fileDownloadStr = '<div class="col-sm-auto"><a href="' + tfVal + '" class="btn btn-secondary" download><span class="mdi mdi-download"></span></a></div>';
+            tfVal = "";
+            required = "";
+            requiredStr = "";
+        }
+
+
+
         //console.log("file_type: ", file_type);
         var elementName = _this.createName(obj);
-        var str = `<div class="row mb-1 ">                            
-        <div class="col-sm  ">
+        var str = `<div class="row mb-1">                            
+        <div class="col-sm">
         <div>
             <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + ` 
             <span class="text-xxs text-gray italic font-normal mt-1 sm:mt-0">` + description + `</span>
             </label>
         </div>
-        </div>                                                          
+        </div>
+        `+ fileDownloadStr + `
         <div class="col-sm  standardWidth">
         <div>
             <div class="flex-1 relative">
-            <input type="`+ file_type + `" id='` + obj.field_name + `' ` + elementName + `' class="w-full form-control" value = "` + tfVal + `" ` + required + ` ` + mobile + ` ></div >
-        </div >
-        </div ></div > `;
+            <input type="`+ file_type + `" id="` + obj.field_name + `" ` + elementName + ` class="w-full form-control" value = "` + tfVal + `" ` + required + ` ` + mobile + `  ` + acceptType + `>
+            </div>
+        </div>
+        </div></div> `;
 
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);
@@ -7093,7 +7119,7 @@ function CustomField() {
         }
 
         var elementName = _this.createName(obj);
-        var str = `<div class="row mb-1" >            
+        var str = `< div class="row mb-1" >            
             <div class="col-sm">
                 <div>
                     <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `
@@ -7181,25 +7207,25 @@ function CustomField() {
         }
 
         var elementName = _this.createName(obj);
-        var str = `<div id ='' class="row mb-1">                       
+        var str = `<div class="row mb-1">                       
             <div class="col-sm">
                 <div>
-                    <label for='` + obj.field_name + `' class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `</label>
+                    <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `</label>
                 </div>
             </div>                                          
             <div class="col-sm  standardWidth">
                 <div>
                     <div class="flex-1 relative">
-                    <select id='`+ obj.field_name + `' ` + elementName + `' class="w-full">`
+                    <select id="`+ obj.field_name + `" ` + elementName + ` class="w-full">`
         while (i < len) {
-            str += `<option value='` + opt[i] + `'>` + opt[i] + `</option>`;
+            str += `<option value="` + opt[i] + `">` + opt[i] + `</option>`;
             i++;
         }
         `</select>
                     </div>
                 </div>
             </div>
-        </div > `;
+        </div>`;
 
 
         /*

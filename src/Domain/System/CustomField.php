@@ -213,6 +213,64 @@ class CustomField extends QueryableGateway
                 $db = new DBQuery();
                 $db->query($sq);
             }
+
+            //manage file upload in custom field
+            $this->fileCustomField($colName, $colVal);
+        } catch (Exception $ex) {
+            echo 'CustomField->updateCustomField(): exception: ',  $ex->getMessage(), "\n";
+        }
+    }
+
+    //file custom field upload handle here
+    public function fileCustomField($colName, $colVal)
+    {
+        try {
+            $sq = "";
+            try {
+                if ($_FILES["custom"]) {
+                    foreach ($_FILES["custom"]["name"] as $table => $files) {
+                        //file
+                        foreach ($files["file"]  as $fieldName => $fileName) {
+
+                            if ($_FILES['custom']['tmp_name'][$table]["file"][$fieldName]) {
+                                $id = time() . mt_rand(10, 99);
+                                $file_name = $id . "_" . $_FILES['custom']['name'][$table]["file"][$fieldName];
+                                $file_tmp = $_FILES['custom']['tmp_name'][$table]["file"][$fieldName];
+                                $fileSavePath = $_SERVER["DOCUMENT_ROOT"] . "/public/custom_files/" . $file_name;
+                                move_uploaded_file($file_tmp, $fileSavePath);
+                                try {
+                                    $sq = "update " . $table . " set " . $fieldName . "='" . "/public/custom_files/" . $file_name . "' where " . $colName . "='" . $colVal . "'";
+                                    $db = new DBQuery();
+                                    $db->query($sq);
+                                } catch (Exception $ex) {
+                                    print_r($ex);
+                                }
+                            }
+                        }
+
+                        //image
+                        foreach ($files["image"]  as $fieldName => $fileName) {
+
+                            if ($_FILES['custom']['tmp_name'][$table]["image"][$fieldName]) {
+                                $id = time() . mt_rand(10, 99);
+                                $file_name = $id . "_" . $_FILES['custom']['name'][$table]["image"][$fieldName];
+                                $file_tmp = $_FILES['custom']['tmp_name'][$table]["image"][$fieldName];
+                                $fileSavePath = $_SERVER["DOCUMENT_ROOT"] . "/public/custom_images/" . $file_name;
+                                move_uploaded_file($file_tmp, $fileSavePath);
+                                try {
+                                    $sq = "update " . $table . " set " . $fieldName . "='" . "/public/custom_images/" . $file_name . "' where " . $colName . "='" . $colVal . "'";
+                                    $db = new DBQuery();
+                                    $db->query($sq);
+                                } catch (Exception $ex) {
+                                    print_r($ex);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception $ex) {
+                print_r($ex);
+            }
         } catch (Exception $ex) {
             echo 'CustomField->updateCustomField(): exception: ',  $ex->getMessage(), "\n";
         }
