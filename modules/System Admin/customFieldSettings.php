@@ -115,9 +115,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     $row = $form->addRow();
 
 
-    $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('sortableBtn', __(''));
-    $col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'tabSortPanel(true);\'>Sort Tile / Tab</button>');
+    //$col = $row->addColumn()->setClass('newdes');
+    //$col->addLabel('sortableBtn', __(''));
+    //$col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'tabSortPanel(true);\'>Sort Tile / Tab</button>');
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('addCustomField', __(''));
