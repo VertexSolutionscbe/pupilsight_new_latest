@@ -14,8 +14,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
 } else {
     //Proceed!
    
-//   echo "<pre>";
-//   print_r($_REQUEST);exit;
+//    echo "<pre>";
+//   print_r($_REQUEST);
     $stuId = $_POST['stuid'];
     $crtd =  date('Y-m-d H:i:s');
     $emailquote = $_POST['emailquote'];
@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
     $types = explode(',', $type);
     $crtd =  date('Y-m-d H:i:s');
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
-
+//print_r($_FILES["email_attach"]);
 
    
     if ($stuId == '') {
@@ -35,6 +35,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
 
         $studentId = explode(',', $stuId);
         //print_r($submissionId);die();
+
+        $attachmentStatus = "No";
+        $NewNameFile = '';
+        $errStatus = "No";
+        if (!empty($_FILES["email_attach"]["name"])) {
+            echo '1';
+            $fileData = pathinfo(basename($_FILES["email_attach"]["name"]));
+            $ex = explode(".", $_FILES["email_attach"]["name"]);
+            $extension = end($ex);
+            $NewNameFile = time() . '.' . $extension;
+            $sourcePath = $_FILES['email_attach']['tmp_name'];
+
+            //$uploaddir = '../../public/attactments_campaign/';
+            $uploaddir = $_SERVER['DOCUMENT_ROOT'] . "/public/attachments/";
+            $uploadfile = $uploaddir . $NewNameFile;
+
+            //echo "\nupload file path : ".$uploadfile."\n";
+            if (move_uploaded_file($sourcePath, $uploadfile)) {
+                $attachmentStatus = "Yes";
+            }
+        }
+       
         foreach($studentId as $st){
             if(!empty($types)){
                 foreach($types as $tp){
@@ -64,10 +86,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                         $url .="&to=".$to;
                         $url .="&sub=".rawurlencode($subject);
                         $url .="&body=".rawurlencode($body);
-                        $res = file_get_contents($url);
 
-                        $sq = "INSERT INTO user_email_sms_sent_details SET  pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
-                        $connection2->query($sq);
+                        if ($attachmentStatus == "Yes") {
+                            $from = $_SESSION[$guid]['organisationAdministratorEmail'];
+                            $fromName = $_SESSION[$guid]['organisationAdministratorName'];
+                            // sendEmailAttactment($to,$subject,$body,$NewNameFile,$from, $fromName);
+        
+        
+                            try {
+                                $mail = $container->get(Mailer::class);
+                                $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+        
+                                $mail->AddAddress($to);
+                                $mail->CharSet = 'UTF-8';
+                                $mail->Encoding = 'base64';
+                                $mail->AddAttachment($uploadfile);                        // Optional name
+                                $mail->isHTML(true);
+                                $mail->Subject = $subject;
+                                $mail->Body = $body;
+        
+                                $mail->Send();
+                                $sq = "INSERT INTO user_email_sms_sent_details SET  pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', uid=" . $cuid . " ";
+                                $connection2->query($sq);
+                            } catch (Exception $ex) {
+                                print_r($x);
+                            }
+                        } else {
+                            $res = file_get_contents($url);
+                            $sq = "INSERT INTO user_email_sms_sent_details SET  pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
+                            $connection2->query($sq);
+                        }
+                        
                     }    
         
                     if(!empty($msg) && !empty($number)){

@@ -3312,52 +3312,69 @@
 
     });
 
-    $(document).on('click', '#sendEmailSms_stud', function () {
+    $(document).on('click', '#sendEmailSms_stud', function (e) {
+        e.preventDefault();
+        $("#preloader").show();
+        window.setTimeout(function () {
+            var formData = new FormData(document.getElementById("sendEmailSms_Student"));
 
-        var emailquote = $("#emailQuote_stud").val();
-        var subjectquote = $("#emailSubjectQuote_stud").val();
+            var emailquote = $("#emailQuote_stud").val();
+            var subjectquote = $("#emailSubjectQuote_stud").val();
 
-        var smsquote = $("#smsQuote_stud").val();
-        var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function () {
-            favorite.push($(this).val());
-        });
-        var stuid = favorite.join(", ");
+            var smsquote = $("#smsQuote_stud").val();
+            var favorite = [];
+            $.each($("input[name='student_id[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var stuid = favorite.join(", ");
 
-        var types = [];
-        $.each($(".chkType:checked"), function () {
-            types.push($(this).attr('data-type'));
-        });
-        var type = types.join(",");
+            var types = [];
+            $.each($(".chkType:checked"), function () {
+                types.push($(this).attr('data-type'));
+            });
+            var type = types.join(",");
 
-        if (stuid) {
-            if (type != '') {
-                if (emailquote != '' || smsquote != '') {
-                    $("#preloader").show();
-                    $.ajax({
-                        url: 'modules/Students/send_stud_email_msg.php',
-                        type: 'post',
-                        data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote, type: type, subjectquote: subjectquote },
-                        async: true,
-                        success: function (response) {
-                            alert('Your Message Sent Successfully! click Ok to continue ');
-                            location.reload();
-                        }
-                    });
+            if (stuid) {
+                if (type != '') {
+                    if (emailquote != '' || smsquote != '') {
+
+                        formData.append('stuid', stuid);
+                        formData.append('emailquote', emailquote);
+                        formData.append('smsquote', smsquote);
+                        formData.append('type', type);
+                        formData.append('subjectquote', subjectquote);
+                        $.ajax({
+                            url: 'modules/Students/send_stud_email_msg.php',
+                            type: 'post',
+                            //data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote, type: type, subjectquote: subjectquote },
+                            data: formData,
+                            contentType: false,
+                            cache: false,
+                            processData: false,
+                            async: false,
+                            success: function (response) {
+                                $("#preloader").hide();
+                                alert('Your Message Sent Successfully! click Ok to continue ');
+                                location.reload();
+                            }
+                        });
+                    } else {
+                        $("#preloader").hide();
+                        alert('You Have to Enter Message.');
+                    }
                 } else {
-                    alert('You Have to Enter Message.');
+                    $("#preloader").hide();
+                    alert('You Have to Select Recipient.');
                 }
             } else {
-                alert('You Have to Select Recipient.');
-            }
-        } else {
-            alert('You Have to Select Applicants.');
+                $("#preloader").hide();
+                alert('You Have to Select Applicants.');
 
-        }
+            }
+        }, 100);
 
 
     });
-
 
 
     $(document).on('click', '.sendButton_staff', function () {
