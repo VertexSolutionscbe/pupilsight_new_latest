@@ -191,7 +191,7 @@ public function getstdData(QueryCriteria $criteria, $pupilsightProgramID, $pupil
             ->newQuery()
             ->from('pupilsightPerson')
             ->cols([
-                'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','assignstudent_tostaff.pupilsightStaffID AS Staffid'
+                'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','assignstudent_tostaff.pupilsightStaffID AS Staffid','stf.officialName as staff_name'
             ])
          
             ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
@@ -199,7 +199,8 @@ public function getstdData(QueryCriteria $criteria, $pupilsightProgramID, $pupil
             ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
             ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
             ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
-            ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
+            ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightPerson AS stf', 'assignstudent_tostaff.pupilsightStaffID=stf.pupilsightPersonID');
 
             if(!empty($pupilsightProgramID)){
                 $query->where('pupilsightProgram.pupilsightProgramID = "'.$pupilsightProgramID.'" ');
@@ -221,41 +222,52 @@ public function getstdData(QueryCriteria $criteria, $pupilsightProgramID, $pupil
             $query->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
                 ->groupBy(['pupilsightPerson.pupilsightPersonID'])
                 ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']) ;
-              //  echo $query;    
+              // echo $query;    
         }else{
 
             $query = $this
             ->newQuery()
             ->from('pupilsightPerson')
             ->cols([
-              'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name',"GROUP_CONCAT(DISTINCT assignstudent_tostaff.pupilsightStaffID SEPARATOR ', ') as staff_id",'assignstudent_tostaff.pupilsightStaffID AS Staffid'
+              'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name',"GROUP_CONCAT(DISTINCT assignstudent_tostaff.pupilsightStaffID SEPARATOR ', ') as staff_id",'assignstudent_tostaff.pupilsightStaffID AS Staffid','stf.officialName as staff_name'
             ])
             ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
+            ->leftJoin('pupilsightPerson AS stf', 'assignstudent_tostaff.pupilsightStaffID=stf.pupilsightPersonID')
             ->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
             //echo $query;
         }
+        //echo $query;
         $res = $this->runQuery($query, $criteria);
         $data = $res->data;
-        if(!empty($data)){
-            foreach($data as $k=>$d){
-                $staffid = $d['staff_id'];
-                if(!empty($staffid)){
-                    $query2 = $this
-                    ->newQuery()
-                    ->from('pupilsightPerson')
-                    ->cols([
-                        "GROUP_CONCAT(DISTINCT pupilsightPerson.officialName SEPARATOR ', ') as staff_name"
-                    ])
-                    ->where('pupilsightPersonID  IN ('.$staffid.') ');
-                    $newdata = $this->runQuery($query2, $criteria);
-                    $data[$k]['staff_name'] = $newdata->data[0]['staff_name'];
-                    
-                } 
-            }
-        }
+        // if(!empty($data)){
+        //     foreach($data as $k=>$d){
+        //         $staffid = $d['staff_id'];
+        //         if(!empty($staffid)){
+        //             $query2 = $this
+        //             ->newQuery()
+        //             ->from('pupilsightPerson')
+        //             ->cols([
+        //                 "GROUP_CONCAT(DISTINCT pupilsightPerson.officialName SEPARATOR ', ') as staff_name"
+        //             ])
+        //             ->where('pupilsightPersonID  IN ('.$staffid.') ');
+        //             echo $query2;
+        //             $newdata = $this->runQuery($query2, $criteria);
+        //             if (!empty($newdata->data[0]['staff_name'])) {
+        //                 $data[$k]['staff_name'] = $newdata->data[0]['staff_name'];
+        //             } else {
+        //                 $data[$k]['staff_name'] = '';
+        //             }
+        //         } else {
+        //             $data[$k]['staff_name'] = '';
+        //         } 
+        //     }
+        // }
         $res->data = $data;
+        // echo '<pre>';
+        // print_r($data);
+        // echo '</pre>';
         return $res;
     }
     public function getselectedStaff(QueryCriteria $criteria){

@@ -29,6 +29,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
 
         $pupilsightRollGroupID = $_GET['pupilsightRollGroupID'] ?? '';
         $pupilsightYearGroupID = $_GET['pupilsightYearGroupID'] ?? '';
+
+        $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
+        $resultp = $connection2->query($sqlp);
+        $rowdataprog = $resultp->fetchAll();
+
+        $program = array();
+        $program2 = array();
+        $program1 = array('' => 'Select Program');
+        foreach ($rowdataprog as $dt) {
+            $program2[$dt['pupilsightProgramID']] = $dt['name'];
+        }
+        $program = $program1 + $program2;
     
         $editLink = '';
         $editID = '';
@@ -39,6 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], $editLink, array('warning1' => __('Your request was successful, but some data was not properly saved.'), 'success1' => __('Your request was completed successfully. You can now add extra information below if you wish.')));
         }
+        echo '<input type="hidden" id="pupilsightSchoolYearID" value="'.$_SESSION[$guid]['pupilsightSchoolYearID'].'">';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_addProcess.php?pupilsightRollGroupID='.$pupilsightRollGroupID.'&pupilsightYearGroupID='.$pupilsightYearGroupID);
 
@@ -47,8 +60,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
         $row = $form->addRow();
+            $row->addLabel('pupilsightProgramID', __('Program'));
+            $row->addSelect('pupilsightProgramID')->fromArray($program)->placeholder('Select Program');
+    
+    
+        $row = $form->addRow();
+            $row->addLabel('pupilsightYearGroupID', __('Class'));
+            $row->addSelect('pupilsightYearGroupID')->placeholder('Select Class');
+    
+            
+        $row = $form->addRow();
+            $row->addLabel('pupilsightRollGroupID', __('Section'));
+            $row->addSelect('pupilsightRollGroupID')->placeholder('Select Section'); 
+
+        $row = $form->addRow();
             $row->addLabel('pupilsightPersonID', __('Patient'));
-            $row->addSelectStudent('pupilsightPersonID', $_SESSION[$guid]['pupilsightSchoolYearID'])->placeholder()->required();
+            $row->addSelect('pupilsightPersonID')->placeholder('Select Student')->required();
 
         $row = $form->addRow();
             $row->addLabel('name', __('First Aider'));
@@ -84,3 +111,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         echo $form->getOutput();
     }
 }
+?>
+
+<script>
+
+    $(document).ready(function(){
+        $("#pupilsightPersonID").select2();
+    });
+
+</script>

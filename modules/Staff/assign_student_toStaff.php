@@ -89,13 +89,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
         $searchform->setFactory(DatabaseFormFactory::create($pdo));
         $searchform->addHiddenValue('studentId', '0');
         $row = $searchform->addRow();
-        $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder();
+        
     
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
             $col->addSelect('pupilsightSchoolYearID')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);    
+
+        $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('pupilsightProgramID', __('Program'));
+            $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder();
             
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightYearGroupID', __('Class'));
@@ -115,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
     
         $col = $row->addColumn()->setClass('newdes');   
         
-        
+        $col->addLabel('', __(''));
         $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');  
         echo $searchform->getOutput();
     

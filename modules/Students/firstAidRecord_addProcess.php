@@ -17,6 +17,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
     }
 
     //Proceed!
+    $pupilsightProgramID = $_POST['pupilsightProgramID'];
+    $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
+    $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
     $pupilsightPersonID = $_POST['pupilsightPersonID'];
     $pupilsightPersonIDFirstAider = $_SESSION[$guid]['pupilsightPersonID'];
     $date = $_POST['date'];
@@ -31,8 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
     } else {
         //Write to database
         try {
-            $data = array('pupilsightPersonIDPatient' => $pupilsightPersonID, 'pupilsightPersonIDFirstAider' => $pupilsightPersonIDFirstAider, 'date' => dateConvert($guid, $date), 'timeIn' => $timeIn, 'description' => $description, 'actionTaken' => $actionTaken, 'followUp' => $followUp, 'pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID']);
-            $sql = 'INSERT INTO pupilsightFirstAid SET pupilsightPersonIDPatient=:pupilsightPersonIDPatient, pupilsightPersonIDFirstAider=:pupilsightPersonIDFirstAider, date=:date, timeIn=:timeIn, description=:description, actionTaken=:actionTaken, followUp=:followUp, pupilsightSchoolYearID=:pupilsightSchoolYearID';
+            $data = array('pupilsightPersonIDPatient' => $pupilsightPersonID, 'pupilsightPersonIDFirstAider' => $pupilsightPersonIDFirstAider, 'date' => dateConvert($guid, $date), 'timeIn' => $timeIn, 'description' => $description, 'actionTaken' => $actionTaken, 'followUp' => $followUp, 'pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID);
+            $sql = 'INSERT INTO pupilsightFirstAid SET pupilsightPersonIDPatient=:pupilsightPersonIDPatient, pupilsightPersonIDFirstAider=:pupilsightPersonIDFirstAider, date=:date, timeIn=:timeIn, description=:description, actionTaken=:actionTaken, followUp=:followUp, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

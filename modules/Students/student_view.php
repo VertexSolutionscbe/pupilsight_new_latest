@@ -146,9 +146,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             if (!empty($pupilsightProgramID)) {
                 $_SESSION['student_search'] = $input;
             }
-            echo '<pre>';
-            print_r($_SESSION['student_search']);
-            echo '</pre>';
+            // echo '<pre>';
+            // print_r($_SESSION['student_search']);
+            // echo '</pre>';
 
             $criteria = $studentGateway->newQueryCriteria()
                 ->searchBy($searchColumns, $search)
@@ -204,6 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             echo "<div style='height:50px; margin-top:10px; '><div class='float-right mb-2'><a style=' ' href=''  data-toggle='modal' data-target='#large-modal-new_stud' data-noti='2'  class='sendButton_stud btn btn-primary' id='sendSMS'>Send SMS</a>";
             echo "&nbsp;&nbsp;<a style='' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_stud' class='sendButton_stud btn btn-primary' id='sendEmail'>Send Email</a>";
+            echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Students/message_history.php' class='btn btn-primary' id='sendEmail'>History</a>";
             //  echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='printIDCard'>Print ID Card</a>";
             //  echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='visitorPass'>Visitor Pass</a>";
             // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='visitorHistory'>Visitor History</a>";
@@ -383,7 +384,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         var txt = $(this).val();
         var count = txt.length;
         var dis = txt.replace(/\"/g, "");
-        var sms_count = count / 160;
+        var sms_count = count / 161;
         var sms_count = parseInt(sms_count) + 1;
         $(this).nextAll('span:first').html('Characters : ' + count + " (<i class='fa fa-eye' aria-hidden='true'></i>) : " + sms_count + " SMS Count(s)");
         $(this).nextAll('span:first').attr("title", dis);

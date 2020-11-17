@@ -91,7 +91,7 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <textarea name=\"email_quote\" id=\"emailSubjectQuote_stud\" rows=\"1\"></textarea></br>
                     <h3 class=\"font-semibold\">Email Message</h3>
                     <textarea name=\"email_quote\" id=\"emailQuote_stud\" rows=\"5\"></textarea>
-                    <h3 class=\"font-semibold\">Attachments</h3>
+                    <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach\" id=\"emailattach_camp\">
                     <div style=\"margin-top: 15px;\" id=\"showEmailField\">
@@ -441,7 +441,7 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <textarea name=\"email_quote\" id=\"emailSubjectQuote_stud\" rows=\"1\"></textarea></br>
                     <h3 class=\"font-semibold\">Email Message</h3>
                     <textarea name=\"email_quote\" id=\"emailQuote_stud\" rows=\"5\"></textarea>
-                    <h3 class=\"font-semibold\">Attachments</h3>
+                    <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach\" id=\"emailattach_camp\">
                     <div style=\"margin-top: 15px;\" id=\"showEmailField\">
