@@ -18,8 +18,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 } else {
 	//Proceed!
 	$page->breadcrumbs
-		->add(__('Manage Users'), 'user_manage.php')
-		->add(__('Edit User'));
+		//->add(__('Manage Users'), 'user_manage.php')
+		->add(__('Edit Student'));
 
 	$returns = array();
 	$returns['warning1'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');

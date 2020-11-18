@@ -40,7 +40,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
         $NewNameFile = '';
         $errStatus = "No";
         if (!empty($_FILES["email_attach"]["name"])) {
-            echo '1';
             $fileData = pathinfo(basename($_FILES["email_attach"]["name"]));
             $ex = explode(".", $_FILES["email_attach"]["name"]);
             $extension = end($ex);

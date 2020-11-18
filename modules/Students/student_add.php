@@ -15,7 +15,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_add.php')
 } else {
     //Proceed!
     $page->breadcrumbs
-         ->add(__('Manage Students'), 'students.php')
+         //->add(__('Manage Students'), 'students.php')
          ->add(__('Add Student'));
 
     $returns = array();
