@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
         $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];  
         
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
         
     } else {      
         $classes = array('' => 'Select Class');
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
         
     }
 
-    
+    echo '<input type="hidden" id="pupilsightSchoolYearID" value="'.$_SESSION[$guid]['pupilsightSchoolYearID'].'">';
     $searchform = Form::create('searchForm', '');
     $searchform->setFactory(DatabaseFormFactory::create($pdo));
     $searchform->addHiddenValue('studentId', '0');
@@ -116,21 +116,21 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
    
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
-    $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder('Select Program');
+    $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProg')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder('Select Program');
 
     $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('pupilsightYearGroupID', __('Class'));
-     $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($pupilsightYearGroupID)->required()->placeholder('Select Class');
+    $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
+     $col->addSelect('pupilsightYearGroupID')->setId('showMultiClassByProg')->fromArray($classes)->selected($pupilsightYearGroupID)->required()->placeholder('Select Class')->selectMultiple();
 
      
     $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('pupilsightRollGroupID', __('Section'));
-    $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->required()->selected($pupilsightRollGroupID)->placeholder('Select Section');
+    $col->addLabel('pupilsightRollGroupID', __('Section'))->addClass('dte');
+    $col->addSelect('pupilsightRollGroupID')->setID('showMultiSecByProgCls')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section')->selectMultiple();
 
     
     $col = $row->addColumn()->setClass('newdes');
     
-
+    $col->addLabel('', __(''));
     $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');
     echo $searchform->getOutput();
     $students = $StudentGateway->getStudentData($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
@@ -147,6 +147,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
             <tr>
                 <th><input type="checkbox" id="chkAllFatherField" > Select All</th>
                 <th>Student Name</th>
+                <th>Class</th>
+                <th>Section</th>
                 
             </tr>
         </thead>
@@ -158,6 +160,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
                     <input type="checkbox" class="" name="student_name[]" value="<?php echo $stu['student_name'];?>" checked style="display:none;">
                 </td>
                 <td><?php echo $stu['student_name'];?></td>
+                <td><?php echo $stu['classname'];?></td>
+                <td><?php echo $stu['secname'];?></td>
             </tr>
             <?php }?>
         </tbody>
@@ -446,7 +450,45 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
     </table>
 <?php */?>    
    </form> 
+
+   <style>
+        select[multiple] {
+            min-height: 35px !important;
+        }
+   </style>
    <script>
+        $('#showMultiClassByProg').selectize({
+            plugins: ['remove_button'],
+        });
+
+        $('#showMultiSecByProgCls').selectize({
+            plugins: ['remove_button'],
+        });
+        
+        
+        $(document).on('change', '#getMultiClassByProg', function () {
+            var id = $(this).val();
+            var type = 'getClass';
+            $('#showMultiClassByProg').selectize()[0].selectize.destroy();
+            $("#getFeeStructureByProgClass").html('');
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: { val: id, type: type },
+                async: true,
+                success: function (response) {
+                    $("#showMultiClassByProg").html('');
+                    $("#showMultiClassByProg").html(response);
+                    $("#showMultiClassByProg").parent().children('.LV_validation_message').remove();
+                    $('#showMultiClassByProg').selectize({
+                        plugins: ['remove_button'],
+                    });
+                    
+                }
+            });
+        });
+
+        
         $(document).on('change', '#chkAllStuField', function() {
             if ($(this).is(':checked')) {
                 $(".stuField").prop("checked", true);

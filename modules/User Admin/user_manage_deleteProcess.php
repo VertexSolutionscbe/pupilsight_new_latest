@@ -36,8 +36,31 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_del
         } else {
             //Write to database
             try {
+                $sqlp = 'SELECT pupilsightPersonID1 FROM pupilsightFamilyRelationship WHERE pupilsightPersonID2 = '.$pupilsightPersonID.' ';
+                $resultp = $connection2->query($sqlp);
+                $parentData = $resultp->fetchALL();
+
                 $data = array('pupilsightPersonID' => $pupilsightPersonID);
                 $sql = 'DELETE FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+
+                if(!empty($parentData)){
+                    foreach($parentData as $pd){
+                        $data = array('pupilsightPersonID' => $pd['pupilsightPersonID1']);
+                        $sql = 'DELETE FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    }
+                }
+
+                $data = array('pupilsightPersonID2' => $pupilsightPersonID);
+                $sql = 'DELETE FROM pupilsightFamilyRelationship WHERE pupilsightPersonID2=:pupilsightPersonID2';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+
+                $data = array('pupilsightPersonID1' => $pupilsightPersonID);
+                $sql = 'DELETE FROM pupilsightFamilyRelationship WHERE pupilsightPersonID1=:pupilsightPersonID1';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

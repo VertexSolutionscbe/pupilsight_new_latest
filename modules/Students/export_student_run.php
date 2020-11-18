@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
         die();
     }
 
-    $sql = 'SELECT  field_name, field_title, modules, active FROM custom_field WHERE table_name = "pupilsightPerson" ';
+    $sql = 'SELECT  field_name, field_title, modules, active FROM custom_field WHERE table_name = "pupilsightPerson" AND field_type != "tab" ';
     $result = $connection2->query($sql);
     $customFields = $result->fetchAll();
     /*
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
                     </td>
                     <td>Official Name</td>
                 </tr>
-                <tr>
+                <!-- <tr>
                     <td>
                         <input type="checkbox" class="stuField" name="student_column[]" value="Gender">
                     </td>
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
                         <input type="checkbox" class="stuField" name="student_column[]" value="Can Login">
                     </td>
                     <td>Can Login (Y,N) (e.g. Y)</td>
-                </tr>
+                </tr> -->
                 <?php
 
                 /*
@@ -161,8 +161,8 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
      `email_test`, `date_check`, `file_upload_test`, `test_upload2`, `image_upload`)
      */
 
-                $fieldName = array("email", "address", "address2District", "address2Country", "languageFirst", "languageSecond", "languageThird", "countryOfBirth", "ethnicity", "religion", "nationalIDCardNumber");
-                $field = array("Email", "Address", "District", "Country", "First Language", "Second Language", "Third Language", "Country of Birth", "Ethnicity", "Religion", "National ID Card Number");
+                $fieldName = array("gender","dob","username","canLogin","email", "address", "address1District", "address1Country", "languageFirst", "languageSecond", "languageThird", "countryOfBirth", "ethnicity", "religion", "nationalIDCardNumber");
+                $field = array("Gender","Date of Birth","Username","Can Login","Email", "Address", "District", "Country", "First Language", "Second Language", "Third Language", "Country of Birth", "Ethnicity", "Religion", "National ID Card Number");
                 $len = count($field);
                 $i = 0;
                 while ($i < $len) {

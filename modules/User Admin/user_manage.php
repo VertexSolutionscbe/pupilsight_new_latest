@@ -128,13 +128,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $table->addActionColumn()
         ->addParam('pupilsightPersonID')
         ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($person, $actions) use ($guid, $highestAction) {
+        ->format(function ($person, $actions) use ($connection2, $highestAction) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/User Admin/user_manage_edit.php');
 
             if ($highestAction == 'Manage Users_editDelete' && $person['pupilsightPersonID'] != $_SESSION[$guid]['pupilsightPersonID']) {
-                $actions->addAction('delete', __('Delete'))
+                $sqlp = 'SELECT pupilsightPersonID2 FROM pupilsightFamilyRelationship WHERE pupilsightPersonID1 = '.$person['pupilsightPersonID'].' ';
+                $resultp = $connection2->query($sqlp);
+                $childData = $resultp->fetch();
+                if(!empty($childData)){
+                    $actions->addAction('deleteAlert', __('DeleteAlert'))
+                    ->setId('alertParentData');
+                } else {
+                    $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/User Admin/user_manage_delete.php');
+                }
+
+                
             }
 
             $actions->addAction('password', __('Change Password'))
@@ -144,3 +154,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     echo $table->render($dataSet);
 }
+
+?>
+
+<script>
+    $(document).on('click','#alertParentData', function(){
+        alert('Student is still active for his Parent!');
+    });
+</script>
