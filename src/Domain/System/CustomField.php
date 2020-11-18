@@ -88,7 +88,7 @@ class CustomField extends QueryableGateway
         $db = new DBQuery();
         $flag = FALSE;
         if ($dt["table_name"]) {
-            $dt['field_title'] = htmlspecialchars($dt['field_title']);
+            $dt['field_title'] = addslashes($dt['field_title']); //addslashes
             $flag = $db->insertArray('custom_field', $dt);
             if ($flag) {
                 $colType = "TEXT NULL ";

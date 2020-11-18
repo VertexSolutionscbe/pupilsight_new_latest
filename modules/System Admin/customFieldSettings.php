@@ -33,7 +33,8 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     }
 
     //custom field data added
-    if ($_POST["table_name"] && $_POST["table_name"]) {
+
+    if ($_POST["table_name"]) {
         $newPostFlag = TRUE;
         $customFieldKey = md5(json_encode($_POST));
         if (isset($_SESSION["customFieldKey"])) {
