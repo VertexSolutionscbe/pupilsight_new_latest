@@ -202,10 +202,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_add.php
                 } else {
                     //Lock markbook column table
                     try {
-                        $sql = 'LOCK TABLES pupilsightPerson WRITE, pupilsightFileExtension WRITE';
+                        $sql = 'LOCK TABLES pupilsightPerson WRITE, pupilsightFileExtension WRITE, pupilsightStudentEnrolment WRITE';
                         $result = $connection2->query($sql);
+
+                        // $sqlf = 'LOCK TABLES pupilsightStudentEnrolment WRITE, pupilsightFileExtension WRITE';
+                        // $resultf = $connection2->query($sqlf);
                     } catch (PDOException $e) {
-                        $URL .= '&return=error21';
+                        $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
                     }
@@ -215,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_add.php
                         $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightPerson'";
                         $resultAI = $connection2->query($sqlAI);
                     } catch (PDOException $e) {
-                        $URL .= '&return=error22';
+                        $URL .= '&return=error2';
                         header("Location: {$URL}");
                         exit();
                     }
@@ -338,11 +341,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_add.php
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                         $studentId = $connection2->lastInsertID();
+
+                        $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
+                        if(!empty($studentId) && !empty($pupilsightSchoolYearID)){
+                            $datae = array('pupilsightPersonID' => $studentId, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID);
+                            $sqlf = "INSERT INTO pupilsightStudentEnrolment SET pupilsightPersonID=:pupilsightPersonID, pupilsightSchoolYearID=:pupilsightSchoolYearID"; 
+                            $resultf = $connection2->prepare($sqlf);
+                            $resultf->execute($datae);
+                        }
                         //print_r($studentId);
 
                     } catch (PDOException $e) {
-                        $URL .= '&return=error23';
-                        header("Location: {$URL}");
+                        
+                        $URL .= '&return=error2';
+                        //header("Location: {$URL}");
                         exit();
                     }
 
@@ -354,6 +367,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_add.php
                     try {
                         $sql = 'UNLOCK TABLES';
                         $result = $connection2->query($sql);
+
+                        $sqlf = 'UNLOCK TABLES';
+                        $result = $connection2->query($sqlf);
 
                         //custom Field Added
                         $customField  = $container->get(CustomField::class);

@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
     }
 
     $page->breadcrumbs->add(__('Student Import'));
-    $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_student_run.php');
+    $form = Form::create('uploadData','');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -44,117 +44,120 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 
 
     if ($_POST) {
-        $handle = fopen($_FILES['file']['tmp_name'], "r");
-        $headers = fgetcsv($handle, 10000, ",");
-        $hders = array();
-        // echo '<pre>';
-        // print_r($headers);
-        // echo '</pre>';
-        $chkHeaderKey = array();
-        foreach ($headers as $key => $hd) {
-            if ($hd == 'Academic Year') {
-                $headers[$key] = 'at_pupilsightSchoolYearID';
-            } else if ($hd == 'Program') {
-                $headers[$key] = 'at_pupilsightProgramID';
-            } else if ($hd == 'Class') {
-                $headers[$key] = 'at_pupilsightYearGroupID';
-            } else if ($hd == 'Section') {
-                $headers[$key] = 'at_pupilsightRollGroupID';
-            } else if ($hd == 'Official Name') {
-                $headers[$key] = 'st_officialName';
-            } else if ($hd == 'Gender') {
-                $headers[$key] = 'st_gender';
-            } else if ($hd == 'Date of Birth') {
-                $headers[$key] = 'st_dob';
-            } else if ($hd == 'Username') {
-                $headers[$key] = 'st_username';
-            } else if ($hd == 'Can Login') {
-                $headers[$key] = 'st_canLogin';
-            } else if ($hd == 'Email') {
-                $headers[$key] = 'st_email';
-            } else if ($hd == 'Address') {
-                $headers[$key] = 'st_address1';
-            } else if ($hd == 'District') {
-                $headers[$key] = 'st_address1District';
-            } else if ($hd == 'Country') {
-                $headers[$key] = 'st_address1Country';
-            } else if ($hd == 'First Language') {
-                $headers[$key] = 'st_languageFirst';
-            } else if ($hd == 'Second Language') {
-                $headers[$key] = 'st_languageSecond';
-            } else if ($hd == 'Third Language') {
-                $headers[$key] = 'st_languageThird';
-            } else if ($hd == 'Country of Birth') {
-                $headers[$key] = 'st_countryOfBirth';
-            } else if ($hd == 'Ethnicity') {
-                $headers[$key] = 'st_ethnicity';
-            } else if ($hd == 'Religion') {
-                $headers[$key] = 'st_religion';
-            } else if ($hd == 'National ID Card Number') {
-                $headers[$key] = 'st_nationalIDCardNumber';
-            } else if ($hd == 'Father Official Name') {
-                $headers[$key] = 'ft_officialName';
-            } else if ($hd == 'Father Date of Birth') {
-                $headers[$key] = 'ft_dob';
-            } else if ($hd == 'Father Username') {
-                $headers[$key] = 'ft_username';
-            } else if ($hd == 'Father Can Login') {
-                $headers[$key] = 'ft_canLogin';
-            } else if ($hd == 'Father Email') {
-                $headers[$key] = 'ft_email';
-            } else if ($hd == 'Father Mobile (Country Code)') {
-                $headers[$key] = 'ft_phone1CountryCode';
-            } else if ($hd == 'Father Mobile No') {
-                $headers[$key] = 'ft_phone1';
-            } else if ($hd == 'Father LandLine (Country Code)') {
-                $headers[$key] = 'ft_phone2CountryCode';
-            } else if ($hd == 'Father Landline No') {
-                $headers[$key] = 'ft_phone2';
-            } else if ($hd == 'Mother Official Name') {
-                $headers[$key] = 'mt_officialName';
-            } else if ($hd == 'Mother Date of Birth') {
-                $headers[$key] = 'mt_dob';
-            } else if ($hd == 'Mother Username') {
-                $headers[$key] = 'mt_username';
-            } else if ($hd == 'Mother Can Login') {
-                $headers[$key] = 'mt_canLogin';
-            } else if ($hd == 'Mother Email') {
-                $headers[$key] = 'mt_email';
-            } else if ($hd == 'Mother Mobile (Country Code)') {
-                $headers[$key] = 'mt_phone1CountryCode';
-            } else if ($hd == 'Mother Mobile No') {
-                $headers[$key] = 'mt_phone1';
-            } else if ($hd == 'Mother LandLine (Country Code)') {
-                $headers[$key] = 'mt_phone2CountryCode';
-            } else if ($hd == 'Mother Landline No') {
-                $headers[$key] = 'mt_phone2';
-            } else {
+        //print_r($_FILES);
+        //die();
+        if(!empty($_FILES['file']['name'])){
+            $handle = fopen($_FILES['file']['tmp_name'], "r");
+            $headers = fgetcsv($handle, 10000, ",");
+            $hders = array();
+            // echo '<pre>';
+            // print_r($headers);
+            // echo '</pre>';
+            $chkHeaderKey = array();
+            foreach ($headers as $key => $hd) {
+                if ($hd == 'Academic Year') {
+                    $headers[$key] = 'at_pupilsightSchoolYearID';
+                } else if ($hd == 'Program') {
+                    $headers[$key] = 'at_pupilsightProgramID';
+                } else if ($hd == 'Class') {
+                    $headers[$key] = 'at_pupilsightYearGroupID';
+                } else if ($hd == 'Section') {
+                    $headers[$key] = 'at_pupilsightRollGroupID';
+                } else if ($hd == 'Official Name') {
+                    $headers[$key] = 'st_officialName';
+                } else if ($hd == 'Gender') {
+                    $headers[$key] = 'st_gender';
+                } else if ($hd == 'Date of Birth') {
+                    $headers[$key] = 'st_dob';
+                } else if ($hd == 'Username') {
+                    $headers[$key] = 'st_username';
+                } else if ($hd == 'Can Login') {
+                    $headers[$key] = 'st_canLogin';
+                } else if ($hd == 'Email') {
+                    $headers[$key] = 'st_email';
+                } else if ($hd == 'Address') {
+                    $headers[$key] = 'st_address1';
+                } else if ($hd == 'District') {
+                    $headers[$key] = 'st_address1District';
+                } else if ($hd == 'Country') {
+                    $headers[$key] = 'st_address1Country';
+                } else if ($hd == 'First Language') {
+                    $headers[$key] = 'st_languageFirst';
+                } else if ($hd == 'Second Language') {
+                    $headers[$key] = 'st_languageSecond';
+                } else if ($hd == 'Third Language') {
+                    $headers[$key] = 'st_languageThird';
+                } else if ($hd == 'Country of Birth') {
+                    $headers[$key] = 'st_countryOfBirth';
+                } else if ($hd == 'Ethnicity') {
+                    $headers[$key] = 'st_ethnicity';
+                } else if ($hd == 'Religion') {
+                    $headers[$key] = 'st_religion';
+                } else if ($hd == 'National ID Card Number') {
+                    $headers[$key] = 'st_nationalIDCardNumber';
+                } else if ($hd == 'Father Official Name') {
+                    $headers[$key] = 'ft_officialName';
+                } else if ($hd == 'Father Date of Birth') {
+                    $headers[$key] = 'ft_dob';
+                } else if ($hd == 'Father Username') {
+                    $headers[$key] = 'ft_username';
+                } else if ($hd == 'Father Can Login') {
+                    $headers[$key] = 'ft_canLogin';
+                } else if ($hd == 'Father Email') {
+                    $headers[$key] = 'ft_email';
+                } else if ($hd == 'Father Mobile (Country Code)') {
+                    $headers[$key] = 'ft_phone1CountryCode';
+                } else if ($hd == 'Father Mobile No') {
+                    $headers[$key] = 'ft_phone1';
+                } else if ($hd == 'Father LandLine (Country Code)') {
+                    $headers[$key] = 'ft_phone2CountryCode';
+                } else if ($hd == 'Father Landline No') {
+                    $headers[$key] = 'ft_phone2';
+                } else if ($hd == 'Mother Official Name') {
+                    $headers[$key] = 'mt_officialName';
+                } else if ($hd == 'Mother Date of Birth') {
+                    $headers[$key] = 'mt_dob';
+                } else if ($hd == 'Mother Username') {
+                    $headers[$key] = 'mt_username';
+                } else if ($hd == 'Mother Can Login') {
+                    $headers[$key] = 'mt_canLogin';
+                } else if ($hd == 'Mother Email') {
+                    $headers[$key] = 'mt_email';
+                } else if ($hd == 'Mother Mobile (Country Code)') {
+                    $headers[$key] = 'mt_phone1CountryCode';
+                } else if ($hd == 'Mother Mobile No') {
+                    $headers[$key] = 'mt_phone1';
+                } else if ($hd == 'Mother LandLine (Country Code)') {
+                    $headers[$key] = 'mt_phone2CountryCode';
+                } else if ($hd == 'Mother Landline No') {
+                    $headers[$key] = 'mt_phone2';
+                } else {
 
-                $sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
-                $resultchk = $connection2->query($sqlchk);
-                $cd = $resultchk->fetch();
-                $modules = explode(',', $cd['modules']);
+                    $sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
+                    $resultchk = $connection2->query($sqlchk);
+                    $cd = $resultchk->fetch();
+                    $modules = explode(',', $cd['modules']);
 
-                //if(!in_array('st_'.$cd['field_name'], $chkHeaderKey)){
-                if (in_array('student', $modules)) {
-                    $headers[$key] = 'st_' . $cd['field_name'];
-                    $chkHeaderKey[] = 'st_' . $cd['field_name'];
+                    //if(!in_array('st_'.$cd['field_name'], $chkHeaderKey)){
+                    if (in_array('student', $modules)) {
+                        $headers[$key] = 'st_' . $cd['field_name'];
+                        $chkHeaderKey[] = 'st_' . $cd['field_name'];
+                    }
+                    //}
+                    //else if(!in_array('ft_'.$cd['field_name'], $chkHeaderKey)){
+                    if (in_array('father', $modules)) {
+                        $headers[$key] = 'ft_' . $cd['field_name'];
+                        $chkHeaderKey[] = 'ft_' . $cd['field_name'];
+                    }
+                    //}
+                    //else if(!in_array('mt_'.$cd['field_name'], $chkHeaderKey)){
+                    if (in_array('mother', $modules)) {
+                        $headers[$key] = 'mt_' . $cd['field_name'];
+                        $chkHeaderKey[] = 'mt_' . $cd['field_name'];
+                    }
+                    //}
                 }
-                //}
-                //else if(!in_array('ft_'.$cd['field_name'], $chkHeaderKey)){
-                if (in_array('father', $modules)) {
-                    $headers[$key] = 'ft_' . $cd['field_name'];
-                    $chkHeaderKey[] = 'ft_' . $cd['field_name'];
-                }
-                //}
-                //else if(!in_array('mt_'.$cd['field_name'], $chkHeaderKey)){
-                if (in_array('mother', $modules)) {
-                    $headers[$key] = 'mt_' . $cd['field_name'];
-                    $chkHeaderKey[] = 'mt_' . $cd['field_name'];
-                }
-                //}
             }
-        }
 
             $hders = $headers;
 
@@ -385,6 +388,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
             //die();
             $URL .= '&return=success0';
             header("Location: {$URL}");
-        
+        } else {
+            $URL .= '&return=error0';
+            header("Location: {$URL}");
+        }
     }
 }

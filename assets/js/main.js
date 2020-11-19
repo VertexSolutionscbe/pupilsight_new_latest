@@ -930,17 +930,30 @@
 
     $(document).on('click', '#expore_student_xl', function () {
         //alert("Export success");
+        // $("#expore_tbl").table2excel({
+        //     name: "Worksheet Name",
+        //     filename: "Student_details.xls",
+        //     fileext: ".xls",
+        //     exclude: ".checkall",
+        //     exclude: ".dropdown",
+        //     exclude_inputs: true,
+        //     exclude_links: true,
+        //     columns: [0, 1, 2, 3, 4, 5]
+
+        // });
+
+        $('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
         $("#expore_tbl").table2excel({
             name: "Worksheet Name",
             filename: "Student_details.xls",
             fileext: ".xls",
             exclude: ".checkall",
-            exclude: ".dropdown",
+            exclude: ".rm_cell",
             exclude_inputs: true,
-            exclude_links: true,
             columns: [0, 1, 2, 3, 4, 5]
 
         });
+        location.reload();
 
     });
 

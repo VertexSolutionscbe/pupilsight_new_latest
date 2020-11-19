@@ -153,6 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
             <?php /* ?>
                 <th rowspan="2"><input type="checkbox" name="checkall" id="checkall" value="on" class="floatNone checkall"></th>
             <?php */?>    
+                <th rowspan="2"><input type='checkbox' class="chkAll"></th>
                 <th rowspan="2">Student Name</th>
                 <th rowspan="2">Student Id</th>
                 <?php if($include_core == '1') { ?>
@@ -188,6 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
             <?php /* ?>
                 <td><input type="checkbox" name="student_id[]" id="student_id[' .<?php echo $stu['pupilsightPersonID'] ?>. ']" value="'.<?php echo $stu['pupilsightPersonID'] ?> .'" ></td>
             <?php */?>    
+                <td><input type='checkbox' class="chkChild" value="<?php echo $stu['pupilsightPersonID']?>"></td>
                 <td><?php echo $stu['student_name']; ?></td>
                 <td><?php echo $stu['pupilsightPersonID']?></td>
                 <?php if($include_core == '1') { 

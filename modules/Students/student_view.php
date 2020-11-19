@@ -94,6 +94,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $program2[$dt['pupilsightProgramID']] = $dt['name'];
             }
             $program = $program1 + $program2;
+
+            $sqlf = 'SELECT field_name FROM student_field_show WHERE pupilsightPersonID = '.$pupilsightPersonID.' ';
+            $resultf = $connection2->query($sqlf);
+            $showfield = $resultf->fetchAll();
+
+            $sqlchk = 'SELECT GROUP_CONCAT(pupilsightModuleButtonID) as buttonIDS FROM pupilsightModuleButtonPermission WHERE pupilsightModuleID = 5 AND pupilsightPersonID = '.$pupilsightPersonID.' ';
+            $resultchk = $connection2->query($sqlchk);
+            $buttPermisionData = $resultchk->fetch();
+            $permissionChk = explode(',',$buttPermisionData['buttonIDS']);
+
             // echo '<pre>';
             // print_r($_POST);
             // echo '</pre>';
@@ -202,6 +212,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             echo $form->getOutput();
 
+        if($roleId == '001'){
+
             echo "<div style='height:50px; margin-top:10px; '><div class='float-right mb-2'><a style=' ' href=''  data-toggle='modal' data-target='#large-modal-new_stud' data-noti='2'  class='sendButton_stud btn btn-primary' id='sendSMS'>Send SMS</a>";
             echo "&nbsp;&nbsp;<a style='' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_stud' class='sendButton_stud btn btn-primary' id='sendEmail'>Send Email</a>";
             echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Students/message_history.php' class='btn btn-primary' id='sendEmail'>History</a>";
@@ -223,12 +235,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-primary' href='#'  id='assignStu_elesub'>Assign Elective Subjects to Students</a>";
 
             echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-primary'>Student Enrollment</a>&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-primary'>Remove Enrollment</a>&nbsp;&nbsp;<a   class='btn btn-primary' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>";
+            echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
+            
             // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='changeStuStatus'>Change Status</a>";
             // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='export'>Export</a>";
-            echo "&nbsp;&nbsp;<i id='expore_student_xl' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
+            echo "&nbsp;&nbsp;<i style='cursor:pointer' id='expore_student_xl' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
+
+            echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/button_permission.php' class='btn btn-primary'>Button Permission</a>";
 
             echo "</div><div class='float-none'></div></div>";
-
+        } else {
+            if(!empty($permissionChk)){
+                echo "<div style='height:50px; margin-top:10px; '><div class='float-right mb-2'>";
+                if(in_array(20, $permissionChk)){
+                echo "<a style=' ' href=''  data-toggle='modal' data-target='#large-modal-new_stud' data-noti='2'  class='sendButton_stud btn btn-primary' id='sendSMS'>Send SMS</a>";
+                }
+                if(in_array(21, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style='' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_stud' class='sendButton_stud btn btn-primary' id='sendEmail'>Send Email</a>";
+            }
+            if(in_array(19, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Students/message_history.php' class='btn btn-primary' id='sendEmail'>History</a>";
+            }
+            if(in_array(22, $permissionChk)){
+                echo "<a style='display:none' id='clickStudentsection' href='fullscreen.php?q=/modules/Students/assign_student_section.php&pupilsightYearGroupID=$pupilsightYearGroupID&pupilsightProgramID=$pupilsightProgramID&width=1000'  class='thickbox '>Assign Students to Section</a>";
+                echo "&nbsp;&nbsp;<a style=' ' data-type='student' class='btn btn-primary' href='#'  id='assignStuSec'>Assign Students to Section</a>";
+            }
+            if(in_array(23, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-primary'>Student Enrollment</a>";
+            }
+            if(in_array(24, $permissionChk)){   
+                echo "&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-primary'>Remove Enrollment</a>";
+            }    
+            if(in_array(12, $permissionChk)){
+                echo "&nbsp;&nbsp;<a   class='btn btn-primary' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>";
+            }
+            if(in_array(14, $permissionChk)){    
+                echo "&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>";
+            }
+            if(in_array(25, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
+            }
+            //if(in_array(8, $permissionChk)){   
+                echo "&nbsp;&nbsp;<i style='cursor:pointer' id='expore_student_xl' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
+            //}
+            if(in_array(26, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/button_permission.php' class='btn btn-primary'>Button Permission</a>";
+            }
+            
+                echo "</div><div class='float-none'></div></div>";
+            }
+        }
 
             if ($_POST) {
                 echo '<div class="float-left"><h2>Choose A Student</h2></div>';
@@ -280,36 +336,135 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
                 });
 
-            $table->addColumn('student', __('Student'))
 
-                ->sortable(['surname', 'preferredName'])
-                ->format(function ($person) {
-                    // if(!empty($person['surname'])){
-                    //     return Format::name('', $person['surname'], $person['officialName'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+            if(!empty($showfield)){
+                foreach($showfield as $sf){
+                    if($sf['field_name'] == 'student'){
+                        $table->addColumn('student', __('Student'))
 
-                    // } else {
-                    if ($person['active_status'] == 'Active') {
-                        $status_icon = '<i class="fa fa-circle greenicon_sts" aria-hidden="true"></i>&nbsp;&nbsp;';
-                    } else {
-                        $status_icon = '<i class="fa fa-circle greyicon_sts " aria-hidden="true"></i>&nbsp;&nbsp;';
+                        ->sortable(['surname', 'preferredName'])
+                        ->format(function ($person) {
+                            // if(!empty($person['surname'])){
+                            //     return Format::name('', $person['surname'], $person['officialName'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+
+                            // } else {
+                            if ($person['active_status'] == 'Active') {
+                                $status_icon = '<i class="fa fa-circle greenicon_sts" aria-hidden="true"></i>&nbsp;&nbsp;';
+                            } else {
+                                $status_icon = '<i class="fa fa-circle greyicon_sts " aria-hidden="true"></i>&nbsp;&nbsp;';
+                            }
+                            return  $status_icon . $person['officialName'];
+                            // }
+
+                        });
                     }
-                    return  $status_icon . $person['officialName'];
-                    // }
+                    if($sf['field_name'] == 'pupilsightPersonID'){
+                    $table->addColumn('pupilsightPersonID', __('Student Id'));
+                    }
+                    if($sf['field_name'] == 'admission_no'){
+                    $table->addColumn('admission_no', __('Admission No'));
+                }
+                if($sf['field_name'] == 'academic_year'){
+                    $table->addColumn('academic_year', __('Academic'));
+                }
+                if($sf['field_name'] == 'program'){
+                    $table->addColumn('program', __('Program'));
+                }
+                if($sf['field_name'] == 'yearGroup'){
+                    $table->addColumn('yearGroup', __('Class'))
+                        ->format(function ($person) {
 
-                });
-            $table->addColumn('pupilsightPersonID', __('Student Id'));
-            // $table->addColumn('pupilsightStudentEnrolmentID', __('Enrolment Id')); 
-            $table->addColumn('academic_year', __('Academic'));
-            $table->addColumn('program', __('Program'));
-            $table->addColumn('yearGroup', __('Class'))
-                ->format(function ($person) {
+                            return $person['yearGroup'];
+                        });
+                    }
+                    if($sf['field_name'] == 'rollGroup'){
+                    $table->addColumn('rollGroup', __('Section'));
+                }
+                if($sf['field_name'] == 'dob'){
+                    $table->addColumn('dob', __('Date of Birth'));
+                }
+                if($sf['field_name'] == 'gender'){
+                    $table->addColumn('gender', __('Gender'));
+                }
+                if($sf['field_name'] == 'username'){
+                    $table->addColumn('username', __('Username'));
+                }
+                if($sf['field_name'] == 'phone1'){
+                    $table->addColumn('phone1', __('Phone'));
+                }
+                if($sf['field_name'] == 'email'){
+                    $table->addColumn('email', __('Email'));
+                }
+                if($sf['field_name'] == 'address1'){
+                    $table->addColumn('address1', __('Address'));
+                }
+                if($sf['field_name'] == 'address1District'){
+                    $table->addColumn('address1District', __('District'));
+                }
+                if($sf['field_name'] == 'address1Country'){
+                    $table->addColumn('address1Country', __('Country'));
+                }
+                if($sf['field_name'] == 'languageFirst'){
+                    
+                    $table->addColumn('languageFirst', __('First Language'));
+                }
+                if($sf['field_name'] == 'languageSecond'){
+                    $table->addColumn('languageSecond', __('Second Language'));
+                }
+                if($sf['field_name'] == 'languageThird'){
+                    $table->addColumn('languageThird', __('Third Language'));
+                }
+                if($sf['field_name'] == 'religion'){
+                    $table->addColumn('religion', __('Religion'));
+                }
+               
+                }
+            } else {
+                $table->addColumn('student', __('Student'))
 
-                    return $person['yearGroup'];
-                });
-            $table->addColumn('rollGroup', __('Section'));
-            //  $table->addColumn('dob', __('Date of Birth'));
-            //  $table->addColumn('active_status', __('Status'));
+                    ->sortable(['surname', 'preferredName'])
+                    ->format(function ($person) {
+                        // if(!empty($person['surname'])){
+                        //     return Format::name('', $person['surname'], $person['officialName'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
 
+                        // } else {
+                        if ($person['active_status'] == 'Active') {
+                            $status_icon = '<i class="fa fa-circle greenicon_sts" aria-hidden="true"></i>&nbsp;&nbsp;';
+                        } else {
+                            $status_icon = '<i class="fa fa-circle greyicon_sts " aria-hidden="true"></i>&nbsp;&nbsp;';
+                        }
+                        return  $status_icon . $person['officialName'];
+                        // }
+
+                    });
+                $table->addColumn('pupilsightPersonID', __('Student Id'));
+                $table->addColumn('admission_no', __('Admission No'));
+                // $table->addColumn('pupilsightStudentEnrolmentID', __('Enrolment Id')); 
+                $table->addColumn('academic_year', __('Academic'));
+                $table->addColumn('program', __('Program'));
+                $table->addColumn('yearGroup', __('Class'))
+                    ->format(function ($person) {
+
+                        return $person['yearGroup'];
+                    });
+                $table->addColumn('rollGroup', __('Section'));
+                $table->addColumn('dob', __('Date of Birth'));
+                $table->addColumn('gender', __('Gender'));
+                $table->addColumn('username', __('Username'));
+                $table->addColumn('phone1', __('Phone'));
+                $table->addColumn('email', __('Email'));
+                $table->addColumn('address1', __('Address'));
+                $table->addColumn('address1District', __('District'));
+                $table->addColumn('address1Country', __('Country'));
+                
+                $table->addColumn('languageFirst', __('First Language'));
+                $table->addColumn('languageSecond', __('Second Language'));
+                $table->addColumn('languageThird', __('Third Language'));
+                $table->addColumn('religion', __('Religion'));
+            }
+
+
+        if($roleId == '001'){
 
             $table->addColumn('student_action', __('Action'))
                 ->sortable(['surname', 'preferredName'])
@@ -331,6 +486,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             echo "<a style='display:none' id='clickStudent_transfer' href='fullscreen.php?q=/modules/Students/transfer_student_view.php&width=600'  class='thickbox '>Transfer Students</a>";
             echo "<a style='display:none' id='clickStudent_reg_dereg' href='fullscreen.php?q=/modules/Students/reg_dereg_student_view.php&width=800'  class='thickbox '>Register &  De-register</a>";
+        } else {
+            if(!empty($permissionChk)){
+                $table->addColumn('student_action', __('Action'))
+                ->sortable(['surname', 'preferredName'])
+                //->format(function ($person) {
+                ->format(function ($person) use ($permissionChk) {
+                    $return = '<div class="navbar">
+                    <a class="nav-link dropdown-toggle" href="#navbar-base" data-toggle="dropdown"
+                                    role="button" aria-expanded="false"><span class="nav-link-title">Select Action</span></a>
+                    <ul class="dropdown-menu">';
+
+                    if(in_array(15, $permissionChk)){
+                        $return .= '<li><a class="dropdown-item" href="index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID=' . $person['pupilsightPersonID'] . '">Student 360</a></li>';
+                    }
+                    if(in_array(13, $permissionChk)){
+                        $return .= '<li><a class="dropdown-item" href="index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=' . $person['pupilsightPersonID'] . '">Edit</a></li>';
+                    }
+                    if(in_array(14, $permissionChk)){
+                        $return .= '<li><a class="dropdown-item thickbox" style="text-decoration: underline !important;" href="fullscreen.php?q=/modules/Students/student_manage_delete.php&pupilsightPersonID=' . $person['pupilsightPersonID'] . '&search=width=650height=135">Delete</a></li>';
+                    }
+                    if(in_array(16, $permissionChk)){
+                        $return .= '<li><a class="dropdown-item" href="index.php?q=/modules/User Admin/user_manage_password.php&pupilsightPersonID=' . $person['pupilsightPersonID'] . '">Change Password</a></li>';
+                    }
+                    if(in_array(17, $permissionChk)){
+                        $return .= '<li><a class="dropdown-item" href="#" id="transfer_student" data-id=' . $person['pupilsightPersonID'] . ' data-type="student">Transfer</a></li>';
+                    }
+                    if(in_array(18, $permissionChk)){
+                        $return .= '<li><a class="dropdown-item" href="#" id="register_deregister" data-id=' . $person['pupilsightPersonID'] . ' data-type="student">Register / De-register</a></li>';
+                    }
+                    if(in_array(19, $permissionChk)){
+                        $return .= '<li><a class="dropdown-item thickbox" href="fullscreen.php?q=/modules/Students/history.php&pupilsightPersonID=' . $person['pupilsightPersonID'] . '&width=800">History</a></li>';
+                    }
+                    $return .= '</ul></div>';
+                    return $return;
+                 
+                });
+
+                if(in_array(17, $permissionChk)){
+                echo "<a style='display:none' id='clickStudent_transfer' href='fullscreen.php?q=/modules/Students/transfer_student_view.php&width=600'  class='thickbox '>Transfer Students</a>";
+                }
+                if(in_array(18, $permissionChk)){
+                echo "<a style='display:none' id='clickStudent_reg_dereg' href='fullscreen.php?q=/modules/Students/reg_dereg_student_view.php&width=800'  class='thickbox '>Register &  De-register</a>";
+                }
+            }
+        }
             // $table->addActionColumn()
             //     ->addParam('pupilsightPersonID')
             //     ->addParam('search', $criteria->getSearchText(true))
