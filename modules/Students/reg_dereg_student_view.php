@@ -109,13 +109,14 @@ else {
            
            
             $regdreg =  array();      
-             $regdreg =  array(''=>'Select',
-                'reg' =>'Register',
-                'dereg'=>'De-register');
+            //  $regdreg =  array(''=>'Select',
+            //     'reg' =>'Register',
+            //     'dereg'=>'De-register');
+            $regdreg =  array('dereg'=>'De-register');
               
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('reg_degreg', __('Select'));
-            $col->addSelect('reg_degreg')->fromArray($regdreg)->setId('reg_dereg_id')->selected('reg')->placeholder();
+            $col->addSelect('reg_degreg')->fromArray($regdreg)->setId('reg_dereg_id');
 
 
             $status =  array();      
@@ -124,7 +125,8 @@ else {
                'Transferred'=>'Transferred'
             );
              
-           $col = $row->addColumn()->setClass('dereg_col newdes nodisplay');
+        //    $col = $row->addColumn()->setClass('dereg_col newdes nodisplay');
+           $col = $row->addColumn();
            $col->addLabel('dereg_status', __('Status'));
            $col->addSelect('dereg_status')->fromArray($status)->setId('dereg_sts')->placeholder();
                     
@@ -142,7 +144,7 @@ else {
 echo "<style>
 .small_wdth 
 {
-    width:368px;
+    width:240px !important;
 }
 .nodisplay
 {

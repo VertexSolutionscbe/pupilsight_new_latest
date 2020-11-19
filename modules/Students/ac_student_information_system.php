@@ -128,6 +128,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
     
     $col->addLabel('', __(''));
     $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('', __(''));
+    $col->addContent('<a id="assignSubject" data-hrf="fullscreen.php?q=/modules/Students/assign_subject_student.php"  class=" btn btn-primary">Assign Subject</a><a class="thickbox" style="display:none" href="" id="clickAssignSubject">AssignSubject</a>');
     echo $searchform->getOutput();
 
     $students = $CurriculamGateway->getstudent_subject_assigned_data($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
@@ -146,6 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
 ?>
 <input type="hidden" id="progId" value="<?php echo $pupilsightProgramID?>">
 <input type="hidden" id="classId" value="<?php echo $pupilsightYearGroupID?>">
+<input type="hidden" id="secId" value="<?php echo $pupilsightRollGroupID?>">
 <?php if($_POST){ ?>
     <table class="table table-striped" style="display: block;overflow: auto;height:auto;white-space: nowrap;">
         <thead style="font-size:14px;">
@@ -155,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
             <?php */?>    
                 <th rowspan="2"><input type='checkbox' class="chkAll"></th>
                 <th rowspan="2">Student Name</th>
-                <th rowspan="2">Student Id</th>
+                <th rowspan="2">Admission No</th>
                 <?php if($include_core == '1') { ?>
                 <th colspan="<?php echo $kount;?>" style="text-align:center; border:2px solid #dee2e6">Core Subject</th>
                 <?php } ?>
@@ -189,9 +194,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
             <?php /* ?>
                 <td><input type="checkbox" name="student_id[]" id="student_id[' .<?php echo $stu['pupilsightPersonID'] ?>. ']" value="'.<?php echo $stu['pupilsightPersonID'] ?> .'" ></td>
             <?php */?>    
-                <td><input type='checkbox' class="chkChild" value="<?php echo $stu['pupilsightPersonID']?>"></td>
+                <td><input type='checkbox' name="student_id[]" class="chkChild" value="<?php echo $stu['pupilsightPersonID']?>"></td>
                 <td><?php echo $stu['student_name']; ?></td>
-                <td><?php echo $stu['pupilsightPersonID']?></td>
+                <td><?php echo $stu['admission_no']?></td>
                 <?php if($include_core == '1') { 
                     foreach($coreSubjects as $core){
                         if(!empty($core['subject_type']) && $core['subject_type'] == 'Core'){
@@ -219,3 +224,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
 <?php 
 } }
 ?>
+
+<script>
+    $(document).on('click', '#assignSubject', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            var stid = stuId;
+            var pid = $("#progId").val();
+            var cid = $("#classId").val();
+            var sid = $("#secId").val();
+            var hrf = $(this).attr('data-hrf');
+            var newhrf = hrf+'&pid='+pid+'&cid='+cid+'&sid='+sid+'&stid='+stid;
+            $("#clickAssignSubject").attr('href', newhrf);
+            $("#clickAssignSubject")[0].click();
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+</script>

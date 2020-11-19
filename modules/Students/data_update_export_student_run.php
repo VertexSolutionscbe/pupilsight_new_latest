@@ -96,8 +96,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
         $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
         $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];  
         
+        if(!empty($pupilsightProgramID)){
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
         $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        }
         
     } else {      
         $classes = array('' => 'Select Class');

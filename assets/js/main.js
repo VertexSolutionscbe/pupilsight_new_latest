@@ -942,7 +942,14 @@
 
         // });
 
-        $('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
+        //$('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
+        $("#expore_tbl tr").each(function () {
+            $(this).find("th:last").remove();
+            $(this).find("td:last").remove();
+            $(this).find("th:first").remove();
+            $(this).find("td:first").remove();
+        });
+
         $("#expore_tbl").table2excel({
             name: "Worksheet Name",
             filename: "Student_details.xls",
