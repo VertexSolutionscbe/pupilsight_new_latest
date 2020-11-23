@@ -247,6 +247,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_delete.php' class='btn btn-primary'>Deleted Student's</a>";
         
             echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Register Student's</a>";
+
+            echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='index.php?q=/modules/Students/generate_tc.php' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
             
 
             echo "</div><div class='float-none'></div></div>";
@@ -294,6 +296,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             if(in_array(28, $permissionChk)){
                 echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Register Student's</a>";
+            }
+
+            if(in_array(29, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='index.php?q=/modules/Students/generate_tc.php' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
             }
             
                 echo "</div><div class='float-none'></div></div>";

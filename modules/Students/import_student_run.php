@@ -9,7 +9,7 @@ use Pupilsight\Domain\DataSet;
 use Pupilsight\Services\Format;
 
 
-include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight/db.php';
 
 
 require __DIR__ . '/moduleFunctions.php';
@@ -267,61 +267,91 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $stu_id = $conn->insert_id;
 
                     // Father Entry
+                    $chkFamily = 0;
                     if (!empty($alrow['ft_officialName'])) {
-                        $sqlf = "INSERT INTO pupilsightPerson (";
-                        foreach ($alrow as $key => $ar) {
-                            if (strpos($key, 'ft_') !== false  && !empty($ar)) {
-                                //$clname = ltrim($key, 'ft_'); 
-                                $clname = substr($key, 3, strlen($key));
-                                $sqlf .= $clname . ',';
-                            }
-                        }
-                        $sqlf .= 'preferredName,gender,passwordStrong,passwordStrongSalt,pupilsightRoleIDPrimary,pupilsightRoleIDAll';
-                        //$sqlf = rtrim($sqlf, ", ");
-                        $sqlf .= ") VALUES (";
-                        foreach ($alrow as $k => $value) {
-                            if (strpos($k, 'ft_') !== false  && !empty($value)) {
-                                $val = str_replace('"', "", $value);
-                                $sqlf .= '"' . $val . '",';
-                            }
-                        }
-                        $sqlf .= '"' . $alrow['ft_officialName'] . '","M","' . $password . '","' . $salt . '","004","004"';
-                        //$sqlf = rtrim($sqlf, ", ");
-                        $sqlf .= ")";
-                        $sqlf = rtrim($sqlf, ", ");
 
-                        //echo "\n<br/>father ".$sqlf;
+                        $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE email = "'.$alrow['ft_email'].'" ';
+                        $resultchk = $connection2->query($sqlchk);
+                        $pd = $resultchk->fetch();
+                        if(!empty($pd)){
+                            $fat_id = $pd['pupilsightPersonID'];
+                            $family_id = $pd['pupilsightFamilyID'];
+                            $chkFamily = 1;
 
-                        $conn->query($sqlf);
-                        $fat_id = $conn->insert_id;
+                            $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $fat_id . "," . $stu_id . ",'Father')";
+                            $conn->query($sqlf4);
+                        }
+
+                        if($chkFamily == '0'){
+                            $sqlf = "INSERT INTO pupilsightPerson (";
+                            foreach ($alrow as $key => $ar) {
+                                if (strpos($key, 'ft_') !== false  && !empty($ar)) {
+                                    //$clname = ltrim($key, 'ft_'); 
+                                    $clname = substr($key, 3, strlen($key));
+                                    $sqlf .= $clname . ',';
+                                }
+                            }
+                            $sqlf .= 'preferredName,gender,passwordStrong,passwordStrongSalt,pupilsightRoleIDPrimary,pupilsightRoleIDAll';
+                            //$sqlf = rtrim($sqlf, ", ");
+                            $sqlf .= ") VALUES (";
+                            foreach ($alrow as $k => $value) {
+                                if (strpos($k, 'ft_') !== false  && !empty($value)) {
+                                    $val = str_replace('"', "", $value);
+                                    $sqlf .= '"' . $val . '",';
+                                }
+                            }
+                            $sqlf .= '"' . $alrow['ft_officialName'] . '","M","' . $password . '","' . $salt . '","004","004"';
+                            //$sqlf = rtrim($sqlf, ", ");
+                            $sqlf .= ")";
+                            $sqlf = rtrim($sqlf, ", ");
+
+                            //echo "\n<br/>father ".$sqlf;
+
+                            $conn->query($sqlf);
+                            $fat_id = $conn->insert_id;
+                        }
                     }
 
                     // Mother Entry
-                    if (!empty($alrow['mt_officialName'])) {
-                        $sqlm = "INSERT INTO pupilsightPerson (";
-                        foreach ($alrow as $key => $ar) {
-                            if (strpos($key, 'mt_') !== false  && !empty($ar)) {
-                                //$clname = ltrim($key, 'mt_'); 
-                                $clname = substr($key, 3, strlen($key));
-                                $sqlm .= $clname . ',';
+                    if($chkFamily == '0'){
+                        if (!empty($alrow['mt_officialName'])) {
+                            $sqlm = "INSERT INTO pupilsightPerson (";
+                            foreach ($alrow as $key => $ar) {
+                                if (strpos($key, 'mt_') !== false  && !empty($ar)) {
+                                    //$clname = ltrim($key, 'mt_'); 
+                                    $clname = substr($key, 3, strlen($key));
+                                    $sqlm .= $clname . ',';
+                                }
                             }
-                        }
-                        $sqlm .= 'preferredName,gender,passwordStrong,passwordStrongSalt,pupilsightRoleIDPrimary,pupilsightRoleIDAll';
-                        //$sqlm = rtrim($sqlm, ", ");
-                        $sqlm .= ") VALUES (";
-                        foreach ($alrow as $k => $value) {
-                            if (strpos($k, 'mt_') !== false  && !empty($value)) {
-                                $val = str_replace('"', "", $value);
-                                $sqlm .= '"' . $val . '",';
+                            $sqlm .= 'preferredName,gender,passwordStrong,passwordStrongSalt,pupilsightRoleIDPrimary,pupilsightRoleIDAll';
+                            //$sqlm = rtrim($sqlm, ", ");
+                            $sqlm .= ") VALUES (";
+                            foreach ($alrow as $k => $value) {
+                                if (strpos($k, 'mt_') !== false  && !empty($value)) {
+                                    $val = str_replace('"', "", $value);
+                                    $sqlm .= '"' . $val . '",';
+                                }
                             }
+                            $sqlm .= '"' . $alrow['mt_officialName'] . '","F","' . $password . '","' . $salt . '","004","004"';
+                            //$sqlm = rtrim($sqlm, ", ");
+                            $sqlm .= ")";
+                            $sqlm = rtrim($sqlm, ", ");
+                            //echo "\n<br/>mother ".$sqlm;
+                            $conn->query($sqlm);
+                            $mot_id = $conn->insert_id;
                         }
-                        $sqlm .= '"' . $alrow['mt_officialName'] . '","F","' . $password . '","' . $salt . '","004","004"';
-                        //$sqlm = rtrim($sqlm, ", ");
-                        $sqlm .= ")";
-                        $sqlm = rtrim($sqlm, ", ");
-                        //echo "\n<br/>mother ".$sqlm;
-                        $conn->query($sqlm);
-                        $mot_id = $conn->insert_id;
+                    } else {
+                        $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE email = "'.$alrow['mt_email'].'" ';
+                        $resultchk = $connection2->query($sqlchk);
+                        $pd = $resultchk->fetch();
+                        if(!empty($pd)){
+                            $mot_id = $pd['pupilsightPersonID'];
+                            $family_id = $pd['pupilsightFamilyID'];
+                            //$chkFamily = 1;
+
+                            $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $mot_id . "," . $stu_id . ",'Mother')";
+                            $conn->query($sqlf4);
+                        }
                     }
 
                     if (!empty($stu_id) && !empty($pupilsightSchoolYearID)) {
@@ -331,46 +361,48 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         //echo "\n<br/>pupilsightStudentEnrolment: ".$sqle;
                     }
 
-
-                    if (!empty($fat_id) || !empty($mot_id)) {
-                        if (!empty($alrow['ft_officialName']) && !empty($alrow['mt_officialName'])) {
-                            $name = $alrow['ft_officialName'] . ' & ' . $alrow['mt_officialName'] . ' Family';
-                        } elseif (!empty($alrow['ft_officialName']) && empty($alrow['mt_officialName'])) {
-                            $name = $alrow['ft_officialName'] . ' Family';
-                        } elseif (empty($alrow['ft_officialName']) && !empty($alrow['mt_officialName'])) {
-                            $name = $alrow['mt_officialName'] . ' Family';
-                        } else {
-                            $name = 'Family';
-                        }
-
-                        $sqlfamily = 'INSERT INTO pupilsightFamily (name,homeAddress,homeAddressDistrict,homeAddressCountry) VALUES ("' . $name . '","' . $homeAddress . '","' . $homeDistrict . '","' . $homeCountry . '")';
-
-                        //echo "\n<br/>family: ".$sqlfamily;
-
-                        $conn->query($sqlfamily);
-                        $family_id = $conn->insert_id;
-                        if (!empty($family_id)) {
-                            if (!empty($fat_id)) {
-                                $sqlf1 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $fat_id . ",'Y','1','N','N','N','N')";
-                                $conn->query($sqlf1);
-                                //echo "\n<br/>pupilsightFamilyAdult: ".$sqlf1;
-
-                                $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $fat_id . "," . $stu_id . ",'Father')";
-                                $conn->query($sqlf4);
-
-                                //echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf4;
+                    if($chkFamily == '0'){
+                        if (!empty($fat_id) || !empty($mot_id)) {
+                        
+                            if (!empty($alrow['ft_officialName']) && !empty($alrow['mt_officialName'])) {
+                                $name = $alrow['ft_officialName'] . ' & ' . $alrow['mt_officialName'] . ' Family';
+                            } elseif (!empty($alrow['ft_officialName']) && empty($alrow['mt_officialName'])) {
+                                $name = $alrow['ft_officialName'] . ' Family';
+                            } elseif (empty($alrow['ft_officialName']) && !empty($alrow['mt_officialName'])) {
+                                $name = $alrow['mt_officialName'] . ' Family';
+                            } else {
+                                $name = 'Family';
                             }
 
-                            if (!empty($mot_id)) {
-                                $sqlf2 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $mot_id . ",'Y','2','N','N','N','N')";
-                                $conn->query($sqlf2);
+                            $sqlfamily = 'INSERT INTO pupilsightFamily (name,homeAddress,homeAddressDistrict,homeAddressCountry) VALUES ("' . $name . '","' . $homeAddress . '","' . $homeDistrict . '","' . $homeCountry . '")';
 
-                                //echo "\n<br/>pupilsightFamilyAdult: ".$sqlf2;
+                            //echo "\n<br/>family: ".$sqlfamily;
 
-                                $sqlf5 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $mot_id . "," . $stu_id . ",'Mother')";
+                            $conn->query($sqlfamily);
+                            $family_id = $conn->insert_id;
+                            if (!empty($family_id)) {
+                                if (!empty($fat_id)) {
+                                    $sqlf1 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $fat_id . ",'Y','1','N','N','N','N')";
+                                    $conn->query($sqlf1);
+                                    //echo "\n<br/>pupilsightFamilyAdult: ".$sqlf1;
 
-                                //echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf5;
-                                $conn->query($sqlf5);
+                                    $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $fat_id . "," . $stu_id . ",'Father')";
+                                    $conn->query($sqlf4);
+
+                                    //echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf4;
+                                }
+
+                                if (!empty($mot_id)) {
+                                    $sqlf2 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $mot_id . ",'Y','2','N','N','N','N')";
+                                    $conn->query($sqlf2);
+
+                                    //echo "\n<br/>pupilsightFamilyAdult: ".$sqlf2;
+
+                                    $sqlf5 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $mot_id . "," . $stu_id . ",'Mother')";
+
+                                    //echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf5;
+                                    $conn->query($sqlf5);
+                                }
                             }
 
                             $sqlf3 = "INSERT INTO pupilsightFamilyChild (pupilsightFamilyID,pupilsightPersonID) VALUES (" . $family_id . "," . $stu_id . ")";
@@ -379,6 +411,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                             //echo "\n<br/>pupilsightFamilyChild: ".$sqlf3;
 
                         }
+                    } else {
+                        $sqlf3 = "INSERT INTO pupilsightFamilyChild (pupilsightFamilyID,pupilsightPersonID) VALUES (" . $family_id . "," . $stu_id . ")";
+                            $conn->query($sqlf3);
                     }
                 }
             }
