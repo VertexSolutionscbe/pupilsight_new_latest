@@ -3348,3 +3348,23 @@ if ($type == 'assignBulkSubject') {
         }
     }
 }
+
+if ($type == 'leaveApprove') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('status' => '1', 'id' => $st);
+        $sql = 'UPDATE pupilsightLeaveApply SET status=:status WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}
+
+if ($type == 'leaveDecline') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('status' => '2', 'id' => $st);
+        $sql = 'UPDATE pupilsightLeaveApply SET status=:status WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}

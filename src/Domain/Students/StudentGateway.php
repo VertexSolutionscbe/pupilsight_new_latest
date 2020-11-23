@@ -598,6 +598,60 @@ class StudentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria, TRUE);
     }
 
+    public function getLeaveHistory(QueryCriteria $criteria, $pupilsightPersonID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('pupilsightLeaveApply')
+            ->cols([
+                'pupilsightLeaveApply.*','pupilsightPerson.officialName as studentName', 'pupilsightLeaveReason.name as leaveReason'
+            ])
+            ->leftJoin('pupilsightPerson', 'pupilsightLeaveApply.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+            ->leftJoin('pupilsightLeaveReason', 'pupilsightLeaveApply.pupilsightLeaveReasonID=pupilsightLeaveReason.id')
+            ->where('pupilsightLeaveApply.pupilsightPersonID IN ('.$pupilsightPersonID.') ')
+            ->orderBy(['pupilsightLeaveApply.id DESC']);
+            // echo $query;
+            // die();
+        return $this->runQuery($query, $criteria,TRUE );
+    } 
+
+    public function getLeaveHistoryByAdmin(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('pupilsightLeaveApply')
+            ->cols([
+                'pupilsightLeaveApply.*','pupilsightPerson.officialName as studentName', 'pupilsightLeaveReason.name as leaveReason', 'pupilsightYearGroup.name AS class', 'pupilsightRollGroup.name AS section','pupilsightProgram.name as program'
+            ])
+            ->leftJoin('pupilsightPerson', 'pupilsightLeaveApply.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+            ->leftJoin('pupilsightLeaveReason', 'pupilsightLeaveApply.pupilsightLeaveReasonID=pupilsightLeaveReason.id')
+            ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+            ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+            ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+            ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID');
+            if (!empty($pupilsightSchoolYearID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
+            }
+            if (!empty($pupilsightProgramID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
+            }
+            
+            if (!empty($pupilsightYearGroupID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
+            }
+            if (!empty($pupilsightRollGroupID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
+            }
+            if (!empty($search)) {
+                $query->where('pupilsightPerson.officialName LIKE "%' . $search . '%" ');
+            }
+            $query->orderBy(['pupilsightLeaveApply.id DESC']);
+            // echo $query;
+            // die();
+        return $this->runQuery($query, $criteria,TRUE );
+    } 
+
 
 
 }
