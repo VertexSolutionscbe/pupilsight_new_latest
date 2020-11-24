@@ -248,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         
             echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Register Student's</a>";
 
-            echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='index.php?q=/modules/Students/generate_tc.php' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
+            echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatetc.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
             
 
             echo "</div><div class='float-none'></div></div>";
@@ -299,7 +299,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             }
 
             if(in_array(29, $permissionChk)){
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='index.php?q=/modules/Students/generate_tc.php' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatetc.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
             }
             
                 echo "</div><div class='float-none'></div></div>";
@@ -679,9 +679,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             }
         }
     });
+    
 
     $(document).on('click', '#alertDelStu', function() {
         alert('You Have to De-Register Student First!');
+    });
+
+    $(document).on('click', '#clickGenerateTC', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            if (favorite.length == 1) {
+                var hrf = $(this).attr('data-hrf');
+                var newhrf = hrf + stuId;
+                $("#generateTC").attr('href', newhrf);
+                window.setTimeout(function () {
+                    $("#generateTC")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select One Student at a time.');
+            }
+            
+        } else {
+            alert('You Have to Select Student.');
+        }
     });
 </script>
 <style>

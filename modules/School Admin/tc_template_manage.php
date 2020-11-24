@@ -15,6 +15,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_m
 } else {
     //Proceed!
    $page->breadcrumbs->add(__('Fee Receipts Templates'));
+   $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
    if (isset($_GET['return'])) {
       returnProcess($guid, $_GET['return'], null, null);
@@ -28,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_m
          ->fromPOST();
 
    $type = 'tc';
-   $templates = $SchoolYearGateway->getTCTemplate($criteria, $type);
+   $templates = $SchoolYearGateway->getTCTemplate($criteria, $pupilsightSchoolYearID);
 
    // DATA TABLE
    $table = DataTable::createPaginated('FeeItemTypeManage', $criteria);
@@ -44,6 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_m
    
    //$table->addColumn('sequenceNumber', __('sequenceNumber'));
    $table->addColumn('serial_number', __('SI No'));
+   $table->addColumn('progname', __('Program'));
+   $table->addColumn('type', __('Type'));
    $table->addColumn('name', __('Template Name'));
   
    $table->addColumn('filename', __('Template File'))

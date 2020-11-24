@@ -40,7 +40,7 @@ class CurriculamGateway extends QueryableGateway
     }
     
     
-    public function getstudent_subject_assigned_data(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID)
+    public function getstudent_subject_assigned_data(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $pupilsightPersonID)
     {
         if(!empty($pupilsightProgramID) && !empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)){
             //print_r($criteria);
@@ -66,6 +66,9 @@ class CurriculamGateway extends QueryableGateway
             }
             if (!empty($pupilsightRollGroupID)) {
                 $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
+            }
+            if (!empty($pupilsightPersonID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightPersonID = "' . $pupilsightPersonID . '" ');
             }
 
             $query->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ')
