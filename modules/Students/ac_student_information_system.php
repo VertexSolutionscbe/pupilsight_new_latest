@@ -6,6 +6,7 @@ use Pupilsight\Domain\Curriculum\CurriculamGateway;
 
 use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Forms\Form;
+use Pupilsight\Domain\Helper\HelperGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_information_system.php') == false) {
     //Acess denied
@@ -13,7 +14,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-
+    $HelperGateway = $container->get(HelperGateway::class);
     $CurriculamGateway = $container->get(CurriculamGateway::class);
     $criteria = $CurriculamGateway->newQueryCriteria()
                     ->pageSize('100000');
@@ -80,15 +81,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
         //    $pupilsightSchoolYearIDpost = $_POST['pupilsightSchoolYearID'];
         $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
         $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
+        $pupilsightPersonID = $_POST['pupilsightPersonID'];
         $searchbyPost = '';
+
+        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+
+        $students =  $HelperGateway->getStudentByAll($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID, $pupilsightRollGroupID);
       
         //  $search =  $_POST['search'];
         $stuId = $_POST['studentId'];
     } else {
+        $classes = array('' => 'Select Class');
+        $sections = array('' => 'Select Section');
+        $students = array('' => 'Select Student');
         $pupilsightProgramID =  '';
         //   $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
         $pupilsightYearGroupID = '';
         $pupilsightRollGroupID = '';
+        $pupilsightPersonID = '';
         $searchbyPost = '';
         $search = '';
         $stuId = '0';
@@ -101,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
     //  echo "<a  id='add_student_to_subject' data-type='student' class='btn btn-primary'>Add Subject</a>&nbsp;&nbsp;";  
     
     // echo '<button id=""  class=" btn btn-primary" style="margin:5px">Unassign route</button>';
-    // echo '<button id=""  class=" btn btn-primary" style="margin:5px">Change route</button>';
+     echo '<input type="hidden" id="pupilsightSchoolYearID" value="'.$pupilsightSchoolYearID.'"> ';
 
     $searchform = Form::create('searchForm', '');
     $searchform->setFactory(DatabaseFormFactory::create($pdo));
@@ -114,11 +125,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'));
-    $col->addSelectYearGroup('pupilsightYearGroupID')->required()->selected($pupilsightYearGroupID);
+    $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->required()->selected($pupilsightYearGroupID);
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightRollGroupID', __('Section'));
-    $col->addSelectRollGroup('pupilsightRollGroupID', $pupilsightSchoolYearID)->required()->selected($pupilsightRollGroupID);
+    $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->required()->selected($pupilsightRollGroupID);
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightPersonID', __('Student'))->addClass('dte');
+    $col->addSelect('pupilsightPersonID')->fromArray($students)->selected($pupilsightPersonID);
 
     $col = $row->addColumn()->setClass('newdes width_smll');
     $col->addLabel('include_coresubjects', __('Include Core Subjects'));
@@ -134,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
     // $col->addContent('');
     echo $searchform->getOutput();
 
-    $students = $CurriculamGateway->getstudent_subject_assigned_data($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
+    $students = $CurriculamGateway->getstudent_subject_assigned_data($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $pupilsightPersonID);
     $elective_sub = array();
 
     // $sql_elective = 'SELECT a.*,b.pupilsightDepartmentID, b.name AS subject FROM ac_elective_group AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN pupilsightProgramClassSectionMapping AS c ON a.pupilsightMappingID = c.pupilsightMappingID WHERE c.pupilsightYearGroupID="'.$pupilsightYearGroupID.'" AND c.pupilsightRollGroupID="'.$pupilsightRollGroupID.'"';
@@ -348,5 +363,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
         }
 
 
+    });
+
+    $(document).ready(function(){
+        $("#pupilsightPersonID").select2();
     });
 </script>

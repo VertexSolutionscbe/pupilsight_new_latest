@@ -138,15 +138,16 @@ class SchoolYearGateway extends QueryableGateway
         return $this->runQuery($query, $criteria,TRUE );
     }
 
-    public function getTCTemplate(QueryCriteria $criteria, $type)
+    public function getTCTemplate(QueryCriteria $criteria, $pupilsightSchoolYearID)
     {
         $query = $this
             ->newQuery()
             ->from('pupilsightDocTemplate')
             ->cols([
-                'pupilsightDocTemplate.*'
+                'pupilsightDocTemplate.*','pupilsightProgram.name as progname'
             ])
-            ->where('pupilsightDocTemplate.type = "'.$type.'"')
+            ->leftJoin('pupilsightProgram', 'pupilsightDocTemplate.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->where('pupilsightDocTemplate.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'"')
             ->orderby(['pupilsightDocTemplate.id DESC']);
 
         return $this->runQuery($query, $criteria,TRUE );

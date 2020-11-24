@@ -366,4 +366,21 @@ class HelperGateway extends QueryableGateway
         return $sections;
     }
 
+    public function getStudentByAll($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID, $pupilsightRollGroupID){
+        
+        $sql = 'SELECT a.*, b.officialName FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND a.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+        $result = $connection2->query($sql);
+        $studentData = $result->fetchAll();
+
+        $students = array();
+        $students2 = array();
+        $students1 = array('' => 'Select Student');
+        foreach ($studentData as $ct) {
+            $students2[$ct['pupilsightPersonID']] = $ct['officialName'];
+        }
+        $students = $students1 + $students2;
+        return $students;
+
+    }
+
 }
