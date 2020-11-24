@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
     //custom field data added
 
-    if ($_POST["table_name"]) {
+    if (isset($_POST["table_name"])) {
         $newPostFlag = TRUE;
         $customFieldKey = md5(json_encode($_POST));
         if (isset($_SESSION["customFieldKey"])) {
@@ -89,13 +89,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
 
     $tableID = "pupilsightPerson";
-    if ($_POST["tableID"]) {
+    if (isset($_POST["tableID"])) {
         $tableID = isset($_POST["tableID"]) ? $_POST["tableID"] : "pupilsightPerson";
     }
 
-    if ($_POST["dbColumn"] && $_POST["dbTable"]) {
-        //isset($_SESSION["dbTable"])
-    }
+    //if ($_POST["dbColumn"] && $_POST["dbTable"]) {
+    //isset($_SESSION["dbTable"])
+    //}
 
     $form = Form::create('customFieldSearchForm', "");
 
@@ -286,6 +286,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                         <option value='dropdown'>Dropdown</option>
                         <option value='email'>EMAIL</option>
                         <option value='mobile'>MOBILE</option>
+                        <option value='number'>NUMBER</option>
                         <option value='date'>Date</option>
                         <option value='image'>Image</option>
                         <option value='file'>File Upload</option>
@@ -307,8 +308,6 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 </div>
             </div>
 
-
-
             <div class="row mb-2">
                 <div class="col-sm">Element Field ID* (must be unique, no special char and no space)</div>
                 <div class="col-sm">
@@ -327,6 +326,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <div class="col-sm">Element Label Description</div>
                 <div class="col-sm">
                     <textarea rows='2' name='field_description' id='description'></textarea>
+                </div>
+            </div>
+
+            <div class="row mb-2" id="fieldLengthPanel" style='display:none;'>
+                <div class="col-sm">Element Length</div>
+                <div class="col-sm">
+                    <input type='text' maxlength="4" class='w-full txtfield' onkeyup="this.value=this.value.replace(/[^\d]/,'')" name='field_length' id='fieldLength'>
                 </div>
             </div>
 
@@ -496,6 +502,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 animation: 150,
                 ghostClass: 'blue-background-class'
             });
+            //$("#fieldLengthPanel").hide();
         });
 
         function saveSorting() {
@@ -688,6 +695,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
         function activateOption() {
             //'varchar','text','date','url','select','checkboxes','radioboxes'
             var element = $("#fieldTypeSelect").val();
+            $("#fieldLengthPanel").hide();
             if (element == "dropdown" || element == "checkboxes" || element == "radioboxes") {
                 $("#optionPanel").show();
                 isTabSelectActive(false);
@@ -696,6 +704,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 $("#optionPanel").hide();
                 isTabSelectActive(true);
                 $("#tabId").html("<b>After</b> Tab / Section / Tile ");
+            } else if (element == "number") {
+                $("#optionPanel").hide();
+                $("#tabId").html("Tab / Section / Tile");
+                isTabSelectActive(false);
+                $("#fieldLengthPanel").show();
             } else {
                 $("#optionPanel").hide();
                 $("#tabId").html("Tab / Section / Tile");

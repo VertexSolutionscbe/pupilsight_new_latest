@@ -93,7 +93,7 @@ class CustomField extends QueryableGateway
             if ($flag) {
                 $colType = "TEXT NULL ";
                 $default_value = "NULL ";
-                if ($dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "image" || $dt["field_type"] == "file") {
+                if ($dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "number" || $dt["field_type"] == "image" || $dt["field_type"] == "file") {
                     $colType = "VARCHAR(255) NULL ";
                 } else if ($dt["field_type"] == "mobile") {
                     $colType = "VARCHAR(12) NULL ";
@@ -196,21 +196,23 @@ class CustomField extends QueryableGateway
                 foreach ($field_type as $ft => $fields) {
                     //echo $tbl . "=>" . $ft;
                     //print_r($fields);
-                    if ($ft == "image") {
+                    /*if ($ft == "image") {
                         //handle image 
-                    } else {
-                        foreach ($fields as $key => $val) {
-                            if ($squ) {
-                                $squ .= ", ";
-                            }
-                            $squ .= $key . "='" . $val . "'";
+                    } else {*/
+                    foreach ($fields as $key => $val) {
+                        if ($squ) {
+                            $squ .= ", ";
                         }
+                        $squ .= $key . "='" . $val . "'";
                     }
+                    //}
                 }
             }
-
+            //print_r($squ);
             if ($squ) {
                 $sq = "update " . $tbl . " set " . $squ . " where " . $colName . "='" . $colVal . "'";
+                //echo $sq;
+                //die();
                 $db = new DBQuery();
                 $db->query($sq);
             }
@@ -305,14 +307,11 @@ class CustomField extends QueryableGateway
     public function getPostData($tableName, $primaryCol, $primaryColVal)
     {
         try {
-            $sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' and active='Y' and field_type in('varchar','text','email','mobile','image','date','file','url','dropdown','checkboxes','radioboxes','tab')";
-            //echo $sq;
+            $sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' and active='Y' and field_type in('varchar','text','email','number','mobile','image','date','file','url','dropdown','checkboxes','radioboxes','tab')";
             $db = new DBQuery();
             $res = $db->selectRaw($sq);
-
             if ($res) {
                 $sq = "select " . $res[0]["fields"] . " from " . $tableName . " where " . $primaryCol . "='" . $primaryColVal . "' ";
-                //echo $sq;
                 $st = $db->selectRaw($sq);
                 if ($st) {
                     $result["t"] = $tableName;

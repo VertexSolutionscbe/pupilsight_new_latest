@@ -22,29 +22,29 @@ class StudentGateway extends QueryableGateway
     private static $tableName = 'pupilsightStudentEnrolment';
 
     private static $searchableColumns = ['pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightPerson.username', 'pupilsightPerson.email', 'pupilsightPerson.emailAlternate', 'pupilsightPerson.studentID', 'pupilsightPerson.phone1', 'pupilsightPerson.vehicleRegistration'];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryStudentsBySchoolYear(QueryCriteria $criteria, $pupilsightSchoolYearID=NULL, $searchFamilyDetails = false, $pupilsightProgramID=NULL, $pupilsightYearGroupID=NULL, $pupilsightRollGroupID=NULL,$search=NULL)
+    public function queryStudentsBySchoolYear(QueryCriteria $criteria, $pupilsightSchoolYearID = NULL, $searchFamilyDetails = false, $pupilsightProgramID = NULL, $pupilsightYearGroupID = NULL, $pupilsightRollGroupID = NULL, $search = NULL)
     {
         //print_r($_SESSION['student_search']);
-        if(!empty($_SESSION['student_search'])){
+        if (!empty($_SESSION['student_search'])) {
             $pupilsightProgramID = $_SESSION['student_search']['pupilsightProgramID'];
             $pupilsightYearGroupID = $_SESSION['student_search']['pupilsightYearGroupID'];
             $pupilsightRollGroupID = $_SESSION['student_search']['pupilsightRollGroupID'];
-        } 
-         
-       //echo $pupilsightProgramID;
-       //die();
+        }
+
+        //echo $pupilsightProgramID;
+        //die();
 
         $query = $this
             ->newQuery()
             ->distinct()
             ->from('pupilsightPerson')
             ->cols([
-                'pupilsightPerson.pupilsightPersonID',"CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status",'pupilsightPerson.pupilsightPersonID as student_id','pupilsightPerson.dob', 'pupilsightStudentEnrolmentID', 'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname','pupilsightPerson.officialName', 'pupilsightPerson.image_240', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', 'pupilsightPerson.dateStart', 'pupilsightPerson.dateEnd', 'pupilsightPerson.status', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program','pupilsightPerson.gender','pupilsightPerson.username','pupilsightPerson.address1','pupilsightPerson.address1District','pupilsightPerson.address1Country','pupilsightPerson.phone1','pupilsightPerson.languageFirst','pupilsightPerson.languageSecond','pupilsightPerson.languageThird','pupilsightPerson.religion','pupilsightPerson.admission_no'
+                'pupilsightPerson.pupilsightPersonID', "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightPerson.dob', 'pupilsightStudentEnrolmentID', 'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightPerson.officialName', 'pupilsightPerson.image_240', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', 'pupilsightPerson.dateStart', 'pupilsightPerson.dateEnd', 'pupilsightPerson.status', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program', 'pupilsightPerson.gender', 'pupilsightPerson.username', 'pupilsightPerson.address1', 'pupilsightPerson.address1District', 'pupilsightPerson.address1Country', 'pupilsightPerson.phone1', 'pupilsightPerson.languageFirst', 'pupilsightPerson.languageSecond', 'pupilsightPerson.languageThird', 'pupilsightPerson.religion', 'pupilsightPerson.admission_no'
             ])
             ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID AND pupilsightStudentEnrolment.pupilsightSchoolYearID = :pupilsightSchoolYearID')
             ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
@@ -55,38 +55,35 @@ class StudentGateway extends QueryableGateway
 
         if ($criteria->hasFilter('all')) {
             $query->innerJoin('pupilsightRole', 'FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)')
-                  ->where("pupilsightRole.category='Student'");
-        } 
-        else if(!empty($search)&&empty($pupilsightProgramID))
-        {
+                ->where("pupilsightRole.category='Student'");
+        } else if (!empty($search) && empty($pupilsightProgramID)) {
             $query->innerJoin('pupilsightRole', 'FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)')
-            ->where("pupilsightRole.category='Student'");
-        }
-        else {
+                ->where("pupilsightRole.category='Student'");
+        } else {
             $query->innerJoin('pupilsightRole', 'FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)')
-            ->where("pupilsightRole.category='Student'")
-            ->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
-                  ->where("pupilsightPerson.status = 'Full'")
-                  
-                  ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
-                  ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
-                  ->bindValue('today', date('Y-m-d'));
+                ->where("pupilsightRole.category='Student'")
+                ->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
+                ->where("pupilsightPerson.status = 'Full'")
+
+                ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
+                ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
+                ->bindValue('today', date('Y-m-d'));
         }
         $query->where('pupilsightPerson.pupilsightRoleIDPrimary = "003" ');
         if (!empty($pupilsightProgramID)) {
             $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
         }
-        
+
         if (!empty($pupilsightYearGroupID)) {
             $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
         }
         if (!empty($pupilsightRollGroupID)) {
             $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
         }
-        
+
         if ($searchFamilyDetails && $criteria->hasSearchText()) {
             self::$searchableColumns = array_merge(self::$searchableColumns, ['parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate']);
-            
+
             $query
                 ->leftJoin('pupilsightFamilyChild as child', "child.pupilsightPersonID=pupilsightPerson.pupilsightPersonID")
                 ->leftJoin('pupilsightFamilyAdult as adult1', "(adult1.pupilsightFamilyID=child.pupilsightFamilyID AND adult1.contactPriority=1)")
@@ -106,14 +103,14 @@ class StudentGateway extends QueryableGateway
     public function queryStudentsBySchoolYearandID(QueryCriteria $criteria, $pupilsightSchoolYearID, $studentids)
     {
 
-      // echo $studentids;
-       
+        // echo $studentids;
+
         $query = $this
             ->newQuery()
             ->distinct()
             ->from('pupilsightPerson')
             ->cols([
-                'pupilsightPerson.officialName as studentName','pupilsightPerson.pupilsightPersonID',"CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status",'pupilsightPerson.pupilsightPersonID as student_id','pupilsightPerson.dob', 'pupilsightStudentEnrolmentID', 'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname','pupilsightYearGroup.name as classname' ,'pupilsightPerson.image_240', 'pupilsightYearGroup.nameShort AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', 'pupilsightPerson.dateStart', 'pupilsightPerson.dateEnd', 'pupilsightPerson.status', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program'
+                'pupilsightPerson.officialName as studentName', 'pupilsightPerson.pupilsightPersonID', "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightPerson.dob', 'pupilsightStudentEnrolmentID', 'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightYearGroup.name as classname', 'pupilsightPerson.image_240', 'pupilsightYearGroup.nameShort AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', 'pupilsightPerson.dateStart', 'pupilsightPerson.dateEnd', 'pupilsightPerson.status', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program'
             ])
             ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID AND pupilsightStudentEnrolment.pupilsightSchoolYearID = :pupilsightSchoolYearID')
             ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
@@ -124,17 +121,17 @@ class StudentGateway extends QueryableGateway
 
         if ($criteria->hasFilter('all')) {
             $query->innerJoin('pupilsightRole', 'FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)')
-                  ->where("pupilsightRole.category='Student'");
+                ->where("pupilsightRole.category='Student'");
         } else {
-             $query->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
-                  ->where("pupilsightPerson.status = 'Full'")
-                  ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
-                  ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
-                  ->bindValue('today', date('Y-m-d'))
-                  ->where('pupilsightPerson.pupilsightPersonID IN( '.$studentids.')');
+            $query->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
+                ->where("pupilsightPerson.status = 'Full'")
+                ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
+                ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
+                ->bindValue('today', date('Y-m-d'))
+                ->where('pupilsightPerson.pupilsightPersonID IN( ' . $studentids . ')');
         }
 
-      
+
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
@@ -146,32 +143,32 @@ class StudentGateway extends QueryableGateway
     public function queryStudentsBySchoolYearandID_with_assigned_subjects(QueryCriteria $criteria, $pupilsightSchoolYearID, $studentids)
     {
 
-      // echo $studentids;
-       
+        // echo $studentids;
+
         $query = $this
             ->newQuery()
             ->distinct()
             ->from('pupilsightPerson')
             ->cols([
-                'pupilsightPerson.pupilsightPersonID',"GROUP_CONCAT(DISTINCT pupilsightDepartment.name SEPARATOR ', ') as coresubject",'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightStudentEnrolment.pupilsightStudentEnrolmentID', "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status",'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname','pupilsightYearGroup.name as classname' , 'pupilsightProgram.name as program'
+                'pupilsightPerson.pupilsightPersonID', "GROUP_CONCAT(DISTINCT pupilsightDepartment.name SEPARATOR ', ') as coresubject", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightStudentEnrolment.pupilsightStudentEnrolmentID', "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightYearGroup.name as classname', 'pupilsightProgram.name as program'
             ])
             ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID AND pupilsightStudentEnrolment.pupilsightSchoolYearID = :pupilsightSchoolYearID')
             ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
-           
+
             ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
-            
+
             ->leftJoin('assign_core_subjects_toclass', 'pupilsightStudentEnrolment.pupilsightProgramID=assign_core_subjects_toclass.pupilsightProgramID')
-            ->leftJoin('pupilsightDepartment', 'assign_core_subjects_toclass.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')    
+            ->leftJoin('pupilsightDepartment', 'assign_core_subjects_toclass.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
             ->bindValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
-       
-             $query->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
 
-                 ->where('pupilsightPerson.pupilsightPersonID IN( '.$studentids.')') 
-                  ->where('pupilsightStudentEnrolment.pupilsightYearGroupID =assign_core_subjects_toclass.pupilsightYearGroupID ')
-                  ->groupBy(['assign_core_subjects_toclass.pupilsightYearGroupID,assign_core_subjects_toclass.pupilsightProgramID,pupilsightPerson.pupilsightPersonID']);
-       
+        $query->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
 
-      
+            ->where('pupilsightPerson.pupilsightPersonID IN( ' . $studentids . ')')
+            ->where('pupilsightStudentEnrolment.pupilsightYearGroupID =assign_core_subjects_toclass.pupilsightYearGroupID ')
+            ->groupBy(['assign_core_subjects_toclass.pupilsightYearGroupID,assign_core_subjects_toclass.pupilsightProgramID,pupilsightPerson.pupilsightPersonID']);
+
+
+
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
@@ -184,14 +181,14 @@ class StudentGateway extends QueryableGateway
             ->newQuery()
             ->from('pupilsightPerson')
             ->cols([
-                'pupilsightPerson.pupilsightPersonID', 'pupilsightStudentEnrolmentID','pupilsightProgram.name AS program', 'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.officialName', 'pupilsightPerson.surname', 'pupilsightPerson.image_240', 'pupilsightYearGroup.nameShort AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', 'pupilsightPerson.dateStart', 'pupilsightPerson.dateEnd', 'pupilsightPerson.status', "'Student' as roleCategory"
+                'pupilsightPerson.pupilsightPersonID', 'pupilsightStudentEnrolmentID', 'pupilsightProgram.name AS program', 'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.officialName', 'pupilsightPerson.surname', 'pupilsightPerson.image_240', 'pupilsightYearGroup.nameShort AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', 'pupilsightPerson.dateStart', 'pupilsightPerson.dateEnd', 'pupilsightPerson.status', "'Student' as roleCategory"
             ])
             ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
             ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
             ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
             ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID');
-            //->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = :pupilsightSchoolYearID')
-            //->bindValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
+        //->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = :pupilsightSchoolYearID')
+        //->bindValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
@@ -213,13 +210,13 @@ class StudentGateway extends QueryableGateway
             ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
             ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
             ->bindValue('today', date('Y-m-d'));
-        
+
         if (!empty($pupilsightRollGroupID)) {
             $query
                 ->where('pupilsightStudentEnrolment.pupilsightRollGroupID = :pupilsightRollGroupID')
                 ->bindValue('pupilsightRollGroupID', $pupilsightRollGroupID);
         }
-            
+
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
         $criteria->addFilterRules([
@@ -238,7 +235,7 @@ class StudentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentsAndTeachersBySchoolYear(QueryCriteria $criteria, $pupilsightSchoolYearID) 
+    public function queryStudentsAndTeachersBySchoolYear(QueryCriteria $criteria, $pupilsightSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -253,17 +250,17 @@ class StudentGateway extends QueryableGateway
             ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
             ->leftJoin('pupilsightStaff', "pupilsightStaff.pupilsightPersonID=pupilsightPerson.pupilsightPersonID")
             ->bindValue('pupilsightSchoolYearID', $pupilsightSchoolYearID)
-            
+
             ->groupBy(['pupilsightPerson.pupilsightPersonID']);
 
         if ($criteria->hasFilter('all')) {
             $query->where("(pupilsightPerson.status = 'Full' OR pupilsightPerson.status = 'Expected')");
         } else {
             $query->where("(pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL OR (pupilsightStaff.pupilsightStaffID IS NOT NULL AND pupilsightRole.category='Staff') )")
-                  ->where("pupilsightPerson.status = 'Full'")
-                  ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
-                  ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
-                  ->bindValue('today', date('Y-m-d'));
+                ->where("pupilsightPerson.status = 'Full'")
+                ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
+                ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
+                ->bindValue('today', date('Y-m-d'));
         }
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
@@ -336,74 +333,75 @@ class StudentGateway extends QueryableGateway
         return $this->db()->selectOne($sql, $data);
     }
 
-    public function get_assigned_elect_sub_tostudents(QueryCriteria $criteria,$studentids) {
-      
-
- /// `assign_elective_subjects_tostudents`,`pupilsightProgramID`,`pupilsightYearGroupID`,`pupilsightDepartmentID`,`pupilsightPersonID`        
-                    $query = $this
-                    ->newQuery()
-                    ->from('assign_elective_subjects_tostudents')
-                    ->cols([
-                        'assign_elective_subjects_tostudents.*','pupilsightProgram.name AS program_name','pupilsightPerson.pupilsightPersonID','pupilsightPerson.surname','pupilsightPerson.officialName',"GROUP_CONCAT(DISTINCT pupilsightDepartment.name SEPARATOR ', ') as subject","GROUP_CONCAT(DISTINCT pupilsightYearGroup.name SEPARATOR ', ') as class"
-                    ])
-                   ->leftJoin('pupilsightDepartment', 'assign_elective_subjects_tostudents.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
-                    ->leftJoin('pupilsightProgram', 'assign_elective_subjects_tostudents.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
-                    ->leftJoin('pupilsightYearGroup', 'assign_elective_subjects_tostudents.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
-                    ->leftJoin('pupilsightPerson', 'assign_elective_subjects_tostudents.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
-                    
-                    ->where('assign_elective_subjects_tostudents.pupilsightPersonID IN( '.$studentids.')')           
-                   // ->bindValue('fn_fee_invoice_id', $fn_fee_invoice_id)
-                    ->groupBy(['assign_elective_subjects_tostudents.pupilsightYearGroupID,assign_elective_subjects_tostudents.pupilsightProgramID']);
-        
-         
-                    return $this->runQuery($query, $criteria);
-                } 
+    public function get_assigned_elect_sub_tostudents(QueryCriteria $criteria, $studentids)
+    {
 
 
+        /// `assign_elective_subjects_tostudents`,`pupilsightProgramID`,`pupilsightYearGroupID`,`pupilsightDepartmentID`,`pupilsightPersonID`        
+        $query = $this
+            ->newQuery()
+            ->from('assign_elective_subjects_tostudents')
+            ->cols([
+                'assign_elective_subjects_tostudents.*', 'pupilsightProgram.name AS program_name', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.surname', 'pupilsightPerson.officialName', "GROUP_CONCAT(DISTINCT pupilsightDepartment.name SEPARATOR ', ') as subject", "GROUP_CONCAT(DISTINCT pupilsightYearGroup.name SEPARATOR ', ') as class"
+            ])
+            ->leftJoin('pupilsightDepartment', 'assign_elective_subjects_tostudents.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
+            ->leftJoin('pupilsightProgram', 'assign_elective_subjects_tostudents.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->leftJoin('pupilsightYearGroup', 'assign_elective_subjects_tostudents.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightPerson', 'assign_elective_subjects_tostudents.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
 
-//get inactive students to get registerd if not registred/assigned  previosly 
-                public function queryStudentsBySchoolYear_inactive_students(QueryCriteria $criteria, $pupilsightSchoolYearID)
-                {
-            
-                  // echo $studentids;
-                   
-                    $query = $this
-                        ->newQuery()
-                        ->distinct()
-                        ->from('pupilsightPerson')
-                        ->cols([
-                            'pupilsightPerson.pupilsightPersonID',"CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status",'pupilsightPerson.pupilsightPersonID as student_id','pupilsightPerson.dob', 'pupilsightStudentEnrolmentID', 'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname','pupilsightYearGroup.name as classname' ,'pupilsightPerson.image_240', 'pupilsightYearGroup.nameShort AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', 'pupilsightPerson.dateStart', 'pupilsightPerson.dateEnd', 'pupilsightPerson.status', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program'
-                        ])
-                        ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID AND pupilsightStudentEnrolment.pupilsightSchoolYearID = :pupilsightSchoolYearID')
-                        ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
-                        ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
-                        ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
-                        ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
-                        ->bindValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
-            
-                    if ($criteria->hasFilter('all')) {
-                        $query->innerJoin('pupilsightRole', 'FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)')
-                              ->where("pupilsightRole.category='Student'");
-                    } else {
-                         $query->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
-                              ->where("pupilsightPerson.status = 'Full'")
-                              ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
-                              ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
-                              ->bindValue('today', date('Y-m-d'))
-                             ->where('(pupilsightStudentEnrolment.active=0 )');
-                    }
-            
-                  
-            
-                    $criteria->addFilterRules($this->getSharedUserFilterRules());
-            
-                    return $this->runQuery($query, $criteria);
-                }
+            ->where('assign_elective_subjects_tostudents.pupilsightPersonID IN( ' . $studentids . ')')
+            // ->bindValue('fn_fee_invoice_id', $fn_fee_invoice_id)
+            ->groupBy(['assign_elective_subjects_tostudents.pupilsightYearGroupID,assign_elective_subjects_tostudents.pupilsightProgramID']);
 
-                
+
+        return $this->runQuery($query, $criteria);
+    }
+
+
+
+    //get inactive students to get registerd if not registred/assigned  previosly 
+    public function queryStudentsBySchoolYear_inactive_students(QueryCriteria $criteria, $pupilsightSchoolYearID)
+    {
+
+        // echo $studentids;
+
+        $query = $this
+            ->newQuery()
+            ->distinct()
+            ->from('pupilsightPerson')
+            ->cols([
+                'pupilsightPerson.pupilsightPersonID', "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightPerson.dob', 'pupilsightStudentEnrolmentID', 'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightYearGroup.name as classname', 'pupilsightPerson.image_240', 'pupilsightYearGroup.nameShort AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', 'pupilsightPerson.dateStart', 'pupilsightPerson.dateEnd', 'pupilsightPerson.status', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program'
+            ])
+            ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID AND pupilsightStudentEnrolment.pupilsightSchoolYearID = :pupilsightSchoolYearID')
+            ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+            ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+            ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->bindValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
+
+        if ($criteria->hasFilter('all')) {
+            $query->innerJoin('pupilsightRole', 'FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)')
+                ->where("pupilsightRole.category='Student'");
+        } else {
+            $query->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
+                ->where("pupilsightPerson.status = 'Full'")
+                ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
+                ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
+                ->bindValue('today', date('Y-m-d'))
+                ->where('(pupilsightStudentEnrolment.active=0 )');
+        }
+
+
+
+        $criteria->addFilterRules($this->getSharedUserFilterRules());
+
+        return $this->runQuery($query, $criteria);
+    }
+
+
     public function getStudentData(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID)
     {
-        if(!empty($pupilsightProgramID) || !empty($pupilsightYearGroupID) || !empty($pupilsightRollGroupID)){
+        if (!empty($pupilsightProgramID) || !empty($pupilsightYearGroupID) || !empty($pupilsightRollGroupID)) {
             //print_r($criteria);
             $clsId = implode(',', $pupilsightYearGroupID);
             $secId = implode(',', $pupilsightRollGroupID);
@@ -412,7 +410,7 @@ class StudentGateway extends QueryableGateway
                 ->newQuery()
                 ->from('pupilsightPerson')
                 ->cols([
-                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.officialName AS student_name','pupilsightProgram.name as progname','pupilsightYearGroup.name as classname','pupilsightRollGroup.name as secname'
+                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.officialName AS student_name', 'pupilsightProgram.name as progname', 'pupilsightYearGroup.name as classname', 'pupilsightRollGroup.name as secname'
                 ])
                 ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
                 ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
@@ -428,7 +426,7 @@ class StudentGateway extends QueryableGateway
                 $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID IN (' . $clsId . ') ');
             }
             if (!empty($secId)) {
-                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID IN (' .$secId . ') ');
+                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID IN (' . $secId . ') ');
             }
 
             $query->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ')
@@ -442,8 +440,5 @@ class StudentGateway extends QueryableGateway
             $res->data = $data;
             return $res;
         }
-    }      
-
-
-
+    }
 }

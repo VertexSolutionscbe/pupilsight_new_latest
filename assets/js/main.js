@@ -6675,8 +6675,8 @@ $(document).on('change', '#Staff_class', function () {
 });
 
 /* Custom Field Creation */
+var customField = new CustomField();
 $(function () {
-    var customField = new CustomField();
     customField.load();
 });
 
@@ -6756,10 +6756,10 @@ function CustomField() {
                 if (obj["data"][i].field_type != "tab") {
                     if (obj["data"][i].active == "Y") {
                         //add Field
-                        console.log("view ", obj.view);
+                        //console.log("view ", obj.view);
                         if (obj.view) {
                             //show
-                            console.log("create view ", obj["data"][i]);
+                            //console.log("create view ", obj["data"][i]);
                             _this.createView(obj["data"][i]);
                         } else {
                             //create input
@@ -6966,6 +6966,7 @@ function CustomField() {
             (value.constructor === Object && Object.keys(value).length === 0)
         )
     }
+
     _this.colCurrent = 0;
     _this.isRowActive = false;
     _this.colActiveStr = "";
@@ -7049,16 +7050,21 @@ function CustomField() {
     this.createInput = function (obj) {
         if (obj.field_type) {
             //'varchar','text','date','url','select','checkboxes','radioboxes'
-            console.log("obj.field_type: ", obj.field_type);
+            //console.log("obj.field_type: ", obj.field_type);
             if (obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file" || obj.field_type == "image") {
                 _this.createTextField(obj);
             } else if (obj.field_type == "text") {
                 _this.createTextArea(obj);
             } else if (obj.field_type == "dropdown") {
                 _this.createDropDown(obj);
-            } else if (obj.field_type == "date") {
-                _this.createDateField(obj);
+            } else if (obj.field_type == "number") {
+                _this.createNumberField(obj);
             }
+            /*
+            else if (obj.field_type == "date") {
+                _this.createDateField(obj);
+            } 
+            */
         }
     };
 
@@ -7077,9 +7083,7 @@ function CustomField() {
         var tfVal = "";
         if (pcdt) {
             tfVal = pcdt.dt[obj.field_name];
-            if (!tfVal) {
-                tfVal = "";
-            }
+            //console.log(obj.field_name, tfval);
         }
 
         var description = "";
@@ -7095,9 +7099,15 @@ function CustomField() {
             file_type = "date";
         } else if (obj.field_type == "file") {
             file_type = "file";
+            if (!tfVal) {
+                tfVal = "";
+            }
         } else if (obj.field_type == "image") {
             file_type = "file";
             acceptType = " accept='image/x-png,image/jpeg,image/jpg' ";
+            if (!tfVal) {
+                tfVal = "";
+            }
         }
 
         mobile = "";
@@ -7112,8 +7122,6 @@ function CustomField() {
             required = "";
             requiredStr = "";
         }
-
-
 
         //console.log("file_type: ", file_type);
         var elementName = _this.createName(obj);
@@ -7138,6 +7146,85 @@ function CustomField() {
             $("#tbody_" + obj.tab).append(str);
         }
     };
+
+    this.createNumberField = function (obj) {
+        var required = "";
+        var requiredStr = "";
+        if (obj.required == "Y") {
+            required = " required ";
+            requiredStr = "<span class='ml-1'> * </span>";
+        }
+
+        var tfVal = "";
+        if (pcdt) {
+            tfVal = pcdt.dt[obj.field_name];
+            /*if (!tfVal) {
+                tfVal = "";
+            }*/
+        }
+
+        var description = "";
+        if (obj.field_description) {
+            description = obj.field_description;
+        }
+
+        var length = obj.field_length;
+        var maxlength = "";
+        if (length) {
+            maxlength = " maxlength='" + length + "' ";
+        }
+        //console.log("file_type: ", file_type);
+        var elementName = _this.createName(obj);
+        var str = `<div class="row mb-1">                            
+        <div class="col-sm">
+        <div>
+            <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + ` 
+            <span class="text-xxs text-gray italic font-normal mt-1 sm:mt-0">` + description + `</span>
+            </label>
+        </div>
+        </div>
+        
+        <div class="col-sm  standardWidth">
+        <div>
+            <div class="flex-1 relative">
+            <input type="text" id="` + obj.field_name + `" ` + elementName + ` class="w-full form-control" value = "` + tfVal + `" ` + required + ` onblur="customField.fixLength(this.id,'` + obj.field_name + `',` + length + `);" ` + maxlength + `" onkeypress="return customField.validatenumerics(event);">
+            <div id="` + obj.field_name + `_error" class="invalid-feedback">Invalid Element Length</div>
+            </div>
+        </div>
+        </div></div> `;
+
+        if (obj.tab) {
+            $("#tbody_" + obj.tab).append(str);
+        }
+    };
+
+    this.fixLength = function (id, name, length) {
+        //console.log(id);
+        if (length) {
+            var ele = document.getElementById(id);
+            //console.log(ele.value.length, length);
+            $('#' + name + '_error').hide();
+            if (!(ele.value.length == length)) {
+                //throw validation error
+                if (ele.value) {
+                    ele.focus();
+                    $('#' + name + '_error').show();
+                }
+            }
+        }
+    }
+
+    this.validatenumerics = function (key) {
+        //getting key code of pressed key
+        var keycode = (key.which) ? key.which : key.keyCode;
+        //comparing pressed keycodes
+
+        if (keycode > 31 && (keycode < 48 || keycode > 57)) {
+            //alert(" You can enter only characters 0 to 9 ");
+            return false;
+        }
+        else return true;
+    }
 
     this.createTextArea = function (obj) {
         var required = "";
