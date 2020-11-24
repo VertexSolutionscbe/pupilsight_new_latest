@@ -19,7 +19,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
 } else {
 
     echo '<h2>';
-    echo __('Campaign Button Permission');
+    echo __('Student View Button Permission');
     echo '</h2>';
 
     $sql = 'SELECT * FROM pupilsightModuleButton WHERE pupilsightModuleID = 5 ';

@@ -69,6 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             if(!empty($type)){
                 $sqle .= 'AND a.type = '.$type.'';
             }
+
             $resulte = $connection2->query($sqle);
             $mailsmsdata = $resulte->fetchAll();
         } else {
@@ -82,6 +83,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         $resulte = $connection2->query($sqle);
         $mailsmsdata = $resulte->fetchAll();
     }
+
+    // echo '<pre>';
+    // print_r($mailsmsdata);
+    // echo '</pre>';
     
     
      echo '<h2>';
@@ -111,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('start_date', __('From Date'))->addClass('dte');
-            $col->addDate('start_date')->setValue($startDate);
+            $col->addDate('start_date')->setValue($startDate)->required();
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('end_date', __('To Date'))->addClass('dte');
@@ -150,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 foreach($mailsmsdata as $estd){ 
                     $stype = '';
                     $sto = '';
-                    if($estd['email'] != 'NULL'){
+                    if($estd['type'] == '2'){
                         $stype = 'Email';
                         $sto = $estd['email'];
                     } else {

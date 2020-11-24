@@ -42,14 +42,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
         die();
     }
 
-    $sql = 'SELECT  field_name, field_title, modules, active FROM custom_field WHERE table_name = "pupilsightPerson" AND field_type != "tab" ';
+    $sql = 'SELECT  field_name, field_title, modules, active, field_type FROM custom_field WHERE table_name = "pupilsightPerson" ';
     $result = $connection2->query($sql);
     $customFields = $result->fetchAll();
-    /*
-    echo '<pre>';
-    print_r($customFields);
-    echo '</pre>';
-*/
+    
+    // echo '<pre>';
+    // print_r($customFields);
+    // echo '</pre>';
+
     if (!empty($customFields)) {
         $stuCusFld = array();
         $fatCusFld = array();
@@ -167,6 +167,7 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
                 $i = 0;
                 while ($i < $len) {
                     if ($customField->isActiveField($customFields, $fieldName[$i])) {
+                        if ($customField->isNotTabField($customFields, $fieldName[$i])) {
                 ?>
                         <tr>
                             <td>
@@ -175,7 +176,7 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
                             <td><?= $field[$i] ?></td>
                         </tr>
                 <?php
-                    }
+                    } }
                     $i++;
                 }
                 ?>
@@ -245,6 +246,7 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
                 <?php
                 if (!empty($stuCusFld)) {
                     foreach ($stuCusFld as $sc) {
+                        if($sc['field_type'] != 'tab' && $sc['active'] == 'Y'){
                 ?>
                         <tr>
                             <td>
@@ -252,7 +254,7 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
                             </td>
                             <td><?php echo $sc['field_title']; ?> (Custom Field)</td>
                         </tr>
-                <?php }
+                <?php } }
                 } ?>
 
             </tbody>
@@ -325,6 +327,7 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
                 <?php
                 if (!empty($fatCusFld)) {
                     foreach ($fatCusFld as $fc) {
+                        if($fc['field_type'] != 'tab' && $fc['active'] == 'Y'){
                 ?>
                         <tr>
                             <td>
@@ -332,7 +335,7 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
                             </td>
                             <td><?php echo $fc['field_title']; ?> (Custom Field)</td>
                         </tr>
-                <?php }
+                <?php } }
                 } ?>
             </tbody>
         </table>
@@ -404,6 +407,7 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
                 <?php
                 if (!empty($motCusFld)) {
                     foreach ($motCusFld as $mc) {
+                        if($mc['field_type'] != 'tab' && $mc['active'] == 'Y'){
                 ?>
                         <tr>
                             <td>
@@ -411,7 +415,7 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
                             </td>
                             <td><?php echo $mc['field_title']; ?> (Custom Field)</td>
                         </tr>
-                <?php }
+                <?php } }
                 } ?>
             </tbody>
         </table>

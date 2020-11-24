@@ -942,7 +942,14 @@
 
         // });
 
-        $('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
+        //$('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
+        $("#expore_tbl tr").each(function () {
+            $(this).find("th:last").remove();
+            $(this).find("td:last").remove();
+            $(this).find("th:first").remove();
+            $(this).find("td:first").remove();
+        });
+
         $("#expore_tbl").table2excel({
             name: "Worksheet Name",
             filename: "Student_details.xls",
@@ -5765,7 +5772,7 @@ $(document).on('click', '.tick_icon', function () {
                     data: { val: val, type: type, sid: sid, eid: eid, classId: classId, progId: progId, chktype: 'add' },
                     async: true,
                     success: function (response) {
-                        alert('Elective Subject Assign Succesfully');
+                        //alert('Elective Subject Assign Succesfully');
                     }
                 });
             }
@@ -5781,7 +5788,7 @@ $(document).on('click', '.tick_icon', function () {
                     data: { val: val, type: type, sid: sid, eid: eid, classId: classId, progId: progId, chktype: 'delete' },
                     async: true,
                     success: function (response) {
-                        alert('Elective Subject Deleted Succesfully');
+                        //alert('Elective Subject Deleted Succesfully');
                         ths.removeClass("greenicon");
                         ths.addClass("greyicon");
                     }

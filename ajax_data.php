@@ -3287,3 +3287,107 @@ if ($type == 'getMultipleSection') {
     }
     echo $data;
 }
+
+if ($type == 'restoreBulkStudent') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('is_delete' => '0', 'pupilsightPersonID' => $st);
+        $sql = 'UPDATE pupilsightPerson SET is_delete=:is_delete WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}
+
+if ($type == 'registerBulkStudent') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('active' => '1', 'pupilsightPersonID' => $st);
+        $sql = 'UPDATE pupilsightPerson SET active=:active WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}
+
+
+if ($type == 'assignBulkSubject') {
+
+    $cuid = $_SESSION[$guid]['pupilsightPersonID'];
+    //stud_id,pupilsightProgramID,pupilsightYearGroupID,subjects
+    $subjects = $val;
+    $pgrm_val = $_POST['pid'];
+    $class_val = $_POST['cid'];
+    $students =  explode(',', $_POST['stuid']);
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
+    //  $ids = explode(',',$val);
+    $subs = explode(',', $subjects);
+    foreach ($subs as $sb) {
+        $sql = 'SELECT ac_elective_group_id FROM ac_elective_group_subjects AS a LEFT JOIN ac_elective_group AS b ON a.ac_elective_group_id = b.id WHERE a.pupilsightDepartmentID=' . $sb . ' AND b.pupilsightSchoolYearID = ' . $pupilsightSchoolYearID . '  AND b.pupilsightProgramID = ' . $pgrm_val . '  AND b.pupilsightYearGroupID = ' . $class_val . ' ';
+        $result = $connection2->query($sql);
+        $eledata = $result->fetch();
+        $ac_elective_group_id = $eledata['ac_elective_group_id'];
+
+        foreach($students as $studid){
+
+            /// `assign_elective_subjects_tostudents`,`pupilsightProgramID`,`pupilsightYearGroupID`,`pupilsightDepartmentID`,`pupilsightPersonID`
+            //to remove duplicate entry for elective language
+            $sqlprev = 'SELECT * FROM assign_elective_subjects_tostudents WHERE pupilsightPersonID = ' . $studid . '  AND pupilsightDepartmentID=' . $sb . ' AND ac_elective_group_id = '.$ac_elective_group_id.' ';
+
+            $resultprev = $connection2->query($sqlprev);
+            $prevData = $resultprev->fetchAll();
+            //print_r($prevData);
+            if (count($prevData) < 1) {
+                //if the subject is not assigned previosly then only will assign
+                // echo "no";
+
+                $data1 = array('pupilsightPersonID' => $studid, 'pupilsightProgramID' => $pgrm_val, 'pupilsightYearGroupID' => $class_val, 'pupilsightDepartmentID' => $sb, 'ac_elective_group_id' => $ac_elective_group_id);
+                $sql1 = "INSERT INTO assign_elective_subjects_tostudents SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightDepartmentID=:pupilsightDepartmentID,pupilsightPersonID=:pupilsightPersonID, ac_elective_group_id=:ac_elective_group_id";
+                $result = $connection2->prepare($sql1);
+                $result->execute($data1);
+            }
+        }
+    }
+}
+
+if ($type == 'leaveApprove') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('status' => '1', 'id' => $st);
+        $sql = 'UPDATE pupilsightLeaveApply SET status=:status WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}
+
+if ($type == 'leaveDecline') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('status' => '2', 'id' => $st);
+        $sql = 'UPDATE pupilsightLeaveApply SET status=:status WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}
+
+
+if ($type == 'addCoreSubjectToStudent') {
+    $pupilsightPersonID = $val;
+    $pupilsightDepartmentID = $_POST['sid'];
+    $pupilsightProgramID = $_POST['progId'];
+    $pupilsightYearGroupID = $_POST['classId'];
+    $chktype = $_POST['chktype'];
+
+    if ($chktype == 'add') {
+        $data2 = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
+
+        $sql2 = 'DELETE FROM remove_core_subjects_from_student WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID';
+        $result2 = $connection2->prepare($sql2);
+        $result2->execute($data2);
+    } else {
+        $data2 = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
+
+        $sql2 = "INSERT INTO remove_core_subjects_from_student SET  pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightDepartmentID=:pupilsightDepartmentID,pupilsightPersonID=:pupilsightPersonID";
+        $result2 = $connection2->prepare($sql2);
+        $result2->execute($data2);
+    }
+}

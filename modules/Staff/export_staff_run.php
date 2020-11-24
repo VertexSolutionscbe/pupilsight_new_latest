@@ -5,6 +5,7 @@ Pupilsight, Flexible & Open School System
 */
 
 use Pupilsight\Data\ImportType;
+use Pupilsight\Domain\System\CustomField;
 
 // Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 7200);
@@ -20,6 +21,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
+    $customField  = $container->get(CustomField::class);
     $page->breadcrumbs->add(__('Export Staff Import File'));
     if(!empty($_POST['staff_column'])){
         // echo '<pre>';
@@ -40,7 +42,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
         die();
     }
 
-    $sql = 'SELECT  field_name, field_title, modules FROM custom_field WHERE table_name = "pupilsightPerson" ';
+    $sql = 'SELECT  field_name, field_title, modules, active, field_type FROM custom_field WHERE table_name = "pupilsightPerson" ';
     $result = $connection2->query($sql);
     $customFields = $result->fetchAll();
     // echo '<pre>';
@@ -80,7 +82,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
                 </td>
                 <td>Official Name</td>
             </tr>
-            <tr>
+            <!-- <tr>
                 <td>
                     <input type="checkbox" class="stuField" name="staff_column[]" value="Type">
                 </td>
@@ -175,10 +177,32 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
                     <input type="checkbox" class="stuField" name="staff_column[]" value="National ID Card Number">
                 </td>
                 <td>National ID Card Number</td>
-            </tr>
+            </tr> -->
+        <?php
+            $fieldName = array("gender","dob","username","canLogin","email", "address", "address1District", "address1Country", "languageFirst", "languageSecond", "languageThird", "countryOfBirth", "ethnicity", "religion", "nationalIDCardNumber");
+                $field = array("Gender","Date of Birth","Username","Can Login","Email", "Address", "District", "Country", "First Language", "Second Language", "Third Language", "Country of Birth", "Ethnicity", "Religion", "National ID Card Number");
+                $len = count($field);
+                $i = 0;
+                while ($i < $len) {
+                    if ($customField->isActiveField($customFields, $fieldName[$i])) {
+                        if ($customField->isNotTabField($customFields, $fieldName[$i])) {
+                ?>
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="stuField" name="student_column[]" value="<?= $field[$i] ?>">
+                            </td>
+                            <td><?= $field[$i] ?></td>
+                        </tr>
+                <?php
+                    } }
+                    $i++;
+                }
+                ?>
+
             <?php
             if(!empty($stuCusFld)){
                 foreach($stuCusFld as $sc){
+                    if($sc['field_type'] != 'tab' && $sc['active'] == 'Y'){
             ?>
             <tr>
                 <td>
@@ -186,7 +210,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
                 </td>
                 <td><?php echo $sc['field_title'];?>  (Custom Field)</td>
             </tr>
-            <?php } }?>
+            <?php } } } ?>
 
         </tbody>
     </table>

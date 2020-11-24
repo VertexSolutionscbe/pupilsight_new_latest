@@ -125,5 +125,32 @@ class SchoolYearGateway extends QueryableGateway
         return $this->runQuery($query, $criteria,TRUE );
     } 
 
+    public function getLeaveReason(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('pupilsightLeaveReason')
+            ->cols([
+                'pupilsightLeaveReason.*'
+            ])
+            ->orderby(['pupilsightLeaveReason.id DESC']);
+
+        return $this->runQuery($query, $criteria,TRUE );
+    }
+
+    public function getTCTemplate(QueryCriteria $criteria, $type)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('pupilsightDocTemplate')
+            ->cols([
+                'pupilsightDocTemplate.*'
+            ])
+            ->where('pupilsightDocTemplate.type = "'.$type.'"')
+            ->orderby(['pupilsightDocTemplate.id DESC']);
+
+        return $this->runQuery($query, $criteria,TRUE );
+    }
+
  
   }

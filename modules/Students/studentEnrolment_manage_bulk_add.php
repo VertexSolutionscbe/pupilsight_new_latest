@@ -47,6 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('stu_id', $studentids);
+        $form->addHiddenValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
 
         $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID);
         $sql = 'SELECT name FROM pupilsightSchoolYear WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID';
@@ -87,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         
         $row = $form->addRow();
             $row->addFooter();
-            $row->addSubmit();
+            $row->addContent('<a class="btn btn-primary" id="addStuEnroll">Submit</a>');
 
         echo $form->getOutput();
     }
@@ -106,4 +107,28 @@ $(document).ready(function() {
     $("div #TB_ajaxContent:eq(0)").css( 'display', 'block');
 });
 /* to avoid multiple occurence of popup in same window   */
+
+    $(document).on('click', '#addStuEnroll', function () {
+        var pid = $("#pupilsightProgramID").val();
+        var cid = $("#pupilsightYearGroupID").val();
+        var formData = new FormData(document.getElementById("studentEnrolmentAdd"));
+        if(pid != '' && cid != ''){
+            $.ajax({
+                url: "modules/Students/studentEnrolment_manage_bulk_addProcess.php",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData: false,
+                async: false,
+                success: function (response) {
+                    alert('Student Enrolled Successfully!');
+                    $("#studentViewSearch").submit();
+                }
+            });
+        } else {
+            alert('Please Select Mandatory Field!');
+        }
+        
+    });
  </script>   

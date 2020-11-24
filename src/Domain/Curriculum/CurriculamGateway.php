@@ -49,11 +49,12 @@ class CurriculamGateway extends QueryableGateway
                 ->newQuery()
                 ->from('pupilsightPerson')
                 ->cols([
-                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.officialName AS student_name'
+                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.officialName AS student_name', 'pupilsightPerson.admission_no','pupilsightProgram.name as progname','pupilsightYearGroup.name as clsname','pupilsightRollGroup.name as secname'
                 ])
                 ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
                 ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
-                ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
+                ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+                ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID');
             if (!empty($pupilsightProgramID)) {
                 $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
             }

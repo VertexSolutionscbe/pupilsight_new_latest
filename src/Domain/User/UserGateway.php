@@ -41,7 +41,8 @@ class UserGateway extends QueryableGateway
                 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.username', 
                 'pupilsightPerson.image_240', 'pupilsightPerson.status', 'pupilsightRole.name as primaryRole'
             ])
-            ->leftJoin('pupilsightRole', 'pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID');
+            ->leftJoin('pupilsightRole', 'pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID')
+            ->where('pupilsightPerson.is_delete = "0" ');
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 

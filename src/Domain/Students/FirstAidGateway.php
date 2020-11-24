@@ -37,7 +37,7 @@ class FirstAidGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightFirstAidID', 'pupilsightFirstAid.date', 'pupilsightFirstAid.timeIn', 'pupilsightFirstAid.timeOut', 'pupilsightFirstAid.description', 'pupilsightFirstAid.actionTaken', 'pupilsightFirstAid.followUp', 'pupilsightFirstAid.date', 'patient.surname AS surnamePatient', 'patient.preferredName AS preferredNamePatient', 'pupilsightFirstAid.pupilsightPersonIDPatient', 'pupilsightRollGroup.name as rollGroup', 'firstAider.title', 'firstAider.surname AS surnameFirstAider', 'firstAider.preferredName AS preferredNameFirstAider'
+                'pupilsightFirstAidID', 'pupilsightFirstAid.date', 'pupilsightFirstAid.timeIn', 'pupilsightFirstAid.timeOut', 'pupilsightFirstAid.description', 'pupilsightFirstAid.actionTaken', 'pupilsightFirstAid.followUp', 'pupilsightFirstAid.date', 'patient.surname AS surnamePatient', 'patient.preferredName AS preferredNamePatient', 'pupilsightFirstAid.pupilsightPersonIDPatient', 'pupilsightRollGroup.name as rollGroup', 'firstAider.title', 'firstAider.surname AS surnameFirstAider', 'firstAider.preferredName AS preferredNameFirstAider', 'firstAider.officialName', 'patient.officialName as patientName', 'pupilsightProgram.name as progName', 'pupilsightYearGroup.name as clsName', 'pupilsightRollGroup.name as secName'
             ])
             ->innerJoin('pupilsightPerson AS patient', 'pupilsightFirstAid.pupilsightPersonIDPatient=patient.pupilsightPersonID')
             ->innerJoin('pupilsightStudentEnrolment', 'patient.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')

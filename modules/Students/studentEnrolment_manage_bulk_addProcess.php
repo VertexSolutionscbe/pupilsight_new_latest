@@ -5,9 +5,9 @@ Pupilsight, Flexible & Open School System
 
 include '../../pupilsight.php';
 
-$pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
+$pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
 $stuId = $_POST['stu_id'];
-$search = $_GET['search'];
+//$search = $_GET['search'];
 
 if ($pupilsightSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -26,6 +26,10 @@ if ($pupilsightSchoolYearID == '') { echo 'Fatal error loading this page!';
             header("Location: {$URL}");
             exit;
         } else {
+            // echo '<pre>';
+            // print_r($_POST);
+            // echo '</pre>';
+            // die();
             $studentid = explode(',', $stuId);
             $pupilsightProgramID = $_POST['pupilsightProgramID'];
             $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
