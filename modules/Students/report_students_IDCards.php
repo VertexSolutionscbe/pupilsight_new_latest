@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';
                 echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
                 echo '<b>'.$_SESSION[$guid]['organisationNameShort'].' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
-                echo '<b>'.__('Year/Roll')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['roll'].'</span><br/>';
+                echo '<b>'.__('Class/Section')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['roll'].'</span><br/>';
                 echo '<b>'.__('School Year')."</b>: <span style='float: right'><i>".$_SESSION[$guid]['pupilsightSchoolYearName'].'</span><br/>';
                 echo '</div>';
                 echo '</td>';

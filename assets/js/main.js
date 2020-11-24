@@ -5772,7 +5772,7 @@ $(document).on('click', '.tick_icon', function () {
                     data: { val: val, type: type, sid: sid, eid: eid, classId: classId, progId: progId, chktype: 'add' },
                     async: true,
                     success: function (response) {
-                        alert('Elective Subject Assign Succesfully');
+                        //alert('Elective Subject Assign Succesfully');
                     }
                 });
             }
@@ -5788,7 +5788,7 @@ $(document).on('click', '.tick_icon', function () {
                     data: { val: val, type: type, sid: sid, eid: eid, classId: classId, progId: progId, chktype: 'delete' },
                     async: true,
                     success: function (response) {
-                        alert('Elective Subject Deleted Succesfully');
+                        //alert('Elective Subject Deleted Succesfully');
                         ths.removeClass("greenicon");
                         ths.addClass("greyicon");
                     }

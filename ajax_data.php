@@ -3368,3 +3368,26 @@ if ($type == 'leaveDecline') {
         $result->execute($data);
     }
 }
+
+
+if ($type == 'addCoreSubjectToStudent') {
+    $pupilsightPersonID = $val;
+    $pupilsightDepartmentID = $_POST['sid'];
+    $pupilsightProgramID = $_POST['progId'];
+    $pupilsightYearGroupID = $_POST['classId'];
+    $chktype = $_POST['chktype'];
+
+    if ($chktype == 'add') {
+        $data2 = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
+
+        $sql2 = 'DELETE FROM remove_core_subjects_from_student WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID';
+        $result2 = $connection2->prepare($sql2);
+        $result2->execute($data2);
+    } else {
+        $data2 = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
+
+        $sql2 = "INSERT INTO remove_core_subjects_from_student SET  pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightDepartmentID=:pupilsightDepartmentID,pupilsightPersonID=:pupilsightPersonID";
+        $result2 = $connection2->prepare($sql2);
+        $result2->execute($data2);
+    }
+}
