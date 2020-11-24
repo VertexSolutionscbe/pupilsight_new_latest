@@ -9,7 +9,7 @@ use Pupilsight\Domain\DataSet;
 use Pupilsight\Services\Format;
 
 
-include('C:/xampp/htdocs/pupilsight/db.php');
+include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
 
 
 
