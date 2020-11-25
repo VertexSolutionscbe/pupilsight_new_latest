@@ -477,7 +477,7 @@ function renderTT($guid, $connection2, $pupilsightPersonID, $pupilsightTTID, $ti
                 }
             }
 
-            //Sunday week adjust for timetable on home page (so Sundays show next week if the week starts on Sunday or Monday—i.e. it's Sunday now and Sunday is not a school day)
+            //Sunday week adjust for timetable on home page (so Sundays show next week if the week starts on Sunday or Mondayï¿½i.e. it's Sunday now and Sunday is not a school day)
             $homeSunday = true;
             if ($q == '' && ($_SESSION[$guid]['firstDayOfTheWeek'] == 'Monday' || $_SESSION[$guid]['firstDayOfTheWeek'] == 'Sunday')) {
                 try {
@@ -1827,7 +1827,7 @@ function renderTTSpace($guid, $connection2, $pupilsightSpaceID, $pupilsightTTID,
         //Spit out controls for displaying calendars
         /*
         if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != '') {
-            
+
             $output .= "<tr class='head' style='height: 37px;'>";
             $output .= "<th class='ttCalendarBar' colspan=" . ($daysInWeek + 1) . '>';
             $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q" . $params . "' style='padding: 5px 5px 0 0'>";
@@ -1906,7 +1906,7 @@ function renderTTSpace($guid, $connection2, $pupilsightSpaceID, $pupilsightTTID,
         }
         $output .= '</tr>';
 
-        $output .= "<tr style='height:" . (ceil($diffTime / 60) + 14) . "px'>";
+        $output .= "<tr style='height:" . (ceil($diffTime / 60) + 25) . "px'>";
         $output .= "<td class='ttTime' style='height: 300px; width: 75px; text-align: center; vertical-align: top'>";
         $output .= "<div style='position: relative; width: 71px'>";
         $countTime = 0;
@@ -2527,7 +2527,7 @@ function renderTTAttendance($guid, $connection2, $classId, $sectionId, $title = 
                 }
             }
 
-            //Sunday week adjust for timetable on home page (so Sundays show next week if the week starts on Sunday or Monday—i.e. it's Sunday now and Sunday is not a school day)
+            //Sunday week adjust for timetable on home page (so Sundays show next week if the week starts on Sunday or Mondayï¿½i.e. it's Sunday now and Sunday is not a school day)
             $homeSunday = true;
             if ($q == '' && ($_SESSION[$guid]['firstDayOfTheWeek'] == 'Monday' || $_SESSION[$guid]['firstDayOfTheWeek'] == 'Sunday')) {
                 try {
