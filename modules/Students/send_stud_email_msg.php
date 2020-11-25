@@ -105,14 +105,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                                 $mail->Body = $body;
         
                                 $mail->Send();
-                                $sq = "INSERT INTO user_email_sms_sent_details SET  pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', uid=" . $cuid . " ";
+                                $sq = "INSERT INTO user_email_sms_sent_details SET type='2', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', uid=" . $cuid . " ";
                                 $connection2->query($sq);
                             } catch (Exception $ex) {
                                 print_r($x);
                             }
                         } else {
                             $res = file_get_contents($url);
-                            $sq = "INSERT INTO user_email_sms_sent_details SET  pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
+                            $sq = "INSERT INTO user_email_sms_sent_details SET type='2', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
                             $connection2->query($sq);
                         }
                         
@@ -123,9 +123,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                         $urls .="&send_to=".$number;
                         $urls .="&msg=".rawurlencode($msg);
                         $urls .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
+                        echo $urls;
                         $resms = file_get_contents($urls);
 
-                        $sq = "INSERT INTO user_email_sms_sent_details SET  pupilsightPersonID = " . $st . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
+                        $sq = "INSERT INTO user_email_sms_sent_details SET type='1', pupilsightPersonID = " . $st . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
                         $connection2->query($sq);
                     }
                     

@@ -3375,7 +3375,7 @@
                             success: function (response) {
                                 $("#preloader").hide();
                                 alert('Your Message Sent Successfully! click Ok to continue ');
-                                location.reload();
+                                //location.reload();
                             }
                         });
                     } else {

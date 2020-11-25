@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_a
 
    
         echo '<h2>';
-        echo __('Add TC Template');
+        echo __('Add Template');
         echo '</h2>';
 
         $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';

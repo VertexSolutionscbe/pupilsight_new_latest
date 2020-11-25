@@ -153,5 +153,66 @@ class SchoolYearGateway extends QueryableGateway
         return $this->runQuery($query, $criteria,TRUE );
     }
 
+    public function getSeries(QueryCriteria $criteria, $pupilsightSchoolYearID)
+    {
+
+        $query = $this
+            ->newQuery()
+            ->from('fn_fee_series')
+            ->cols([
+                'fn_fee_series.*', 'pupilsightSchoolYear.name AS acedemic_year', 'COUNT(a.id) as invkount', 'COUNT(b.id) as reckount','pupilsightProgram.name as progname'
+            ])
+            ->leftJoin('pupilsightSchoolYear', 'fn_fee_series.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+            ->leftJoin('fn_fee_invoice AS a', 'fn_fee_series.id=a.inv_fn_fee_series_id')
+            ->leftJoin('fn_fee_invoice AS b', 'fn_fee_series.id=b.rec_fn_fee_series_id')
+            ->leftJoin('pupilsightProgram', 'fn_fee_series.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->where('fn_fee_series.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+            ->where('fn_fee_series.type != "Finance" ')
+            ->where('fn_fee_series.type != "Application" ')
+            ->groupBy(['fn_fee_series.id']);
+        //return $this->runQuery($query, $criteria,TRUE );
+
+        //return $this->runQuery($query, $criteria, TRUE);
+
+            $res = $this->runQuery($query, $criteria, TRUE);
+            $data = $res->data;
+            // echo '<pre>';
+            // print_r($data);
+            // echo '</pre>';
+            // die();
+            if(!empty($data)){
+                foreach($data as $k=>$d){
+                    $clsid = $d['classIds'];
+                    if(!empty($clsid)){
+                        $query2 = $this
+                            ->newQuery()
+                            ->from('pupilsightYearGroup')
+                            ->cols([
+                                'GROUP_CONCAT(pupilsightYearGroup.name) as clsnames','pupilsightYearGroup.pupilsightYearGroupID as id'
+                            ])
+                            ->where('pupilsightYearGroup.pupilsightYearGroupID IN ('.$clsid.') ')
+                            ->orderby(['pupilsightYearGroup.pupilsightYearGroupID DESC']);
+                        // echo $query2;
+                        // die();
+                            $newdata = $this->runQuery($query2, $criteria);
+                            if(!empty($newdata->data[0]['id'])){
+                                $data[$k]['classes'] = $newdata->data[0]['clsnames'];
+                            } else {
+                                $data[$k]['classes'] = '';
+                            }
+                    } else {
+                        $data[$k]['classes'] = '';
+                    }
+                }
+               
+            }
+            // echo '<pre>';
+            // print_r($data);
+            // echo '</pre>';
+            // die();
+            $res->data = $data;
+            return $res;
+    }
+
  
   }

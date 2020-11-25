@@ -386,6 +386,7 @@ class AdmissionGateway extends QueryableGateway
             ->leftJoin('fn_fee_invoice AS b', 'fn_fee_series.id=b.rec_fn_fee_series_id')
             ->where('fn_fee_series.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
             ->where('fn_fee_series.type != "Finance" ')
+            ->where('fn_fee_series.type != "TC" ')
             ->groupBy(['fn_fee_series.id']);
 
         return $this->runQuery($query, $criteria, TRUE);

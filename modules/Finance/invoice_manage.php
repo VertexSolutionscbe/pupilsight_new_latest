@@ -92,6 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     
         // QUERY
         $criteria = $FeesGateway->newQueryCriteria()
+            ->pageSize(5000)
             ->sortBy(['id'])
             ->fromPOST();
         // echo '<pre>';
@@ -151,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
-        //->pageSize(5000)
+        ->pageSize(5000)
         ->sortBy(['id'])
         ->fromPOST();
 
@@ -279,7 +280,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     //     ->displayLabel();
     echo "<hr />";
     echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/Finance/invoice_assign_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Class</a>";  
-    echo "&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Finance/invoice_assign_student_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Student</a>&nbsp;&nbsp;<a style='color:#666;cursor:pointer;font-size: 15px;' id='export_invoice'><span><i class='fas fa-file-export'></i>Export</span></a></div><div class='float-none'></div></div>";  
+    echo "&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Finance/invoice_assign_student_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Student</a>&nbsp;&nbsp;<a style='color:#666;cursor:pointer;font-size: 15px;' id='export_invoice'><i title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i></a></div><div class='float-none'></div></div>";  
 
     
     

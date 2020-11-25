@@ -47,17 +47,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
     $startDate = '';
     $endDate = '';
+    $stDate = '';
+    $enDate = '';
     if($_POST){
         if(!empty($_POST['start_date'])){
             $sdate = str_replace('/', '-', $_POST['start_date']);
             $start_date = date('Y-m-d', strtotime($sdate)).'  00:00:01';
             $startDate = date('Y-m-d', strtotime($sdate));
+            $stDate = $_POST['start_date'];
 
             $edate = str_replace('/', '-', $_POST['end_date']);
             
             if(!empty($_POST['end_date'])){
                 $end_date = date('Y-m-d', strtotime($edate)).'  23:59:59';
                 $endDate = date('Y-m-d', strtotime($edate));
+                $enDate = $_POST['end_date'];
             } else {
                 $end_date = date('Y-m-d', strtotime($sdate)).'  23:59:59';
                 $endDate = '';
@@ -65,21 +69,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $type = $_POST['type'];
 
-            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.cdt >= "'.$start_date.'" AND a.cdt <= "'.$end_date.'"  ';
+            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.cdt >= "'.$start_date.'" AND a.cdt <= "'.$end_date.'" ';
             if(!empty($type)){
                 $sqle .= 'AND a.type = '.$type.'';
             }
-
+            $sqle .= ' ORDER BY a.id DESC ';
+            // echo $sqle;
+            // die();
             $resulte = $connection2->query($sqle);
             $mailsmsdata = $resulte->fetchAll();
         } else {
-            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID ';
+            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID ORDER BY a.id DESC';
             $resulte = $connection2->query($sqle);
             $mailsmsdata = $resulte->fetchAll();
         }
         
     } else {
-        $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID ';
+        $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID ORDER BY a.id DESC';
         $resulte = $connection2->query($sqle);
         $mailsmsdata = $resulte->fetchAll();
     }
@@ -116,11 +122,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('start_date', __('From Date'))->addClass('dte');
-            $col->addDate('start_date')->setValue($startDate)->required();
+            $col->addDate('start_date')->setValue($stDate)->required();
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('end_date', __('To Date'))->addClass('dte');
-            $col->addDate('end_date')->setValue($endDate);
+            $col->addDate('end_date')->setValue($enDate);
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('type', __('Type'))->addClass('dte');
@@ -170,7 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     <th><?php echo $estd['subject']; ?></th>
                     <th><?php echo $estd['description']; ?></th>
                     <th><?php echo $estd['uname']; ?></th>
-                    <th><?php echo $estd['cdt']; ?></th>
+                    <th><?php echo date('d/m/Y h:i:s', strtotime($estd['cdt'])); ?></th>
                 </tr>
             <?php  } } else { ?> 
                 <tr>

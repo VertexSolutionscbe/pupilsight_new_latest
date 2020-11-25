@@ -44,11 +44,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     echo "<a style='display:none' id='clickStudentPage' href='fullscreen.php?q=/modules/Finance/fee_structure_assign_student_manage_add.php&width=800'  class='thickbox '>Assign Fee Structure</a>";  
     echo "<a style='display:none' id='deleteStudentFeeStructure' href='fullscreen.php?q=/modules/Finance/fee_structure_assign_student_manage_delete.php'  class='thickbox '>Delete Fee Structure</a>";  
     echo "<a style='display:none' id='massDeleteStudentFeeStructure' href='fullscreen.php?q=/modules/Finance/fee_structure_assign_student_manage_massDelete.php'  class='thickbox '>Delete Fee Structure</a>";  
+    
 
 
     echo "<div style='height:50px;'><div class='float-right mb-2'><a id='assignStudentPage' class=' btn btn-primary'>Assign Fee Structure</a>";  
 
-    echo "&nbsp;&nbsp;<a id='deleteStudentPage' class=' btn btn-primary'>Delete Fee Structure</a></div><div class='float-none'></div></div>";
+    echo "&nbsp;&nbsp;<a id='deleteStudentPage' class=' btn btn-primary'>Delete Fee Structure</a>";
+
+    echo "&nbsp;&nbsp;<i style='cursor:pointer' id='exportFeeAssignStr' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
+
+    echo "</div><div class='float-none'></div></div>";
 
     // echo "&nbsp;&nbsp;<a  id='massDeleteStudentPage' class=' btn btn-primary'>Mass Delete</a></div><div class='float-none'></div></div>";  
 
@@ -237,6 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     $table->addCheckboxColumn('stuid',__(''))
     ->setClass('chkbox')
         ->context('Select');
+    $table->addColumn('serial_number', __('Sl No'));
     $table->addColumn('admission_no', __('Admission No'));    
     $table->addColumn('student_name', __('Student Name'));
     $table->addColumn('progname', __('Program'));
@@ -260,3 +266,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }
+
+?>
+
+<script>
+    $(document).on('click', '#exportFeeAssignStr', function () {
+       
+        $("#expore_tbl tr").each(function () {
+            $(this).find("th:first").remove();
+            $(this).find("td:first").remove();
+        });
+
+       $("#expore_tbl").table2excel({
+           name: "Worksheet Name",
+           filename: "Student_Fee_Structure.xls",
+           fileext: ".xls",
+           // exclude: ".checkall",
+           // exclude: ".rm_cell",
+           // exclude_inputs: true,
+           // columns: [0, 1, 2, 3, 4, 5]
+
+       });
+       location.reload();
+
+   });
+</script>

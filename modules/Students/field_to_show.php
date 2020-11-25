@@ -155,6 +155,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="religion" <?php if (in_array("religion", $field)) { ?> checked <?php } ?>></td>
                 <td>Religion</td>
             </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="fatherName" <?php if (in_array("fatherName", $field)) { ?> checked <?php } ?>></td>
+                <td>Father Name</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="fatherEmail" <?php if (in_array("fatherEmail", $field)) { ?> checked <?php } ?>></td>
+                <td>Father Email</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="fatherPhone" <?php if (in_array("fatherPhone", $field)) { ?> checked <?php } ?>></td>
+                <td>Father Phone</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="motherName" <?php if (in_array("motherName", $field)) { ?> checked <?php } ?>></td>
+                <td>Mother Name</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="motherEmail" <?php if (in_array("motherEmail", $field)) { ?> checked <?php } ?>></td>
+                <td>Mother Email</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="motherPhone" <?php if (in_array("motherPhone", $field)) { ?> checked <?php } ?>></td>
+                <td>Mother Phone</td>
+            </tr>
         </tbody>
     </table>
 </form>

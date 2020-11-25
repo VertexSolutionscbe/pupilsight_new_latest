@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
     
     $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('name', __('Structure Name'));
-        $col->addTextField('name')->setValue($name)->addClass('txtfield');
+        $col->addTextField('name')->setID('strname')->setValue($name)->addClass('txtfield');
 
     $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('fn_fees_head_id', __('Account Head'));
@@ -95,6 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
 
     $FeesGateway = $container->get(FeesGateway::class);
     $criteria = $FeesGateway->newQueryCriteria()
+        ->pageSize(5000)
         ->sortBy(['id'])
         ->fromPOST();
     
