@@ -16,7 +16,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     $pupilsightTTID = $_GET['pupilsightTTID'] ?? '';
     $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'] ?? '';
     $pupilsightTTColumnRowID = $_GET['pupilsightTTColumnRowID'] ?? '';
-   // $pupilsightCourseClassID = $_GET['pupilsightCourseClassID'] ?? '';
+    // $pupilsightCourseClassID = $_GET['pupilsightCourseClassID'] ?? '';
     $pupilsightProgramID = $_GET['pupilsightProgramID'];
     $pupilsightYearGroupID = $_GET['pupilsightYearGroupID'];
     if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID == '' ) {
@@ -44,25 +44,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             echo '</div>';
         } else {
             //Let's go!
-           // $row = $result->fetch();
+            // $row = $result->fetch();
             $rowdep = $result->fetch();
-          // print_r($rowdep);
+            // print_r($rowdep);
             $pupilsightDepartmentID =  $rowdep['pupilsightDepartmentID'];
-         
+
             $pupilsightSpaceID = $rowdep['pupilsightSpaceID'];
             $pupilsightTTDayRowClassID = $rowdep['pupilsightTTDayRowClassID'];
 
-            $sqlst = 'SELECT a.pupilsightStaffID,a.pupilsightDepartmentID ,c.officialName as sname FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID  WHERE a.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'"';           
+            $sqlst = 'SELECT a.pupilsightStaffID,a.pupilsightDepartmentID ,c.officialName as sname FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID  WHERE a.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'"';
             $resultSt = $connection2->query($sqlst);
-            $resultSt->execute();           
+            $resultSt->execute();
             $staffListData = $resultSt->fetchAll();
-        
+
             if(!empty($staffListData)){
                 $staffList = array();
-                $staffList2=array();  
+                $staffList2=array();
                 $staffList1=array(''=>'Select Staff');
                 foreach ($staffListData as $dt) {
-                   $staffList2[$dt['pupilsightStaffID']] = $dt['sname'];
+                    $staffList2[$dt['pupilsightStaffID']] = $dt['sname'];
                 }
                 $staffList= $staffList1 + $staffList2;
             }
@@ -82,9 +82,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 echo '</div>';
             } else {
                 $values = $result->fetch();
-               // print_r($values);
+                // print_r($values);
 
-                $urlParams = ['pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTID' => $pupilsightTTID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID];
+                $urlParams = ['pupilsightProgramID'=>$pupilsightProgramID,'pupilsightYearGroupID'=>$pupilsightYearGroupID,'pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTID' => $pupilsightTTID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID];
 
                 $page->breadcrumbs
                     ->add(__('Manage Timetables'), 'tt.php', $urlParams)
@@ -98,52 +98,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 }
                 $sujects = array();
                 $subject1 = array();
-                
+
                 $sqls = 'SELECT a.pupilsightDepartmentID,b.name FROM assign_core_subjects_toclass as a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'"';
                 $resultSub = $connection2->query($sqls);
-                $resultSub->execute();           
+                $resultSub->execute();
                 $subject = $resultSub->fetchAll();
                 foreach($subject as $sub){
-                   $subject1[$sub['pupilsightDepartmentID']] = $sub['name'];
+                    $subject1[$sub['pupilsightDepartmentID']] = $sub['name'];
                 }
-                $subject=$subject1; 
+                $subject=$subject1;
 
-             
-        
+
+
 
                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_editProcess.php?&pupilsightTTDayID=$pupilsightTTDayID&pupilsightTTID=$pupilsightTTID&pupilsightSchoolYearID=$pupilsightSchoolYearID&pupilsightTTColumnRowID=$pupilsightTTColumnRowID&pupilsightTTDayRowClassID=$pupilsightTTDayRowClassID&pupilsightCourseClassID=$pupilsightCourseClassID");
 
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->addHiddenValue('pupilsightTTID', $pupilsightTTID);
                 $form->addHiddenValue('pupilsightProgramID', $pupilsightProgramID);
-                 $form->addHiddenValue('pupilsightYearGroupID', $pupilsightYearGroupID);
+                $form->addHiddenValue('pupilsightYearGroupID', $pupilsightYearGroupID);
                 $form->addHiddenValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
 
                 $row = $form->addRow();
-                    $row->addLabel('ttName', __('Timetable'));
-                    $row->addTextField('ttName')->maxLength(20)->required()->readonly()->setValue($values['ttName']);
+                $row->addLabel('ttName', __('Timetable'));
+                $row->addTextField('ttName')->maxLength(20)->required()->readonly()->setValue($values['ttName']);
 
                 $row = $form->addRow();
-                    $row->addLabel('dayName', __('Day'));
-                    $row->addTextField('dayName')->maxLength(20)->required()->readonly()->setValue($values['dayName']);
+                $row->addLabel('dayName', __('Day'));
+                $row->addTextField('dayName')->maxLength(20)->required()->readonly()->setValue($values['dayName']);
 
                 $row = $form->addRow();
-                    $row->addLabel('rowName', __('Period'));
-                    $row->addTextField('rowName')->maxLength(20)->required()->readonly()->setValue($values['rowName']);
+                $row->addLabel('rowName', __('Period'));
+                $row->addTextField('rowName')->maxLength(20)->required()->readonly()->setValue($values['rowName']);
 
-                    $row = $form->addRow();
-                    $row->addLabel('pupilsightDepartmentID', __('Subject'));
-                    $row->addSelect('pupilsightDepartmentID')->fromArray($subject)->required()->placeholder()->selected($rowdep['pupilsightDepartmentID']);
+                $row = $form->addRow();
+                $row->addLabel('pupilsightDepartmentID', __('Subject'));
+                $row->addSelect('pupilsightDepartmentID')->fromArray($subject)->required()->placeholder()->selected($rowdep['pupilsightDepartmentID']);
 
-                    $row = $form->addRow();
+                $row = $form->addRow();
                 $row->addLabel('pupilsightStaffID', __('Staff'));
                 $pupilsightStaffIDs = explode(',', $rowdep['pupilsightStaffID']);
-                   $checked = array_filter(array_keys($staffList), function ($item) use ($pupilsightStaffIDs) {
-                       return in_array($item, $pupilsightStaffIDs);
-                   });
-               $row->addSelect('pupilsightStaffID')->fromArray($staffList)->selected($pupilsightStaffIDs)->selectMultiple();   
+                $checked = array_filter(array_keys($staffList), function ($item) use ($pupilsightStaffIDs) {
+                    return in_array($item, $pupilsightStaffIDs);
+                });
+                $row->addSelect('pupilsightStaffID')->fromArray($staffList)->selected($pupilsightStaffIDs)->selectMultiple();
 
-                    
+
 
                 $locations = array() ;
                 try {
@@ -165,14 +165,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                         $locations[$rowSelect['pupilsightSpaceID']] = htmlPrep($rowSelect['name']);
                     }
                 }
-                
-                $row = $form->addRow();
-                    $row->addLabel('pupilsightSpaceID', __('Location'));
-                    $row->addSelect('pupilsightSpaceID')->selected($pupilsightSpaceID)->fromArray($locations)->placeholder()->setValue($rowdep['pupilsightSpaceID']);
 
                 $row = $form->addRow();
-                    $row->addFooter();
-                    $row->addSubmit();
+                $row->addLabel('pupilsightSpaceID', __('Location'));
+                $row->addSelect('pupilsightSpaceID')->selected($pupilsightSpaceID)->fromArray($locations)->placeholder()->setValue($rowdep['pupilsightSpaceID']);
+
+                $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
 
                 echo $form->getOutput();
             }
@@ -182,17 +182,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 ?>
 <script>
     $(document).on('change','#pupilsightDepartmentID',function(){
-       var val = $(this).val();
-       var type = 'Classwisesubject';
-       if (val != '') {
+        var val = $(this).val();
+        var type = 'Classwisesubject';
+        if (val != '') {
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
                 data: { val: val, type: type },
                 async: true,
-                success: function(response) {            
-                $("#pupilsightStaffID").html();
-                $("#pupilsightStaffID").html(response);
+                success: function(response) {
+                    $("#pupilsightStaffID").html();
+                    $("#pupilsightStaffID").html(response);
                 }
             });
         }

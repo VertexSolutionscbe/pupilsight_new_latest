@@ -158,7 +158,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                     $script = '<script type="text/javascript">';
                     $script .= '$(function () {';
                     $script .= "$('#checkall".$dowShort.$values['nameShort']."').click(function () {";
+                    $script .= "if($('.".$dowShort.$values['nameShort'].":checkbox').attr('checked')){";
+                    $script .= "$('.".$dowShort.$values['nameShort'].":checkbox').prop('checked',false)";
+                    $script .='}else{';
                     $script .= "$('.".$dowShort.$values['nameShort'].":checkbox').attr('checked', this.checked);";
+                    $script .='}';
                     $script .= '});';
                     $script .= '});';
                     $script .= '</script>';
