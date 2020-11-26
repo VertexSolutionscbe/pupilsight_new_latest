@@ -9,7 +9,7 @@ $id = $_POST['id'];
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/staff_view.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/change_staff_status.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/change_staff_status.php') != false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

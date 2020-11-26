@@ -47,6 +47,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
         $row->addLabel('pass', __('Enter Password for Login Id '));
         $row->addTextField('pass')->setValue($password)->placeholder('Enter Password for Login Id')->required();
 
+        $content = 'Dear User,
+        Greetings from '.$_SESSION[$guid]['organisationName'].'. Your account has been activated on our School management software "Pupilpod". Kindly login to Pupilpod at the earliest.
+        
+        URL: '.$_SESSION[$guid]['absoluteURL'].'
+        Username: $username 
+        Password: $password 
+        
+        Note: Please reset the Password by Clicking on "Change Password" link provided at the right top corner of your homepage. For any queries send a email to '.$_SESSION[$guid]['email'].'';
+
+        $row = $form->addRow();
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('content', __('Email Content'));
+        $col->addTextArea('mailcontent')->setValue($content)->required();
+
         $row = $form->addRow();
         $row->addLabel('', __(''));
         $row->addContent('');

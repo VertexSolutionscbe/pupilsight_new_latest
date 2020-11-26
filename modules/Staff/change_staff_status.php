@@ -9,7 +9,7 @@ use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
  //print_r($id);die();
 
-if (isActionAccessible($guid, $connection2, '/modules/Staff/change_staff_status.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/change_staff_status.php') != false) {
     //Acess denied
     echo "<div class='alert alert-danger'>";
     echo __('You do not have access to this action.');
@@ -35,11 +35,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/change_staff_status.
         echo '</div>';
     } else {
         $status = array();
-        $status =  array(''=>'Select  status',
+        $status =  array(''=>'Select Status',
             'active' =>'Active',
             'inactive'=>'Inactive');
 
-        $reasoninactive = array(''=>'select Reason',
+        $reasoninactive = array(''=>'Select Reason',
             'Resigned' => 'Resigned',
             'Change department' =>'Change department'  
         );
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/change_staff_status.
            
             $row = $form->addRow();
                     $col = $row->addColumn()->setClass('newdes')->setID('staffstatus');
-                    $col->addLabel('staffstatus', __('change Status'));
+                    $col->addLabel('staffstatus', __('Select Status'));
                     $col->addSelect('staffstatus')->fromArray($status)->required();  
 
             $row = $form->addRow();

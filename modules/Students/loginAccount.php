@@ -68,8 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     $series = $series1 + $series2;
 
     $classes = '';
-    $endDate = '';
-    $stDate = '';
+    $pupilsightProgramID = '';
+    $pupilsightYearGroupID = '';
     $enDate = '';
 
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
         LEFT JOIN pupilsightFamilyAdult as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2 
         LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full' 
         
-        WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID = " . $pupilsightYearGroupID . " ORDER BY d.pupilsightYearGroupID ASC ";
+        WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID = " . $pupilsightYearGroupID . " ORDER BY a.pupilsightPersonID DESC ";
          //echo $sqle;
         // die();
         $resulte = $connection2->query($sqle);
@@ -154,6 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     <a class="btn btn-primary" style="float:right;" id="createAccount">Create Account</a>
     <a  style="display:none;" class="thickbox" id="showPasswordPage" href="fullscreen.php?q=/modules/Students/loginPassword.php">Create Account</a>
     <input type='hidden' name="password" id="addPassword" value="">
+    <textarea id="addContent" name="content" style="display:none;"></textarea>
     <div style="overflow-x:auto; width:100%;" >
     <table class="table" id="historyTable">
         <thead>
@@ -300,7 +301,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 
     $(document).on('click', '#donePassword', function () {
         var pass = $("#pass").val();
+        var content = $("#mailcontent").val();
         $("#addPassword").val(pass);
+        $("#addContent").val(content);
+        $("#preloader").show();
         $("#createAccountForm").submit();
     });
 

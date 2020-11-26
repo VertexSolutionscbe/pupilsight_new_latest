@@ -252,6 +252,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Register Student's</a>";
 
             echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatetc.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
+
+            echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
+
+            echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
+
+            echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
+
+            echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
             
 
             echo "</div><div class='float-none'></div></div>";
@@ -304,7 +312,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             if(in_array(29, $permissionChk)){
                 echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatetc.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
             }
-            
+
+            if(in_array(31, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
+            }
+            if(in_array(30, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
+            }
+            if(in_array(32, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
+            }
+            if(in_array(33, $permissionChk)){
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+            }
                 echo "</div><div class='float-none'></div></div>";
             }
         }
@@ -351,11 +371,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->notSortable()
                 ->format(function ($person) {
 
-
-                    if (!empty($person['yearGroup'])) {
-                        return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='enrollstuid'>";
+                    if($person['active'] == '0') {
+                        if (!empty($person['yearGroup'])) {
+                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='enrollstuid' data-del='1' data-name=" . $person['officialName'] . "'>";
+                        } else {
+                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='stuid' data-del='1' data-name=" . $person['officialName'] . "'>";
+                        }
                     } else {
-                        return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='stuid'>";
+                        if (!empty($person['yearGroup'])) {
+                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='enrollstuid' data-del='2' data-name=" . $person['officialName'] . "'>";
+                        } else {
+                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='stuid' data-del='2' data-name=" . $person['officialName'] . "'>";
+                        }
                     }
                 });
 
@@ -645,10 +672,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
     $(document).on('click', '#deleteBulkStudent', function() {
         var favorite = [];
+        var chk = [];
+        var chkname = [];
         $.each($("input[name='student_id[]']:checked"), function() {
             favorite.push($(this).val());
+            if($(this).attr('data-del') == '2'){
+                chk.push($(this).attr('data-del'));
+                chkname.push($(this).attr('data-name'));
+            }
         });
         var stuId = favorite.join(",");
+        if(chk){
+            var chkId = chk.join(",");
+        }
+        if(chkname){
+            var chkN = chkname.join(", ");
+        }
+        if(chkId != ''){
+            alert('Please De-Register Students - '+chkN+' ');
+            return false;
+        }
         //alert(subid);
         if (stuId) {
             var val = stuId;
@@ -729,6 +772,102 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $("#generateTC").attr('href', newhrf);
                 window.setTimeout(function () {
                     $("#generateTC")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select One Student at a time.');
+            }
+            
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click', '#clickGenerateStudy', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            if (favorite.length == 1) {
+                var hrf = $(this).attr('data-hrf');
+                var newhrf = hrf + stuId;
+                $("#generateStudy").attr('href', newhrf);
+                window.setTimeout(function () {
+                    $("#generateStudy")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select One Student at a time.');
+            }
+            
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click', '#clickGenerateBonafide', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            if (favorite.length == 1) {
+                var hrf = $(this).attr('data-hrf');
+                var newhrf = hrf + stuId;
+                $("#generateBonafide").attr('href', newhrf);
+                window.setTimeout(function () {
+                    $("#generateBonafide")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select One Student at a time.');
+            }
+            
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click', '#clickGenerateConduct', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            if (favorite.length == 1) {
+                var hrf = $(this).attr('data-hrf');
+                var newhrf = hrf + stuId;
+                $("#generateConduct").attr('href', newhrf);
+                window.setTimeout(function () {
+                    $("#generateConduct")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select One Student at a time.');
+            }
+            
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click', '#clickGenerateFee', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            if (favorite.length == 1) {
+                var hrf = $(this).attr('data-hrf');
+                var newhrf = hrf + stuId;
+                $("#generateFee").attr('href', newhrf);
+                window.setTimeout(function () {
+                    $("#generateFee")[0].click();
                 }, 10);
             } else {
                 alert('You Have to Select One Student at a time.');

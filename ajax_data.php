@@ -3199,8 +3199,13 @@ if ($type == 'deleteBulkSection') {
 if ($type == 'deleteBulkStudent') {
     $ids = explode(',', $val);
     foreach ($ids as $st) {
-        $data = array('pupilsightPersonID' => $st);
-        $sql = 'DELETE FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+        // $data = array('pupilsightPersonID' => $st);
+        // $sql = 'DELETE FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+        // $result = $connection2->prepare($sql);
+        // $result->execute($data);
+
+        $data = array('is_delete' => '1', 'pupilsightPersonID' => $st);
+        $sql = 'UPDATE pupilsightPerson SET is_delete=:is_delete WHERE pupilsightPersonID=:pupilsightPersonID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     }
