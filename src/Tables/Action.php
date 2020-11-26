@@ -57,7 +57,9 @@ class Action extends WebLink
             case 'deletenew':  $this->setIcon('garbage')->modalWindow(650, 135);
                             break;
             case 'deleteAlert':  $this->setIcon('garbage')->modalWindow(650, 135);
-                            break;                
+                            break;     
+            case 'deleteStaff':  $this->setIcon('garbage')->modalWindow(650, 400);
+                        break;
             case 'print':   $this->setIcon('print');
                             break;
             case 'export':  $this->setIcon('download');
@@ -296,6 +298,14 @@ class Action extends WebLink
 			} elseif($this->getLabel() == 'Delete'){
                
 				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-trash-can-outline mdi-24px"></i>', 
+                    ($this->displayLabel? $this->getLabel() : ''),
+                    $this->getLabel(), 
+                    $this->getIcon()
+                ));
+                
+			} elseif($this->getLabel() == 'DeleteStaff'){
+               
+				$this->setContent(sprintf('%1$s <i title="Delete Staff" class="mdi mdi-trash-can-outline mdi-24px"></i>', 
                     ($this->displayLabel? $this->getLabel() : ''),
                     $this->getLabel(), 
                     $this->getIcon()

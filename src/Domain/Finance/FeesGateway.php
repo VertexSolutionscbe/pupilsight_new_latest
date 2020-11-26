@@ -442,7 +442,7 @@ print_r($rs);
             ->orderBy(['pupilsightPerson.pupilsightPersonID']); 
         // echo $query;    
         //     die();
-        return $this->runQuery($query, $criteria);
+        return $this->runQuery($query, $criteria, TRUE);
     }
 
     public function getStudentlist_quick_cashpayment(QueryCriteria $criteria)

@@ -34,12 +34,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
         }
 
         //Check if school year specified
-        $persId = $_GET['pupilsightPersonID'];
 
-        $sqls = "SELECT pupilsightStaffID FROM pupilsightStaff WHERE pupilsightPersonID = ".$persId." ";
-        $results = $connection2->query($sqls);
-        $stfdata = $results->fetch();
-        $pupilsightStaffID = $stfdata['pupilsightStaffID'];
+        if(!empty($_GET['pupilsightPersonID'])){
+            $persId = $_GET['pupilsightPersonID'];
+
+            $sqls = "SELECT pupilsightStaffID FROM pupilsightStaff WHERE pupilsightPersonID = ".$persId." ";
+            $results = $connection2->query($sqls);
+            $stfdata = $results->fetch();
+            $pupilsightStaffID = $stfdata['pupilsightStaffID'];
+        } else {
+            $pupilsightStaffID = $_GET['pupilsightStaffID'];
+        }
 
 
         //$pupilsightStaffID = $_GET['pupilsightStaffID'];

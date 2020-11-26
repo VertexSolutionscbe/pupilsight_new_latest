@@ -102,7 +102,7 @@ $table->addActionColumn()
     // $actions->addAction('copynew', __('Copy'))
     //         ->setURL('/modules/Transport/transport_route_copy.php');
 
-    $actions->addAction('delete', __('Delete'))
+    $actions->addAction('deleteStaff', __('DeleteStaff'))
             ->setURL('/modules/Staff/remove_assined_staff.php');
 });
 echo $table->render($staff);    
