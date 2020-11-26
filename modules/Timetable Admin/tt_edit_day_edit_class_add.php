@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             //Let's go!
             $values = $result->fetch();
 
-            $urlParams = ['pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTID' => $pupilsightTTID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID];
+            $urlParams = ['pupilsightProgramID'=>$pupilsightProgramID,'pupilsightYearGroupID'=>$pupilsightYearGroupID,'pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTID' => $pupilsightTTID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID];
 
             $page->breadcrumbs
                 ->add(__('Manage Timetables'), 'tt.php', $urlParams)

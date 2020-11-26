@@ -21,6 +21,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     $pupilsightTTColumnRowID = $_GET['pupilsightTTColumnRowID'];
     $pupilsightProgramID = $_GET['pupilsightProgramID'];
     $pupilsightYearGroupID = $_GET['pupilsightYearGroupID'];
+    $pupilsightCourseClassID = $_GET['pupilsightCourseClassID'];
    //print_r($pupilsightTTColumnRowID);
     if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID == '' or $pupilsightTTColumnRowID == '') {
         echo "<div class='alert alert-danger'>";
@@ -37,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
-            $urlParams = ['pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTID' => $pupilsightTTID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID];
+            $urlParams = ['pupilsightProgramID'=>$pupilsightProgramID,'pupilsightYearGroupID'=>$pupilsightYearGroupID,'pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTID' => $pupilsightTTID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID];
 
             $page->breadcrumbs
                 ->add(__('Manage Timetables'), 'tt.php', $urlParams)
@@ -92,6 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->addParam('pupilsightTTColumnRowID', $pupilsightTTColumnRowID)
                 ->addParam('pupilsightProgramID', $pupilsightProgramID)
                 ->addParam('pupilsightYearGroupID', $pupilsightYearGroupID)
+                ->addParam('pupilsightCourseClassID', $pupilsightCourseClassID)
                 ->addParam('pupilsightTTDayRowClassID')
                 
                

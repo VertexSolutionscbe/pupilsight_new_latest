@@ -23,7 +23,7 @@ if ($_POST['pupilsightSpaceID'] != '') {
 
 if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID == '' or $pupilsightTTColumnRowID == '') { echo 'Fatal error loading this page!';
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class.php&pupilsightTTDayID=$pupilsightTTDayID&pupilsightTTID=$pupilsightTTID&pupilsightSchoolYearID=$pupilsightSchoolYearID&pupilsightTTColumnRowID=$pupilsightTTColumnRowID&pupilsightProgramID=$pupilsightProgramID&pupilsightYearGroupID=$pupilsightYearGroupID";
+    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_edit_day_edit_class.php&pupilsightTTDayID=$pupilsightTTDayID&pupilsightTTID=$pupilsightTTID&pupilsightSchoolYearID=$pupilsightSchoolYearID&pupilsightTTColumnRowID=$pupilsightTTColumnRowID&pupilsightProgramID=$pupilsightProgramID&pupilsightYearGroupID=$pupilsightYearGroupID&pupilsightCourseClassID=$pupilsightCourseClassID";
 
     if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_add.php') == false) {
         $URL .= '&return=error0';
@@ -82,7 +82,7 @@ if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID
                 //Last insert ID
                 $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
 
-                $URL .= "&return=success0&editID=$AI&pupilsightCourseClassID=pupilsightCourseClassID";
+                $URL .= "&return=success0&editID=$AI&pupilsightCourseClassID=$pupilsightCourseClassID";
                 header("Location: {$URL}");
             }
         }}
