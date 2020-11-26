@@ -190,6 +190,9 @@ class WebLink extends Element
 		} else if($this->getLabel() == 'DeleteAlert'){
             $cls = ' ';
             return '<a class="'.$cls.'" ' . $this->getAttributeString() . '>' . $this->content . $this->getEmbeddedElements() . '</a>';
+		} else if($this->getLabel() == 'DeleteStaff'){
+            $cls = 'thickbox';
+            return '<a class="'.$cls.'" ' . $this->getAttributeString() . '>' . $this->content . $this->getEmbeddedElements() . '</a>';
 		} else if($this->getLabel() == 'UploadTemplate'){
             $cls = 'thickbox';
             return '<a class="'.$cls.'" ' . $this->getAttributeString() . '>' . $this->content . $this->getEmbeddedElements() . '</a>';

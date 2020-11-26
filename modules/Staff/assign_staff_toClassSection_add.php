@@ -8,6 +8,7 @@ use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
 use Pupilsight\Domain\Staff\StaffGateway;
 use Pupilsight\Forms\DatabaseFormFactory;
+use Pupilsight\Domain\Helper\HelperGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClassSection_add.php') == false) {
     //Acess denied
@@ -27,13 +28,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClass
             $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
         }
 
+        $HelperGateway = $container->get(HelperGateway::class);
+
         if($_POST){        
             $pupilsightProgramID =  $_POST['pupilsightProgramID'];
             $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
-            $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];         
+            $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];  
+            
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
           
             $stuId = $_POST['studentId'];
         } else {
+            $classes = array('' => 'Select Class');
+            $sections = array('' => 'Select Section');
             $pupilsightProgramID =  '';
             $pupilsightYearGroupID =  '';
             $pupilsightRollGroupID =  '';
@@ -75,23 +83,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClass
     $row = $searchform->addRow();
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightProgramID', __('Program'));
-        $col->addSelect('pupilsightProgramID')->fromArray($program)->required()->selected($pupilsightProgramID)->placeholder();
+        $col->addSelect('pupilsightProgramID')->setID('getMultiClassByProgStaff')->fromArray($program)->required()->selected($pupilsightProgramID)->placeholder();
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightYearGroupID', __('Class'));
-        $col->addSelectYearGroup('pupilsightYearGroupID')->selected($pupilsightYearGroupID)->required();
+        $col->addSelect('pupilsightYearGroupID')->setID('showMultiClassByProgStaff')->fromArray($classes)->selected($pupilsightYearGroupID)->required();
 
         $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('pupilsightRollGroupID', __('Section'));
-        $col->addSelectRollGroup('pupilsightRollGroupID', $pupilsightSchoolYearID)->required()->selected($pupilsightRollGroupID);
-        $col = $row->addColumn()->setClass('newdes');   
+        $col->addLabel('pupilsightRollGroupID', __('Section'))->addClass('dte');
+        $col->addSelect('pupilsightRollGroupID')->setID('showMultiSecByProgClsStaff')->fromArray($sections)->required()->selected($pupilsightRollGroupID)->selectMultiple();
         
+        $col = $row->addColumn()->setClass('newdes');   
+        $col->addLabel('', __(''));
         $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');  
         echo $searchform->getOutput();
 
     $StaffGateway = $container->get(StaffGateway::class);
     $criteria = $StaffGateway->newQueryCriteria()
         //->sortBy(['id'])
+        ->pageSize('5000')
         ->fromPOST();
 
    $students = $StaffGateway->getStudentData($criteria, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
@@ -109,3 +119,48 @@ echo $table->render($students);
 
     
 }
+?>
+
+<script>
+
+$(document).ready(function () {
+    $('#showMultiSecByProgClsStaff').selectize({
+        plugins: ['remove_button'],
+    });
+});
+
+$(document).on('change', '#getMultiClassByProgStaff', function () {
+    var id = $(this).val();
+    var type = 'getClass';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type },
+        async: true,
+        success: function (response) {
+            $("#showMultiClassByProgStaff").html();
+            $("#showMultiClassByProgStaff").html(response);
+        }
+    });
+});
+
+$(document).on('change', '#showMultiClassByProgStaff', function () {
+    var id = $(this).val();
+    var pid = $('#getMultiClassByProgStaff').val();
+    var type = 'getSection';
+    $('#showMultiSecByProgClsStaff').selectize()[0].selectize.destroy();
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, pid: pid },
+        async: true,
+        success: function (response) {
+            $("#showMultiSecByProgClsStaff").html();
+            $("#showMultiSecByProgClsStaff").html(response);
+            $('#showMultiSecByProgClsStaff').selectize({
+                plugins: ['remove_button'],
+            });
+        }
+    });
+});
+</script>

@@ -112,7 +112,8 @@ class StaffGateway extends QueryableGateway
                 $query->where('pupilsightProgramClassSectionMapping.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
             } 
             if(!empty($pupilsightRollGroupID)){
-                $query->where('pupilsightProgramClassSectionMapping.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" ');
+                $rollIds = implode(',', $pupilsightRollGroupID);
+                $query->where('pupilsightProgramClassSectionMapping.pupilsightRollGroupID IN ('.$rollIds.') ');
             } 
 
             $query->orderBy(['pupilsightProgramClassSectionMapping.pupilsightYearGroupID ASC']);

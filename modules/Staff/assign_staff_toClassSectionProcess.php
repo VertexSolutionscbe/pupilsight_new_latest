@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 
 include '../../pupilsight.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/assign_staff_toClassSection.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/assign_staff_toClassSection.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClassSection.php') == false) {
     $URL .= '&return=error0';

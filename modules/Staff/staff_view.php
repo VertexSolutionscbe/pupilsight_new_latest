@@ -43,6 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $criteria = $staffGateway->newQueryCriteria()
             ->searchBy($staffGateway->getSearchableColumns(), $search)
             ->filterBy('all', $allStaff)
+            ->pageSize(5000)
             ->sortBy(['surname', 'preferredName'])
             ->fromPOST();
 
