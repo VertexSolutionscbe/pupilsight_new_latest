@@ -169,6 +169,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 $cnt = 1;
                 $cls = "odd";
                 while ($i < $len) {
+
                     $isFieldActive = TRUE;
                     $fieldStr = "&nbsp;"; //show or active
                     if (in_array($cd[$i]["Field"], $inactiveCol)) {
@@ -179,6 +180,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     if ($i % 2 == 0) {
                         $cls = "even";
                     }
+
                     echo "\n<tr class='" . $cls . "'>";
                     echo "\n<td>" . $cnt . "</td>";
                     echo "\n<td>" . $fieldStr . "</td>";
@@ -821,47 +823,53 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     while ($i < $len) {
         $field_type = $customFieldList[$i]["field_type"];
         if ($field_type) {
-            $fieldTitle = $customFieldList[$i]["field_title"];
-            $fieldName = $customFieldList[$i]["field_name"];
-            if (empty($fieldTitle)) {
-                $fieldTitle = $fieldName;
-            }
+            $isColAvl = $customField->isColumnAvailable($customFieldList[$i]["table_name"], $customFieldList[$i]["field_name"]);
             $id = $customFieldList[$i]["id"];
-            $str .= "\n<tr id='custom_row_" . $id . "'>";
-            $str .= "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
-            $str .= "<td>" . $fieldTitle . "</td>";
-            $str .= "<td>" . $customField->getInputTag($customFieldList[$i]["field_type"]) . "</td>";
-            $mod = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["modules"]) . "</div>";
-            $str .= "<td>" . $mod . "</td>";
-
-            $tabs = explode(",", $customFieldList[$i]["tabs"]);
-            $jlen = count($tabs);
-            $j = 0;
-            $opt = "<input type='hidden' id='fieldid_" . $fieldName . "' value='" . $customFieldList[$i]["id"] . "'>";
-            $opt .= "<input type='hidden' id='tabSelect_" . $fieldName . "' value='" . $customFieldList[$i]["tab"] . "'>";
-            $opt .= "<select id='switchTab_" . $fieldName . "' onchange=\"changeTab('" . $fieldName . "');\">";
-            $opt .= "\n<option value=''>Select</option>";
-            $optse = "";
-            while ($j < $jlen) {
-                $optse = "";
-                if ($tabs[$j] == $customFieldList[$i]["tab"]) {
-                    $optse = " selected";
+            if ($isColAvl == FALSE) {
+                $customField->removeUnusedColumn($id);
+            } else {
+                $fieldTitle = $customFieldList[$i]["field_title"];
+                $fieldName = $customFieldList[$i]["field_name"];
+                if (empty($fieldTitle)) {
+                    $fieldTitle = $fieldName;
                 }
-                $opt .= "\n<option value='" . $tabs[$j] . "' " . $optse . ">" . $tabs[$j] . "</option>";
-                $j++;
+
+                $str .= "\n<tr id='custom_row_" . $id . "' >";
+                $str .= "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
+                $str .= "<td>" . $fieldTitle . "</td>";
+                $str .= "<td>" . $customField->getInputTag($customFieldList[$i]["field_type"]) . "</td>";
+                $mod = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["modules"]) . "</div>";
+                $str .= "<td>" . $mod . "</td>";
+
+                $tabs = explode(",", $customFieldList[$i]["tabs"]);
+                $jlen = count($tabs);
+                $j = 0;
+                $opt = "<input type='hidden' id='fieldid_" . $fieldName . "' value='" . $customFieldList[$i]["id"] . "'>";
+                $opt .= "<input type='hidden' id='tabSelect_" . $fieldName . "' value='" . $customFieldList[$i]["tab"] . "'>";
+                $opt .= "<select id='switchTab_" . $fieldName . "' onchange=\"changeTab('" . $fieldName . "');\">";
+                $opt .= "\n<option value=''>Select</option>";
+                $optse = "";
+                while ($j < $jlen) {
+                    $optse = "";
+                    if ($tabs[$j] == $customFieldList[$i]["tab"]) {
+                        $optse = " selected";
+                    }
+                    $opt .= "\n<option value='" . $tabs[$j] . "' " . $optse . ">" . $tabs[$j] . "</option>";
+                    $j++;
+                }
+                $opt .= "</select>";
+
+                $str .= "<td>" . $opt . "</td>";
+
+                $str .= "<td>" . $customFieldList[$i]["active"] . "</td>";
+                $pv = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_view"]) . "</div>";
+                $str .= "<td>" . $pv . "</td>";
+                $pe = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_edit"]) . "</div>";
+                $str .= "<td>" . $pe . "</td>";
+
+                $str .= "<td><button class='btn btn-secondary' onclick=\"deleteCustomField('" . $id . "','" . $customFieldList[$i]["table_name"] . "','" . $fieldName . "');\">Delete</button></td>";
+                $str .= "</tr>";
             }
-            $opt .= "</select>";
-
-            $str .= "<td>" . $opt . "</td>";
-
-            $str .= "<td>" . $customFieldList[$i]["active"] . "</td>";
-            $pv = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_view"]) . "</div>";
-            $str .= "<td>" . $pv . "</td>";
-            $pe = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_edit"]) . "</div>";
-            $str .= "<td>" . $pe . "</td>";
-
-            $str .= "<td><button class='btn btn-secondary' onclick=\"deleteCustomField('" . $id . "','" . $customFieldList[$i]["table_name"] . "','" . $fieldName . "');\">Delete</button></td>";
-            $str .= "</tr>";
         }
         $i++;
     }

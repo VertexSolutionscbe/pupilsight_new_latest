@@ -328,6 +328,32 @@ class CustomField extends QueryableGateway
         }
     }
 
+    public function isColumnAvailable($tableName, $colName)
+    {
+        try {
+            $sq = "SHOW COLUMNS FROM " . $tableName . " LIKE '" . $colName . "'";
+            $db = new DBQuery();
+            $res = $db->selectRaw($sq);
+            if ($res) {
+                return TRUE;
+            }
+        } catch (Exception $ex) {
+            print_r($ex);
+        }
+        return FALSE;
+    }
+
+    public function removeUnusedColumn($id)
+    {
+        try {
+            $db = new DBQuery();
+            $sq = "delete from custom_field where id='" . $id . "'";
+            $db->query($sq);
+        } catch (Exception $ex) {
+            print_r($ex);
+        }
+    }
+
     public function getCustomFieldList()
     {
         $db = new DBQuery();
