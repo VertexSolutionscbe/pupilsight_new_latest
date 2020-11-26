@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
 
 	$row = $form->addRow();
 		$row->addLabel('subject', __('Subject'))->description(__('Must be unique.'));
-		$row->addTextField('subject')->required()->maxLength(20);
+		$row->addTextField('subject')->required()->maxLength(250);
 
 	$row = $form->addRow();
 		$col = $row->addColumn('body');
