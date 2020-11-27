@@ -29,10 +29,11 @@ if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID
             header("Location: {$URL}");
         } else {
             try {
-                $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID);
-                $sql = 'SELECT pupilsightTTDayRowClassID FROM pupilsightTTDayRowClass WHERE pupilsightTTDayID=:pupilsightTTDayID AND pupilsightTTColumnRowID=:pupilsightTTColumnRowID ';
+                $data = array('pupilsightTTDayRowClassID'=>$pupilsightTTDayRowClassID);
+                $sql = 'SELECT pupilsightTTDayRowClassID FROM pupilsightTTDayRowClass WHERE pupilsightTTDayRowClassID=:pupilsightTTDayRowClassID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
+                //print_r($result->rowCount()); die();
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
@@ -45,8 +46,8 @@ if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID
             } else {
                 //Write to database
                 try {
-                    $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID);
-                    $sql = 'DELETE FROM pupilsightTTDayRowClass WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID ';
+                    $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID,'pupilsightTTDayRowClassID'=>$pupilsightTTDayRowClassID);
+                    $sql = 'DELETE FROM pupilsightTTDayRowClass WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID AND pupilsightTTDayRowClassID=:pupilsightTTDayRowClassID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

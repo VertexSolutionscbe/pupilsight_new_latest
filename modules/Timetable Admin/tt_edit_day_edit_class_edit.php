@@ -19,18 +19,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     // $pupilsightCourseClassID = $_GET['pupilsightCourseClassID'] ?? '';
     $pupilsightProgramID = $_GET['pupilsightProgramID'];
     $pupilsightYearGroupID = $_GET['pupilsightYearGroupID'];
+    $pupilsightTTDayRowClassID = $_GET['pupilsightTTDayRowClassID'];
     if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID == '' ) {
         echo "<div class='alert alert-danger'>";
         echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
-            $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID);
+            $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID,'pupilsightTTDayRowClassID'=>$pupilsightTTDayRowClassID);
             $sql = 'SELECT pupilsightTTDayRowClass.pupilsightTTDayRowClassID, pupilsightTTDayRowClass.pupilsightDepartmentID,pupilsightTTDayRowClass.pupilsightStaffID,pupilsightPerson.officialName,pupilsightTTDayRowClass.pupilsightSpaceID FROM pupilsightTTDayRowClass 
             -- JOIN pupilsightCourseClass ON (pupilsightTTDayRowClass.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID)
             LEFT JOIN pupilsightStaff on pupilsightTTDayRowClass.pupilsightStaffID=pupilsightStaff.pupilsightStaffID
             LEFT JOIN pupilsightDepartment ON pupilsightTTDayRowClass.pupilsightDepartmentID = pupilsightDepartment.pupilsightDepartmentID LEFT JOIN pupilsightPerson  ON pupilsightStaff.pupilsightPersonID = pupilsightPerson.pupilsightPersonID
-             WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID AND pupilsightTTColumnRowID=:pupilsightTTColumnRowID 
+             WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID AND pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayRowClassID=:pupilsightTTDayRowClassID
              ';
             $result = $connection2->prepare($sql);
             $result->execute($data);
