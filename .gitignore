@@ -71,8 +71,6 @@ tests/config/supportgit /_generated/*
 /cms/w2f/database.php
 /cms/w2f/*
 /cms/w2f/*
-uploads/cache/*
-/uploads/cache/*
 /wp/wp-config.php
 src/Domain/DBQuery.php
 
