@@ -123,7 +123,7 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <span></span>
                 </div>
                 <div class=\"modal-footer\">
-                    <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
+                    <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" id=\"closeSM\">Close</button>
                     <button type=\"button\" class=\"btn btn-primary\" id=\"sendEmailSms_stud\">Send</button>
                 </div>
             </form>
@@ -142,18 +142,27 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
             </div>
-            <div class=\"modal-body emailField\" style=\"display:none;\">
-                <h3 class=\"font-semibold\">Email Message</h3>
-                <textarea name=\"email_quote\" id=\"emailQuote_staff\" rows=\"5\"></textarea>
-            </div>
-            <div class=\"modal-body smsField\" style=\"display:none;\">
-                <h3 class=\"font-semibold\">SMS Message</h3>
-                <textarea name=\"sms_quote\" id=\"smsQuote_staff\"></textarea>
-            </div>
-            <div class=\"modal-footer\">
-                <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
-                <button type=\"button\" class=\"btn btn-primary\" id=\"sendEmailSms_staff\">Send</button>
-            </div>
+            <form id=\"sendEmailSms_Staff\" method=\"post\" enctype=\"multipart/form-data\">
+                <div class=\"modal-body\"> Send To - <p id=\"sendTo\"></p>
+                </div>
+                <div class=\"modal-body emailField\" style=\"display:none;\">
+                    <h3 class=\"font-semibold\">Subject</h3>
+                    <textarea name=\"email_quote\" id=\"emailSubjectQuote_staff\" rows=\"1\"></textarea></br>
+                    <h3 class=\"font-semibold\">Email Message</h3>
+                    <textarea name=\"email_quote\" id=\"emailQuote_staff\" rows=\"5\"></textarea>
+                    <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
+                    <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
+                    <input type='file' name=\"email_attach_staff\" id=\"emailattach_camp\">
+                </div>
+                <div class=\"modal-body smsField\" style=\"display:none;\">
+                    <h3 class=\"font-semibold\">SMS Message</h3>
+                    <textarea name=\"sms_quote\" id=\"smsQuote_staff\"></textarea>
+                </div>
+                <div class=\"modal-footer\">
+                    <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" id=\"closeSMT\">Close</button>
+                    <button type=\"button\" class=\"btn btn-primary\" id=\"sendEmailSms_staff\">Send</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -473,7 +482,7 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <span></span>
                 </div>
                 <div class=\"modal-footer\">
-                    <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
+                    <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" id=\"closeSM\">Close</button>
                     <button type=\"button\" class=\"btn btn-primary\" id=\"sendEmailSms_stud\">Send</button>
                 </div>
             </form>
@@ -492,18 +501,27 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <span aria-hidden=\"true\">&times;</span>
                 </button>
             </div>
-            <div class=\"modal-body emailField\" style=\"display:none;\">
-                <h3 class=\"font-semibold\">Email Message</h3>
-                <textarea name=\"email_quote\" id=\"emailQuote_staff\" rows=\"5\"></textarea>
-            </div>
-            <div class=\"modal-body smsField\" style=\"display:none;\">
-                <h3 class=\"font-semibold\">SMS Message</h3>
-                <textarea name=\"sms_quote\" id=\"smsQuote_staff\"></textarea>
-            </div>
-            <div class=\"modal-footer\">
-                <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>
-                <button type=\"button\" class=\"btn btn-primary\" id=\"sendEmailSms_staff\">Send</button>
-            </div>
+            <form id=\"sendEmailSms_Staff\" method=\"post\" enctype=\"multipart/form-data\">
+                <div class=\"modal-body\"> Send To - <p id=\"sendTo\"></p>
+                </div>
+                <div class=\"modal-body emailField\" style=\"display:none;\">
+                    <h3 class=\"font-semibold\">Subject</h3>
+                    <textarea name=\"email_quote\" id=\"emailSubjectQuote_staff\" rows=\"1\"></textarea></br>
+                    <h3 class=\"font-semibold\">Email Message</h3>
+                    <textarea name=\"email_quote\" id=\"emailQuote_staff\" rows=\"5\"></textarea>
+                    <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
+                    <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
+                    <input type='file' name=\"email_attach_staff\" id=\"emailattach_camp\">
+                </div>
+                <div class=\"modal-body smsField\" style=\"display:none;\">
+                    <h3 class=\"font-semibold\">SMS Message</h3>
+                    <textarea name=\"sms_quote\" id=\"smsQuote_staff\"></textarea>
+                </div>
+                <div class=\"modal-footer\">
+                    <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" id=\"closeSMT\">Close</button>
+                    <button type=\"button\" class=\"btn btn-primary\" id=\"sendEmailSms_staff\">Send</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

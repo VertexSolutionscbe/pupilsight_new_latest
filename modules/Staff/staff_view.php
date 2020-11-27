@@ -115,6 +115,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         echo "<a style='display:none' id='clickchnagestatus' href='fullscreen.php?q=/modules/Staff/change_staff_status.php'  class='thickbox '>Change Route</a>";
         echo "<div style='height:50px;'><div class='float-left mb-2'><a  id=''  data-toggle='modal' data-target='#large-modal-new_staff' data-noti='2'  class='sendButton_staff btn btn-primary'>Send SMS</a>&nbsp;&nbsp;";
         echo "<a  id='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_staff' class='sendButton_staff btn btn-primary'>Send Email</a>&nbsp;&nbsp;<a  id='change_status' data-type='staff'  data-noti='1'  class=' btn btn-primary'>Change Status</a>";
+        echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/message_history.php' class='btn btn-primary' id='sendEmail'>SMS - SENT ITEMS</a>";
+        echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/staff_manage_add.php' class='btn btn-primary' id='sendEmail'>ADD</a>";
         echo " </div><div class='float-none'></div></div>";
 
         $staff = $staffGateway->queryAllStaff($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightDepartmentID);
@@ -122,10 +124,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         // DATA TABLE
         $table = DataTable::createPaginated('staffManage', $criteria);
 
-        $table->addHeaderAction('add', __('Add'))
-            ->setURL('/modules/Staff/staff_manage_add.php')
-            ->addParam('search', $search)
-            ->displayLabel();
+        // $table->addHeaderAction('add', __('Add'))
+        //     ->setURL('/modules/Staff/staff_manage_add.php')
+        //     ->addParam('search', $search)
+        //     ->displayLabel();
 
         $table->modifyRows(function ($person, $row) {
             if (!empty($person['status']) && $person['status'] != 'Full') $row->addClass('error');
@@ -146,7 +148,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
         $table->addCheckboxColumn('stuid', __(''))
             ->setClass('chkbox')
-            ->notSortable();
+            ->notSortable()
+            ->format(function ($staff) {
+                return "<input id='stuid' name='stuid[]' type='checkbox' value='" . $staff['stuid'] . "' class='enrollstuid' data-del='1' data-name='" . $staff['officialName'] . "'>";
+            });
+
+
+
         $table->addColumn('fullName', __('Name'))
             ->description(__('Initials'))
             ->width('35%')

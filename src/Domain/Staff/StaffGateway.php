@@ -36,7 +36,7 @@ class StaffGateway extends QueryableGateway
             ->distinct()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightPerson.pupilsightPersonID','assignstaff_toclasssection.pupilsightMappingID','pupilsightProgramClassSectionMapping.pupilsightProgramID' ,'pupilsightPerson.title', 'pupilsightPerson.surname','pupilsightPerson.email','pupilsightPerson.phone1', 'pupilsightPerson.preferredName', 'pupilsightPerson.status', 'pupilsightPerson.username', 'pupilsightPerson.image_240','pupilsightStaff.staff_status AS stat',
+                'pupilsightPerson.pupilsightPersonID','pupilsightPerson.officialName','assignstaff_toclasssection.pupilsightMappingID','pupilsightProgramClassSectionMapping.pupilsightProgramID' ,'pupilsightPerson.title', 'pupilsightPerson.surname','pupilsightPerson.email','pupilsightPerson.phone1', 'pupilsightPerson.preferredName', 'pupilsightPerson.status', 'pupilsightPerson.username', 'pupilsightPerson.image_240','pupilsightStaff.staff_status AS stat',
                 'pupilsightStaff.pupilsightStaffID','pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightStaff.initials', 'pupilsightStaff.type', 'pupilsightStaff.jobTitle'
             ])
             ->innerJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=pupilsightStaff.pupilsightPersonID')
@@ -53,7 +53,8 @@ class StaffGateway extends QueryableGateway
         if (!empty($pupilsightDepartmentID)) {
             $query->where('assignstaff_tosubject.pupilsightdepartmentID = "' . $pupilsightDepartmentID . '" ');
         }
-        $query->groupBy(['pupilsightPerson.pupilsightPersonID'])
+        $query->where('pupilsightPerson.pupilsightRoleIDPrimary != "003" ')
+        ->groupBy(['pupilsightPerson.pupilsightPersonID'])
        ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
    //  echo  $query;
         $criteria->addFilterRules([
@@ -92,7 +93,7 @@ class StaffGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
-    public function getStudentData(QueryCriteria $criteria, $pupilsightProgramID,  $pupilsightYearGroupID, $pupilsightRollGroupID)
+    public function getStudentData(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID,  $pupilsightYearGroupID, $pupilsightRollGroupID)
     {
       //  $pupilsightRoleIDAll = '003';
         if (!empty($pupilsightProgramID)) {
@@ -104,9 +105,10 @@ class StaffGateway extends QueryableGateway
             ->cols(['pupilsightProgramClassSectionMapping.pupilsightMappingID AS stuid','pupilsightProgram.name AS program', 'pupilsightYearGroup.nameShort AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup'])
             ->leftJoin('pupilsightProgram', 'pupilsightProgramClassSectionMapping.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
             ->leftJoin('pupilsightYearGroup', 'pupilsightProgramClassSectionMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
-            ->leftJoin('pupilsightRollGroup', 'pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID');
+            ->leftJoin('pupilsightRollGroup', 'pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+            ->where('pupilsightProgramClassSectionMapping.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ');
             if(!empty($pupilsightProgramID)){
-                $query->where('pupilsightProgram.pupilsightProgramID = "'.$pupilsightProgramID.'" ');
+                $query->where('pupilsightProgramClassSectionMapping.pupilsightProgramID = "'.$pupilsightProgramID.'" ');
             } 
             if(!empty($pupilsightYearGroupID)){
                 $query->where('pupilsightProgramClassSectionMapping.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
@@ -155,7 +157,7 @@ class StaffGateway extends QueryableGateway
         ->leftJoin('pupilsightYearGroup', 'pupilsightProgramClassSectionMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
         ->leftJoin('pupilsightRollGroup', 'pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
         ->leftJoin('pupilsightPerson', 'assignstaff_toclasssection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
-        ->groupBy(['pupilsightProgram.pupilsightProgramID,pupilsightYearGroup.pupilsightYearGroupID']);
+        ->groupBy(['pupilsightProgramClassSectionMapping.pupilsightMappingID']);
         
         $res = $this->runQuery($query, $criteria);
         $data = $res->data;

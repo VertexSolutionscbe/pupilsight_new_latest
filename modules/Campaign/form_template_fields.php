@@ -36,10 +36,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
         $fields = array();
 
         $arrHeader = array();
-        foreach($field as $fe){
-            foreach($fe as $f){
-                if(!empty($f->attributes)){
-                    $arrHeader[] = $f->attributes->name;
+        if(!empty($field)){
+            foreach($field as $fe){
+                foreach($fe as $f){
+                    if(!empty($f->attributes)){
+                        $arrHeader[] = $f->attributes->name;
+                    }
                 }
             }
         }

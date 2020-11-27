@@ -341,7 +341,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                             $mot_id = $conn->insert_id;
                         }
                     } else {
-                        $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE email = "'.$alrow['mt_email'].'" ';
+                        $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE b.pupilsightFamilyID = '.$family_id.' AND b.relationship = "Mother" ';
                         $resultchk = $connection2->query($sqlchk);
                         $pd = $resultchk->fetch();
                         if(!empty($pd)){

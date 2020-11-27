@@ -7,7 +7,7 @@ include '../../pupilsight.php';
 //  echo '<pre>';
 //  print_r($_POST);
 //  echo '</pre>';die();
- $ids = $_POST['staff_id'];//array
+ $ids = $_POST['staff'];//array
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/remove_assined_staff.php&id='.$id;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/assign_staff_toClassSection.php';
@@ -18,7 +18,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/remove_assined_staff
 } else {
     //Proceed!
     //Check if school year specified
-    $cnt =count($ids);
+    $cnt = count($ids);
     if ($cnt == 0) {
         $URL .= '&return=error1';
         header("Location: {$URL}");

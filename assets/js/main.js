@@ -3376,6 +3376,8 @@
                                 $("#preloader").hide();
                                 alert('Your Message Sent Successfully! click Ok to continue ');
                                 //location.reload();
+                                $("#sendEmailSms_Student")[0].reset();
+                                $("#closeSM").click();
                             }
                         });
                     } else {
@@ -3399,10 +3401,13 @@
 
     $(document).on('click', '.sendButton_staff', function () {
         var stuids = [];
+        var names = [];
         $.each($("input[name='stuid[]']:checked"), function () {
             stuids.push($(this).val());
+            names.push($(this).attr('data-name'));
         });
         var stuid = stuids.join(",");
+        var stfnames = names.join(", ");
         if (stuid) {
             $(".sendButton_staff").removeClass('activestate');
             $(this).addClass('activestate');
@@ -3427,6 +3432,7 @@
                 $(".emailField").show();
                 $(".smsField").show();
             }
+            $("#sendTo").text(stfnames);
         } else {
             alert('You Have to Select Staff');
             window.setTimeout(function () {
@@ -3439,35 +3445,58 @@
     });
 
     $(document).on('click', '#sendEmailSms_staff', function () {
+        $("#preloader").show();
+        window.setTimeout(function () {
+            var emailquote = $("#emailQuote_staff").val();
+            var smsquote = $("#smsQuote_staff").val();
+            var subjectquote = $("#emailSubjectQuote_staff").val();
+            var favorite = [];
+            $.each($("input[name='stuid[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var formData = new FormData(document.getElementById("sendEmailSms_Staff"));
+            var stuid = favorite.join(", ");
 
-        var emailquote = $("#emailQuote_staff").val();
-        var smsquote = $("#smsQuote_staff").val();
-        var favorite = [];
-        $.each($("input[name='stuid[]']:checked"), function () {
-            favorite.push($(this).val());
-        });
-        var stuid = favorite.join(", ");
+            // var types = [];
+            // $.each($(".chkType:checked"), function () {
+            //     types.push($(this).attr('data-type'));
+            // });
+            // var type = types.join(",");
 
-        if (stuid) {
-            if (emailquote != '' || smsquote != '') {
-                $("#preloader").show();
-                $.ajax({
-                    url: 'modules/Staff/send_staff_email_msg.php',
-                    type: 'post',
-                    data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote },
-                    async: true,
-                    success: function (response) {
-                        alert('Your Message Sent Successfully! click Ok to continue ');
-                        location.reload();
-                    }
-                });
+            if (stuid) {
+                if (emailquote != '' || smsquote != '') {
+
+                    formData.append('stuid', stuid);
+                    formData.append('emailquote', emailquote);
+                    formData.append('smsquote', smsquote);
+                    //formData.append('type', type);
+                    formData.append('subjectquote', subjectquote);
+                    $.ajax({
+                        url: 'modules/Staff/send_staff_email_msg.php',
+                        type: 'post',
+                        data: formData,
+                        contentType: false,
+                        cache: false,
+                        processData: false,
+                        async: false,
+                        success: function (response) {
+                            $("#preloader").hide();
+                            alert('Your Message Sent Successfully! click Ok to continue ');
+                            $("#sendEmailSms_Staff")[0].reset();
+                            $("#closeSMT").click();
+                            // location.reload();
+                        }
+                    });
+                } else {
+                    $("#preloader").hide();
+                    alert('You Have to Enter Quote.');
+                }
             } else {
-                alert('You Have to Enter Quote.');
-            }
-        } else {
-            alert('You Have to Select Staff.');
+                $("#preloader").hide();
+                alert('You Have to Select Staff.');
 
-        }
+            }
+        }, 100);
     });
 
     //assign student to section

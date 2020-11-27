@@ -82,6 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             //Proceed!
             $classes = array('' => 'Select Class');
             $sections = array('' => 'Select Section');
+            $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
 
             $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
             $resultp = $connection2->query($sqlp);
@@ -129,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
                 $search = $_POST['search'];
 
-                $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+                
                 $uid = $_SESSION[$guid]['pupilsightPersonID'];
 
                 if ($roleId == '2') {
@@ -200,8 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section');
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('search', __('Search For'))
-                ->description($searchDescription);
+            $col->addLabel('search', __('Search For'));
             $col->addTextField('search')->setValue($search);
 
             $col = $row->addColumn()->setClass('newdes');
@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             
             echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_delete.php' class='btn btn-primary'>Deleted Student's</a>";
         
-            echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Register Student's</a>";
+            echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Registered Student's</a>";
 
             echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatetc.php?aid=".$pupilsightSchoolYearID."&sid=' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
 
@@ -306,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             }
 
             if(in_array(28, $permissionChk)){
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Register Student's</a>";
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Registered Student's</a>";
             }
 
             if(in_array(29, $permissionChk)){
@@ -373,15 +373,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                     if($person['active'] == '0') {
                         if (!empty($person['yearGroup'])) {
-                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='enrollstuid' data-del='1' data-name=" . $person['officialName'] . "'>";
+                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='enrollstuid' data-del='1' data-name='" . $person['officialName'] . "'>";
                         } else {
-                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='stuid' data-del='1' data-name=" . $person['officialName'] . "'>";
+                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='stuid' data-del='1' data-name='" . $person['officialName'] . "'>";
                         }
                     } else {
                         if (!empty($person['yearGroup'])) {
-                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='enrollstuid' data-del='2' data-name=" . $person['officialName'] . "'>";
+                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='enrollstuid' data-del='2' data-name='" . $person['officialName'] . "'>";
                         } else {
-                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='stuid' data-del='2' data-name=" . $person['officialName'] . "'>";
+                            return "<input id='student_id' name='student_id[]' type='checkbox' value='" . $person['pupilsightPersonID'] . "' class='stuid' data-del='2' data-name='" . $person['officialName'] . "'>";
                         }
                     }
                 });
