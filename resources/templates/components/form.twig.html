@@ -65,7 +65,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                 {% if element.instanceOf('Pupilsight\\Forms\\ValidatableInterface') %}
                 <script type="text/javascript">
-                    { { element.getValidationOutput | raw } }
+                    {{ element.getValidationOutput | raw }}
                 </script>
                 {% endif %}
             </div>
@@ -76,7 +76,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         <script type="text/javascript">
             {% for code in javascript %}
-            { { code | raw } }
+            {{ code | raw }}
             {% endfor %}
         </script>
 </form>

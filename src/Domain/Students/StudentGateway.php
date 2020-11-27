@@ -86,18 +86,25 @@ class StudentGateway extends QueryableGateway
             $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
         }
 
-        if ($searchFamilyDetails && $criteria->hasSearchText()) {
-            self::$searchableColumns = array_merge(self::$searchableColumns, ['parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate']);
-
-            $query
-                ->leftJoin('pupilsightFamilyChild as child', "child.pupilsightPersonID=pupilsightPerson.pupilsightPersonID")
-                ->leftJoin('pupilsightFamilyAdult as adult1', "(adult1.pupilsightFamilyID=child.pupilsightFamilyID AND adult1.contactPriority=1)")
-                ->leftJoin('pupilsightPerson as parent1', "(parent1.pupilsightPersonID=adult1.pupilsightPersonID AND parent1.status='Full')")
-                ->leftJoin('pupilsightFamilyAdult as adult2', "(adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2)")
-                ->leftJoin('pupilsightPerson as parent2', "(parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full')");
+        if (!empty($search)) {
+            $query->where('pupilsightPerson.officialName LIKE "%' . $search . '%" ');
         }
 
+
+
+        // if ($searchFamilyDetails && $criteria->hasSearchText()) {
+        //     self::$searchableColumns = array_merge(self::$searchableColumns, ['parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate']);
+
+        //     $query
+        //         ->leftJoin('pupilsightFamilyChild as child', "child.pupilsightPersonID=pupilsightPerson.pupilsightPersonID")
+        //         ->leftJoin('pupilsightFamilyAdult as adult1', "(adult1.pupilsightFamilyID=child.pupilsightFamilyID AND adult1.contactPriority=1)")
+        //         ->leftJoin('pupilsightPerson as parent1', "(parent1.pupilsightPersonID=adult1.pupilsightPersonID AND parent1.status='Full')")
+        //         ->leftJoin('pupilsightFamilyAdult as adult2', "(adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2)")
+        //         ->leftJoin('pupilsightPerson as parent2', "(parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full')");
+        // }
+
         $query->where('pupilsightPerson.is_delete = "0" ')
+            ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
         //echo $query;
         $criteria->addFilterRules($this->getSharedUserFilterRules());

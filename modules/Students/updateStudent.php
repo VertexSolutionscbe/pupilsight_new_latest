@@ -91,8 +91,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/updateStudent.php
         LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID=e.pupilsightRollGroupID 
         LEFT JOIN pupilsightSchoolYear AS f ON b.pupilsightSchoolYearID=f.pupilsightSchoolYearID 
         
-        WHERE a.admission_no = '' AND b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " ORDER BY d.pupilsightYearGroupID ". $type." ";
-         //echo $sqle;
+        WHERE a.pupilsightRoleIDPrimary = '003' AND a.admission_no IS NULL AND b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " ORDER BY d.pupilsightYearGroupID ". $type." ";
+        //echo $sqle;
         // die();
         $resulte = $connection2->query($sqle);
         $studentData = $resulte->fetchAll();
