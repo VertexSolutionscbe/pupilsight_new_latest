@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
 <style>
     .cls {
         width: 310px;
-        margin: 0 0 0 -85px;
+        margin: 0 0 0 -125px;
     }
 </style>
 

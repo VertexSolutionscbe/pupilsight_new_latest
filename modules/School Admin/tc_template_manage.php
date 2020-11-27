@@ -39,7 +39,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_m
    //     ->displayLabel();
    
    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/School Admin/tc_template_add.php' class='thickbox btn btn-primary'>Add</a>
-   <a href='public/doc_template/default/tc_template.docx'  class='btn btn-primary' download>Deafult Template <i class='fas fa-download'></i></a></div><div class='float-none'></div></div>";  
+   <a href='public/doc_template/default/tc_template.docx'  class='btn btn-primary' download>Deafult Template</a>
+   <a href='index.php?q=/modules/School Admin/form_template_fields.php'  class='btn btn-primary'>Template Fields</a>
+   </div><div class='float-none'></div></div>";  
 
    
    

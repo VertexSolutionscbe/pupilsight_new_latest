@@ -27,6 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClass
         if (isset($_GET['pupilsightSchoolYearID'])) {
             $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
         }
+        $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
         $HelperGateway = $container->get(HelperGateway::class);
 
@@ -104,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClass
         ->pageSize('5000')
         ->fromPOST();
 
-   $students = $StaffGateway->getStudentData($criteria, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
+   $students = $StaffGateway->getStudentData($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
 
 $table = DataTable::createPaginated('FeeStructureManage', $criteria);
     $table->addCheckboxColumn('stuid',__(''))

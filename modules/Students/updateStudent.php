@@ -1,6 +1,6 @@
 <?php
- 
- 
+
+
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -35,13 +35,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/updateStudent.php
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    
+
     $page->breadcrumbs->add(__('Student Update'));
 
- 
-     if (isset($_GET['return'])) {
-         returnProcess($guid, $_GET['return'], null, null);
-     }
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
 
     $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
     $resultp = $connection2->query($sqlp);
@@ -75,125 +75,127 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/updateStudent.php
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
     $HelperGateway = $container->get(HelperGateway::class);
-    if($_POST){
+    if ($_POST) {
         $series_id = $_POST['series_id'];
         $pupilsightProgramID = $_POST['pupilsightProgramID'];
         //$pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
         $type = $_POST['type'];
 
         //$classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        
-        if(!empty($pupilsightProgramID) && !empty($type)){ 
-        $sqle = "SELECT a.officialName, a.pupilsightPersonID, a.admission_no, d.name AS class,c.name as program ,f.name as academic, d.pupilsightYearGroupID,c.pupilsightProgramID ,f.pupilsightSchoolYearID FROM pupilsightPerson AS a 
+
+        if (!empty($pupilsightProgramID) && !empty($type)) {
+            $sqle = "SELECT a.officialName, a.pupilsightPersonID, a.admission_no, d.name AS class,c.name as program ,f.name as academic, d.pupilsightYearGroupID,c.pupilsightProgramID ,f.pupilsightSchoolYearID FROM pupilsightPerson AS a 
         LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID=b.pupilsightPersonID 
         LEFT JOIN pupilsightProgram AS c ON b.pupilsightProgramID=c.pupilsightProgramID 
         LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID=d.pupilsightYearGroupID 
         LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID=e.pupilsightRollGroupID 
         LEFT JOIN pupilsightSchoolYear AS f ON b.pupilsightSchoolYearID=f.pupilsightSchoolYearID 
         
-        WHERE a.pupilsightRoleIDPrimary = '003' AND a.admission_no IS NULL AND b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " ORDER BY d.pupilsightYearGroupID ". $type." ";
-        //echo $sqle;
-        // die();
-        $resulte = $connection2->query($sqle);
-        $studentData = $resulte->fetchAll();
+        WHERE a.pupilsightRoleIDPrimary = '003' AND a.admission_no IS NULL AND b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " ORDER BY d.pupilsightYearGroupID " . $type . " ";
+            //echo $sqle;
+            // die();
+            $resulte = $connection2->query($sqle);
+            $studentData = $resulte->fetchAll();
         }
-       
-    } 
+    }
 
     // echo '<pre>';
     // print_r($studentData);
     // echo '</pre>';
     //die();
-    
-     echo '<h2>';
-     echo __('Student Message History');
-     echo '</h2>';
-     
-     $types = array('' => 'Select Type', 'ASC' => 'Ascending', 'DESC' => 'Descending');
-     $form = Form::create('filter', '');
 
-            $form->setClass('noIntBorder fullWidth');
-            $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
-            $row = $form->addRow();
+    echo '<h2>';
+    echo __('Student Message History');
+    echo '</h2>';
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+    $types = array('' => 'Select Type', 'ASC' => 'Ascending', 'DESC' => 'Descending');
+    $form = Form::create('filter', '');
 
-            // $col = $row->addColumn()->setClass('newdes');
-            // $col->addLabel('pupilsightYearGroupID', __('Class'));
-            // $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
+    $form->setClass('noIntBorder fullWidth');
+    $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
+    $row = $form->addRow();
 
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightProgramID', __('Program'));
+    $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('series_id', __('Series'));
-            $col->addSelect('series_id')->fromArray($series)->selected($series_id)->placeholder('Select Series')->required();
+    // $col = $row->addColumn()->setClass('newdes');
+    // $col->addLabel('pupilsightYearGroupID', __('Class'));
+    // $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
 
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('type', __('Type'))->addClass('dte');
-            $col->addSelect('type')->fromArray($types)->selected($type)->required();
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('series_id', __('Series'));
+    $col->addSelect('series_id')->fromArray($series)->selected($series_id)->placeholder('Select Series')->required();
 
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
-            $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('type', __('Type'))->addClass('dte');
+    $col->addSelect('type')->fromArray($types)->selected($type)->required();
+
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('', __(''));
+    $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
 
 
-            echo $form->getOutput();
-    if($_POST){
-    ?>
-    <form method="post" action="index.php?q=/modules/Students/updateStudentNo.php">
-    <button class="btn btn-primary" style="float:right;">Update</button>
-    <input type='hidden' name="series_id" value="<?php echo $series_id; ?>">
-    <table class="table" id="historyTable">
-        <thead>
-            <tr>
-                <th>Sl No</th>
-                <th>Program</th>
-                <th>Class</th>
-                <th>Student Name</th>
-                <th>Admission No</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            if(!empty($studentData)) { 
-                $i = 1;
-                foreach($studentData as $estd){ 
-                ?>
-                
-                <input style="display:none;" type='text' name="student_id[]" value="<?php echo $estd['pupilsightPersonID']; ?>">
-                <tr>
-                    <th><?php echo $i; ?></th>
-                    <th><?php echo $estd['program']; ?></th>
-                    <th><?php echo $estd['class']; ?></th>
-                    <th><?php echo $estd['officialName']; ?></th>
-                    <th><?php echo $estd['admission_no']; ?></th>
-                    
-                </tr>
-            <?php  $i++; } } else { ?> 
-                <tr>
-                    <th colspan="7">No Message History</th>
-                </tr>
-            <?php } ?>
-        </tbody>
+    echo $form->getOutput();
+    if ($_POST) {
+?>
+        <form method="post" action="index.php?q=/modules/Students/updateStudentNo.php">
+            <button class="btn btn-primary" style="float:right;">Update</button>
+            <input type='hidden' name="series_id" value="<?php echo $series_id; ?>">
+            <table class="table" id="historyTable">
+                <thead>
+                    <tr>
+                        <th>Sl No</th>
+                        <th>Program</th>
+                        <th>Class</th>
+                        <th>Student Name</th>
+                        <th>Admission No</th>
 
-    </table>
-    </form>
-<?php   
-} }
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (!empty($studentData)) {
+                        $i = 1;
+                        foreach ($studentData as $estd) {
+                    ?>
+
+                            <input style="display:none;" type='text' name="student_id[]" value="<?php echo $estd['pupilsightPersonID']; ?>">
+                            <tr>
+                                <th><?php echo $i; ?></th>
+                                <th><?php echo $estd['program']; ?></th>
+                                <th><?php echo $estd['class']; ?></th>
+                                <th><?php echo $estd['officialName']; ?></th>
+                                <th><?php echo $estd['admission_no']; ?></th>
+
+                            </tr>
+                        <?php $i++;
+                        }
+                    } else { ?>
+                        <tr>
+                            <th colspan="7">No Message History</th>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+
+            </table>
+        </form>
+<?php
+    }
+}
 ?>
 
 <script>
-    $(function(){
+    $(function() {
         $("#historyTable").dataTable();
     })
     $("#start_date").datepicker({
         //minDate: 0,
-        onClose: function (selectedDate) {
+        onClose: function(selectedDate) {
             $("#end_date").datepicker("option", "minDate", selectedDate);
         }
     });

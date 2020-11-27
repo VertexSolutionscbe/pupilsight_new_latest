@@ -31,7 +31,7 @@ use Pupilsight\Domain\Admission\AdmissionGateway;
 require_once __DIR__ . '/moduleFunctions.php';
 
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $type = $_POST['type'];
 
-            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE  a.sent_to = "1" AND a.cdt >= "'.$start_date.'" AND a.cdt <= "'.$end_date.'" ';
+            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE  a.sent_to = "2" AND a.cdt >= "'.$start_date.'" AND a.cdt <= "'.$end_date.'" ';
             if(!empty($type)){
                 $sqle .= 'AND a.type = '.$type.'';
             }
@@ -79,13 +79,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             $resulte = $connection2->query($sqle);
             $mailsmsdata = $resulte->fetchAll();
         } else {
-            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.sent_to = "1" ORDER BY a.id DESC';
+            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.sent_to = "2" ORDER BY a.id DESC';
             $resulte = $connection2->query($sqle);
             $mailsmsdata = $resulte->fetchAll();
         }
         
     } else {
-        $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.sent_to = "1" ORDER BY a.id DESC';
+        $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.sent_to = "2" ORDER BY a.id DESC';
         $resulte = $connection2->query($sqle);
         $mailsmsdata = $resulte->fetchAll();
     }
