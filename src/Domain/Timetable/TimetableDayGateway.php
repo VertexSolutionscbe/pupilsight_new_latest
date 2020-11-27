@@ -52,8 +52,8 @@ class TimetableDayGateway extends Gateway
     }
     public function selectTTDayRowClassesByID($pupilsightTTDayID, $pupilsightTTColumnRowID) {
         $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID);
-       
-        $sql = "SELECT pupilsightTTDayRowClassID,pupilsightStaffID,  pupilsightSpace.pupilsightSpaceID,pupilsightDepartment.name as subname, pupilsightSpace.name as location, pupilsightProgram.name as progName, pupilsightYearGroup.name as className FROM pupilsightTTDayRowClass 
+
+        $sql = "SELECT pupilsightTTDayRowClassID,pupilsightStaffID,/*pupilsightPerson.officialName as staffname,*/  pupilsightSpace.pupilsightSpaceID,pupilsightDepartment.name as subname, pupilsightSpace.name as location, pupilsightProgram.name as progName, pupilsightYearGroup.name as className FROM pupilsightTTDayRowClass 
                 
                 LEFT JOIN pupilsightSpace ON (pupilsightTTDayRowClass.pupilsightSpaceID=pupilsightSpace.pupilsightSpaceID)
                 LEFT JOIN pupilsightDepartment ON (pupilsightTTDayRowClass.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID)
@@ -63,6 +63,9 @@ class TimetableDayGateway extends Gateway
 
                 LEFT JOIN pupilsightProgram ON (pupilsightTT.pupilsightProgramID=pupilsightProgram.pupilsightProgramID)
                 LEFT JOIN pupilsightYearGroup ON (pupilsightTT.pupilsightYearGroupIDList=pupilsightYearGroup.pupilsightYearGroupID)
+                
+                 /*JOIN pupilsightStaff ON (pupilsightTTDayRowClass.pupilsightStaffID=pupilsightStaff.pupilsightStaffID)
+                 JOIN pupilsightPerson ON( pupilsightStaff.pupilsightPersonID=pupilsightPerson.pupilsightPersonID)*/
                 
                 WHERE pupilsightTTDayRowClass.pupilsightTTColumnRowID=:pupilsightTTColumnRowID 
                 AND pupilsightTTDayRowClass.pupilsightTTDayID=:pupilsightTTDayID 

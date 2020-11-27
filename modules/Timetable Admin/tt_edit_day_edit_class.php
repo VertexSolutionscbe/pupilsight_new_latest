@@ -83,6 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->displayLabel();
 
             $table->addColumn('subname', __('Subject'));
+            $table->addColumn('pupilsightTTDayRowClassID', __('ID'));
+            //$table->addColumn('staffname', __('Staff'));
             $table->addColumn('location', __('Location'));
 
             // ACTIONS
@@ -95,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->addParam('pupilsightYearGroupID', $pupilsightYearGroupID)
                 ->addParam('pupilsightCourseClassID', $pupilsightCourseClassID)
                 ->addParam('pupilsightTTDayRowClassID')
-                
+
                
                 ->format(function ($values, $actions) {
                     $actions->addAction('edit', __('Edit'))
