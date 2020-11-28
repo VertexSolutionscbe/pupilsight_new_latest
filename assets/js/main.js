@@ -7119,6 +7119,9 @@ function CustomField() {
         var tfVal = "";
         if (pcdt) {
             tfVal = pcdt.dt[obj.field_name];
+            if (_this.isEmpty(tfVal)) {
+                tfVal = "";
+            }
             //console.log(obj.field_name, tfval);
         }
 
@@ -7194,9 +7197,9 @@ function CustomField() {
         var tfVal = "";
         if (pcdt) {
             tfVal = pcdt.dt[obj.field_name];
-            /*if (!tfVal) {
+            if (_this.isEmpty(tfVal)) {
                 tfVal = "";
-            }*/
+            }
         }
 
         var description = "";
@@ -7273,7 +7276,7 @@ function CustomField() {
         var tfVal = "";
         if (pcdt) {
             tfVal = pcdt.dt[obj.field_name];
-            if (!tfVal) {
+            if (_this.isEmpty(tfVal)) {
                 tfVal = "";
             }
         }
@@ -7315,7 +7318,7 @@ function CustomField() {
         var tfVal = "";
         if (pcdt) {
             tfVal = pcdt.dt[obj.field_name];
-            if (!tfVal) {
+            if (_this.isEmpty(tfVal)) {
                 tfVal = "";
             }
         }
@@ -7353,7 +7356,7 @@ function CustomField() {
         var tfVal = "";
         if (pcdt) {
             tfVal = pcdt.dt[obj.field_name];
-            if (!tfVal) {
+            if (_this.isEmpty(tfVal)) {
                 tfVal = "";
             }
         }

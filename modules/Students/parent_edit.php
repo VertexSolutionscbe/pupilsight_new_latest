@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 
 	try {
 		$customField  = $container->get(CustomField::class);
-		$customField->getPostData("pupilsightPerson", "pupilsightPersonID", $pupilsightPersonID);
+		$customField->getPostData("pupilsightPerson", "pupilsightPersonID", $pupilsightPersonID, "father");
 	} catch (Exception $ex) {
 		print_r($ex->getMessage());
 	}

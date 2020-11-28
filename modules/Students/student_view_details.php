@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         } else {
 
             $customField  = $container->get(CustomField::class);
-            $customField->getPostData("pupilsightPerson", "pupilsightPersonID", $pupilsightPersonID);
+            $customField->getPostData("pupilsightPerson", "pupilsightPersonID", $pupilsightPersonID, "student");
 
 
             $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');

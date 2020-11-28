@@ -304,10 +304,15 @@ class CustomField extends QueryableGateway
         return $sq;
     }
 
-    public function getPostData($tableName, $primaryCol, $primaryColVal)
+    public function getPostData($tableName, $primaryCol, $primaryColVal, $modules = NULL)
     {
         try {
-            $sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' and active='Y' and field_type in('varchar','text','email','number','mobile','image','date','file','url','dropdown','checkboxes','radioboxes','tab')";
+            $sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' ";
+            $sq .= "and active='Y' and field_type in('varchar','text','email','number','mobile','image','date','file','url','dropdown','checkboxes','radioboxes','tab') ";
+            if ($modules) {
+                $sq .= "and modules like '%" . $modules . "%'";
+            }
+
             $db = new DBQuery();
             $res = $db->selectRaw($sq);
             if ($res) {
