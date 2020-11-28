@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/updateStudent.php
     $page->addError(__('You do not have access to this action.'));
 } else {
     
-    $page->breadcrumbs->add(__('Student Update'));
+    $page->breadcrumbs->add(__('Student Id Generation'));
 
  
      if (isset($_GET['return'])) {
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/updateStudent.php
     //die();
     
      echo '<h2>';
-     echo __('Student Message History');
+     echo __('Student  Id Generation');
      echo '</h2>';
      
      $types = array('' => 'Select Type', 'ASC' => 'Ascending', 'DESC' => 'Descending');

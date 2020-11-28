@@ -37,6 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
    
     $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
 
+    $sql = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
+    $result = $connection2->query($sql);
+    $customFields = $result->fetchAll();
+
+    //print_r($customFields);
+
     $sqla = 'SELECT GROUP_CONCAT(field_name) AS fname FROM student_field_show WHERE pupilsightPersonID = '.$pupilsightPersonID.' ';
     $resulta = $connection2->query($sqla);
     $fieldSave = $resulta->fetch();
@@ -87,10 +93,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="pupilsightPersonID" <?php if (in_array("pupilsightPersonID", $field)) { ?> checked <?php } ?>></td>
                 <td>Student ID</td>
             </tr>
+            <?php /*
             <tr>
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="admission_no" <?php if (in_array("admission_no", $field)) { ?> checked <?php } ?>></td>
                 <td>Admission No</td>
             </tr>
+            */ ?>
             <tr>
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="academic_year" <?php if (in_array("academic_year", $field)) { ?> checked <?php } ?>></td>
                 <td>Academic Year</td>
@@ -179,6 +187,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="motherPhone" <?php if (in_array("motherPhone", $field)) { ?> checked <?php } ?>></td>
                 <td>Mother Phone</td>
             </tr>
+            <?php 
+            if(!empty($customFields)){
+                foreach($customFields as $cf){
+            ?>
+                    <tr>
+                        <td><input type="checkbox" class="chkChild" name="field_name[]" value="<?php echo $cf['field_name']?>" <?php if (in_array($cf['field_name'], $field)) { ?> checked <?php } ?>></td>
+                        <td><?php echo $cf['field_title']?></td>
+                    </tr>
+            <?php
+                }
+            }
+            ?>
         </tbody>
     </table>
 </form>
