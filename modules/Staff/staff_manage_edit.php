@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 $form->addHiddenValue('pupilsightPersonID', $values['pupilsightPersonID']);
                 $form->addHiddenValue('signature_path', $values['signature_path']);
 
-                $form->addRow()->addHeading(__('Basic Information'));
+                $form->addRow("basic_information")->addHeading(__('Basic Information'));
 
                 $row = $form->addRow();
                 $row->addLabel('pupilsightPersonName', __('Person'))->description(__('Must be unique.'));

@@ -46,11 +46,11 @@ if ($type == 'subjectSortTab') {
     if ($val) {
         $modules = "student";
         //user_manage_edit.php,student_edit.php,student_add.php,staff_manage_add.php,parent_edit.php
-        if ($val == "page_edit.php") {
+        if ($val == "parent_edit.php") {
             $modules = "father";
         } else if ($val == "student_edit.php" || $val == "student_add.php") {
             $modules = "student";
-        } else if ($val == "staff_manage_add.php") {
+        } else if ($val == "staff_manage_add.php" || $val == "staff_manage_edit.php") {
             $modules = "staff";
         }
 
@@ -59,12 +59,14 @@ if ($type == 'subjectSortTab') {
         $sq .= "and c.modules like '%" . $modules . "%'";
         //echo $sq;
         $result = $connection2->query($sq);
+
         $rs = $result->fetchAll();
         //print_r($rs);
         if (empty($rs)) {
-
-            $sq = "select c.*,m.tabs  from custom_field_modal as m, custom_field as c where m.table_name = c.table_name and FIND_IN_SET('" . $val . "',page_edit) ";
-            //echo "\n".$sq;
+            $sq = "select c.*,m.tabs  from custom_field_modal as m, custom_field as c where m.table_name = c.table_name ";
+            $sq .= "and FIND_IN_SET('" . $val . "',page_edit) ";
+            $sq .= "and c.modules like '%" . $modules . "%'";
+            //echo "\n" . $sq;
             $result = $connection2->query($sq);
             $dt["data"] = $result->fetchAll();
             $dt["view"] = false;
