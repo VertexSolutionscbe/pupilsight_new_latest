@@ -65,37 +65,37 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/data_update_stude
                 } else if ($hd == 'Section') {
                     $headers[$key] = 'at_pupilsightRollGroupID';
                 } else if ($hd == 'Official Name') {
-                    $headers[$key] = 'st_officialName';
+                    $headers[$key] = '##_officialName';
                 } else if ($hd == 'Gender') {
-                    $headers[$key] = 'st_gender';
+                    $headers[$key] = '##_gender';
                 } else if ($hd == 'Date of Birth') {
-                    $headers[$key] = 'st_dob';
+                    $headers[$key] = '##_dob';
                 } else if ($hd == 'Username') {
-                    $headers[$key] = 'st_username';
+                    $headers[$key] = '##_username';
                 } else if ($hd == 'Can Login') {
-                    $headers[$key] = 'st_canLogin';
+                    $headers[$key] = '##_canLogin';
                 } else if ($hd == 'Email') {
-                    $headers[$key] = 'st_email';
+                    $headers[$key] = '##_email';
                 } else if ($hd == 'Address') {
-                    $headers[$key] = 'st_address1';
+                    $headers[$key] = '##_address1';
                 } else if ($hd == 'District') {
-                    $headers[$key] = 'st_address1District';
+                    $headers[$key] = '##_address1District';
                 } else if ($hd == 'Country') {
-                    $headers[$key] = 'st_address1Country';
+                    $headers[$key] = '##_address1Country';
                 } else if ($hd == 'First Language') {
-                    $headers[$key] = 'st_languageFirst';
+                    $headers[$key] = '##_languageFirst';
                 } else if ($hd == 'Second Language') {
-                    $headers[$key] = 'st_languageSecond';
+                    $headers[$key] = '##_languageSecond';
                 } else if ($hd == 'Third Language') {
-                    $headers[$key] = 'st_languageThird';
+                    $headers[$key] = '##_languageThird';
                 } else if ($hd == 'Country of Birth') {
-                    $headers[$key] = 'st_countryOfBirth';
+                    $headers[$key] = '##_countryOfBirth';
                 } else if ($hd == 'Ethnicity') {
-                    $headers[$key] = 'st_ethnicity';
+                    $headers[$key] = '##_ethnicity';
                 } else if ($hd == 'Religion') {
-                    $headers[$key] = 'st_religion';
+                    $headers[$key] = '##_religion';
                 } else if ($hd == 'National ID Card Number') {
-                    $headers[$key] = 'st_nationalIDCardNumber';
+                    $headers[$key] = '##_nationalIDCardNumber';
                 } else {
 
                     $sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
@@ -103,10 +103,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/data_update_stude
                     $cd = $resultchk->fetch();
                     $modules = explode(',', $cd['modules']);
 
-                    if (!in_array('st_' . $cd['field_name'], $chkHeaderKey)) {
+                    if (!in_array('##_' . $cd['field_name'], $chkHeaderKey)) {
                         if (in_array('student', $modules)) {
-                            $headers[$key] = 'st_' . $cd['field_name'];
-                            $chkHeaderKey[] = 'st_' . $cd['field_name'];
+                            $headers[$key] = '##_' . $cd['field_name'];
+                            $chkHeaderKey[] = '##_' . $cd['field_name'];
                         }
                     }
                 }
@@ -130,14 +130,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/data_update_stude
                     // Student Update
                     $sql = "UPDATE pupilsightPerson SET ";
                     foreach ($alrow as $key => $ar) {
-                        if (strpos($key, 'st_') !== false && !empty($ar)) {
-                            $clname = ltrim($key, 'st_');
+                        if (strpos($key, '##_') !== false && !empty($ar)) {
+                            $clname = ltrim($key, '##_');
                             $sql .= $clname . '= "' . $ar . '",';
                         }
                     }
                     $sql = rtrim($sql, ", ");
                     $sql .= " WHERE pupilsightPersonID = '" . $alrow['pupilsightPersonID'] . "'";
-                    echo $sql;
+                    //echo $sql;
                     $conn->query($sql);
                 }
                 // die();

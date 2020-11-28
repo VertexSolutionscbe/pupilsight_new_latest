@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_a
     
     
                         $filename = time() . '_' .  $_FILES["file"]["name"];
-                        $fileTarget = $_SERVER['DOCUMENT_ROOT']."/pupilsight/public/doc_template/" . $filename;	
+                        $fileTarget = $_SERVER['DOCUMENT_ROOT']."/public/doc_template/" . $filename;	
                         if(move_uploaded_file($_FILES["file"]["tmp_name"], $fileTarget)){
                             echo "Template updated successfully";
                         } else {
