@@ -159,6 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     
     <a class="btn btn-primary" style="float:right;" id="createAccount">Create Account</a>
     <a  style="display:none;" class="thickbox" id="showPasswordPage" href="fullscreen.php?q=/modules/Students/loginPassword.php">Create Account</a>
+    <a class="btn btn-primary" style="float:right;margin-right:10px;" id="deleteAccount">Delete Account</a>
     <input type='hidden' name="password" id="addPassword" value="">
     <textarea id="addContent" name="content" style="display:none;"></textarea>
     <div style="overflow-x:auto; width:100%;" >
@@ -351,4 +352,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
             }
         });
     });
+
+    $(document).on('click', '#deleteAccount', function () {
+         
+         var stuids = [];
+         $.each($(".chkclick:checked"), function () {
+             stuids.push($(this).val());
+         });
+         var stuid = stuids.join(",");
+         if (stuid) {
+            var val = stuid;
+            var type = 'deleteUserLoginAccount';
+            if (val != '') {
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: val, type: type },
+                    async: true,
+                    success: function (response) {
+                        location.reload();
+                    }
+                });
+            }
+         } else {
+             alert('you Have to Select User to Delete Account');
+         }
+     });
 </script>

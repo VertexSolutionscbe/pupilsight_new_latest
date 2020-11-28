@@ -28,7 +28,7 @@ $sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoo
 
 $valuept = database::doSelectOne($sqlpt);
 
-echo $file = $valuept['path'];
+$file = $valuept['path'];
 
 
 
@@ -179,7 +179,7 @@ if (!empty($file)) {
             } catch (Exception $ex) {
             }
 
-            echo $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '". $tc_id."' , uid= '". $pupilsightPersonID."'";
+            $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '". $tc_id."' , uid= '". $pupilsightPersonID."'";
             $connection2->query($sq);
             
             $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";
@@ -249,4 +249,4 @@ if (!empty($file)) {
             die();
         }
     }
-}
+} 
