@@ -335,6 +335,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
 
+            $sql = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
+            $result = $connection2->query($sql);
+            $customFields = $result->fetchAll();
+
             // DATA TABLE
             $table = DataTable::createPaginated('students', $criteria);
             echo "<a style='display:none;' id='submitBulkStudentEnrolment' href='fullscreen.php?q=/modules/Students/studentEnrolment_manage_bulk_add.php&pupilsightSchoolYearID=" . $pupilsightSchoolYearID . "&width=800'  class='thickbox '>Bulk Student Enrollment</a>";
@@ -439,7 +443,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                         $table->addColumn('address1Country', __('Country'));
                     }
                     if ($sf['field_name'] == 'languageFirst') {
-
                         $table->addColumn('languageFirst', __('First Language'));
                     }
                     if ($sf['field_name'] == 'languageSecond') {
@@ -469,6 +472,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
                     if ($sf['field_name'] == 'motherPhone') {
                         $table->addColumn('motherPhone', __('Mother Phone'));
+                    }
+
+                    if (!empty($customFields)) {
+                        foreach ($customFields as $cf) {
+                            if ($sf['field_name'] == $cf['field_name']) {
+                                $table->addColumn($cf['field_name'], __($cf['field_title']));
+                            }
+                        }
                     }
                 }
             } else {

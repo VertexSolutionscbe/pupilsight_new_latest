@@ -5,17 +5,18 @@ include '../pupilsight.php';
 include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 $adminlib = new adminlib();
 
-session_start();
+
 $aid = $_GET['aid'];
 //$pid = $_GET['pid'];
 $sid = $_GET['sid'];
 
 //error_reporting(E_ALL);
 $studentId = explode(',', $sid);
-$sqlchk = 'SELECT pupilsightProgramID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = '.$sid.' ';
+
+$sqlchk = 'SELECT pupilsightProgramID, pupilsightYearGroupID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = '.$sid.' ';
 $pro = database::doSelectOne($sqlchk);
 
-$sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoolYearID = ".$aid." AND pupilsightProgramID = ".$pro['pupilsightProgramID']." AND type = 'Fee Letter' ";
+$sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoolYearID = ".$aid." AND pupilsightProgramID = ".$pro['pupilsightProgramID']." AND type = 'Fee Letter' AND FIND_IN_SET('".$pro['pupilsightYearGroupID']."', classIds) ";
 
 $valuept = database::doSelectOne($sqlpt);
 
@@ -98,20 +99,73 @@ if (!empty($file)) {
         try {
                
             //$phpword->setValue('tc_no', $tc_id);
-            $phpword->setValue('application_no', $fname);
-            $phpword->setValue('application_date', $date);
-            $phpword->setValue('student_name', $applicationData['officialName']);
-            $phpword->setValue('program', $applicationData['program']);
-            $phpword->setValue('class', $applicationData['class']);
-            $phpword->setValue('section', $applicationData['section']);
-            $phpword->setValue('academic', $applicationData['academic']);
-            $phpword->setValue('dob', $applicationData['dob']);
-            $phpword->setValue('father_name', $applicationData['fatherName']);
-            $phpword->setValue('father_email', $applicationData['fatherEmail']);
-            $phpword->setValue('father_phone', $applicationData['fatherPhone']);
-            $phpword->setValue('mother_name', $applicationData['motherName']);
-            $phpword->setValue('mother_email', $applicationData['motherEmail']);
-            $phpword->setValue('mother_phone', $applicationData['motherPhone']);
+            try {
+                    $phpword->setValue('application_no', $fname);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('application_date', $date);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('student_name', $applicationData['officialName']);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('program', $applicationData['program']);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('class', $applicationData['class']);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('section', $applicationData['section']);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('academic', $applicationData['academic']);
+            } catch (Exception $ex) {
+            }
+            try {
+                $phpword->setValue('dob', $applicationData['dob']);
+            } catch (Exception $ex) {
+            }
+            try {
+                $phpword->setValue('father_name', $applicationData['fatherName']);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('father_email', $applicationData['fatherEmail']);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('father_phone', $applicationData['fatherPhone']);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('mother_name', $applicationData['motherName']);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('mother_email', $applicationData['motherEmail']);
+            } catch (Exception $ex) {
+            }
+
+            try {
+                $phpword->setValue('mother_phone', $applicationData['motherPhone']);
+            } catch (Exception $ex) {
+            }
 
             // $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '". $tc_id."' ";
             // $connection2->query($sq);

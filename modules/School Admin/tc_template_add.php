@@ -54,7 +54,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_a
 
         $row = $form->addRow();
         $row->addLabel('pupilsightProgramID', __('Program'));
-        $row->addSelect('pupilsightProgramID')->fromArray($program)->placeholder('Select Program')->required();
+        $row->addSelect('pupilsightProgramID')->setID('getMultiClassByProgCamp')->fromArray($program)->placeholder('Select Program')->required();
+
+        $row = $form->addRow();
+        $row->addLabel('classIds', __('Class'))->addClass('dte');
+        $row->addSelect('classIds')->setID('showMultiClassByProg')->placeholder('Select Class')->selectMultiple()->required();
 
         
         $row = $form->addRow();
@@ -75,25 +79,54 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_a
         echo $form->getOutput();
 }
 ?>
-<!-- <script type="text/javascript">
-    $('#edit_template_form').on('submit',(function(e) {
-    e.preventDefault();
-    var formData = new FormData(this);
-    $.ajax({
-        url:"ajaxSwitch.php", 
-        type: "POST",             
-        data: formData, 
-        contentType: false,      
-        cache: false,             
-        processData:false, 
-        async: false,       
-        success: function(data)  
-        {
-           
-            alert(data);
-            window.location.reload()
-        }
+<script type="text/javascript">
+
+    $(document).ready(function () {
+      	$('#showMultiClassByProg').selectize({
+      		plugins: ['remove_button'],
+      	});
     });
 
-    }));
-</script> -->
+    $(document).on('change', '#getMultiClassByProgCamp', function () {
+        var id = $(this).val();
+        var type = 'getClass';
+        $('#showMultiClassByProg').selectize()[0].selectize.destroy();
+        $("#getFeeStructureByProgClass").html('');
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type },
+            async: true,
+            success: function (response) {
+                $("#showMultiClassByProg").html('');
+                $("#showMultiClassByProg").html(response);
+                $("#showMultiClassByProg").parent().children('.LV_validation_message').remove();
+                $('#showMultiClassByProg').selectize({
+                    plugins: ['remove_button'],
+                });
+                
+            }
+        });
+    });
+
+    // $('#edit_template_form').on('submit',(function(e) {
+    // e.preventDefault();
+    // var formData = new FormData(this);
+    // $.ajax({
+    //     url:"ajaxSwitch.php", 
+    //     type: "POST",             
+    //     data: formData, 
+    //     contentType: false,      
+    //     cache: false,             
+    //     processData:false, 
+    //     async: false,       
+    //     success: function(data)  
+    //     {
+           
+    //         alert(data);
+    //         window.location.reload()
+    //     }
+    // });
+
+    // }));
+</script>
