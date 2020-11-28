@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     $page->addError(__('You do not have access to this action.'));
 } else {
     
-    $page->breadcrumbs->add(__('Student Update'));
+    $page->breadcrumbs->add(__('Login Accounts'));
 
  
      if (isset($_GET['return'])) {
@@ -84,6 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
         
         if(!empty($pupilsightProgramID) && !empty($pupilsightYearGroupID)){ 
+            $classIds = implode(',', $pupilsightYearGroupID);
         $sqle = "SELECT a.officialName, a.pupilsightPersonID, a.admission_no, a.username as stuUsername, a.passwordStrong as stuPassword, d.name AS class,c.name as program ,f.name as academic, d.pupilsightYearGroupID,c.pupilsightProgramID ,f.pupilsightSchoolYearID,f.pupilsightSchoolYearID, parent1.pupilsightPersonID as fatherId, parent1.officialName as fatherName, parent1.username as fatherUsername, parent1.passwordStrong as fatherPassword, parent2.pupilsightPersonID as motherId, parent2.officialName as motherName, parent2.username as motherUsername, parent2.passwordStrong as motherPassword FROM pupilsightPerson AS a 
         LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID=b.pupilsightPersonID 
         LEFT JOIN pupilsightProgram AS c ON b.pupilsightProgramID=c.pupilsightProgramID 
@@ -97,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
         LEFT JOIN pupilsightFamilyAdult as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2 
         LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full' 
         
-        WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID = " . $pupilsightYearGroupID . " ORDER BY a.pupilsightPersonID DESC ";
+        WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID IN (" . $classIds . ") ORDER BY a.pupilsightPersonID DESC ";
          //echo $sqle;
         // die();
         $resulte = $connection2->query($sqle);
@@ -112,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     //die();
     
      echo '<h2>';
-     echo __('Student Message History');
+     echo __('Login Accounts');
      echo '</h2>';
      
      $types = array('' => 'Select Type', 'ASC' => 'Ascending', 'DESC' => 'Descending');
@@ -124,11 +125,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+            $col->addSelect('pupilsightProgramID')->setID('getMultiClassByProgCamp')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightYearGroupID', __('Class'));
-            $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
+            $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
+            $col->addSelect('pupilsightYearGroupID')->setID('showMultiClassByProg')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required()->selectMultiple();
 
 
             // $col = $row->addColumn()->setClass('newdes');
@@ -148,9 +149,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 
 
             echo $form->getOutput();
-    if($_POST){
+    ?>
+    <a class="btn btn-primary thickbox" style="float:right;margin-left: 10px;" href="fullscreen.php?q=/modules/Students/sms_email_content.php&type=Sms">SMS Content</a>
+    <a class="btn btn-primary thickbox" style="float:right;margin-left: 10px;" href="fullscreen.php?q=/modules/Students/sms_email_content.php&type=Email">Email Content</a>
+
+   <?php if($_POST){
     ?>
     <form method="post" id="createAccountForm" action="index.php?q=/modules/Students/loginAccountProcess.php">
+    
     <a class="btn btn-primary" style="float:right;" id="createAccount">Create Account</a>
     <a  style="display:none;" class="thickbox" id="showPasswordPage" href="fullscreen.php?q=/modules/Students/loginPassword.php">Create Account</a>
     <input type='hidden' name="password" id="addPassword" value="">
@@ -302,8 +308,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     $(document).on('click', '#donePassword', function () {
         var pass = $("#pass").val();
         var content = $("#mailcontent").val();
+        var favorite = [];
+        $.each($("input[name='type[]']:checked"), function(){
+            favorite.push($(this).val());
+        });
+        var types = favorite.join(",");
         $("#addPassword").val(pass);
-        $("#addContent").val(content);
+        $("#addContent").val(types);
         $("#preloader").show();
         $("#createAccountForm").submit();
     });
@@ -311,5 +322,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     $(document).on('click', '#closePassword', function () {
         $("#TB_overlay").remove();
         $("#TB_window").remove();
+    });
+
+    $(document).ready(function () {
+      	$('#showMultiClassByProg').selectize({
+      		plugins: ['remove_button'],
+      	});
+    });
+
+    $(document).on('change', '#getMultiClassByProgCamp', function () {
+        var id = $(this).val();
+        var type = 'getClass';
+        $('#showMultiClassByProg').selectize()[0].selectize.destroy();
+        $("#getFeeStructureByProgClass").html('');
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type },
+            async: true,
+            success: function (response) {
+                $("#showMultiClassByProg").html('');
+                $("#showMultiClassByProg").html(response);
+                $("#showMultiClassByProg").parent().children('.LV_validation_message').remove();
+                $('#showMultiClassByProg').selectize({
+                    plugins: ['remove_button'],
+                });
+                
+            }
+        });
     });
 </script>

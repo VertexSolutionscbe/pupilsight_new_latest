@@ -518,3 +518,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
     }
 }
 ?>
+<script>
+    $(document).ready(function(){
+        $("#pupilsightPersonID").select2();
+        $("#pupilsightPersonID2").select2();
+    });
+</script>

@@ -443,7 +443,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     $table->addColumn('address1Country', __('Country'));
                 }
                 if($sf['field_name'] == 'languageFirst'){
-                    
                     $table->addColumn('languageFirst', __('First Language'));
                 }
                 if($sf['field_name'] == 'languageSecond'){

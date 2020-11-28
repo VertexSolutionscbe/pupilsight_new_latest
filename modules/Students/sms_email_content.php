@@ -22,31 +22,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     }
         $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-   
+        $type = $_GET['type'];
+
         echo '<h2>';
-        echo __('Password for Accounts');
+        echo __($type.' Content');
         echo '</h2>';
 
-        $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
-        $pass = array(); //remember to declare $pass as an array
-        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-        for ($i = 0; $i < 8; $i++) {
-            $n = rand(0, $alphaLength);
-            $pass[] = $alphabet[$n];
-        }
+        echo '<h3 style="color:red;">Please Dont Remove $username and $password.</h3>';
 
-        $password = implode($pass);
+        $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$type.'" ';
+        $results = $connection2->query($sqls);
+        $contentData = $results->fetch();
 
-        $form = Form::create('filter', '');
+        $form = Form::create('smsEmail', $_SESSION[$guid]['absoluteURL'].'/modules/Students/sms_email_contentProcess.php');
 
         $form->setClass('noIntBorder fullWidth');
-        $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
+
+        $form->addHiddenValue('type', $type);
         $row = $form->addRow();
 
-        //$col = $row->addColumn()->setClass('newdes');
-        $row->addLabel('pass', __('Enter Password for Login Id '));
-        $row->addTextField('pass')->setValue($password)->placeholder('Enter Password for Login Id')->required();
-
+        
         // $content = 'Dear User,
         // Greetings from '.$_SESSION[$guid]['organisationName'].'. Your account has been activated on our School management software "Pupilpod". Kindly login to Pupilpod at the earliest.
         
@@ -56,11 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
         
         // Note: Please reset the Password by Clicking on "Change Password" link provided at the right top corner of your homepage. For any queries send a email to '.$_SESSION[$guid]['email'].'';
 
-        $types = array('Sms' => 'Sms', 'Email' => 'Email');
         $row = $form->addRow();
-        //$col = $row->addColumn()->setClass('newdes');
-        $row->addLabel('type', __('Notification'));
-        $row->addCheckBox('type')->fromArray($types);
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('content', __('Content'));
+        $col->addTextArea('content')->setValue($contentData['content'])->required();
 
         $row = $form->addRow();
         $row->addLabel('', __(''));
@@ -68,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 
         $row = $form->addRow();
         $row->addLabel('', __(''));
-        $row->addContent('<a class="btn btn-primary" id="donePassword">Done</a>&nbsp;&nbsp;<a class="btn btn-primary" id="closePassword">Close</a>');
+        $row->addSubmit();
 
 
 

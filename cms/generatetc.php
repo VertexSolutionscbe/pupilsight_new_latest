@@ -5,6 +5,15 @@ include '../pupilsight.php';
 include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 $adminlib = new adminlib();
 
+if(isset($_SESSION)){
+    foreach($_SESSION as $s){
+        if(!empty($s['pupilsightPersonID'])){
+            $pupilsightPersonID = $s['pupilsightPersonID'];
+        }
+    }
+} else {
+    $pupilsightPersonID = '';
+}
 
 $aid = $_GET['aid'];
 //$pid = $_GET['pid'];
@@ -15,11 +24,11 @@ $studentId = explode(',', $sid);
 $sqlchk = 'SELECT pupilsightProgramID, pupilsightYearGroupID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = '.$sid.' ';
 $pro = database::doSelectOne($sqlchk);
 
-$sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoolYearID = ".$aid." AND pupilsightProgramID = ".$pro['pupilsightProgramID']." AND type = 'TC' AND FIND_IN_SET(".$pro['pupilsightYearGroupID'].", classIds) ";
+$sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoolYearID = ".$aid." AND pupilsightProgramID = ".$pro['pupilsightProgramID']." AND type = 'TC' AND FIND_IN_SET('".$pro['pupilsightYearGroupID']."', classIds) ";
 
 $valuept = database::doSelectOne($sqlpt);
 
-$file = $valuept['path'];
+echo $file = $valuept['path'];
 
 
 
@@ -170,7 +179,7 @@ if (!empty($file)) {
             } catch (Exception $ex) {
             }
 
-            $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '". $tc_id."' ";
+            echo $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '". $tc_id."' , uid= '". $pupilsightPersonID."'";
             $connection2->query($sq);
             
             $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";

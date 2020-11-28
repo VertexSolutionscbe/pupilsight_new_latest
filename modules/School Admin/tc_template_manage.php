@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_m
    $table->addColumn('filename', __('Template File'))
    ->format(function ($dataSet) {
        if($dataSet['filename'] != '') {
-           return '<a href="public/receipt_template/'.$dataSet['filename'].'" download>'.$dataSet['filename'].'</a>';
+           return '<a href="public/doc_template/'.$dataSet['filename'].'" download>'.$dataSet['filename'].'</a>';
        } 
        return $dataSet['filename'];
    }); 
