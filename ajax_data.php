@@ -3396,3 +3396,13 @@ if ($type == 'addCoreSubjectToStudent') {
         $result2->execute($data2);
     }
 }
+
+if ($type == 'deleteUserLoginAccount') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('passwordStrong' => '', 'passwordStrongSalt' => '', 'canLogin' => 'N', 'pupilsightPersonID' => $st);
+        $sql = 'UPDATE pupilsightPerson SET passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, canLogin=:canLogin WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}
