@@ -37,6 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $userGateway = $container->get(UserGateway::class);
     $criteria = $userGateway->newQueryCriteria()
         ->searchBy($userGateway->getSearchableColumns(), $search)
+        ->pageSize(5000)
         ->sortBy(['surname', 'preferredName'])
         ->fromPOST();
 
