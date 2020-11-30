@@ -83,10 +83,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 ->displayLabel();
 
             $table->addColumn('subname', __('Subject'));
-            $table->addColumn('pupilsightTTDayRowClassID', __('ID'));
+            //$table->addColumn('pupilsightTTDayRowClassID', __('ID'));
+            $output .= "<input name='pupilsightTTDayRowClassID' value='' id='pupilsightTTDayRowClassID' type='hidden'>";
             $table->addColumn('staffname', __('Staff'));
             $table->addColumn('location', __('Location'));
-
             // ACTIONS
             $table->addActionColumn()
                 ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
