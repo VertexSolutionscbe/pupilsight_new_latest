@@ -773,17 +773,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         var stuId = favorite.join(",");
         //alert(subid);
         if (stuId) {
-            if (favorite.length == 1) {
-                var hrf = $(this).attr('data-hrf');
-                var newhrf = hrf + stuId;
-                $("#generateTC").attr('href', newhrf);
-                window.setTimeout(function() {
-                    $("#generateTC")[0].click();
-                }, 10);
-            } else {
-                alert('You Have to Select One Student at a time.');
+            if (confirm("Do you want to Generated TC?")) {
+                if (favorite.length == 1) {
+                    var hrf = $(this).attr('data-hrf');
+                    var newhrf = hrf + stuId;
+                    $("#generateTC").attr('href', newhrf);
+                    window.setTimeout(function () {
+                        $("#generateTC")[0].click();
+                    }, 10);
+                } else {
+                    alert('You Have to Select One Student at a time.');
+                }
             }
-
         } else {
             alert('You Have to Select Student.');
         }

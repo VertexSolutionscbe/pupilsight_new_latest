@@ -48,6 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_m
    //$table->addColumn('sequenceNumber', __('sequenceNumber'));
    $table->addColumn('serial_number', __('SI No'));
    $table->addColumn('progname', __('Program'));
+   $table->addColumn('classes', __('Class'));
    $table->addColumn('type', __('Type'));
    $table->addColumn('name', __('Template Name'));
   

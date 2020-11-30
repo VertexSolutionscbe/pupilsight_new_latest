@@ -655,4 +655,40 @@ class StudentGateway extends QueryableGateway
         // die();
         return $this->runQuery($query, $criteria, TRUE);
     }
+
+
+    public function getTCHistoryByAdmin(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('pupilsightStudentTcTaken')
+            ->cols([
+                'pupilsightStudentTcTaken.*', 'pupilsightPerson.officialName as studentName', 'pupilsightYearGroup.name AS class', 'pupilsightRollGroup.name AS section', 'pupilsightProgram.name as program'
+            ])
+            ->leftJoin('pupilsightPerson', 'pupilsightStudentTcTaken.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+            ->leftJoin('pupilsightYearGroup', 'pupilsightStudentTcTaken.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightRollGroup', 'pupilsightStudentTcTaken.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+            ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentTcTaken.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+            ->leftJoin('pupilsightProgram', 'pupilsightStudentTcTaken.pupilsightProgramID=pupilsightProgram.pupilsightProgramID');
+        if (!empty($pupilsightSchoolYearID)) {
+            $query->where('pupilsightStudentTcTaken.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
+        }
+        if (!empty($pupilsightProgramID)) {
+            $query->where('pupilsightStudentTcTaken.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
+        }
+
+        if (!empty($pupilsightYearGroupID)) {
+            $query->where('pupilsightStudentTcTaken.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
+        }
+        if (!empty($pupilsightRollGroupID)) {
+            $query->where('pupilsightStudentTcTaken.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
+        }
+        if (!empty($search)) {
+            $query->where('pupilsightPerson.officialName LIKE "%' . $search . '%" ');
+        }
+        $query->orderBy(['pupilsightStudentTcTaken.id DESC']);
+        // echo $query;
+        // die();
+        return $this->runQuery($query, $criteria, TRUE);
+    }
 }

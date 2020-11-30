@@ -24,6 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/leaveHistory.php'
 
     // QUERY
     $criteria = $studentGateway->newQueryCriteria()
+        ->pageSize(5000)
         ->sortBy(['id'])
         ->fromPOST();
 

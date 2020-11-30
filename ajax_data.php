@@ -3406,3 +3406,21 @@ if ($type == 'deleteUserLoginAccount') {
         $result->execute($data);
     }
 }
+
+if ($type == 'revertTC') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $sqlprev = 'SELECT * FROM pupilsightStudentTcTaken WHERE pupilsightPersonID = ' . $st . '';
+        $resultprev = $connection2->query($sqlprev);
+        $prevData = $resultprev->fetch();
+
+        $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID=".$prevData['pupilsightProgramID'].", pupilsightYearGroupID=".$prevData['pupilsightYearGroupID']." , pupilsightRollGroupID=".$prevData['pupilsightRollGroupID']." WHERE pupilsightPersonID=" . $st . "";
+        $connection2->query($squ);
+
+
+        $data1 = array('pupilsightPersonID' => $st);
+        $sql1 = 'DELETE FROM pupilsightStudentTcTaken WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result1 = $connection2->prepare($sql1);
+        $result1->execute($data1);
+    }
+}

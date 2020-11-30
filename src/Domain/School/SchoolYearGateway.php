@@ -150,7 +150,40 @@ class SchoolYearGateway extends QueryableGateway
             ->where('pupilsightDocTemplate.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'"')
             ->orderby(['pupilsightDocTemplate.id DESC']);
 
-        return $this->runQuery($query, $criteria,TRUE );
+            $res = $this->runQuery($query, $criteria, TRUE);
+            $data = $res->data;
+            if(!empty($data)){
+                foreach($data as $k=>$d){
+                    $clsid = $d['classIds'];
+                    if(!empty($clsid)){
+                        $query2 = $this
+                            ->newQuery()
+                            ->from('pupilsightYearGroup')
+                            ->cols([
+                                'GROUP_CONCAT(pupilsightYearGroup.name) as clsnames','pupilsightYearGroup.pupilsightYearGroupID as id'
+                            ])
+                            ->where('pupilsightYearGroup.pupilsightYearGroupID IN ('.$clsid.') ')
+                            ->orderby(['pupilsightYearGroup.pupilsightYearGroupID DESC']);
+                        // echo $query2;
+                        // die();
+                            $newdata = $this->runQuery($query2, $criteria);
+                            if(!empty($newdata->data[0]['id'])){
+                                $data[$k]['classes'] = $newdata->data[0]['clsnames'];
+                            } else {
+                                $data[$k]['classes'] = '';
+                            }
+                    } else {
+                        $data[$k]['classes'] = '';
+                    }
+                }
+               
+            }
+            // echo '<pre>';
+            // print_r($data);
+            // echo '</pre>';
+            // die();
+            $res->data = $data;
+            return $res;
     }
 
     public function getSeries(QueryCriteria $criteria, $pupilsightSchoolYearID)
@@ -176,10 +209,6 @@ class SchoolYearGateway extends QueryableGateway
 
             $res = $this->runQuery($query, $criteria, TRUE);
             $data = $res->data;
-            // echo '<pre>';
-            // print_r($data);
-            // echo '</pre>';
-            // die();
             if(!empty($data)){
                 foreach($data as $k=>$d){
                     $clsid = $d['classIds'];
