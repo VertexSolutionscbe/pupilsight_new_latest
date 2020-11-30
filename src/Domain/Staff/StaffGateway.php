@@ -21,7 +21,7 @@ class StaffGateway extends QueryableGateway
 
     private static $tableName = 'pupilsightStaff';
 
-    private static $searchableColumns = ['preferredName', 'surname', 'username', 'pupilsightStaff.jobTitle'];
+    private static $searchableColumns = ['preferredName', 'surname', 'username', 'pupilsightStaff.jobTitle','email','type','phone1'];
     
     /**
      * Queries the list of users for the Manage Staff page.
@@ -37,7 +37,7 @@ class StaffGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'pupilsightPerson.pupilsightPersonID','pupilsightPerson.officialName','assignstaff_toclasssection.pupilsightMappingID','pupilsightProgramClassSectionMapping.pupilsightProgramID' ,'pupilsightPerson.title', 'pupilsightPerson.surname','pupilsightPerson.email','pupilsightPerson.phone1', 'pupilsightPerson.preferredName', 'pupilsightPerson.status', 'pupilsightPerson.username', 'pupilsightPerson.image_240','pupilsightStaff.staff_status AS stat',
-                'pupilsightStaff.pupilsightStaffID','pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightStaff.initials', 'pupilsightStaff.type', 'pupilsightStaff.jobTitle'
+                'pupilsightStaff.pupilsightStaffID','pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightStaff.initials', 'pupilsightStaff.type', 'pupilsightStaff.jobTitle', 'pupilsightPerson.passwordStrong as stfPassword', 'pupilsightPerson.username as stfUsername'
             ])
             ->innerJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=pupilsightStaff.pupilsightPersonID')
             ->leftJoin('assignstaff_toclasssection', 'assignstaff_toclasssection.pupilsightPersonID=pupilsightStaff.pupilsightPersonID') 

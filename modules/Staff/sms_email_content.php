@@ -6,7 +6,7 @@ Pupilsight, Flexible & Open School System
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -30,11 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 
         echo '<h3 style="color:red;">Please Dont Remove $username and $password.</h3>';
 
-        $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$type.'"  AND user_type = "Student"  ';
+        $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$type.'" AND user_type = "Staff" ';
         $results = $connection2->query($sqls);
         $contentData = $results->fetch();
 
-        $form = Form::create('smsEmail', $_SESSION[$guid]['absoluteURL'].'/modules/Students/sms_email_contentProcess.php');
+        $form = Form::create('smsEmail', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/sms_email_contentProcess.php');
 
         $form->setClass('noIntBorder fullWidth');
 

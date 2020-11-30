@@ -6,7 +6,7 @@ Pupilsight, Flexible & Open School System
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -22,26 +22,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     }
         $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-        $type = $_GET['type'];
-
+   
         echo '<h2>';
-        echo __($type.' Content');
+        echo __('Password for Accounts');
         echo '</h2>';
 
-        echo '<h3 style="color:red;">Please Dont Remove $username and $password.</h3>';
+        $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
 
-        $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$type.'"  AND user_type = "Student"  ';
-        $results = $connection2->query($sqls);
-        $contentData = $results->fetch();
+        $password = implode($pass);
 
-        $form = Form::create('smsEmail', $_SESSION[$guid]['absoluteURL'].'/modules/Students/sms_email_contentProcess.php');
+        $form = Form::create('filter', '');
 
         $form->setClass('noIntBorder fullWidth');
-
-        $form->addHiddenValue('type', $type);
+        $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
         $row = $form->addRow();
 
-        
+        //$col = $row->addColumn()->setClass('newdes');
+        $row->addLabel('pass', __('Enter Password for Login Id '));
+        $row->addTextField('pass')->setValue($password)->placeholder('Enter Password for Login Id')->required();
+
         // $content = 'Dear User,
         // Greetings from '.$_SESSION[$guid]['organisationName'].'. Your account has been activated on our School management software "Pupilpod". Kindly login to Pupilpod at the earliest.
         
@@ -51,10 +56,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
         
         // Note: Please reset the Password by Clicking on "Change Password" link provided at the right top corner of your homepage. For any queries send a email to '.$_SESSION[$guid]['email'].'';
 
+        $types = array('Sms' => 'Sms', 'Email' => 'Email');
         $row = $form->addRow();
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('content', __('Content'));
-        $col->addTextArea('content')->setValue($contentData['content'])->required();
+        //$col = $row->addColumn()->setClass('newdes');
+        $row->addLabel('type', __('Notification'));
+        $row->addCheckBox('type')->fromArray($types);
 
         $row = $form->addRow();
         $row->addLabel('', __(''));
@@ -62,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 
         $row = $form->addRow();
         $row->addLabel('', __(''));
-        $row->addSubmit();
+        $row->addContent('<a class="btn btn-primary" id="donePassword">Done</a>&nbsp;&nbsp;<a class="btn btn-primary" id="closePassword">Close</a>');
 
 
 

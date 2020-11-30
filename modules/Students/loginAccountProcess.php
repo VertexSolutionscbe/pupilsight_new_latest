@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                     if($userData['pupilsightRoleIDPrimary'] == '004'){
 
                         if(!empty($userData['email']) && $nt == 'Email'){
-                            $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$nt.'" ';
+                            $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$nt.'" AND user_type = "Student" ';
                             $results = $connection2->query($sqls);
                             $contentData = $results->fetch();
 
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                         if(!empty($userData['phone1'])  && $nt == 'Sms'){
                             $cuid = $_SESSION[$guid]['pupilsightPersonID'];
 
-                            $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$nt.'" ';
+                            $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$nt.'" AND user_type = "Student" ';
                             $results = $connection2->query($sqls);
                             $contentData = $results->fetch();
                             
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                         // print_r($studentData);
                         // echo '</pre>';
                         // die();
-                        $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$nt.'" ';
+                        $sqls = 'SELECT content FROM pupilsightContent WHERE type = "'.$nt.'" AND user_type = "Student" ';
                         $results = $connection2->query($sqls);
                         $contentData = $results->fetch();
                         if(!empty($contentData)){

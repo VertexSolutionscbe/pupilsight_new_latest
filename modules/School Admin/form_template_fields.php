@@ -67,51 +67,46 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_m
         </tr>
         <tr>
             <td>6</td>
-            <td>Application No</td>
-            <td>${application_no}</td>
+            <td>Date</td>
+            <td>${date}</td>
         </tr>
         <tr>
             <td>7</td>
-            <td>Application Date</td>
-            <td>${application_date}</td>
-        </tr>
-        <tr>
-            <td>8</td>
             <td>TC No</td>
             <td>${tc_no}</td>
         </tr>
         <tr>
-            <td>9</td>
+            <td>8</td>
             <td>Date of Birth</td>
             <td>${dob}</td>
         </tr>
         <tr>
-            <td>10</td>
+            <td>9</td>
             <td>Father Name</td>
             <td>${father_name}</td>
         </tr>
         <tr>
-            <td>11</td>
+            <td>10</td>
             <td>Father Name</td>
             <td>${father_email}</td>
         </tr>
         <tr>
-            <td>12</td>
+            <td>11</td>
             <td>Father Name</td>
             <td>${father_phone}</td>
         </tr>
         <tr>
-            <td>13</td>
+            <td>12</td>
             <td>Mother Name</td>
             <td>${mother_name}</td>
         </tr>
         <tr>
-            <td>14</td>
+            <td>13</td>
             <td>Mother Name</td>
             <td>${mother_email}</td>
         </tr>
         <tr>
-            <td>15</td>
+            <td>14</td>
             <td>Mother Name</td>
             <td>${mother_phone}</td>
         </tr>

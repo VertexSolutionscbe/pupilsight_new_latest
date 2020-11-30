@@ -112,7 +112,7 @@ if (!empty($file)) {
                 }
 
                 try {
-                    $date = date('d/m/Y');
+                    $date = date('d-m-Y');
                     $phpword->setValue('date', $date);
                 } catch (Exception $ex) {
                 }
@@ -205,9 +205,10 @@ if (!empty($file)) {
                 }
 
                 $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".pdf";
+                $fileSaveName = $fname . ".pdf";
 
                 
-                $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '" . $tc_id . "', file_path = '".$pdfFilename."' , uid= '" . $pupilsightPersonID . "'";
+                $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '" . $tc_id . "', file_path = '".$fileSaveName."' , uid= '" . $pupilsightPersonID . "'";
                 $connection2->query($sq);
 
                 $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";
@@ -227,6 +228,6 @@ if (!empty($file)) {
     }
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view.php';
-    $URL .= '&return=error2';
+    $URL .= '&return=error12';
     header("Location: {$URL}");
 }
