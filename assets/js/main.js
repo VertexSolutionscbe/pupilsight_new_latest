@@ -6725,6 +6725,8 @@ function CustomField() {
         try {
             var link = "ajax_custom_data.php";
             var val = _this.getPageNames();
+            var relation = _this.getParameterByName("relation");
+            console.log("relation: ", relation);
             //var val = "user_manage_edit.php";
             if (val) {
                 var type = "getCustomControl";
@@ -6733,7 +6735,8 @@ function CustomField() {
                     url: link,
                     data: {
                         val: val,
-                        type: type
+                        type: type,
+                        relation: relation
                     },
                 }).done(function (msg) {
                     if (msg) {

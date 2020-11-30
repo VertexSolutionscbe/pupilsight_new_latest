@@ -16,6 +16,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 	echo __('You do not have access to this action.');
 	echo '</div>';
 } else {
+
 	//Proceed!
 	$page->breadcrumbs
 		//  ->add(__('Manage Users'), 'user_manage.php')
@@ -23,8 +24,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 	$pupilsightPersonID = $_GET['pupilsightPersonID'];
 
 	try {
+		$relation = "father";
+		if (isset($_GET["relation"])) {
+			$relation = trim(strtolower($_GET["relation"]));
+		}
+
 		$customField  = $container->get(CustomField::class);
-		$customField->getPostData("pupilsightPerson", "pupilsightPersonID", $pupilsightPersonID, "father");
+		$customField->getPostData("pupilsightPerson", "pupilsightPersonID", $pupilsightPersonID, $relation);
 	} catch (Exception $ex) {
 		print_r($ex->getMessage());
 	}
@@ -101,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 			echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=" . $childid . "&search=' class='btn btn-primary '>Student</a>";
 			//	}
 			foreach ($parents as $par) {
-				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=" . $par['pupilsightPersonID1'] . "&child_id=" . $childid . "&search=' class='btn btn-primary'>" . $par['relationship'] . "</a>";
+				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=" . $par['pupilsightPersonID1'] . "&child_id=" . $childid . "&relation=" . $par['relationship'] . "&search=' class='btn btn-primary'>" . $par['relationship'] . "</a>";
 			}
 			//	echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=".$pupilsightPersonID."&search=' class='btn btn-primary active'>Parent1</a>"; 
 			echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=" . $parents[0]['pupilsightFamilyID'] . "&child_id=" . $childid . "' class='btn btn-primary'>Family</a></div><div class='float-none'></div></div>";

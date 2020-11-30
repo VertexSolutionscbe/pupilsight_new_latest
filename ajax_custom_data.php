@@ -48,6 +48,9 @@ if ($type == 'subjectSortTab') {
         //user_manage_edit.php,student_edit.php,student_add.php,staff_manage_add.php,parent_edit.php
         if ($val == "parent_edit.php") {
             $modules = "father";
+            if (isset($_POST["relation"])) {
+                $modules = trim(strtolower($_POST["relation"]));
+            }
         } else if ($val == "student_edit.php" || $val == "student_add.php") {
             $modules = "student";
         } else if ($val == "staff_manage_add.php" || $val == "staff_manage_edit.php") {

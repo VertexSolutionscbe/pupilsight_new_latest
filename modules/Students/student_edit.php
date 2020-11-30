@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			echo "<div style='height:50px;'><div class='float-left mb-2'><a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=" . $pupilsightPersonID . "&search=' class='btn btn-primary active'>Student</a>";
 
 			foreach ($parents as $par) {
-				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=" . $par['pupilsightPersonID1'] . "&child_id=" . $pupilsightPersonID . "&search=' class='btn btn-primary'>" . $par['relationship'] . "</a>";
+				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=" . $par['pupilsightPersonID1'] . "&child_id=" . $pupilsightPersonID . "&relation=" . $par['relationship'] . "&search=' class='btn btn-primary'>" . $par['relationship'] . "</a>";
 			}
 			echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=" . $parents[0]['pupilsightFamilyID'] . "&child_id=" . $pupilsightPersonID . "' class='btn btn-primary'>Family</a></div><div class='float-none'></div></div>";
 
