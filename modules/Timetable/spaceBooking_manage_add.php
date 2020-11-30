@@ -275,3 +275,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         }
     }
 }
+?>
+<script>
+
+</script>
+<?php

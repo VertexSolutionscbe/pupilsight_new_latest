@@ -18,6 +18,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     $pupilsightTTColumnRowID = $_GET['pupilsightTTColumnRowID'];
     //$pupilsightCourseClassID = $_GET['pupilsightCourseClassID'];
     $pupilsightProgramID = $_GET['pupilsightProgramID'];
+    $pupilsightTTDayRowClassID = $_GET['pupilsightTTDayRowClassID'];
     $pupilsightYearGroupID = $_GET['pupilsightYearGroupID'];
 
     if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID == '') {
@@ -26,8 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
         echo '</div>';
     } else {
         try {
-            $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID);
-            $sql = 'SELECT pupilsightTTDayRowClassID FROM pupilsightTTDayRowClass  WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID ';
+            $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID,'pupilsightTTDayRowClassID'=>$pupilsightTTDayRowClassID);
+            $sql = 'SELECT pupilsightTTDayRowClassID FROM pupilsightTTDayRowClass  WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID  AND pupilsightTTDayRowClassID=:pupilsightTTDayRowClassID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

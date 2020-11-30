@@ -29,6 +29,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
+
+        try {
+            //custom Field Added
+            $customField  = $container->get(CustomField::class);
+            $customField->postCustomField($_POST["custom"], 'pupilsightPersonID', $pupilsightPersonID);
+        } catch (Exception $ex) {
+            print_r($ex);
+        }
+
         try {
             $data = array('pupilsightPersonID' => $pupilsightPersonID);
             $sql = 'SELECT * FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
@@ -45,9 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
             header("Location: {$URL}");
         } else {
             $row = $result->fetch();
-
-            $customField  = $container->get(CustomField::class);
-            $customField->postCustomField($_POST["custom"], 'pupilsightPersonID', $pupilsightPersonID);
 
             //Get categories
             $staff = false;

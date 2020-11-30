@@ -20,7 +20,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     $pupilsightProgramID = $_GET['pupilsightProgramID'] ?? '';
     $pupilsightTTDayID = $_GET['pupilsightTTDayID'] ?? '';
     $pupilsightTTID = $_GET['pupilsightTTID'] ?? '';
-    $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'] ?? '';   
+    $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'] ?? '';
     if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID == '' or $pupilsightProgramID=='' or $pupilsightYearGroupID == '') {
         echo "<div class='alert alert-danger'>";
         echo __('You have not specified one or more required parameters.');

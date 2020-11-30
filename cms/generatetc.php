@@ -5,9 +5,9 @@ include '../pupilsight.php';
 include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 $adminlib = new adminlib();
 
-if(isset($_SESSION)){
-    foreach($_SESSION as $s){
-        if(!empty($s['pupilsightPersonID'])){
+if (isset($_SESSION)) {
+    foreach ($_SESSION as $s) {
+        if (!empty($s['pupilsightPersonID'])) {
             $pupilsightPersonID = $s['pupilsightPersonID'];
         }
     }
@@ -21,10 +21,10 @@ $sid = $_GET['sid'];
 
 //error_reporting(E_ALL);
 $studentId = explode(',', $sid);
-$sqlchk = 'SELECT pupilsightProgramID, pupilsightYearGroupID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = '.$sid.' ';
+$sqlchk = 'SELECT pupilsightProgramID, pupilsightYearGroupID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = ' . $sid . ' ';
 $pro = database::doSelectOne($sqlchk);
 
-$sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoolYearID = ".$aid." AND pupilsightProgramID = ".$pro['pupilsightProgramID']." AND type = 'TC' AND FIND_IN_SET('".$pro['pupilsightYearGroupID']."', classIds) ";
+$sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoolYearID = " . $aid . " AND pupilsightProgramID = " . $pro['pupilsightProgramID'] . " AND type = 'TC' AND FIND_IN_SET('" . $pro['pupilsightYearGroupID'] . "', classIds) ";
 
 $valuept = database::doSelectOne($sqlpt);
 
@@ -67,9 +67,9 @@ if (!empty($file)) {
                 $fname = $aid;
             }
 
-            $date = date('d-m-Y', strtotime($applicationData['created_at']));
+            $admission_date = date('d-m-Y', strtotime($applicationData['created_at']));
 
-            $sql = "SELECT id, formatval FROM fn_fee_series WHERE pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . " AND pupilsightProgramID = ".$applicationData['pupilsightProgramID']." ";
+            $sql = "SELECT id, formatval FROM fn_fee_series WHERE pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . " AND pupilsightProgramID = " . $applicationData['pupilsightProgramID'] . " AND FIND_IN_SET('" . $applicationData['pupilsightYearGroupID'] . "', classIds) ";
             $result = database::doSelectOne($sql);
 
             if (!empty($result['formatval'])) {
@@ -104,149 +104,129 @@ if (!empty($file)) {
             }
 
 
-        try {
-               
             try {
-                $phpword->setValue('tc_no', $tc_id);
-            } catch (Exception $ex) {
-            }
 
-            try {
-                    $phpword->setValue('application_no', $fname);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('tc_no', $tc_id);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('application_date', $date);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $date = date('d/m/Y');
+                    $phpword->setValue('date', $date);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('student_name', $applicationData['officialName']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('admission_date', $admission_date);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('program', $applicationData['program']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('student_name', $applicationData['officialName']);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('class', $applicationData['class']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('program', $applicationData['program']);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('section', $applicationData['section']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('class', $applicationData['class']);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('academic', $applicationData['academic']);
-            } catch (Exception $ex) {
-            }
-            try {
-                $phpword->setValue('dob', $applicationData['dob']);
-            } catch (Exception $ex) {
-            }
-            try {
-                $phpword->setValue('father_name', $applicationData['fatherName']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('section', $applicationData['section']);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('father_email', $applicationData['fatherEmail']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('academic', $applicationData['academic']);
+                } catch (Exception $ex) {
+                }
+                try {
+                    $phpword->setValue('dob', $applicationData['dob']);
+                } catch (Exception $ex) {
+                }
+                try {
+                    $phpword->setValue('father_name', $applicationData['fatherName']);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('father_phone', $applicationData['fatherPhone']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('father_email', $applicationData['fatherEmail']);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('mother_name', $applicationData['motherName']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('father_phone', $applicationData['fatherPhone']);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('mother_email', $applicationData['motherEmail']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('mother_name', $applicationData['motherName']);
+                } catch (Exception $ex) {
+                }
 
-            try {
-                $phpword->setValue('mother_phone', $applicationData['motherPhone']);
-            } catch (Exception $ex) {
-            }
+                try {
+                    $phpword->setValue('mother_email', $applicationData['motherEmail']);
+                } catch (Exception $ex) {
+                }
 
-            $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '". $tc_id."' , uid= '". $pupilsightPersonID."'";
-            $connection2->query($sq);
+                try {
+                    $phpword->setValue('mother_phone', $applicationData['motherPhone']);
+                } catch (Exception $ex) {
+                }
+
+                
             
-            $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";
-	        $connection2->query($squ);
-        } catch (Exception $ex) {
-            echo $ex;
-            die();
-        }
-           
 
+                $fname = trim(str_replace("/", "_", $fname));
+                $fname = trim(str_replace(" ", "_", $fname)) . "_" . time();
 
-            // foreach ($arrHeader as $k => $ah) {
-            //     if (array_key_exists($ah, $arr)) {
-            //         if ($ah == 'file-upload' || $ah == 'image_upload') {
-            //             $attrValue = $arr[$ah];
-            //             try {
-            //                 $imgVal = array("path" => $attrValue, "width" => 100, "height" => 100);
-            //                 $phpword->setImageValue($ah, $imgVal);
-            //                 //$phpword->setImageValue($ah, $attrValue);
-            //             } catch (Exception $ex) {
-            //             }
-            //         } else {
-            //             try {
-            //                 $pv = str_replace('&', ' and ', $arr[$ah]);
-            //                 $phpword->setValue($ah, $pv);
-            //             } catch (Exception $ex) {
-            //             }
-            //         }
-            //     } else {
-            //         try {
-            //             $phpword->setValue($ah, '');
-            //         } catch (Exception $ex) {
-            //         }
-            //     }
-            // }
-            // echo '<pre>';
-            // print_r($newarr);
-            // echo '</pre>';
-            // die();
-           
+                $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".docx";
+                $phpword->saveAs($savedocsx);
 
-            $fname = trim(str_replace("/", "_", $fname));
+                
 
-            $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".docx";
-            $phpword->saveAs($savedocsx);
+                // header("Content-Disposition: attachment; filename=" . $fname . ".docx");
+                // readfile($savedocsx);
+                // unlink($savedocsx);
 
-            // header("Content-Disposition: attachment; filename=" . $fname . ".docx");
-            // readfile($savedocsx);
-            // unlink($savedocsx);
+                $fileName = $fname . ".docx";
+                $dirPath = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/";
 
-            $fileName = $fname . ".docx";
-            $dirPath = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/";
+                if (file_exists($dirPath . $fileName)) {
+                    convert($fileName, $dirPath, $dirPath, FALSE, TRUE);
+                } else {
+                    //echo "file not fund.";
+                }
 
-            if (file_exists($dirPath . $fileName)) {
-                convert($fileName, $dirPath, $dirPath, FALSE, TRUE);
-            } else {
-                //echo "file not fund.";
+                $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".pdf";
+
+                
+                $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '" . $tc_id . "', file_path = '".$pdfFilename."' , uid= '" . $pupilsightPersonID . "'";
+                $connection2->query($sq);
+
+                $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";
+                $connection2->query($squ);
+
+                header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
+                readfile($pdfFilename);
+                unlink($savedocsx);
+            } catch (Exception $ex) {
+                echo $ex;
+                die();
             }
-
-            $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".pdf";
-
-            header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
-            readfile($pdfFilename);
-            unlink($savedocsx);
         } catch (Exception $ex) {
             echo $ex;
             die();
         }
     }
-} 
+} else {
+    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view.php';
+    $URL .= '&return=error2';
+    header("Location: {$URL}");
+}

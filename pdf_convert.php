@@ -9,15 +9,18 @@ function convert($fileName, $inFilePath, $outFilePath = NULL, $deleteSourceFile 
     if (file_exists($file)) {
         chmod($file, 0777);
         $commandPath = "lowriter --convert-to pdf " . $file;
+        //print_r($commandPath);
         $command = escapeshellcmd($commandPath);
         $convertFilePath = "";
 
         $highlight = shell_exec($command);
+        //print_r($highlight);
+
         $tmpFile = explode("->", $highlight);
 
         //get filename from terminal
         $filePath = trim(substr($tmpFile[1], 0, strpos($tmpFile[1], ".pdf"))) . ".pdf";
-
+        //echo "filepath . " . $filePath;
         if (file_exists($filePath)) {
             $convertFilePath = $filePath;
             chmod($convertFilePath, 0777);

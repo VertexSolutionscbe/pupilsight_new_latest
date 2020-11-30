@@ -815,7 +815,7 @@ function renderTT($guid, $connection2, $pupilsightPersonID, $pupilsightTTID, $ti
             if ($week != false) {
                 $output .= sprintf(__('Week %1$s'), $week) . '<br/>';
             }
-            $output .= "<span style='font-weight: normal; font-style: italic;'>" . __('Time') . '<span>';
+            $output .= "<span style='font-weight: normal; font-style: italic;'>" . __('School Time') . '<span>';
             $output .= '</th>';
             $count = 0;
             foreach ($days as $day) {
@@ -894,8 +894,8 @@ function renderTT($guid, $connection2, $pupilsightPersonID, $pupilsightTTID, $ti
                 $output .= '</tr>';
             }
 
-            $output .= "<tr style='height:" . (ceil($diffTime / 60) + 14) . "px'>";
-            $output .= "<td class='ttTime' style='height: 300px;text-align: center; vertical-align: top'>";
+            $output .= "<tr style='height:" . (ceil($diffTime / 60) + 25) . "px'>";
+            $output .= "<td class='ttTime' style='height: 300px;text-align: center; vertical-align: top;padding-top: 0 !important;'>";
             $output .= "<div style='position: relative;'>";
             $countTime = 0;
             $time = $timeStart;
@@ -1192,6 +1192,8 @@ function renderTTDay($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDa
                 $dataPeriods = array('pupilsightTTDayID' => $rowDay['pupilsightTTDayID'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
                 $sqlPeriods = 'SELECT pupilsightTTColumnRow.pupilsightTTColumnRowID, pupilsightTTColumnRow.name, timeStart, timeEnd, type, date, pupilsightTTDay.pupilsightTTDayID FROM pupilsightTTDay JOIN pupilsightTTDayDate ON (pupilsightTTDay.pupilsightTTDayID=pupilsightTTDayDate.pupilsightTTDayID) JOIN pupilsightTTColumn ON (pupilsightTTDay.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) WHERE pupilsightTTDayDate.pupilsightTTDayID=:pupilsightTTDayID AND date=:date ORDER BY timeStart, timeEnd';
                 $resultPeriods = $connection2->prepare($sqlPeriods);
+                //print_r($dataPeriods);
+                //print_r($sqlPeriods);die();
                 $resultPeriods->execute($dataPeriods);
             } catch (PDOException $e) {
                 $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
@@ -1202,16 +1204,11 @@ function renderTTDay($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDa
 
 
                 $resultcs = $connection2->query($sqlcs);
-                $staffcs = $resultcs->fetch();
+                //$staffcs = $resultcs->fetch();
+                /*while ($pp=$resultcs->fetch()){
+                    print_r($pp);
+                } die();*/
 
-
-                if (!empty($staffcs)) {
-                    $staffName = $staffcs['officialName'];
-                    $subjectName = $staffcs['name'];
-                } else {
-                    $staffName = '';
-                    $subjectName = '';
-                }
 
 
                 $isSlotInTime = false;
@@ -1260,8 +1257,21 @@ function renderTTDay($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDa
                     if ($height > 15 and $height < 30) {
                         $output .= $rowPeriods['name'] . '<br/>';
                     } elseif ($height >= 30) {
-                        $output .= "<div class='ttleft'>" . $subjectName . "</div><div class='ttright'>" . $staffName . '</div><div class="clear"></div><br/>';
-                        $output .= $rowPeriods['name'] . '&nbsp;';
+                        //$pp=2;
+
+                        while($staffcs = $resultcs->fetch()) {
+
+                            if (!empty($staffcs)) {
+                                $staffName = $staffcs['officialName'];
+                                $subjectName = $staffcs['name'];
+                            } else {
+                                $staffName = '';
+                                $subjectName = '';
+                            }
+
+                            $output .= "<div class='ttleft'>" . $subjectName . "</div><div class='ttright'>" . $staffName . '</div><div class="clear"></div><br/>';
+                            //$output .= $rowPeriods['name'] . '&nbsp;';
+                        }
                         $output .= '<i>' . substr($effectiveStart, 0, 5) . '-' . substr($effectiveEnd, 0, 5) . '</i>';
                     }
                     /*$output .= '<div style="margin-top:-8px; display:grid"><span style="color:blue; font-size:14px;">' . $subjectName . '</span><span style="margin-top:-8px;color: #206bc4;

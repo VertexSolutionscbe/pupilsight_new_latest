@@ -34,55 +34,58 @@ if ($pupilsightTTDayID == '' or $pupilsightTTID == '' or $pupilsightSchoolYearID
             header("Location: {$URL}");
         } else {
             try {
-                $datau = array('pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightTTColumnRowID'=>$pupilsightTTColumnRowID,'pupilsightStaffID'=>$st,'pupilsightTTDayID'=>$pupilsightTTDayID);
-                $sqlu = 'SELECT * FROM pupilsightTTDayRowClass WHERE pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightStaffID=:pupilsightStaffID AND pupilsightTTDayID=:pupilsightTTDayID' ;
-               //print_r( $datau);die();
+                $datau = array('pupilsightTTDayRowClassID'=>$pupilsightTTDayRowClassID);
+                $sqlu = 'SELECT * FROM pupilsightTTDayRowClass WHERE  pupilsightTTDayRowClassID=:pupilsightTTDayRowClassID' ;
+                //print_r( $datau);die();
                 $resultu = $connection2->prepare($sqlu);
                 $resultu->execute($datau);
+                //print_r($resultu->rowCount()); die();
             } catch (PDOException $e) {
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
                 exit();
-            }   if ($resultu->rowCount() > 0) {
+            }   if ($resultu->rowCount() == 0) {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
-       
-            try {
-                $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID);
-                $sql = 'SELECT  pupilsightTTDayRowClassID FROM pupilsightTTDayRowClass WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID AND pupilsightTTColumnRowID=:pupilsightTTColumnRowID ';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
 
-            if ($result->rowCount() < 1) {
-                $URL .= '&return=error3';
-                header("Location: {$URL}");
-            } else {
-                //Write to database
                 try {
-                   
-                 
-                        $data = array('pupilsightSpaceID' => $pupilsightSpaceID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID,'pupilsightStaffID'=>$st,'pupilsightDepartmentID'=>$pupilsightDepartmentID);
-                        $sql = 'UPDATE pupilsightTTDayRowClass SET pupilsightSpaceID=:pupilsightSpaceID,pupilsightStaffID=:pupilsightStaffID,pupilsightDepartmentID=:pupilsightDepartmentID WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID ';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-
-                  
-                  
+                    $data = array('pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID,'pupilsightTTDayRowClassID'=>$pupilsightTTDayRowClassID);
+                    $sql = 'SELECT  pupilsightTTDayRowClassID FROM pupilsightTTDayRowClass WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID AND pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayRowClassID=:pupilsightTTDayRowClassID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                    //print_r($result->rowCount()); die();
                 } catch (PDOException $e) {
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();
                 }
 
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
-            }
-        }}
+                if ($result->rowCount() < 1) {
+                    $URL .= '&return=error3';
+                    header("Location: {$URL}");
+                } else {
+                    //Write to database
+                    try {
+
+
+                        $data = array('pupilsightSpaceID' => $pupilsightSpaceID, 'pupilsightTTColumnRowID' => $pupilsightTTColumnRowID, 'pupilsightTTDayID' => $pupilsightTTDayID,'pupilsightStaffID'=>$st,'pupilsightDepartmentID'=>$pupilsightDepartmentID,'pupilsightTTDayRowClassID'=>$pupilsightTTDayRowClassID);
+                        $sql = 'UPDATE pupilsightTTDayRowClass SET pupilsightSpaceID=:pupilsightSpaceID,pupilsightStaffID=:pupilsightStaffID,pupilsightDepartmentID=:pupilsightDepartmentID WHERE pupilsightTTColumnRowID=:pupilsightTTColumnRowID AND pupilsightTTDayID=:pupilsightTTDayID AND pupilsightTTDayRowClassID=:pupilsightTTDayRowClassID';
+                        //print_r($data);die();
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+
+
+
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
+            }}
     }
 }

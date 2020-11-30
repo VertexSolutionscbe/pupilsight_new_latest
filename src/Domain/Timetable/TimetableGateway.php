@@ -14,7 +14,7 @@ use Pupilsight\Domain\Gateway;
  */
 class TimetableGateway extends Gateway
 {
-    public function selectTimetablesBySchoolYear($pupilsightSchoolYearID) 
+    public function selectTimetablesBySchoolYear($pupilsightSchoolYearID)
     {
         $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID);
         $sql = "SELECT pupilsightTTID, pupilsightTT.pupilsightSchoolYearID, pupilsightTT.name, pupilsightTT.nameShort, pupilsightTT.active, pupilsightYearGroup.nameShort as yearGroups, GROUP_CONCAT(pupilsightRollGroup.nameShort ORDER BY pupilsightRollGroupID ASC SEPARATOR ', ') as sections
@@ -32,19 +32,19 @@ class TimetableGateway extends Gateway
     {
         $db = new DBQuery();
         $classes = $db->select("select * from pupilsightYearGroup");
-        foreach($classes as $cls){
-            $sqlroll = $db->select('SELECT DISTINCT a.pupilsightRollGroupID AS sections FROM pupilsightRollGroup AS a LEFT JOIN pupilsightProgramClassSectionMapping AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE b.pupilsightYearGroupID = "'.$cls['pupilsightYearGroupID'].'" ');
-            if(!empty($sqlroll)){
-                foreach($sqlroll as $sec){
-                    if(!empty($pupilsightTTID)){
-                        $sqlchk = $db->select('SELECT pupilsightTTID FROM pupilsightTT WHERE find_in_set("'.$sec['sections'].'",pupilsightRollGroupIDList) <> 0 AND pupilsightYearGroupIDList = "'.$cls['pupilsightYearGroupID'].'" AND pupilsightTTID != '.$pupilsightTTID.' ');
+        foreach ($classes as $cls) {
+            $sqlroll = $db->select('SELECT DISTINCT a.pupilsightRollGroupID AS sections FROM pupilsightRollGroup AS a LEFT JOIN pupilsightProgramClassSectionMapping AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE b.pupilsightYearGroupID = "' . $cls['pupilsightYearGroupID'] . '" ');
+            if (!empty($sqlroll)) {
+                foreach ($sqlroll as $sec) {
+                    if (!empty($pupilsightTTID)) {
+                        $sqlchk = $db->select('SELECT pupilsightTTID FROM pupilsightTT WHERE find_in_set("' . $sec['sections'] . '",pupilsightRollGroupIDList) <> 0 AND pupilsightYearGroupIDList = "' . $cls['pupilsightYearGroupID'] . '" AND pupilsightTTID != ' . $pupilsightTTID . ' ');
                     } else {
-                        $sqlchk = $db->select('SELECT pupilsightTTID FROM pupilsightTT WHERE find_in_set("'.$sec['sections'].'",pupilsightRollGroupIDList) <> 0 AND pupilsightYearGroupIDList = "'.$cls['pupilsightYearGroupID'].'" ');
+                        $sqlchk = $db->select('SELECT pupilsightTTID FROM pupilsightTT WHERE find_in_set("' . $sec['sections'] . '",pupilsightRollGroupIDList) <> 0 AND pupilsightYearGroupIDList = "' . $cls['pupilsightYearGroupID'] . '" ');
                     }
-                    
-                    if(empty($sqlchk->data[0]['pupilsightTTID'])){
+
+                    if (empty($sqlchk->data[0]['pupilsightTTID'])) {
                         $classIds[$cls['pupilsightYearGroupID']] = $cls['name'];
-                    } 
+                    }
                 }
             } else {
                 $classIds[$cls['pupilsightYearGroupID']] = $cls['name'];
@@ -56,7 +56,7 @@ class TimetableGateway extends Gateway
         // print_r($classIds);
         // echo '</pre>';
         //  die();
-       
+
         // $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightTTID' => $pupilsightTTID);
         // $sql = "SELECT pupilsightYearGroup.pupilsightYearGroupID, pupilsightYearGroup.name
         //         FROM pupilsightYearGroup
