@@ -2,11 +2,13 @@
 /*
 Pupilsight, Flexible & Open School System
 */
+
 use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
 use Pupilsight\Domain\Students\StudentGateway;
 use Pupilsight\Domain\Helper\HelperGateway;
+
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_tc_history.php') == false) {
     //Acess denied
     echo "<div class='alert alert-danger'>";
@@ -80,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_tc_histor
     // if (!empty($pupilsightProgramID)) {
     //     $_SESSION['student_search'] = $input;
     // }
-    
+
     $tcHistory = $studentGateway->getTCHistoryByAdmin($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
 
     $form = Form::create('studentViewSearch', '');
@@ -119,16 +121,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_tc_histor
 
     // DATA TABLE
 
-    
+
     $table = DataTable::createPaginated('programManage', $criteria);
 
     // $table->addHeaderAction('add', __('Add'))
     //     ->setURL('/modules/School Admin/leaveReason_add.php')
     //     ->displayLabel();
-    
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a id='revertTC' class='btn btn-primary'>Revert</a></div><div class='float-none'></div></div>";  
 
-    
+    echo "<div style='height:50px;'><div class='float-right mb-2'><a id='revertTC' class='btn btn-primary'>Revert</a></div><div class='float-none'></div></div>";
+
+
     $table->addCheckBoxColumn('pupilsightPersonID', __(''));
     $table->addColumn('serial_number', __('Sl No'));
     $table->addColumn('program', __('Program'));
@@ -138,12 +140,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_tc_histor
     $table->addColumn('file_path', __('File'))
         ->format(function ($tcHistory) {
             if (!empty($tcHistory['file_path'])) {
-                return '<a href="public/student_tc/'.$tcHistory['file_path'].'" download><i title="Download" class="mdi mdi-file-download mdi-24px download_icon"></i></a>';
-            } 
+                return '<a href="public/student_tc/' . $tcHistory['file_path'] . '" download><i title="Download" class="mdi mdi-file-download mdi-24px download_icon"></i></a>';
+            }
             return $tcHistory['file_path'];
         });
     $table->addColumn('cdt', __('Date'));
-    
+
     echo $table->render($tcHistory);
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
@@ -181,6 +183,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_tc_histor
             alert('You Have to Select Student.');
         }
     });
-
-   
 </script>

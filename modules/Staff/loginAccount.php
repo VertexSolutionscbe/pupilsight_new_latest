@@ -26,12 +26,13 @@ use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Domain\Admission\AdmissionGateway;
 use Pupilsight\Domain\Helper\HelperGateway;
+use Pupilsight\Domain\Staff\StaffGateway;
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
 
-if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
@@ -55,57 +56,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     }
     $program = $program1 + $program2;
 
-    $sqls = 'SELECT id, series_name FROM fn_fee_series WHERE type = "Admission" ';
-    $results = $connection2->query($sqls);
-    $seriesData = $results->fetchAll();
-
-    $series = array();
-    $series2 = array();
-    $series1 = array('' => 'Select Series');
-    foreach ($seriesData as $dt) {
-        $series2[$dt['id']] = $dt['series_name'];
+    $sqld = 'SELECT pupilsightDepartmentID, name FROM pupilsightDepartment ';
+    $resultd = $connection2->query($sqld);
+    $rowdatadept = $resultd->fetchAll();
+    $subjects = array('' => __('Select Subject'));
+    $subject2 = array();
+    // $subject1=array(''=>'Select Subjects');
+    foreach ($rowdatadept as $dt) {
+        $subject2[$dt['pupilsightDepartmentID']] = $dt['name'];
     }
-    $series = $series1 + $series2;
+    $subjects +=  $subject2;
 
-    $classes = '';
-    $pupilsightProgramID = '';
-    $pupilsightYearGroupID = '';
-    $enDate = '';
 
-    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-    $HelperGateway = $container->get(HelperGateway::class);
-    if($_POST){
-        //$series_id = $_POST['series_id'];
+    if ($_POST) {
         $pupilsightProgramID = $_POST['pupilsightProgramID'];
-        $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
-        //$type = $_POST['type'];
+        $pupilsightDepartmentID = $_POST['pupilsightDepartmentID'];
+        $search = $_POST['search'];
+    } else {
+        $pupilsightProgramID = '';
+        $pupilsightDepartmentID = '';
+        $search = '';
+    }
 
-        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        
-        if(!empty($pupilsightProgramID) && !empty($pupilsightYearGroupID)){ 
-            $classIds = implode(',', $pupilsightYearGroupID);
-        $sqle = "SELECT a.officialName, a.pupilsightPersonID, a.admission_no, a.username as stuUsername, a.passwordStrong as stuPassword, d.name AS class,c.name as program ,f.name as academic, d.pupilsightYearGroupID,c.pupilsightProgramID ,f.pupilsightSchoolYearID,f.pupilsightSchoolYearID, parent1.pupilsightPersonID as fatherId, parent1.officialName as fatherName, parent1.username as fatherUsername, parent1.passwordStrong as fatherPassword, parent2.pupilsightPersonID as motherId, parent2.officialName as motherName, parent2.username as motherUsername, parent2.passwordStrong as motherPassword FROM pupilsightPerson AS a 
-        LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID=b.pupilsightPersonID 
-        LEFT JOIN pupilsightProgram AS c ON b.pupilsightProgramID=c.pupilsightProgramID 
-        LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID=d.pupilsightYearGroupID 
-        LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID=e.pupilsightRollGroupID 
-        LEFT JOIN pupilsightSchoolYear AS f ON b.pupilsightSchoolYearID=f.pupilsightSchoolYearID
+  
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+ 
 
-        LEFT JOIN pupilsightFamilyChild AS child ON child.pupilsightPersonID=a.pupilsightPersonID 
-        LEFT JOIN pupilsightFamilyAdult AS adult1 ON adult1.pupilsightFamilyID=child.pupilsightFamilyID AND adult1.contactPriority=1 
-        LEFT JOIN pupilsightPerson as parent1 ON parent1.pupilsightPersonID=adult1.pupilsightPersonID AND parent1.status='Full' 
-        LEFT JOIN pupilsightFamilyAdult as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2 
-        LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full' 
-        
-        WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID IN (" . $classIds . ") ORDER BY a.pupilsightPersonID DESC ";
-         //echo $sqle;
-        // die();
-        $resulte = $connection2->query($sqle);
-        $studentData = $resulte->fetchAll();
-        }
-       
-    } 
+    $staffGateway = $container->get(StaffGateway::class);
+
+        // QUERY
+        $criteria = $staffGateway->newQueryCriteria()
+            ->searchBy($staffGateway->getSearchableColumns(), $search)
+            ->filterBy('all', $allStaff)
+            ->pageSize(5000)
+            ->sortBy(['surname', 'preferredName'])
+            ->fromPOST();
+
+    $staff = $staffGateway->queryAllStaff($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightDepartmentID);
 
     // echo '<pre>';
     // print_r($studentData);
@@ -116,8 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
      echo __('Login Accounts');
      echo '</h2>';
      
-     $types = array('' => 'Select Type', 'ASC' => 'Ascending', 'DESC' => 'Descending');
-     $form = Form::create('filter', '');
+        $form = Form::create('filter', '');
 
             $form->setClass('noIntBorder fullWidth');
             $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
@@ -125,22 +112,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->setID('getMultiClassByProgCamp')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+            $col->addSelect('pupilsightProgramID')->setID('getMultiClassByProgCamp')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
-            $col->addSelect('pupilsightYearGroupID')->setID('showMultiClassByProg')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required()->selectMultiple();
+            $col->addLabel('pupilsightDepartmentID', __('Subjects'));
+            $col->addSelect('pupilsightDepartmentID')->fromArray($subjects)->selected($pupilsightDepartmentID)->placeholder();
 
-
-            // $col = $row->addColumn()->setClass('newdes');
-            // $col->addLabel('series_id', __('Series'));
-            // $col->addSelect('series_id')->fromArray($series)->selected($series_id)->placeholder('Select Series')->required();
-
-
-            // $col = $row->addColumn()->setClass('newdes');
-            // $col->addLabel('type', __('Type'))->addClass('dte');
-            // $col->addSelect('type')->fromArray($types)->selected($type)->required();
-
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('search', __('Search By Name, Email, Type, Phone'));
+            $col->addTextField('search')->setValue($search)->maxLength(20);
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('', __(''));
@@ -150,15 +130,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 
             echo $form->getOutput();
     ?>
-    <a class="btn btn-primary thickbox" style="float:right;margin-left: 10px;" href="fullscreen.php?q=/modules/Students/sms_email_content.php&type=Sms">SMS Content</a>
-    <a class="btn btn-primary thickbox" style="float:right;margin-left: 10px;" href="fullscreen.php?q=/modules/Students/sms_email_content.php&type=Email">Email Content</a>
+    <a class="btn btn-primary thickbox" style="float:right;margin-left: 10px;" href="fullscreen.php?q=/modules/Staff/sms_email_content.php&type=Sms">SMS Content</a>
+    <a class="btn btn-primary thickbox" style="float:right;margin-left: 10px;" href="fullscreen.php?q=/modules/Staff/sms_email_content.php&type=Email">Email Content</a>
 
-   <?php if($_POST){
-    ?>
-    <form method="post" id="createAccountForm" action="index.php?q=/modules/Students/loginAccountProcess.php">
+  
+    <form method="post" id="createAccountForm" action="index.php?q=/modules/Staff/loginAccountProcess.php">
     
     <a class="btn btn-primary" style="float:right;" id="createAccount">Create Account</a>
-    <a  style="display:none;" class="thickbox" id="showPasswordPage" href="fullscreen.php?q=/modules/Students/loginPassword.php">Create Account</a>
+    <a  style="display:none;" class="thickbox" id="showPasswordPage" href="fullscreen.php?q=/modules/Staff/loginPassword.php">Create Account</a>
     <a class="btn btn-primary" style="float:right;margin-right:10px;" id="deleteAccount">Delete Account</a>
     <input type='hidden' name="password" id="addPassword" value="">
     <textarea id="addContent" name="content" style="display:none;"></textarea>
@@ -166,74 +145,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     <table class="table" id="historyTable">
         <thead>
             <tr>
-                <th colspan="4" style="text-align:center;">Student</th>
-                <th colspan="4" style="text-align:center;">Father</th>
-                <th colspan="4" style="text-align:center;">Mother</th>
-                <!-- <th colspan="4" style="text-align:center;">Guardian</th> -->
-            </tr>
-            <tr>
                 <th><input type="checkbox" class="chkAll"></th>
                 <th>Name</th>
                 <th>Login Id</th>
                 <th>Status</th>
 
-                <th><input type="checkbox" class="chkAllFather"></th>
-                <th>Name</th>
-                <th>Login Id</th>
-                <th>Status</th>
-
-                <th><input type="checkbox" class="chkAllMother"></th>
-                <th>Name</th>
-                <th>Login Id</th>
-                <th>Status</th>
-
-                <!-- <th><input type="checkbox"></th>
-                <th>Name</th>
-                <th>Login Id</th>
-                <th>Status</th> -->
             </tr>
         </thead>
         <tbody>
             <?php 
-            if(!empty($studentData)) { 
+            if(!empty($staff)) { 
                 $i = 1;
-                foreach($studentData as $estd){ 
-                    if(!empty($estd['stuPassword'])){
+                foreach($staff as $estd){ 
+                    if(!empty($estd['stfPassword'])){
                         $chkclsStu = 'greenicon';
                     } else {
                         $chkclsStu = 'greyicon';
                     }
 
-                    if(!empty($estd['fatherPassword'])){
-                        $chkclsFat = 'greenicon';
-                    } else {
-                        $chkclsFat = 'greyicon';
-                    }
-
-                    if(!empty($estd['motherPassword'])){
-                        $chkclsMot = 'greenicon';
-                    } else {
-                        $chkclsMot = 'greyicon';
-                    }
-
+                   
                 ?>
                 
                     <tr>
                         <td><input type="checkbox" name="personId[]" class="chkclick chkChild" value="<?php echo $estd['pupilsightPersonID']; ?>"></td>
                         <td><?php echo $estd['officialName']; ?></td>
-                        <td><?php echo $estd['stuUsername']; ?></td>
+                        <td><?php echo $estd['stfUsername']; ?></td>
                         <td><i class="mdi mdi-checkbox-marked-circle mdi-24px <?php echo $chkclsStu;?> "></i></td>
 
-                        <td><input type="checkbox" name="personId[]" class="chkclick chkFather" value="<?php echo $estd['fatherId']; ?>"></td>
-                        <td><?php echo $estd['fatherName']; ?></td>
-                        <td><?php echo $estd['fatherUsername']; ?></td>
-                        <td><i class="mdi mdi-checkbox-marked-circle mdi-24px <?php echo $chkclsFat;?> "></i></td>
-
-                        <td><input type="checkbox" name="personId[]" class="chkclick chkMother" value="<?php echo $estd['motherId']; ?>"></td>
-                        <td><?php echo $estd['motherName']; ?></td>
-                        <td><?php echo $estd['motherUsername']; ?></td>
-                        <td><i class="mdi mdi-checkbox-marked-circle mdi-24px <?php echo $chkclsMot;?> "></i></td>
-                        
                     </tr>
             <?php  $i++; } } else { ?> 
                 <tr>
@@ -246,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     </table>
     </form>
 <?php   
-} }
+} 
 ?>
 
 <script>

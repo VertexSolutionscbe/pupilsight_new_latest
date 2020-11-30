@@ -90,21 +90,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightDepartmentID', __('Subjects'));
         $col->addSelect('pupilsightDepartmentID')->fromArray($subjects)->selected($pupilsightDepartmentID)->placeholder();
+        
         $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('search', __('Search For'));
-        //  $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
+        $col->addLabel('search', __('Search By Name, Email, Type, Phone'));
         $col->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
 
-        /* if ($highestAction == 'View Staff Profile_full') {
-            $row = $form->addRow();
-                $row->addLabel('allStaff', __('All Staff'))->description(__('Include all staff, regardless of status, start date, end date, etc.'));
-                $row->addCheckbox('allStaff')->checked($allStaff);
-        }
-        */
-
         $col = $row->addColumn()->setClass('newdes');
-
-        //  $row->addFooter();
+        $col->addLabel('', __(''));
         $col->addSearchSubmit($pupilsight->session)->setClass('submit_align submt');
 
         echo $form->getOutput();

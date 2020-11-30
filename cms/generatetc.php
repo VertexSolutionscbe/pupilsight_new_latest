@@ -112,7 +112,7 @@ if (!empty($file)) {
                 }
 
                 try {
-                    $date = date('d/m/Y');
+                    $date = date('d-m-Y');
                     $phpword->setValue('date', $date);
                 } catch (Exception $ex) {
                 }
@@ -228,6 +228,6 @@ if (!empty($file)) {
     }
 } else {
     $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view.php';
-    $URL .= '&return=error2';
+    $URL .= '&return=error12';
     header("Location: {$URL}");
 }
