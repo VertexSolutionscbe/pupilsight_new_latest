@@ -13,8 +13,8 @@ $databaseUsername = 'root';
 //$databasePassword = '';
 //$databaseName = 'pupilsight'; //pd_demo
 //live
-$databasePassword = 'xyz';
-$databaseName = 'pupilsight'; //pd_demo
+$databasePassword = 'xyz'; //xyz
+$databaseName = 'pd_demo'; //pd_demo
 
 // if (session_status() == PHP_SESSION_NONE) {
 //     session_start();

@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_tc_histor
     $table->addColumn('file_path', __('File'))
         ->format(function ($tcHistory) {
             if (!empty($tcHistory['file_path'])) {
-                return '<a href='.$tcHistory['file_path'].' download><i title="Download" class="mdi mdi-file-download mdi-24px download_icon"></i></a>';
+                return '<a href="public/student_tc/'.$tcHistory['file_path'].'" download><i title="Download" class="mdi mdi-file-download mdi-24px download_icon"></i></a>';
             } 
             return $tcHistory['file_path'];
         });

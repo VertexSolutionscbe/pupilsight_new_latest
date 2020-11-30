@@ -205,9 +205,10 @@ if (!empty($file)) {
                 }
 
                 $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".pdf";
+                $fileSaveName = $fname . ".pdf";
 
                 
-                $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '" . $tc_id . "', file_path = '".$pdfFilename."' , uid= '" . $pupilsightPersonID . "'";
+                $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '" . $tc_id . "', file_path = '".$fileSaveName."' , uid= '" . $pupilsightPersonID . "'";
                 $connection2->query($sq);
 
                 $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";
