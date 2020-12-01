@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
         // echo "<a  id='unassignStudentstaff'  class='btn btn-primary'>Remove Staff</a>&nbsp;&nbsp;";  
         // echo "</div><div class='float-none'></div></div>";
         echo "<a style='display:none' id='clickstaffunassign' href='fullscreen.php?q=/modules/Staff/remove_assigned_staffSub.php&width=600'  class='thickbox '> Unassign Staff</a>";
-        echo'<div  ><a id="unassignsubj" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Unassign</a>&nbsp;&nbsp;<a href="fullscreen.php?q=/modules/Staff/select_staff_sub.php&width=650" class= "btn btn-primary thickbox" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Assign staff to subject</a></div>';
+        echo'<div  ><a id="unassignsubj" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Unassign</a>&nbsp;&nbsp;<a href="fullscreen.php?q=/modules/Staff/select_staff_sub.php&width=650" class= "btn btn-primary thickbox" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Assign Staff To Subject</a></div>';
     
     $StaffGateway = $container->get(StaffGateway::class);
     $criteria = $StaffGateway->newQueryCriteria()
