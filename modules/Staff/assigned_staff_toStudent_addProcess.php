@@ -56,13 +56,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
                     $result->execute($data);
                 }
             } catch (PDOException $e) {
-                $URL .= '&return=error9';
-                header("Location: {$URL}");
-                exit();
+                // $URL .= '&return=error9';
+                // header("Location: {$URL}");
+                // exit();
             }
 
-            $URL .= "&return=success0";
-            header("Location: {$URL}");
+            // $URL .= "&return=success0";
+            // header("Location: {$URL}");
         }
     }
 }

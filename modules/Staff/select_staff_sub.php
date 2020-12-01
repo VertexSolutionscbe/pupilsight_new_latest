@@ -9,6 +9,7 @@ $id = $session->get('staffs_id');
 use Pupilsight\Domain\Staff\StaffGateway;
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
+use Pupilsight\Domain\Helper\HelperGateway;
 
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php') == false) {
@@ -28,28 +29,116 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
     echo '<h2>';
-    echo __('Choose A Staff to subject');
+    echo __('Choose A Staff to Subject');
     echo '</h2>';
    
-$StaffGateway = $container->get(StaffGateway::class);
-$criteria = $StaffGateway->newQueryCriteria()
-        //->sortBy(['id'])
-        ->fromPOST();
-        
-$getselstaff = $StaffGateway->getselectedStaff($criteria);
-    //print_r($getselstaff);die();
-    $sqlp = 'SELECT a.pupilsightStaffID,a.staff_status AS stat,b.*, b.pupilsightPersonID AS stu_id , a.type, b.officialName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID';
-    $resultp = $connection2->query($sqlp);
-    $getstaff= $resultp->fetchAll();
-    
-  
-    $sqld = 'SELECT name, pupilsightDepartmentID AS sub_id FROM pupilsightDepartment';
-    $resultd = $connection2->query($sqld);
-    $getsub= $resultd->fetchAll();
+    $StaffGateway = $container->get(StaffGateway::class);
+    $criteria = $StaffGateway->newQueryCriteria()
+            //->sortBy(['id'])
+            ->fromPOST();
 
-    echo "<a style='display:none' id='clickstaffunassign' href='fullscreen.php?q=/modules/Staff/remove_assigned_staffSub.php&width=800'  class='thickbox '>Unassign staff</a>"; 
-   
-    $getselectedstaff = [];
+
+    $classes = array('' => 'Select Class');
+    $sections = array('' => 'Select Section');
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+
+    $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
+    $resultp = $connection2->query($sqlp);
+    $rowdataprog = $resultp->fetchAll();
+
+    $program = array();
+    $program2 = array();
+    $program1 = array('' => 'Select Program');
+    foreach ($rowdataprog as $dt) {
+        $program2[$dt['pupilsightProgramID']] = $dt['name'];
+    }
+    $program = $program1 + $program2;
+
+    $HelperGateway = $container->get(HelperGateway::class);
+
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
+    if ($_POST) {
+        $input = $_POST;
+        $pupilsightProgramID = $_POST['pupilsightProgramID'];
+        $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
+        $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
+        $search = $_POST['search'];
+
+
+        $uid = $_SESSION[$guid]['pupilsightPersonID'];
+
+        if ($roleId == '2') {
+            $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
+            $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
+        } else {
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        }
+
+    } else {
+        $classes = array('' => 'Select Class');
+        $sections = array('' => 'Select Section');
+        $pupilsightProgramID = '';
+        $pupilsightYearGroupID =  '';
+        $pupilsightRollGroupID = '';
+        $search = '';
+        $input = '';
+       
+    }
+
+    $form = Form::create('studentViewSearch', '');
+
+    $form->setClass('noIntBorder fullWidth');
+    $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
+    $row = $form->addRow();
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightProgramID', __('Program'));
+    $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightYearGroupID', __('Class'));
+    $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
+
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightRollGroupID', __('Section'));
+    $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section')->required();
+
+    
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('', __(''));
+    $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
+
+
+
+    echo $form->getOutput();
+
+          
+    //$getselstaff = $StaffGateway->getselectedStaff($criteria);
+    //print_r($getselstaff);die();
+    
+    if(!empty($pupilsightProgramID) && !empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)){
+        $sqlp = 'SELECT GROUP_CONCAT(pupilsightMappingID) AS mappingIds FROM pupilsightProgramClassSectionMapping WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID = '.$pupilsightYearGroupID.' AND pupilsightRollGroupID = '.$pupilsightRollGroupID.' ';
+        $resultp = $connection2->query($sqlp);
+        $getMapData = $resultp->fetch();
+
+
+
+        $sqlp = 'SELECT a.pupilsightStaffID,a.staff_status AS stat,b.*, b.pupilsightPersonID AS stu_id , a.type, b.officialName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN assignstaff_toclasssection AS c ON a.pupilsightPersonID = c.pupilsightPersonID  WHERE c.pupilsightMappingID IN ('.$getMapData['mappingIds'].') ';
+        $resultp = $connection2->query($sqlp);
+        $getstaff= $resultp->fetchAll();
+        
+    
+        $sqld = 'SELECT a.name, a.pupilsightDepartmentID AS sub_id FROM pupilsightDepartment AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE b.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND b.pupilsightProgramID = '.$pupilsightProgramID.' AND b.pupilsightYearGroupID = '.$pupilsightYearGroupID.'';
+        $resultd = $connection2->query($sqld);
+        $getsub= $resultd->fetchAll();
+
+        echo "<a style='display:none' id='clickstaffunassign' href='fullscreen.php?q=/modules/Staff/remove_assigned_staffSub.php&width=800'  class='thickbox '>Unassign staff</a>"; 
+    
+        $getselectedstaff = [];
     ?>
     <form action="<?=$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/assign_staff_toSubjectProcess.php';?>" method="post" autocomplete="on" enctype="multipart/form-data" class="smallIntBorder fullWidth standardForm" id="program">
         <input type="hidden" name="address" value="/modules/Staff/select_staff_sub.php">
@@ -107,6 +196,10 @@ $getselstaff = $StaffGateway->getselectedStaff($criteria);
         </div>
         
     </form>
+
+    
+
+<?php } ?>
     <!-- Edited By : Mandeep, Reason : Search filter added to both staff and subjects -->
     <script>
         function searchStaff() {

@@ -7,6 +7,7 @@ use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
 use Pupilsight\Domain\Staff\StaffGateway;
 use Pupilsight\Forms\DatabaseFormFactory;
+use Pupilsight\Domain\Helper\HelperGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toStaff.php') == false) {
     //Acess denied
@@ -58,38 +59,92 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
         // print_r($_POST);
         // echo '</pre>';
         //die();
-        if($_POST){
+    $HelperGateway = $container->get(HelperGateway::class);
+    if($_POST){
             
-            $pupilsightProgramID =  $_POST['pupilsightProgramID'];
-            $pupilsightSchoolYearIDpost = $_POST['pupilsightSchoolYearID'];
-            $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
-            $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
-            $searchbyPost =  '';
-            $search =  $_POST['search'];
-            $stuId = $_POST['studentId'];
+        $pupilsightProgramID =  $_POST['pupilsightProgramID'];
+        //$pupilsightSchoolYearIDpost = $_POST['pupilsightSchoolYearID'];
+        $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
+        $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
+        // $searchbyPost =  '';
+        // $search =  $_POST['search'];
+        // $stuId = $_POST['studentId'];
+
+        $uid = $_SESSION[$guid]['pupilsightPersonID'];
+
+        if ($roleId == '2') {
+            $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
+            $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
         } else {
-            $pupilsightProgramID =  '';
-            $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
-            $pupilsightYearGroupID =  '';
-            $pupilsightRollGroupID =  '';
-            $searchbyPost =  '';
-            $search = '';
-            $stuId = '0';
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
         }
+
+        $sqlp = 'SELECT GROUP_CONCAT(pupilsightMappingID) AS mappingIds FROM pupilsightProgramClassSectionMapping WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID = '.$pupilsightYearGroupID.' AND pupilsightRollGroupID = '.$pupilsightRollGroupID.' ';
+        $resultp = $connection2->query($sqlp);
+        $getMapData = $resultp->fetch();
+        
+        $sqlp = 'SELECT GROUP_CONCAT(a.pupilsightStaffID) AS staffIds   FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN assignstaff_toclasssection AS c ON a.pupilsightPersonID = c.pupilsightPersonID  WHERE c.pupilsightMappingID IN ('.$getMapData['mappingIds'].') ';
+        $resultp = $connection2->query($sqlp);
+        $getstaff= $resultp->fetch();
+
+        $staffIds = $getstaff['staffIds'];
+    } else {
+        $classes = array('' => 'Select Class');
+        $sections = array('' => 'Select Section');
+        $pupilsightProgramID =  '';
+        //$pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
+        $pupilsightYearGroupID =  '';
+        $pupilsightRollGroupID =  '';
+        $staffIds = '0';
+        // $searchbyPost =  '';
+        // $search = '';
+        // $stuId = '0';
+    }
         // echo "<a style='display:none' id='clickstaffassign' href='fullscreen.php?q=/modules/Staff/assigned_student_toStaff_add.php&width=800'  class='thickbox '>Assign Staff</a>"; 
         // echo "<a style='display:none' id='clk_remove' href='fullscreen.php?q=/modules/Staff/remove_staff_fromstudent.php'  class='thickbox '>Change status</a>";   
         // echo "<div style='height:50px;'><div class='float-left mb-2'><a  id='assignstaff_st' data-type='staff' class='btn btn-primary'>Assign Staff</a>&nbsp;&nbsp;";  
         // echo "<a  id='unassignStudentstaff'  class='btn btn-primary'>Remove Staff</a>&nbsp;&nbsp;";  
         // echo "</div><div class='float-none'></div></div>";
         echo "<a style='display:none' id='clickstaffunassign' href='fullscreen.php?q=/modules/Staff/remove_assigned_staffSub.php&width=600'  class='thickbox '> Unassign Staff</a>";
-        echo'<div  ><a id="unassignsubj" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Unassign</a>&nbsp;&nbsp;<a href="fullscreen.php?q=/modules/Staff/select_staff_sub.php&width=650" class= "btn btn-primary thickbox" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Assign Staff To Subject</a></div>';
+        echo'<div  ><a id="unassignsubj" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Unassign</a>&nbsp;&nbsp;<a href="index.php?q=/modules/Staff/select_staff_sub.php" class= "btn btn-primary" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Assign Staff To Subject</a></div>';
+
+        $form = Form::create('studentViewSearch', '');
+
+        $form->setClass('noIntBorder fullWidth');
+        $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
+        $row = $form->addRow();
+    
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('pupilsightProgramID', __('Program'));
+        $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+    
+    
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('pupilsightYearGroupID', __('Class'));
+        $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
+    
+    
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('pupilsightRollGroupID', __('Section'));
+        $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section')->required();
+    
+        
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('', __(''));
+        $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
+    
+    
+    
+        echo $form->getOutput();
     
     $StaffGateway = $container->get(StaffGateway::class);
     $criteria = $StaffGateway->newQueryCriteria()
         //->sortBy(['id'])
+        ->pageSize(1000)
         ->fromPOST();
 
-$getselstaff = $StaffGateway->getselectedStaff($criteria);
+    $getselstaff = $StaffGateway->getStaffByFilter($criteria, $staffIds);
     $table = DataTable::createPaginated('FeeStructureManage', $criteria);
 
     $table->addCheckboxColumn('st_id',__(''))

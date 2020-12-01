@@ -189,7 +189,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
                 ?>
                         <tr>
                             <td>
-                                <input type="checkbox" class="stuField" name="student_column[]" value="<?= $field[$i] ?>">
+                                <input type="checkbox" class="stuField" name="staff_column[]" value="<?= $field[$i] ?>">
                             </td>
                             <td><?= $field[$i] ?></td>
                         </tr>

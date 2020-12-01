@@ -7,6 +7,7 @@ use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
 use Pupilsight\Domain\Staff\StaffGateway;
 use Pupilsight\Forms\DatabaseFormFactory;
+use Pupilsight\Domain\Helper\HelperGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toStaff.php') == false) {
     //Acess denied
@@ -58,29 +59,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
         // print_r($_POST);
         // echo '</pre>';
         //die();
+
+        $HelperGateway = $container->get(HelperGateway::class);
         if($_POST){
             
             $pupilsightProgramID =  $_POST['pupilsightProgramID'];
             $pupilsightSchoolYearIDpost = $_POST['pupilsightSchoolYearID'];
             $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
             $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
+            $pupilsightDepartmentID =  $_POST['pupilsightDepartmentID'];
             $searchbyPost =  '';
             $search =  $_POST['search'];
             $stuId = $_POST['studentId'];
+
+            echo "<a style='display:none' id='clickstaffassign' href='fullscreen.php?q=/modules/Staff/assigned_student_toStaff_add.php&aid=".$pupilsightSchoolYearIDpost."&pid=".$pupilsightProgramID."&cid=".$pupilsightYearGroupID."&sid=".$pupilsightRollGroupID."&width=800'  class='thickbox '>Assign Staff</a>"; 
+            echo "<a style='display:none' id='clk_remove' href='fullscreen.php?q=/modules/Staff/remove_staff_fromstudent.php'  class='thickbox '>Change status</a>";   
+            echo "<div style='height:50px;'><div class='float-left mb-2'><a  id='assignstaff_st' data-type='staff' class='btn btn-primary'>Assign Staff</a>&nbsp;&nbsp;";  
+            echo "<a  id='unassignStudentstaff'  class='btn btn-primary'>Remove Staff</a>&nbsp;&nbsp;";  
+            echo "</div><div class='float-none'></div></div>";
+
+            $uid = $_SESSION[$guid]['pupilsightPersonID'];
+
+            if ($roleId == '2') {
+                $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
+                $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
+            } else {
+                $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            }
+
+            $sqld = 'SELECT pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum WHERE pupilsightSchoolYearID ="'.$pupilsightSchoolYearIDpost.'" AND pupilsightProgramID ="'.$pupilsightProgramID.'" AND pupilsightYearGroupID ="'.$pupilsightYearGroupID.'"   order by subject_display_name asc ';
+            $resultd = $connection2->query($sqld);
+            $rowdatadept = $resultd->fetchAll();
+            $subjects=array();  
+            $subject2=array();  
+            // $subject1=array(''=>'Select Subjects');
+            foreach ($rowdatadept as $dt) {
+                $subject2[$dt['pupilsightDepartmentID']] = $dt['subject_display_name'];
+            }
+            $subjects=  $subject2; 
+
+            $sqlchk = 'SELECT subject_type from subjectToClassCurriculum WHERE pupilsightSchoolYearID ='.$pupilsightSchoolYearIDpost.' AND pupilsightProgramID ='.$pupilsightProgramID.' AND pupilsightYearGroupID = '.$pupilsightYearGroupID.' AND pupilsightDepartmentID = '.$pupilsightDepartmentID.'  ';
+            $resultchk = $connection2->query($sqlchk);
+            $subChk = $resultchk->fetch();
+            $subType = $subChk['subject_type'];
         } else {
+            $classes = array('' => 'Select Class');
+            $sections = array('' => 'Select Section');
+            $subjects= array('' => 'Select Subject');
+            $subType = '';
             $pupilsightProgramID =  '';
             $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
             $pupilsightYearGroupID =  '';
             $pupilsightRollGroupID =  '';
+            $pupilsightDepartmentID =  '';
             $searchbyPost =  '';
             $search = '';
             $stuId = '0';
         }
-        echo "<a style='display:none' id='clickstaffassign' href='fullscreen.php?q=/modules/Staff/assigned_student_toStaff_add.php&width=800'  class='thickbox '>Assign Staff</a>"; 
-        echo "<a style='display:none' id='clk_remove' href='fullscreen.php?q=/modules/Staff/remove_staff_fromstudent.php'  class='thickbox '>Change status</a>";   
-        echo "<div style='height:50px;'><div class='float-left mb-2'><a  id='assignstaff_st' data-type='staff' class='btn btn-primary'>Assign Staff</a>&nbsp;&nbsp;";  
-        echo "<a  id='unassignStudentstaff'  class='btn btn-primary'>Remove Staff</a>&nbsp;&nbsp;";  
-        echo "</div><div class='float-none'></div></div>";
+       
         // echo '<button id="" href="modules/Transport/assign_route.php"  class=" btn btn-primary" style="margin:5px">Assign route</button>';
         // echo '<button id=""  class=" btn btn-primary" style="margin:5px">Unassign route</button>';
         // echo '<button id=""  class=" btn btn-primary" style="margin:5px">Change route</button>';
@@ -101,11 +138,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
             
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightYearGroupID', __('Class'));
-            $col->addSelectYearGroup('pupilsightYearGroupID')->selected($pupilsightYearGroupID);
+            $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($pupilsightYearGroupID)->required();
     
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightRollGroupID', __('Section'));
-            $col->addSelectRollGroup('pupilsightRollGroupID', $pupilsightSchoolYearID)->selected($pupilsightRollGroupID);
+            $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->selected($pupilsightRollGroupID)->required();
+
+        $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('pupilsightDepartmentID', __('Subjects'));
+            $col->addSelect('pupilsightDepartmentID')->fromArray($subjects)->required()->selected($pupilsightDepartmentID)->placeholder()->required();
     
         // $col = $row->addColumn()->setClass('newdes');
         //     $col->addLabel('searchby', __('Search By'));
@@ -128,7 +169,7 @@ $criteria = $StaffGateway->newQueryCriteria()
         //->sortBy(['id'])
         ->fromPOST();
 
-$students = $StaffGateway->getstdData($criteria, $pupilsightProgramID, $pupilsightSchoolYearIDpost, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
+$students = $StaffGateway->getstdData($criteria, $pupilsightProgramID, $pupilsightSchoolYearIDpost, $pupilsightYearGroupID, $pupilsightRollGroupID , $pupilsightDepartmentID, $search, $subType);
 
 $table = DataTable::createPaginated('FeeStructureManage', $criteria);
 
@@ -164,6 +205,48 @@ $table->addColumn('staff_name', __('Staff Name'));
 //         print_r($students);
 //         echo '</pre>';
        // die();
+if($_POST){
 echo $table->render($students);
+}
 
 }
+
+?>
+
+<script>
+    $("#pupilsightYearGroupID").change(function() {
+        loadSubjects();
+    });
+    
+
+    function loadSubjects() {
+        var pupilsightProgramID = $("#pupilsightProgramID").val();
+        var pupilsightYearGroupID = $("#pupilsightYearGroupID").val();
+        //var roleid= $("#roleid").val();
+        if (pupilsightYearGroupID) {
+            var type = "getSubjectbasedonclassNew";
+            try {
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: {
+                        val: pupilsightYearGroupID,
+                        type: type,
+                        pupilsightProgramID:pupilsightProgramID
+
+                    },
+                    async: true,
+                    success: function(response) {
+                        $("#pupilsightDepartmentID").html(response);
+                        if (reloadCall) {
+                            $("#pupilsightDepartmentID").val(_pupilsightDepartmentID);
+                            
+                        }
+                    }
+                });
+            } catch (ex) {
+                reloadCall = false;
+            }
+        }
+    }
+</script>
