@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
 
 
 
-        $sqlp = 'SELECT a.pupilsightStaffID,a.staff_status AS stat,b.*, b.pupilsightPersonID AS stu_id , a.type, b.officialName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN assignstaff_toclasssection AS c ON a.pupilsightPersonID = c.pupilsightPersonID  WHERE c.pupilsightMappingID IN ('.$getMapData['mappingIds'].') ';
+        $sqlp = 'SELECT a.pupilsightStaffID,a.staff_status AS stat,b.*, b.pupilsightPersonID AS stu_id , a.type, b.officialName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN assignstaff_toclasssection AS c ON a.pupilsightPersonID = c.pupilsightPersonID  WHERE c.pupilsightMappingID IN ('.$getMapData['mappingIds'].') AND b.pupilsightRoleIDPrimary NOT IN (003,004) ';
         $resultp = $connection2->query($sqlp);
         $getstaff= $resultp->fetchAll();
         
