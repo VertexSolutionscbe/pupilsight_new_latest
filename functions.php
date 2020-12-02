@@ -2000,6 +2000,7 @@ function returnProcessGetAlert($return, $editLink = null, $customReturns = null)
         $returns['warning2'] = __('Your request was successful, but some data was not properly deleted.');
         $returns['error11'] = __('Attendance has been taken at the following times for the specified date for this Subject with Same Time slot:.');
         $returns['error12'] = __('Template is Not Configured for Selected Class.');
+        $returns['success1'] = __('Data Uploaded Successfully.');
 
         if (isset($customReturns)) {
             if (is_array($customReturns)) {

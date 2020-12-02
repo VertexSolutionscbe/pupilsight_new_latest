@@ -186,91 +186,132 @@ class StaffGateway extends QueryableGateway
 
     }
 
-public function getstdData(QueryCriteria $criteria, $pupilsightProgramID, $pupilsightSchoolYearIDpost, $pupilsightYearGroupID, $pupilsightRollGroupID, $search)
+public function getstdData(QueryCriteria $criteria, $pupilsightProgramID, $pupilsightSchoolYearIDpost, $pupilsightYearGroupID, $pupilsightRollGroupID, $pupilsightDepartmentID, $search, $subType)
     {
         $pupilsightRoleIDAll = '003';
-        if (!empty($pupilsightProgramID)) {
+        if($subType == 'Elective'){
             $query = $this
-            ->newQuery()
-            ->from('pupilsightPerson')
-            ->cols([
-                'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','assignstudent_tostaff.pupilsightStaffID AS Staffid','stf.officialName as staff_name'
-            ])
-         
-            ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
-            ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
-            ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
-            ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
-            ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
-            ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
-            ->leftJoin('pupilsightPerson AS stf', 'assignstudent_tostaff.pupilsightStaffID=stf.pupilsightPersonID');
+                ->newQuery()
+                ->from('pupilsightPerson')
+                ->cols([
+                    'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','GROUP_CONCAT(assignstudent_tostaff.pupilsightStaffID) AS staffIds'
+                ])
+            
+                ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
+                ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+                ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+                ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+                ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+                ->leftJoin('assign_elective_subjects_tostudents', 'pupilsightPerson.pupilsightPersonID=assign_elective_subjects_tostudents.pupilsightPersonID');
 
-            if(!empty($pupilsightProgramID)){
-                $query->where('pupilsightProgram.pupilsightProgramID = "'.$pupilsightProgramID.'" ');
-            } 
-            if(!empty($pupilsightSchoolYearIDpost)){
-                $query->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearIDpost.'" ');
-            } 
-            if(!empty($pupilsightYearGroupID)){
-                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
-            } 
-            if(!empty($pupilsightRollGroupID)){
-                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" ');
-            } 
-            if(!empty($search)){
-                $query->where('pupilsightPerson.officialName LIKE "%'.$search.'%" ')
-                ->orwhere('pupilsightPerson.pupilsightPersonID = "'.$search.'" ');;
+                if(!empty($pupilsightProgramID)){
+                    $query->where('pupilsightProgram.pupilsightProgramID = "'.$pupilsightProgramID.'" ');
+                } 
+                if(!empty($pupilsightSchoolYearIDpost)){
+                    $query->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearIDpost.'" ');
+                } 
+                if(!empty($pupilsightYearGroupID)){
+                    $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
+                } 
+                if(!empty($pupilsightRollGroupID)){
+                    $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" ');
+                } 
+                if(!empty($pupilsightDepartmentID)){
+                    $query->where('assign_elective_subjects_tostudents.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ');
+                } 
+                if(!empty($search)){
+                    $query->where('pupilsightPerson.officialName LIKE "%'.$search.'%" ')
+                    ->orwhere('pupilsightPerson.pupilsightPersonID = "'.$search.'" ');;
 
-            } 
-            $query->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
+                } 
+                $query->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
+                    ->groupBy(['pupilsightPerson.pupilsightPersonID'])
+                    ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']) ;
+        } else {
+        
+            if (!empty($pupilsightProgramID)) {
+                $query = $this
+                ->newQuery()
+                ->from('pupilsightPerson')
+                ->cols([
+                    'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','GROUP_CONCAT(assignstudent_tostaff.pupilsightStaffID) AS staffIds'
+                ])
+            
+                ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
+                ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+                ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+                ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+                ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
+                // ->leftJoin('pupilsightPerson AS stf', 'assignstudent_tostaff.pupilsightStaffID=stf.pupilsightPersonID');
+
+                if(!empty($pupilsightProgramID)){
+                    $query->where('pupilsightProgram.pupilsightProgramID = "'.$pupilsightProgramID.'" ');
+                } 
+                if(!empty($pupilsightSchoolYearIDpost)){
+                    $query->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearIDpost.'" ');
+                } 
+                if(!empty($pupilsightYearGroupID)){
+                    $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
+                } 
+                if(!empty($pupilsightRollGroupID)){
+                    $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" ');
+                } 
+                
+                if(!empty($search)){
+                    $query->where('pupilsightPerson.officialName LIKE "%'.$search.'%" ')
+                    ->orwhere('pupilsightPerson.pupilsightPersonID = "'.$search.'" ');;
+
+                } 
+                $query->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
+                    ->groupBy(['pupilsightPerson.pupilsightPersonID'])
+                    ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']) ;
+                // echo $query;    
+            }else{
+
+                $query = $this
+                ->newQuery()
+                ->from('pupilsightPerson')
+                ->cols([
+                'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name',"GROUP_CONCAT(DISTINCT assignstudent_tostaff.pupilsightStaffID SEPARATOR ', ') as staff_id",'assignstudent_tostaff.pupilsightStaffID AS Staffid','stf.officialName as staff_name'
+                ])
+                ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
+                ->leftJoin('pupilsightPerson AS stf', 'assignstudent_tostaff.pupilsightStaffID=stf.pupilsightPersonID')
+                ->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
                 ->groupBy(['pupilsightPerson.pupilsightPersonID'])
-                ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']) ;
-              // echo $query;    
-        }else{
-
-            $query = $this
-            ->newQuery()
-            ->from('pupilsightPerson')
-            ->cols([
-              'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name',"GROUP_CONCAT(DISTINCT assignstudent_tostaff.pupilsightStaffID SEPARATOR ', ') as staff_id",'assignstudent_tostaff.pupilsightStaffID AS Staffid','stf.officialName as staff_name'
-            ])
-            ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
-            ->leftJoin('pupilsightPerson AS stf', 'assignstudent_tostaff.pupilsightStaffID=stf.pupilsightPersonID')
-            ->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
-            ->groupBy(['pupilsightPerson.pupilsightPersonID'])
-            ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
-            //echo $query;
+                ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
+                //echo $query;
+            }
         }
         //echo $query;
         $res = $this->runQuery($query, $criteria);
         $data = $res->data;
-        // if(!empty($data)){
-        //     foreach($data as $k=>$d){
-        //         $staffid = $d['staff_id'];
-        //         if(!empty($staffid)){
-        //             $query2 = $this
-        //             ->newQuery()
-        //             ->from('pupilsightPerson')
-        //             ->cols([
-        //                 "GROUP_CONCAT(DISTINCT pupilsightPerson.officialName SEPARATOR ', ') as staff_name"
-        //             ])
-        //             ->where('pupilsightPersonID  IN ('.$staffid.') ');
-        //             echo $query2;
-        //             $newdata = $this->runQuery($query2, $criteria);
-        //             if (!empty($newdata->data[0]['staff_name'])) {
-        //                 $data[$k]['staff_name'] = $newdata->data[0]['staff_name'];
-        //             } else {
-        //                 $data[$k]['staff_name'] = '';
-        //             }
-        //         } else {
-        //             $data[$k]['staff_name'] = '';
-        //         } 
-        //     }
-        // }
+           
+        foreach($data as $k=>$sd){
+            if(!empty($sd['staffIds'])){
+                $query2 = $this
+                ->newQuery()
+                ->from('pupilsightPerson')
+                ->cols([
+                    "GROUP_CONCAT(DISTINCT pupilsightPerson.officialName SEPARATOR ', ') as pname",
+                    ])
+                ->where('pupilsightPerson.pupilsightPersonID IN ('.$sd['staffIds'].') ');
+
+                $newdata = $this->runQuery($query2, $criteria);
+                
+            // die();
+                if(!empty($newdata)){
+                    $data[$k]['staff_name'] = $newdata->data[0]['pname'];
+                } else {
+                    $data[$k]['staff_name'] = '';
+                }    
+            } else {
+                $data[$k]['staff_name'] = '';
+            } 
+        }
+        
         $res->data = $data;
-        // echo '<pre>';
-        // print_r($data);
-        // echo '</pre>';
         return $res;
     }
     public function getselectedStaff(QueryCriteria $criteria){
@@ -300,6 +341,26 @@ public function getstdData(QueryCriteria $criteria, $pupilsightProgramID, $pupil
             ->where('pupilsightPerson.pupilsightRoleIDPrimary = 002');
 
         return $this->runQuery($query, $criteria);
+    }
+
+
+    public function getStaffByFilter(QueryCriteria $criteria, $staffIds){
+        $query = $this
+        ->newQuery()
+        ->from('assignstaff_tosubject')
+        ->cols([
+        'assignstaff_tosubject.*','assignstaff_tosubject.pupilsightStaffID AS st_id','pupilsightPerson.officialName AS fname',"GROUP_CONCAT(DISTINCT pupilsightDepartment.name SEPARATOR ', ') as dep_name"
+        ])
+        ->leftJoin('pupilsightStaff', 'assignstaff_tosubject.pupilsightStaffID=pupilsightStaff.pupilsightStaffID')
+        ->leftJoin('pupilsightPerson', 'pupilsightStaff.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+        ->leftJoin('pupilsightDepartment','assignstaff_tosubject.pupilsightdepartmentID=pupilsightDepartment.pupilsightDepartmentID');
+        if(!empty($staffIds)){
+            $query->WHERE('assignstaff_tosubject.pupilsightStaffID IN ('.$staffIds.') ');
+        } 
+        
+        $query->groupBy(['pupilsightPerson.pupilsightPersonID']);
+        return $this->runQuery($query, $criteria);
+
     }
 
 }
