@@ -3424,3 +3424,59 @@ if ($type == 'revertTC') {
         $result1->execute($data1);
     }
 }
+
+
+if ($type == 'getClassForStaff') {
+    $pid = $val;
+    $stid = $_POST['stid'];
+    $sql = 'SELECT a.*, c.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN assignstaff_toclasssection b ON(a.pupilsightMappingID =b.pupilsightMappingID)  LEFT JOIN pupilsightYearGroup AS c ON a.pupilsightYearGroupID =c.pupilsightYearGroupID  WHERE a.pupilsightProgramID = "' . $pid . '" AND b.pupilsightPersonID="' . $stid . '" GROUP BY a.pupilsightYearGroupID';
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+    // echo '<pre>';
+    // print_r($classes);
+    // echo '</pre>';
+    $data = '<option value="">Select Class</option>';
+    if (!empty($classes)) {
+        foreach ($classes as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+
+if ($type == 'getSectionForStaff') {
+    $cid = $val;
+    $stid = $_POST['stid'];
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+    $sql = 'SELECT a.*, c.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN assignstaff_toclasssection b ON(a.pupilsightMappingID =b.pupilsightMappingID) LEFT JOIN pupilsightRollGroup AS c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightYearGroupID = "' . $cid . '" AND b.pupilsightPersonID="' . $stid . '" GROUP BY a.pupilsightRollGroupID';
+    $result = $connection2->query($sql);
+    $sections = $result->fetchAll();
+    $data = '<option value="">Select Section</option>';
+    if (!empty($sections)) {
+        foreach ($sections as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightRollGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+
+if ($type == 'getSubjectForStaff') {
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+    $pupilsightPersonID = $_POST['stid'];
+    
+
+    $pupilsightProgramID = $_POST['pupilsightProgramID'];
+    
+    $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND subjectToClassCurriculum.pupilsightProgramID = '" . $pupilsightProgramID . "' AND subjectToClassCurriculum.pupilsightYearGroupID ='" . $val . "' AND pupilsightStaff.pupilsightPersonID='" . $pupilsightPersonID . "' order by subjectToClassCurriculum.subject_display_name asc";
+    
+
+    $result = $connection2->query($sq);
+    $rowdata = $result->fetchAll();
+    $returndata = '<option value="">Select Subject</option>';
+    foreach ($rowdata as $row) {
+        $returndata .= '<option value=' . $row['pupilsightDepartmentID'] . '  data-dimode=' . $row['di_mode'] . '>' . $row['subject_display_name'] . '</option>';
+    }
+    echo $returndata;
+}

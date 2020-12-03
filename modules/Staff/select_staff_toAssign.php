@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_toAssig
     echo '</h2>';
 
 
-    $sqlp = 'SELECT a.pupilsightStaffID,a.staff_status AS stat,b.*, b.pupilsightPersonID AS stu_id , a.type, b.officialName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID';
+    $sqlp = 'SELECT a.pupilsightStaffID,a.staff_status AS stat,b.*, b.pupilsightPersonID AS stu_id , a.type, b.officialName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.pupilsightRoleIDPrimary NOT IN (003,004) ';
     $resultp = $connection2->query($sqlp);
     $getstaff= $resultp->fetchAll();
     

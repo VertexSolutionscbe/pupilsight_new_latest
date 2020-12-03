@@ -54,39 +54,39 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
         foreach ($headers as $key => $hd) {
 
             if ($hd == 'Official Name') {
-                $headers[$key] = 'st_officialName';
+                $headers[$key] = '##_officialName';
             } else if ($hd == 'Type') {
                 $headers[$key] = 'at_type';
             } else if ($hd == 'Gender') {
-                $headers[$key] = 'st_gender';
+                $headers[$key] = '##_gender';
             } else if ($hd == 'Date of Birth') {
-                $headers[$key] = 'st_dob';
+                $headers[$key] = '##_dob';
             } else if ($hd == 'Username') {
-                $headers[$key] = 'st_username';
+                $headers[$key] = '##_username';
             } else if ($hd == 'Can Login') {
-                $headers[$key] = 'st_canLogin';
+                $headers[$key] = '##_canLogin';
             } else if ($hd == 'Email') {
-                $headers[$key] = 'st_email';
+                $headers[$key] = '##_email';
             } else if ($hd == 'Address') {
-                $headers[$key] = 'st_address1';
+                $headers[$key] = '##_address1';
             } else if ($hd == 'District') {
-                $headers[$key] = 'st_address1District';
+                $headers[$key] = '##_address1District';
             } else if ($hd == 'Country') {
-                $headers[$key] = 'st_address1Country';
+                $headers[$key] = '##_address1Country';
             } else if ($hd == 'First Language') {
-                $headers[$key] = 'st_languageFirst';
+                $headers[$key] = '##_languageFirst';
             } else if ($hd == 'Second Language') {
-                $headers[$key] = 'st_languageSecond';
+                $headers[$key] = '##_languageSecond';
             } else if ($hd == 'Third Language') {
-                $headers[$key] = 'st_languageThird';
+                $headers[$key] = '##_languageThird';
             } else if ($hd == 'Country of Birth') {
-                $headers[$key] = 'st_countryOfBirth';
+                $headers[$key] = '##_countryOfBirth';
             } else if ($hd == 'Ethnicity') {
-                $headers[$key] = 'st_ethnicity';
+                $headers[$key] = '##_ethnicity';
             } else if ($hd == 'Religion') {
-                $headers[$key] = 'st_religion';
+                $headers[$key] = '##_religion';
             } else if ($hd == 'National ID Card Number') {
-                $headers[$key] = 'st_nationalIDCardNumber';
+                $headers[$key] = '##_nationalIDCardNumber';
             } else {
 
                 $sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
@@ -94,10 +94,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 $cd = $resultchk->fetch();
                 $modules = explode(',', $cd['modules']);
 
-                //if(!in_array('st_'.$cd['field_name'], $chkHeaderKey)){
+                //if(!in_array('##_'.$cd['field_name'], $chkHeaderKey)){
                 if (in_array('staff', $modules)) {
-                    $headers[$key] = 'st_' . $cd['field_name'];
-                    $chkHeaderKey[] = 'st_' . $cd['field_name'];
+                    $headers[$key] = '##_' . $cd['field_name'];
+                    $chkHeaderKey[] = '##_' . $cd['field_name'];
                 }
                 //}
 
@@ -138,8 +138,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 // Student Entry
                 $sql = "INSERT INTO pupilsightPerson (";
                 foreach ($alrow as $key => $ar) {
-                    if (strpos($key, 'st_') !== false && !empty($ar)) {
-                        //$clname = ltrim($key, 'st_'); 
+                    if (strpos($key, '##_') !== false && !empty($ar)) {
+                        //$clname = ltrim($key, '##_'); 
                         $clname = substr($key, 3, strlen($key));
                         $sql .= $clname . ',';
                     }
@@ -148,12 +148,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 //$sql = rtrim($sql, ", ");
                 $sql .= ") VALUES (";
                 foreach ($alrow as $k => $value) {
-                    if (strpos($k, 'st_') !== false && !empty($value)) {
+                    if (strpos($k, '##_') !== false && !empty($value)) {
                         $val = str_replace('"', "", $value);
                         $sql .= '"' . $val . '",';
                     }
                 }
-                $sql .= '"' . $alrow['st_officialName'] . '","002","002"';
+                $sql .= '"' . $alrow['##_officialName'] . '","002","002"';
                 //$sql = rtrim($sql, ", ");
                 $sql .= ")";
                 $sql = rtrim($sql, ", ");
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
 
         fclose($handle);
 
-        $URL .= '&return=success0';
+        $URL .= '&return=success1';
         header("Location: {$URL}");
     }
 }

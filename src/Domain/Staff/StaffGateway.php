@@ -37,7 +37,7 @@ class StaffGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'pupilsightPerson.pupilsightPersonID','pupilsightPerson.officialName','assignstaff_toclasssection.pupilsightMappingID','pupilsightProgramClassSectionMapping.pupilsightProgramID' ,'pupilsightPerson.title', 'pupilsightPerson.surname','pupilsightPerson.email','pupilsightPerson.phone1', 'pupilsightPerson.preferredName', 'pupilsightPerson.status', 'pupilsightPerson.username', 'pupilsightPerson.image_240','pupilsightStaff.staff_status AS stat',
-                'pupilsightStaff.pupilsightStaffID','pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightStaff.initials', 'pupilsightStaff.type', 'pupilsightStaff.jobTitle', 'pupilsightPerson.passwordStrong as stfPassword', 'pupilsightPerson.username as stfUsername'
+                'pupilsightStaff.pupilsightStaffID','pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightStaff.initials', 'pupilsightStaff.type', 'pupilsightStaff.jobTitle', 'pupilsightPerson.passwordStrong as stfPassword', 'pupilsightPerson.username as stfUsername','pupilsightPerson.dob','pupilsightPerson.gender',
             ])
             ->innerJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=pupilsightStaff.pupilsightPersonID')
             ->leftJoin('assignstaff_toclasssection', 'assignstaff_toclasssection.pupilsightPersonID=pupilsightStaff.pupilsightPersonID') 
@@ -54,6 +54,7 @@ class StaffGateway extends QueryableGateway
             $query->where('assignstaff_tosubject.pupilsightdepartmentID = "' . $pupilsightDepartmentID . '" ');
         }
         $query->where('pupilsightPerson.pupilsightRoleIDPrimary != "003" ')
+        ->where('pupilsightPerson.pupilsightRoleIDPrimary != "004" ')
         ->groupBy(['pupilsightPerson.pupilsightPersonID'])
        ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
    //  echo  $query;
@@ -141,7 +142,9 @@ class StaffGateway extends QueryableGateway
                 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.title', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.status', 'pupilsightPerson.username', 'pupilsightPerson.image_240',
                 'pupilsightStaff.pupilsightStaffID','pupilsightPerson.email','pupilsightPerson.phone1 AS phone','pupilsightStaff.staff_status','pupilsightPerson.pupilsightPersonID AS staffid', 'pupilsightStaff.initials', 'pupilsightStaff.type', 'pupilsightStaff.jobTitle'
             ])
-            ->innerJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=pupilsightStaff.pupilsightPersonID');
+            ->innerJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=pupilsightStaff.pupilsightPersonID')
+            ->where('pupilsightPerson.pupilsightRoleIDPrimary != "003" ')
+            ->where('pupilsightPerson.pupilsightRoleIDPrimary != "004" ');
 
         return $this->runQuery($query, $criteria);
     }
@@ -361,6 +364,38 @@ public function getstdData(QueryCriteria $criteria, $pupilsightProgramID, $pupil
         $query->groupBy(['pupilsightPerson.pupilsightPersonID']);
         return $this->runQuery($query, $criteria);
 
+    }
+
+    public function getFeedbackCategory(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('pupilsightFeedbackCategory')
+            ->cols([
+                'pupilsightFeedbackCategory.*'
+            ])
+            ->orderBy(['pupilsightFeedbackCategory.id DESC']);
+
+        return $this->runQuery($query, $criteria, TRUE);
+    }
+    
+    public function getFeedback(QueryCriteria $criteria, $staff_id)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('pupilsightFeedback')
+            ->cols([
+                'pupilsightFeedback.*','pupilsightFeedbackCategory.name as catName','pupilsightDepartment.name as subjectName','pupilsightProgram.name AS program', 'pupilsightYearGroup.name AS class', 'pupilsightRollGroup.name AS section'
+            ])
+            ->leftJoin('pupilsightFeedbackCategory', 'pupilsightFeedback.category_id=pupilsightFeedbackCategory.id')
+            ->leftJoin('pupilsightProgram', 'pupilsightFeedback.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->leftJoin('pupilsightYearGroup', 'pupilsightFeedback.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightRollGroup', 'pupilsightFeedback.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+            ->leftJoin('pupilsightDepartment','pupilsightFeedback.pupilsightdepartmentID=pupilsightDepartment.pupilsightDepartmentID')
+            ->where('pupilsightFeedback.pupilsightPersonID = '.$staff_id.' ')
+            ->orderBy(['pupilsightFeedback.id DESC']);
+
+        return $this->runQuery($query, $criteria, TRUE);
     }
 
 }

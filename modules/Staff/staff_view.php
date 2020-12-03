@@ -22,6 +22,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         echo '</div>';
     } else {
         //Proceed!
+
+        $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
+
         $page->breadcrumbs->add(__('View Staff Profiles'));
         $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         $search = (isset($_GET['search']) ? $_GET['search'] : '');
@@ -109,9 +112,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         echo "<a  id='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_staff' class='sendButton_staff btn btn-primary'>Send Email</a>&nbsp;&nbsp;<a  id='change_status' data-type='staff'  data-noti='1'  class=' btn btn-primary'>Change Status</a>";
         echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/message_history.php' class='btn btn-primary' id='sendEmail'>SMS - SENT ITEMS</a>";
         echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/staff_manage_add.php' class='btn btn-primary' id='sendEmail'>ADD</a>";
+        echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Staff/field_to_show.php'  >Field to Show</a>";
+        echo "&nbsp;&nbsp;<a data-hrf='index.php?q=/modules/Staff/feedback_manage.php' href='' class='btn btn-primary' id='addFeedback'>Feedback</a>";
+        
         echo " </div><div class='float-none'></div></div>";
 
         $staff = $staffGateway->queryAllStaff($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightDepartmentID);
+
+        $sqlf = 'SELECT field_name FROM staff_field_show WHERE pupilsightPersonID = ' . $pupilsightPersonID . ' ';
+        $resultf = $connection2->query($sqlf);
+        $showfield = $resultf->fetchAll();
+
+        $sql = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("staff",modules) ';
+        $result = $connection2->query($sql);
+        $customFields = $result->fetchAll();
 
         // DATA TABLE
         $table = DataTable::createPaginated('staffManage', $criteria);
@@ -146,22 +160,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             });
 
 
-
-        $table->addColumn('fullName', __('Name'))
-            ->description(__('Initials'))
-            ->width('35%')
-            ->sortable(['surname', 'preferredName'])
-            ->format(function ($person) {
-                return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true)
-                    . '<br/><span style="font-size: 85%; font-style: italic">' . $person['initials'] . "</span>";
-            });
-        $table->addColumn('email', __('Email'))->width('25%')->translatable();
-        $table->addColumn('phone1', __('Phone'))->width('25%')->translatable();
-        $table->addColumn('stat', __('Status'))->width('25%')->translatable();
-        $table->addColumn('type', __('Type'))->width('25%')->translatable();
-        $table->addColumn('type', __('Type'))->width('25%')->translatable();
-        $table->addColumn('jobTitle', __('Job Title'))->width('25%');
-
+        if (!empty($showfield)) {
+            foreach ($showfield as $sf) {
+                if ($sf['field_name'] == 'staff_name') {
+                    $table->addColumn('officialName', __('Name'));
+                }
+                if ($sf['field_name'] == 'email') {
+                    $table->addColumn('email', __('Email'));
+                }
+                if ($sf['field_name'] == 'phone1') {
+                    $table->addColumn('phone1', __('Phone'));
+                }
+                if ($sf['field_name'] == 'type') {
+                    $table->addColumn('type', __('Type'));
+                }
+                if ($sf['field_name'] == 'jobTitle') {
+                    $table->addColumn('jobTitle', __('Job Title'));
+                }
+                if ($sf['field_name'] == 'username') {
+                    $table->addColumn('username', __('Username'));
+                }
+                if ($sf['field_name'] == 'dob') {
+                    $table->addColumn('dob', __('Date of Birth'));
+                }
+                if ($sf['field_name'] == 'gender') {
+                    $table->addColumn('gender', __('Gender'));
+                }
+                if ($sf['field_name'] == 'stat') {
+                    $table->addColumn('stat', __('Status'));
+                }
+                
+                if (!empty($customFields)) {
+                    foreach ($customFields as $cf) {
+                        if ($sf['field_name'] == $cf['field_name']) {
+                            $table->addColumn($cf['field_name'], __($cf['field_title']));
+                        }
+                    }
+                }
+            }
+        } else {
+            $table->addColumn('officialName', __('Name'));
+            $table->addColumn('email', __('Email'))->width('25%')->translatable();
+            $table->addColumn('phone1', __('Phone'))->width('25%')->translatable();
+            $table->addColumn('type', __('Type'))->width('25%')->translatable();
+            $table->addColumn('jobTitle', __('Job Title'))->width('25%');
+            $table->addColumn('username', __('UserName'))->width('25%')->translatable();
+            $table->addColumn('dob', __('Date of Birth'))->width('25%')->translatable();
+            $table->addColumn('gender', __('Gender'))->width('25%')->translatable();
+            $table->addColumn('stat', __('Status'))->width('25%')->translatable();
+        }
         // ACTIONS
         $table->addActionColumn()
             ->addParam('pupilsightPersonID')
@@ -188,4 +235,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         cursor: pointer;
     }
 </style>
+
+
+<script>
+    $(document).on('click', '#addFeedback', function () {
+        if ($("input[name='stuid[]']").is(':checked')) {
+            var checked = $("input[name='stuid[]']:checked").length;
+            if (checked > 1) {
+                alert("Please Select One Staff!");
+                return false;
+            } else {
+                var hrf = $(this).attr('data-hrf');
+                var id = $("input[name='stuid[]']:checked").val();
+                if (id != '') {
+                    var newhrf = hrf + '&stid=' + id;
+                    $("#addFeedback").attr('href', newhrf);
+                    $("#addFeedback")[0].click();
+                } else {
+                    alert("Please Select Staff!");
+                    return false;
+                }
+            }
+        } else {
+            alert("Please Select Staff!");
+            return false;
+        }
+    });
+</script>
 <?php
