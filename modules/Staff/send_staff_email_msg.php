@@ -24,12 +24,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
     $emailquote = $_POST['emailquote'];
     $subjectquote = $_POST['subjectquote'];
     $smsquote = $_POST['smsquote'];
-    // $type = $_POST['type'];
-    // $types = explode(',', $type);
+    if(!empty($_POST['type'])){
+        $types = explode(',', $_POST['type']);
+    } else {
+        $types = array();
+    }
+    
     $crtd =  date('Y-m-d H:i:s');
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
 
-
+    // print_r($types);
+    // die();
    
     if ($stuId == '') {
         $URL .= '&return=error1';
@@ -50,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
             $sourcePath = $_FILES['email_attach_staff']['tmp_name'];
 
             //$uploaddir = '../../public/attactments_campaign/';
-            $uploaddir = $_SERVER['DOCUMENT_ROOT'] . "/pupilsight/public/attachments/";
+            $uploaddir = $_SERVER['DOCUMENT_ROOT'] . "/public/attachments/";
             $uploadfile = $uploaddir . $NewNameFile;
 
             //echo "\nupload file path : ".$uploadfile."\n";
@@ -60,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
         }
 
         foreach($studentId as $st){
-            $sqle = "SELECT email, phone1, officialName FROM pupilsightPerson WHERE pupilsightPersonID = ".$st." ";
+            $sqle = "SELECT email, phone1, phone2, officialName FROM pupilsightPerson WHERE pupilsightPersonID = ".$st." ";
             $resulte = $connection2->query($sqle);
             $rowdata = $resulte->fetch();
             
@@ -70,16 +75,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
             $body = nl2br($emailquote);
             $msg = $smsquote;
             //$number = '9986448340';
-            $number = $rowdata['phone1'];
+            
             //sendingmail($to);
 
-           // echo $sub;
-            // $data = array('campaign_id' => $campaignId,'form_id' => $formId, 'submission_id' => $sub, 'state' => $statename,  'state_id' => $stateid, 'status' => '1', 'cdt' => $crtd);
-                            
-            //  $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, cdt=:cdt";
-            //     $result = $connection2->prepare($sql);
-            //     $result->execute($data);
-            
             if(!empty($body) && !empty($to)){ 
                 $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/mailsend.php';
                 $url .="&to=".$to;
@@ -117,15 +115,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
                 }
             }    
 
-            if(!empty($msg) && !empty($number)){
-                $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
-                $urls .="&send_to=".$number;
-                $urls .="&msg=".rawurlencode($msg);
-                $urls .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
-                $resms = file_get_contents($urls);
+            if(!empty($types)){
+                foreach($types as $tp){
+                    if($tp == 'phone1'){
+                        $number = $rowdata['phone1'];
+                    }
+                    if($tp == 'phone2'){
+                        $number = $rowdata['phone2'];
+                    }
+                    
+                    if(!empty($msg) && !empty($number)){
+                        $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
+                        $urls .="&send_to=".$number;
+                        $urls .="&msg=".rawurlencode($msg);
+                        $urls .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
+                        $resms = file_get_contents($urls);
 
-                $sq = "INSERT INTO user_email_sms_sent_details SET type='1', sent_to = '2', pupilsightPersonID = " . $st . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
-                $connection2->query($sq);
+                        $sq = "INSERT INTO user_email_sms_sent_details SET type='1', sent_to = '2', pupilsightPersonID = " . $st . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
+                        $connection2->query($sq);
+                    }
+                }
             }
             
         }

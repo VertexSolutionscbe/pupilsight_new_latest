@@ -9,7 +9,7 @@ use Pupilsight\Domain\DataSet;
 use Pupilsight\Services\Format;
 
 
-include $_SERVER["DOCUMENT_ROOT"].'/pupilsight/db.php';
+include $_SERVER["DOCUMENT_ROOT"].'/db.php';
 
 
 
@@ -74,6 +74,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/data_update_staff_ru
                 }
                 else if($hd == 'Email'){
                     $headers[$key] = '##_email';
+                }
+                else if($hd == 'Mobile'){
+                    $headers[$key] = '##_phone1';
                 }
                 else if($hd == 'Address'){
                     $headers[$key] = '##_address1';

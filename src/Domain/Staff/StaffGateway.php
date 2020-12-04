@@ -362,6 +362,8 @@ public function getstdData(QueryCriteria $criteria, $pupilsightProgramID, $pupil
         } 
         
         $query->groupBy(['pupilsightPerson.pupilsightPersonID']);
+        // echo $query;
+        // die();
         return $this->runQuery($query, $criteria);
 
     }

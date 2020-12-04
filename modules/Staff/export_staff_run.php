@@ -179,8 +179,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
                 <td>National ID Card Number</td>
             </tr> -->
         <?php
-            $fieldName = array("gender","dob","username","canLogin","email", "address", "address1District", "address1Country", "languageFirst", "languageSecond", "languageThird", "countryOfBirth", "ethnicity", "religion", "nationalIDCardNumber");
-                $field = array("Gender","Date of Birth","Username","Can Login","Email", "Address", "District", "Country", "First Language", "Second Language", "Third Language", "Country of Birth", "Ethnicity", "Religion", "National ID Card Number");
+            $fieldName = array("gender","dob","username","canLogin","email", "phone1", "address", "address1District", "address1Country", "languageFirst", "languageSecond", "languageThird", "countryOfBirth", "ethnicity", "religion", "nationalIDCardNumber");
+                $field = array("Gender","Date of Birth","Username","Can Login","Email", "Mobile", "Address", "District", "Country", "First Language", "Second Language", "Third Language", "Country of Birth", "Ethnicity", "Religion", "National ID Card Number");
                 $len = count($field);
                 $i = 0;
                 while ($i < $len) {
@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
                 foreach($stuCusFld as $sc){
                     if($sc['field_type'] != 'tab' && $sc['active'] == 'Y'){
             ?>
-            <tr>
+            <tr> 
                 <td>
                     <input type="checkbox" class="stuField" name="staff_column[]" value="<?php echo $sc['field_title'];?>">
                 </td>

@@ -9,7 +9,7 @@ print_r($_POST);
 print_r($st_id);
 echo '</pre>';
 */
-$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . '/assign_staff_toSubject.php';
+$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . '/select_staff_sub.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/assigned_staff_toStudent_add.php') == false) {
     $URL .= '&return=error0';

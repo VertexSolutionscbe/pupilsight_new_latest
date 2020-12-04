@@ -24,6 +24,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/feedback_category_ma
 
     $staff_id = $_GET['stid'];
 
+    $sql = 'SELECT officialName FROM pupilsightPerson WHERE pupilsightPersonID = '.$staff_id.' ';
+    $result = $connection2->query($sql);
+    $staffData = $result->fetch();
+
+    $staffName = $staffData['officialName'];
+
     // QUERY
     $criteria = $StaffGateway->newQueryCriteria()
         ->sortBy(['id'])
@@ -34,6 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/feedback_category_ma
     // DATA TABLE
     $table = DataTable::createPaginated('schoolYearManage', $criteria);
 
+    echo "<h2>Staff Name : ".$staffName."</h2>";
     echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=/modules/Staff/feedback_manage_add.php&stid=".$staff_id."' class='btn btn-primary'>Add</a><div class='float-none'></div></div></div>";  
     
     // $table->addHeaderAction('add', __('Add'))

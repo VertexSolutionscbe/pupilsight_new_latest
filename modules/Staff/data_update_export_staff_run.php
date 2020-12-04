@@ -155,6 +155,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
             </tr>
             <tr>
                 <td>
+                    <input type="checkbox" class="stuField" name="staff_column[]" value="Mobile">
+                </td>
+                <td>Mobile</td>
+            </tr>
+            <tr>
+                <td>
                     <input type="checkbox" class="stuField" name="staff_column[]" value="Address">
                 </td>
                 <td>Address</td>

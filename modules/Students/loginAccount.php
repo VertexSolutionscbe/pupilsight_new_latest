@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
         LEFT JOIN pupilsightFamilyAdult as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2 
         LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full' 
         
-        WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID IN (" . $classIds . ") ORDER BY a.pupilsightPersonID DESC ";
+        WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID IN (" . $classIds . ") GROUP BY a.pupilsightPersonID ORDER BY a.pupilsightPersonID DESC ";
          //echo $sqle;
         // die();
         $resulte = $connection2->query($sqle);

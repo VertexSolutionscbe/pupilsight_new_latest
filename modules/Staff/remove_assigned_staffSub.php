@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/remove_assigned_staf
 
     $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
     $col = $row->addColumn()->setClass('newdes');
-    $col->addCheckbox('select')->setId('checkall')->setClass('checkall'); 
+    $col->addCheckbox('select')->setId('checkall')->setClass('chkAll'); 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('Name', __('Subject Name'))->addClass('dte');
 
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/remove_assigned_staf
 foreach($getdep as $dep){
     $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
     $col = $row->addColumn()->setClass('newdes');
-    $col->addCheckbox('dep[]')->setValue($dep['pupilsightdepartmentID'])->setClass('fee_id'); 
+    $col->addCheckbox('dep[]')->setValue($dep['pupilsightdepartmentID'])->setClass('chkChild'); 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel($dep['name'], __($dep['name']))->addClass('dte');
  
@@ -69,3 +69,24 @@ $row->addSubmit();
 
 }
 }
+
+
+?>
+
+<script>
+    $(document).on('change', '.chkAll', function () {
+        if ($(".chkAll:checkbox").is(':checked')) {
+            $(".chkChild:checkbox").prop("checked", true);
+        } else {
+            $(".chkChild:checkbox").prop("checked", false);
+        }
+    });
+
+    $(document).on('change', '.chkChild', function () {
+        if ($(this).is(':checked')) {
+            //$(".chkChild"+id).prop("checked", true);
+        } else {
+            $(".chkAll:checkbox").prop("checked", false);
+        }
+    });
+</script>

@@ -88,7 +88,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
         $resultp = $connection2->query($sqlp);
         $getstaff= $resultp->fetch();
 
-        $staffIds = $getstaff['staffIds'];
+        if(!empty($getstaff['staffIds'])){
+            $staffIds = $getstaff['staffIds'];
+        } else {
+            $staffIds = 0;
+        }
+        
     } else {
         $classes = array('' => 'Select Class');
         $sections = array('' => 'Select Section');
@@ -153,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
     $table->addColumn('fname', __('Staff'));
     $table->addColumn('dep_name', __('Subject'));
    
-    
+
 echo $table->render($getselstaff);
 
 }
