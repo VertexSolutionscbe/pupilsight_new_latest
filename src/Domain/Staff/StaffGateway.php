@@ -57,7 +57,7 @@ class StaffGateway extends QueryableGateway
         ->where('pupilsightPerson.pupilsightRoleIDPrimary != "004" ')
         ->groupBy(['pupilsightPerson.pupilsightPersonID'])
        ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
-   //  echo  $query;
+  
         $criteria->addFilterRules([
             'type' => function ($query, $type) {
                 if ($type == 'other') {

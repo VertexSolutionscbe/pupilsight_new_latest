@@ -68,10 +68,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/feedback_category_ma
                     
                     
 
-            // if ($schoolYear['status'] != 'Current') {
                 $actions->addAction('delete', __('Delete'))
                        ->setURL('/modules/Staff/feedback_manage_delete.php');
-            // }
         });
 
     echo $table->render($feedbacks);

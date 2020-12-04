@@ -13,8 +13,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/feedback_category_ma
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    //Proceed!
-    //Validate Inputs
+    
 //  echo '<pre>';
 //  print_r($_POST);
 //  echo '</pre>';

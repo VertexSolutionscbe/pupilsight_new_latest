@@ -127,6 +127,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $result = $connection2->query($sql);
         $customFields = $result->fetchAll();
 
+        
+
         // DATA TABLE
         $table = DataTable::createPaginated('staffManage', $criteria);
 

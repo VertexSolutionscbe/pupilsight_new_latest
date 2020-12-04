@@ -35,61 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_toAssig
     $getstaff= $resultp->fetchAll();
     
 
-//     $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/assign_staff_toClassSectionProcess.php');
-//     $form->setFactory(DatabaseFormFactory::create($pdo));
-
-//     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-//     $form->addHiddenValue('stu_id', $studentids);
-//     //$tab = '';
-
-//    $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
-//     $col = $row->addColumn()->setClass('min_width_check margin_check');
-//     $col->addCheckbox('select')->setId('checkall')->setClass('chkAll');   
-
-//     $col = $row->addColumn()->setClass('');
-//     $col->addLabel('Name', __('Name'))->addClass('dte');
-
-//     $col = $row->addColumn()->setClass('');
-//     $col->addLabel('Email', __('Email'))->addClass('dte');
-    
-//     $col = $row->addColumn()->setClass('');
-//     $col->addLabel('Phone', __('Phone'))->addClass('dte mrlft');
-    
-//     $col = $row->addColumn()->setClass('');
-//     $col->addLabel('department', __('department'))->addClass('dte');
-    
-//     $col = $row->addColumn()->setClass('');
-//     $col->addLabel('Status', __('Status'))->addClass('dte');
-    
-
-// foreach($getstaff as $staff){
-//     $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
-//         $col = $row->addColumn()->setClass('min_width_check');
-//         $col->addCheckbox('staff[]')->setValue($staff['stu_id'])->setClass('fee_id margin_check chkChild'); 
-
-//         $col = $row->addColumn()->setClass('');
-//         $col->addLabel($staff['name'], __($staff['name']))->addClass('dte');
-
-//         $col = $row->addColumn()->setClass('');
-//         $col->addLabel($staff['email'], __($staff['email']))->addClass('dte');
-//         $col = $row->addColumn()->setClass('');
-
-//         $col->addLabel($staff['phone1'], __($staff['phone1']))->addClass('dte mrlft');
-//         $col = $row->addColumn()->setClass('');
-
-//         $col->addLabel($staff['type'], __($staff['type']))->addClass('dte');
-//         $col = $row->addColumn()->setClass('');
-//         $col->addLabel($staff['stat'], __($staff['stat']))->addClass('dte');
-
-
-     
-// }
-   
-//     $row = $form->addRow();
-//         $row->addFooter();
-//         $row->addSubmit();
-
-//     echo $form->getOutput();
 
 }
 ?>

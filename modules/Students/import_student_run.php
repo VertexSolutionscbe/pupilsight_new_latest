@@ -64,73 +64,73 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                 } else if ($hd == 'Section') {
                     $headers[$key] = 'at_pupilsightRollGroupID';
                 } else if ($hd == 'Official Name') {
-                    $headers[$key] = 'st_officialName';
+                    $headers[$key] = '##_officialName';
                 } else if ($hd == 'Gender') {
-                    $headers[$key] = 'st_gender';
+                    $headers[$key] = '##_gender';
                 } else if ($hd == 'Date of Birth') {
-                    $headers[$key] = 'st_dob';
+                    $headers[$key] = '##_dob';
                 } else if ($hd == 'Username') {
-                    $headers[$key] = 'st_username';
+                    $headers[$key] = '##_username';
                 } else if ($hd == 'Can Login') {
-                    $headers[$key] = 'st_canLogin';
+                    $headers[$key] = '##_canLogin';
                 } else if ($hd == 'Email') {
-                    $headers[$key] = 'st_email';
+                    $headers[$key] = '##_email';
                 } else if ($hd == 'Address') {
-                    $headers[$key] = 'st_address1';
+                    $headers[$key] = '##_address1';
                 } else if ($hd == 'District') {
-                    $headers[$key] = 'st_address1District';
+                    $headers[$key] = '##_address1District';
                 } else if ($hd == 'Country') {
-                    $headers[$key] = 'st_address1Country';
+                    $headers[$key] = '##_address1Country';
                 } else if ($hd == 'First Language') {
-                    $headers[$key] = 'st_languageFirst';
+                    $headers[$key] = '##_languageFirst';
                 } else if ($hd == 'Second Language') {
-                    $headers[$key] = 'st_languageSecond';
+                    $headers[$key] = '##_languageSecond';
                 } else if ($hd == 'Third Language') {
-                    $headers[$key] = 'st_languageThird';
+                    $headers[$key] = '##_languageThird';
                 } else if ($hd == 'Country of Birth') {
-                    $headers[$key] = 'st_countryOfBirth';
+                    $headers[$key] = '##_countryOfBirth';
                 } else if ($hd == 'Ethnicity') {
-                    $headers[$key] = 'st_ethnicity';
+                    $headers[$key] = '##_ethnicity';
                 } else if ($hd == 'Religion') {
-                    $headers[$key] = 'st_religion';
+                    $headers[$key] = '##_religion';
                 } else if ($hd == 'National ID Card Number') {
-                    $headers[$key] = 'st_nationalIDCardNumber';
+                    $headers[$key] = '##_nationalIDCardNumber';
                 } else if ($hd == 'Father Official Name') {
-                    $headers[$key] = 'ft_officialName';
+                    $headers[$key] = '&&_officialName';
                 } else if ($hd == 'Father Date of Birth') {
-                    $headers[$key] = 'ft_dob';
+                    $headers[$key] = '&&_dob';
                 } else if ($hd == 'Father Username') {
-                    $headers[$key] = 'ft_username';
+                    $headers[$key] = '&&_username';
                 } else if ($hd == 'Father Can Login') {
-                    $headers[$key] = 'ft_canLogin';
+                    $headers[$key] = '&&_canLogin';
                 } else if ($hd == 'Father Email') {
-                    $headers[$key] = 'ft_email';
+                    $headers[$key] = '&&_email';
                 } else if ($hd == 'Father Mobile (Country Code)') {
-                    $headers[$key] = 'ft_phone1CountryCode';
+                    $headers[$key] = '&&_phone1CountryCode';
                 } else if ($hd == 'Father Mobile No') {
-                    $headers[$key] = 'ft_phone1';
+                    $headers[$key] = '&&_phone1';
                 } else if ($hd == 'Father LandLine (Country Code)') {
-                    $headers[$key] = 'ft_phone2CountryCode';
+                    $headers[$key] = '&&_phone2CountryCode';
                 } else if ($hd == 'Father Landline No') {
-                    $headers[$key] = 'ft_phone2';
+                    $headers[$key] = '&&_phone2';
                 } else if ($hd == 'Mother Official Name') {
-                    $headers[$key] = 'mt_officialName';
+                    $headers[$key] = '$$_officialName';
                 } else if ($hd == 'Mother Date of Birth') {
-                    $headers[$key] = 'mt_dob';
+                    $headers[$key] = '$$_dob';
                 } else if ($hd == 'Mother Username') {
-                    $headers[$key] = 'mt_username';
+                    $headers[$key] = '$$_username';
                 } else if ($hd == 'Mother Can Login') {
-                    $headers[$key] = 'mt_canLogin';
+                    $headers[$key] = '$$_canLogin';
                 } else if ($hd == 'Mother Email') {
-                    $headers[$key] = 'mt_email';
+                    $headers[$key] = '$$_email';
                 } else if ($hd == 'Mother Mobile (Country Code)') {
-                    $headers[$key] = 'mt_phone1CountryCode';
+                    $headers[$key] = '$$_phone1CountryCode';
                 } else if ($hd == 'Mother Mobile No') {
-                    $headers[$key] = 'mt_phone1';
+                    $headers[$key] = '$$_phone1';
                 } else if ($hd == 'Mother LandLine (Country Code)') {
-                    $headers[$key] = 'mt_phone2CountryCode';
+                    $headers[$key] = '$$_phone2CountryCode';
                 } else if ($hd == 'Mother Landline No') {
-                    $headers[$key] = 'mt_phone2';
+                    $headers[$key] = '$$_phone2';
                 } else {
 
                     $sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
@@ -138,22 +138,22 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $cd = $resultchk->fetch();
                     $modules = explode(',', $cd['modules']);
 
-                    //if(!in_array('st_'.$cd['field_name'], $chkHeaderKey)){
+                    //if(!in_array('##_'.$cd['field_name'], $chkHeaderKey)){
                     if (in_array('student', $modules)) {
-                        $headers[$key] = 'st_' . $cd['field_name'];
-                        $chkHeaderKey[] = 'st_' . $cd['field_name'];
+                        $headers[$key] = '##_' . $cd['field_name'];
+                        $chkHeaderKey[] = '##_' . $cd['field_name'];
                     }
                     //}
-                    //else if(!in_array('ft_'.$cd['field_name'], $chkHeaderKey)){
+                    //else if(!in_array('&&_'.$cd['field_name'], $chkHeaderKey)){
                     if (in_array('father', $modules)) {
-                        $headers[$key] = 'ft_' . $cd['field_name'];
-                        $chkHeaderKey[] = 'ft_' . $cd['field_name'];
+                        $headers[$key] = '&&_' . $cd['field_name'];
+                        $chkHeaderKey[] = '&&_' . $cd['field_name'];
                     }
                     //}
-                    //else if(!in_array('mt_'.$cd['field_name'], $chkHeaderKey)){
+                    //else if(!in_array('$$_'.$cd['field_name'], $chkHeaderKey)){
                     if (in_array('mother', $modules)) {
-                        $headers[$key] = 'mt_' . $cd['field_name'];
-                        $chkHeaderKey[] = 'mt_' . $cd['field_name'];
+                        $headers[$key] = '$$_' . $cd['field_name'];
+                        $chkHeaderKey[] = '$$_' . $cd['field_name'];
                     }
                     //}
                 }
@@ -201,15 +201,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $stu_id = '';
                     $fat_id = '0';
                     $mot_id = '0';
-                    if (!empty($alrow['st_address1'])) {
-                        $addr = str_replace('"', "", $alrow['st_address1']);
+                    if (!empty($alrow['##_address1'])) {
+                        $addr = str_replace('"', "", $alrow['##_address1']);
                         $homeAddress = $addr;
                     }
-                    if (!empty($alrow['st_address1District'])) {
-                        $homeDistrict = $alrow['st_address1District'];
+                    if (!empty($alrow['##_address1District'])) {
+                        $homeDistrict = $alrow['##_address1District'];
                     }
-                    if (!empty($alrow['st_address1Country'])) {
-                        $homeCountry = $alrow['st_address1Country'];
+                    if (!empty($alrow['##_address1Country'])) {
+                        $homeCountry = $alrow['##_address1Country'];
                     }
 
                     if (!empty($alrow['at_pupilsightSchoolYearID'])) {
@@ -242,8 +242,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     // Student Entry
                     $sql = "INSERT INTO pupilsightPerson (";
                     foreach ($alrow as $key => $ar) {
-                        if (strpos($key, 'st_') !== false && !empty($ar)) {
-                            //$clname = ltrim($key, 'st_'); 
+                        if (strpos($key, '##_') !== false && !empty($ar)) {
+                            //$clname = ltrim($key, '##_'); 
                             $clname = substr($key, 3, strlen($key));
                             $sql .= $clname . ',';
                         }
@@ -252,12 +252,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     //$sql = rtrim($sql, ", ");
                     $sql .= ") VALUES (";
                     foreach ($alrow as $k => $value) {
-                        if (strpos($k, 'st_') !== false && !empty($value)) {
+                        if (strpos($k, '##_') !== false && !empty($value)) {
                             $val = str_replace('"', "", $value);
                             $sql .= '"' . $val . '",';
                         }
                     }
-                    $sql .= '"' . $alrow['st_officialName'] . '","003","003"';
+                    $sql .= '"' . $alrow['##_officialName'] . '","003","003"';
                     //$sql = rtrim($sql, ", ");
                     $sql .= ")";
                     $sql = rtrim($sql, ", ");
@@ -268,9 +268,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 
                     // Father Entry
                     $chkFamily = 0;
-                    if (!empty($alrow['ft_officialName'])) {
+                    if (!empty($alrow['&&_officialName'])) {
 
-                        $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE email = "'.$alrow['ft_email'].'" ';
+                        $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE email = "'.$alrow['&&_email'].'" ';
                         $resultchk = $connection2->query($sqlchk);
                         $pd = $resultchk->fetch();
                         if(!empty($pd)){
@@ -285,8 +285,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         if($chkFamily == '0'){
                             $sqlf = "INSERT INTO pupilsightPerson (";
                             foreach ($alrow as $key => $ar) {
-                                if (strpos($key, 'ft_') !== false  && !empty($ar)) {
-                                    //$clname = ltrim($key, 'ft_'); 
+                                if (strpos($key, '&&_') !== false  && !empty($ar)) {
+                                    //$clname = ltrim($key, '&&_'); 
                                     $clname = substr($key, 3, strlen($key));
                                     $sqlf .= $clname . ',';
                                 }
@@ -295,12 +295,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                             //$sqlf = rtrim($sqlf, ", ");
                             $sqlf .= ") VALUES (";
                             foreach ($alrow as $k => $value) {
-                                if (strpos($k, 'ft_') !== false  && !empty($value)) {
+                                if (strpos($k, '&&_') !== false  && !empty($value)) {
                                     $val = str_replace('"', "", $value);
                                     $sqlf .= '"' . $val . '",';
                                 }
                             }
-                            $sqlf .= '"' . $alrow['ft_officialName'] . '","M","' . $password . '","' . $salt . '","004","004"';
+                            $sqlf .= '"' . $alrow['&&_officialName'] . '","M","' . $password . '","' . $salt . '","004","004"';
                             //$sqlf = rtrim($sqlf, ", ");
                             $sqlf .= ")";
                             $sqlf = rtrim($sqlf, ", ");
@@ -314,11 +314,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 
                     // Mother Entry
                     if($chkFamily == '0'){
-                        if (!empty($alrow['mt_officialName'])) {
+                        if (!empty($alrow['$$_officialName'])) {
                             $sqlm = "INSERT INTO pupilsightPerson (";
                             foreach ($alrow as $key => $ar) {
-                                if (strpos($key, 'mt_') !== false  && !empty($ar)) {
-                                    //$clname = ltrim($key, 'mt_'); 
+                                if (strpos($key, '$$_') !== false  && !empty($ar)) {
+                                    //$clname = ltrim($key, '$$_'); 
                                     $clname = substr($key, 3, strlen($key));
                                     $sqlm .= $clname . ',';
                                 }
@@ -327,12 +327,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                             //$sqlm = rtrim($sqlm, ", ");
                             $sqlm .= ") VALUES (";
                             foreach ($alrow as $k => $value) {
-                                if (strpos($k, 'mt_') !== false  && !empty($value)) {
+                                if (strpos($k, '$$_') !== false  && !empty($value)) {
                                     $val = str_replace('"', "", $value);
                                     $sqlm .= '"' . $val . '",';
                                 }
                             }
-                            $sqlm .= '"' . $alrow['mt_officialName'] . '","F","' . $password . '","' . $salt . '","004","004"';
+                            $sqlm .= '"' . $alrow['$$_officialName'] . '","F","' . $password . '","' . $salt . '","004","004"';
                             //$sqlm = rtrim($sqlm, ", ");
                             $sqlm .= ")";
                             $sqlm = rtrim($sqlm, ", ");
@@ -364,12 +364,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     if($chkFamily == '0'){
                         if (!empty($fat_id) || !empty($mot_id)) {
                         
-                            if (!empty($alrow['ft_officialName']) && !empty($alrow['mt_officialName'])) {
-                                $name = $alrow['ft_officialName'] . ' & ' . $alrow['mt_officialName'] . ' Family';
-                            } elseif (!empty($alrow['ft_officialName']) && empty($alrow['mt_officialName'])) {
-                                $name = $alrow['ft_officialName'] . ' Family';
-                            } elseif (empty($alrow['ft_officialName']) && !empty($alrow['mt_officialName'])) {
-                                $name = $alrow['mt_officialName'] . ' Family';
+                            if (!empty($alrow['&&_officialName']) && !empty($alrow['$$_officialName'])) {
+                                $name = $alrow['&&_officialName'] . ' & ' . $alrow['$$_officialName'] . ' Family';
+                            } elseif (!empty($alrow['&&_officialName']) && empty($alrow['$$_officialName'])) {
+                                $name = $alrow['&&_officialName'] . ' Family';
+                            } elseif (empty($alrow['&&_officialName']) && !empty($alrow['$$_officialName'])) {
+                                $name = $alrow['$$_officialName'] . ' Family';
                             } else {
                                 $name = 'Family';
                             }
