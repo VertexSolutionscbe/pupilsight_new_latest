@@ -65,11 +65,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
         }
 
         foreach($studentId as $st){
-            $sqle = "SELECT email, phone1, phone2, officialName FROM pupilsightPerson WHERE pupilsightPersonID = ".$st." ";
+            $sqle = "SELECT email, emailAlternate, phone1, phone2, officialName FROM pupilsightPerson WHERE pupilsightPersonID = ".$st." ";
             $resulte = $connection2->query($sqle);
             $rowdata = $resulte->fetch();
             
-            $to = $rowdata['email'];
+            // $to = $rowdata['email'];
             //  $to = 'aseenacreace@gmail.com';
             $subject = nl2br($subjectquote);
             $body = nl2br($emailquote);
@@ -78,42 +78,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
             
             //sendingmail($to);
 
-            if(!empty($body) && !empty($to)){ 
-                $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/mailsend.php';
-                $url .="&to=".$to;
-                $url .="&sub=".rawurlencode($subject);
-                $url .="&body=".rawurlencode($body);
-                
-                if ($attachmentStatus == "Yes") {
-                    $from = $_SESSION[$guid]['organisationAdministratorEmail'];
-                    $fromName = $_SESSION[$guid]['organisationAdministratorName'];
-                    // sendEmailAttactment($to,$subject,$body,$NewNameFile,$from, $fromName);
-
-
-                    try {
-                        $mail = $container->get(Mailer::class);
-                        $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
-
-                        $mail->AddAddress($to);
-                        $mail->CharSet = 'UTF-8';
-                        $mail->Encoding = 'base64';
-                        $mail->AddAttachment($uploadfile);                        // Optional name
-                        $mail->isHTML(true);
-                        $mail->Subject = $subject;
-                        $mail->Body = $body;
-
-                        $mail->Send();
-                        $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '2', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', uid=" . $cuid . " ";
-                        $connection2->query($sq);
-                    } catch (Exception $ex) {
-                        print_r($x);
+            if(!empty($types)){
+                foreach($types as $tp){
+                    if($tp == 'email'){
+                        $to = $rowdata['email'];
                     }
-                } else {
-                    $res = file_get_contents($url);
-                    $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '2', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
-                    $connection2->query($sq);
+                    if($tp == 'emailAlternate'){
+                        $to = $rowdata['emailAlternate'];
+                    }
+
+                    if(!empty($body) && !empty($to)){ 
+                        $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/mailsend.php';
+                        $url .="&to=".$to;
+                        $url .="&sub=".rawurlencode($subject);
+                        $url .="&body=".rawurlencode($body);
+                        
+                        if ($attachmentStatus == "Yes") {
+                            $from = $_SESSION[$guid]['organisationAdministratorEmail'];
+                            $fromName = $_SESSION[$guid]['organisationAdministratorName'];
+                            // sendEmailAttactment($to,$subject,$body,$NewNameFile,$from, $fromName);
+
+
+                            try {
+                                $mail = $container->get(Mailer::class);
+                                $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+
+                                $mail->AddAddress($to);
+                                $mail->CharSet = 'UTF-8';
+                                $mail->Encoding = 'base64';
+                                $mail->AddAttachment($uploadfile);                        // Optional name
+                                $mail->isHTML(true);
+                                $mail->Subject = $subject;
+                                $mail->Body = $body;
+
+                                $mail->Send();
+                                $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '2', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', uid=" . $cuid . " ";
+                                $connection2->query($sq);
+                            } catch (Exception $ex) {
+                                print_r($x);
+                            }
+                        } else {
+                            $res = file_get_contents($url);
+                            $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '2', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
+                            $connection2->query($sq);
+                        }
+                    }    
                 }
-            }    
+            }
 
             if(!empty($types)){
                 foreach($types as $tp){
