@@ -94,13 +94,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 $cd = $resultchk->fetch();
                 $modules = explode(',', $cd['modules']);
 
-                //if(!in_array('##_'.$cd['field_name'], $chkHeaderKey)){
                 if (in_array('staff', $modules)) {
                     $headers[$key] = '##_' . $cd['field_name'];
                     $chkHeaderKey[] = '##_' . $cd['field_name'];
                 }
-                //}
-
+               
                 $page->breadcrumbs->add(__('Staff Import'));
                 $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run.php');
             }
