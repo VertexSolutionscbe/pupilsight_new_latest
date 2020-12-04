@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                     $headers[$key] = '##_' . $cd['field_name'];
                     $chkHeaderKey[] = '##_' . $cd['field_name'];
                 }
-               
+
                 $page->breadcrumbs->add(__('Staff Import'));
                 $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run.php');
             }
@@ -127,10 +127,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
             $salt = getSaltNew();
             $pass = 'Admin@123456';
             $password = hash('sha256', $salt . $pass);
-            // echo '<pre>';
-            //     print_r($all_rows);
-            //     echo '</pre>';
-            //    die();
+            /*echo '<pre>';
+            print_r($all_rows);
+            echo '</pre>';
+            die();*/
             foreach ($all_rows as  $alrow) {
 
                 // Student Entry
@@ -146,6 +146,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 //$sql = rtrim($sql, ", ");
                 $sql .= ") VALUES (";
                 foreach ($alrow as $k => $value) {
+                    if ($k == "##_dob") {
+                        $value = date('Y-m-d', strtotime($value));
+                    }
                     if (strpos($k, '##_') !== false && !empty($value)) {
                         $val = str_replace('"', "", $value);
                         $sql .= '"' . $val . '",';
