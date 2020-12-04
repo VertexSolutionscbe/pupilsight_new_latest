@@ -230,7 +230,7 @@ class CustomField extends QueryableGateway
         try {
             $sq = "";
             try {
-                if ($_FILES["custom"]) {
+                if (isset($_FILES["custom"])) {
                     foreach ($_FILES["custom"]["name"] as $table => $files) {
                         //file
                         foreach ($files["file"]  as $fieldName => $fileName) {

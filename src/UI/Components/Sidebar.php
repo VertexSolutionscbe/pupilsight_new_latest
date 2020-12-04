@@ -53,11 +53,11 @@ class Sidebar implements OutputableInterface
             } elseif ($loginReturn == 'fail5') {
                 $loginReturnMessage = __('Your request failed due to a database error.');
             } elseif ($loginReturn == 'fail6') {
-                $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/passwordReset.php'>", '</a>');
+                $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/passwordReset.php'>", '</a>');
             } elseif ($loginReturn == 'fail7') {
-                $loginReturnMessage = sprintf(__('Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+                $loginReturnMessage = sprintf(__('Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:" . $_SESSION[$guid]['organisationDBAEmail'] . "'>" . $_SESSION[$guid]['organisationDBAName'] . '</a>');
             } elseif ($loginReturn == 'fail8') {
-                $loginReturnMessage = sprintf(__('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $_SESSION[$guid]['systemName'], "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+                $loginReturnMessage = sprintf(__('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $_SESSION[$guid]['systemName'], "<a href='mailto:" . $_SESSION[$guid]['organisationDBAEmail'] . "'>" . $_SESSION[$guid]['organisationDBAName'] . '</a>');
             } elseif ($loginReturn == 'fail9') {
                 $loginReturnMessage = __('Your primary role does not support the ability to log into the specified year.');
             }
@@ -81,85 +81,84 @@ class Sidebar implements OutputableInterface
                 echo __('Login with Google');
                 echo '</h2>';
 
-                ?>
+?>
                 <script>
-                    $(function(){
+                    $(function() {
                         $('#siteloader').load('lib/google/index.php');
                     });
                 </script>
                 <div id="siteloader" style="min-height:73px"></div>
-                <?php
+<?php
                 echo '</div>';
-
             } //End Check for Google Auth
             if ((isset($_SESSION[$guid]['username']) == false)) { // If Google Auth set to No make sure login screen not visible when logged in
                 echo '<div class="column-no-break">';
                 echo '<h2>';
-                    echo __('Login');
+                echo __('Login');
                 echo '</h2>';
 
                 if (empty($_SESSION[$guid]['pupilsightSchoolYearID'])) setCurrentSchoolYear($guid, $connection2);
 
-                $form = Form::create('loginForm', $_SESSION[$guid]['absoluteURL'].'/login.php?'.(isset($_GET['q'])? 'q='.$_GET['q'] : '') );
+                $form = Form::create('loginForm', $_SESSION[$guid]['absoluteURL'] . '/login.php?' . (isset($_GET['q']) ? 'q=' . $_GET['q'] : ''));
 
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setAutocomplete(false);
                 $form->setClass('noIntBorder fullWidth');
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                $loginIcon = '<img src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['pupilsightThemeName'].'/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
+                $loginIcon = '<img src="' . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . '/img/%1$s.png" style="width:20px;height:20px;margin:-2px 0 0 2px;" title="%2$s">';
 
                 $row = $form->addRow();
-                    $row->addContent(sprintf($loginIcon, 'attendance', __('Username or email')));
-                    $row->addTextField('username')
-                        ->required()
-                        ->maxLength(50)
-                        ->setClass('fullWidth')
-                        ->placeholder(__('Username or email'))
-                        ->addValidationOption('onlyOnSubmit: true');
+                $row->addContent(sprintf($loginIcon, 'attendance', __('Username or email')));
+                $row->addTextField('username')
+                    ->required()
+                    ->maxLength(50)
+                    ->setClass('fullWidth')
+                    ->placeholder(__('Username or email'))
+                    ->addValidationOption('onlyOnSubmit: true');
 
                 $row = $form->addRow();
-                    $row->addContent(sprintf($loginIcon, 'key', __('Password')));
-                    $row->addPassword('password')
-                        ->required()
-                        ->maxLength(30)
-                        ->setClass('fullWidth')
-                        ->placeholder(__('Password'))
-                        ->addValidationOption('onlyOnSubmit: true');
+                $row->addContent(sprintf($loginIcon, 'key', __('Password')));
+                $row->addPassword('password')
+                    ->required()
+                    ->maxLength(30)
+                    ->setClass('fullWidth')
+                    ->placeholder(__('Password'))
+                    ->addValidationOption('onlyOnSubmit: true');
 
                 $row = $form->addRow()->setClass('loginOptions');
-                    $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
-                    $row->addSelectSchoolYear('pupilsightSchoolYearID')
-                        ->setClass('fullWidth')
-                        ->placeholder(null)
-                        ->selected($_SESSION[$guid]['pupilsightSchoolYearID']);
+                $row->addContent(sprintf($loginIcon, 'planner', __('School Year')));
+                $row->addSelectSchoolYear('pupilsightSchoolYearID')
+                    ->setClass('fullWidth')
+                    ->placeholder(null)
+                    ->selected($_SESSION[$guid]['pupilsightSchoolYearID']);
 
                 $row = $form->addRow()->setClass('loginOptions');
-                    $row->addContent(sprintf($loginIcon, 'language', __('Language')));
-                    $row->addSelectI18n('pupilsighti18nID')
-                        ->setClass('fullWidth')
-                        ->placeholder(null)
-                        ->selected($_SESSION[$guid]['i18n']['pupilsighti18nID']);
+                $row->addContent(sprintf($loginIcon, 'language', __('Language')));
+                $row->addSelectI18n('pupilsighti18nID')
+                    ->setClass('fullWidth')
+                    ->placeholder(null)
+                    ->selected($_SESSION[$guid]['i18n']['pupilsighti18nID']);
 
                 $row = $form->addRow();
-                    $row->addContent('<a class="show_hide" onclick="false" href="#">'.__('Options').'</a>')
-                        ->append(' . <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=passwordReset.php">'.__('Forgot Password?').'</a>')
-                        ->wrap('<span class="small">', '</span>')
-                        ->setClass('right');
+                $row->addContent('<a class="show_hide" onclick="false" href="#">' . __('Options') . '</a>')
+                    ->append(' . <a href="' . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=passwordReset.php">' . __('Forgot Password?') . '</a>')
+                    ->wrap('<span class="small">', '</span>')
+                    ->setClass('right');
 
                 $row = $form->addRow();
-                    $row->addFooter(false);
-                    $row->addSubmit(__('Login'));
+                $row->addFooter(false);
+                $row->addSubmit(__('Login'));
 
                 echo $form->getOutput();
                 echo '</div>';
 
                 // Control the show/hide for login options
                 echo "<script type='text/javascript'>";
-                    echo '$(".loginOptions").hide();';
-                    echo '$(".show_hide").click(function(){';
-                    echo '$(".loginOptions").fadeToggle(1000);';
-                    echo '});';
+                echo '$(".loginOptions").hide();';
+                echo '$(".show_hide").click(function(){';
+                echo '$(".loginOptions").fadeToggle(1000);';
+                echo '});';
                 echo '</script>';
 
                 //Publc registration permitted?
@@ -170,7 +169,7 @@ class Sidebar implements OutputableInterface
                     echo __('Register');
                     echo '</h2>';
                     echo '<p>';
-                    echo sprintf(__('%1$sJoin our learning community.%2$s'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/publicRegistration.php'>", '</a>').' '.__("It's free!");
+                    echo sprintf(__('%1$sJoin our learning community.%2$s'), "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/publicRegistration.php'>", '</a>') . ' ' . __("It's free!");
                     echo '</p>';
                     echo '</div>';
                 }
@@ -225,9 +224,9 @@ class Sidebar implements OutputableInterface
                             } elseif (count($_SESSION[$guid]['messageWallOutput']) == 2) {
                                 $height = 197;
                             }
-                            echo "<table id='messageWallWidget' style='width: 100%; height: ".$height."px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>";
-                                //Content added by JS
-                                $rand = rand(0, count($_SESSION[$guid]['messageWallOutput']));
+                            echo "<table id='messageWallWidget' style='width: 100%; height: " . $height . "px; border: 1px solid grey; padding: 6px; background-color: #eeeeee'>";
+                            //Content added by JS
+                            $rand = rand(0, count($_SESSION[$guid]['messageWallOutput']));
                             $total = count($_SESSION[$guid]['messageWallOutput']);
                             $order = '';
                             for ($i = 0; $i < $total; ++$i) {
@@ -236,34 +235,34 @@ class Sidebar implements OutputableInterface
                                 $message = $_SESSION[$guid]['messageWallOutput'][$pos];
 
                                 //COLOR ROW BY STATUS!
-                                echo "<tr id='messageWall".$pos."' style='z-index: 1;'>";
+                                echo "<tr id='messageWall" . $pos . "' style='z-index: 1;'>";
                                 echo "<td style='font-size: 95%; letter-spacing: 85%;'>";
                                 //Image
                                 $style = "style='width: 45px; height: 60px; float: right; margin-left: 6px; border: 1px solid black'";
-                                if ($message['photo'] == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$message['photo']) == false) {
-                                    echo "<img $style  src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['pupilsightThemeName']."/img/anonymous_75.jpg'/>";
+                                if ($message['photo'] == '' or file_exists($_SESSION[$guid]['absolutePath'] . '/' . $message['photo']) == false) {
+                                    echo "<img $style  src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/anonymous_75.jpg'/>";
                                 } else {
-                                    echo "<img $style src='".$_SESSION[$guid]['absoluteURL'].'/'.$message['photo']."'/>";
+                                    echo "<img $style src='" . $_SESSION[$guid]['absoluteURL'] . '/' . $message['photo'] . "'/>";
                                 }
 
                                 //Message number
-                                echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message ".($pos + 1).'</div>';
+                                echo "<div style='margin-bottom: 4px; text-transform: uppercase; font-size: 70%; color: #888'>Message " . ($pos + 1) . '</div>';
 
                                 //Title
-                                $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php#'.$message['pupilsightMessengerID'];
+                                $URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Messenger/messageWall_view.php#' . $message['pupilsightMessengerID'];
                                 if (strlen($message['subject']) <= 16) {
-                                    echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".$message['subject'].'</a><br/>';
+                                    echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>" . $message['subject'] . '</a><br/>';
                                 } else {
-                                    echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>".mb_substr($message['subject'], 0, 16).'...</a><br/>';
+                                    echo "<a style='font-weight: bold; font-size: 105%; letter-spacing: 85%; text-transform: uppercase' href='$URL'>" . mb_substr($message['subject'], 0, 16) . '...</a><br/>';
                                 }
 
                                 //Text
                                 echo "<div style='margin-top: 5px'>";
                                 $message = preg_replace('/<script\b[^>]*>(.*?)<\/script>/is', '', $message);
                                 if (strlen(strip_tags($message['details'])) <= 40) {
-                                    echo strip_tags($message['details']).'<br/>';
+                                    echo strip_tags($message['details']) . '<br/>';
                                 } else {
-                                    echo mb_substr(strip_tags($message['details']), 0, 40).'...<br/>';
+                                    echo mb_substr(strip_tags($message['details']), 0, 40) . '...<br/>';
                                 }
                                 echo '</div>';
                                 echo '</td>';
@@ -283,7 +282,7 @@ class Sidebar implements OutputableInterface
                             echo '
                                 <script type="text/javascript">
                                     $(document).ready(function(){
-                                        var order=['.$order."];
+                                        var order=[' . $order . "];
                                         var interval = 1;
 
                                             for(var i=0; i<order.length; i++) {
@@ -326,7 +325,7 @@ class Sidebar implements OutputableInterface
                                 </script>";
                         }
                         echo "<p style='padding-top: 5px; text-align: right'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>".__('View Message Wall').'</a>';
+                        echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Messenger/messageWall_view.php'>" . __('View Message Wall') . '</a>';
                         echo '</p>';
                         echo '</div>';
                     }
@@ -346,9 +345,9 @@ class Sidebar implements OutputableInterface
                 try {
                     $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
                     $sql = "
-                    (SELECT 'teacherRecorded' AS type, pupilsightPlannerEntryID, pupilsightUnitID, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class, pupilsightPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM pupilsightPlannerEntry JOIN pupilsightCourseClass ON (pupilsightPlannerEntry.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClass.pupilsightCourseClassID=pupilsightCourseClassPerson.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID) WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseClassPerson.pupilsightPersonID=:pupilsightPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
+                    (SELECT 'teacherRecorded' AS type, pupilsightPlannerEntryID, pupilsightUnitID, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class, pupilsightPlannerEntry.name, date, timeStart, timeEnd, viewableStudents, viewableParents, homework, homeworkDueDateTime, role FROM pupilsightPlannerEntry JOIN pupilsightCourseClass ON (pupilsightPlannerEntry.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClass.pupilsightCourseClassID=pupilsightCourseClassPerson.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID) WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseClassPerson.pupilsightPersonID=:pupilsightPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND homework='Y' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND homeworkDueDateTime>'" . date('Y-m-d H:i:s') . "' AND ((date<'" . date('Y-m-d') . "') OR (date='" . date('Y-m-d') . "' AND timeEnd<='" . date('H:i:s') . "')))
                     UNION
-                    (SELECT 'studentRecorded' AS type, pupilsightPlannerEntry.pupilsightPlannerEntryID, pupilsightUnitID, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class, pupilsightPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, pupilsightPlannerEntryStudentHomework.homeworkDueDateTime, role FROM pupilsightPlannerEntry JOIN pupilsightCourseClass ON (pupilsightPlannerEntry.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClass.pupilsightCourseClassID=pupilsightCourseClassPerson.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID) JOIN pupilsightPlannerEntryStudentHomework ON (pupilsightPlannerEntryStudentHomework.pupilsightPlannerEntryID=pupilsightPlannerEntry.pupilsightPlannerEntryID AND pupilsightPlannerEntryStudentHomework.pupilsightPersonID=pupilsightCourseClassPerson.pupilsightPersonID) WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseClassPerson.pupilsightPersonID=:pupilsightPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND pupilsightPlannerEntryStudentHomework.homeworkDueDateTime>'".date('Y-m-d H:i:s')."' AND ((date<'".date('Y-m-d')."') OR (date='".date('Y-m-d')."' AND timeEnd<='".date('H:i:s')."')))
+                    (SELECT 'studentRecorded' AS type, pupilsightPlannerEntry.pupilsightPlannerEntryID, pupilsightUnitID, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class, pupilsightPlannerEntry.name, date, timeStart, timeEnd, 'Y' AS viewableStudents, 'Y' AS viewableParents, 'Y' AS homework, pupilsightPlannerEntryStudentHomework.homeworkDueDateTime, role FROM pupilsightPlannerEntry JOIN pupilsightCourseClass ON (pupilsightPlannerEntry.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClass.pupilsightCourseClassID=pupilsightCourseClassPerson.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID) JOIN pupilsightPlannerEntryStudentHomework ON (pupilsightPlannerEntryStudentHomework.pupilsightPlannerEntryID=pupilsightPlannerEntry.pupilsightPlannerEntryID AND pupilsightPlannerEntryStudentHomework.pupilsightPersonID=pupilsightCourseClassPerson.pupilsightPersonID) WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseClassPerson.pupilsightPersonID=:pupilsightPersonID AND NOT role='Student - Left' AND NOT role='Teacher - Left' AND (role='Teacher' OR (role='Student' AND viewableStudents='Y')) AND pupilsightPlannerEntryStudentHomework.homeworkDueDateTime>'" . date('Y-m-d H:i:s') . "' AND ((date<'" . date('Y-m-d') . "') OR (date='" . date('Y-m-d') . "' AND timeEnd<='" . date('H:i:s') . "')))
                     ORDER BY homeworkDueDateTime, type";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
@@ -413,8 +412,8 @@ class Sidebar implements OutputableInterface
                             }
 
                             echo "<li style='$style'>";
-                            echo  "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&pupilsightPlannerEntryID='.$row['pupilsightPlannerEntryID'].'&date='.$row['date']."'>".$row['course'].'.'.$row['class'].'</a><br/>';
-                            echo "<span style='font-style: italic'>Due at ".substr($row['homeworkDueDateTime'], 11, 5).' on '.dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10));
+                            echo  "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Planner/planner_view_full.php&pupilsightPlannerEntryID=' . $row['pupilsightPlannerEntryID'] . '&date=' . $row['date'] . "'>" . $row['course'] . '.' . $row['class'] . '</a><br/>';
+                            echo "<span style='font-style: italic'>Due at " . substr($row['homeworkDueDateTime'], 11, 5) . ' on ' . dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10));
                             echo '</li>';
                         }
                         ++$count;
@@ -423,7 +422,7 @@ class Sidebar implements OutputableInterface
                 }
 
                 echo "<p style='padding-top: 0px; text-align: right'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php'>".__('View Homework').'</a>';
+                echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Planner/planner_deadlines.php'>" . __('View Homework') . '</a>';
                 echo '</p>';
                 echo '</div>';
             }
@@ -435,7 +434,7 @@ class Sidebar implements OutputableInterface
             if ($highestAction == 'View Markbook_myMarks') {
                 try {
                     $dataEntry = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
-                    $sqlEntry = "SELECT pupilsightMarkbookEntryID, pupilsightMarkbookColumn.name, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class FROM pupilsightMarkbookEntry JOIN pupilsightMarkbookColumn ON (pupilsightMarkbookEntry.pupilsightMarkbookColumnID=pupilsightMarkbookColumn.pupilsightMarkbookColumnID) JOIN pupilsightCourseClass ON (pupilsightMarkbookColumn.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightPersonIDStudent=:pupilsightPersonID AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableStudents='Y' ORDER BY completeDate DESC, name";
+                    $sqlEntry = "SELECT pupilsightMarkbookEntryID, pupilsightMarkbookColumn.name, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class FROM pupilsightMarkbookEntry JOIN pupilsightMarkbookColumn ON (pupilsightMarkbookEntry.pupilsightMarkbookColumnID=pupilsightMarkbookColumn.pupilsightMarkbookColumnID) JOIN pupilsightCourseClass ON (pupilsightMarkbookColumn.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightPersonIDStudent=:pupilsightPersonID AND complete='Y' AND completeDate<='" . date('Y-m-d') . "' AND viewableStudents='Y' ORDER BY completeDate DESC, name";
                     $resultEntry = $connection2->prepare($sqlEntry);
                     $resultEntry->execute($dataEntry);
                 } catch (\PDOException $e) {
@@ -451,7 +450,7 @@ class Sidebar implements OutputableInterface
                     $count = 0;
 
                     while ($rowEntry = $resultEntry->fetch() and $count < 5) {
-                        echo "<li><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php#'.$rowEntry['pupilsightMarkbookEntryID']."'>".$rowEntry['course'].'.'.$rowEntry['class']."<br/><span style='font-size: 85%; font-style: italic'>".$rowEntry['name'].'</span></a></li>';
+                        echo "<li><a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Markbook/markbook_view.php#' . $rowEntry['pupilsightMarkbookEntryID'] . "'>" . $rowEntry['course'] . '.' . $rowEntry['class'] . "<br/><span style='font-size: 85%; font-style: italic'>" . $rowEntry['name'] . '</span></a></li>';
                         ++$count;
                     }
 
@@ -515,28 +514,28 @@ class Sidebar implements OutputableInterface
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo "<td style='word-wrap: break-word'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Departments/department_course_class.php&pupilsightCourseClassID='.$row['pupilsightCourseClassID']."'>".$row['course'].'.'.$row['class'].'</a>';
+                    echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Departments/department_course_class.php&pupilsightCourseClassID=' . $row['pupilsightCourseClassID'] . "'>" . $row['course'] . '.' . $row['class'] . '</a>';
                     echo '</td>';
                     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner.php&pupilsightCourseClassID='.$row['pupilsightCourseClassID']."&viewBy=class'><img style='margin-top: 3px' title='".__('View Planner')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/planner.png'/></a> ";
+                        echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Planner/planner.php&pupilsightCourseClassID=' . $row['pupilsightCourseClassID'] . "&viewBy=class'><img style='margin-top: 3px' title='" . __('View Planner') . "' src='./themes/" . $_SESSION[$guid]['pupilsightThemeName'] . "/img/planner.png'/></a> ";
                         echo '</td>';
                     }
                     if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&pupilsightCourseClassID='.$row['pupilsightCourseClassID']."'><img style='margin-top: 3px' title='".__('View Markbook')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/markbook.png'/></a> ";
+                        echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Markbook/markbook_view.php&pupilsightCourseClassID=' . $row['pupilsightCourseClassID'] . "'><img style='margin-top: 3px' title='" . __('View Markbook') . "' src='./themes/" . $_SESSION[$guid]['pupilsightThemeName'] . "/img/markbook.png'/></a> ";
                         echo '</td>';
                     }
                     echo "<td style='text-align: center'>";
                     if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php') && $row['attendance'] == 'Y') {
-                        echo "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&pupilsightCourseClassID=".$row['pupilsightCourseClassID']."'><img title='".__('Take Attendance')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/attendance.png'/></a>";
+                        echo "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&pupilsightCourseClassID=" . $row['pupilsightCourseClassID'] . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]['pupilsightThemeName'] . "/img/attendance.png'/></a>";
                     } else {
-                        echo "<a href='index.php?q=/modules/Departments/department_course_class.php&pupilsightCourseClassID=".$row['pupilsightCourseClassID']."#participants'><img title='".__('Participants')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/attendance.png'/></a>";
+                        echo "<a href='index.php?q=/modules/Departments/department_course_class.php&pupilsightCourseClassID=" . $row['pupilsightCourseClassID'] . "#participants'><img title='" . __('Participants') . "' src='./themes/" . $_SESSION[$guid]['pupilsightThemeName'] . "/img/attendance.png'/></a>";
                     }
                     echo '</td>';
                     if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                         echo "<td style='text-align: center'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&pupilsightCourseClassIDFilter='.$row['pupilsightCourseClassID']."'><img style='margin-top: 3px' title='".__('View Homework')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/homework.png'/></a> ";
+                        echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Planner/planner_deadlines.php&pupilsightCourseClassIDFilter=' . $row['pupilsightCourseClassID'] . "'><img style='margin-top: 3px' title='" . __('View Homework') . "' src='./themes/" . $_SESSION[$guid]['pupilsightThemeName'] . "/img/homework.png'/></a> ";
                         echo '</td>';
                     }
                     echo '</tr>';
@@ -575,9 +574,9 @@ class Sidebar implements OutputableInterface
                 echo '<ul>';
                 for ($i = 0; $i < count($_SESSION[$guid]['pupilsightRoleIDAll']); ++$i) {
                     if ($_SESSION[$guid]['pupilsightRoleIDAll'][$i][0] == $_SESSION[$guid]['pupilsightRoleIDCurrent']) {
-                        echo "<li><a href='roleSwitcherProcess.php?pupilsightRoleID=".$_SESSION[$guid]['pupilsightRoleIDAll'][$i][0]."'>".__($_SESSION[$guid]['pupilsightRoleIDAll'][$i][1]).'</a> <i>'.__('(Active)').'</i></li>';
+                        echo "<li><a href='roleSwitcherProcess.php?pupilsightRoleID=" . $_SESSION[$guid]['pupilsightRoleIDAll'][$i][0] . "'>" . __($_SESSION[$guid]['pupilsightRoleIDAll'][$i][1]) . '</a> <i>' . __('(Active)') . '</i></li>';
                     } else {
-                        echo "<li><a href='roleSwitcherProcess.php?pupilsightRoleID=".$_SESSION[$guid]['pupilsightRoleIDAll'][$i][0]."'>".__($_SESSION[$guid]['pupilsightRoleIDAll'][$i][1]).'</a></li>';
+                        echo "<li><a href='roleSwitcherProcess.php?pupilsightRoleID=" . $_SESSION[$guid]['pupilsightRoleIDAll'][$i][0] . "'>" . __($_SESSION[$guid]['pupilsightRoleIDAll'][$i][1]) . '</a></li>';
                     }
                 }
                 echo '</ul>';
@@ -600,40 +599,39 @@ class Sidebar implements OutputableInterface
         $connection2 = $this->db->getConnection();
 
         $output = false;
-    
+
         $category = getRoleCategory($_SESSION[$guid]['pupilsightRoleIDCurrent'], $connection2);
         if ($category == 'Parent') {
             $output .= '<div class="column-no-break">';
             $output .= "<h2 style='margin-bottom: 10px'>";
             $output .= 'Profile Photo';
             $output .= '</h2>';
-    
+
             if ($_SESSION[$guid]['image_240'] == '') { //No photo, so show uploader
                 $output .= '<p>';
-                $output .= __('Please upload a passport photo to use as a profile picture.').' '.__('240px by 320px').'.';
+                $output .= __('Please upload a passport photo to use as a profile picture.') . ' ' . __('240px by 320px') . '.';
                 $output .= '</p>';
-    
-                $form = Form::create('photoUpload', $_SESSION[$guid]['absoluteURL'].'/index_parentPhotoUploadProcess.php?pupilsightPersonID='.$_SESSION[$guid]['pupilsightPersonID']);
+
+                $form = Form::create('photoUpload', $_SESSION[$guid]['absoluteURL'] . '/index_parentPhotoUploadProcess.php?pupilsightPersonID=' . $_SESSION[$guid]['pupilsightPersonID']);
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->setClass('smallIntBorder w-full');
-    
+
                 $row = $form->addRow();
-                    $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false)->setClass('fullWidth');
-                    $row->addSubmit(__('Go'));
-    
+                $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false)->setClass('fullWidth');
+                $row->addSubmit(__('Go'));
+
                 $output .= $form->getOutput();
-    
             } else { //Photo, so show image and removal link
                 $output .= '<p>';
                 $output .= getUserPhoto($guid, $_SESSION[$guid]['image_240'], 240);
                 $output .= "<div style='margin-left: 220px; margin-top: -50px'>";
-                $output .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index_parentPhotoDeleteProcess.php?pupilsightPersonID='.$_SESSION[$guid]['pupilsightPersonID']."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/garbage.png'/></a><br/><br/>";
+                $output .= "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index_parentPhotoDeleteProcess.php?pupilsightPersonID=' . $_SESSION[$guid]['pupilsightPersonID'] . "' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='" . __('Delete') . "' src='./themes/" . $_SESSION[$guid]['pupilsightThemeName'] . "/img/garbage.png'/></a><br/><br/>";
                 $output .= '</div>';
                 $output .= '</p>';
             }
             $output .= '</div>';
         }
-    
+
         return $output;
     }
 }

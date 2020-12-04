@@ -35,25 +35,26 @@
 
                         {% endif %} {% endif %} {% endfor %}
                     </ul>
-                    
+
                     <!-- Sidebar -->
-                    {% for code in page.extraSidebar if sidebar and sidebarPosition != 'bottom' %} {% if code is not empty %}
-                    <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-6">
+                    {% for code in page.extraSidebar if sidebar and sidebarPosition != 'bottom' %}
+                    {% if code is not empty %}
+                    <div class="md:column-2 lg:column-1 pt-2 sm:pt-16 lg:pt-6">
                         {{ code|raw }}
                     </div>
                     {% endif %} {% endfor %} {% if sidebar and sidebarContents %}
                     <div class="md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} ">
                         {{ sidebarContents|raw }}
                     </div>
-                
-                    {% endif %}  {% for code in page.extraSidebar if sidebar and sidebarPosition == 'bottom' %}
+
+                    {% endif %} {% for code in page.extraSidebar if sidebar and sidebarPosition == 'bottom' %}
                     <div class="md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-0">
                         {{ code|raw }}
                     </div>
                     {% endfor %}
                     <!-- Sidebar -->
                 </div>
-                
+
             </div>
         </div>
     </div>

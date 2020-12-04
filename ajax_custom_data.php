@@ -53,7 +53,7 @@ if ($type == 'subjectSortTab') {
             }
         } else if ($val == "student_edit.php" || $val == "student_add.php") {
             $modules = "student";
-        } else if ($val == "staff_manage_add.php" || $val == "staff_manage_edit.php") {
+        } else if ($val == "staff_manage_add.php" || $val == "staff_manage_edit.php" || $val == "staff_view_details.php") {
             $modules = "staff";
         }
 
