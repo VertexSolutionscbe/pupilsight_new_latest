@@ -157,6 +157,12 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_staff\"></textarea>
+                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
+                        <input type='checkbox' class='chkType' data-type=\"phone1\" name='phone1' value='1'>
+                        Phone 1
+                        <input type='checkbox' class='chkType' data-type=\"phone2\" name='phone2' value='1'>
+                        Phone 2
+                    </div>
                 </div>
                 <div class=\"modal-footer\">
                     <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" id=\"closeSMT\">Close</button>
@@ -516,6 +522,12 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_staff\"></textarea>
+                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
+                        <input type='checkbox' class='chkType' data-type=\"phone1\" name='phone1' value='1'>
+                        Phone 1
+                        <input type='checkbox' class='chkType' data-type=\"phone2\" name='phone2' value='1'>
+                        Phone 2
+                    </div>
                 </div>
                 <div class=\"modal-footer\">
                     <button type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\" id=\"closeSMT\">Close</button>

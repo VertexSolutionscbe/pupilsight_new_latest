@@ -41,18 +41,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assigned_student_toS
         $resultp = $connection2->query($sqlp);
         $getstaff= $resultp->fetch();
 
-        $sqlp = 'SELECT  b.pupilsightPersonID AS staff_id , b.officialName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightStaffID IN ('.$getstaff['staffIds'].') ';
-        $resultp = $connection2->query($sqlp);
-        $getstaffs= $resultp->fetchAll();
-        //$rowdataprog = $resultp->fetchAll();
+        if(!empty($getstaff['staffIds'])){
+            $sqlp = 'SELECT  b.pupilsightPersonID AS staff_id , b.officialName AS name FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightStaffID IN ('.$getstaff['staffIds'].') ';
+            $resultp = $connection2->query($sqlp);
+            $getstaffs= $resultp->fetchAll();
+            //$rowdataprog = $resultp->fetchAll();
 
-        $getstaff=array();  
-        $getstaff2=array();  
-        $getstaff1=array(''=>'Select staff');
-        foreach ($getstaffs as $dt) {
-            $getstaff2[$dt['staff_id']] = $dt['name'];
-        }
-        $getstaff= $getstaff1 + $getstaff2;  
+            $getstaff=array();  
+            $getstaff2=array();  
+            $getstaff1=array(''=>'Select staff');
+            foreach ($getstaffs as $dt) {
+                $getstaff2[$dt['staff_id']] = $dt['name'];
+            }
+            $getstaff= $getstaff1 + $getstaff2;
+        } else {
+            $getstaff=array(''=>'Select staff');
+        }  
     } else {
         $getstaff= array();  
     }

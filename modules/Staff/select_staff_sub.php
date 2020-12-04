@@ -20,7 +20,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('View Staff Profiles'));
+    ->add(__('Assign Staff To Subject'), 'assign_staff_toSubject.php')
+    ->add(__('Choose A Staff to Subject'));
     $editLink = '';
     // if (isset($_GET['editID'])) {
     //     $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/fee_structure_assign_student_manage_edit.php&id='.$_GET['editID'];
@@ -87,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
        
     }
 
-    $form = Form::create('studentViewSearch', '');
+    $form = Form::create('assignStaffToSubjectSearch', '');
 
     $form->setClass('noIntBorder fullWidth');
     $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
@@ -140,11 +141,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
     
         $getselectedstaff = [];
     ?>
-    <form action="<?=$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/assign_staff_toSubjectProcess.php';?>" method="post" autocomplete="on" enctype="multipart/form-data" class="smallIntBorder fullWidth standardForm" id="program">
+    <form action="<?=$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/assign_staff_toSubjectProcess.php';?>" method="post" autocomplete="on" enctype="multipart/form-data" class="smallIntBorder fullWidth standardForm" id="assignStaffForm">
         <input type="hidden" name="address" value="/modules/Staff/select_staff_sub.php">
         <div class='row'>
             <div class='col-12 text-right'>
-                <button id="simplesubmitInvoice" style="height: 34px; float: right;"class=" btn btn-primary">Assign</button>
+                <a id="assignStaffToSubject" style="height: 34px; float: right;"class=" btn btn-primary">Assign</a>
             </div>
         </div>
         <!-- Edited By : Mandeep, Reason : Search filter added to both staff and subjects -->
@@ -235,6 +236,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
                 }
             }
         }
+
+        $(document).on('click', '#assignStaffToSubject', function (e) {
+
+            e.preventDefault();
+            var formData = new FormData(document.getElementById("assignStaffForm"));
+            var favorite = [];
+            $.each($("input[name='selected_sstaff[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var staff_id = favorite.join(", ");
+
+            var favorite1 = [];
+            $.each($("input[name='selected_sub[]']:checked"), function () {
+                favorite1.push($(this).val());
+            });
+            var subject_id = favorite1.join(", ");
+            //   alert(submit_id + '-' + form_id + '-' + camp_id);
+            if (staff_id) {
+                if (subject_id) {
+                    $("#preloader").show();
+                    $.ajax({
+                        url: "modules/Staff/assign_staff_toSubjectProcess.php",
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        cache: false,
+                        processData: false,
+                        async: false,
+                        success: function (data) {
+                            alert("Staff Assigned Successfully!");
+                            $("#preloader").hide();
+                            $("#assignStaffToSubjectSearch").submit();
+                        }
+                    });
+                } else {
+                    alert('You Have to Select Subject.');
+                    $("#preloader").hide();
+                }
+            } else {
+                alert('You Have to Select Staff.');
+                $("#preloader").hide();
+            }
+            });
     </script>
     <?php
     
