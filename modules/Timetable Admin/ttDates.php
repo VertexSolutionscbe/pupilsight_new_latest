@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 // Get the TT day names
                 try {
                     $dataDay = array();
-                    $sqlDay = 'SELECT date, pupilsightTTDay.nameShort AS dayName, pupilsightTT.nameShort AS ttName FROM pupilsightTTDayDate JOIN pupilsightTTDay ON (pupilsightTTDayDate.pupilsightTTDayID=pupilsightTTDay.pupilsightTTDayID) JOIN pupilsightTT ON (pupilsightTTDay.pupilsightTTID=pupilsightTT.pupilsightTTID)';
+                    $sqlDay = 'SELECT date,pupilsightTTDay.pupilsightTTDayID, pupilsightTTDay.nameShort AS dayName, pupilsightTT.nameShort AS ttName FROM pupilsightTTDayDate JOIN pupilsightTTDay ON (pupilsightTTDayDate.pupilsightTTDayID=pupilsightTTDay.pupilsightTTDayID) JOIN pupilsightTT ON (pupilsightTTDay.pupilsightTTID=pupilsightTT.pupilsightTTID)';
                     $resultDay = $connection2->prepare($sqlDay);
                     $resultDay->execute($dataDay);
                 } catch (PDOException $e) {
@@ -203,8 +203,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                             $column->addContent("<br/><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/ttDates_edit.php&pupilsightSchoolYearID=$pupilsightSchoolYearID&dateStamp=".$i."'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/config.png'/></a><br/>");
 
                             if (isset($ttDays[$date])) {
+                                //$ii=1;
+
                                 foreach ($ttDays[$date] as $day) {
-                                    $column->addContent($day['ttName'].' '.$day['dayName'])->wrap('<b>', '</b>');
+                                    $pupilsightTTDayID=$day['pupilsightTTDayID'];
+                                    //$column->addCheckbox('ttName['.$ii.']')->setValue($ii)->setClass($day['pupilsightTTDayID']);
+                                    //$column->addContent("<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/ttDates_edit_delete.php&pupilsightTTDayID=$pupilsightTTDayID&pupilsightSchoolYearID=$pupilsightSchoolYearID&dateStamp=".$i."'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/garbage.png'/></a><br/>");
+                                    $column->addContent("<input type='checkbox' name='ttName[]' value='$pupilsightTTDayID~$pupilsightSchoolYearID~$i'>".$day['ttName'].' '.$day['dayName'])->wrap('<b>', '</b>');
+                                    //$ii++;
                                 }
                             }
                         }
@@ -224,13 +230,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
             $table = $form->addRow()->addTable()->setClass('fullWidth smallIntBorder');
             $row = $table->addRow();
                 $row->addLabel('pupilsightTTDayID', __('Day'));
-                $row->addSelect('pupilsightTTDayID')->fromQuery($pdo, $sql, $data)->addClass('mediumWidth')->selectMultiple()->required();
+                    $row->addSelect('pupilsightTTDayID')->fromQuery($pdo, $sql, $data)->addClass('mediumWidth')->selectMultiple()->required();
 
             $row = $table->addRow()->addClass('right');
                 $row->addContent();
                 $row->addSubmit();
-            
+
             echo $form->getOutput();
         }
+
+        $massdeleteurl=$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/ttDates_edit_MassDeleteProcess.php";
+        echo '<p>Please select data that needs to be deleted.</p>';
+        echo "<h2><button style='background-color: #206bc4; color: white; padding: 3px; border: #206bc4;' type='button' id='move_to' value='get check box values'>Mass Delete</button></h2>";
+        $script = '<script type="text/javascript">';
+        $script .= '$("#move_to").on("click", function(e){
+         if(confirm("Are you sure?")){   
+        ';
+        $script .= "e.preventDefault();";
+        $script .= "";
+        $script .= "$('#ttDates').attr('action', '$massdeleteurl').submit();
+        }";
+        $script .= '});';
+        $script .= '</script>';
+        echo $script;
     }
 }

@@ -160,8 +160,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     if (isset($_POST['ttDate'])) {
         $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
     }
-    $tt = renderTTAttendance($guid, $connection2, $pupilsightYearGroupID, $pupilsightRollGroupID, '', $ttDate, '/modules/Attendance/attendance_take_bySection.php');
-    if ($tt != false) {
+   // $tt = renderTTAttendance($guid, $connection2, $pupilsightYearGroupID, $pupilsightRollGroupID, '', $ttDate, '/modules/Attendance/attendance_take_bySection.php');
+    $tt = renderTTAttendancepp($guid, $connection2, $pupilsightPersonID, $pupilsightYearGroupID, $pupilsightRollGroupID, '', $ttDate, '/modules/Attendance/attendance_take_bySection.php');
+        if ($tt != false) {
         echo $tt;
     } else {
         echo "<div class='alert alert-danger'>";

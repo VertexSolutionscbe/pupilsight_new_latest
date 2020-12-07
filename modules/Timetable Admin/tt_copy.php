@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_copy.ph
         foreach ($rowdataprog as $dt) {
             $program2[$dt['pupilsightProgramID']] = $dt['name'];
         }
-        $program= $program1 + $program2; 
+        $program= $program1 + $program2;
 //get All class
         $sqlc = 'SELECT pupilsightYearGroupID,name FROM pupilsightYearGroup';
         $resultc = $connection2->query($sqlc);
@@ -116,7 +116,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_copy.ph
 
             $row = $form->addRow();
                 $row->addLabel('pupilsightRollGroupID', __('Section'));
-                $row->addSelect('pupilsightRollGroupID', $pupilsightSchoolYearID)->required();
+                $row->addSelect('pupilsightRollGroupID', $pupilsightSchoolYearID)->required()->selectMultiple();
+                //$row->addSelect('pupilsightRollGroupID', $pupilsightSchoolYearID)->required();
+
 
                 // $col = $row->addColumn()->setClass('newdes');
                 // $col->addLabel('pupilsightRollGroupID', __('Section'));

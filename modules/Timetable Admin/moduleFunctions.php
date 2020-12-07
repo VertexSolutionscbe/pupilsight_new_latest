@@ -1906,7 +1906,7 @@ function renderTTSpace($guid, $connection2, $pupilsightSpaceID, $pupilsightTTID,
         }
         $output .= '</tr>';
 
-        $output .= "<tr style='height:" . (ceil($diffTime / 60) + 25) . "px'>";
+        $output .= "<tr style='height:" . (ceil($diffTime / 60) + 14) . "px'>";
         $output .= "<td class='ttTime' style='height: 300px; width: 75px; text-align: center; vertical-align: top'>";
         $output .= "<div style='position: relative; width: 71px'>";
         $countTime = 0;

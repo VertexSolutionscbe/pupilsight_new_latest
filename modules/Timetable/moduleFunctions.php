@@ -1578,6 +1578,611 @@ function renderTTDay($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDa
     return $output;
 }
 
+//extra function wrote to get timetable values , author preetam
+function renderTTDaypp($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDayStamp, $count, $daysInWeek, $pupilsightPersonID, $gridTimeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $specialDayStart = '', $specialDayEnd = '', $edit = false)
+{
+    $schoolCalendarAlpha = 0.90;
+    $ttAlpha = 1.0;
+
+    if ($_SESSION[$guid]['viewCalendarSchool'] != 'N' or $_SESSION[$guid]['viewCalendarPersonal'] != 'N' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != 'N') {
+        $ttAlpha = 0.75;
+    }
+
+    $date = date('Y-m-d', ($startDayStamp + (86400 * $count)));
+
+    $self = false;
+    if ($pupilsightPersonID == $_SESSION[$guid]['pupilsightPersonID'] and $edit == false) {
+        $self = true;
+        $roleCategory = getRoleCategory($_SESSION[$guid]['pupilsightRoleIDCurrent'], $connection2);
+    }
+    /*
+    if ($narrow == 'trim') {
+        $width = (ceil(640 / $daysInWeek) - 20) . 'px';
+    } elseif ($narrow == 'narrow') {
+        $width = (ceil(515 / $daysInWeek) - 20) . 'px';
+    } else {
+        $width = (ceil(690 / $daysInWeek) - 20) . 'px';
+    }*/
+    $width = "100%";
+    $output = '';
+    $blank = true;
+
+    $zCount = 0;
+    $allDay = 0;
+
+    if ($schoolOpen == false) {
+        try {
+            $dataSpecialDay = array('date' => $date);
+            $sqlSpecialDay = "SELECT name, description FROM pupilsightSchoolYearSpecialDay WHERE date=:date";
+            $resultSpecialDay = $connection2->prepare($sqlSpecialDay);
+            $resultSpecialDay->execute($dataSpecialDay);
+        } catch (PDOException $e) {
+        }
+
+        $specialDay = $resultSpecialDay->rowCount() > 0 ? $resultSpecialDay->fetch() : array('name' => '', 'description' => '');
+
+        $output .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+        $output .= "<div style='position: relative'>";
+        $output .= "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: " . ceil($diffTime / 60) . "px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
+        $output .= "<div style='position: relative; top: 50%' title='" . $specialDay['description'] . "'>";
+        $output .= "<span style='color: rgba(255,0,0,$ttAlpha);'>" . __('School Closed');
+        $output .= '<br/><br/>' . $specialDay['name'] . '</span>';
+        $output .= '</div>';
+        $output .= '</div>';
+
+        $zCount = 1;
+
+        //Draw periods from school calendar
+        if ($eventsSchool != false) {
+            $height = 0;
+            $top = 0;
+            $dayTimeStart = '';
+            foreach ($eventsSchool as $event) {
+                if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                    if ($event[1] == 'All Day') {
+                        $label = $event[0];
+                        $title = '';
+                        if (strlen($label) > 20) {
+                            $label = substr($label, 0, 20) . '...';
+                            $title = "title='" . $event[0] . "'";
+                        }
+                        $height = '30px';
+                        $top = (($maxAllDays * -31) - 8 + ($allDay * 30)) . 'px';
+                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<a target='_blank'  href='" . $event[5] . "'>" . $label . '</a>';
+                        $output .= '</div>';
+                        ++$allDay;
+                    } else {
+                        $label = $event[0];
+                        $title = "title='" . date('H:i', $event[2]) . ' to ' . date('H:i', $event[3]) . "'";
+                        $height = ceil(($event[3] - $event[2]) / 60) . 'px';
+                        $charCut = 20;
+                        if ($height < 20) {
+                            $charCut = 12;
+                        }
+                        if (strlen($label) > $charCut) {
+                            $label = substr($label, 0, $charCut) . '...';
+                            $title = "title='" . $event[0] . ' (' . date('H:i', $event[2]) . ' to ' . date('H:i', $event[3]) . ")'";
+                        }
+                        $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)) . ' ' . $gridTimeStart)) / 60)) . 'px';
+                        $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= "<a target='_blank' href='" . $event[5] . "'>" . $label . '</a>';
+                        $output .= '</div>';
+                    }
+                    ++$zCount;
+                }
+            }
+        }
+
+        //Draw periods from personal calendar
+        if ($eventsPersonal != false) {
+            $height = 0;
+            $top = 0;
+            $bg = "rgba(103,153,207,$schoolCalendarAlpha)";
+            foreach ($eventsPersonal as $event) {
+                if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                    if ($event[1] == 'All Day') {
+                        $label = $event[0];
+                        $title = '';
+                        if (strlen($label) > 20) {
+                            $label = substr($label, 0, 20) . '...';
+                            $title = "title='" . $event[0] . "'";
+                        }
+                        $height = '30px';
+                        $top = (($maxAllDays * -31) - 8 + ($allDay * 30)) . 'px';
+                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= !empty($event[5])
+                            ? "<a target='_blank' href='" . $event[5] . "'>" . $label . '</a>'
+                            : $label;
+                        $output .= '</div>';
+                        ++$allDay;
+                    } else {
+                        $label = $event[0];
+                        $title = "title='" . date('H:i', $event[2]) . ' to ' . date('H:i', $event[3]) . "'";
+                        $height = ceil(($event[3] - $event[2]) / 60) . 'px';
+                        $charCut = 20;
+                        if ($height < 20) {
+                            $charCut = 12;
+                        }
+                        if (strlen($label) > $charCut) {
+                            $label = substr($label, 0, $charCut) . '...';
+                            $title = "title='" . $event[0] . ' (' . date('H:i', $event[2]) . ' to ' . date('H:i', $event[3]) . ")'";
+                        }
+                        $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)) . ' ' . $gridTimeStart)) / 60)) . 'px';
+                        $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                        $output .= !empty($event[5])
+                            ? "<a target='_blank' href='" . $event[5] . "'>" . $label . '</a>'
+                            : $label;
+                        $output .= '</div>';
+                    }
+                    ++$zCount;
+                }
+            }
+        }
+        $output .= '</div>';
+        $output .= '</td>';
+    } else {
+        //Make array of space changes
+        $spaceChanges = array();
+        try {
+            $dataSpaceChange = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
+            $sqlSpaceChange = 'SELECT pupilsightTTSpaceChange.*, pupilsightSpace.name AS space, phoneInternal FROM pupilsightTTSpaceChange LEFT JOIN pupilsightSpace ON (pupilsightTTSpaceChange.pupilsightSpaceID=pupilsightSpace.pupilsightSpaceID) WHERE date=:date';
+            $resultSpaceChange = $connection2->prepare($sqlSpaceChange);
+            $resultSpaceChange->execute($dataSpaceChange);
+        } catch (PDOException $e) {
+        }
+        while ($rowSpaceChange = $resultSpaceChange->fetch()) {
+            $spaceChanges[$rowSpaceChange['pupilsightTTDayRowClassID']][0] = $rowSpaceChange['space'];
+            $spaceChanges[$rowSpaceChange['pupilsightTTDayRowClassID']][1] = $rowSpaceChange['phoneInternal'];
+        }
+
+        //Get day start and end!
+        $dayTimeStart = '';
+        $dayTimeEnd = '';
+        try {
+            $dataDiff = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'pupilsightTTID' => $pupilsightTTID);
+            $sqlDiff = 'SELECT timeStart, timeEnd FROM pupilsightTTDay JOIN pupilsightTTDayDate ON (pupilsightTTDay.pupilsightTTDayID=pupilsightTTDayDate.pupilsightTTDayID) JOIN pupilsightTTColumn ON (pupilsightTTDay.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) JOIN pupilsightTTColumnRow ON (pupilsightTTColumn.pupilsightTTColumnID=pupilsightTTColumnRow.pupilsightTTColumnID) WHERE date=:date AND pupilsightTTID=:pupilsightTTID';
+            $resultDiff = $connection2->prepare($sqlDiff);
+            $resultDiff->execute($dataDiff);
+        } catch (PDOException $e) {
+            $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+        }
+        while ($rowDiff = $resultDiff->fetch()) {
+            if ($dayTimeStart == '') {
+                $dayTimeStart = $rowDiff['timeStart'];
+            }
+            if ($rowDiff['timeStart'] < $dayTimeStart) {
+                $dayTimeStart = $rowDiff['timeStart'];
+            }
+            if ($dayTimeEnd == '') {
+                $dayTimeEnd = $rowDiff['timeEnd'];
+            }
+            if ($rowDiff['timeEnd'] > $dayTimeEnd) {
+                $dayTimeEnd = $rowDiff['timeEnd'];
+            }
+        }
+        if ($specialDayStart != '') {
+            $dayTimeStart = $specialDayStart;
+        }
+        if ($specialDayEnd != '') {
+            $dayTimeEnd = $specialDayEnd;
+        }
+
+        $dayDiffTime = strtotime($dayTimeEnd) - strtotime($dayTimeStart);
+
+        $startPad = strtotime($dayTimeStart) - strtotime($gridTimeStart);
+
+        $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
+        $output .= "<td $today style='font-size: 12px;padding:0 !important;'>";
+
+        try {
+            $dataDay = array('pupilsightTTID' => $pupilsightTTID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
+            $sqlDay = 'SELECT pupilsightTTDay.pupilsightTTDayID FROM pupilsightTTDayDate JOIN pupilsightTTDay ON (pupilsightTTDayDate.pupilsightTTDayID=pupilsightTTDay.pupilsightTTDayID) WHERE pupilsightTTID=:pupilsightTTID AND date=:date';
+            $resultDay = $connection2->prepare($sqlDay);
+            $resultDay->execute($dataDay);
+        } catch (PDOException $e) {
+            $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+        }
+
+        if ($resultDay->rowCount() == 1) {
+            $rowDay = $resultDay->fetch();
+            $zCount = 0;
+            $output .= "<div style='position: relative'>";
+
+            //Draw outline of the day
+            try {
+                $dataPeriods = array('pupilsightTTDayID' => $rowDay['pupilsightTTDayID'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
+                $sqlPeriods = 'SELECT pupilsightTTColumnRow.pupilsightTTColumnRowID, pupilsightTTColumnRow.name, timeStart, timeEnd, type, date, pupilsightTTDay.pupilsightTTDayID FROM pupilsightTTDay JOIN pupilsightTTDayDate ON (pupilsightTTDay.pupilsightTTDayID=pupilsightTTDayDate.pupilsightTTDayID) JOIN pupilsightTTColumn ON (pupilsightTTDay.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) WHERE pupilsightTTDayDate.pupilsightTTDayID=:pupilsightTTDayID AND date=:date ORDER BY timeStart, timeEnd';
+                $resultPeriods = $connection2->prepare($sqlPeriods);
+                //print_r($dataPeriods);
+                //print_r($sqlPeriods);die();
+                $resultPeriods->execute($dataPeriods);
+            } catch (PDOException $e) {
+                $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+            }
+
+            while ($rowPeriods = $resultPeriods->fetch()) {
+                $sqlcs = 'SELECT a.pupilsightDepartmentID,c.officialName , d.name FROM pupilsightTTDayRowClass AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightDepartment AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID WHERE a.pupilsightTTColumnRowID = ' . $rowPeriods['pupilsightTTColumnRowID'] . ' AND a.pupilsightTTDayID = ' . $rowPeriods['pupilsightTTDayID'] . ' ';
+
+
+                $resultcs = $connection2->query($sqlcs);
+                //$staffcs = $resultcs->fetch();
+                /*while ($pp=$resultcs->fetch()){
+                    print_r($pp);
+                } die();*/
+
+
+
+                $isSlotInTime = false;
+                if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
+                    $isSlotInTime = true;
+                } elseif ($rowPeriods['timeStart'] >= $dayTimeStart and $rowPeriods['timeEnd'] <= $dayTimeEnd) {
+                    $isSlotInTime = true;
+                } elseif ($rowPeriods['timeStart'] < $dayTimeEnd and $rowPeriods['timeEnd'] >= $dayTimeEnd) {
+                    $isSlotInTime = true;
+                }
+
+                if ($isSlotInTime == true) {
+                    $effectiveStart = $rowPeriods['timeStart'];
+                    $effectiveEnd = $rowPeriods['timeEnd'];
+                    if ($dayTimeStart > $rowPeriods['timeStart']) {
+                        $effectiveStart = $dayTimeStart;
+                    }
+                    if ($dayTimeEnd < $rowPeriods['timeEnd']) {
+                        $effectiveEnd = $dayTimeEnd;
+                    }
+
+                    $height = ceil((strtotime($effectiveEnd) - strtotime($effectiveStart)) / 60) . 'px';
+                    $top = ceil(((strtotime($effectiveStart) - strtotime($dayTimeStart)) + $startPad) / 60) . 'px';
+                    $title = '';
+                    if ($rowPeriods['type'] != 'Lesson' and $height > 15 and $height < 30) {
+                        $title = "title='" . substr($effectiveStart, 0, 5) . ' - ' . substr($effectiveEnd, 0, 5) . "'";
+                    } elseif ($rowPeriods['type'] != 'Lesson' and $height <= 15) {
+                        $title = "title='" . $rowPeriods['name'] . ' (' . substr($effectiveStart, 0, 5) . '-' . substr($effectiveEnd, 0, 5) . ")'";
+                    }
+                    $class = 'ttGeneric';
+                    if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
+                        $class = 'ttCurrent';
+                        $lineHeight = '';
+                    }
+                    $style = '';
+                    if ($rowPeriods['type'] == 'Lesson') {
+                        $class = 'ttLesson';
+                        $lineHeight = '';
+                    }
+
+
+                    if ($class == 'ttGeneric') {
+                        $lineHeight = 'line-height:15px;';
+                    }
+                    $output .= "<div class='$class' $title style='z-index: $zCount; position: absolute; top: $top; width: $width; height: $height; margin: 0px; padding: 0px; opacity: $ttAlpha; $lineHeight'>";
+                    if ($height > 15 and $height < 30) {
+                        $output .= $rowPeriods['name'] . '<br/>';
+                    } elseif ($height >= 30) {
+                        //$pp=2;
+
+                        while($staffcs = $resultcs->fetch()) {
+
+                            if (!empty($staffcs)) {
+                                $deptid = $staffcs['pupilsightDepartmentID'];
+                                $staffName = $staffcs['officialName'];
+                                $subjectName = $staffcs['name'];
+                            } else {
+                                $staffName = '';
+                                $subjectName = '';
+                            }
+
+                            $output .= "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Attendance/attendance_take_bysubject.php&studentId=' .$_GET['studentId']. '&pupilsightProgramID=' . $_GET['pupilsightProgramID'] . '&pupilsightYearGroupID=' . $_GET['pupilsightYearGroupID']. '&pupilsightPersonID=' . $_GET['pupilsightPersonID']. '&pupilsightRollGroupID=' . $_GET['pupilsightRollGroupID']. '&pupilsightDepartmentID=' . $deptid. '&currentDate=' . $_GET['ttDate'] .'&timetableattendance=1'."'> 
+                            <div class='ttleft'>" . $subjectName . "</div><div class='ttright'>" . $staffName . '</div></a><div class="clear"></div><br/>';
+                            //$output .= $rowPeriods['name'] . '&nbsp;';
+                        }
+                        $output .= '<i>' . substr($effectiveStart, 0, 5) . '-' . substr($effectiveEnd, 0, 5) . '</i>';
+                    }
+                    /*$output .= '<div style="margin-top:-8px; display:grid"><span style="color:blue; font-size:14px;">' . $subjectName . '</span><span style="margin-top:-8px;color: #206bc4;
+                    ">' . $staffName . '</span></div>';*/
+                    $output .= '</div>';
+                    ++$zCount;
+                }
+            }
+
+            //Draw periods from TT
+            try {
+                $dataPeriods = array('pupilsightTTDayID' => $rowDay['pupilsightTTDayID'], 'pupilsightPersonID' => $pupilsightPersonID);
+                $sqlPeriods = "SELECT pupilsightTTDayID, pupilsightTTDayRowClassID, pupilsightTTColumnRow.pupilsightTTColumnRowID, pupilsightCourseClass.pupilsightCourseClassID, pupilsightTTColumnRow.name, pupilsightCourse.pupilsightCourseID, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class, timeStart, timeEnd, phoneInternal, pupilsightSpace.name AS roomName FROM pupilsightCourse JOIN pupilsightCourseClass ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClass.pupilsightCourseClassID=pupilsightCourseClassPerson.pupilsightCourseClassID) JOIN pupilsightTTDayRowClass ON (pupilsightCourseClass.pupilsightCourseClassID=pupilsightTTDayRowClass.pupilsightCourseClassID) JOIN pupilsightTTColumnRow ON (pupilsightTTDayRowClass.pupilsightTTColumnRowID=pupilsightTTColumnRow.pupilsightTTColumnRowID) LEFT JOIN pupilsightSpace ON (pupilsightTTDayRowClass.pupilsightSpaceID=pupilsightSpace.pupilsightSpaceID) WHERE pupilsightTTDayID=:pupilsightTTDayID AND pupilsightCourseClassPerson.pupilsightPersonID=:pupilsightPersonID AND NOT role LIKE '% - Left' ORDER BY timeStart, timeEnd";
+                $resultPeriods = $connection2->prepare($sqlPeriods);
+                $resultPeriods->execute($dataPeriods);
+            } catch (PDOException $e) {
+                $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+            }
+            while ($rowPeriods = $resultPeriods->fetch()) {
+                $isSlotInTime = false;
+                if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
+                    $isSlotInTime = true;
+                } elseif ($rowPeriods['timeStart'] >= $dayTimeStart and $rowPeriods['timeEnd'] <= $dayTimeEnd) {
+                    $isSlotInTime = true;
+                } elseif ($rowPeriods['timeStart'] < $dayTimeEnd and $rowPeriods['timeEnd'] >= $dayTimeEnd) {
+                    $isSlotInTime = true;
+                }
+
+                if ($isSlotInTime == true) {
+                    //Check for an exception for the current user
+                    try {
+                        $dataException = array('pupilsightPersonID' => $pupilsightPersonID);
+                        $sqlException = 'SELECT * FROM pupilsightTTDayRowClassException WHERE pupilsightTTDayRowClassID=' . $rowPeriods['pupilsightTTDayRowClassID'] . ' AND pupilsightPersonID=:pupilsightPersonID';
+                        $resultException = $connection2->prepare($sqlException);
+                        $resultException->execute($dataException);
+                    } catch (PDOException $e) {
+                        $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+                    }
+                    if ($resultException->rowCount() < 1) {
+                        $effectiveStart = $rowPeriods['timeStart'];
+                        $effectiveEnd = $rowPeriods['timeEnd'];
+                        if ($dayTimeStart > $rowPeriods['timeStart']) {
+                            $effectiveStart = $dayTimeStart;
+                        }
+                        if ($dayTimeEnd < $rowPeriods['timeEnd']) {
+                            $effectiveEnd = $dayTimeEnd;
+                        }
+
+                        $blank = false;
+                        if ($narrow == 'trim') {
+                            $width = (ceil(640 / $daysInWeek) - 20) . 'px';
+                        } elseif ($narrow == 'narrow') {
+                            $width = (ceil(515 / $daysInWeek) - 20) . 'px';
+                        } else {
+                            $width = (ceil(690 / $daysInWeek) - 20) . 'px';
+                        }
+                        $height = ceil((strtotime($effectiveEnd) - strtotime($effectiveStart)) / 60) . 'px';
+                        $top = (ceil((strtotime($effectiveStart) - strtotime($dayTimeStart)) / 60 + ($startPad / 60))) . 'px';
+                        $title = "title='";
+                        if ($height < 45) {
+                            $title .= __('Time:') . ' ' . substr($effectiveStart, 0, 5) . ' - ' . substr($effectiveEnd, 0, 5) . ' | ';
+                            $title .= __('Timeslot:') . ' ' . $rowPeriods['name'] . ' | ';
+                        }
+                        if ($rowPeriods['roomName'] != '') {
+                            if ($rowPeriods['phoneInternal'] != '') {
+                                if (isset($spaceChanges[$rowPeriods['pupilsightTTDayRowClassID']][0]) == false) {
+                                    $title .= __('Phone:') . ' ' . $rowPeriods['phoneInternal'] . ' | ';
+                                } else {
+                                    $title .= __('Phone:') . ' ' . $spaceChanges[$rowPeriods['pupilsightTTDayRowClassID']][1] . ' | ';
+                                }
+                            }
+                        }
+                        $title = substr($title, 0, -3);
+                        $title .= "'";
+                        $class2 = 'ttPeriod';
+
+                        if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $date == date('Y-m-d')) {
+                            $class2 = 'ttPeriodCurrent';
+                        }
+
+                        //Create div to represent period
+                        $fontSize = '100%';
+                        if ($height < 60) {
+                            $fontSize = '85%';
+                        }
+                        $output .= "<div class='$class2' $title style='z-index: $zCount; position: absolute; top: $top; width: $width; height: $height; margin: 0px; padding: 0px; opacity: 1; font-size: 12px; font-weight: bold;line-height: 14px;'>";
+                        if ($height >= 45) {
+                            $output .= $rowPeriods['name'] . '<br/>';
+                            $output .= '<i>' . substr($effectiveStart, 0, 5) . ' - ' . substr($effectiveEnd, 0, 5) . '</i><br/>';
+                        }
+
+                        if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') and $edit == false) {
+                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Departments/department_course_class.php&pupilsightCourseClassID=' . $rowPeriods['pupilsightCourseClassID'] . "'>" . $rowPeriods['course'] . '.' . $rowPeriods['class'] . '</a><br/>';
+                        } elseif (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') and $edit == true) {
+                            $output .= "<a style='text-decoration: none; font-weight: bold; font-size: 120%' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_class_edit.php&pupilsightCourseClassID=' . $rowPeriods['pupilsightCourseClassID'] . '&pupilsightSchoolYearID=' . $_SESSION[$guid]['pupilsightSchoolYearID'] . '&pupilsightCourseID=' . $rowPeriods['pupilsightCourseID'] . "'>" . $rowPeriods['course'] . '.' . $rowPeriods['class'] . '</a><br/>';
+                        } else {
+                            $output .= "<span style='font-size: 120%'><b>" . $rowPeriods['course'] . '.' . $rowPeriods['class'] . '</b></span><br/>';
+                        }
+                        if ($edit == false) {
+                            if (isset($spaceChanges[$rowPeriods['pupilsightTTDayRowClassID']]) == false) {
+                                $output .= $rowPeriods['roomName'];
+                            } else {
+                                if ($spaceChanges[$rowPeriods['pupilsightTTDayRowClassID']][0] != '') {
+                                    $output .= "<span style='border: 1px solid #c00; padding: 0 2px'>" . $spaceChanges[$rowPeriods['pupilsightTTDayRowClassID']][0] . '</span>';
+                                } else {
+                                    $output .= "<span style='border: 1px solid #c00; padding: 0 2px'><i>" . __('No Space Allocated') . '</span>';
+                                }
+                            }
+                        } else {
+                            $output .= "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_edit.php&pupilsightTTDayID=' . $rowPeriods['pupilsightTTDayID'] . "&pupilsightTTID=$pupilsightTTID&pupilsightSchoolYearID=" . $_SESSION[$guid]['pupilsightSchoolYearID'] . '&pupilsightTTColumnRowID=' . $rowPeriods['pupilsightTTColumnRowID'] . '&pupilsightTTDayRowClass=' . $rowPeriods['pupilsightTTDayRowClassID'] . '&pupilsightCourseClassID=' . $rowPeriods['pupilsightCourseClassID'] . "'>" . $rowPeriods['roomName'] . '</a>';
+                        }
+                        $output .= '</div>';
+                        ++$zCount;
+
+                        if ($narrow == 'full' or $narrow == 'trim') {
+                            if ($edit == false) {
+                                //Add planner link icons for staff looking at own TT.
+                                if ($self == true and $roleCategory == 'Staff') {
+                                    if ($height >= 30) {
+                                        $output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
+                                        //Check for lesson plan
+                                        $bgImg = 'none';
+
+                                        try {
+                                            $dataPlan = array('pupilsightCourseClassID' => $rowPeriods['pupilsightCourseClassID'], 'date' => $date, 'timeStart' => $rowPeriods['timeStart'], 'timeEnd' => $rowPeriods['timeEnd']);
+                                            $sqlPlan = 'SELECT name, pupilsightPlannerEntryID FROM pupilsightPlannerEntry WHERE pupilsightCourseClassID=:pupilsightCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd GROUP BY name';
+                                            $resultPlan = $connection2->prepare($sqlPlan);
+                                            $resultPlan->execute($dataPlan);
+                                        } catch (PDOException $e) {
+                                            $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+                                        }
+
+                                        if ($resultPlan->rowCount() == 1) {
+                                            $rowPlan = $resultPlan->fetch();
+                                            $output .= "<a style='pointer-events: auto' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&pupilsightCourseClassID=' . $rowPeriods['pupilsightCourseClassID'] . '&pupilsightPlannerEntryID=' . $rowPlan['pupilsightPlannerEntryID'] . "'><img style='float: right; margin: " . (substr($height, 0, -2) - 27) . "px 2px 0 0' title='Lesson planned: " . htmlPrep($rowPlan['name']) . "' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/iconTick.png'/></a>";
+                                        } elseif ($resultPlan->rowCount() == 0) {
+                                            $output .= "<a style='pointer-events: auto' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Planner/planner_add.php&viewBy=class&pupilsightCourseClassID=' . $rowPeriods['pupilsightCourseClassID'] . '&date=' . $date . '&timeStart=' . $effectiveStart . '&timeEnd=' . $effectiveEnd . "'><img style='float: right; margin: " . (substr($height, 0, -2) - 27) . "px 2px 0 0' title='Add lesson plan' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/page_new.png'/></a>";
+                                        } else {
+                                            $output .= "<a style='pointer-events: auto' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Planner/planner.php&viewBy=class&pupilsightCourseClassID=' . $rowPeriods['pupilsightCourseClassID'] . '&date=' . $date . '&timeStart=' . $effectiveStart . '&timeEnd=' . $effectiveEnd . "'><div style='float: right; margin: " . (substr($height, 0, -2) - 17) . "px 5px 0 0'>" . __('Error') . '</div></a>';
+                                        }
+                                        $output .= '</div>';
+                                        ++$zCount;
+                                    }
+                                }
+                                //Add planner link icons for any one else's TT
+                                else {
+                                    $output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
+                                    //Check for lesson plan
+                                    $bgImg = 'none';
+
+                                    try {
+                                        $dataPlan = array('pupilsightCourseClassID' => $rowPeriods['pupilsightCourseClassID'], 'date' => $date, 'timeStart' => $rowPeriods['timeStart'], 'timeEnd' => $rowPeriods['timeEnd']);
+                                        $sqlPlan = 'SELECT name, pupilsightPlannerEntryID FROM pupilsightPlannerEntry WHERE pupilsightCourseClassID=:pupilsightCourseClassID AND date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd GROUP BY name';
+                                        $resultPlan = $connection2->prepare($sqlPlan);
+                                        $resultPlan->execute($dataPlan);
+                                    } catch (PDOException $e) {
+                                        $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+                                    }
+                                    if ($resultPlan->rowCount() == 1) {
+                                        $rowPlan = $resultPlan->fetch();
+                                        $output .= "<a style='pointer-events: auto' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&pupilsightCourseClassID=' . $rowPeriods['pupilsightCourseClassID'] . '&pupilsightPlannerEntryID=' . $rowPlan['pupilsightPlannerEntryID'] . "&search=$pupilsightPersonID'><img style='float: right; margin: " . (substr($height, 0, -2) - 27) . "px 2px 0 0' title='" . __('View lesson:') . ' ' . htmlPrep($rowPlan['name']) . "' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/plus.png'/></a>";
+                                    } elseif ($resultPlan->rowCount() > 1) {
+                                        $output .= "<div style='float: right; margin: " . (substr($height, 0, -2) - 17) . "px 5px 0 0'>" . __('Error') . '</div>';
+                                    }
+                                    $output .= '</div>';
+                                    ++$zCount;
+                                }
+                            }
+                            //Show exception editing
+                            elseif ($edit) {
+                                $output .= "<div $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: none; pointer-events: none'>";
+                                //Check for lesson plan
+                                $bgImg = 'none';
+                                $output .= "<a style='pointer-events: auto' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Timetable Admin/tt_edit_day_edit_class_exception.php&pupilsightTTDayID=' . $rowPeriods['pupilsightTTDayID'] . "&pupilsightTTID=$pupilsightTTID&pupilsightSchoolYearID=" . $_SESSION[$guid]['pupilsightSchoolYearID'] . '&pupilsightTTColumnRowID=' . $rowPeriods['pupilsightTTColumnRowID'] . '&pupilsightTTDayRowClass=' . $rowPeriods['pupilsightTTDayRowClassID'] . '&pupilsightCourseClassID=' . $rowPeriods['pupilsightCourseClassID'] . "'><img style='float: right; margin: " . (substr($height, 0, -2) - 27) . "px 2px 0 0' title='" . __('Manage Exceptions') . "' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/attendance.png'/></a>";
+                                $output .= '</div>';
+                                ++$zCount;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Draw periods from school calendar
+            if ($eventsSchool != false) {
+                $height = 0;
+                $top = 0;
+                foreach ($eventsSchool as $event) {
+                    if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                        if ($event[1] == 'All Day') {
+                            $label = $event[0];
+                            $title = '';
+                            if (strlen($label) > 20) {
+                                $label = substr($label, 0, 20) . '...';
+                                $title = "title='" . $event[0] . "'";
+                            }
+                            $height = '30px';
+                            $top = (($maxAllDays * -31) - 8 + ($allDay * 30)) . 'px';
+                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<a target='_blank' href='" . $event[5] . "'>" . $label . '</a>';
+                            $output .= '</div>';
+                            ++$allDay;
+                        } else {
+                            $label = $event[0];
+                            $title = "title='" . date('H:i', $event[2]) . ' to ' . date('H:i', $event[3]) . "'";
+                            $height = ceil(($event[3] - $event[2]) / 60) . 'px';
+                            $charCut = 20;
+                            if ($height < 20) {
+                                $charCut = 12;
+                            }
+                            if (strlen($label) > $charCut) {
+                                $label = substr($label, 0, $charCut) . '...';
+                                $title = "title='" . $event[0] . ' (' . date('H:i', $event[2]) . ' to ' . date('H:i', $event[3]) . ")'";
+                            }
+                            $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)) . ' ' . $gridTimeStart)) / 60)) . 'px';
+                            $output .= "<div class='ttSchoolCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= "<a target='_blank' href='" . $event[5] . "'>" . $label . '</a>';
+                            $output .= '</div>';
+                        }
+                        ++$zCount;
+                    }
+                }
+            }
+
+            //Draw periods from personal calendar
+            if ($eventsPersonal != false) {
+                $height = 0;
+                $top = 0;
+                $bg = "rgba(103,153,207,$schoolCalendarAlpha)";
+                foreach ($eventsPersonal as $event) {
+                    if (date('Y-m-d', $event[2]) == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                        if ($event[1] == 'All Day') {
+                            $label = $event[0];
+                            $title = '';
+                            if (strlen($label) > 20) {
+                                $label = substr($label, 0, 20) . '...';
+                                $title = "title='" . $event[0] . "'";
+                            }
+                            $height = '30px';
+                            $top = (($maxAllDays * -31) - 8 + ($allDay * 30)) . 'px';
+                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= !empty($event[5])
+                                ? "<a target='_blank' href='" . $event[5] . "'>" . $label . '</a>'
+                                : $label;
+                            $output .= '</div>';
+                            ++$allDay;
+                        } else {
+                            $label = $event[0];
+                            $title = "title='" . date('H:i', $event[2]) . ' to ' . date('H:i', $event[3]) . "'";
+                            $height = ceil(($event[3] - $event[2]) / 60) . 'px';
+                            $charCut = 20;
+                            if ($height < 20) {
+                                $charCut = 12;
+                            }
+                            if (strlen($label) > $charCut) {
+                                $label = substr($label, 0, $charCut) . '...';
+                                $title = "title='" . $event[0] . ' (' . date('H:i', $event[2]) . ' to ' . date('H:i', $event[3]) . ")'";
+                            }
+                            $top = (ceil(($event[2] - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)) . ' ' . $gridTimeStart)) / 60)) . 'px';
+                            $output .= "<div class='ttPersonalCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                            $output .= !empty($event[5])
+                                ? "<a target='_blank' href='" . $event[5] . "'>" . $label . '</a>'
+                                : $label;
+                            $output .= '</div>';
+                        }
+                        ++$zCount;
+                    }
+                }
+            }
+
+            $output .= '</div>';
+        }
+
+        //Draw space bookings and staff coverage
+        if ($eventsSpaceBooking != false) {
+            $dayTimeStart = $gridTimeStart;
+            $startPad = 0;
+            $output .= "<div style='position: relative'>";
+
+            $height = 0;
+            $top = 0;
+            foreach ($eventsSpaceBooking as $event) {
+                if ($event[3] == date('Y-m-d', ($startDayStamp + (86400 * $count)))) {
+                    $height = ceil((strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))) . ' ' . $event[5]) - strtotime(date('Y-m-d', ($startDayStamp + (86400 * $count))) . ' ' . $event[4])) / 60) . 'px';
+                    $top = (ceil((strtotime($event[3] . ' ' . $event[4]) - strtotime(date('Y-m-d', $startDayStamp + (86400 * $count)) . ' ' . $dayTimeStart)) / 60 + ($startPad / 60))) . 'px';
+                    if ($height < 45) {
+                        $label = $event[1];
+                        $title = "title='" . substr($event[4], 0, 5) . '-' . substr($event[5], 0, 5) . ' ' . $event[6] . "'";
+                    } else {
+                        $label = $event[1] . "<br/><span style='font-weight: normal'>" . substr($event[4], 0, 5) . '-' . substr($event[5], 0, 5) . '<br/>' . $event[6] . '</span>';
+                        $title = "title='" . ($event[7] ?? '') . "'";
+                    }
+                    $output .= "<div class='ttSpaceBookingCalendar' $title style='z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid #555; height: $height; margin: 0px; padding: 0px; opacity: $schoolCalendarAlpha'>";
+                    $output .= $label;
+                    $output .= '</div>';
+                    ++$zCount;
+                }
+            }
+            $output .= '</div>';
+        }
+    }
+
+    $output .= '</td>';
+
+    return $output;
+}
+
+
 //TIMETABLE FOR ROOM
 function renderTTSpace($guid, $connection2, $pupilsightSpaceID, $pupilsightTTID, $title = '', $startDayStamp = '', $q = '', $params = '')
 {
@@ -3024,6 +3629,750 @@ function renderTTAttendance($guid, $connection2, $classId, $sectionId, $title = 
 
                     if ($day == '') {
                         $day .= "<td style='text-align: center; vertical-align: top; font-size: 12px'></td>";
+                    }
+
+                    $output .= $day;
+                }
+            }
+            $output .= '</tr>';
+            $output .= '</table>';
+            $output .= '</div>';
+        }
+    }
+
+    return $output;
+}
+
+//extra function wrote to get timetable values , author preetam
+function renderTTAttendancepp($guid, $connection2, $pupilsightPersonID, $classId, $sectionId, $title = '', $startDayStamp = '', $q = '', $params = '', $narrow = 'full', $edit = false)
+{
+    $zCount = 0;
+    $output = '';
+    $proceed = false;
+
+    $highestAction = getHighestGroupedAction($guid, '/modules/Timetable/tt.php', $connection2);
+
+    if ($highestAction == 'View Timetable by Person_allYears') {
+        $proceed = true;
+    } else if ($_SESSION[$guid]['pupilsightSchoolYearIDCurrent'] == $_SESSION[$guid]['pupilsightSchoolYearID']) {
+
+        if ($highestAction == 'View Timetable by Person') {
+            $proceed = true;
+        } else if ($highestAction == 'View Timetable by Person_my') {
+            if ($pupilsightPersonID == $_SESSION[$guid]['pupilsightPersonID']) {
+                $proceed = true;
+            }
+        } else if ($highestAction == 'View Timetable by Person_myChildren') {
+             /*try {
+                 $data = array('pupilsightPersonID1' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightPersonID2' => $pupilsightPersonID);
+                 $sql = "SELECT pupilsightFamilyChild.pupilsightPersonID FROM pupilsightFamilyChild
+                     JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightFamilyID=pupilsightFamilyChild.pupilsightFamilyID)
+                     WHERE pupilsightFamilyAdult.pupilsightPersonID=:pupilsightPersonID1 AND pupilsightFamilyChild.pupilsightPersonID=:pupilsightPersonID2 AND pupilsightFamilyAdult.childDataAccess='Y'";
+                 $result = $connection2->prepare($sql);
+                 $result->execute($data);
+             } catch (PDOException $e) {
+                 echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+             }*/
+
+            /*if ($result->rowCount() > 0) {
+                $proceed = true;
+            }*/
+        }
+    }
+
+    if ($proceed == false) {
+        $output .= "<div class='alert alert-danger'>" . __('You do not have permission to access this timetable at this time.') . '</div>';
+    } else {
+        $self = false;
+        // if ($pupilsightPersonID == $_SESSION[$guid]['pupilsightPersonID'] and $edit == false) {
+        //     $self = true;
+        //     if ($_SESSION[$guid]['viewCalendarSchool'] != false and $_SESSION[$guid]['viewCalendarPersonal'] != false and $_SESSION[$guid]['viewCalendarSpaceBooking'] != false) {
+        //         try {
+        //             $dataDisplay = array('viewCalendarSchool' => $_SESSION[$guid]['viewCalendarSchool'], 'viewCalendarPersonal' => $_SESSION[$guid]['viewCalendarPersonal'], 'viewCalendarSpaceBooking' => $_SESSION[$guid]['viewCalendarSpaceBooking'], 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
+        //             $sqlDisplay = 'UPDATE pupilsightPerson SET viewCalendarSchool=:viewCalendarSchool, viewCalendarPersonal=:viewCalendarPersonal, viewCalendarSpaceBooking=:viewCalendarSpaceBooking WHERE pupilsightPersonID=:pupilsightPersonID';
+        //             $resultDisplay = $connection2->prepare($sqlDisplay);
+        //             $resultDisplay->execute($dataDisplay);
+        //         } catch (PDOException $e) {
+        //             $output .= "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+        //         }
+        //     }
+        // }
+
+        $blank = true;
+        if ($startDayStamp == '') {
+            $startDayStamp = time();
+        }
+
+        //Find out which timetables I am involved in this year
+        try {
+            $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightYearGroupIDList' => $classId, 'pupilsightRollGroupIDList' => $sectionId);
+            $sql = "SELECT DISTINCT pupilsightTT.pupilsightTTID, pupilsightTT.name, pupilsightTT.nameShortDisplay FROM pupilsightTT JOIN pupilsightTTDay ON (pupilsightTT.pupilsightTTID=pupilsightTTDay.pupilsightTTID) JOIN pupilsightTTDayRowClass ON (pupilsightTTDayRowClass.pupilsightTTDayID=pupilsightTTDay.pupilsightTTDayID) JOIN pupilsightCourseClass ON (pupilsightTTDayRowClass.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightYearGroupIDList=:pupilsightYearGroupIDList AND FIND_IN_SET(pupilsightRollGroupIDList, :pupilsightRollGroupIDList) AND active='Y' ";
+            //print_r($data);
+            //print_r($sql);die();
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+            //print_r($result->rowCount());die();
+        } catch (PDOException $e) {
+            $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+        }
+
+        //If I am not involved in any timetables display all within the year
+
+        if ($result->rowCount() == 0) {
+            try {
+                $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightYearGroupIDList' => $classId, 'pupilsightRollGroupIDList' => $sectionId);
+                $sql = "SELECT pupilsightTT.pupilsightTTID, pupilsightTT.name, pupilsightTT.nameShortDisplay FROM pupilsightTT WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightYearGroupIDList=:pupilsightYearGroupIDList AND FIND_IN_SET(pupilsightRollGroupIDList, :pupilsightRollGroupIDList) AND active='Y' ";
+                //print_r($data);print_r($sql); die();
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+                //print_r($result->rowCount());//die();
+            } catch (PDOException $e) {
+                $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+            }
+        }
+
+        //link to other TTs
+
+        if ($result->rowcount() > 0) {
+            $pupilsightTTID='';
+            while($row = $result->fetch()) {$pupilsightTTID=$row['pupilsightTTID'];}
+            /*$output .= "<table class='table'>";
+            $output .= '<tr>';
+            $output .= '<td>';
+            $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span>: ';
+            $pupilsightTTID='';
+            while ($row = $result->fetch()) {
+                $pupilsightTTID=$row['pupilsightTTID'];
+                $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
+                $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp) . "' type='hidden'>";
+                $output .= "<input name='schoolCalendar' value='" . $_SESSION[$guid]['viewCalendarSchool'] . "' type='hidden'>";
+                $output .= "<input name='personalCalendar' value='" . $_SESSION[$guid]['viewCalendarPersonal'] . "' type='hidden'>";
+                $output .= "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]['viewCalendarSpaceBooking'] . "' type='hidden'>";
+                $output .= "<input name='fromTT' value='Y' type='hidden'>";
+                $output .= "<input class='btn btn-link' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='" . $row['name'] . "'>";
+                $output .= '</form>';
+            }
+            try {
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+            }
+            $output .= '</td>';
+            $output .= '</tr>';
+            $output .= '</table>';*/
+
+            if ($pupilsightTTID != '') {
+
+                if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php', 'View Master Timetable')) {
+                    $data = array('pupilsightTTID' => $pupilsightTTID);
+                    $sql = "SELECT pupilsightTT.pupilsightTTID, pupilsightTT.name, pupilsightTT.nameShortDisplay FROM pupilsightTT WHERE pupilsightTT.pupilsightTTID=:pupilsightTTID";
+                } else {
+                    $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightTTID' => $pupilsightTTID);
+                    $sql = "SELECT DISTINCT pupilsightTT.pupilsightTTID, pupilsightTT.name, pupilsightTT.nameShortDisplay FROM pupilsightTT JOIN pupilsightTTDay ON (pupilsightTT.pupilsightTTID=pupilsightTTDay.pupilsightTTID) JOIN pupilsightTTDayRowClass ON (pupilsightTTDayRowClass.pupilsightTTDayID=pupilsightTTDay.pupilsightTTDayID) JOIN pupilsightCourseClass ON (pupilsightTTDayRowClass.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClassPerson.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightTT.pupilsightTTID=:pupilsightTTID";
+                }
+            }
+            try {
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+            }
+        }
+
+        //Display first TT
+        if ($result->rowCount() > 0) {
+            $row = $result->fetch();
+            $pupilsightTTID = $row['pupilsightTTID'];
+            $nameShortDisplay = $row['nameShortDisplay']; //Store day short name display setting for later
+            $thisWeek = time();
+
+            if ($title != false) {
+                $output .= '<h2>' . $row['name'] . '</h2>';
+            }
+            /*$output .= "<table class='table'>";
+            $output .= '<tr>';
+            $output .= "<td style='vertical-align: top;width:300px'>";
+            $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
+            $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60))) . "' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='" . $_SESSION[$guid]['viewCalendarSchool'] . "' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='" . $_SESSION[$guid]['viewCalendarPersonal'] . "' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]['viewCalendarSpaceBooking'] . "' type='hidden'>";
+            $output .= "<input name='fromTT' value='Y' type='hidden'>";
+            $output .= "<input name='pupilsightYearGroupID' value='" . $classId . "' type='hidden'>";
+            $output .= "<input name='pupilsightRollGroupID' value='" . $sectionId . "' type='hidden'>";
+            $output .= "<input class='btn btn-link' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='< " . __('Last Week') . "'>";
+            $output .= '</form>';
+            $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
+            $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($thisWeek)) . "' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='" . $_SESSION[$guid]['viewCalendarSchool'] . "' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='" . $_SESSION[$guid]['viewCalendarPersonal'] . "' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]['viewCalendarSpaceBooking'] . "' type='hidden'>";
+            $output .= "<input name='fromTT' value='Y' type='hidden'>";
+            $output .= "<input name='pupilsightYearGroupID' value='" . $classId . "' type='hidden'>";
+            $output .= "<input name='pupilsightRollGroupID' value='" . $sectionId . "' type='hidden'>";
+            $output .= "<input class='btn btn-link' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='" . __('This Week') . "'>";
+            $output .= '</form>';
+            $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
+            $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (7 * 24 * 60 * 60))) . "' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='" . $_SESSION[$guid]['viewCalendarSchool'] . "' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='" . $_SESSION[$guid]['viewCalendarPersonal'] . "' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]['viewCalendarSpaceBooking'] . "' type='hidden'>";
+            $output .= "<input name='fromTT' value='Y' type='hidden'>";
+            $output .= "<input name='pupilsightYearGroupID' value='" . $classId . "' type='hidden'>";
+            $output .= "<input name='pupilsightRollGroupID' value='" . $sectionId . "' type='hidden'>";
+            $output .= "<input class='btn btn-link' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='" . __('Next Week') . " >'>";
+            $output .= '</form>';
+            $output .= '</td>';
+            $output .= "<td style='vertical-align: top; text-align: right'>";
+            // $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&pupilsightTTID=".$row['pupilsightTTID']."$params'>";
+            // $output .= "<input name='pupilsightYearGroupID' value='".$classId."' type='hidden'>";
+            // $output .= "<input name='pupilsightRollGroupID' value='".$sectionId."' type='hidden'>";
+            // $output .= '<span class="relative">';
+            // $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp)."' type='text' style='height: 28px; width:100px; margin-right: 0px; float: none'> ";
+            // $output .= '</span>';
+            // $output .= '<script type="text/javascript">';
+            // $output .= "var ttDate=new LiveValidation('ttDate');";
+            // $output .= 'ttDate.add( Validate.Format, {pattern:';
+            // if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
+            //     $output .= "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
+            // } else {
+            //     $output .= $_SESSION[$guid]['i18n']['dateFormatRegEx'];
+            // }
+            // $output .= ', failureMessage: "Use ';
+            // if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
+            //     $output .= 'dd/mm/yyyy';
+            // } else {
+            //     $output .= $_SESSION[$guid]['i18n']['dateFormat'];
+            // }
+            // $output .= '." } );';
+            // $output .= 'ttDate.add(Validate.Presence);';
+            // $output .= '$("#ttDate").datepicker();';
+            // $output .= '</script>';
+
+            // $output .= "<input style='margin-top: 0px; margin-right: -2px' type='submit' value='".__('Go')."'>";
+            // $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
+            // $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
+            // $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            // $output .= "<input name='fromTT' value='Y' type='hidden'>";
+            // $output .= '</form>';
+            $output .= '</td>';
+            $output .= '</tr>';
+            $output .= '</table>';*/
+
+            //Check which days are school days
+            $daysInWeek = 0;
+            $days = array();
+            $timeStart = '';
+            $timeEnd = '';
+            try {
+                $dataDays = array();
+                $sqlDays = "SELECT * FROM pupilsightDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
+                $resultDays = $connection2->prepare($sqlDays);
+                $resultDays->execute($dataDays);
+            } catch (PDOException $e) {
+                $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+            }
+            $days = $resultDays->fetchAll();
+            $daysInWeek = $resultDays->rowCount();
+            foreach ($days as $day) {
+                if ($timeStart == '' or $timeEnd == '') {
+                    $timeStart = $day['schoolStart'];
+                    $timeEnd = $day['schoolEnd'];
+                } else {
+                    if ($day['schoolStart'] < $timeStart) {
+                        $timeStart = $day['schoolStart'];
+                    }
+                    if ($day['schoolEnd'] > $timeEnd) {
+                        $timeEnd = $day['schoolEnd'];
+                    }
+                }
+            }
+
+            //Sunday week adjust for timetable on home page (so Sundays show next week if the week starts on Sunday or Monday—i.e. it's Sunday now and Sunday is not a school day)
+            $homeSunday = true;
+            if ($q == '' && ($_SESSION[$guid]['firstDayOfTheWeek'] == 'Monday' || $_SESSION[$guid]['firstDayOfTheWeek'] == 'Sunday')) {
+                try {
+                    $dataDays = array();
+                    $sqlDays = "SELECT nameShort FROM pupilsightDaysOfWeek WHERE nameShort='Sun' AND schoolDay='N'";
+                    $resultDays = $connection2->prepare($sqlDays);
+                    $resultDays->execute($dataDays);
+                } catch (PDOException $e) {
+                    echo $e->getMessage();
+                }
+                if ($resultDays->rowCount() == 1) {
+                    $homeSunday = false;
+                }
+            }
+
+            //If school is closed on Sunday, and it is a Sunday, count forward, otherwise count back
+            if (!$homeSunday and date('D', $startDayStamp) == 'Sun') {
+                $startDayStamp = $startDayStamp + 86400;
+            } else {
+                while (date('D', $startDayStamp) != $days[0]['nameShort']) {
+                    $startDayStamp = $startDayStamp - 86400;
+                }
+            }
+
+            //Count forward to the end of the week
+            $endDayStamp = $startDayStamp + (86400 * ($daysInWeek - 1));
+
+            $schoolCalendarAlpha = 0.85;
+            $ttAlpha = 1.0;
+
+            if ($_SESSION[$guid]['viewCalendarSchool'] != 'N' or $_SESSION[$guid]['viewCalendarPersonal'] != 'N' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != 'N') {
+                $ttAlpha = 0.75;
+            }
+
+            //Get school calendar array
+            $allDay = false;
+            $eventsSchool = false;
+            if ($self == true and $_SESSION[$guid]['viewCalendarSchool'] == 'Y') {
+                if ($_SESSION[$guid]['calendarFeed'] != '') {
+                    $eventsSchool = getCalendarEvents($connection2, $guid,  $_SESSION[$guid]['calendarFeed'], $startDayStamp, $endDayStamp);
+                }
+                //Any all days?
+                if ($eventsSchool != false) {
+                    foreach ($eventsSchool as $event) {
+                        if ($event[1] == 'All Day') {
+                            $allDay = true;
+                        }
+                    }
+                }
+            }
+
+            //Get personal calendar array
+            $eventsPersonal = false;
+            if ($self == true and $_SESSION[$guid]['viewCalendarPersonal'] == 'Y') {
+                if ($_SESSION[$guid]['calendarFeedPersonal'] != '') {
+                    $eventsPersonal = getCalendarEvents($connection2, $guid,  $_SESSION[$guid]['calendarFeedPersonal'], $startDayStamp, $endDayStamp);
+                }
+                //Any all days?
+                if ($eventsPersonal != false) {
+                    foreach ($eventsPersonal as $event) {
+                        if ($event[1] == 'All Day') {
+                            $allDay = true;
+                        }
+                    }
+                }
+            }
+
+            $spaceBookingAvailable = isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage.php');
+            $eventsSpaceBooking = false;
+            if ($spaceBookingAvailable) {
+                //Get space booking array
+                if ($self == true and $_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
+                    $eventsSpaceBooking = getSpaceBookingEvents($guid, $connection2, $startDayStamp, $_SESSION[$guid]['pupilsightPersonID']);
+                }
+            }
+
+            global $container;
+            $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
+
+            $criteria = $staffCoverageGateway->newQueryCriteria()
+                ->filterBy('startDate', date('Y-m-d', $startDayStamp))
+                ->filterBy('endDate', date('Y-m-d', $endDayStamp))
+                ->filterBy('status', 'Accepted')
+                ->pageSize(0);
+            $coverageList = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $pupilsightPersonID);
+
+            foreach ($coverageList as $coverage) {
+                $fullName = Format::name($coverage['titleAbsence'], $coverage['preferredNameAbsence'], $coverage['surnameAbsence'], 'Staff', false, true);
+                if (empty($fullName)) {
+                    $fullName = Format::name($coverage['titleStatus'], $coverage['preferredNameStatus'], $coverage['surnameStatus'], 'Staff', false, true);
+                }
+
+                $eventsSpaceBooking[] = [
+                    'Coverage',
+                    __('Coverage'),
+                    '',
+                    $coverage['date'],
+                    $coverage['allDay'] == 'N' ? $coverage['timeStart'] : $timeStart,
+                    $coverage['allDay'] == 'N' ? $coverage['timeEnd'] : $timeEnd,
+                    $fullName,
+                    '',
+                ];
+            }
+
+            // STAFF ABSENCE
+            // Add an absence as a fake all-day personal event, so it doesn't overlap the calendar (which subs need to see!)
+            $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
+
+            $criteria = $staffAbsenceGateway->newQueryCriteria()
+                ->filterBy('dateStart', date('Y-m-d', $startDayStamp))
+                ->filterBy('dateEnd', date('Y-m-d', $endDayStamp))
+                ->filterBy('status', 'Approved')
+                ->pageSize(0);
+            $absenceList = $staffAbsenceGateway->queryAbsencesByPerson($criteria, $pupilsightPersonID, false);
+            $canViewAbsences = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php');
+
+            foreach ($absenceList as $absence) {
+                $summary = __('Absent');
+                if ($absence['coverage'] == 'Accepted') {
+                    $summary .= ' - ' . __('Coverage') . ': ' . Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true);
+                }
+                $allDay = true;
+                $url = $canViewAbsences
+                    ? $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Staff/absences_view_details.php&pupilsightStaffAbsenceID=' . $absence['pupilsightStaffAbsenceID']
+                    : '';
+                $eventsPersonal[] = [$summary, 'All Day', strtotime($absence['date']), null, '', $url];
+            }
+
+            //Count up max number of all day events in a day
+            $eventsCombined = false;
+            $maxAllDays = 0;
+            if ($allDay == true) {
+                if ($eventsPersonal != false and $eventsSchool != false) {
+                    $eventsCombined = array_merge($eventsSchool, $eventsPersonal);
+                } elseif ($eventsSchool != false) {
+                    $eventsCombined = $eventsSchool;
+                } elseif ($eventsPersonal != false) {
+                    $eventsCombined = $eventsPersonal;
+                }
+
+                $eventsCombined = msort($eventsCombined, 2, true);
+
+                $currentAllDays = 0;
+                $lastDate = '';
+                $currentDate = '';
+                foreach ($eventsCombined as $event) {
+                    if ($event[1] == 'All Day') {
+                        $currentDate = date('Y-m-d', $event[2]);
+                        if ($lastDate != $currentDate) {
+                            $currentAllDays = 0;
+                        }
+                        ++$currentAllDays;
+
+                        if ($currentAllDays > $maxAllDays) {
+                            $maxAllDays = $currentAllDays;
+                        }
+
+                        $lastDate = $currentDate;
+                    }
+                }
+            }
+
+            //Max diff time for week based on timetables
+            try {
+                $dataDiff = array('date1' => date('Y-m-d', ($startDayStamp + (86400 * 0))), 'date2' => date('Y-m-d', ($endDayStamp + (86400 * 1))), 'pupilsightTTID' => $row['pupilsightTTID']);
+                $sqlDiff = 'SELECT DISTINCT pupilsightTTColumn.pupilsightTTColumnID FROM pupilsightTTDay JOIN pupilsightTTDayDate ON (pupilsightTTDay.pupilsightTTDayID=pupilsightTTDayDate.pupilsightTTDayID) JOIN pupilsightTTColumn ON (pupilsightTTDay.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) WHERE (date>=:date1 AND date<=:date2) AND pupilsightTTID=:pupilsightTTID';
+                $resultDiff = $connection2->prepare($sqlDiff);
+                $resultDiff->execute($dataDiff);
+            } catch (PDOException $e) {
+                $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+            }
+            while ($rowDiff = $resultDiff->fetch()) {
+                try {
+                    $dataDiffDay = array('pupilsightTTColumnID' => $rowDiff['pupilsightTTColumnID']);
+                    $sqlDiffDay = 'SELECT * FROM pupilsightTTColumnRow WHERE pupilsightTTColumnID=:pupilsightTTColumnID ORDER BY timeStart';
+                    $resultDiffDay = $connection2->prepare($sqlDiffDay);
+                    $resultDiffDay->execute($dataDiffDay);
+                } catch (PDOException $e) {
+                    $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+                }
+                while ($rowDiffDay = $resultDiffDay->fetch()) {
+                    if ($rowDiffDay['timeStart'] < $timeStart) {
+                        $timeStart = $rowDiffDay['timeStart'];
+                    }
+                    if ($rowDiffDay['timeEnd'] > $timeEnd) {
+                        $timeEnd = $rowDiffDay['timeEnd'];
+                    }
+                }
+            }
+
+            //Max diff time for week based on special days timing change
+            try {
+                $dataDiff = array('date1' => date('Y-m-d', ($startDayStamp + (86400 * 0))), 'date2' => date('Y-m-d', ($startDayStamp + (86400 * 6))));
+                $sqlDiff = "SELECT * FROM pupilsightSchoolYearSpecialDay WHERE date>=:date1 AND date<=:date2 AND type='Timing Change' AND NOT schoolStart IS NULL AND NOT schoolEnd IS NULL";
+                $resultDiff = $connection2->prepare($sqlDiff);
+                $resultDiff->execute($dataDiff);
+            } catch (PDOException $e) {
+                $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+            }
+            while ($rowDiff = $resultDiff->fetch()) {
+                if ($rowDiff['schoolStart'] < $timeStart) {
+                    $timeStart = $rowDiff['schoolStart'];
+                }
+                if ($rowDiff['schoolEnd'] > $timeEnd) {
+                    $timeEnd = $rowDiff['schoolEnd'];
+                }
+            }
+
+            //Max diff based on school calendar events
+            if ($self == true and $eventsSchool != false) {
+                foreach ($eventsSchool as $event) {
+                    if (date('Y-m-d', $event[2]) <= date('Y-m-d', ($startDayStamp + (86400 * 6)))) {
+                        if ($event[1] != 'All Day') {
+                            if (date('H:i:s', $event[2]) < $timeStart) {
+                                $timeStart = date('H:i:s', $event[2]);
+                            }
+                            if (date('H:i:s', $event[3]) > $timeEnd) {
+                                $timeEnd = date('H:i:s', $event[3]);
+                            }
+                            if (date('Y-m-d', $event[2]) != date('Y-m-d', $event[3])) {
+                                $timeEnd = '23:59:59';
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Max diff based on personal calendar events
+            if ($self == true and $eventsPersonal != false) {
+                foreach ($eventsPersonal as $event) {
+                    if (date('Y-m-d', $event[2]) <= date('Y-m-d', ($startDayStamp + (86400 * 6)))) {
+                        if ($event[1] != 'All Day') {
+                            if (date('H:i:s', $event[2]) < $timeStart) {
+                                $timeStart = date('H:i:s', $event[2]);
+                            }
+                            if (date('H:i:s', $event[3]) > $timeEnd) {
+                                $timeEnd = date('H:i:s', $event[3]);
+                            }
+                            if (date('Y-m-d', $event[2]) != date('Y-m-d', $event[3])) {
+                                $timeEnd = '23:59:59';
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Max diff based on space booking events
+            if ($self == true and $eventsSpaceBooking != false) {
+                foreach ($eventsSpaceBooking as $event) {
+                    if ($event[3] <= date('Y-m-d', ($startDayStamp + (86400 * 6)))) {
+                        if ($event[4] < $timeStart) {
+                            $timeStart = $event[4];
+                        }
+                        if ($event[5] > $timeEnd) {
+                            $timeEnd = $event[5];
+                        }
+                    }
+                }
+            }
+
+            //Final calc
+            $diffTime = strtotime($timeEnd) - strtotime($timeStart);
+
+            if ($narrow == 'trim') {
+                $width = (ceil(640 / $daysInWeek) - 20) . 'px';
+            } elseif ($narrow == 'narrow') {
+                $width = (ceil(515 / $daysInWeek) - 20) . 'px';
+            } else {
+                $width = (ceil(690 / $daysInWeek) - 20) . 'px';
+            }
+
+            $count = 0;
+
+            $output .= '<div class="overflow-x-scroll sm:overflow-x-auto overflow-y-hidden mb-6">';
+            /*$output .= "<table class='table mini mb-1' border='1' style='border: 1px solid rgba(110, 117, 130, 0.2);width: ";
+            if ($narrow == 'trim') {
+                $output .= '700px';
+            } elseif ($narrow == 'narrow') {
+                $output .= '575px';
+            } else {
+                $output .= '750px';
+            }
+            $output .= ";'>";*/
+            $output .= "<table class='table mb-1' border='1' style='border: 1px solid rgba(110, 117, 130, 0.2);";
+            //Spit out controls for displaying calendars
+            /*
+            if ($self == true and ($_SESSION[$guid]['calendarFeed'] != '' or $_SESSION[$guid]['calendarFeedPersonal'] != '' or $_SESSION[$guid]['viewCalendarSpaceBooking'] != '')) {
+                $output .= "<tr class='head' style='height: 37px;'>";
+                $output .= "<th class='ttCalendarBar' colspan=" . ($daysInWeek + 1) . '>';
+                $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q" . $params . "' style='padding: 5px 5px 0 0'>";
+                if ($_SESSION[$guid]['calendarFeed'] != '' and $_SESSION[$guid]['googleAPIAccessToken'] != null) {
+                    $checked = '';
+                    if ($_SESSION[$guid]['viewCalendarSchool'] == 'Y') {
+                        $checked = 'checked';
+                    }
+                    $output .= "<span class='ttSchoolCalendar' style='opacity: $schoolCalendarAlpha'>" . __('School Calendar');
+                    $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='schoolCalendar' onclick='submit();'/>";
+                    $output .= '</span>';
+                }
+                if ($_SESSION[$guid]['calendarFeedPersonal'] != '' and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
+                    $checked = '';
+                    if ($_SESSION[$guid]['viewCalendarPersonal'] == 'Y') {
+                        $checked = 'checked';
+                    }
+                    $output .= "<span class='ttPersonalCalendar' style='opacity: $schoolCalendarAlpha'>" . __('Personal Calendar');
+                    $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='personalCalendar' onclick='submit();'/>";
+                    $output .= '</span>';
+                }
+                if ($spaceBookingAvailable) {
+                    if ($_SESSION[$guid]['viewCalendarSpaceBooking'] != '') {
+                        $checked = '';
+                        if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y') {
+                            $checked = 'checked';
+                        }
+                        $output .= "<span class='ttSpaceBookingCalendar' style='opacity: $schoolCalendarAlpha'><a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Timetable/spaceBooking_manage.php'>" . __('Bookings') . '</a> ';
+                        $output .= "<input $checked style='margin-left: 3px' type='checkbox' name='spaceBookingCalendar' onclick='submit();'/>";
+                        $output .= '</span>';
+                    }
+                }
+
+                $output .= "<input type='hidden' name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp) . "'>";
+                $output .= "<input name='fromTT' value='Y' type='hidden'>";
+                $output .= '</form>';
+                $output .= '</th>';
+                $output .= '</tr>';
+            }
+            */
+
+            $output .= "<tr class='head'>";
+            $output .= "<th style='vertical-align: top; width: 50px !important; text-align: center'>";
+            //Calculate week number
+            $week = getWeekNumber($startDayStamp, $connection2, $guid);
+            if ($week != false) {
+                $output .= sprintf(__('Week %1$s'), $week) . '<br/>';
+            }
+            $output .= "<span style='font-weight: normal; font-style: italic;'>" . __('School Time') . '<span>';
+            $output .= '</th>';
+            $count = 0;
+            foreach ($days as $day) {
+                if ($day['schoolDay'] == 'Y') {
+                    if ($count == 0) {
+                        $firstSequence = $day['sequenceNumber'];
+                    }
+                    $dateCorrection = ($day['sequenceNumber'] - 1) - ($firstSequence - 1);
+
+                    unset($rowDay);
+                    $color = '';
+                    try {
+                        $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'pupilsightTTID' => $pupilsightTTID);
+                        $sqlDay = 'SELECT nameShort, color, fontColor FROM pupilsightTTDay JOIN pupilsightTTDayDate ON (pupilsightTTDay.pupilsightTTDayID=pupilsightTTDayDate.pupilsightTTDayID) WHERE date=:date AND pupilsightTTID=:pupilsightTTID';
+                        $resultDay = $connection2->prepare($sqlDay);
+                        $resultDay->execute($dataDay);
+                    } catch (PDOException $e) {
+                    }
+                    if ($resultDay->rowCount() == 1) {
+                        $rowDay = $resultDay->fetch();
+                        if ($rowDay['color'] != '') {
+                            $color .= "; background-color: #" . $rowDay['color'] . "; background-image: none";
+                        }
+                        if ($rowDay['fontColor'] != '') {
+                            $color .= "; color: #" . $rowDay['fontColor'];
+                        }
+                    }
+
+                    $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
+                    $output .= "<th $today style='vertical-align: top; text-align: center; width: ";
+
+                    if ($narrow == 'trim') {
+                        $output .= (550 / $daysInWeek);
+                    } elseif ($narrow == 'narrow') {
+                        $output .= (375 / $daysInWeek);
+                    } else {
+                        $output .= (550 / $daysInWeek);
+                    }
+                    $output .= "px" . $color . "'>";
+                    if ($nameShortDisplay != 'Timetable Day Short Name') {
+                        $output .= __($day['nameShort']) . '<br/>';
+                    } else {
+                        if (!empty($rowDay['nameShort']) && $rowDay['nameShort'] != '') {
+                            $output .= $rowDay['nameShort'] . '<br/>';
+                        } else {
+                            $output .= __($day['nameShort']) . '<br/>';
+                        }
+                    }
+                    $output .= "<span style='font-size: 80%; font-style: italic'>" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) . '</span><br/>';
+                    try {
+                        $dataSpecial = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                        $sqlSpecial = "SELECT * FROM pupilsightSchoolYearSpecialDay WHERE date=:date AND type='Timing Change'";
+                        $resultSpecial = $connection2->prepare($sqlSpecial);
+                        $resultSpecial->execute($dataSpecial);
+                    } catch (PDOException $e) {
+                        $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+                    }
+                    if ($resultSpecial->rowcount() == 1) {
+                        $rowSpecial = $resultSpecial->fetch();
+                        $output .= "<span style='font-size: 80%; font-weight: bold'><u>" . $rowSpecial['name'] . '</u></span>';
+                    }
+                    $output .= '</th>';
+                }
+                $count++;
+            }
+            $output .= '</tr>';
+
+            //Space for all day events
+            if (($eventsSchool == true or $eventsPersonal == true) and $allDay == true and $eventsCombined != null) {
+                $output .= "<tr style='height: " . ((31 * $maxAllDays) + 5) . "px'>";
+                $output .= "<td style='vertical-align: top;text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>";
+                $output .= "<span style='font-size: 80%'><b>" . sprintf(__('All Day%1$s Events'), '<br/>') . '</b></span>';
+                $output .= '</td>';
+                $output .= "<td colspan=$daysInWeek style='vertical-align: top;text-align: center; border-top: 1px solid #888; border-bottom: 1px solid #888'>";
+                $output .= '</td>';
+                $output .= '</tr>';
+            }
+
+            $output .= "<tr style='height:" . (ceil($diffTime / 60) + 25) . "px'>";
+            $output .= "<td class='ttTime' style='height: 300px;text-align: center; vertical-align: top;padding-top: 0 !important;'>";
+            $output .= "<div style='position: relative;'>";
+            $countTime = 0;
+            $time = $timeStart;
+            $output .= "<div $title style='z-index: " . $zCount . "; position: absolute; top: -3px;border: none; width: 100%;height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
+            $output .= substr($time, 0, 5) . '<br/>';
+            $output .= '</div>';
+            $time = date('H:i:s', strtotime($time) + 3600);
+            $spinControl = 0;
+            while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 2))) {
+                ++$countTime;
+                $output .= "<div $title style='z-index: $zCount; position: absolute; top:" . (($countTime * 60) - 5) . "px ;border: none; width: 100%;height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
+                $output .= substr($time, 0, 5) . '<br/>';
+                $output .= '</div>';
+                $time = date('H:i:s', strtotime($time) + 3600);
+                ++$spinControl;
+            }
+
+            $output .= '</div>';
+            $output .= '</td>';
+
+            //Run through days of the week
+            foreach ($days as $day) {
+                if ($day['schoolDay'] == 'Y') {
+                    $dateCorrection = ($day['sequenceNumber'] - 1) - ($firstSequence - 1);
+
+                    //Check to see if day is term time
+                    $isDayInTerm = false;
+                    try {
+                        $dataTerm = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID']);
+                        $sqlTerm = 'SELECT pupilsightSchoolYearTerm.firstDay, pupilsightSchoolYearTerm.lastDay FROM pupilsightSchoolYearTerm, pupilsightSchoolYear WHERE pupilsightSchoolYearTerm.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID AND pupilsightSchoolYear.pupilsightSchoolYearID=:pupilsightSchoolYearID';
+                        $resultTerm = $connection2->prepare($sqlTerm);
+                        $resultTerm->execute($dataTerm);
+                    } catch (PDOException $e) {
+                        $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+                    }
+                    while ($rowTerm = $resultTerm->fetch()) {
+                        if (date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) >= $rowTerm['firstDay'] and date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) <= $rowTerm['lastDay']) {
+                            $isDayInTerm = true;
+                        }
+                    }
+
+                    if ($isDayInTerm == true) {
+                        //Check for school closure day
+                        try {
+                            $dataClosure = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                            $sqlClosure = 'SELECT * FROM pupilsightSchoolYearSpecialDay WHERE date=:date';
+                            $resultClosure = $connection2->prepare($sqlClosure);
+                            $resultClosure->execute($dataClosure);
+                        } catch (PDOException $e) {
+                            $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+                        }
+                        if ($resultClosure->rowCount() == 1) {
+                            $rowClosure = $resultClosure->fetch();
+                            if ($rowClosure['type'] == 'School Closure') {
+                                $day = renderTTDaypp($guid, $connection2, $row['pupilsightTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $pupilsightPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, '', '', $edit);
+                            } elseif ($rowClosure['type'] == 'Timing Change') {
+                                $day = renderTTDaypp($guid, $connection2, $row['pupilsightTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $pupilsightPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, $rowClosure['schoolStart'], $rowClosure['schoolEnd'], $edit);
+                            }
+                        } else {
+                            $day = renderTTDaypp($guid, $connection2, $row['pupilsightTTID'], true, $startDayStamp, $dateCorrection, $daysInWeek, $pupilsightPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, '', '', $edit);
+                        }
+                    } else {
+                        $day = renderTTDaypp($guid, $connection2, $row['pupilsightTTID'], false, $startDayStamp, $dateCorrection, $daysInWeek, $pupilsightPersonID, $timeStart, $eventsSchool, $eventsPersonal, $eventsSpaceBooking, $diffTime, $maxAllDays, $narrow, '', '', $edit);
+                    }
+
+                    if ($day == '') {
+                        $day .= "<td style='font-size: 12px;padding:0 !important;'></td>";
                     }
 
                     $output .= $day;
