@@ -153,6 +153,13 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach_staff\" id=\"emailattach_camp\">
+                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
+                        <input type='checkbox' class='chkType' data-type=\"email\" name='email' value='1'>
+                        Email
+                        <input type='checkbox' class='chkType' data-type=\"emailAlternate\" name='emailAlternate'
+                            value='1'>
+                        Alternate Email
+                    </div>
                 </div>
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
@@ -518,6 +525,13 @@ class __TwigTemplate_15e50498ae5a5d72b54aaa4bf1a33996851b97a5deeeadcd5341d91a583
                     <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach_staff\" id=\"emailattach_camp\">
+                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
+                        <input type='checkbox' class='chkType' data-type=\"email\" name='email' value='1'>
+                        Email
+                        <input type='checkbox' class='chkType' data-type=\"emailAlternate\" name='emailAlternate'
+                            value='1'>
+                        Alternate Email
+                    </div>
                 </div>
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>

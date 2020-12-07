@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
-        //->pageSize(1)
+        ->pageSize(10000)
         ->sortBy(['id'])
         ->fromPOST();
 
@@ -242,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
             //     $col->addContent('<a id="refundTransaction"  class=" btn btn-primary" >Refund</a> <a style="display:none;" class="thickbox " id="refundTransactionSubmit" href="fullscreen.php?q=/modules/Finance/fee_transaction_refund.php&width=800" >RefundSubmit</a>');
 
             $col = $row->addColumn()->setClass('newdes');
-                $col->addContent('<a id="receipt_export" class=" btn btn-primary">Download Receipts <i class="fas fa-download" aria-hidden="true"></i></a><a id="downloadLink" data-hrf="index.php?q=/modules/Finance/ajaxfile.php&id=" href="index.php?q=/modules/Finance/ajaxfile.php" class="" style="display:none;">Download Receipts</a>');    
+                $col->addContent('<a id="receipt_export" class=" btn btn-primary">Download Receipts <i class="fas fa-download" aria-hidden="true"></i></a><a id="downloadLink" data-hrf="index.php?q=/modules/Finance/ajaxfile.php&id=" href="index.php?q=/modules/Finance/ajaxfile.php" class="" style="display:none;">Download Receipts</a>&nbsp;&nbsp;<a style="color:#666;cursor:pointer;" id="export_transaction" class="btn btn-primary">Export</a>');    
             
         $row = $form->addRow()->addClass('tran_tbl');
             $col = $row->addColumn()->setClass('newdes');
@@ -252,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
         $col->addLabel('', __('Total Transaction Amount: '.number_format($t_amount,2)));
               
         $col = $row->addColumn()->setClass('newdes');
-        $col->addContent('<a style="color:#666;cursor:pointer;" id="export_transaction"><span style="position: absolute;  left: 220px;"><i class="fas fa-file-export"></i>Export</span></a>');
+        $col->addContent('');
 
             // $col = $row->addColumn()->setClass('newdes');
             // $col->addLabel('', __('Export:'));
@@ -320,6 +320,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
         color: green;
         margin: 6px;
         cursor: pointer;
+    }
+
+    .table-responsive {
+        height : 500px !important;
     }
 </style>
 

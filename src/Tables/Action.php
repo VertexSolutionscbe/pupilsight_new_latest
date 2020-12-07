@@ -40,6 +40,8 @@ class Action extends WebLink
                             break;
             case 'edit':    $this->setIcon('config');
                             break;
+            case 'editAlert':  $this->setIcon('config');
+                        break;
             case 'editnew':  $this->setIcon('config')->modalWindowNew(650, 100);
                             break;
             case 'uploadtemplate':  $this->setIcon('config')->modalWindowNew(650, 100);
@@ -52,7 +54,7 @@ class Action extends WebLink
                             break;                
             case 'copynew':  $this->setIcon('config')->modalWindowNew(650, 100);
                         break;                                
-            case 'delete':  $this->setIcon('garbage')->modalWindow(650, 135);
+            case 'delete':  $this->setIcon('garbage')->modalWindow(650, 200);
                             break;
             case 'deletenew':  $this->setIcon('garbage')->modalWindow(650, 135);
                             break;
@@ -277,7 +279,7 @@ class Action extends WebLink
                     $this->getIcon()
                 ));
 			} 
-            elseif($this->getLabel() == 'Edit'|| $this->getLabel() == 'edit'||$this->getLabel() == 'Edit Individual Needs Details'){
+            elseif($this->getLabel() == 'Edit'|| $this->getLabel() == 'edit'||$this->getLabel() == 'Edit Individual Needs Details' || $this->getLabel() == 'EditAlert'){
 				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-pencil-box-outline mdi-24px"></i>', 
                     ($this->displayLabel? $this->getLabel() : ''),
                     $this->getLabel(), 

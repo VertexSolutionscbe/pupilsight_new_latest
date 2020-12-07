@@ -227,26 +227,26 @@ if ($type == 'getAjaxFeeStructureItem') {
     }
     $feeItemData = $feeItemData1 + $feeItemData2;
 
-    $data = '<tr id="seatdiv" class="seatdiv fixedfine flex flex-col sm:flex-row justify-between content-center p-0 deltr' . $aid . '"><td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+    $data = '<div id="seatdiv" class="row mb-1 seatdiv fixedfine deltr' . $aid . '" style="margin-bottom:20px !important;"><div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><select id="feeStructureItemDisableId" name="fn_fee_item_id[' . $aid . ']" class="w-full  txtfield allFeeItemId">';
     foreach ($feeItemData as $k => $st) {
         $data .= '<option value="' . $k . '">' . $st . '</option>';
     }
     $data .= ' </select></div></div>
-        </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+        </div></div>
+        <div class="col-sm  newdes nobrdbtm">
             <div class="input-group stylish-input-group">
                 <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="amount" name="amount[' . $aid . ']" class="w-full  txtfield numfield kountAmt"></div></div>
-            </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+            </div></div>
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><select id="tax" name="tax[' . $aid . ']" class="w-full txtfield taxOptionSelect" data-id="' . $aid . '"><option value="N">No</option><option value="Y">Yes</option></select></div></div>
         </div>  
-        </td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+        </div>
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group" style="display:inline-flex;">
-            <div class="dte mb-1"></div><div class=" txtfield kountseat szewdt numfield mb-1"><div class="flex-1 relative"><input type="text" id="taxPercent' . $aid . '" name="tax_percent[' . $aid . ']" class="w-full txtfield kountseat szewdt numfield" readonly></div></div><div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="far fa-times-circle delSeattr" data-id="' . $aid . '"></i></div></div></td></tr>';
+            <div class="dte mb-1"></div><div class=" txtfield kountseat szewdt numfield mb-1"><div class="flex-1 relative"><input type="text" id="taxPercent' . $aid . '" name="tax_percent[' . $aid . ']" class="w-full txtfield kountseat szewdt numfield" readonly></div></div><div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' . $aid . '"></i></div></div></div></div>';
 
 
     echo $data;
@@ -302,34 +302,34 @@ if ($type == 'getAjaxInvoiceItem') {
     }
     $feeItemData = $feeItemData1 + $feeItemData2;
 
-    $data = '<tr style="margin-bottom:0px !important;" id="seatdiv" class="seatdiv fixedfine flex flex-col sm:flex-row justify-between content-center p-0 deltr' . $aid . '"><td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
-        <div class="input-group stylish-input-group">
+    $data = '<div style="" id="seatdiv" class="row mb-1 seatdiv fixedfine  deltr' . $aid . '"><div class="col-sm  newdes nobrdbtm">
+        <div >
             <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><select id="feeStructureItemDisableId" name="fn_fee_item_id[' . $aid . ']" class="w-full  txtfield allFeeItemId">';
     foreach ($feeItemData as $k => $st) {
         $data .= '<option value="' . $k . '">' . $st . '</option>';
     }
     $data .= ' </select></div></div>
-        </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
-            <div class="input-group stylish-input-group">
+        </div></div>
+        <div class="col-sm  newdes nobrdbtm">
+            <div >
                 <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="description" name="description[' . $aid . ']" class="w-full  txtfield"></div></div>
-            </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
-            <div class="input-group stylish-input-group">
+            </div></div>
+        <div class="col-sm  newdes nobrdbtm">
+            <div >
                 <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="amount" name="amount[' . $aid . ']" class="w-full  txtfield numfield"></div></div>
-            </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
-        <div class="input-group stylish-input-group">
+            </div></div>
+        <div class="col-sm  newdes nobrdbtm">
+        <div >
             <div class="dte mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="tax" name="tax[' . $aid . ']" class="w-full txtfield numfield"></div></div>
         </div>  
-        </td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
-            <div class="input-group stylish-input-group" style="display:inline-flex;">
+        </div>
+        <div class="col-sm  newdes nobrdbtm">
+            <div  style="display:inline-flex;">
                 <div class="dte mb-1"></div><div class="  txtfield kountseat szewdt2 numfield mb-1"><div class="flex-1 relative"><input type="text" id="discount" name="discount[' . $aid . ']" class="w-full  txtfield szewdt2 numfield"></div></div>
-                <div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="far fa-times-circle delSeattr" data-id="' . $aid . '"></i></div>
-            </div></td>
+                <div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' . $aid . '"></i></div>
+            </div></div>
 
-        </tr>';
+        </div>';
 
 
     echo $data;

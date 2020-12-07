@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
             $col->addTextField('');     
         
         $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
-             $col->addButton(__('Add'))->setID('addInvoiceItem')->addData('cid', '1')->addData('disid', 'nodata')->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+             $col->addContent('<a style="cursor:pointer;" data-cid="1" data-disid="nodata" id="addInvoiceItem" class="btn btn-primary lftbutt">Add</a>');
 
        
 
@@ -232,6 +232,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
     }
 
     #seatdiv {
-        margin-bottom:20px;
+        margin-bottom:20px !important;
     }
 </style>

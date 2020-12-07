@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         echo "<a style='display:none' id='clickchnagestatus' href='fullscreen.php?q=/modules/Staff/change_staff_status.php'  class='thickbox '>Change Route</a>";
         echo "<div style='height:50px;'><div class='float-left mb-2'><a  id=''  data-toggle='modal' data-target='#large-modal-new_staff' data-noti='2'  class='sendButton_staff btn btn-primary'>Send SMS</a>&nbsp;&nbsp;";
         echo "<a  id='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_staff' class='sendButton_staff btn btn-primary'>Send Email</a>&nbsp;&nbsp;<a  id='change_status' data-type='staff'  data-noti='1'  class=' btn btn-primary'>Change Status</a>";
-        echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/message_history.php' class='btn btn-primary' id='sendEmail'>SMS - SENT ITEMS</a>";
+        echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/message_history.php' class='btn btn-primary' id='sendEmail'>SMS/EMAIL - SENT ITEMS</a>";
         echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/staff_manage_add.php' class='btn btn-primary' id='sendEmail'>ADD</a>";
         echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Staff/field_to_show.php'  >Field to Show</a>";
         echo "&nbsp;&nbsp;<a data-hrf='index.php?q=/modules/Staff/feedback_manage.php' href='' class='btn btn-primary' id='addFeedback'>Feedback</a>";
@@ -171,7 +171,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                     $table->addColumn('email', __('Email'));
                 }
                 if ($sf['field_name'] == 'phone1') {
-                    $table->addColumn('phone1', __('Phone'));
+                    $table->addColumn('phone1', __('Phone 1'));
+                }
+                if ($sf['field_name'] == 'phone2') {
+                    $table->addColumn('phone2', __('Phone 2'));
+                }
+                if ($sf['field_name'] == 'phone3') {
+                    $table->addColumn('phone3', __('Phone 3'));
+                }
+                if ($sf['field_name'] == 'phone4') {
+                    $table->addColumn('phone4', __('Phone 4'));
                 }
                 if ($sf['field_name'] == 'type') {
                     $table->addColumn('type', __('Type'));

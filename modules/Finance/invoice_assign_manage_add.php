@@ -1,14 +1,6 @@
 <?php
 
-echo '<style>.right.mb-1 {
-    margin-bottom: 15px !important;
-}
 
-.mbtm3, select {
-    margin-bottom: 13px !important;
-    height: 26px !important;
-    width: 100%;
-}</style>';
 /*
 Pupilsight, Flexible & Open School System
 */

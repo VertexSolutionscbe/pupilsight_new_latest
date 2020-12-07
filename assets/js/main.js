@@ -2894,6 +2894,7 @@
             columns: [0, 1, 2, 3, 4, 5]
 
         });
+        location.reload();
 
     });
 
@@ -3492,28 +3493,32 @@
                         alert('You Have to Select Recipient.');
                     }
                 } else if (emailquote != '') {
-
-                    formData.append('stuid', stuid);
-                    formData.append('emailquote', emailquote);
-                    formData.append('smsquote', smsquote);
-                    formData.append('type', type);
-                    formData.append('subjectquote', subjectquote);
-                    $.ajax({
-                        url: 'modules/Staff/send_staff_email_msg.php',
-                        type: 'post',
-                        data: formData,
-                        contentType: false,
-                        cache: false,
-                        processData: false,
-                        async: false,
-                        success: function (response) {
-                            $("#preloader").hide();
-                            alert('Your Message Sent Successfully! click Ok to continue ');
-                            $("#sendEmailSms_Staff")[0].reset();
-                            $("#closeSMT").click();
-                            // location.reload();
-                        }
-                    });
+                    if (type != '') {
+                        formData.append('stuid', stuid);
+                        formData.append('emailquote', emailquote);
+                        formData.append('smsquote', smsquote);
+                        formData.append('type', type);
+                        formData.append('subjectquote', subjectquote);
+                        $.ajax({
+                            url: 'modules/Staff/send_staff_email_msg.php',
+                            type: 'post',
+                            data: formData,
+                            contentType: false,
+                            cache: false,
+                            processData: false,
+                            async: false,
+                            success: function (response) {
+                                $("#preloader").hide();
+                                alert('Your Message Sent Successfully! click Ok to continue ');
+                                $("#sendEmailSms_Staff")[0].reset();
+                                $("#closeSMT").click();
+                                // location.reload();
+                            }
+                        });
+                    } else {
+                        $("#preloader").hide();
+                        alert('You Have to Select Recipient.');
+                    }
 
                 } else {
                     $("#preloader").hide();

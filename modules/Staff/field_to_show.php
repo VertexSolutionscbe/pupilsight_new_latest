@@ -94,7 +94,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             </tr>
             <tr>
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="phone1" <?php if (in_array("phone1", $field)) { ?> checked <?php } ?>></td>
-                <td>Phone</td>
+                <td>Phone 1</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="phone2" <?php if (in_array("phone2", $field)) { ?> checked <?php } ?>></td>
+                <td>Phone 2</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="phone3" <?php if (in_array("phone3", $field)) { ?> checked <?php } ?>></td>
+                <td>Phone 3</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="phone4" <?php if (in_array("phone4", $field)) { ?> checked <?php } ?>></td>
+                <td>Phone 4</td>
             </tr>
             <tr>
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="type" <?php if (in_array("type", $field)) { ?> checked <?php } ?>></td>

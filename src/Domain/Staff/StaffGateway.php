@@ -37,7 +37,7 @@ class StaffGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'pupilsightPerson.pupilsightPersonID','pupilsightPerson.officialName','assignstaff_toclasssection.pupilsightMappingID','pupilsightProgramClassSectionMapping.pupilsightProgramID' ,'pupilsightPerson.title', 'pupilsightPerson.surname','pupilsightPerson.email','pupilsightPerson.phone1', 'pupilsightPerson.preferredName', 'pupilsightPerson.status', 'pupilsightPerson.username', 'pupilsightPerson.image_240','pupilsightStaff.staff_status AS stat',
-                'pupilsightStaff.pupilsightStaffID','pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightStaff.initials', 'pupilsightStaff.type', 'pupilsightStaff.jobTitle', 'pupilsightPerson.passwordStrong as stfPassword', 'pupilsightPerson.username as stfUsername','pupilsightPerson.dob','pupilsightPerson.gender',
+                'pupilsightStaff.pupilsightStaffID','pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightStaff.initials', 'pupilsightStaff.type', 'pupilsightStaff.jobTitle', 'pupilsightPerson.passwordStrong as stfPassword', 'pupilsightPerson.username as stfUsername','pupilsightPerson.dob','pupilsightPerson.gender','pupilsightPerson.phone2','pupilsightPerson.phone3','pupilsightPerson.phone4'
             ])
             ->innerJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=pupilsightStaff.pupilsightPersonID')
             ->leftJoin('assignstaff_toclasssection', 'assignstaff_toclasssection.pupilsightPersonID=pupilsightStaff.pupilsightPersonID') 
