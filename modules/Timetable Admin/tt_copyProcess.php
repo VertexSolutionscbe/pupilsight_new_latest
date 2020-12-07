@@ -22,6 +22,9 @@ $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
 $pupilsightProgramID = $_POST['pupilsightProgramID'];
 $pupilsightTTID = $_POST['pupilsightTTID'];
 
+
+
+
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt.php&pupilsightSchoolYearID=$pupilsightSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') == false) {
@@ -51,54 +54,58 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
             header("Location: {$URL}");
         } else {
             //Write to database
-            try {
-                    //take pupilsightTTID value for insering
-                $datac = array('pupilsightTTID' => $pupilsightTTID);
-                $sqlc='SELECT * FROM  pupilsightTTDay WHERE pupilsightTTID =:pupilsightTTID'; 
+            foreach ($pupilsightRollGroupIDList as $pupilsightRollGroupIDList1){
+                if($pupilsightRollGroupIDList1!=''){
+                    try {
+                        //take pupilsightTTID value for insering
+                        $datac = array('pupilsightTTID' => $pupilsightTTID);
+                        $sqlc='SELECT * FROM  pupilsightTTDay WHERE pupilsightTTID =:pupilsightTTID';
 
-                $resultc = $connection2->prepare($sqlc);
-                $resultc->execute($datac);   
-                $values = $resultc->fetchAll();
-               
-                        // print_r($values)  ;die();            
-       
-                $data = array('name' => $name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'nameShort' => $nameShort, 'nameShortDisplay' => $nameShortDisplay, 'active' => $active, 'pupilsightYearGroupIDList' => $pupilsightYearGroupIDList, 'pupilsightRollGroupIDList' => $pupilsightRollGroupIDList,'pupilsightProgramID'=>$pupilsightProgramID);
-                $sql = 'INSERT INTO pupilsightTT SET pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, nameShort=:nameShort, nameShortDisplay=:nameShortDisplay, active=:active, pupilsightProgramID=:pupilsightProgramID,pupilsightYearGroupIDList=:pupilsightYearGroupIDList, pupilsightRollGroupIDList=:pupilsightRollGroupIDList';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-                //last ID
-                $strId = $connection2->lastInsertID();
-           
-                foreach($values as $val){              
-                $datar = array('pupilsightTTID'=>$strId,'pupilsightTTColumnID' =>  $val['pupilsightTTColumnID'],'name' => $val['name'], 'nameShort'=>$val['nameShort'],'color' =>$val['color'],'fontColor' => $val['fontColor']);                 
-                $sqlr = 'INSERT INTO pupilsightTTDay SET pupilsightTTID=:pupilsightTTID, name=:name, nameShort=:nameShort, color=:color, fontColor=:fontColor, pupilsightTTColumnID=:pupilsightTTColumnID';              
-                $resultr = $connection2->prepare($sqlr);
-                $resultr->execute($datar);
+                        $resultc = $connection2->prepare($sqlc);
+                        $resultc->execute($datac);
+                        $values = $resultc->fetchAll();
 
-                $ttc = $connection2->lastInsertID();
+                                // print_r($values)  ;die();
 
-                $datat = array('pupilsightTTDayID' => $val['pupilsightTTDayID']);
-               
-                $sqlrc='SELECT * FROM  pupilsightTTDayRowClass WHERE pupilsightTTDayID =:pupilsightTTDayID'; 
-                $resultrow = $connection2->prepare($sqlrc);
-                $resultrow->execute($datat);   
-                 $valueRow = $resultrow->fetchAll();
-                 foreach ($valueRow as $value) {
-                    $data = array('pupilsightTTColumnRowID' => $value['pupilsightTTColumnRowID'], 'pupilsightTTDayID' =>$ttc, 'pupilsightCourseClassID' => $value['pupilsightCourseClassID'], 'pupilsightSpaceID' => $value['pupilsightSpaceID']);
-                    $sql = 'INSERT INTO pupilsightTTDayRowClass SET pupilsightTTColumnRowID=:pupilsightTTColumnRowID, pupilsightTTDayID=:pupilsightTTDayID, pupilsightCourseClassID=:pupilsightCourseClassID, pupilsightSpaceID=:pupilsightSpaceID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                   
-                 }
-              
-            
-            }
+                        $data = array('name' => $name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'nameShort' => $nameShort, 'nameShortDisplay' => $nameShortDisplay, 'active' => $active, 'pupilsightYearGroupIDList' => $pupilsightYearGroupIDList, 'pupilsightRollGroupIDList' => $pupilsightRollGroupIDList1,'pupilsightProgramID'=>$pupilsightProgramID);
+                        $sql = 'INSERT INTO pupilsightTT SET pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, nameShort=:nameShort, nameShortDisplay=:nameShortDisplay, active=:active, pupilsightProgramID=:pupilsightProgramID,pupilsightYearGroupIDList=:pupilsightYearGroupIDList, pupilsightRollGroupIDList=:pupilsightRollGroupIDList';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                        //last ID
+                        $strId = $connection2->lastInsertID();
 
-               
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
+                        foreach($values as $val){
+                        $datar = array('pupilsightTTID'=>$strId,'pupilsightTTColumnID' =>  $val['pupilsightTTColumnID'],'name' => $val['name'], 'nameShort'=>$val['nameShort'],'color' =>$val['color'],'fontColor' => $val['fontColor']);
+                        $sqlr = 'INSERT INTO pupilsightTTDay SET pupilsightTTID=:pupilsightTTID, name=:name, nameShort=:nameShort, color=:color, fontColor=:fontColor, pupilsightTTColumnID=:pupilsightTTColumnID';
+                        $resultr = $connection2->prepare($sqlr);
+                        $resultr->execute($datar);
+
+                        $ttc = $connection2->lastInsertID();
+
+                        $datat = array('pupilsightTTDayID' => $val['pupilsightTTDayID']);
+
+                        $sqlrc='SELECT * FROM  pupilsightTTDayRowClass WHERE pupilsightTTDayID =:pupilsightTTDayID';
+                        $resultrow = $connection2->prepare($sqlrc);
+                        $resultrow->execute($datat);
+                         $valueRow = $resultrow->fetchAll();
+                         foreach ($valueRow as $value) {
+                            $data = array('pupilsightTTColumnRowID' => $value['pupilsightTTColumnRowID'], 'pupilsightTTDayID' =>$ttc, 'pupilsightCourseClassID' => $value['pupilsightCourseClassID'], 'pupilsightSpaceID' => $value['pupilsightSpaceID']);
+                            $sql = 'INSERT INTO pupilsightTTDayRowClass SET pupilsightTTColumnRowID=:pupilsightTTColumnRowID, pupilsightTTDayID=:pupilsightTTDayID, pupilsightCourseClassID=:pupilsightCourseClassID, pupilsightSpaceID=:pupilsightSpaceID';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+
+                         }
+
+
+                    }
+
+
+                    } catch (PDOException $e) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    }
+                }
             }
 
             //Last insert ID

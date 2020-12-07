@@ -355,6 +355,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                                 try {
                                     $dataSpace = array('name' => $row['dayName'], 'pupilsightTTID' => $pupilsightTTID);
                                     $sqlSpace = 'SELECT * FROM pupilsightTTDay WHERE name=:name AND pupilsightTTID=:pupilsightTTID';
+                                    //print_r($dataSpace);print_r($sqlSpace);die();
                                     $resultSpace = $connection2->prepare($sqlSpace);
                                     $resultSpace->execute($dataSpace);
                                 } catch (PDOException $e) {
@@ -400,13 +401,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                             while ($row = $result->fetch()) {
                                 try {
                                     $dataSpace = array('rowName' => $row['rowName'], 'dayName' => $row['dayName'], 'pupilsightTTID' => $pupilsightTTID);
-                                    $sqlSpace = 'SELECT pupilsightTTColumnRow.name, pupilsightTTDay.name FROM pupilsightTTDay JOIN pupilsightTT ON (pupilsightTTDay.pupilsightTTID=pupilsightTT.pupilsightTTID) JOIN pupilsightTTColumn ON (pupilsightTTDay.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) WHERE pupilsightTT.pupilsightTTID=:pupilsightTTID AND pupilsightTTColumnRow.name=:rowName AND pupilsightTTDay.name=:dayName';
+                                    //$sqlSpace = 'SELECT pupilsightTTColumnRow.name, pupilsightTTDay.name FROM pupilsightTTDay JOIN pupilsightTT ON (pupilsightTTDay.pupilsightTTID=pupilsightTT.pupilsightTTID) JOIN pupilsightTTColumn ON (pupilsightTTDay.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) WHERE pupilsightTT.pupilsightTTID=:pupilsightTTID AND pupilsightTTColumnRow.name=:rowName AND pupilsightTTDay.name=:dayName';
+                                    $sqlSpace = 'select pupilsightTTColumnRow.name, pupilsightTTDay.name from pupilsightTT, pupilsightTTDay, pupilsightTTColumnRow, pupilsightTTColumn
+where pupilsightTT.pupilsightTTID=pupilsightTTDay.pupilsightTTID and 
+pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID and
+pupilsightTT.pupilsightTTID=:pupilsightTTID and pupilsightTTColumnRow.name=:rowName and  pupilsightTTDay.name=:dayName';
+                                    //print_r($sqlSpace); print_r($dataSpace);die();
                                     $resultSpace = $connection2->prepare($sqlSpace);
                                     $resultSpace->execute($dataSpace);
+                                    //print_r($resultSpace->rowCount());die();
                                 } catch (PDOException $e) {
                                 }
 
-                                if ($resultSpace->rowCount() != 1) {
+                                if ($resultSpace->rowCount() < 1) {
                                     $rowCheckFail = true;
                                     $proceed = false;
                                     $errorList .= $row['dayName'].' '.$row['rowName'].', ';
@@ -823,22 +830,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                                 $addFail = false;
                                 try {
                                     $dataRow = array('name1' => $row['dayName'], 'name2' => $row['rowName'], 'pupilsightTTID' => $pupilsightTTID);
-                                    $sqlRow = '(SELECT pupilsightTTColumnRowID FROM pupilsightTTDay JOIN pupilsightTTColumn ON (pupilsightTTColumn.pupilsightTTColumnID=pupilsightTTDay.pupilsightTTColumnID) JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTColumn.pupilsightTTColumnID) WHERE pupilsightTTDay.name=:name1 AND pupilsightTTColumnRow.name=:name2 AND pupilsightTTDay.pupilsightTTID=:pupilsightTTID)';
+                                    $sqlRow = '(SELECT pupilsightTTColumnRowID FROM pupilsightTTDay /*JOIN pupilsightTTColumn ON (pupilsightTTColumn.pupilsightTTColumnID=pupilsightTTDay.pupilsightTTColumnID)*/ JOIN pupilsightTTColumnRow ON (pupilsightTTColumnRow.pupilsightTTColumnID=pupilsightTTDay.pupilsightTTColumnID) WHERE pupilsightTTDay.name=:name1 AND pupilsightTTColumnRow.name=:name2 AND pupilsightTTDay.pupilsightTTID=:pupilsightTTID)';
+                                    //print_r($dataRow);print_r($sqlRow);die();
                                     $resultRow = $connection2->prepare($sqlRow);
                                     $resultRow->execute($dataRow);
 
                                     $dataDay = array('name' => $row['dayName'], 'pupilsightTTID' => $pupilsightTTID);
                                     $sqlDay = '(SELECT pupilsightTTDayID FROM pupilsightTTDay WHERE name=:name AND pupilsightTTID=:pupilsightTTID)';
+                                    //print_r($dataDay); print_r($sqlDay); die();
                                     $resultDay = $connection2->prepare($sqlDay);
                                     $resultDay->execute($dataDay);
 
                                     $dataClass = array('nameShort1' => $row['courseNameShort'], 'nameShort2' => $row['classNameShort'], 'pupilsightSchoolYearID' => $pupilsightSchoolYearID);
                                     $sqlClass = '(SELECT pupilsightCourseClassID FROM pupilsightCourseClass JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightCourse.nameShort=:nameShort1 AND pupilsightCourseClass.nameShort=:nameShort2 AND pupilsightSchoolYearID=:pupilsightSchoolYearID)';
+                                    //print_r($dataClass);print_r($sqlClass);die();
                                     $resultClass = $connection2->prepare($sqlClass);
                                     $resultClass->execute($dataClass);
 
                                     $dataSpace = array('name' => $row['spaceName']);
                                     $sqlSpace = '(SELECT pupilsightSpaceID FROM pupilsightSpace WHERE name=:name)';
+                                    //print_r($dataSpace);print_r($sqlSpace);die();
                                     $resultSpace = $connection2->prepare($sqlSpace);
                                     $resultSpace->execute($dataSpace);
                                 } catch (PDOException $e) {
@@ -854,14 +865,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                                     $addFail = true;
                                 } else {
                                     $rowRow = $resultRow->fetch();
+                                    //print_r($rowRow);
                                     $rowDay = $resultDay->fetch();
                                     $rowClass = $resultClass->fetch();
                                     $rowSpace = $resultSpace->fetch();
 
                                     try {
-                                        $sqlInsert = 'INSERT INTO pupilsightTTDayRowClass SET pupilsightTTColumnRowID='.$rowRow['pupilsightTTColumnRowID'].', pupilsightTTDayID='.$rowDay['pupilsightTTDayID'].', pupilsightCourseClassID='.$rowClass['pupilsightCourseClassID'].', pupilsightSpaceID='.$rowSpace['pupilsightSpaceID'];
+                                        $sqlInsert = 'INSERT INTO pupilsightTTDayRowClass SET pupilsightTTColumnRowID='.$rowRow['pupilsightTTColumnRowID'].', pupilsightTTDayID='.$rowDay['pupilsightTTDayID'].', pupilsightCourseClassID='.$rowClass['pupilsightCourseClassID'].', pupilsightSpaceID='.$rowSpace['pupilsightSpaceID'].',pupilsightStaffID='.$staffs[0];
+                                        //print_r($sqlInsert);die();
                                         $resultInsert = $connection2->query($sqlInsert);
                                         $pupilsightTTDayRowClassID = $connection2->lastInsertId();
+                                        print_r($pupilsightTTDayRowClassID);
                                     } catch (PDOException $e) {
                                         $ttSyncFail = true;
                                         $proceed = false;
