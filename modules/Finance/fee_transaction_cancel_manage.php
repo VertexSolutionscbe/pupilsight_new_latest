@@ -223,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel(' ', __(' '));
-            $col->addContent('<button class=" btn btn-primary">Search</button>');
+            $col->addContent('<button class=" btn btn-primary">Search</button>&nbsp;&nbsp;<a style="color:#666;cursor:pointer;" id="export_transaction" class="btn btn-primary">Export</a>');
             
             
       
@@ -237,9 +237,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('', __('Total Cancel Transaction Amount: '.number_format($t_amount,2)));
               
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addContent('<button style="color:#666"  id="export_transaction"><span  style="position: absolute;  left: 220px;
-        bottom: 1px;"><i class="fas fa-file-export"></i>Export</span></button>');
+        // $col = $row->addColumn()->setClass('newdes');
+        // $col->addContent('<button style="color:#666"  id="export_transaction"><span  style="position: absolute;  left: 220px;
+        // bottom: 1px;"><i class="fas fa-file-export"></i>Export</span></button>');
 
         // $col = $row->addColumn()->setClass('newdes');
         // $col->addLabel('', __('Export:'));
@@ -297,3 +297,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }
+
+
+?>
+<style>
+   
+    .table-responsive {
+        height : 500px !important;
+    }
+
+</style>

@@ -532,13 +532,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         //payment history
         echo "<div class ='row fee_hdr feeitem' data-type='2'><div class='col-md-12'> Payment History <i class='fas fa-arrow-right  icon_2 icon_m'></i></div>       
         </div>";
-        echo "<div><div class='col-md-12 '><a id='cancelReceiptPaymentHistory' style='display:none;float:right'  class='cancelReceiptPaymentHistory btn btn-primary oCls_2 oClose'>Cancel Receipt</a>
+        echo "<div><div class='col-md-12 '><a id='cancelReceiptPaymentHistory' style='display:none; cursor:pointer;'  class='cancelReceiptPaymentHistory btn btn-primary oCls_2 oClose'>Cancel Receipt</a>
        
         <a  href='fullscreen.php?q=/modules/Finance/fee_cancel_receipts.php'  class='thickbox' id='cancelReceiptSubmit' style='display:none'>View Bill Details</a>
         </div>       
         </div>";
         
-        echo "<div id='table-wrapper'><div id='table-scroll'><table cellspacing='0' style='display:none;width: 100%;  margin-top: 40px;' class='oCls_2 oClose' id='FeeInvoiceListManage'>";
+        echo "<div id='table-wrapper'><div id='table-scroll'><table cellspacing='0' style='display:none;width: 100%;  margin-top: 40px;' class='oCls_2 oClose table' id='FeeInvoiceListManage'>";
         echo "<thead>";
         echo "<tr class='head'>";  
         echo '<th>';
@@ -704,12 +704,37 @@ echo " <style>
         });
    });
 
+    $(document).on('change', '#bank_id', function(){
+            if($(this).val() != ''){
+                $(this).removeClass('erroralert');
+            } 
+    });
+
+    $(document).on('change', '#dd_cheque_date', function(){
+            if($(this).val() != ''){
+                $(this).removeClass('erroralert');
+            } 
+    });
+
+    $(document).on('keyup', '#dd_cheque_no', function(){
+            if($(this).val() != ''){
+                $(this).removeClass('erroralert');
+            } 
+    });
+
+    $(document).on('keyup', '#dd_cheque_amount', function(){
+            if($(this).val() != ''){
+                $(this).removeClass('erroralert');
+            } 
+    });
+
 
    $(document).on('click','#collectionFormSubmit',function(){
         var amtpay = $("#amount_paying").val();
               
         var formData = $("#collectionForm").serialize();
         var err=0;
+        var chkValidation=0;
         var paymentMode = $("#paymentMode").val();
 
         if(amtpay == ''){
@@ -732,35 +757,43 @@ echo " <style>
             if (val == 'CHEQUE' || val == 'DD') {
                 if($("#bank_id").val() == ''){
                     $("#bank_id").addClass('erroralert');
-                    alert('Please Select Bank Name!');
+                    //alert('Please Select Bank Name!');
                     err++;
+                    chkValidation++;
                 } else {
                     $("#bank_id").removeClass('erroralert');
                 }
                 if($("#dd_cheque_date").val() == ''){
                     $("#dd_cheque_date").addClass('erroralert');
-                    alert('Please Insert DD/Cheque Date!');
+                    //alert('Please Insert DD/Cheque Date!');
                     err++;
+                    chkValidation++;
                 } else {
                     $("#dd_cheque_date").removeClass('erroralert');
                 }
                 if($("#dd_cheque_no").val() == ''){
                     $("#dd_cheque_no").addClass('erroralert');
-                    alert('Please Insert DD/Cheque No!');
+                    //alert('Please Insert DD/Cheque No!');
                     err++;
+                    chkValidation++;
                 } else {
                     $("#dd_cheque_no").removeClass('erroralert');
                 }
 
                 if($("#dd_cheque_amount").val() == ''){
                     $("#dd_cheque_amount").addClass('erroralert');
-                    alert('Please Insert DD/Cheque Amount!');
+                    //alert('Please Insert DD/Cheque Amount!');
                     err++;
+                    chkValidation++;
                 } else {
                     $("#dd_cheque_amount").removeClass('erroralert');
                 }
             }    
             $("#paymentMode").removeClass('LV_invalid_field');
+        }
+        if(chkValidation != 0){
+            alert('Please Enter All Mandatory Fields!');
+            return false;
         }
         if(err==0){
             $("#preloader").show();

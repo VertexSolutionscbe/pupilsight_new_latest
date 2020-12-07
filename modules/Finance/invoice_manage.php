@@ -116,8 +116,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
         
 
-        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        if(!empty($pupilsightProgramID)){
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            if(!empty($pupilsightYearGroupID)){
+                $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            }
+        }
 
         
     } else {
@@ -152,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
-        ->pageSize(5000)
+        ->pageSize(100000)
         ->sortBy(['id'])
         ->fromPOST();
 
@@ -250,7 +254,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel(' ', __(' '));
-            $col->addContent('<button class=" btn btn-primary">Search</button>');
+            $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
+            //$col->addContent('<button class=" btn btn-primary">Search</button>');
+
+
         $row = $form->addRow()->addClass('tran_tbl');
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('', __('No of invoice : '.$kountTransaction));
