@@ -390,6 +390,7 @@ print_r($rs);
         if(!empty($_SESSION['fee_str_search'])){
             $input = $_SESSION['fee_str_search'];
         } 
+        //print_r($input);
        
         $pupilsightRoleIDAll = '003';
         $query = $this
@@ -438,9 +439,21 @@ print_r($rs);
                         ->orwhere('b.phone1  = "'.$search.'" ')
                         ->orwhere('b.email  = "'.$search.'" ');
             }
+            if(!empty($input['simplesearch']) && empty($input['searchfield'])){
+                $search = $input['simplesearch'];
+                $query->where('pupilsightPerson.officialName LIKE "%'.$search.'%" ')
+                        ->orwhere('pupilsightPerson.pupilsightPersonID = "'.$search.'" ')
+                        ->orwhere('pupilsightPerson.admission_no = "'.$search.'" ')
+                        ->orwhere('a.officialName  LIKE "%'.$search.'%" ')
+                        ->orwhere('a.phone1  = "'.$search.'" ')
+                        ->orwhere('a.email  = "'.$search.'" ')
+                        ->orwhere('b.officialName  LIKE "%'.$search.'%" ')
+                        ->orwhere('b.phone1  = "'.$search.'" ')
+                        ->orwhere('b.email  = "'.$search.'" ');
+            }
             $query->groupBy(['pupilsightPerson.pupilsightPersonID'])  
             ->orderBy(['pupilsightPerson.pupilsightPersonID']); 
-        // echo $query;    
+        //echo $query;    
         //     die();
         return $this->runQuery($query, $criteria, TRUE);
     }

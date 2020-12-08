@@ -34,6 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_item_manage.ph
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
+        ->pageSize(5000)
         ->sortBy(['id'])
         ->fromPOST();
 
@@ -63,8 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_item_manage.ph
     echo $searchform->getOutput();
 
     //$table->addColumn('sequenceNumber', __('sequenceNumber'));
-    $table->addColumn('serial_number', __('SI No'));
     $table->addCheckBoxColumn('id', __(''));
+    $table->addColumn('serial_number', __('SI No'));
     $table->addColumn('name', __('Fee Item Name'));
     $table->addColumn('code', __('Fee Item Code'));
     $table->addColumn('acedemic_year', __('Acedemic Year'));

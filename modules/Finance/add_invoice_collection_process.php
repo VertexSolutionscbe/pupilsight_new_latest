@@ -10,6 +10,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
     //header("Location: {$URL}");
     echo "error0";
 } else {
+    // echo '<pre>';
+    // print_r($_POST);
+    // echo '</pre>';
+    // die();
 
     $title = $_POST['title'];
     $pupilsightPersonID=$_POST['pstid'];
@@ -60,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
 
         if ($result->rowCount() > 0) {
             //$URL .= '&return=error3';
-            echo "Invoice title is duplicate";
+            echo "Invoice title is Already Exist!";
             //header("Location: {$URL}");
         } else {
             //Write to database

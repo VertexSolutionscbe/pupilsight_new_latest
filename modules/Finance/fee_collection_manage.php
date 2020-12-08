@@ -320,6 +320,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $col = $row->addColumn()->setClass('newdes hiddencol ddChequeRow');
         $col->addLabel('bank_id', __('Bank Name'));
         $col->addSelect('bank_id')->fromArray($bank)->addClass(' txtfield');
+
+        $col = $row->addColumn()->setClass('newdes ddCashRow hiddencol');
+            $col->addLabel('payment_status', __('Payment Status'))->addClass('dte');
+            $col->addTextField('payment_status')->setId('cashPaymentStatus')->setValue('Payment Received')->readonly()->addClass('txtfield');
     
         $col = $row->addColumn()->setClass('hiddencol');
         $col->addLabel('', __(''));
@@ -502,7 +506,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         <a href='fullscreen.php?q=/modules/Finance/add_invoice_collections.php&width=1100&height=550' class='thickbox btn btn-primary addInvoiceLinkCollection' data-type='addInvoiceLink'>Add Invoice</a>
         <a  class=' btn btn-primary btn_cancel_invoice_collection' data-type='cancelInvoice'>Cancel Invoice</a>
         <a id='apply_discount_btn'  class=' apply_discount_btn btn btn-primary'>Apply discount</a>
-        <a  href='fullscreen.php?q=/modules/Finance/apply_discount.php&width=800px'  class='thickbox' id='apply_discount_popup' style='display:none'></a>
+        <a  href='fullscreen.php?q=/modules/Finance/apply_discount.php&width=900px'  class='thickbox' id='apply_discount_popup' style='display:none'></a>
         <a  id='' data-type='student' class='chkinvoice btn btn-primary'>Proceed to next</a>
         </div><div class='float-none'></div></div>";
         echo "<div class ='row fee_hdr FeeInvoiceListManage feeitem' data-type='1'><div class='col-md-12'> Invoices <i class='fas fa-arrow-down icon_1 icon_m'></i></div></div>";
@@ -985,4 +989,11 @@ $(document).on('click','#cancel_invoice',function(){
         });
      }
 });
+
+$(document).on('keydown', '#search', function (e) {
+        if (e.keyCode == 13) {
+            $("#searchInvoice")[0].click();
+            return false;
+        }
+    })
 </script>

@@ -1083,11 +1083,11 @@ if(isset($_POST['type'])){
                                 $total=$ind['finalamount'];
                             }
                         echo '<tr>
-                        <td>'.$i++.'</td>
-                        <td>'.$ind['stu_invoice_no'].'</td>
-                        <td>'.$total.'</td>
-                        <td><input type="number" name="discount_a[]" value="'.$special_dis['discount'].'" readonly class="form-control inid_'.$ind['invoiceid'].'" ></td>
-                        <td><input type="checkbox"  class="chkinvoice_discount invoice'.$ind['invoiceid'].'" name="invoiceid[]" value="'.$ind['invoiceid'].'" data-id="'.$ind['invoiceid'].'" ></td>
+                        <td  width="5%">'.$i++.'</td>
+                        <td  width="10%">'.$ind['stu_invoice_no'].'</td>
+                        <td  width="5%">'.$total.'</td>
+                        <td  width="5%"><input type="number" name="discount_a[]" value="'.$special_dis['discount'].'" readonly class="form-control inid_'.$ind['invoiceid'].'" ></td>
+                        <td  width="10%"><input type="checkbox"  class="chkinvoice_discount invoice'.$ind['invoiceid'].'" name="invoiceid[]" value="'.$ind['invoiceid'].'" data-id="'.$ind['invoiceid'].'" ></td>
                         </tr>';
 
                        
@@ -1098,7 +1098,7 @@ if(isset($_POST['type'])){
                         ?>
     </tbody>
   </table>
-  <a href="#" class="btn-fill-md  text-light bg-dodger-blue save_sp_discount" id="save_sp_discount" data-type="invoice_level_dataStore">Apply</a>
+  <a href="#" class="btn btn-primary save_sp_discount" id="save_sp_discount" data-type="invoice_level_dataStore">Apply</a>
 </div>
   <?php  
     } else {
@@ -1186,27 +1186,27 @@ if(isset($_POST['type'])){
         $amtdiscount = $totalamount - $discountamt;
         $data .= '<tr class="odd invrow" role="row">
                   
-            <td>
+            <td width="5%">
                 '.$i++.' 
             </td>
              
-            <td class="p-2 sm:p-3">
+            <td width="10%">
                ' . $fI['feeitemname'] . '     
             </td> 
-            <td class="p-2 sm:p-3 hidden-1 md:table-cell">
+            <td width="5%">
             ' . $fI['amount'] . '  
             </td>                          
-            <td class="p-2 sm:p-3 hidden-1 md:table-cell">
+            <td width="10%">
                <input type="number" class="form-control itid_'.$fI['itemid'].'" value="'.$special_dis['discount'].'" readonly>
             </td>
-             <td><label class="leading-normal" for="feeItemid"></label> <input type="checkbox" class="' . $cls . '" id="feeItemid" data-id="'.$fI['itemid'].'" value="' . $fI['itemid'] . '" ' . $checked . '></td>
+             <td width="10%"><label class="leading-normal" for="feeItemid"></label> <input type="checkbox" class="' . $cls . '" id="feeItemid" data-id="'.$fI['itemid'].'" value="' . $fI['itemid'] . '" ' . $checked . '></td>
         </tr>';
     }
     echo $data;
     echo "</tbody>";
     echo "</table>";
 ?>
-   <a href="#" class="btn-fill-md  text-light bg-dodger-blue save_sp_discount" id="save_sp_discount" data-type="fee_item_level_dataStore">Apply</a>
+   <a href="#" class="btn btn-primary save_sp_discount" id="save_sp_discount" data-type="fee_item_level_dataStore">Apply</a>
 <?php
     }
     } else {
