@@ -177,13 +177,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     
     
     $col = $row->addColumn()->setClass('newdes');    
-        //$col->addLabel('', __(''));
+        $col->addLabel('', __(''));
         $col->addTextField('simplesearch')->placeholder('Search by Student Name, ID')->addClass('txtfield')->setValue($searchbyPost);
 
     $col = $row->addColumn()->setClass('newdes');   
     $col->addLabel('', __(''));
-    $col->addContent('<input type="hidden" name="searchtype" value="1"><a id="simplesubmitInvoice" class=" btn btn-primary">Search</a>');  
-    $col->addContent('<a id="advanceSearch" class="transactionButton btn btn-primary" style="position:absolute; right:0;">Advance Search</a>');
+    $col->addContent('<input type="hidden" name="searchtype" value="1"><a id="simplesubmitInvoice" class=" btn btn-primary">Search</a>&nbsp;&nbsp;<a id="advanceSearch" class="btn btn-primary">Advance Search</a>');  
+    //$col->addContent('<a id="advanceSearch" class="transactionButton btn btn-primary" style="position:absolute; right:0;">Advance Search</a>');
     
     if($_POST){
         if(empty($_POST['simplesearch'])){
@@ -196,13 +196,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     }
     
     
-    $col = $row->addColumn()->setClass('newdes advsrch');
-        $col->addLabel('pupilsightProgramID', __('Program'));
-        $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder();
+    
 
     $col = $row->addColumn()->setClass('newdes advsrch');
         $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
-        $col->addSelect('pupilsightSchoolYearID')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);    
+        $col->addSelect('pupilsightSchoolYearID')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);  
+        
+    $col = $row->addColumn()->setClass('newdes advsrch');
+        $col->addLabel('pupilsightProgramID', __('Program'));
+        $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder();
         
     $col = $row->addColumn()->setClass('newdes advsrch');
         $col->addLabel('pupilsightYearGroupID', __('Class'));
@@ -222,16 +224,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
 
     $col = $row->addColumn()->setClass('newdes');   
     $col->addLabel('', __(''));
-    $col->addContent('<input type="hidden" name="searchtype" value="2"><button id="" class="transactionButton btn btn-primary">Search</button>');   
+    $col->addContent('<input type="hidden" name="searchtype" value="2"><button id="" class=" btn btn-primary">Search</button><button id="submitInvoice" style="display:none;" class=" btn btn-primary">Submit</button><a id="normalSearch" title="Normal Search" class=" btn btn-primary" style="position:absolute; right:0; margin-right: -5px;width: 96px;">Nr Search</a>');   
     
-    $col->addContent('<button id="submitInvoice" style="display:none;" class="transactionButton btn btn-primary">Submit</button>'); 
+    // $col->addContent('<button id="submitInvoice" style="display:none;" class="transactionButton btn btn-primary">Submit</button>'); 
     
-    $col->addContent('<a id="normalSearch" class="transactionButton btn btn-primary" style="position:absolute; right:0; margin-top: -39px;width: 100px; font-size: 8px; line-height: 28px;">Normal Search</a>');
+    // $col->addContent('<a id="normalSearch" class="transactionButton btn btn-primary" style="position:absolute; right:0; margin-top: -39px;width: 100px; font-size: 8px; line-height: 28px;">Normal Search</a>');
 
     echo $searchform->getOutput();
     
     
     $criteria = $FeesGateway->newQueryCriteria()
+        ->pageSize(5000)
         ->sortBy(['id'])
         ->fromPOST();
    

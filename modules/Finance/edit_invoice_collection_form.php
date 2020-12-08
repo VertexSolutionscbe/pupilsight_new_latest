@@ -240,7 +240,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                     $col->addTextField('');     
                 
                 $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
-                    $col->addButton(__('Add'))->setID('addInvoiceItem')->addData('cid', $lastId)->addData('disid', $feeItemIds)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+                    //$col->addButton(__('Add'))->setID('addInvoiceItem')->addData('cid', $lastId)->addData('disid', $feeItemIds)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+                    $col->addContent('<a style="cursor:pointer;margin-bottom: 15px;" data-cid="'.$lastId.'" data-disid="'.$feeItemIds.'" id="addInvoiceItem" class="btn btn-primary lftbutt">Add</a>');
 
             
             if(!empty($childvalues)){

@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     echo __('Fee Structure Assign Student');
     echo '</h2>';
 
-    $adata = '<select id="filterStructureOnAcademicYr" style="margin: -50px 0 0 0;"><option>Academic Year</option>';
+    $adata = '<select id="filterStructureOnAcademicYr" style="width:25%"><option>Academic Year</option>';
     foreach($academicyear as $ay){
         if($pupilsightSchoolYearID == $ay['pupilsightSchoolYearID']){
             $sel = 'selected';
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
 
   
    
-echo '<div style="width:40%; margin-bottom:10px;" >
+echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
     <input type="text" class="w-full" id="searchTable" placeholder="Search">
 </div>';
 
@@ -83,7 +83,7 @@ echo '<div style="width:40%; margin-bottom:10px;" >
 
     $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
         $col = $row->addColumn()->setClass('newdes');
-        $col->addCheckbox('select')->setId('checkall')->setClass('fee_id checkall');   
+        $col->addCheckbox('select')->setId('checkall')->setClass('fee_id chkAll');   
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('Fee Structure', __('Fee Structure'))->addClass('dte');
@@ -101,7 +101,7 @@ echo '<div style="width:40%; margin-bottom:10px;" >
         //     $col->addLabel('pupilsightYearGroupID', __($fee['academic_year']));
         $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
             $col = $row->addColumn()->setClass('newdes');
-            $col->addCheckbox('fee_id[]')->setValue($fee['id'])->setClass('fee_id'); 
+            $col->addCheckbox('fee_id[]')->setValue($fee['id'])->setClass('fee_id chkChild'); 
 
             $col = $row->addColumn()->setClass('newdes');
             $t="<a title='".$fee['name']."'>".$fee['name']."</a>";
@@ -134,6 +134,22 @@ echo '<div style="width:40%; margin-bottom:10px;" >
         $(".standardForm tbody tr:not(:first-child):not(:last-child)").filter(function() {
         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
+    });
+
+    $(document).on('change', '.chkAll', function () {
+        if ($('.chkAll:checkbox').is(':checked')) {
+            $(".chkChild:checkbox").prop("checked", true);
+        } else {
+            $(".chkChild:checkbox").prop("checked", false);
+        }
+    });
+
+    $(document).on('change', '.chkChild', function () {
+        if ($(this).is(':checked')) {
+            //$(".chkChild"+id).prop("checked", true);
+        } else {
+            $(".chkAll:checkbox").prop("checked", false);
+        }
     });
 
 </script>    

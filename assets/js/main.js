@@ -2574,7 +2574,7 @@
         }
     });
 
-    $('#simplesearch').keydown(function (e) {
+    $(document).on('keydown', '#simplesearch', function (e) {
         if (e.keyCode == 13) {
             var val = '1';
             var type = 'searchStudent';
@@ -2750,14 +2750,17 @@
 
     $(document).on('change', '#paymentMode', function () {
         //var val = $(this).val();
+        $(".ddCashRow").addClass('hiddencol');
         var val = $("#paymentMode option:selected").text();
         val = val.toUpperCase();
         if (val == 'CHEQUE' || val == 'DD') {
             if (val == 'CHEQUE') {
                 $("#payment_status").val('Cheque Received');
+                $("#cashPaymentStatus").val('Cheque Received');
             }
             if (val == 'DD') {
                 $("#payment_status").val('DD Received');
+                $("#cashPaymentStatus").val('DD Received');
             }
 
 
@@ -2784,11 +2787,13 @@
 
         } else if (val == 'NEFT' || val == 'RTGS' || val == 'CREDIT CARD' || val == 'DEBIT CARD') {
             $("#payment_status").val('Payment Received');
+            $("#cashPaymentStatus").val('Payment Received');
             $(".ddChequeRow").addClass('hiddencol');
             $(".neft_cls").removeClass('hiddencol');
 
         } else {
-            $("#payment_status").val('Payment Received');
+            $(".ddCashRow").removeClass('hiddencol');
+            $("#cashPaymentStatus").val('Payment Received');
             $(".neft_cls").addClass('hiddencol');
             $(".ddChequeRow").addClass('hiddencol');
         }

@@ -242,7 +242,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
                     $col->addTextField(''); 
                     
                 $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
-                    $col->addButton(__('Add'))->setID('addFeeStructureItem')->addData('cid', $lastId)->addData('disid', $feeItemIds)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+                    //$col->addButton(__('Add'))->setID('addFeeStructureItem')->addData('cid', $lastId)->addData('disid', $feeItemIds)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+                    
+                    $col->addContent('<a style="cursor:pointer;" data-cid="'.$lastId.'" data-disid="'.$feeItemIds.'" id="addFeeStructureItem" class="btn btn-primary lftbutt">Add</a>');
 
             
             if(!empty($childvalues)){

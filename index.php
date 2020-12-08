@@ -408,8 +408,9 @@ if ($isLoggedIn) {
     $paymentMenu = array('name' => "Payment", 'list' => $paymentList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
 
     if (isset($menuMainItems["Finance"])) {
-        $menuMainItems["Finance"][0] = array('name' => 'Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
-        $menuMainItems["Finance"][1] = $masterMenu;
+        
+        $menuMainItems["Finance"][0] = $masterMenu;
+        $menuMainItems["Finance"][1] = array('name' => 'Fee Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
         $menuMainItems["Finance"][2] = $paymentMenu;
     }
 
