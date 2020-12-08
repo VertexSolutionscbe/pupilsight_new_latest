@@ -16,9 +16,9 @@ $databaseUsername = 'root';
 $databasePassword = 'xyz'; //xyz
 $databaseName = 'pd_demo'; //pd_demo
 
-// if (session_status() == PHP_SESSION_NONE) {
-//     session_start();
-// }
+//if (session_status() == PHP_SESSION_NONE) {
+//    session_start();
+//}
 
 $_SESSION["databaseName"] = $databaseName;
 /**
