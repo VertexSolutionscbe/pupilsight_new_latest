@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
         $resultsessdata = $connection2->query($sqlsessdata);
         $sessionvalues = $resultsessdata->fetchAll();
     }
-    if(isset(($_GET))){        
+    if(isset($_GET)){
         $pupilsightProgramID =  isset($_GET['pupilsightProgramID'])? $_GET['pupilsightProgramID'] : '';
         $pupilsightYearGroupID = isset($_GET['classes'])? $_GET['classes'] : '';
         $setclasss = isset($_GET['classes'])? $_GET['classes'] : '';
@@ -245,7 +245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
    
             $row = $form->addRow();
             $row->addFooter();
-            $row->addContent('<button type="button" id="attnSettingsSubmit" class=" btn btn-primary" style="position:absolute; right:0; margin-top: -18px;">Submit</button>');
+            $row->addContent('<button type="button" id="attnSettingsSubmit" class=" btn btn-primary" style="position:absolute; right:9px; margin-top: -18px;">Submit</button>');
 
 
     echo $form->getOutput();

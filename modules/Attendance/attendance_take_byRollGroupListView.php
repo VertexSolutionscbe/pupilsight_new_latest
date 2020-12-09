@@ -152,13 +152,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             $section_id= "pupilsightRollGroupID";
             $sqlp = 'SELECT p.pupilsightProgramID, p.name FROM pupilsightProgram AS p RIGHT JOIN attn_settings AS a ON(p.pupilsightProgramID =a.pupilsightProgramID) ';
             $resultp = $connection2->query($sqlp);
-            $rowdataprog = $resultp->fetchAll();         
-        
+            $rowdataprog = $resultp->fetchAll();
+
             foreach ($rowdataprog as $dt) {
                 $program2[$dt['pupilsightProgramID']] = $dt['name'];
             }
-            $program = $program1 + $program2;  
-            
+            $program = $program1 + $program2;
+
             $pupilsightProgramID =  isset($_GET['pupilsightProgramID'])?$_GET['pupilsightProgramID']:"";
             $pupilsightRollGroupID = isset($_GET['pupilsightRollGroupID'])?$_GET['pupilsightRollGroupID']:"";
             $pupilsightYearGroupID = isset($_GET['pupilsightYearGroupID'])?$_GET['pupilsightYearGroupID']:"";
@@ -381,10 +381,57 @@ window.location.reload();
                         }
                         }
                         //ends auto lock
+
+                        //preetam
+                        $sqlpr = "SELECT p.pupilsightProgramID, p.name, a.enable_sort_display_field_1, a.enable_sort_display_field_2,a.display_field_1,a.display_field_2 FROM pupilsightProgram AS p RIGHT JOIN attn_settings AS a ON(p.pupilsightProgramID =a.pupilsightProgramID) WHERE a.pupilsightProgramID=$pupilsightProgramID AND a.pupilsightYearGroupID=$pupilsightYearGroupID";
+                        //print_r($sqlpr);
+                        $resultpr = $connection2->query($sqlpr);
+                        $rowdataprogr = $resultpr->fetchAll();
+                        $enable_sort_display_field_1='';
+                        $enable_sort_display_field_2='';
+
+                        foreach ($rowdataprogr as $dtr) {
+                             $enable_sort_display_field_1=$dtr['enable_sort_display_field_1'];
+                             $enable_sort_display_field_2=$dtr['enable_sort_display_field_2'];
+                             $display_field_1=$dtr['display_field_1'];
+                             $display_field_2=$dtr['display_field_2'];
+                        }
+                        if($display_field_1=='Admission No'){
+                            $display_field_1='admission_no';
+                        }
+                        if($display_field_2=='Admission No'){
+                            $display_field_2='admission_no';
+                        }
+                        if($display_field_1=='Student ID'){
+                            $display_field_1='pupilsightPersonID';
+                        }
+                        if($display_field_2=='Student ID'){
+                            $display_field_2='pupilsightPersonID';
+                        }
+                        if($display_field_1=='Mother Name' || $display_field_1=='Father Name' || $display_field_1=='Class' || $display_field_1=='Date OF Birth'){
+                            $display_field_1='';
+                        }
+                        if($display_field_2=='Mother Name' || $display_field_2=='Father Name' || $display_field_2=='Class' || $display_field_2=='Date OF Birth'){
+                            $display_field_2='';
+                        }
+
                         //Show roll group grid
                         try {
-                            $dataRollGroup = array('pupilsightProgramID'=>$pupilsightProgramID,'pupilsightYearGroupID'=>$pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID, 'date' => $currentDate);
-                            $sqlRollGroup = "SELECT pupilsightPerson.image_240,pupilsightPerson.gender,pupilsightPerson.dob,pupilsightPerson.preferredName, pupilsightPerson.officialName,pupilsightPerson.phone1, pupilsightPerson.pupilsightPersonID,pupilsightPerson.admission_no as admno,pupilsightYearGroup.name as classname FROM pupilsightStudentEnrolment INNER JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID LEFT JOIN pupilsightYearGroup ON pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID WHERE pupilsightRollGroupID=:pupilsightRollGroupID AND  pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID AND  pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)AND pupilsightPerson.pupilsightRoleIDPrimary=003 ORDER BY rollOrder, officialName, preferredName";
+                            if($enable_sort_display_field_1=='1' AND $enable_sort_display_field_2=='1'){
+                                $dataRollGroup = array('pupilsightProgramID'=>$pupilsightProgramID,'pupilsightYearGroupID'=>$pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID, 'date' => $currentDate);
+                                $sqlRollGroup = "SELECT pupilsightPerson.image_240,pupilsightPerson.gender,pupilsightPerson.dob,pupilsightPerson.preferredName, pupilsightPerson.officialName,pupilsightPerson.phone1, pupilsightPerson.pupilsightPersonID,pupilsightPerson.admission_no as admno,pupilsightYearGroup.name as classname FROM pupilsightStudentEnrolment INNER JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID LEFT JOIN pupilsightYearGroup ON pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID WHERE pupilsightRollGroupID=:pupilsightRollGroupID AND  pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID AND  pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)AND pupilsightPerson.pupilsightRoleIDPrimary=003 ORDER BY  $display_field_1, $display_field_2";
+                            }elseif ($enable_sort_display_field_1=='1' AND $display_field_1!=''){
+                                $dataRollGroup = array('pupilsightProgramID'=>$pupilsightProgramID,'pupilsightYearGroupID'=>$pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID, 'date' => $currentDate);
+                                $sqlRollGroup = "SELECT pupilsightPerson.image_240,pupilsightPerson.gender,pupilsightPerson.dob,pupilsightPerson.preferredName, pupilsightPerson.officialName,pupilsightPerson.phone1, pupilsightPerson.pupilsightPersonID,pupilsightPerson.admission_no as admno,pupilsightYearGroup.name as classname FROM pupilsightStudentEnrolment INNER JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID LEFT JOIN pupilsightYearGroup ON pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID WHERE pupilsightRollGroupID=:pupilsightRollGroupID AND  pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID AND  pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)AND pupilsightPerson.pupilsightRoleIDPrimary=003 ORDER BY $display_field_1";
+                            }elseif ($enable_sort_display_field_2=='1' AND $display_field_2!=''){
+                                $dataRollGroup = array('pupilsightProgramID'=>$pupilsightProgramID,'pupilsightYearGroupID'=>$pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID, 'date' => $currentDate);
+                                $sqlRollGroup = "SELECT pupilsightPerson.image_240,pupilsightPerson.gender,pupilsightPerson.dob,pupilsightPerson.preferredName, pupilsightPerson.officialName,pupilsightPerson.phone1, pupilsightPerson.pupilsightPersonID,pupilsightPerson.admission_no as admno,pupilsightYearGroup.name as classname FROM pupilsightStudentEnrolment INNER JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID LEFT JOIN pupilsightYearGroup ON pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID WHERE pupilsightRollGroupID=:pupilsightRollGroupID AND  pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID AND  pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)AND pupilsightPerson.pupilsightRoleIDPrimary=003 ORDER BY $display_field_2";
+                            }else {
+                                $dataRollGroup = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'date' => $currentDate);
+                                $sqlRollGroup = "SELECT pupilsightPerson.image_240,pupilsightPerson.gender,pupilsightPerson.dob,pupilsightPerson.preferredName, pupilsightPerson.officialName,pupilsightPerson.phone1, pupilsightPerson.pupilsightPersonID,pupilsightPerson.admission_no as admno,pupilsightYearGroup.name as classname FROM pupilsightStudentEnrolment INNER JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID LEFT JOIN pupilsightYearGroup ON pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID WHERE pupilsightRollGroupID=:pupilsightRollGroupID AND  pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID AND  pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)AND pupilsightPerson.pupilsightRoleIDPrimary=003 ORDER BY rollOrder, officialName, preferredName";
+                            }
+                            //print_r($dataRollGroup);
+                           // print_r($sqlRollGroup);
                             $resultRollGroup = $connection2->prepare($sqlRollGroup);
                             $resultRollGroup->execute($dataRollGroup);
                         } catch (PDOException $e) {
@@ -471,7 +518,7 @@ window.location.reload();
                             $form->addHiddenValue('sendSmsUser','');
                             $form->addHiddenValue('subject_mandatory_status',$subject_mandatory);
                               echo '
-                           <select  required  class="btn-fill-md  bg-dodger-blue" style="background:#C5E3F1 ,color:#0f0f0f ; margin:10px"  name="pupilsightDepartmentID" id="pupilsightDepartmentID">
+                           <select  required  class="btn-fill-md  bg-dodger-blue" style="background:#C5E3F1; ,color:#0f0f0f ; margin:10px"  name="pupilsightDepartmentID" id="pupilsightDepartmentID">
                                <option value="">--Please choose Subject--</option>';
                                foreach($subjects1 as $sub){
                                    if(!empty($sub['name'])){
@@ -642,14 +689,13 @@ window.location.reload();
                                         //geting father name
                                        $name=$HelperGateway->getParentNameByPupilsightPersonID($connection2, $student['pupilsightPersonID'],'Father');
                                            $col = $row->addColumn()->setClass('newdes');
-                                            $col = $row->addColumn()->setClass('newdes');
                                             $col->addTextField('Father Name')->readonly()->setValue($name);
                                        } else if($att_configuration['display_field_1']=="Date OF Birth"){
                                           $col = $row->addColumn()->setClass('newdes');
-                                          $dob='';
-                                          if(!empty($student['dob'])){
-                                            $dob=date('d/m/Y');
-                                          }
+                                          $dob=$student['dob'];
+                                          /*if(!empty($student['dob'])){
+                                            $dob=date($dob,'d/m/Y');
+                                          }*/
                                           $col->addTextField('class')->readonly()->setValue($dob);
                                        } else if($att_configuration['display_field_1']=="Class"){
 
@@ -699,10 +745,10 @@ window.location.reload();
                                        } else if($att_configuration['display_field_2']=="Date OF Birth"){
 
                                           $col = $row->addColumn()->setClass('newdes');
-                                          $dob='';
-                                          if(!empty($student['dob'])){
-                                            $dob=date('d/m/Y');
-                                          }
+                                          $dob=$student['dob'];
+                                          /*if(!empty($student['dob'])){
+                                            echo $dob=date($dob,'d/m/Y');
+                                          }*/
                                        $col->addTextField('class')->readonly()->setValue($dob);
 
                                        } else if($att_configuration['display_field_2']=="Class"){
@@ -992,7 +1038,7 @@ function showCount(){
            $(".savePopUp").text('Save Attendance');
         } else {
             $(".savePopUp").attr('id','savePopUp');
-            $(".savePopUp").text('Submit');
+            $(".savePopUp").text('Save Attendance');
         }
         $("#presentsTotal").html(presents);
         $("#absentsTotal").html(absents);
