@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
         $toDate=implode("-", array_reverse(explode("/", $_POST['toDate'])));
     }
 
-    if ($pupilsightProgramID == '' or $attn_type == '' or $id == '' or $pupilsightSchoolYearID =='') {
+    if ($pupilsightProgramID == '' or $attn_type == '' or $id == '' or $pupilsightSchoolYearID =='' or $fromDate>$toDate) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {

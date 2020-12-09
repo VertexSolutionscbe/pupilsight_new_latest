@@ -10,8 +10,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    
-    // die();
+
+     //die();
     //Proceed!
     //Validate Inputs
     $pupilsightProgramID = (isset($_POST['pupilsightProgramID']))? $_POST['pupilsightProgramID'] : '0';
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
         $toDate=implode("-", array_reverse(explode("/", $_POST['toDate'])));
     }
     $pupilsightYearGroupID = implode(',' , $classes);
-    if ($pupilsightProgramID == '' or $attn_type == '') {
+    if ($pupilsightProgramID == '' or $attn_type == '' or $fromDate>$toDate) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
