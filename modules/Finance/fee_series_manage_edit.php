@@ -77,20 +77,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_series_manage_
 
                 $row = $form->addRow();
                     $row->addLabel('format', __('Format'));
-                    $row->addTextField('format')->required()->setValue($values['format']);
+                    $row->addTextField('format')->required()->setValue($values['format'])->readonly();
 
                
-                $row = $form->addRow();
-                    $row->addLabel('start_number', __('Start No'));
-                    $row->addTextField('start_number')->setValue($values['start_number']);
+                // $row = $form->addRow();
+                //     $row->addLabel('start_number', __('Start No'));
+                //     $row->addTextField('start_number')->setValue($values['start_number']);
 
-                $row = $form->addRow();
-                    $row->addLabel('no_of_digit', __('No of Digit'));
-                    $row->addTextField('no_of_digit')->setValue($values['no_of_digit']);
+                // $row = $form->addRow();
+                //     $row->addLabel('no_of_digit', __('No of Digit'));
+                //     $row->addTextField('no_of_digit')->setValue($values['no_of_digit']);
 
-                $row = $form->addRow();
-                    $row->addLabel('start_char', __('Enter Character'));
-                    $row->addTextField('start_char')->setValue($values['start_char']);  
+                // $row = $form->addRow();
+                //     $row->addLabel('start_char', __('Enter Character'));
+                //     $row->addTextField('start_char')->setValue($values['start_char']);  
             
            
             $row = $form->addRow();

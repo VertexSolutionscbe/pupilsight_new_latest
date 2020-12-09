@@ -733,25 +733,33 @@ if(isset($_POST['type'])){
                         $nday = $dd;
                     }
                     
-                    if(!empty($nday)){
-                        if($finedata['amount_type'] == 'Fixed'){
-                            $amtper = $finedata['amount_in_number']  * $nday;
-                            $type = 'num';
-                        } else {
-                            $amtper = $finedata['amount_in_percent']  * $nday;
-                            $type = 'percent';
-                        }
+                    // if(!empty($nday)){
+                    //     if($finedata['amount_type'] == 'Fixed'){
+                    //         $amtper = $finedata['amount_in_number']  * $nday;
+                    //         $type = 'num';
+                    //     } else {
+                    //         $amtper = $finedata['amount_in_percent']  * $nday;
+                    //         $type = 'percent';
+                    //     }
+                    // } else {
+                    //     if($finedata['amount_type'] == 'Fixed'){
+                    //         $amtper = $finedata['amount_in_number'];
+                    //         $type = 'num';
+                    //     } else {
+                    //         $amtper = $finedata['amount_in_percent'];
+                    //         $type = 'percent';
+                    //     }
+                    // }
+
+                    if($finedata['amount_type'] == 'Fixed'){
+                        $amtper = $finedata['amount_in_number'];
+                        $type = 'num';
                     } else {
-                        if($finedata['amount_type'] == 'Fixed'){
-                            $amtper = $finedata['amount_in_number'];
-                            $type = 'num';
-                        } else {
-                            $amtper = $finedata['amount_in_percent'];
-                            $type = 'percent';
-                        }
+                        $amtper = $finedata['amount_in_percent'];
+                        $type = 'percent';
                     }
                     
-                    
+                    //$amtper = $dd.'-'.$nday;
                    
                 } else {
                     $amtper = '';

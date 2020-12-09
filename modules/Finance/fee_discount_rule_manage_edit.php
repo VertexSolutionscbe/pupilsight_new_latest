@@ -145,19 +145,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_discount_rule_
 
                 if($values['fees_discount_type'] == '1' && $values['fees_discount_type'] != '2'){ 
                     $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
-                         $col->addButton(__('Add'))->setID('addCategoryRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+                        //$col->addButton(__('Add'))->setID('addCategoryRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+                        $col->addContent('<a style="cursor:pointer;margin-bottom: 15px;" data-cid="'.$lastId.'"  id="addCategoryRule" class="btn btn-primary lftbutt">Add</a>');
                 } else {
                     $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt hidediv');
-                        $col->addButton(__('Add'))->setID('addCategoryRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');  
+                        //$col->addButton(__('Add'))->setID('addCategoryRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');  
+                        $col->addContent('<a style="cursor:pointer;margin-bottom: 15px;" data-cid="'.$lastId.'"  id="addCategoryRule" class="btn btn-primary lftbutt">Add</a>');
                 }   
                 
                 if($values['fees_discount_type'] == '2' && $values['fees_discount_type'] != '1'){ 
                     $col = $row->addColumn()->setClass('newdes nobrdbtm invbutt ');
-                         $col->addButton(__('Add'))->setID('addInvoiceCountRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt'); 
+                         //$col->addButton(__('Add'))->setID('addInvoiceCountRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+                         $col->addContent('<a style="cursor:pointer;margin-bottom: 15px;" data-cid="'.$lastId.'"  id="addInvoiceCountRule" class="btn btn-primary lftbutt">Add</a>');
                 } else {
                     $col = $row->addColumn()->setClass('newdes nobrdbtm invbutt hidediv');
-                        $col->addButton(__('Add'))->setID('addInvoiceCountRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt'); 
-                     
+                        //$col->addButton(__('Add'))->setID('addInvoiceCountRule')->addData('cid', $lastId)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt'); 
+                        $col->addContent('<a style="cursor:pointer;margin-bottom: 15px;" data-cid="'.$lastId.'"  id="addInvoiceCountRule" class="btn btn-primary lftbutt">Add</a>');
                 }   
                     
                 if($values['fees_discount_type'] == '1' && $values['fees_discount_type'] != '2'){ 
@@ -202,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_discount_rule_
                     $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv fixedfine hidediv');
                         $col = $row->addColumn()->setClass('newdes nobrdbtm');
                             $col->addLabel('cat_name', __('Category Name'))->addClass('dte');
-                            $col->addSelect('cat_name[1]')->fromArray($fee_category)->addClass('txtfield')->required();
+                            $col->addSelect('cat_name[1]')->fromArray($fee_category)->addClass('txtfield');
 
                         
                         $col = $row->addColumn()->setClass('newdes nobrdbtm');

@@ -287,11 +287,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     //     ->displayLabel();
     echo "<hr />";
     echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/Finance/invoice_assign_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Class</a>";  
-    echo "&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Finance/invoice_assign_student_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Student</a>&nbsp;&nbsp;<a style='color:#666;cursor:pointer;font-size: 15px;' id='export_invoice'><i title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i></a></div><div class='float-none'></div></div>";  
+    echo "&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Finance/invoice_assign_student_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Student</a>&nbsp;&nbsp;<a style='' id='deleteBulkInvoice' class='btn btn-primary'>Bulk Delete</a>&nbsp;&nbsp;<a style='color:#666;cursor:pointer;font-size: 15px;' id='export_invoice'><i title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i></a></div><div class='float-none'></div></div>";  
 
     
     
-    //$table->addCheckboxColumn('insid', __(''));
+    $table->addCheckboxColumn('insid', __(''));
     $table->addColumn('serial_number', __('Sl.No:'));
     $table->addColumn('title', __('Invoice Title'));
     $table->addColumn('program', __('Program '));
@@ -300,6 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     $table->addColumn('std_name', __('Name'));
     $table->addColumn('admission_no', __('Admission No'));
     $table->addColumn('invoice_no', __('Invoice Series Number'));
+    $table->addColumn('inv_amount', __('Invoice Fee Amount'));
     $table->addColumn('account_head', __('Ac Head'));
     $table->addColumn('due_date', __('Due Date'))
     ->format(function ($dataSet) {
@@ -369,6 +370,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
       	$('#showMultiSecByProgCls').selectize({
       		plugins: ['remove_button'],
       	});
+    });
+
+    $(document).on('click', '#deleteBulkInvoice', function() {
+        var favorite = [];
+        $.each($("input[name='insid[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var invId = favorite.join(",");
+        
+        if (invId) {
+            var val = invId;
+            var type = 'deleteBulkInvoice';
+            if (val != '') {
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: {
+                        val: val,
+                        type: type
+                    },
+                    async: true,
+                    success: function(response) {
+                        alert('Invoice Deleted Successfully!');
+                        location.reload();
+                    }
+                });
+            }
+        } else {
+            alert('You Have to Select Invoice.');
+        }
     });
 
 </script>

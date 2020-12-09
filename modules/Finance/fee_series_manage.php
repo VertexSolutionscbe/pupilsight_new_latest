@@ -55,8 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_series_manage.
     $table->addActionColumn()
         ->addParam('id')
         ->format(function ($yearGroups, $actions) use ($guid) {
-            // $actions->addAction('editnew', __('Edit'))
-            //         ->setURL('/modules/Finance/fee_series_manage_edit.php');
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Finance/fee_series_manage_edit.php');
             $kount = $yearGroups['invkount'] + $yearGroups['reckount'];
             if(empty($kount)){
                 $actions->addAction('delete', __('Delete'))

@@ -104,17 +104,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_discount_rule_
             $col->addTextField('');     
         
         $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
-             $col->addButton(__('Add'))->setID('addCategoryRule')->addData('cid', '1')->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+            //$col->addButton(__('Add'))->setID('addCategoryRule')->addData('cid', '1')->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+            $col->addContent('<a style="cursor:pointer;margin-bottom: 15px;" data-cid="1"  id="addCategoryRule" class="btn btn-primary lftbutt">Add</a>');
 
         $col = $row->addColumn()->setClass('newdes nobrdbtm invbutt hidediv');
-            $col->addButton(__('Add'))->setID('addInvoiceCountRule')->addData('cid', '1')->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');     
+            //$col->addButton(__('Add'))->setID('addInvoiceCountRule')->addData('cid', '1')->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');   
+            $col->addContent('<a style="cursor:pointer;margin-bottom: 15px;" data-cid="1"  id="addInvoiceCountRule" class="btn btn-primary lftbutt">Add</a>');  
 
         $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv fixedfine');
 
         $col = $row->addColumn()->setClass('newdes nobrdbtm');
         
         $col->addLabel('cat_name', __('Category Name'))->addClass('dte');
-         $col->addSelect('cat_name[1]')->fromArray($fee_category)->addClass('txtfield')->required();
+         $col->addSelect('cat_name[1]')->fromArray($fee_category)->addClass('txtfield');
         
         $col = $row->addColumn()->setClass('newdes nobrdbtm');
         $col->addLabel('fn_fee_item_id', __('Fee Item'))->addClass('dte');
@@ -126,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_discount_rule_
 
         $col = $row->addColumn()->setClass('newdes nobrdbtm');
             $col->addLabel('category_amount', __('Amount / Percent'))->addClass('dte');
-            $col->addTextField('category_amount[1]')->addClass('ralignnumfield txtfield kountseat szewdt numfield amtPercent')->required(); 
+            $col->addTextField('category_amount[1]')->addClass('ralignnumfield txtfield kountseat szewdt numfield amtPercent'); 
             $col->addLabel('', __(''))->addClass('dte');             
        
     

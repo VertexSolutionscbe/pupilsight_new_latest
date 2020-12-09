@@ -238,9 +238,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
         ->sortBy(['id'])
         ->fromPOST();
    
-    $yearGroups = $FeesGateway->getFeesStructureAssignStudent($criteria,$input);
+    if($_POST){
+        $yearGroups = $FeesGateway->getFeesStructureAssignStudent($criteria,$input);
+    }
     $table = DataTable::createPaginated('FeeStructureStudentAssignManage', $criteria);
-
     
     $table->addCheckboxColumn('stuid',__(''))
     ->setClass('chkbox')
@@ -265,7 +266,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     //                 ->setURL('/modules/Finance/fee_structure_assign_student_manage_delete.php');
     //     });
 
+    if($_POST){
     echo $table->render($yearGroups);
+    }
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }

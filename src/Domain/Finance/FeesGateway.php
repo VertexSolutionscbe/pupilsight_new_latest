@@ -799,6 +799,21 @@ print_r($rs);
                         } else {
                             $data[$k]['chkinvstatus'] = '';
                         }
+
+                    $query3 = $this
+                    ->newQuery()
+                    ->from('fn_fee_invoice_item')
+                    ->cols([
+                        'SUM(fn_fee_invoice_item.total_amount) as tot_amount'
+                    ])
+                    ->where('fn_fee_invoice_item.fn_fee_invoice_id = "'.$invid.'" ');
+                
+                    $newdata1 = $this->runQuery($query3, $criteria);
+                    if(!empty($newdata1->data[0]['tot_amount'])){
+                        $data[$k]['inv_amount'] = $newdata1->data[0]['tot_amount'];
+                    } else {
+                        $data[$k]['inv_amount'] = '';
+                    }
                     
                 }
                
@@ -1495,6 +1510,13 @@ print_r($rs);
             ]);
 
         return $this->runQuery($query, $criteria, true);
+    }
+
+    public function getFeesCategory(QueryCriteria $criteria)
+    {
+        $db = new DBQuery();
+        $rs = $db->select_serial("select id, name from fee_category");
+        return $rs;
     }
 
 }
