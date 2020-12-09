@@ -6,9 +6,9 @@ Pupilsight, Flexible & Open School System
 include '../../pupilsight.php';
 
 $id = $_GET['id'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/fee_series_manage.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/fee_category_manage.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_series_manage_edit.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_category_manage_edit.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
@@ -20,7 +20,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_series_manage_
     } else {
         try {
             $data = array('id' => $id);
-            $sql = 'SELECT * FROM fn_fee_series WHERE id=:id';
+            $sql = 'SELECT * FROM fee_category WHERE id=:id';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -34,20 +34,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_series_manage_
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-            $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
-            $series_name = $_POST['series_name'];
-            $description = $_POST['description'];
-            $format = $_POST['format'];
-           
+            $name = $_POST['name'];
+            // $nameShort = $_POST['nameShort'];
+            // $sequenceNumber = $_POST['sequenceNumber'];
+            
 
-            if ($series_name == ''  or $format == '' ) {
+            if ($name == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
                 //Check unique inputs for uniquness
                 try {
-                    $data = array('series_name' => $series_name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'format' => $format, 'id' => $id);
-                    $sql = 'SELECT * FROM fn_fee_series WHERE (series_name=:series_name AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND format=:format) AND NOT id=:id';
+                    $data = array('name' => $name, 'id' => $id);
+                    $sql = 'SELECT * FROM fee_category WHERE (name=:name) AND NOT id=:id';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -62,8 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_series_manage_
                 } else {
                     //Write to database
                     try {
-                        $data = array('type' => 'Finance', 'series_name' => $series_name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'description' => $description, 'id' => $id);
-                        $sql = 'UPDATE fn_fee_series SET type=:type, series_name=:series_name, pupilsightSchoolYearID=:pupilsightSchoolYearID, description=:description WHERE id=:id';
+                        $data = array('name' => $name,  'id' => $id);
+                        $sql = 'UPDATE fee_category SET name=:name WHERE id=:id';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

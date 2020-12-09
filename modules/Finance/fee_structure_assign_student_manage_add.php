@@ -74,14 +74,14 @@ echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
     <input type="text" class="w-full" id="searchTable" placeholder="Search">
 </div>';
 
-    $form = Form::create('assignFeeStructure', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_assign_student_manage_addProcess.php');
-    $form->setFactory(DatabaseFormFactory::create($pdo));
+    // $form = Form::create('assignFeeStructure', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_assign_student_manage_addProcess.php');
+    // $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('stu_id', $studentids);
+    // $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    // $form->addHiddenValue('stu_id', $studentids);
     //$tab = '';
-
-    $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
+?>
+    <!-- $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
         $col = $row->addColumn()->setClass('newdes');
         $col->addCheckbox('select')->setId('checkall')->setClass('fee_id chkAll');   
 
@@ -95,10 +95,6 @@ echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
         $col->addLabel('Academic Year', __('Academic Year'))->addClass('dte');
 
     foreach($feestructure as $fee){
-        //$tab .= '';
-        // $row = $form->addRow();
-        //     $col->addLabel('pupilsightProgramID', __($fee['name']));
-        //     $col->addLabel('pupilsightYearGroupID', __($fee['academic_year']));
         $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
             $col = $row->addColumn()->setClass('newdes');
             $col->addCheckbox('fee_id[]')->setValue($fee['id'])->setClass('fee_id chkChild'); 
@@ -112,15 +108,40 @@ echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
             
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel($fee['academic_year'], __($fee['academic_year']))->addClass('dte');
-    }
+    } -->
+<form id="assignFeeStructure" method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_assign_student_manage_addProcess.php'?>">
+<input type="hidden" name="stu_id" value="<?php echo $studentids?>">
+<button type="submit" class="btn btn-primary" style="float:right; margin-bottom:10px;margin-top: -46px;">Submit</button>
+    <table class="table" >
+        <thead>
+            <tr>
+                <th><input type="checkbox" class="chkAll" ></th>
+                <th>Academic Year</th>
+                <th>Fee Structure</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php if(!empty($feestructure)){ 
+                foreach($feestructure as $fee){
+            ?>
+            <tr>
+                <td><input type="checkbox" name="fee_id[]" class="chkChild" value="<?php echo $fee['id']; ?>" ></td>
+                <td><?php echo $fee['academic_year']; ?></td>
+                <td><?php echo $fee['name']; ?></td>
+                <td><?php echo $fee['totalamount']; ?></td>
+            </tr>
+            <?php } } ?>
+        </tbody>
+    </table>
     
+</form>
+<?php      
+    // $row = $form->addRow();
+    //     $row->addFooter();
+    //     $row->addSubmit();
 
-        
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
-
-    echo $form->getOutput();
+    // echo $form->getOutput();
 
 }
 
@@ -131,7 +152,7 @@ echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
     
     $("#searchTable").on("keyup", function() {
         var value = $(this).val().toLowerCase();
-        $(".standardForm tbody tr:not(:first-child):not(:last-child)").filter(function() {
+        $(".table tbody").filter(function() {
         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
@@ -151,5 +172,28 @@ echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
             $(".chkAll:checkbox").prop("checked", false);
         }
     });
+
+    // $(document).on('click', '#saveAssignFeeStr', function () {
+    //     var sub = [];
+    //     $.each($("input[name='fee_id[]']:checked"), function () {
+    //         sub.push($(this).val());
+    //     });
+    //     var subid = sub.join(",");
+    //     if (subid != '') {
+    //         $.ajax({
+    //             url: 'index.php?q=/modules/Finance/fee_structure_assign_student_manage_addProcess.php',
+    //             type: 'post',
+    //             data: $('#assignFeeStructure').serialize(),
+    //             async: true,
+    //             success: function (response) {
+    //                 $("#TB_overlay").remove();
+    //                 $("#TB_window").remove();
+    //                 $("#feeSettingId-" + kid).val(response);
+    //             }
+    //         });
+    //     } else {
+    //         alert('You Have to Select Fee Group!');
+    //     }
+    // });
 
 </script>    

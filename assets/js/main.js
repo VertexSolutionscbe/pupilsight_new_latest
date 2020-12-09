@@ -2904,8 +2904,17 @@
     });
 
     $(document).on('click', '#export_invoice', function () {
-        $('#expore_tbl').find('td,th').last().remove();
-        $('#expore_tbl ').find('.bulkCheckbox').remove();
+
+        $("#expore_tbl tr").each(function () {
+            $(this).find("th:last").remove();
+            $(this).find("td:last").remove();
+            $(this).find("th:first").remove();
+            $(this).find("td:first").remove();
+        });
+
+        // $('#expore_tbl').find('td,th').first().remove();
+        // $('#expore_tbl').find('td,th').last().remove();
+        // $('#expore_tbl ').find('.bulkCheckbox').remove();
         $("#expore_tbl").table2excel({
             name: "Worksheet Name",
             filename: "fee_invoices.xls",
@@ -2914,6 +2923,7 @@
             exclude_inputs: true,
             columns: [0, 1, 2, 3, 4, 5]
         });
+        location.reload();
     });
 
 

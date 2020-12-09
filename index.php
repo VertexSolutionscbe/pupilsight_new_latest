@@ -378,17 +378,18 @@ if ($isLoggedIn) {
         }
     }
 
-    $masterList[0] = array('name' => 'Fee Series', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_series_manage.php');
-    $masterList[1] = array('name' => 'Fee Head', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_head_manage.php');
-    $masterList[2] = array('name' => 'Fine Rule', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_fine_rule_manage.php');
-    $masterList[3] = array('name' => 'Fee Item Type', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_item_type_manage.php');
-    $masterList[4] = array('name' => 'Receipts Template', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_receipts_manage.php');
-    $masterList[5] = array('name' => 'Fee Item', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_item_manage.php');
-    $masterList[6] = array('name' => 'Deposit Account', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/deposit_account_manage.php');
-    $masterList[7] = array('name' => 'Discount Rule', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_discount_rule_manage.php');
-    $masterList[8] = array('name' => 'Fee Counter', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_manage.php');
-    $masterList[9] = array('name' => 'Banks & Payment Mode', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_master_manage.php');
-    $masterList[10] = array('name' => 'Fee Payment Gateway', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_payment_gateway_manage.php');
+    $masterList[0] = array('name' => 'Fee Category', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_category_manage.php');
+    $masterList[1] = array('name' => 'Fee Series', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_series_manage.php');
+    $masterList[2] = array('name' => 'Fee Head', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_head_manage.php');
+    $masterList[3] = array('name' => 'Fine Rule', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_fine_rule_manage.php');
+    $masterList[4] = array('name' => 'Fee Item Type', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_item_type_manage.php');
+    $masterList[5] = array('name' => 'Receipts Template', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_receipts_manage.php');
+    $masterList[6] = array('name' => 'Fee Item', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_item_manage.php');
+    $masterList[7] = array('name' => 'Deposit Account', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/deposit_account_manage.php');
+    $masterList[8] = array('name' => 'Discount Rule', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_discount_rule_manage.php');
+    $masterList[9] = array('name' => 'Fee Counter', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_manage.php');
+    $masterList[10] = array('name' => 'Banks & Payment Mode', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_master_manage.php');
+    $masterList[11] = array('name' => 'Fee Payment Gateway', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_payment_gateway_manage.php');
 
     $paymentList[0] = array('name' => 'Manage Invoice', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_manage.php');
     //echo $session->get('counterid');

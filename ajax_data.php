@@ -125,7 +125,7 @@ if ($type == 'getAjaxDiscountCategory') {
         $feeItemData[$dt['id']] = $dt['name'];
     }
 
-    $data = '<tr id="seatdiv" class="seatdiv fixedfine flex flex-col sm:flex-row justify-between content-center p-0 deltr' . $aid . '"><td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+    $data = '<div style="margin-bottom:30px !important;" id="seatdiv" class="row mb-1 seatdiv fixedfine deltr' . $aid . '"><div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative">
             <select id="cat_name[' . $aid . ']" name="cat_name[' . $aid . ']" class="w-full txtfield">';
@@ -134,23 +134,23 @@ if ($type == 'getAjaxDiscountCategory') {
     }
     $data .= '</select>
             </div></div>
-        </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+        </div></div>
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><select id="fn_fee_item_id" name="fn_fee_item_id[' . $aid . ']" class="w-full  txtfield">';
     foreach ($feeItemData as $k => $st) {
         $data .= '<option value="' . $k . '">' . $st . '</option>';
     }
     $data .= ' </select></div></div>
-        </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+        </div></div>
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><select id="item_type" name="item_type[' . $aid . ']" class="w-full txtfield"><option value="Fixed">Fixed</option><option value="Percentage">Percentage</option></select></div></div>
         </div>  
-        </td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+        </div>
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group" style="display:inline-flex;">
-            <div class="dte mb-1"></div><div class=" txtfield kountseat szewdt numfield mb-1"><div class="flex-1 relative"><input type="text" id="category_amount" name="category_amount[' . $aid . ']" class="ralignnumfield w-full txtfield kountseat szewdt numfield amtPercent"></div></div><div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="far fa-times-circle delSeattr" data-id="' . $aid . '"></i></div></div></td></tr>';
+            <div class="dte mb-1"></div><div class=" txtfield kountseat szewdt numfield mb-1"><div class="flex-1 relative"><input type="text" id="category_amount" name="category_amount[' . $aid . ']" class="ralignnumfield w-full txtfield kountseat szewdt numfield amtPercent"></div></div><div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px  delSeattr" data-id="' . $aid . '"></i></div></div></div></div>';
 
 
     echo $data;
@@ -167,34 +167,34 @@ if ($type == 'getAjaxInvoiceCategory') {
         $feeItemData[$dt['id']] = $dt['name'];
     }
 
-    $data = '<tr id="seatdiv2" class="seatdiv2 dayslabfine flex flex-col sm:flex-row justify-between content-center p-0 deltr' . $aid . '"><td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm2">
+    $data = '<div style="margin-bottom:30px !important;" id="seatdiv2" class="row mb-1 seatdiv2 dayslabfine deltr' . $aid . '"><div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="inv_name" name="inv_name[' . $aid . ']" class="inv_name w-full txtfield"></div></div>
-        </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm2">
+        </div></div>
+        <div class="col-sm  newdes nobrdbtm">
             <div class="input-group stylish-input-group">
                 <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="min_invoice" name="min_invoice[' . $aid . ']" class="min_inv w-full  txtfield numfield"></div></div>
-            </div></td>
-            <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm2">
+            </div></div>
+            <div class="col-sm  newdes nobrdbtm">
             <div class="input-group stylish-input-group">
                 <div class="dte mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="max_invoice" name="max_invoice[' . $aid . ']" class="max_inv w-full  txtfield numfield"></div></div>
-            </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm2">
+            </div></div>
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><select id="inv_fn_fee_item_id" name="inv_fn_fee_item_id[' . $aid . ']" class="w-full  txtfield">';
     foreach ($feeItemData as $k => $st) {
         $data .= '<option value="' . $k . '">' . $st . '</option>';
     }
     $data .= ' </select></div></div>
-        </div></td>    
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm2">
+        </div></div>    
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><select id="inv_item_type" name="inv_item_type[' . $aid . ']" class="w-full txtfield"><option value="Fixed">Fixed</option><option value="Percentage">Percentage</option></select></div></div>
         </div>  
-        </td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm2">
+        </div>
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group" style="display:inline-flex;">
-            <div class="dte mb-1"></div><div class=" txtfield kountseat szewdt2 numfield mb-1"><div class="flex-1 relative"><input type="text" id="inv_amount" name="inv_amount[' . $aid . ']" class="w-full txtfield kountseat szewdt2 numfield inv_amtPercent"></div></div><div class="dte mb-1"  style="font-size: 20px; padding:  0px 0 0px 4px; width: 20px"><i style="cursor:pointer" class="far fa-times-circle delSeattr" data-id="' . $aid . '"></i></div></div></td></tr>';
+            <div class="dte mb-1"></div><div class=" txtfield kountseat szewdt2 numfield mb-1"><div class="flex-1 relative"><input type="text" id="inv_amount" name="inv_amount[' . $aid . ']" class="w-full txtfield kountseat szewdt2 numfield inv_amtPercent"></div></div><div class="dte mb-1"  style="font-size: 20px; padding:  0px 0 0px 4px; width: 20px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' . $aid . '"></i></div></div></div></div>';
 
 
     echo $data;
@@ -3479,4 +3479,18 @@ if ($type == 'getSubjectForStaff') {
         $returndata .= '<option value=' . $row['pupilsightDepartmentID'] . '  data-dimode=' . $row['di_mode'] . '>' . $row['subject_display_name'] . '</option>';
     }
     echo $returndata;
+}
+
+
+if ($type == 'deleteBulkInvoice') {
+    $ids = explode(',', $val);
+    $reason = 'Cancel';
+    $status = '2';
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    foreach ($ids as $st) {
+        $data = array('reason_for_cancel' => $reason, 'status' => $status, 'invoice_status' => 'Canceled', 'cancel_user_id' => $uid, 'id' => $st);
+        $sql = 'UPDATE fn_fee_invoice_student_assign SET status=:status, reason_for_cancel=:reason_for_cancel, invoice_status=:invoice_status, cancel_user_id=:cancel_user_id WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
 }
