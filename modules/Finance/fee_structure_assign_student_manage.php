@@ -266,8 +266,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     //                 ->setURL('/modules/Finance/fee_structure_assign_student_manage_delete.php');
     //     });
 
-    if($_POST){
-    echo $table->render($yearGroups);
+    if($_POST){   
+        echo $table->render($yearGroups);
     }
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
