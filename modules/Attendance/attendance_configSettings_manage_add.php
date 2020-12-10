@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
     
     $row = $form->addRow()->addClass('showClass');
     $row->addLabel('classes', __('Class'));
-    $row->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple()->selected($setclass);
+    $row->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple()->selected($setclass)->required();
     
     $row = $form->addRow();
     $row->addLabel('attn_type', __('Attendance Type'));

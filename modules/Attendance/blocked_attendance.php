@@ -36,11 +36,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/blocked_attenda
 
         // echo '<pre>';
         // print_r($_POST);
-        if($_POST){     
+        if($_POST){
             $pupilsightProgramID =  isset($_POST['pupilsightProgramID'])? $_POST['pupilsightProgramID'] : '';
             $pupilsightYearGroupID = isset($_POST['pupilsightYearGroupID'])? $_POST['pupilsightYearGroupID'] : '';
             $pupilsightRollGroupID = isset($_POST['pupilsightRollGroupID'])? $_POST['pupilsightRollGroupID'] : '';
-          
+
             $stuId = isset($_GET['studentId'])? $_GET['studentId'] : '';
 
             $today = date('Y-m-d');
@@ -157,9 +157,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/blocked_attenda
          $edate_val= dateConvert($guid, $edate);
  
    if($_POST)
-   {   
-    $blocked= $attendanceLogGateway->selectBlockedAttendanceLogs($criteria, $pupilsightYearGroupID,$pupilsightRollGroupID,$sdate_val,$edate_val);   
-   }   
+   {
+       $blocked= $attendanceLogGateway->selectBlockedAttendanceLogs($criteria, $pupilsightYearGroupID,$pupilsightRollGroupID,$sdate_val,$edate_val);
+   }
    else
    {   
     $blocked = $attendanceLogGateway->selectBlockedAttendanceLogsAll($criteria);

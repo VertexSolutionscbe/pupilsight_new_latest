@@ -278,8 +278,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             echo __('Report Data').': '. Format::dateRangeReadable($dateStart, $dateEnd);        
             echo '</h2>';
             echo '<p style="color:#666;">';
-            echo '<strong>' . __('Total number of school days to date:').' '.$schoolDayCounts['total'].'</strong><br/>';
-            echo __('Total number of school days in date range:').' '.$schoolDayCounts['dateRange'];
+           // echo '<strong>' . __('Total number of school days to date:').' '.$schoolDayCounts['total'].'</strong><br/>';
+            //echo __('Total number of school days in date range:').' '.$schoolDayCounts['dateRange'];
         echo '</p>';
 
             // echo "<div class='alert alert-danger'>";
@@ -294,13 +294,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             
             echo "<div style='height:50px; margin-top:10px;'><div class='float-right mb-2'>
             <a style=' margin-bottom:10px;' data-sdate='".$dateStart."' data-edate='".$dateEnd."' id='exportExcelSummary_byDate' href='javascript:void(0)' data-sc='".$countClassAsSchool."' class='btn btn-primary'>Export Excel</a>
-            <a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-new_attendance' data-noti='2'  class='sendButton_attendance btn btn-primary' id='sendSMS'>Send SMS</a>";  
+            <a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-new_attendance' data-noti='2'  class='sendButton_attendance btn btn-primary' id='sendSMS'>Send SMS</a>";
             echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_attendance' class='sendButton_attendance btn btn-primary' id='sendEmail'>Send Email</a>";
              echo " </div><div class='float-none'></div></div>";
 
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&pupilsightCourseClassID='.$pupilsightCourseClassID.'&pupilsightRollGroupID='.$pupilsightRollGroupID.'&pupilsightAttendanceCodeID='. $pupilsightAttendanceCodeID .'&pupilsightProgramID=' . $pupilsightProgramID . '&pupilsightYearGroupID='.$pupilsightYearGroupID.'&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/print.png'/></a>";
+            //echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&pupilsightCourseClassID='.$pupilsightCourseClassID.'&pupilsightRollGroupID='.$pupilsightRollGroupID.'&pupilsightAttendanceCodeID='. $pupilsightAttendanceCodeID .'&pupilsightProgramID=' . $pupilsightProgramID . '&pupilsightYearGroupID='.$pupilsightYearGroupID.'&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/print.png'/></a>";
             echo '</div>';
            echo "<div id='report_data' style='display:none'></div>";
             echo '<table class="table colorOddEven" >';

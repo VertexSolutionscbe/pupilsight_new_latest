@@ -245,7 +245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
    
             $row = $form->addRow();
             $row->addFooter();
-            $row->addContent('<button type="button" id="attnSettingsSubmit" class=" btn btn-primary" style="position:absolute; right:9px; margin-top: -18px;">Submit</button>');
+            $row->addContent('<button type="button" id="attnSettingsSubmit" class=" btn btn-primary" style="position:absolute; right:9px; margin-top: 0px;">Submit</button>');
 
 
     echo $form->getOutput();

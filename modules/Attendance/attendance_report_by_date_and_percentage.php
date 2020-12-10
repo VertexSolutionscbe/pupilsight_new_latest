@@ -231,7 +231,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_repo
 
     $table->addColumn('officialName', __('Name'));
 
-    $table->addColumn('pupilsightPersonID', __(' ID'));
+    //$table->addColumn('pupilsightPersonID', __(' ID'));
+    $table->addColumn('admission_no', __(' Admission Id'));
     $table->addColumn('total', __('Total'));
     $table->addColumn('present', __('Present'));
     $table->addColumn('percentage', __('%'))->setClass('percentage_td');
