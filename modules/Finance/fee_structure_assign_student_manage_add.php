@@ -111,8 +111,9 @@ echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
     } -->
 <form id="assignFeeStructure" method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_assign_student_manage_addProcess.php'?>">
 <input type="hidden" name="stu_id" value="<?php echo $studentids?>">
+<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'];?>">
 <button type="submit" class="btn btn-primary" style="float:right; margin-bottom:10px;margin-top: -46px;">Submit</button>
-    <table class="table" >
+    <table class="table" id="strAssign">
         <thead>
             <tr>
                 <th><input type="checkbox" class="chkAll" ></th>
@@ -152,7 +153,7 @@ echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
     
     $("#searchTable").on("keyup", function() {
         var value = $(this).val().toLowerCase();
-        $(".table tbody").filter(function() {
+        $("#strAssign tbody tr").filter(function() {
         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });

@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
-        ->pageSize(100000)
+        ->pageSize(10000)
         ->sortBy(['id'])
         ->fromPOST();
 
@@ -286,7 +286,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     //     ->setURL('/modules/Finance/program_manage_add.php')
     //     ->displayLabel();
     echo "<hr />";
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/Finance/invoice_assign_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Class</a>";  
+    echo "<div style='height:50px;'><div class='float-right mb-2'><a style=' ' href=''  data-toggle='modal' data-target='#large-modal-new-invoice_stud' data-noti='2'  class='sendButton_stud_inv btn btn-primary' id='sendSMS'>Send SMS</a>&nbsp;&nbsp;<a style='' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new-invoice_stud' class='sendButton_stud_inv btn btn-primary' id='sendEmail'>Send Email</a>&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Finance/invoice_assign_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Class</a>";  
     echo "&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Finance/invoice_assign_student_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Student</a>&nbsp;&nbsp;<a style='' id='deleteBulkInvoice' class='btn btn-primary'>Bulk Delete</a>&nbsp;&nbsp;<a style='color:#666;cursor:pointer;font-size: 15px;' id='export_invoice'><i title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i></a></div><div class='float-none'></div></div>";  
 
     
@@ -400,6 +400,113 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
         } else {
             alert('You Have to Select Invoice.');
         }
+    });
+
+    $(document).on('click', '.sendButton_stud_inv', function () {
+        var stuids = [];
+        $.each($("input[name='insid[]']:checked"), function () {
+            stuids.push($(this).val());
+        });
+        var stuid = stuids.join(",");
+        if (stuid) {
+            $(".sendButton_stud_inv").removeClass('activestate');
+            $(this).addClass('activestate');
+            var noti = $(this).attr('data-noti');
+            $(".emailsmsFieldTitle_inv").hide();
+            $(".emailFieldTitle_inv").hide();
+            $(".emailField_inv").hide();
+            $(".smsFieldTitle_inv").hide();
+            $(".smsField_inv").hide();
+            if (noti == '1') {
+                $(".emailFieldTitle_inv").show();
+                $(".emailField_inv").show();
+            } else if (noti == '2') {
+                $(".smsFieldTitle_inv").show();
+                $(".smsField_inv").show();
+            } else if (noti == '3') {
+                $(".emailsmsFieldTitle_inv").show();
+                $(".emailField_inv").show();
+                $(".smsField_inv").show();
+            } else {
+                $(".emailsmsFieldTitle_inv").show();
+                $(".emailField_inv").show();
+                $(".smsField_inv").show();
+            }
+        } else {
+            alert('You Have to Select Student First');
+            window.setTimeout(function () {
+                $("#large-modal-new-invoice_stud").removeClass('show');
+                $("#chkCounterSession").removeClass('modal-open');
+                $(".modal-backdrop").remove();
+            }, 10);
+        }
+
+    });
+
+    $(document).on('click', '#sendEmailSms_stud_invoice', function (e) {
+        e.preventDefault();
+        $("#preloader").show();
+        window.setTimeout(function () {
+            var formData = new FormData(document.getElementById("sendEmailSms_Student_inv"));
+
+            var emailquote = $("#emailQuote_stud_inv").val();
+            var subjectquote = $("#emailSubjectQuote_stud_inv").val();
+
+            var smsquote = $("#smsQuote_stud_inv").val();
+            var favorite = [];
+            $.each($("input[name='insid[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var stuid = favorite.join(", ");
+
+            var types = [];
+            $.each($(".chkType_inv:checked"), function () {
+                types.push($(this).attr('data-type'));
+            });
+            var type = types.join(",");
+
+            if (stuid) {
+                if (type != '') {
+                    if (emailquote != '' || smsquote != '') {
+
+                        formData.append('stuid', stuid);
+                        formData.append('emailquote', emailquote);
+                        formData.append('smsquote', smsquote);
+                        formData.append('type', type);
+                        formData.append('subjectquote', subjectquote);
+                        $.ajax({
+                            url: 'modules/Finance/send_stud_email_msg.php',
+                            type: 'post',
+                            //data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote, type: type, subjectquote: subjectquote },
+                            data: formData,
+                            contentType: false,
+                            cache: false,
+                            processData: false,
+                            async: false,
+                            success: function (response) {
+                                $("#preloader").hide();
+                                alert('Your Message Sent Successfully! click Ok to continue ');
+                                //location.reload();
+                                $("#sendEmailSms_Student_inv")[0].reset();
+                                $("#closeSM").click();
+                            }
+                        });
+                    } else {
+                        $("#preloader").hide();
+                        alert('You Have to Enter Message.');
+                    }
+                } else {
+                    $("#preloader").hide();
+                    alert('You Have to Select Recipient.');
+                }
+            } else {
+                $("#preloader").hide();
+                alert('You Have to Select Applicants.');
+
+            }
+        }, 100);
+
+
     });
 
 </script>

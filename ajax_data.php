@@ -624,9 +624,10 @@ if ($type == 'searchStudent') {
     $aid = $_POST['val'];
     $search = $_POST['search'];
 
-    $sqli = 'SELECT a.pupilsightPersonID, a.admission_no, p.name,a.officialName,  d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON b.pupilsightProgramID = p.pupilsightProgramID  LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE a.pupilsightRoleIDPrimary = "003" AND a.officialName LIKE "%' . $search . '%" OR b.pupilsightSchoolYearID = "' . $search . '" OR b.pupilsightProgramID = "' . $search . '" OR b.pupilsightYearGroupID = "' . $search . '" OR  a.pupilsightPersonID = "' . $search . '" OR  a.admission_no = "' . $search . '"';
+    $sqli = 'SELECT a.pupilsightPersonID, a.admission_no, p.name,a.officialName,  d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON b.pupilsightProgramID = p.pupilsightProgramID  LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE a.pupilsightRoleIDPrimary = "003" AND a.officialName LIKE "%' . $search . '%" OR  a.pupilsightPersonID = "' . $search . '" OR  a.admission_no = "' . $search . '"';
     $resulti = $connection2->query($sqli);
     $students = $resulti->fetchAll();
+    //print_r($students);
     $data = '';
     foreach ($students as $k => $dt) {
         $sqls = 'SELECT p.officialName FROM pupilsightFamilyRelationship as r LEFT JOIN pupilsightPerson as p

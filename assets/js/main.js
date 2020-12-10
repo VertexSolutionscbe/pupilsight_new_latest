@@ -2855,7 +2855,8 @@
                         }
                     });
                 } else {
-                    return false;
+                    $("#chkCounterSession").attr('data-chkCounter', '1');
+                    return true;
                 }
             }
         }

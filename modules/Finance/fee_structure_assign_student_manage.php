@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
 
     $col = $row->addColumn()->setClass('newdes');   
     $col->addLabel('', __(''));
-    $col->addContent('<input type="hidden" name="searchtype" value="2"><button id="" class=" btn btn-primary">Search</button><button id="submitInvoice" style="display:none;" class=" btn btn-primary">Submit</button><a id="normalSearch" title="Normal Search" class=" btn btn-primary" style="position:absolute; right:0; margin-right: -5px;width: 96px;">Nr Search</a>');   
+    $col->addContent('<input type="hidden" name="searchtype" value="2"><button id="" class=" btn btn-primary" style="margin-left: -10px">Search</button><button id="submitInvoice" style="display:none;" class=" btn btn-primary">Submit</button><a id="normalSearch" title="Normal Search" class=" btn btn-primary" style="position:absolute; right:0; margin-right: 2px;width: 96px;">Nr Search</a>');   
     
     // $col->addContent('<button id="submitInvoice" style="display:none;" class="transactionButton btn btn-primary">Submit</button>'); 
     

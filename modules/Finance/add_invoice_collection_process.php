@@ -50,23 +50,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
         echo "Required parameters missing ";
     } else {
         //Check unique inputs for uniquness
-        try {
-            $data = array('title' => $title);
-            $sql = 'SELECT * FROM fn_fee_invoice WHERE title=:title ';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "error2";
-            //$URL .= '&return=error2';
-           // header("Location: {$URL}");
-            //exit();
-        }
+        // try {
+        //     $data = array('title' => $title);
+        //     $sql = 'SELECT * FROM fn_fee_invoice WHERE title=:title ';
+        //     $result = $connection2->prepare($sql);
+        //     $result->execute($data);
+        // } catch (PDOException $e) {
+        //     echo "error2";
+        // }  close code of invoice name unique
 
-        if ($result->rowCount() > 0) {
-            //$URL .= '&return=error3';
-            echo "Invoice title is Already Exist!";
-            //header("Location: {$URL}");
-        } else {
+        // if ($result->rowCount() > 0) {
+        //     echo "Invoice title is Already Exist!";
+        // } else {  close code of invoice name unique
             //Write to database
             $sqlpt = "SELECT * FROM fn_fee_series WHERE id = ".$inv_fn_fee_series_id." ";
             $resultpt = $connection2->query($sqlpt);
@@ -178,6 +173,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
              echo "success";
          /*   $URL .= "&return=success0";
             header("Location: {$URL}");*/
-        }
+        // } close code of invoice name unique
     }
 }

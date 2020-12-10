@@ -20,14 +20,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
     $HelperGateway = $container->get(HelperGateway::class);
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
     $cdate = date('Y-m-d');
+
+    $countersql = 'SELECT id FROM fn_fees_counter ';
+    $resultcounter = $connection2->query($countersql);
+    $counterData = $resultcounter->fetch();
     
-    $sqlp = 'SELECT a.id FROM fn_fees_counter_map AS a LEFT JOIN fn_fees_counter AS b ON a.fn_fees_counter_id = b.id WHERE a.pupilsightPersonID = "'.$cuid.'" AND a.active_date = "'.$cdate.'" AND b.status = "1" ';
-    $resultp = $connection2->query($sqlp);
-    $chkcounter = $resultp->fetchAll();
-    //print_r($chkcounter);
-    if(empty($chkcounter)){
-        $returnURL = $_SESSION[$guid]['absoluteURL'].'/index.php';
-        header("Location: {$returnURL}");
+    if(!empty($counterData)){
+        $sqlp = 'SELECT a.id FROM fn_fees_counter_map AS a LEFT JOIN fn_fees_counter AS b ON a.fn_fees_counter_id = b.id WHERE a.pupilsightPersonID = "'.$cuid.'" AND a.active_date = "'.$cdate.'" AND b.status = "1" ';
+        $resultp = $connection2->query($sqlp);
+        $chkcounter = $resultp->fetchAll();
+        //print_r($chkcounter);
+        if(empty($chkcounter)){
+            $returnURL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/fee_counter_check_add.php';
+            header("Location: {$returnURL}");
+        }
     }
 
     //Proceed!
@@ -697,6 +703,7 @@ echo " <style>
             success: function(response) {
                 // if(response == "success"){
                     load();
+                    loadInvoices();
                     alert("Your Receipt Cancelled Successfully");
                     $("#TB_overlay").remove();
                     $("#TB_window").remove();
