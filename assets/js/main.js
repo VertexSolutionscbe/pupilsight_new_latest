@@ -2960,7 +2960,8 @@
             async: true,
             success: function (response) {
 
-                $("#pupilsightYearGroupID").html();
+                $("#pupilsightYearGroupID").html('');
+                $("#pupilsightRollGroupID").html('');
                 $("#pupilsightYearGroupID").html(response);
             }
         });
@@ -2976,7 +2977,7 @@
             data: { val: id, type: type, pid: pid },
             async: true,
             success: function (response) {
-                $("#pupilsightRollGroupID").html();
+                $("#pupilsightRollGroupID").html('');
                 $("#pupilsightRollGroupID").html(response);
             }
         });
@@ -4678,17 +4679,7 @@
 
     });
 
-    $(document).on('click', '#simplesubmitInvoice', function () {
-        var val = $("#simplesearch").val();
-        if (val == '') {
-            $("#simplesearch").val('');
-            $("#search").val('');
-            $("#searchForm").submit();
-        } else {
-            $("#searchForm").submit();
-        }
 
-    });
 
     $(document).on('change', '.chkfrmday', function (e) {
         e.preventDefault();
@@ -8782,4 +8773,29 @@ $(document).on('change', '#clsID', function () {
             $("#secID").html(response);
         }
     });
+});
+
+$(document).on('click', '#simplesubmitInvoice', function () {
+    var val = $("#simplesearch").val();
+    if (val == '') {
+        $("#simplesearch").val('');
+        $("#search").val('');
+        $("#searchForm").submit();
+    } else {
+        $("#pupilsightProgramID option:selected").prop("selected", false);
+        $("#pupilsightYearGroupID option:selected").prop("selected", false);
+        $("#pupilsightRollGroupID option:selected").prop("selected", false);
+        $("#searchfield option:selected").prop("selected", false);
+        $("#search").val('');
+        $(".searchType").val('1');
+        $("#searchForm").submit();
+    }
+
+});
+
+
+$(document).on('click', '#advancesubmitInvoice', function () {
+    $("#simplesearch").val('');
+    $(".searchType").val('2');
+    $("#searchForm").submit();
 });

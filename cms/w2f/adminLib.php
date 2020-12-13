@@ -270,28 +270,33 @@ class adminlib
 		$result = database::doSelectOne($sql);
 		$chklimit = $result['limit_apply_form'];
 		$formId = $result['form_id'];
+		if(!empty($formId)){
 
-		$sql2 = "SELECT count(DISTINCT submission_id) as ids FROM `wp_fluentform_entry_details` WHERE form_id = " . $formId . " ";
-		$result2 = database::doSelectOne($sql2);
-		$kount = $result2['ids'];
+			$sql2 = "SELECT count(DISTINCT submission_id) as ids FROM `wp_fluentform_entry_details` WHERE form_id = " . $formId . " ";
+			$result2 = database::doSelectOne($sql2);
+			$kount = $result2['ids'];
 
-		if ($chklimit != '0') {
-			if (!empty($kount)) {
-				if ($chklimit > $kount) {
-					$return = '1';
+			if ($chklimit != '0') {
+				if (!empty($kount)) {
+					if ($chklimit > $kount) {
+						$return = '1';
+					} else {
+						$return = '2';
+					}
 				} else {
-					$return = '2';
+					$return = '1';
 				}
 			} else {
 				$return = '1';
 			}
+			if ($return == '2') {
+				$sql3 = "UPDATE campaign SET status = '3' WHERE id = " . $cid . " ";
+				$result3 = database::doUpdate($sql3);
+			}
 		} else {
-			$return = '1';
+			$return = '2';
 		}
-		if ($return == '2') {
-			$sql3 = "UPDATE campaign SET status = '3' WHERE id = " . $cid . " ";
-			$result3 = database::doUpdate($sql3);
-		}
+
 		return $return;
 	}
 

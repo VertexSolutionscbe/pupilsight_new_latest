@@ -32,7 +32,7 @@ if ($chkstatus == '2') {
 }
 $campaign_byid = $adminlib->getcampaign_byid($url_id);
 
-$sqlchk = "SELECT a.id, b.pupilsightProgramID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightProgram AS b ON a.pupilsightProgramID = b.pupilsightProgramID  WHERE a.campaign_id = " . $url_id . " GROUP BY a.pupilsightProgramID ";
+$sqlchk = "SELECT a.id, a.pupilsightProgramID, a.campaign_id, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightProgram AS b ON a.pupilsightProgramID = b.pupilsightProgramID  WHERE a.campaign_id = " . $url_id . " GROUP BY a.pupilsightProgramID ";
 $cmpProClsChkData = database::doSelect($sqlchk);
 
 $programData = array();

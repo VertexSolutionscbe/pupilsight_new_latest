@@ -727,16 +727,30 @@ echo " <style>
             } 
     });
 
-    $(document).on('keyup', '#dd_cheque_no', function(){
-            if($(this).val() != ''){
+    $(document).on('change', '#dd_cheque_no', function(){
+
+        if($(this).val() != ''){
+            var len = $(this).val().length;
+            if(len < 6){
+                alert('Enter Proper DD / Cheque No');
+                $(this).addClass('erroralert');
+            } else {
                 $(this).removeClass('erroralert');
-            } 
+            }
+        } 
     });
 
-    $(document).on('keyup', '#dd_cheque_amount', function(){
-            if($(this).val() != ''){
+    $(document).on('change', '#dd_cheque_amount', function(){
+        var ap = $("#amount_paying").val();
+        var val = $(this).val();
+        if(val != ''){
+            if(parseFloat(val) != parseFloat(ap)){
+                alert('Please Enter Same Amount as Amount Paying Field!');
+                $(this).addClass('erroralert');
+            } else {
                 $(this).removeClass('erroralert');
-            } 
+            }
+        } 
     });
 
 

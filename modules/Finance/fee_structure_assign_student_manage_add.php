@@ -112,7 +112,7 @@ echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
 <form id="assignFeeStructure" method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_assign_student_manage_addProcess.php'?>">
 <input type="hidden" name="stu_id" value="<?php echo $studentids?>">
 <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'];?>">
-<button type="submit" class="btn btn-primary" style="float:right; margin-bottom:10px;margin-top: -46px;">Submit</button>
+<a id="saveAssignFeeStr" class="btn btn-primary" style="float:right; margin-bottom:10px;margin-top: -46px;">Submit</a>
     <table class="table" id="strAssign">
         <thead>
             <tr>
@@ -174,27 +174,37 @@ echo '<div style="width:40%; margin-bottom:10px; margin-top:10px;" >
         }
     });
 
-    // $(document).on('click', '#saveAssignFeeStr', function () {
-    //     var sub = [];
-    //     $.each($("input[name='fee_id[]']:checked"), function () {
-    //         sub.push($(this).val());
-    //     });
-    //     var subid = sub.join(",");
-    //     if (subid != '') {
-    //         $.ajax({
-    //             url: 'index.php?q=/modules/Finance/fee_structure_assign_student_manage_addProcess.php',
-    //             type: 'post',
-    //             data: $('#assignFeeStructure').serialize(),
-    //             async: true,
-    //             success: function (response) {
-    //                 $("#TB_overlay").remove();
-    //                 $("#TB_window").remove();
-    //                 $("#feeSettingId-" + kid).val(response);
-    //             }
-    //         });
-    //     } else {
-    //         alert('You Have to Select Fee Group!');
-    //     }
-    // });
+    $(document).on('click', '#saveAssignFeeStr', function () {
+        var sub = [];
+        $.each($("input[name='fee_id[]']:checked"), function () {
+            sub.push($(this).val());
+        });
+        var subid = sub.join(",");
+        var searchType = $(".searchType").val();
+        
+        if (subid != '') {
+            $.ajax({
+                url: 'index.php?q=/modules/Finance/fee_structure_assign_student_manage_addProcess.php',
+                type: 'post',
+                data: $('#assignFeeStructure').serialize(),
+                async: true,
+                success: function (response) {
+                    alert('Fee Structure Assign Successfully!');
+                    $("#TB_overlay").remove();
+                    $("#TB_window").remove();
+                    if(searchType == 2){
+                        $(".searchType").val('2');
+                        $("#searchForm").submit();
+                    } else {
+                        $(".searchType").val('1');
+                        $("#searchForm").submit();
+                    }
+                    
+                }
+            });
+        } else {
+            alert('You Have to Select Fee Group!');
+        }
+    });
 
 </script>    

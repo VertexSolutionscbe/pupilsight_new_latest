@@ -113,13 +113,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     // $searchby = array(''=>'Search By', 'stu_name'=>'Student Name', 'stu_id'=>'Student Id', 'adm_id'=>'Admission Id', 'father_name'=>'Father Name', 'father_email'=>'Father Email', 'mother_name'=>'Mother Name', 'mother_email'=>'Mother Email');
 
     // echo '<pre>';
-    // print_r($coldata);    
+    // print_r($_POST);    
     // echo '</pre>';
     // die();
     $search =  '';
     $searchbyPost =  '';
     $advsearch = '';
     if($_POST){
+        unset($_SESSION['fee_str_search']);
         $input = $_POST;
 
         $pupilsightProgramID =  $_POST['pupilsightProgramID'];
@@ -166,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     $searchform->addHiddenValue('studentId', '0');
 
     if($_POST){
-        if(!empty($_POST['simplesearch'])){
+        if($searchtype == 1){
             $row = $searchform->addRow()->setId('normalSearchRow');
         } else {
             $row = $searchform->addRow()->setId('normalSearchRow')->setClass('hiddencol');
@@ -182,11 +183,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
 
     $col = $row->addColumn()->setClass('newdes');   
     $col->addLabel('', __(''));
-    $col->addContent('<input type="hidden" name="searchtype" value="1"><a id="simplesubmitInvoice" class=" btn btn-primary">Search</a>&nbsp;&nbsp;<a id="advanceSearch" class="btn btn-primary">Advance Search</a>');  
+    $col->addContent('<input type="hidden" class="searchType" name="searchtype" value="'.$searchtype.'"><a id="simplesubmitInvoice" class=" btn btn-primary">Search</a>&nbsp;&nbsp;<a id="advanceSearch" class="btn btn-primary">Advance Search</a>');  
     //$col->addContent('<a id="advanceSearch" class="transactionButton btn btn-primary" style="position:absolute; right:0;">Advance Search</a>');
     
     if($_POST){
-        if(empty($_POST['simplesearch'])){
+        if($searchtype == 2){
             $row = $searchform->addRow()->setId('advanceSearchRow');
         } else {
             $row = $searchform->addRow()->setId('advanceSearchRow')->setClass('hiddencol');
@@ -224,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
 
     $col = $row->addColumn()->setClass('newdes');   
     $col->addLabel('', __(''));
-    $col->addContent('<input type="hidden" name="searchtype" value="2"><button id="" class=" btn btn-primary" style="margin-left: -10px">Search</button><button id="submitInvoice" style="display:none;" class=" btn btn-primary">Submit</button><a id="normalSearch" title="Normal Search" class=" btn btn-primary" style="position:absolute; right:0; margin-right: 2px;width: 96px;">Nr Search</a>');   
+    $col->addContent('<input type="hidden" class="searchType" name="searchtype" value="'.$searchtype.'"><a id="advancesubmitInvoice" class=" btn btn-primary" style="margin-left: -10px">Search</a><button id="submitInvoice" style="display:none;" class=" btn btn-primary">Submit</button><a id="normalSearch" title="Normal Search" class=" btn btn-primary" style="position:absolute; right:0; margin-right: 2px;width: 96px;">Nr Search</a>');   
     
     // $col->addContent('<button id="submitInvoice" style="display:none;" class="transactionButton btn btn-primary">Submit</button>'); 
     
@@ -267,7 +268,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     //     });
 
     if($_POST){   
-        echo $table->render($yearGroups);
+        if(!empty($yearGroups->data)){
+            echo $table->render($yearGroups);
+        } else {
+            echo '<h2 style="text-align:center;">No Data Found!</h2>';
+        }
     }
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);

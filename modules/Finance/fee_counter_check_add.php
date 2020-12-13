@@ -15,9 +15,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_counter_check_
     //Proceed!
     
 
-    $page->breadcrumbs
-        ->add(__('Manage Fee Item Type'), 'fee_item_type_manage.php')
-        ->add(__('Add Fee Item Type'));
+    $page->breadcrumbs->add(__('Assign Counter'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
