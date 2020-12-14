@@ -527,7 +527,7 @@ if(isset($_POST['type'])){
       case "loadInvoicesCollections":
         $stuId=$_POST['val'];
         $pupilsightSchoolYearID=$_POST['py'];
-        $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, fn_fee_invoice_student_assign.id as invid, g.is_fine_editable, g.fine_type, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND pupilsightPerson.pupilsightPersonID = "'.$stuId.'" AND fn_fee_invoice_student_assign.status = 1 GROUP BY fn_fee_invoice.id';
+        $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, fn_fee_invoice_student_assign.id as invid, g.is_fine_editable, g.fine_type, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND pupilsightPerson.pupilsightPersonID = "'.$stuId.'" AND fn_fee_invoice_student_assign.status = 1  GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice_student_assign.id DESC';
         $resultinv = $connection2->query($invoices);
         $invdata = $resultinv->fetchAll();
         // echo '<pre>';
@@ -650,52 +650,56 @@ if(isset($_POST['type'])){
                         $type = '';
                     }
                 } elseif($finetype == '2' && $ruletype == '1'){
-                    $sqlf = 'SELECT * FROM fn_fees_rule_type WHERE fn_fees_fine_rule_id = "'.$fineId.'" AND fine_type = "'.$finetype.'" AND rule_type = "'.$ruletype.'" ';
-                    $resultf = $connection2->query($sqlf);
-                    $finedata = $resultf->fetch();
-                    $no = 0;
-                    if(!empty($finedata['ignore_holiday'])){
-                        $cdate = $date;
-                        $ddate = $d['due_date'];
-                        $no = countholidays($cdate,$ddate,$weekendDaysId);
-                    }
+                    if($d['due_date'] != '1970-01-01'){
+                        $sqlf = 'SELECT * FROM fn_fees_rule_type WHERE fn_fees_fine_rule_id = "'.$fineId.'" AND fine_type = "'.$finetype.'" AND rule_type = "'.$ruletype.'" ';
+                        $resultf = $connection2->query($sqlf);
+                        $finedata = $resultf->fetch();
+                        $no = 0;
+                        if(!empty($finedata['ignore_holiday'])){
+                            $cdate = $date;
+                            $ddate = $d['due_date'];
+                            $no = countholidays($cdate,$ddate,$weekendDaysId);
+                        }
 
-                    if($no != '0'){
-                        $nday = $dd - $no;
-                    } else {
-                        $nday = $dd;
+                        if($no != '0'){
+                            $nday = $dd - $no;
+                        } else {
+                            $nday = $dd;
+                        }
+                        
+                        if(!empty($nday)){
+                            $amtper = $finedata['amount_in_percent'] * $nday;
+                        } else {
+                            $amtper = $finedata['amount_in_percent'];
+                        }
+                        $type = 'percent';
                     }
-                    
-                    if(!empty($nday)){
-                        $amtper = $finedata['amount_in_percent'] * $nday;
-                    } else {
-                        $amtper = $finedata['amount_in_percent'];
-                    }
-                    $type = 'percent';
                 } elseif($finetype == '2' && $ruletype == '2'){
-                    $sqlf = 'SELECT * FROM fn_fees_rule_type WHERE fn_fees_fine_rule_id = "'.$fineId.'" AND fine_type = "'.$finetype.'" AND rule_type = "'.$ruletype.'" ';
-                    $resultf = $connection2->query($sqlf);
-                    $finedata = $resultf->fetch();
-                    $no = 0;
-                    if(!empty($finedata['ignore_holiday'])){
-                        $cdate = $date;
-                        $ddate = $d['due_date'];
-                        $no = countholidays($cdate,$ddate,$weekendDaysId);
-                    }
+                    if($d['due_date'] != '1970-01-01'){
+                        $sqlf = 'SELECT * FROM fn_fees_rule_type WHERE fn_fees_fine_rule_id = "'.$fineId.'" AND fine_type = "'.$finetype.'" AND rule_type = "'.$ruletype.'" ';
+                        $resultf = $connection2->query($sqlf);
+                        $finedata = $resultf->fetch();
+                        $no = 0;
+                        if(!empty($finedata['ignore_holiday'])){
+                            $cdate = $date;
+                            $ddate = $d['due_date'];
+                            $no = countholidays($cdate,$ddate,$weekendDaysId);
+                        }
 
-                    if($no != '0'){
-                        $nday = $dd - $no;
-                    } else {
-                        $nday = $dd;
+                        if($no != '0'){
+                            $nday = $dd - $no;
+                        } else {
+                            $nday = $dd;
+                        }
+                        
+                        if(!empty($nday)){
+                            $amtper = $finedata['amount_in_number'] * $nday;
+                        } else {
+                            $amtper = $finedata['amount_in_number'];
+                        }
+                        
+                        $type = 'num';
                     }
-                    
-                    if(!empty($nday)){
-                        $amtper = $finedata['amount_in_number'] * $nday;
-                    } else {
-                        $amtper = $finedata['amount_in_number'];
-                    }
-                    
-                    $type = 'num';
                 } elseif($finetype == '3' && $ruletype == '1'){
                     $sqlf = 'SELECT * FROM fn_fees_rule_type WHERE fn_fees_fine_rule_id = "'.$fineId.'" AND fine_type = "'.$finetype.'" AND rule_type = "'.$ruletype.'" ';
                     $resultf = $connection2->query($sqlf);

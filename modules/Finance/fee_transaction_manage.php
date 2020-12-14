@@ -69,7 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     
     
     $tran_status =  array(
-        ''=>__('Select Transaction Status')
+        ''=>__('Select Transaction Status'),
+        'Payment Received' => __('Payment Received'),
+        'Cheque Received' => __('Cheque Received'),
+        'DD Received' => __('DD Received'),
+        'Transaction Successful' => __('Transaction Successful')
     );
 
     $pupilsightSchoolYearID = '';
@@ -94,21 +98,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
         $input = $_POST;
         $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
         $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
-        $pupilsightPersonID =  $_POST['pupilsightPersonID'];
+        //$pupilsightPersonID =  $_POST['pupilsightPersonID'];
+        $admission_no = $_POST['admission_no'];
         $student_name = $_POST['student_name'];
         $receipt_number =  $_POST['receipt_number'];
         $transaction_id =  $_POST['transaction_id'];
         $bank_id =  $_POST['bank_id'];
         $payment_mode_id =  $_POST['payment_mode_id'];
+        $payment_status =  $_POST['payment_status'];
         $startdate = $_POST['startdate'];
         $enddate =  $_POST['enddate'];
 
-        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        if(!empty($pupilsightProgramID)){
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            if(!empty($pupilsightYearGroupID)){
+                $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            }
+        }
     } else {
         $classes = array('' => 'Select Class');
         $sections = array('' => 'Select Section');
         $input = ''; 
+        $admission_no = '';
         $pupilsightYearGroupID =  '';
         $pupilsightRollGroupID =  '';
         $pupilsightPersonID =  '';
@@ -117,6 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
         $transaction_id =  '';
         $bank_id =  '';
         $payment_mode_id =  '';
+        $payment_status = '';
         $startdate = '';
         $enddate =  '';
         unset($_SESSION['trnsaction_search']);
@@ -137,18 +149,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     }
     $program= $program1 + $program2;  
 
-    $feeTransaction = $FeesGateway->getFeesTransaction($criteria, $input, $pupilsightSchoolYearID);
+    if($_POST){
+        $feeTransaction = $FeesGateway->getFeesTransaction($criteria, $input, $pupilsightSchoolYearID);
 
-    $c_query = $FeesGateway->getFeesTransactiontotal($criteria, $input, $pupilsightSchoolYearID);
-    //$total = $FeesGateway->getFeesCancelTransactionTotalCount($criteria, $input, $pupilsightSchoolYearID);
-    $sqldr =$c_query;
-    $resultdr = $connection2->query($sqldr);
-    $master = $resultdr->fetchAll();
-    $t_amount=0;
-    foreach($master as $am){
-        $t_amount+=$am['transcation_amount'];
+        $c_query = $FeesGateway->getFeesTransactiontotal($criteria, $input, $pupilsightSchoolYearID);
+        //$total = $FeesGateway->getFeesCancelTransactionTotalCount($criteria, $input, $pupilsightSchoolYearID);
+        $sqldr =$c_query;
+        $resultdr = $connection2->query($sqldr);
+        $master = $resultdr->fetchAll();
+        $t_amount=0;
+        foreach($master as $am){
+            $t_amount+=$am['transcation_amount'];
+        }
+        $kountTransaction = count($master);
+    } else {
+        $kountTransaction = 0;
+        $t_amount = 0;
     }
-    $kountTransaction = count($master);
 
     $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fee_transaction_manage.php')->addClass('newform');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -157,21 +174,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
 
    
     $row = $form->addRow();
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('pupilsightProgramID', __('Program'));
-        $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder();
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightYearGroupID', __('Class'));
-            $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($pupilsightYearGroupID);
+            $col->addLabel('pupilsightProgramID', __('Program'));
+            $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProg')->selected($pupilsightProgramID)->fromArray($program);
+            
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
+            $col->addSelect('pupilsightYearGroupID')->setId('showMultiClassByProg')->fromArray($classes)->selected($pupilsightYearGroupID)->selectMultiple();
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightRollGroupID', __('Section'));
-            $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->selected($pupilsightRollGroupID);
+            $col->addLabel('[pupilsightRollGroupID', __('Section'))->addClass('dte');
+            $col->addSelect('pupilsightRollGroupID')->setId('showMultiSecByProgCls')->fromArray($sections)->selected($pupilsightRollGroupID)->selectMultiple();
+
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightPersonID', __('Student Id'));
-            $col->addTextField('pupilsightPersonID')->setValue($pupilsightPersonID)->addClass('txtfield');
+            $col->addLabel('admission_no', __('Admission No'));
+            $col->addTextField('admission_no')->setValue($admission_no)->addClass('txtfield');
             
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('student_name', __('Student Name'));
@@ -203,9 +222,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
             $col->addLabel('payment_mode_id', __('Payment Mode'));
             $col->addSelect('payment_mode_id')->selected($payment_mode_id)->fromArray($paymentmode);
             
-            // $col = $row->addColumn()->setClass('newdes');
-            // $col->addLabel('select transaction status', __('Transaction'));
-            // $col->addSelect('tran_status')->fromArray($tran_status);
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('payment_status', __('Transaction Status'));
+            $col->addSelect('payment_status')->selected($payment_status)->fromArray($tran_status);
             
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('startdate', __('From Date'))->addClass('dte');
@@ -217,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel(' ', __(' '));
-            $col->addContent('<button class=" btn btn-primary">Search</button>');
+            $col->addContent('<button id="searchTransaction" class=" btn btn-primary">Search</button>');
             
             
             // $col = $row->addColumn()->setClass('hiddencol');
@@ -272,7 +291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $table->addColumn('receipt_number', __('Receipt No'));
     $table->addColumn('invoice_no', __('Invoice No'));
     $table->addColumn('student_name', __('Name'));
-    $table->addColumn('stu_id', __('Student ID'));
+    $table->addColumn('admission_no', __('Admission No'));
     $table->addColumn('transaction_id', __('Transaction Id'));
     $table->addColumn('paymentmode', __('payment Mode'));
     $table->addColumn('bankname', __('Bank name'));
@@ -282,7 +301,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
    
     $table->addColumn('transcation_amount', __('Transaction Amount'));
     $table->addColumn('amount_paying', __('Amount Paid'));
-    $table->addColumn('payment_date', __('Payment Date'));
+    $table->addColumn('payment_date', __('Payment Date'))
+    ->format(function ($dataSet) {
+        if (!empty($dataSet['payment_status_up_date'])) {
+            $pdate = $dataSet['payment_status_up_date'];
+            return $pdate;
+        } else {
+            $dt = $dataSet['payment_date'];
+           return $dt;
+        }
+        return $dataSet['payment_date'];
+    });
     $table->addColumn('payment_status', __('Payment Status'));
     $table->addColumn('print', __('Print Receipt'))
          ->format(function ($dataSet) {
@@ -307,7 +336,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     //                 ->setURL('/modules/Finance/fee_series_manage_delete.php');
     //     });
 
-    echo $table->render($feeTransaction);
+    if($_POST){
+        echo $table->render($feeTransaction);
+    }
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }
@@ -328,6 +359,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
 </style>
 
 <script>
+
+    $(document).ready(function () {
+      	$('#showMultiClassByProg').selectize({
+      		plugins: ['remove_button'],
+      	});
+    });
+    
+    $(document).ready(function () {
+      	$('#showMultiSecByProgCls').selectize({
+      		plugins: ['remove_button'],
+      	});
+    });
 
     // $(document).on('click', '#receipt_export', function() {
     //    var checked = $("input[name='collection_id[]']:checked").length;

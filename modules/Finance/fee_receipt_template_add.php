@@ -23,6 +23,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $types = array('' => 'Select Type', 'Fee Receipt' => 'Fee Receipt', 'Cancel Receipt' => 'Cancel Receipt', 'Refund Receipt' => 'Refund Receipt');
+
    
         echo '<h2>';
         echo __('Add Fee Receipts Template');
@@ -33,6 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+        $row = $form->addRow();
+        $row->addLabel('type', __('Template Type'));
+        $row->addSelect('type')->fromArray($types)->required();
         
         $row = $form->addRow();
         $row->addLabel('name', __('Template Name'));

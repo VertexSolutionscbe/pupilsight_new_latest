@@ -445,7 +445,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
             $col->addTextField('');   
             echo $form->getOutput();
 
-            echo "<div class ='row fee_hdr hideFeeItemContent divFeeItem feeitem' data-type='0'><div class='col-md-12'> Fee Items<i class='fas fa-arrow-right icon_0 icon_m'></i></div></div>";
+            echo "<div class ='row fee_hdr hideFeeItemContent divFeeItem feeitem' data-type='0'><div class='col-md-12'> Fee Items<i class='mdi mdi-arrow-right-thick icon_0 icon_m'></i></div></div>";
             echo"<div style='width: 100%;display:none' class='oCls_0 oClose' >";
             echo "<table class='table' cellspacing='0'  id='FeeItemManage'  >";
             echo "<thead>";
@@ -515,7 +515,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         <a  href='fullscreen.php?q=/modules/Finance/apply_discount.php&width=900px'  class='thickbox' id='apply_discount_popup' style='display:none'></a>
         <a  id='' data-type='student' class='chkinvoice btn btn-primary'>Proceed to next</a>
         </div><div class='float-none'></div></div>";
-        echo "<div class ='row fee_hdr FeeInvoiceListManage feeitem' data-type='1'><div class='col-md-12'> Invoices <i class='fas fa-arrow-down icon_1 icon_m'></i></div></div>";
+        echo "<div class ='row fee_hdr FeeInvoiceListManage feeitem' data-type='1'><div class='col-md-12'> Invoices <i class='mdi mdi-arrow-down-thick icon_1 icon_m'></i></div></div>";
 
         echo "<table class='table' cellspacing='0' style='width: 100%;' class='oCls_1 oClose' id='FeeInvoiceListManage'>";
         echo "<thead>";
@@ -540,7 +540,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         echo "</tbody>";
         echo '</table>';
         //payment history
-        echo "<div class ='row fee_hdr feeitem' data-type='2'><div class='col-md-12'> Payment History <i class='fas fa-arrow-right  icon_2 icon_m'></i></div>       
+        echo "<div class ='row fee_hdr feeitem' data-type='2'><div class='col-md-12'> Payment History <i class='mdi mdi-arrow-right-thick  icon_2 icon_m'></i></div>       
         </div>";
         echo "<div><div class='col-md-12 '><a id='cancelReceiptPaymentHistory' style='display:none; cursor:pointer;'  class='cancelReceiptPaymentHistory btn btn-primary oCls_2 oClose'>Cancel Receipt</a>
        
@@ -926,26 +926,93 @@ $(document).on('click','#addInvoiceStnButton',function(){
      var title= $("#title").val();
      if(title.trim()!=""){
           $("#title").removeClass('LV_invalid_field');
+          $("#title").removeClass('erroralert');
      } else {
         err++;
        $("#title").addClass('LV_invalid_field');
+       $("#title").addClass('erroralert');
      }
+
+     if($("#feeStructureItemDisableId").val() == ''){
+        err++;
+        $("#feeStructureItemDisableId").addClass('erroralert');
+     } else {
+        $("#feeStructureItemDisableId").removeClass('erroralert');
+     }
+
+     if($("#invamt").val() == ''){
+        err++;
+        $("#invamt").addClass('erroralert');
+     } else {
+        $("#invamt").removeClass('erroralert');
+     }
+
+     if($("#fnFeesHeadId").val() == ''){
+        err++;
+        $("#fnFeesHeadId").addClass('erroralert');
+     } else {
+        $("#fnFeesHeadId").removeClass('erroralert');
+     }
+
+     if($("#inv_fn_fee_series_id").val() == ''){
+        err++;
+        $("#inv_fn_fee_series_id").addClass('erroralert');
+     } else {
+        $("#inv_fn_fee_series_id").removeClass('erroralert');
+     }
+
+     if($("#rec_fn_fee_series_id").val() == ''){
+        err++;
+        $("#rec_fn_fee_series_id").addClass('erroralert');
+     } else {
+        $("#rec_fn_fee_series_id").removeClass('erroralert');
+     }
+
+    
      if(err==0){
-         $.ajax({
-            url: url,
-            type: 'post',
-            data: formData,
-            async: true,
-            success: function(response) {
-              if(response=="success"){
-                alert("Invoice added successfully");
-                $("#TB_closeWindowButton").click();
-                 loadInvoices();
-              } else {
-                alert(response);
-              }
+        var val = $("#fn_fees_fine_rule_id").val();
+        if(val != ''){
+            var ddate = $("#due_date").val();
+            if(ddate == ''){
+                $("#due_date").addClass('erroralert');
+                alert('You have to Add Due Date');
+                return false;
+            } else {
+                $("#due_date").removeClass('erroralert');
+                $.ajax({
+                    url: url,
+                    type: 'post',
+                    data: formData,
+                    async: true,
+                    success: function(response) {
+                    if(response=="success"){
+                        alert("Invoice added successfully");
+                        $("#TB_closeWindowButton").click();
+                        loadInvoices();
+                    } else {
+                        alert(response);
+                    }
+                    }
+                });
             }
-        });
+        } else {
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: formData,
+                async: true,
+                success: function(response) {
+                if(response=="success"){
+                    alert("Invoice added successfully");
+                    $("#TB_closeWindowButton").click();
+                    loadInvoices();
+                } else {
+                    alert(response);
+                }
+                }
+            });
+        }
+        
      }
 });
 $(document).on('click','#updateInvoiceStnButton',function(){
@@ -961,22 +1028,73 @@ $(document).on('click','#updateInvoiceStnButton',function(){
         err++;
        $("#title").addClass('LV_invalid_field');
      }
+
+     
+     if($("#fn_fees_head_id").val() == ''){
+        err++;
+        $("#fn_fees_head_id").addClass('erroralert');
+     } else {
+        $("#fn_fees_head_id").removeClass('erroralert');
+     }
+
+     if($("#inv_fn_fee_series_id").val() == ''){
+        err++;
+        $("#inv_fn_fee_series_id").addClass('erroralert');
+     } else {
+        $("#inv_fn_fee_series_id").removeClass('erroralert');
+     }
+
+     if($("#rec_fn_fee_series_id").val() == ''){
+        err++;
+        $("#rec_fn_fee_series_id").addClass('erroralert');
+     } else {
+        $("#rec_fn_fee_series_id").removeClass('erroralert');
+     }
+
      if(err==0){
-         $.ajax({
-            url: url,
-            type: 'post',
-            data: formData,
-            async: true,
-            success: function(response) {
-              if(response=="success"){
-                alert("Invoice updated successfully");
-                $("#TB_closeWindowButton").click();
-                 loadInvoices();
-              } else {
-                alert(response);
-              }
+        var val = $("#fn_fees_fine_rule_id").val();
+        if(val != ''){
+            var ddate = $("#due_date").val();
+            if(ddate == ''){
+                $("#due_date").addClass('erroralert');
+                alert('You have to Add Due Date');
+                return false;
+            } else {
+                $("#due_date").removeClass('erroralert');
+                $.ajax({
+                    url: url,
+                    type: 'post',
+                    data: formData,
+                    async: true,
+                    success: function(response) {
+                    if(response=="success"){
+                        alert("Invoice updated successfully");
+                        $("#TB_closeWindowButton").click();
+                        loadInvoices();
+                    } else {
+                        alert(response);
+                    }
+                    }
+                });
             }
-        });
+        } else {
+            $.ajax({
+                url: url,
+                type: 'post',
+                data: formData,
+                async: true,
+                success: function(response) {
+                if(response=="success"){
+                    alert("Invoice updated successfully");
+                    $("#TB_closeWindowButton").click();
+                    loadInvoices();
+                } else {
+                    alert(response);
+                }
+                }
+            });
+        }
+         
      }
 });
 $(document).on('click','#cancel_invoice',function(){

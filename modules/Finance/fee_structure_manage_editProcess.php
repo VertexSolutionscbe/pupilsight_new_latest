@@ -68,6 +68,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
             $tax = $_POST['tax'];
             $tax_percent = $_POST['tax_percent'];
             $udt = date('Y-m-d H:i:s');
+
+            // if(!empty($_POST['update_invoices'])){
+            //     $update_invoices = $_POST['update_invoices'];
+            // } else {
+            //     $update_invoices = '2';
+            // }
             
 
             if ($name == ''  or $pupilsightSchoolYearID == '' or $invoice_title == ''  or $pupilsightSchoolFinanceYearID == '' or $fn_fees_head_id == '') {
@@ -140,6 +146,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
                                 }
                             }
                         }    
+
+
+                        // if(!empty($update_invoices)){
+                        //     $sql = 'SELECT GROUP_CONCAT(id) as invid FROM fn_fee_invoice WHERE fn_fee_structure_id = '.$id.' ';
+                        //     $result = $connection2->query($sql);
+                        //     $invData = $result->fetch();
+
+                        // }
                     } catch (PDOException $e) {
                         $URL .= '&return=error2';
                         header("Location: {$URL}");

@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
     $row = $form->addRow();
     $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('fn_fees_head_id', __('Account Head'));
-            $col->addSelect('fn_fees_head_id')->fromArray($feeHeadData)->required(); 
+            $col->addSelect('fn_fees_head_id')->setId('fnFeesHeadId')->fromArray($feeHeadData)->required(); 
             
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('due_date', __('Due Date'))->addClass('dte');
@@ -218,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
         
     $row = $form->addRow()->setID('lastseatdiv');
         $row->addFooter();
-        $row->addContent('<a id="addInvoiceStnButton" class=" btn btn-primary">Submit</a>'); 
+        $row->addContent('<a id="addInvoiceStnButton" class=" btn btn-primary" style="float:right;">Submit</a>'); 
 
     echo $form->getOutput();
 

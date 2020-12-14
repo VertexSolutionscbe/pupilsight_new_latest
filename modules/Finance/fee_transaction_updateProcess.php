@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
         $result1 = $connection2->prepare($sql1);
         $result1->execute($data1);
     }
-    $URL .= "&return=success0";
-    header("Location: {$URL}");
+    // $URL .= "&return=success0";
+    // header("Location: {$URL}");
 }
 }

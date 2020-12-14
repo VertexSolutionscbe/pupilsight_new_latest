@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
             echo '</h2>';
 
            
-            $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_manage_editProcess.php?id='.$id);
+            $form = Form::create('feeStructureForm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_manage_editProcess.php?id='.$id);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -307,9 +307,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
             }       
                 $row = $form->addRow()->setID('lastseatdiv');
                 $row->addFooter();
-                $row->addSubmit();
+                //$row->addCheckbox('update_invoices')->description(__('<b>Update Invoice Items</b>'))->setValue('1'); 
+                // $row->addSubmit();
+                $row->addContent('<a id="saveFeeStructure" class="btn btn-primary" style="float:right;">Submit</a>');
 
             echo $form->getOutput();
         }
     }
 }
+
+?>
+
+<script>
+    $(document).on('click', '#saveFeeStructure', function(){
+        var val = $("#fn_fees_fine_rule_id").val();
+        if(val != ''){
+            var ddate = $("#dueDate").val();
+            if(ddate == ''){
+                $("#dueDate").addClass('erroralert');
+                alert('You have to Add Due Date');
+                return false;
+            } else {
+                $("#dueDate").removeClass('erroralert');
+                $("#feeStructureForm").submit();
+            }
+        } else {
+            $("#feeStructureForm").submit();
+        }
+    });
+</script>
