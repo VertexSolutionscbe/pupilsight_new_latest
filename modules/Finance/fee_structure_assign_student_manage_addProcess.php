@@ -42,13 +42,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
                 }
             }
             
-            $URL .= "&return=success0";
-            header("Location: {$URL}");
+            // $URL .= "&return=success0";
+            // header("Location: {$URL}");
 
         } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
+            // $URL .= '&return=error2';
+            // header("Location: {$URL}");
+            // exit();
         }
 
         

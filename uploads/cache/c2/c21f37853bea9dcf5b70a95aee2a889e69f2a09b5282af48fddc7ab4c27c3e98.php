@@ -324,7 +324,7 @@ class __TwigTemplate_0e26bd8c61b5c60a8dfbfc18576013cb167e701a311a2c0ef74a9d1c722
 <body id='chkCounterSession' data-val='";
         // line 133
         echo twig_escape_filter($this->env, ($context["counterid"] ?? null), "html", null, true);
-        echo "' class='antialiased'>
+        echo "' data-chkCounter=\"\" class='antialiased'>
     <!-- Preloader Start Here -->
     <div id=\"preloader\" style=\"display:none;\"></div>
     <!-- Preloader End Here -->
@@ -1292,7 +1292,7 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
     </style>
 </head>
 
-<body id='chkCounterSession' data-val='{{ counterid }}' class='antialiased'>
+<body id='chkCounterSession' data-val='{{ counterid }}' data-chkCounter=\"\" class='antialiased'>
     <!-- Preloader Start Here -->
     <div id=\"preloader\" style=\"display:none;\"></div>
     <!-- Preloader End Here -->

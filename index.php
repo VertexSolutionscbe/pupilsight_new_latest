@@ -378,6 +378,10 @@ if ($isLoggedIn) {
         }
     }
 
+    $countersql = 'SELECT id FROM fn_fees_counter';
+    $resultcounter = $connection2->query($countersql);
+    $counterData = $resultcounter->fetch();
+
     $masterList[0] = array('name' => 'Fee Category', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_category_manage.php');
     $masterList[1] = array('name' => 'Fee Series', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_series_manage.php');
     $masterList[2] = array('name' => 'Fee Head', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_head_manage.php');
@@ -393,8 +397,12 @@ if ($isLoggedIn) {
 
     $paymentList[0] = array('name' => 'Manage Invoice', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_manage.php');
     //echo $session->get('counterid');
-    if ($session->get('counterid') == '') {
-        $paymentList[1] = array('name' => 'Collection', 'class' => 'thickbox', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_check_add.php');
+    if(!empty($counterData)){
+        if ($session->get('counterid') == '') {
+            $paymentList[1] = array('name' => 'Collection', 'class' => 'thickbox', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_check_add.php');
+        } else {
+            $paymentList[1] = array('name' => 'Collection', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_collection_manage.php');
+        }
     } else {
         $paymentList[1] = array('name' => 'Collection', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_collection_manage.php');
     }

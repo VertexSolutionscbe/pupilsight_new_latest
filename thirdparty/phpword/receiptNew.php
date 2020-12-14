@@ -6,9 +6,9 @@ session_start();
 // $file = $_SERVER["DOCUMENT_ROOT"]."/thirdparty/phpword/templates/receipt_1.docx";
 require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
 
-$file = $_SERVER["DOCUMENT_ROOT"]."/thirdparty/phpword/templates/receipt_1.docx";
+// $file = $_SERVER["DOCUMENT_ROOT"]."/pupilsight/thirdparty/phpword/templates/receipt_1.docx";
 
-$phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
+// $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
 
 /*$dts = $_SESSION["dts_receipt"];
 $fee_items = $_SESSION["dts_receipt_feeitem"];
@@ -19,6 +19,12 @@ $fee_items = $_SESSION["dts_receipt_feeitem"];
 $dts["total"]=$dts["transcation_amount"];*/
 $dts = $_POST["dts_receipt"];
 $fee_items = $_POST["dts_receipt_feeitem"];
+
+$file = $dts['receiptTemplate'];
+
+$phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
+
+
 $dts["total"]=$dts["transcation_amount"];
 $_SESSION['doc_receipt_id']=$dts["transactionId"];
 foreach ($dts as $key => $value) {

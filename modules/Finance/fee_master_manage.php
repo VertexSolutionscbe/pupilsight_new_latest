@@ -24,6 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_master_manage.
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
+        ->pageSize(1000)
         ->sortBy(['id'])
         ->fromPOST();
 
@@ -36,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_master_manage.
     //     ->setURL('/modules/Finance/program_manage_add.php')
     //     ->displayLabel();
     
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/Finance/fee_master_manage_add.php' class='thickbox btn btn-primary'>Add</a></div><div class='float-none'></div></div>";  
+    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/Finance/fee_master_manage_add.php' class='thickbox btn btn-primary'>Add</a>&nbsp;&nbsp;<a href='index.php?q=/modules/Finance/import_fee_master_manage.php' class='btn btn-primary'>Import</a></div><div class='float-none'></div></div>";  
 
     
     

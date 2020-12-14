@@ -234,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
             //$col->addDate('date')->addClass('txtfield')->readonly()->required();
 
             $col = $row->addColumn()->setClass('newdes');
-                $col->addContent('<a id="transactionStatusChange" class=" btn btn-primary">Update Transaction Status</a> <a id="updateTransactionStatus" href="fullscreen.php?q=/modules/Finance/fee_transaction_update.php" class="thickbox  btn btn-primary" style="display:none;">Update Transaction Status</a>&nbsp;&nbsp;<a id="cancelTransaction" class=" btn btn-primary">Cancel</a><a style="display:none;" id="cancelTransactionSubmit" href="fullscreen.php?q=/modules/Finance/fee_transaction_cancel.php"  class="thickbox " >CancelSubmit</a>&nbsp;&nbsp;<a id="refundTransaction"  class=" btn btn-primary" >Refund</a> <a style="display:none;" class="thickbox " id="refundTransactionSubmit" href="fullscreen.php?q=/modules/Finance/fee_transaction_refund.php&width=800" >RefundSubmit</a>');
+                $col->addContent('<a  href=""  data-toggle="modal" data-target="#large-modal-new-invoice_stud" data-noti="2"  class="sendButton_stud_inv btn btn-primary" id="sendSMS">Send SMS</a>&nbsp;&nbsp;<a href="" data-toggle="modal" data-noti="1" data-target="#large-modal-new-invoice_stud" class="sendButton_stud_inv btn btn-primary" id="sendEmail">Send Email</a>&nbsp;&nbsp;<a id="transactionStatusChange" class=" btn btn-primary">Update Transaction Status</a> <a id="updateTransactionStatus" href="fullscreen.php?q=/modules/Finance/fee_transaction_update.php" class="thickbox  btn btn-primary" style="display:none;">Update Transaction Status</a>&nbsp;&nbsp;<a id="cancelTransaction" class=" btn btn-primary">Cancel</a><a style="display:none;" id="cancelTransactionSubmit" href="fullscreen.php?q=/modules/Finance/fee_transaction_cancel.php"  class="thickbox " >CancelSubmit</a>&nbsp;&nbsp;<a id="refundTransaction"  class=" btn btn-primary" >Refund</a> <a style="display:none;" class="thickbox " id="refundTransactionSubmit" href="fullscreen.php?q=/modules/Finance/fee_transaction_refund.php&width=800" >RefundSubmit</a>');
 
             // $col = $row->addColumn()->setClass('newdes');
             //     $col->addContent('<a id="cancelTransaction" class=" btn btn-primary">Cancel</a><a style="display:none;" id="cancelTransactionSubmit" href="fullscreen.php?q=/modules/Finance/fee_transaction_cancel.php"  class="thickbox " >CancelSubmit</a>');
@@ -365,6 +365,113 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
         } else {
             alert('You Have to Select Transction');
         }
+    });
+
+    $(document).on('click', '.sendButton_stud_inv', function () {
+        var stuids = [];
+        $.each($("input[name='collection_id[]']:checked"), function () {
+            stuids.push($(this).val());
+        });
+        var stuid = stuids.join(",");
+        if (stuid) {
+            $(".sendButton_stud_inv").removeClass('activestate');
+            $(this).addClass('activestate');
+            var noti = $(this).attr('data-noti');
+            $(".emailsmsFieldTitle_inv").hide();
+            $(".emailFieldTitle_inv").hide();
+            $(".emailField_inv").hide();
+            $(".smsFieldTitle_inv").hide();
+            $(".smsField_inv").hide();
+            if (noti == '1') {
+                $(".emailFieldTitle_inv").show();
+                $(".emailField_inv").show();
+            } else if (noti == '2') {
+                $(".smsFieldTitle_inv").show();
+                $(".smsField_inv").show();
+            } else if (noti == '3') {
+                $(".emailsmsFieldTitle_inv").show();
+                $(".emailField_inv").show();
+                $(".smsField_inv").show();
+            } else {
+                $(".emailsmsFieldTitle_inv").show();
+                $(".emailField_inv").show();
+                $(".smsField_inv").show();
+            }
+        } else {
+            alert('You Have to Select Student First');
+            window.setTimeout(function () {
+                $("#large-modal-new-invoice_stud").removeClass('show');
+                $("#chkCounterSession").removeClass('modal-open');
+                $(".modal-backdrop").remove();
+            }, 10);
+        }
+
+    });
+
+    $(document).on('click', '#sendEmailSms_stud_invoice', function (e) {
+        e.preventDefault();
+        $("#preloader").show();
+        window.setTimeout(function () {
+            var formData = new FormData(document.getElementById("sendEmailSms_Student_inv"));
+
+            var emailquote = $("#emailQuote_stud_inv").val();
+            var subjectquote = $("#emailSubjectQuote_stud_inv").val();
+
+            var smsquote = $("#smsQuote_stud_inv").val();
+            var favorite = [];
+            $.each($("input[name='collection_id[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var stuid = favorite.join(", ");
+
+            var types = [];
+            $.each($(".chkType_inv:checked"), function () {
+                types.push($(this).attr('data-type'));
+            });
+            var type = types.join(",");
+
+            if (stuid) {
+                if (type != '') {
+                    if (emailquote != '' || smsquote != '') {
+
+                        formData.append('stuid', stuid);
+                        formData.append('emailquote', emailquote);
+                        formData.append('smsquote', smsquote);
+                        formData.append('type', type);
+                        formData.append('subjectquote', subjectquote);
+                        $.ajax({
+                            url: 'modules/Finance/send_stud_email_msg_transaction.php',
+                            type: 'post',
+                            //data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote, type: type, subjectquote: subjectquote },
+                            data: formData,
+                            contentType: false,
+                            cache: false,
+                            processData: false,
+                            async: false,
+                            success: function (response) {
+                                $("#preloader").hide();
+                                alert('Your Message Sent Successfully! click Ok to continue ');
+                                //location.reload();
+                                $("#sendEmailSms_Student_inv")[0].reset();
+                                $("#closeSM").click();
+                            }
+                        });
+                    } else {
+                        $("#preloader").hide();
+                        alert('You Have to Enter Message.');
+                    }
+                } else {
+                    $("#preloader").hide();
+                    alert('You Have to Select Recipient.');
+                }
+            } else {
+                $("#preloader").hide();
+                alert('You Have to Select Applicants.');
+
+            }
+        }, 100);
+
+
     });
 
 

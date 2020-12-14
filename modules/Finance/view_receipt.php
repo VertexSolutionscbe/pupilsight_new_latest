@@ -28,7 +28,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/view_receipt.php')
 ?>
 
 <?php
- echo "<a  href='".$_SESSION[$guid]['absoluteURL']."/public/receipts/".$transids.".docx' download class='btn btn-primary' type='' >Download receipt</a></br>";
+//  echo "<a  href='".$_SESSION[$guid]['absoluteURL']."/public/receipts/".$transids.".docx' download class='btn btn-primary' type='' >Download receipt</a></br>";
+echo "<a  href='".$_SESSION[$guid]['absoluteURL']."/cms/convertPdf.php?id=".$transids."' class='btn btn-primary' type='' >Download receipt</a></br>";
   
 } ?> 
 
