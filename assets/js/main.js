@@ -7636,7 +7636,7 @@ $(document).on('click', '#expore_xl_campaign', function () {
     var submt_id = submit_ids.join(",");
 
     if (submt_id == '') {
-        alert('You Have to Select Applicantion.');
+        alert('You Have to Select Application.');
     } else {
         $('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
         $("#expore_tbl").table2excel({

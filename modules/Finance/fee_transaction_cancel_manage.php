@@ -138,17 +138,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
         $_SESSION['can_trnsaction_search'] = $input;
     }
 
-    $feeTransaction = $FeesGateway->getFeesCancelTransaction($criteria, $input, $pupilsightSchoolYearID);
-    $c_query = $FeesGateway->getFeesCancelTransactionTotal($criteria, $input, $pupilsightSchoolYearID);
-    //$total = $FeesGateway->getFeesCancelTransactionTotalCount($criteria, $input, $pupilsightSchoolYearID);
-    $sqldr =$c_query;
-    $resultdr = $connection2->query($sqldr);
-    $master = $resultdr->fetchAll();
-    $t_amount=0;
-    foreach($master as $am){
-        $t_amount+=$am['transcation_amount'];
+    if($_POST){
+        $feeTransaction = $FeesGateway->getFeesCancelTransaction($criteria, $input, $pupilsightSchoolYearID);
+        $c_query = $FeesGateway->getFeesCancelTransactionTotal($criteria, $input, $pupilsightSchoolYearID);
+        //$total = $FeesGateway->getFeesCancelTransactionTotalCount($criteria, $input, $pupilsightSchoolYearID);
+        $sqldr =$c_query;
+        $resultdr = $connection2->query($sqldr);
+        $master = $resultdr->fetchAll();
+        $t_amount=0;
+        foreach($master as $am){
+            $t_amount+=$am['transcation_amount'];
+        }
+        $kountTransaction = count($master);
+    } else {
+        $kountTransaction = 0;
+        $t_amount = 0;
     }
-    $kountTransaction = count($master);
     
     
     $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fee_transaction_cancel_manage.php')->addClass('newform');
@@ -223,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel(' ', __(' '));
-            $col->addContent('<button class=" btn btn-primary">Search</button>&nbsp;&nbsp;<a style="color:#666;cursor:pointer;" id="export_transaction" class="btn btn-primary">Export</a>');
+            $col->addContent('<button class=" btn btn-primary">Search</button>&nbsp;&nbsp;<a style="color:#666;cursor:pointer;" id="export_cancel_transaction" class="btn btn-primary">Export</a>');
             
             
       
@@ -269,15 +274,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
     $table->addColumn('totalamt', __('Transaction'));
     $table->addColumn('fine', __('Fine Amount'));
     $table->addColumn('transcation_amount', __('Total'));
-    $table->addColumn('payment_date', __('Payment Date'));
+    $table->addColumn('payment_date', __('Payment Date'))
+    ->format(function ($feeTransaction) {
+        if ($feeTransaction['payment_date'] == '1970-01-01') {
+            return '';
+        } else {
+            $dt = date('d/m/Y', strtotime($feeTransaction['payment_date']));
+           return $dt;
+        }
+        return $feeTransaction['payment_date'];
+    });
+    $table->addColumn('cdt', __('Cancel Date'))
+    ->format(function ($feeTransaction) {
+        if ($feeTransaction['cdt'] == '1970-01-01') {
+            return '';
+        } else {
+            $dt = date('d/m/Y', strtotime($feeTransaction['cdt']));
+           return $dt;
+        }
+        return $feeTransaction['cdt'];
+    });
+    $table->addColumn('stfName', __('Cancelled by'));
     $table->addColumn('print', __('Print Receipt'))
-         ->format(function ($dataSet) {
-             if (!empty($dataSet['transaction_id'])) {
-                 return '<a href="public/cancelreceipts/'.$dataSet['transaction_id'].'.docx"  download><i class="fas fa-receipt"></i></a>';
+         ->format(function ($feeTransaction) {
+             if (!empty($feeTransaction['transaction_id'])) {
+                 return '<a href="public/cancelreceipts/'.$feeTransaction['transaction_id'].'.docx"  download><i class="mdi mdi-download mdi-24px"></i></a>';
              } else {
                 return 'Stoped';
              }
-             return $dataSet['status'];
+             return $feeTransaction['print'];
     });
 
 
@@ -293,7 +318,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
     //                 ->setURL('/modules/Finance/fee_series_manage_delete.php');
     //     });
 
-    echo $table->render($feeTransaction);
+    if($_POST){
+        echo $table->render($feeTransaction);
+    }
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }
@@ -307,3 +334,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
     }
 
 </style>
+
+<script>
+    $(document).ready(function() {
+        $('#expore_tbl').find("input[name='collection_id[]']").each(function() {
+            $(this).addClass('include_cell');
+            $(this).closest('tr').addClass('rm_cell');
+            
+        });
+
+
+        $(document).on('change', '.include_cell', function() {
+            if ($(this).is(":checked")) {
+                $(this).closest('tr').removeClass('rm_cell');
+            } else {
+                $(this).closest('tr').addClass('rm_cell');
+            }
+        });
+    });
+
+    $(document).on('click', '#export_cancel_transaction', function () {
+        var submit_ids = [];
+        $.each($("input[name='collection_id[]']:checked"), function () {
+            submit_ids.push($(this).val());
+        });
+        var submt_id = submit_ids.join(",");
+
+        if (submt_id == '') {
+            alert('You Have to Select Transaction.');
+        } else {
+            $('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
+            $("#expore_tbl").table2excel({
+                name: "Worksheet Name",
+                filename: "cancel_transaction.xls",
+                fileext: ".xls",
+                exclude: ".checkall",
+                exclude: ".rm_cell",
+                exclude_inputs: true,
+                columns: [0, 1, 2, 3, 4, 5]
+
+            });
+            location.reload();
+        }
+    });
+</script>

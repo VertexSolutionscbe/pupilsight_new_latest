@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
 
      
 
-    $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_transaction_cancelProcess.php');
+    $form = Form::create('cancelTransactionForm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_transaction_cancelProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -50,8 +50,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
         
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSubmit();
+        $row->addContent('<a id="cancelTransaction" class="btn btn-primary">Submit</a>');
 
     echo $form->getOutput();
 
 }
+?>
+
+<script>
+    $(document).on('click', '#cancelTransaction', function () {
+        var remarks = $("#remarks").val();
+        var formData = new FormData(document.getElementById("cancelTransactionForm"));
+        if (remarks != '') {
+            $.ajax({
+                url: 'modules/Finance/fee_transaction_cancelProcess.php',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData: false,
+                async: false,
+                success: function (response) {
+                    $("#preloader").hide();
+                    alert('Transaction Cancelled Successfully!');
+                    //location.reload();
+                    $("#cancelTransactionForm")[0].reset();
+                    $("#closeSM").click();
+                    $("#searchTransaction").click();
+                }
+            });
+        } else {
+            alert('You Have to Enter Mandatory Fields!');
+        }
+    });
+</script>

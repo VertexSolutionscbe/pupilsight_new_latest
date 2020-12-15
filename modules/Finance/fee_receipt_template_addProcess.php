@@ -19,6 +19,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
     // die();
     //Proceed!
     $name = $_POST['name'];
+    $type = $_POST['type'];
     
    
     if ($name == '') {
@@ -70,8 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
                         // echo "Error: " . $_FILES["file"]["error"];
                     }
     
-                    $data = array('name' => $name, 'path' => $fileTarget, 'filename' => $filename);
-                    $sql = "INSERT INTO fn_fees_receipt_template_master SET name=:name, path=:path, filename=:filename";
+                    $data = array('type' => $type, 'name' => $name, 'path' => $fileTarget, 'filename' => $filename);
+                    $sql = "INSERT INTO fn_fees_receipt_template_master SET type=:type, name=:name, path=:path, filename=:filename";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

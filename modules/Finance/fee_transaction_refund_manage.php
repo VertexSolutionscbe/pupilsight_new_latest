@@ -101,19 +101,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_re
         $_SESSION['ref_trnsaction_search'] = $input;
     }
 
-    $feeTransaction = $FeesGateway->getFeesRefundTransaction($criteria, $input, $pupilsightSchoolYearID);
-    // echo "<pre>";
-    //     print_r($feeTransaction);
-    $c_query = $FeesGateway->getFeesRefundTransactionTotal($criteria, $input, $pupilsightSchoolYearID);
-    //$total = $FeesGateway->getFeesCancelTransactionTotalCount($criteria, $input, $pupilsightSchoolYearID);
-    $sqldr =$c_query;
-    $resultdr = $connection2->query($sqldr);
-    $FeesRefund = $resultdr->fetchAll();
-    $t_amount=0;
-    foreach($FeesRefund as $am){
-        $t_amount+=$am['refund_amount'];
-    }
-    $kountTransaction = count($FeesRefund);
+    //if($_POST){
+
+        $feeTransaction = $FeesGateway->getFeesRefundTransaction($criteria, $input, $pupilsightSchoolYearID);
+        // echo "<pre>";
+        //     print_r($feeTransaction);
+        $c_query = $FeesGateway->getFeesRefundTransactionTotal($criteria, $input, $pupilsightSchoolYearID);
+        //$total = $FeesGateway->getFeesCancelTransactionTotalCount($criteria, $input, $pupilsightSchoolYearID);
+        $sqldr =$c_query;
+        $resultdr = $connection2->query($sqldr);
+        $FeesRefund = $resultdr->fetchAll();
+        $t_amount=0;
+        foreach($FeesRefund as $am){
+            $t_amount+=$am['refund_amount'];
+        }
+        $kountTransaction = count($FeesRefund);
+    // } else {
+    //     $kountTransaction = 0;
+    //     $t_amount = 0;
+    // }
     
     $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fee_transaction_refund_manage.php')->addClass('newform');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -197,35 +203,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_re
     $table->addColumn('student_name', __('Name'));
     $table->addColumn('pupilsightPersonID', __('Student ID'));
     $table->addColumn('transaction_id', __('Transaction ID'));
-    $table->addColumn('refund_date', __('Refund Date'));
+    $table->addColumn('refund_date', __('Refund Date'))
+    ->format(function ($feeTransaction) {
+        if ($feeTransaction['refund_date'] == '1970-01-01') {
+            return '';
+        } else {
+            $dt = date('d/m/Y', strtotime($feeTransaction['refund_date']));
+           return $dt;
+        }
+        return $feeTransaction['refund_date'];
+    });
     $table->addColumn('paymentmode', __('Refund Mode'));
     $table->addColumn('dd_cheque_no', __('DD/Cheque No'));
     $table->addColumn('bankname', __('Bank name'));
-    $table->addColumn('dd_cheque_date', __('DD/Cheque Date'));
+    $table->addColumn('dd_cheque_date', __('DD/Cheque Date'))
+    ->format(function ($feeTransaction) {
+        if ($feeTransaction['dd_cheque_date'] == '0000-00-00') {
+            return '';
+        } else {
+            $dt = date('d/m/Y', strtotime($feeTransaction['dd_cheque_date']));
+           return $dt;
+        }
+        return $feeTransaction['dd_cheque_date'];
+    });
     $table->addColumn('remarks', __('Remarks'));
     $table->addColumn('transaction_amount', __('Transaction Amount'));
     $table->addColumn('refund_amount', __('Refund Amount'))->addClass('bikashrefund');
     
     $table->addColumn('transaction_pending_amount', __('Pending Transaction Amount'))
-    ->format(function ($dataSet) {
-        if (!empty($dataSet['transaction_pending_amount'])) {
-            $pendingAmt = $dataSet['transaction_amount'] - $dataSet['refund_amount'];
-            return $pendingAmt;
+    ->format(function ($feeTransaction) {
+        if (!empty($feeTransaction['transaction_pending_amount'])) {
+            $pendingAmt = $feeTransaction['transaction_amount'] - $feeTransaction['refund_amount'];
+            return number_format($pendingAmt, 2);
         } else {
-            return $dataSet['transaction_amount'];
+            return number_format($feeTransaction['transaction_amount'], 2);
         }
-        return $dataSet['transaction_pending_amount'];
+        return $feeTransaction['transaction_pending_amount'];
     });
 
     $table->addColumn('refundby', __('Refund By'));
     $table->addColumn('print', __('Print Receipt'))
-    ->format(function ($dataSet) {
-        if (!empty($dataSet['transaction_id'])) {
-            return '<a href="public/refundreceipts/'.$dataSet['transaction_id'].'.docx"  download><i class="fas fa-receipt"></i></a>';
+    ->format(function ($feeTransaction) {
+        if (!empty($feeTransaction['transaction_id'])) {
+            return '<a href="public/refundreceipts/'.$feeTransaction['transaction_id'].'.docx"  download><i class="mdi mdi-download mdi-24px"></i></a>';
         } else {
            return 'Stoped';
         }
-        return $dataSet['status'];
+        return $feeTransaction['status'];
 });
 
 
@@ -241,7 +265,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_re
     //                 ->setURL('/modules/Finance/fee_series_manage_delete.php');
     //     });
 
-    echo $table->render($feeTransaction);
+    //if($_POST){
+        echo $table->render($feeTransaction);
+    //}
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }

@@ -160,28 +160,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
         ->sortBy(['id'])
         ->fromPOST();
 
-    $invoices = $FeesGateway->getInvoice($criteria, $input, $pupilsightSchoolYearID);
-    $c_query = $FeesGateway->getInvoiceTotal($criteria, $input, $pupilsightSchoolYearID);
+    if($_POST){
+        $invoices = $FeesGateway->getInvoice($criteria, $input, $pupilsightSchoolYearID);
+        $c_query = $FeesGateway->getInvoiceTotal($criteria, $input, $pupilsightSchoolYearID);
 
-    // echo '<pre>';
-    // print_r($invoices);
-    // echo '</pre>';
-    // die();
-   
-    //$total = $FeesGateway->getFeesCancelTransactionTotalCount($criteria, $input, $pupilsightSchoolYearID);
-    // $sqldr =$c_query;
 
-    // $resultdr = $connection2->query($sqldr);
-    // $master = $resultdr->fetchAll();    
-    // echo '<pre>';
-    // print_r($master);
-    // echo '</pre>';
-
-    $t_amount=0;
-    foreach($c_query as $am){
-        $t_amount+=$am['tot_amount'];
+        $t_amount=0;
+        foreach($c_query as $am){
+            $t_amount+=$am['tot_amount'];
+        }
+        $kountTransaction = count($c_query);
+    } else {
+        $t_amount = 0;
+        $kountTransaction = 0;
     }
-    $kountTransaction = count($c_query);
     // DATA TABLE
 
 
@@ -301,34 +293,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     $table->addColumn('admission_no', __('Admission No'));
     $table->addColumn('invoice_no', __('Invoice Series Number'));
     $table->addColumn('inv_amount', __('Invoice Fee Amount'));
-    $table->addColumn('account_head', __('Ac Head'));
-    $table->addColumn('due_date', __('Due Date'))
-    ->format(function ($dataSet) {
-        if ($dataSet['due_date'] == '1970-01-01') {
-            return '';
+    $table->addColumn('paid', __('Pending'))
+    ->format(function ($invoices) {
+        if (!empty($invoices['paid'])) {
+            $pendingAmt = $invoices['inv_amount'] - $invoices['paid'];
+            return $pendingAmt;
         } else {
-            $dt = date('d/m/Y', strtotime($dataSet['due_date']));
+            $dt = $invoices['inv_amount'];
            return $dt;
         }
-        return $dataSet['due_date'];
+        return $invoices['paid'];
+    });
+    $table->addColumn('account_head', __('Ac Head'));
+    $table->addColumn('due_date', __('Due Date'))
+    ->format(function ($invoices) {
+        if ($invoices['due_date'] == '1970-01-01') {
+            return '';
+        } else {
+            $dt = date('d/m/Y', strtotime($invoices['due_date']));
+           return $dt;
+        }
+        return $invoices['due_date'];
     });
     $table->addColumn('invstatus', __('Status'));
-    // ->format(function ($dataSet) {
-    //     if ($dataSet['status'] == '1') {
+    // ->format(function ($invoices) {
+    //     if ($invoices['status'] == '1') {
     //         return 'Active';
     //     } else {
     //        return 'Cancelled';
     //     }
-    //     return $dataSet['type'];
+    //     return $invoices['type'];
     // }); 
     // $table->addColumn('bank_name', __('Bank Name'));
     // $table->addColumn('ac_no', __('Account No'));
     // ACTIONS
     $table->addActionColumn()
         ->addParam('invid')
-        ->format(function ($dataSet, $actions) use ($guid) {
-            if ($dataSet['chkstatus'] == '1') {
-                if($dataSet['chkinvstatus'] == 'paid'){
+        ->format(function ($invoices, $actions) use ($guid) {
+            if ($invoices['chkstatus'] == '1') {
+                if($invoices['chkinvstatus'] == 'paid'){
                     $actions->addAction('editAlert', __('EditAlert'))
                     ->setId('alertInvoiceEditData');
                    
@@ -352,7 +355,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
            
         });
 
-    echo $table->render($invoices);
+    if($_POST){
+        echo $table->render($invoices);
+    }
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }

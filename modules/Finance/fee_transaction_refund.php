@@ -166,23 +166,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_re
 
 
     $invoices = $FeesGateway->getCollectionInvoiceRefund($criteria, $transids);
-        $table1 = DataTable::createPaginated('FeeInvoiceListManage', $criteria);
+        // $table1 = DataTable::createPaginated('FeeInvoiceListManage', $criteria);
         
-        $table1->addColumn('title', __('Invoice Title'));
-        $table1->addColumn('invoice_no', __('Invoice No'));
-        $table1->addColumn('invoiceamount', __('Invoice Amount'));
-        //$table1->addColumn('total_amount', __('Invoice Transaction'));
-        $table1->addColumn('fine', __('Fine Amount'));
-        $table1->addColumn('discount', __('Discount Amount'));
-        $table1->addColumn('totalamount', __('Total Amount'));
-        $table1->addColumn('payment_status', __('Invoice Status'));
+        // $table1->addColumn('title', __('Invoice Title'));
+        // $table1->addColumn('invoice_no', __('Invoice No'));
+        // $table1->addColumn('invoiceamount', __('Invoice Amount'));
+        // //$table1->addColumn('total_amount', __('Invoice Transaction'));
+        // $table1->addColumn('fine', __('Fine Amount'));
+        // $table1->addColumn('discount', __('Discount Amount'));
+        // $table1->addColumn('totalamount', __('Total Amount'));
+        // $table1->addColumn('payment_status', __('Invoice Status'));
         
 
-        echo $table1->render($invoices);
+        // echo $table1->render($invoices);
 
 }
 
 ?>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Invoice Title</th>
+            <th>Invoice No</th>
+            <th>Invoice Amount</th>
+            <th>Fine Amount</th>
+            <th>Discount Amount</th>
+            <th>Total Amount</th>
+            <th>Invoice Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+    <?php if(!empty($invoices)) {
+            foreach($invoices as $inv){
+        ?>
+        <tr>
+            <td><?php echo $inv['title'];?></td>
+            <td><?php echo $inv['invoice_no'];?></td>
+            <td><?php echo $inv['invoiceamount'];?></td>
+            <td><?php echo $inv['fine'];?></td>
+            <td><?php echo $inv['discount'];?></td>
+            <td><?php echo $inv['totalamount'];?></td>
+            <td><?php echo $inv['payment_status'];?></td>
+        </tr>
+        <?php } } ?>
+    </tbody>
+
+
+</table>
 
 <script>
 
@@ -202,7 +234,7 @@ $(document).on('click','#chkRefundTransaction',function(){
 
         if($("#refund_receipt_series_id").val() == ''){
             $("#refund_receipt_series_id").addClass('erroralert');
-            alert('Please Select Refund Receipt Series!');
+            //alert('Please Select Refund Receipt Series!');
             err++;
         } else {
             $("#refund_receipt_series_id").removeClass('erroralert');
@@ -210,7 +242,7 @@ $(document).on('click','#chkRefundTransaction',function(){
 
         if($("#refund_amount").val() == ''){
             $("#refund_amount").addClass('erroralert');
-            alert('Please Enter Refund Amount!');
+            //alert('Please Enter Refund Amount!');
             err++;
         } else {
             $("#refund_amount").removeClass('erroralert');
@@ -218,30 +250,32 @@ $(document).on('click','#chkRefundTransaction',function(){
 
         if(paymentMode==""){
             err++;
+            $("#paymentMode").addClass('erroralert');
             $("#paymentMode").addClass('LV_invalid_field');
-            alert("Please select payment mode");
+            //alert("Please select payment mode");
         } else {
             
             var val = $("#paymentMode option:selected").text();
             val = val.toUpperCase();
             if (val == 'CHEQUE' || val == 'DD') {
-                if($("#bankId").val() == ''){
-                    $("#bankId option:selected").addClass('erroralert');
-                    alert('Please Select Bank Name!');
+                var bnkId = $("#bankId").val();
+                if(bnkId == ''){
+                    $("#bankId").addClass('erroralert');
+                    //alert('Please Select Bank Name!');
                     err++;
                 } else {
                     $("#bankId").removeClass('erroralert');
                 }
                 if($("#dd_cheque_date").val() == ''){
                     $("#dd_cheque_date").addClass('erroralert');
-                    alert('Please Insert DD/Cheque Date!');
+                    //alert('Please Insert DD/Cheque Date!');
                     err++;
                 } else {
                     $("#dd_cheque_date").removeClass('erroralert');
                 }
                 if($("#dd_cheque_no").val() == ''){
                     $("#dd_cheque_no").addClass('erroralert');
-                    alert('Please Insert DD/Cheque No!');
+                    //alert('Please Insert DD/Cheque No!');
                     err++;
                 } else {
                     $("#dd_cheque_no").removeClass('erroralert');
@@ -249,18 +283,38 @@ $(document).on('click','#chkRefundTransaction',function(){
 
                 if($("#dd_cheque_amount").val() == ''){
                     $("#dd_cheque_amount").addClass('erroralert');
-                    alert('Please Insert DD/Cheque Amount!');
+                    //alert('Please Insert DD/Cheque Amount!');
                     err++;
                 } else {
                     $("#dd_cheque_amount").removeClass('erroralert');
                 }
             }    
             $("#paymentMode").removeClass('LV_invalid_field');
+            $("#paymentMode").removeClass('erroralert');
 
             
         }
         if(err==0){
-            $("#refundAmount").submit();
+            var formData = new FormData(document.getElementById("refundAmount"));
+            $.ajax({
+                url: 'modules/Finance/fee_transaction_refundProcess.php',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                cache: false,
+                processData: false,
+                async: false,
+                success: function (response) {
+                    $("#preloader").hide();
+                    alert('Transaction Refund Successfully!');
+                    //location.reload();
+                    $("#refundAmount")[0].reset();
+                    $("#closeSM").click();
+                    $("#searchTransaction").click();
+                }
+            });
+        } else {
+            alert('Please Enter All Mandatory Field!');
         }
    });
   

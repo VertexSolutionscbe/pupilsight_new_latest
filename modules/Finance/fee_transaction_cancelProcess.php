@@ -142,8 +142,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
                 }
                
             } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+                // $URL .= '&return=error2';
+                // header("Location: {$URL}");
                 exit();
             }
 
@@ -152,8 +152,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
             //Last insert ID
             // $AI = str_pad($connection2->lastInsertID(), 3, '0', STR_PAD_LEFT);
 
-            $URL .= "&return=success0";
-            header("Location: {$URL}");
+            // $URL .= "&return=success0";
+            // header("Location: {$URL}");
     }
 
     

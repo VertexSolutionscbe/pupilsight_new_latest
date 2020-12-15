@@ -804,18 +804,24 @@ print_r($rs);
                     $invid = $d['id'];
                      $query2 = $this
                         ->newQuery()
-                        ->from('fn_fees_collection')
+                        ->from('fn_fees_student_collection')
                         ->cols([
-                            'id','invoice_status'
+                            'SUM(fn_fees_student_collection.total_amount_collection) as paid_amount'
                         ])
-                        ->where('fn_fees_invoice_id = "'.$invid.'" ')
-                        ->where('pupilsightPersonID = "'.$d['std_id'].'" ');
+                        ->where('fn_fees_student_collection.fn_fees_invoice_id = "'.$invid.'" ')
+                        ->where('fn_fees_student_collection.pupilsightPersonID = "'.$d['std_id'].'" ');
                        
                         $newdata = $this->runQuery($query2, $criteria);
-                        if(!empty($newdata->data[0]['id'])){
+                        if(!empty($newdata->data[0]['paid_amount'])){
                             $data[$k]['chkinvstatus'] = 'paid';
+                            if(!empty($newdata->data[0]['paid_amount'])){
+                                $data[$k]['paid'] = $newdata->data[0]['paid_amount'];
+                            } else {
+                                $data[$k]['paid'] = '';
+                            }
                         } else {
                             $data[$k]['chkinvstatus'] = '';
+                            $data[$k]['paid'] = '';
                         }
 
                     $query3 = $this
@@ -992,9 +998,9 @@ print_r($rs);
             if(!empty($input['transaction_id'])){
                 $query->where('fn_fees_collection.transaction_id = "'.$input['transaction_id'].'" ');
             }
-            if(!empty($input['pupilsightPersonID'])){
-                $query->where('fn_fees_collection.pupilsightPersonID = "'.$input['pupilsightPersonID'].'" ');
-            }
+            // if(!empty($input['pupilsightPersonID'])){
+            //     $query->where('fn_fees_collection.pupilsightPersonID = "'.$input['pupilsightPersonID'].'" ');
+            // }
             if(!empty($input['receipt_number'])){
                 $query->where('fn_fees_collection.receipt_number = "'.$input['receipt_number'].'" ');
             }
@@ -1007,6 +1013,16 @@ print_r($rs);
             if(!empty($input['payment_mode_id'])){
                 $query->where('fn_fees_collection.payment_mode_id = "'.$input['payment_mode_id'].'" ');
             }
+            if(!empty($input['payment_status'])){
+                if($input['payment_status'] == 'Transaction Successful'){
+                    $query->where('fn_fees_collection.payment_status IS NULL ');
+                } else {
+                    $query->where('fn_fees_collection.payment_status = "'.$input['payment_status'].'" ');
+                }
+            }
+            if(!empty($input['admission_no'])){
+                $query->where('pupilsightPerson.admission_no = "'.$input['admission_no'].'" ');
+            }
             if(!empty($input['student_name'])){
                 $query->where('pupilsightPerson.officialName LIKE "%'.$input['student_name'].'%" ');
             }
@@ -1014,10 +1030,10 @@ print_r($rs);
                 $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "'.$input['pupilsightProgramID'].'" ');
             }
             if(!empty($input['pupilsightYearGroupID'])){
-                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "'.$input['pupilsightYearGroupID'].'" ');
+                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID IN ('.implode(',', $input['pupilsightYearGroupID']).') ');
             }
             if(!empty($input['pupilsightRollGroupID'])){
-                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "'.$input['pupilsightRollGroupID'].'" ');
+                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID IN ('.implode(',', $input['pupilsightRollGroupID']).') ');
             }
             if(!empty($input['startdate']) && !empty($input['enddate'])){
                 $sd = explode('/', $_POST['startdate']);
@@ -1063,7 +1079,7 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fees_collection')
             ->cols([
-                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.email','pupilsightPerson.phone1','pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','pupilsightStudentEnrolment.pupilsightYearGroupID as classid','pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid'
+                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.email','pupilsightPerson.phone1','pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','pupilsightStudentEnrolment.pupilsightYearGroupID as classid','pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid', 'pupilsightPerson.admission_no'
             ])
             ->leftJoin('pupilsightPerson', 'fn_fees_collection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
             ->leftJoin('pupilsightStudentEnrolment', 'fn_fees_collection.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
@@ -1074,9 +1090,9 @@ print_r($rs);
             if(!empty($input['transaction_id'])){
                 $query->where('fn_fees_collection.transaction_id = "'.$input['transaction_id'].'" ');
             }
-            if(!empty($input['pupilsightPersonID'])){
-                $query->where('fn_fees_collection.pupilsightPersonID = "'.$input['pupilsightPersonID'].'" ');
-            }
+            // if(!empty($input['pupilsightPersonID'])){
+            //     $query->where('fn_fees_collection.pupilsightPersonID = "'.$input['pupilsightPersonID'].'" ');
+            // }
             if(!empty($input['receipt_number'])){
                 $query->where('fn_fees_collection.receipt_number = "'.$input['receipt_number'].'" ');
             }
@@ -1089,6 +1105,16 @@ print_r($rs);
             if(!empty($input['payment_mode_id'])){
                 $query->where('fn_fees_collection.payment_mode_id = "'.$input['payment_mode_id'].'" ');
             }
+            if(!empty($input['payment_status'])){
+                if($input['payment_status'] == 'Transaction Successful'){
+                    $query->where('fn_fees_collection.payment_status IS NULL ');
+                } else {
+                    $query->where('fn_fees_collection.payment_status = "'.$input['payment_status'].'" ');
+                }
+            } 
+            if(!empty($input['admission_no'])){
+                $query->where('pupilsightPerson.admission_no = "'.$input['admission_no'].'" ');
+            }
             if(!empty($input['student_name'])){
                 $query->where('pupilsightPerson.officialName LIKE "%'.$input['student_name'].'%" ');
             }
@@ -1096,11 +1122,12 @@ print_r($rs);
                 $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "'.$input['pupilsightProgramID'].'" ');
             }
             if(!empty($input['pupilsightYearGroupID'])){
-                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "'.$input['pupilsightYearGroupID'].'" ');
+                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID IN ('.implode(',', $input['pupilsightYearGroupID']).') ');
             }
             if(!empty($input['pupilsightRollGroupID'])){
-                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "'.$input['pupilsightRollGroupID'].'" ');
+                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID IN ('.implode(',', $input['pupilsightRollGroupID']).') ');
             }
+              
             if(!empty($input['startdate']) && !empty($input['enddate'])){
                 $sd = explode('/', $_POST['startdate']);
                 $sdate  = date('Y-m-d', strtotime(implode('-', array_reverse($sd))));
@@ -1147,7 +1174,7 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fees_collection')
             ->cols([
-                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id','pupilsightPerson.admission_no', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason'
+                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id','pupilsightPerson.admission_no', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason','a.officialName as stfName','fn_fees_cancel_collection.cdt'
             ])
             ->leftJoin('pupilsightPerson', 'fn_fees_collection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
             ->leftJoin('pupilsightStudentEnrolment', 'fn_fees_collection.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
@@ -1155,7 +1182,8 @@ print_r($rs);
             ->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
             ->leftJoin('fn_masters', 'fn_fees_collection.payment_mode_id=fn_masters.id')
             ->leftJoin('fn_masters as bnk', 'fn_fees_collection.bank_id=bnk.id')
-            ->leftJoin('fn_fees_cancel_collection', 'fn_fees_collection.id=fn_fees_cancel_collection.fn_fees_collection_id');
+            ->leftJoin('fn_fees_cancel_collection', 'fn_fees_collection.id=fn_fees_cancel_collection.fn_fees_collection_id')
+            ->leftJoin('pupilsightPerson AS a', 'fn_fees_cancel_collection.canceled_by=a.pupilsightPersonID');
             if(!empty($input['transaction_id'])){
                 $query->where('fn_fees_collection.transaction_id = "'.$input['transaction_id'].'" ');
             }
@@ -1200,7 +1228,7 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fees_collection')
             ->cols([
-                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id','pupilsightPerson.admission_no', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason'
+                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id','pupilsightPerson.admission_no', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason','a.officialName as stfName','fn_fees_cancel_collection.cdt'
             ])
             ->leftJoin('pupilsightPerson', 'fn_fees_collection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
             ->leftJoin('fn_fees_student_collection', 'fn_fees_collection.transaction_id=fn_fees_student_collection.transaction_id')
@@ -1208,6 +1236,7 @@ print_r($rs);
             ->leftJoin('fn_masters', 'fn_fees_collection.payment_mode_id=fn_masters.id')
             ->leftJoin('fn_masters as bnk', 'fn_fees_collection.bank_id=bnk.id')
             ->leftJoin('fn_fees_cancel_collection', 'fn_fees_collection.id=fn_fees_cancel_collection.fn_fees_collection_id')
+            ->leftJoin('pupilsightPerson AS a', 'fn_fees_cancel_collection.canceled_by=a.pupilsightPersonID')
             ->where('fn_fees_collection.transaction_status = "2" ')
             ->where('fn_fees_collection.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
             ->groupBy(['fn_fees_collection.id']);
@@ -1525,8 +1554,9 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fees_receipt_template_master')
             ->cols([
-                'id','name','path','filename'
-            ]);
+                'id','name','path','filename','type'
+            ])
+            ->orderBy(['id DESC']);;
 
         return $this->runQuery($query, $criteria, true);
     }

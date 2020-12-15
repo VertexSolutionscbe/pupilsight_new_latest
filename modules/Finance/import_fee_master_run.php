@@ -12,6 +12,7 @@ use Pupilsight\Services\Format;
 include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
 
 
+
 require __DIR__ . '/moduleFunctions.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Finance/fee_master_manage.php';

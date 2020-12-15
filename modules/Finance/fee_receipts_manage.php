@@ -24,6 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
 
    // QUERY
    $criteria = $FeesGateway->newQueryCriteria()
+        ->pageSize(1000)
          ->sortBy(['id'])
          ->fromPOST();
 
@@ -44,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
    //$table->addColumn('sequenceNumber', __('sequenceNumber'));
    $table->addColumn('serial_number', __('SI No'));
    $table->addColumn('name', __('Template Name'));
-  
+   $table->addColumn('type', __('Template Type'));
    $table->addColumn('filename', __('Template File'))
    ->format(function ($dataSet) {
        if($dataSet['filename'] != '') {
