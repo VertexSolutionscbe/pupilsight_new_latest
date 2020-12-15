@@ -168,7 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_re
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel(' ', __(' '));
-            $col->addContent('<button class=" btn btn-primary">Search</button>&nbsp;&nbsp;<a style="color:#666;cursor:pointer;" id="export_transaction" class="btn btn-primary">Export</a>');
+            $col->addContent('<button class=" btn btn-primary">Search</button>&nbsp;&nbsp;<a style="color:#666;cursor:pointer;" id="export_refund_transaction" class="btn btn-primary">Export</a>');
             
             
 
@@ -282,3 +282,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_re
     }
 
 </style>
+
+<script>
+
+    $(document).ready(function() {
+        $('#expore_tbl').find("input[name='id[]']").each(function() {
+            $(this).addClass('include_cell');
+            $(this).closest('tr').addClass('rm_cell');
+            
+        });
+
+
+        $(document).on('change', '.include_cell', function() {
+            if ($(this).is(":checked")) {
+                $(this).closest('tr').removeClass('rm_cell');
+            } else {
+                $(this).closest('tr').addClass('rm_cell');
+            }
+        });
+    });
+
+    $(document).on('click', '#export_refund_transaction', function () {
+        var submit_ids = [];
+        $.each($("input[name='id[]']:checked"), function () {
+            submit_ids.push($(this).val());
+        });
+        var submt_id = submit_ids.join(",");
+
+        if (submt_id == '') {
+            alert('You Have to Select Transaction.');
+        } else {
+            $('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
+            $("#expore_tbl").table2excel({
+                name: "Worksheet Name",
+                filename: "refund_transaction.xls",
+                fileext: ".xls",
+                exclude: ".checkall",
+                exclude: ".rm_cell",
+                exclude_inputs: true,
+                columns: [0, 1, 2, 3, 4, 5]
+
+            });
+            location.reload();
+        }
+    });
+</script>

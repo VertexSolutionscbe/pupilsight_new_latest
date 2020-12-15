@@ -307,7 +307,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
             }       
                 $row = $form->addRow()->setID('lastseatdiv');
                 $row->addFooter();
-                //$row->addCheckbox('update_invoices')->description(__('<b>Update Invoice Items</b>'))->setValue('1'); 
+                $row->addCheckbox('update_invoices')->description(__('<b>Update Invoice</b>'))->setValue('1'); 
                 // $row->addSubmit();
                 $row->addContent('<a id="saveFeeStructure" class="btn btn-primary" style="float:right;">Submit</a>');
 
