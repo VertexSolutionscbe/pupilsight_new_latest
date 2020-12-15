@@ -89,7 +89,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
    public function getUserLog($dt)
     {
 
-        $sq = "select l.pupilsightPersonID, p.officialName  from pupilsightAttendanceLogPerson as l, pupilsightPerson as p where p.pupilsightPersonID = l.pupilsightPersonID group by l.pupilsightPersonID ";
+        $sq = "select p.admission_no, l.pupilsightPersonID, p.officialName  from pupilsightAttendanceLogPerson as l, pupilsightPerson as p where p.pupilsightPersonID = l.pupilsightPersonID group by l.pupilsightPersonID ";
+        //print_r($sq);
         $flag = FALSE;
         if ($dt) {
             $flag = TRUE;
@@ -108,7 +109,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             $ed = date('Y-m-d', strtotime(implode('-', array_reverse($ed))));
 
 
-            $sq = "select l.pupilsightPersonID, p.officialName  from pupilsightAttendanceLogPerson as l, ";
+            $sq = "select p.admission_no,l.pupilsightPersonID, p.officialName  from pupilsightAttendanceLogPerson as l, ";
             $sq .= "pupilsightPerson as p, pupilsightStudentEnrolment as s ";
             $sq .= "where p.pupilsightPersonID = l.pupilsightPersonID ";
             $sq .= "and s.pupilsightPersonID = l.pupilsightPersonID ";
