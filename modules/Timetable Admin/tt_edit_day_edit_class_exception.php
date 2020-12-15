@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
         $timetableDayGateway = $container->get(TimetableDayGateway::class);
         $values = $timetableDayGateway->getTTDayRowClassByID($pupilsightTTDayID, $pupilsightTTColumnRowID, $pupilsightCourseClassID);
-
+//print_r($timetableDayGateway);die();
         if (empty($values)) {
             echo "<div class='alert alert-danger'>";
             echo __('The specified record cannot be found.');
