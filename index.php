@@ -397,7 +397,7 @@ if ($isLoggedIn) {
 
     $paymentList[0] = array('name' => 'Manage Invoice', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_manage.php');
     //echo $session->get('counterid');
-    if(!empty($counterData)){
+    if (!empty($counterData)) {
         if ($session->get('counterid') == '') {
             $paymentList[1] = array('name' => 'Collection', 'class' => 'thickbox', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_check_add.php');
         } else {
@@ -417,7 +417,7 @@ if ($isLoggedIn) {
     $paymentMenu = array('name' => "Payment", 'list' => $paymentList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
 
     if (isset($menuMainItems["Finance"])) {
-        
+
         $menuMainItems["Finance"][0] = $masterMenu;
         $menuMainItems["Finance"][1] = array('name' => 'Fee Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
         $menuMainItems["Finance"][2] = $paymentMenu;
