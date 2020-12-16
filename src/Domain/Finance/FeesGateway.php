@@ -1139,7 +1139,8 @@ print_r($rs);
             }
             $query->where('fn_fees_collection.transaction_status = "1" ')
                 ->where('fn_fees_collection.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
-                ->groupBy(['fn_fees_collection.id']);
+                ->groupBy(['fn_fees_collection.id'])
+                ->orderBy(['fn_fees_collection.id DESC']);
             //echo $query;
        } else {
             $query = $this
@@ -1157,7 +1158,8 @@ print_r($rs);
             ->leftJoin('fn_masters as bnk', 'fn_fees_collection.bank_id=bnk.id')
             ->where('fn_fees_collection.transaction_status = "1" ')
             ->where('fn_fees_collection.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
-            ->groupBy(['fn_fees_collection.id']);
+            ->groupBy(['fn_fees_collection.id'])
+            ->orderBy(['fn_fees_collection.id DESC']);
           
        }
        //echo $query;  

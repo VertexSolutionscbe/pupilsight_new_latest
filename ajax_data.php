@@ -380,7 +380,7 @@ if ($type == 'filterstudentbyclass') {
             <div class=" mb-1"><label for="invoice_title" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs"> </label></div>';
     foreach ($students as $k => $cl) {
         if (!empty($cl['fsid'])) {
-            $sqlchk = 'SELECT GROUP_CONCAT(DISTINCT b.fn_fee_structure_id) as fid FROM fn_fee_invoice_student_assign AS a LEFT JOIN fn_fee_invoice AS b ON a.fn_fee_invoice_id = b.id WHERE a.pupilsightPersonID = ' . $cl['pupilsightPersonID'] . ' ';
+            $sqlchk = 'SELECT GROUP_CONCAT(DISTINCT b.fn_fee_structure_id) as fid FROM fn_fee_invoice_student_assign AS a LEFT JOIN fn_fee_invoice AS b ON a.fn_fee_invoice_id = b.id WHERE a.pupilsightPersonID = ' . $cl['pupilsightPersonID'] . ' AND a.invoice_status != "Canceled" ';
             $resultchk = $connection2->query($sqlchk);
             $chkstrid = $resultchk->fetch();
             $fid = $chkstrid['fid'];
