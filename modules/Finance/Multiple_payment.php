@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
         
         $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
             //  $col->addButton(__('Add'))->setID('addMultiPaymentItem')->addData('cid', '1')->addData('disid', 'nodata')->addClass('bttnsubmt bg-dodger-blue fsize lftbutt addbutt');
-             $col->addContent('<a style="cursor:pointer;" data-cid="1" data-disid="nodata" id="addMultiPaymentItem" class="btn btn-primary lftbutt addbutt">Add</a>');
+             $col->addContent('<a style="cursor:pointer;height: 25px;margin-bottom: 40px !important;" data-cid="1" data-disid="nodata" id="addMultiPaymentItem" class="btn btn-primary lftbutt addbutt">Add</a>');
 
            
 

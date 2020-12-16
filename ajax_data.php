@@ -2197,10 +2197,10 @@ if ($type == "getPaymentHistory") {
     // print_r($payhistory);die();
     if (!empty($payhistory)) {
         foreach ($payhistory as $ph) {
-            $sqli = "SELECT invoice_no FROM fn_fees_student_collection where transaction_id = " . $ph['transaction_id'] . " OR partial_transaction_id = " . $ph['transaction_id'] . " LIMIT 0,1";
+            $sqli = "SELECT GROUP_CONCAT(DISTINCT invoice_no) AS invNo FROM fn_fees_student_collection where transaction_id = " . $ph['transaction_id'] . " OR partial_transaction_id = " . $ph['transaction_id'] . " LIMIT 0,1";
             $resulti = $connection2->query($sqli);
             $invdata = $resulti->fetch();
-            $invnno = $invdata['invoice_no'];
+            $invnno = $invdata['invNo'];
 
             $m_txt = '';
             $mode = strtoupper($ph['payMode']);

@@ -29,10 +29,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/view_receipt.php')
 
 <?php
 //  echo "<a  href='".$_SESSION[$guid]['absoluteURL']."/public/receipts/".$transids.".docx' download class='btn btn-primary' type='' >Download receipt</a></br>";
-echo "<a  href='".$_SESSION[$guid]['absoluteURL']."/cms/convertPdf.php?id=".$transids."' class='btn btn-primary' type='' >Download receipt</a></br>";
+// echo "<a  href='".$_SESSION[$guid]['absoluteURL']."/cms/convertPdf.php?id=".$transids."' class='btn btn-primary' type='' >Download receipt</a></br>";
   
-} ?> 
+// } ?> 
 
+<?php /* ?>
 <iframe style="width:100%; height:500px;" src="https://docs.google.com/gview?url=<?php echo $_SESSION[$guid]['absoluteURL'];?>/public/receipts/<?php echo $transids;?>.docx&embedded=true"></iframe>
+
+<?php */ ?>
+<?php
+    $filePath = urlencode($_SESSION[$guid]['absoluteURL'] . "/public/receipts/" . $transids . ".pdf");
+    $pdfView = $_SESSION[$guid]['absoluteURL'] . "/thirdparty/pdfjs/web/viewer.php?src=" . $filePath;
+} ?>
+
+<iframe style="width:100%; height:500px;border=0;" border='0' id="printPage" src="<?php echo $pdfView; ?>"></iframe>
       
 
