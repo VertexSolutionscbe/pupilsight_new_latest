@@ -1175,11 +1175,17 @@ $(document).on('keydown', '#search', function (e) {
     
     
     $(document).on('click', '#closePaymentScreen', function (e) {
-        $("#showPaymentScreen").hide();
-        var type = $("#searchCollectionType").val();
+        //$("#showPaymentScreen").hide();
+        $("#collectionForm").hide();
+        $(".hideFeeItemContent").hide();
+        loadInvoices();
+        $(".oCls_1").show();
+        $('.icon_1').removeClass('mdi mdi-arrow-right-thick');
+        $('.icon_1').addClass('mdi mdi-arrow-down-thick');
+        //var type = $("#searchCollectionType").val();
         // alert(type);
         // if(type == 1){
-            $("#searchStudent").click();
+            //$("#searchStudent").click();
         // } else {
         //     $("#searchInvoice").click();
         // }

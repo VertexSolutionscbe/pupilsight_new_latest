@@ -310,21 +310,9 @@ if(isset($_POST['type'])){
                 $resultu = $connection2->prepare($sqlu);
                 $resultu->execute($datau);
 
-                $datau = array('invoice_status'=>$invoice_status, 'fn_fees_invoice_id' => $fn_fees_invoice_id,  'pupilsightPersonID' => $pupilsightPersonID);
-                $sqlu = 'UPDATE fn_fees_collection SET invoice_status=:invoice_status WHERE fn_fees_invoice_id=:fn_fees_invoice_id AND pupilsightPersonID=:pupilsightPersonID';
-                $resultu = $connection2->prepare($sqlu);
-                $resultu->execute($datau);
-
-                $dataiu = array('invoice_status' => $invoice_status,  'pupilsightPersonID' => $pupilsightPersonID,  'fn_fee_invoice_id' => $fn_fees_invoice_id);
-                $sqliu = 'UPDATE fn_fee_invoice_student_assign SET invoice_status=:invoice_status WHERE pupilsightPersonID=:pupilsightPersonID AND fn_fee_invoice_id=:fn_fee_invoice_id';
-                $resultiu = $connection2->prepare($sqliu);
-                $resultiu->execute($dataiu);
                 
                 
-               
-
-                
-                if($amount_paying < $total_amount_without_fine_discount){
+                if($amount_paying < $transcation_amount){
                     $isql = 'SELECT a.id, a.fn_fee_invoice_id, a.total_amount,b.invoice_no FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_student_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id WHERE a.id IN ('.$invoice_item_id.') AND b.pupilsightPersonID = '.$pupilsightPersonID.'  ORDER BY b.id ASC';
                     $resultip = $connection2->query($isql);
                     $valuesip = $resultip->fetchAll();
@@ -372,7 +360,7 @@ if(isset($_POST['type'])){
                             $invoice_no = $values['invoice_no'];
                             $itemamount = $values['total_amount'];
 
-                            $chkpayitem = 'SELECT id FROM fn_fees_student_collection WHERE fn_fees_invoice_id = '.$fn_fee_invoice_id.' AND fn_fee_invoice_item_id = '.$itid.' AND pupilsightPersonID = '.$pupilsightPersonID.' ';
+                            $chkpayitem = 'SELECT a.id FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fees_invoice_id = '.$fn_fee_invoice_id.' AND a.fn_fee_invoice_item_id = '.$itid.' AND a.pupilsightPersonID = '.$pupilsightPersonID.' AND b.transaction_status = 1 ';
                             $resultcp = $connection2->query($chkpayitem);
                             $valuecp = $resultcp->fetch();
 
@@ -434,11 +422,23 @@ if(isset($_POST['type'])){
                 // print_r($dts_receipt);
                 // echo '</pre>';
                 // die();
+                $stuName = str_replace(' ', '_', $valuestu["officialName"]);
+                $filename = $stuName.'_'.$transactionId;
                 $session->forget(['doc_receipt_id']);
-                $session->set('doc_receipt_id',$transactionId);
+                $session->set('doc_receipt_id',$filename);
                 if(!empty($invoice_id)){
                     $invid = explode(',', $invoice_id);
                     foreach($invid as $iid){
+                        $datau = array('invoice_status'=>$invoice_status, 'fn_fees_invoice_id' => $iid,  'pupilsightPersonID' => $pupilsightPersonID);
+                        $sqlu = 'UPDATE fn_fees_collection SET invoice_status=:invoice_status WHERE fn_fees_invoice_id=:fn_fees_invoice_id AND pupilsightPersonID=:pupilsightPersonID';
+                        $resultu = $connection2->prepare($sqlu);
+                        $resultu->execute($datau);
+
+                        $dataiu = array('invoice_status' => $invoice_status,  'pupilsightPersonID' => $pupilsightPersonID,  'fn_fee_invoice_id' => $iid);
+                        $sqliu = 'UPDATE fn_fee_invoice_student_assign SET invoice_status=:invoice_status WHERE pupilsightPersonID=:pupilsightPersonID AND fn_fee_invoice_id=:fn_fee_invoice_id';
+                        $resultiu = $connection2->prepare($sqliu);
+                        $resultiu->execute($dataiu);
+
                         $chksql = 'SELECT fn_fee_structure_id, display_fee_item, title as invoice_title FROM fn_fee_invoice WHERE id = '.$iid.' ';
                         $resultchk = $connection2->query($chksql);
                         $valuechk = $resultchk->fetch();
@@ -451,7 +451,7 @@ if(isset($_POST['type'])){
                         }
 
                         if($valuech['display_fee_item'] == '2'){
-                            $sqcs = "select SUM(fi.total_amount) AS tamnt from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$invoice_item_id.")";
+                            $sqcs = "select SUM(fi.total_amount) AS tamnt from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.fn_fee_invoice_id =  ".$iid." ";
                             $resultfi = $connection2->query($sqcs);
                             $valuefi = $resultfi->fetchAll();
                             if (!empty($valuefi)) {
@@ -507,6 +507,8 @@ if(isset($_POST['type'])){
                 
                     }
                 }
+
+
                 if(!empty($dts_receipt) && !empty($dts_receipt_feeitem)){ 
                     $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receiptNew.php';
                     $datamerge = array_merge($dts_receipt, $dts_receipt_feeitem);
