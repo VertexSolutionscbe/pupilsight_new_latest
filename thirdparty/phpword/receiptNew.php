@@ -33,9 +33,9 @@ $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
 $dts["total"]=$dts["transcation_amount"];
 
 $stuName = str_replace(' ', '_', $dts["student_name"]);
-$filename = $stuName.'_'.$dts["transactionId"];
+$receiptfilename = $stuName.'_'.$dts["transactionId"];
 // $_SESSION['doc_receipt_id']=$dts["transactionId"];
-$_SESSION['doc_receipt_id']=$filename;
+$_SESSION['doc_receipt_id']=$receiptfilename;
 foreach ($dts as $key => $value) {
     $phpword->setValue($key, $value);
 }
@@ -56,47 +56,22 @@ if(!empty($fee_items)){
 }
 
 try {
-    $dataiu = array('filename' => $filename,  'transaction_id' => $dts["transactionId"]);
+    $dataiu = array('filename' => $receiptfilename,  'transaction_id' => $dts["transactionId"]);
     $sqliu = 'UPDATE fn_fees_collection SET filename=:filename WHERE transaction_id=:transaction_id';
     $resultiu = $connection2->prepare($sqliu);
     $resultiu->execute($dataiu);
 
     // $fileName = $dts["transactionId"] . ".docx";
-    $fileName = $filename . ".docx";
+    $fileName = $receiptfilename . ".docx";
     $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/receipts/";
     $savedocsx = $inFilePath . $fileName;
     //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
     //echo $savedocsx;
     $phpword->saveAs($savedocsx);
 
-    //convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+    convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
 } catch (Exception $ex) {
 }
-
-// $savedocsx = $_SERVER["DOCUMENT_ROOT"]."/pupilsight/public/receipts/".$dts["transactionId"].".docx";
-// //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
-// //echo $savedocsx;
-// $phpword->saveAs($savedocsx);
-// //die();
-// //$admincallback = $_SESSION["admin_callback"];
-// /*if(!empty($admincallback)){
-//     $callback = $admincallback;
-// } else {
-//     $callback = $_SESSION["paypost"]["callbackurl"];
-// }
-
-// if(isset($callback)){
-//     ?>
-//     <script type="text/javascript">
-//         window.history.back();
-//     </script>
-//     <?php
-//     //header('Location: '.$callback);
-//     exit;
-// }else{
-//     header('Location: index.php');
-//     exit;
-// }*/
 
 function convert_number_to_words($number) {
    

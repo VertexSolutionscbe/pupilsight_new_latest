@@ -28,7 +28,7 @@ function createZipAndDownload($files, $filesPath, $zipFileName)
 
 $collectionId = $_GET['id'];
 // die();
-$sq = "select GROUP_CONCAT(transaction_id) as tid  FROM fn_fees_collection  where id IN (".$collectionId.") ";
+$sq = "select GROUP_CONCAT(filename) as tid  FROM fn_fees_collection  where id IN (".$collectionId.") ";
 $result = $connection2->query($sq);
 $rowdata = $result->fetch();
 
@@ -38,7 +38,7 @@ $rowdata = $result->fetch();
 
 // echo $zipnames = $rowdata1['zipname'];
 
-$fname = str_replace(",",".docx,",$rowdata['tid']).'.docx';
+$fname = str_replace(",",".pdf,",$rowdata['tid']).'.pdf';
 $files = explode(',', $fname);
 
 // echo '<pre>';

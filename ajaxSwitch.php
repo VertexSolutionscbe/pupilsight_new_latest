@@ -319,6 +319,7 @@ if(isset($_POST['type'])){
 
                     if(!empty($valuesip)){
                         $chkamount = $amount_paying;
+                        //$i = 1;
                         foreach($valuesip as $itmid){
                             $fn_fee_invoice_id = $itmid['fn_fee_invoice_id'];
                             $invoice_no = $itmid['invoice_no'];
@@ -327,16 +328,27 @@ if(isset($_POST['type'])){
                             if($itemamount < $chkamount){
                                 $status = '1';
                                 $paidamount = $itemamount;
+                                $chkamount = $chkamount - $itemamount;
                             } else {
                                 $status = '2';
-                                $paidamount = $chkamount;
+                                if($chkamount > 0){
+                                    $paidamount = $chkamount;
+                                } else {
+                                    $paidamount = '';
+                                }
+                                $chkamount = $chkamount - $itemamount;
+                                
                             }
+
+                            // $leftAmt = $chkamount - $paidamount; 
+                            // $balanceAmt = $leftAmt;
                                 
                                 $datai = array('pupilsightPersonID'=>$pupilsightPersonID,'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => $status);
                                 $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
                                 $resulti = $connection2->prepare($sqli);
                                 $resulti->execute($datai);
-                                $chkamount = $chkamount - $itemamount;
+                                
+                                //$i++;
                             // } else {
                             //     $paidamount = $chkamount;
                             //     $datai = array('pupilsightPersonID'=>$pupilsightPersonID,'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => '2');

@@ -279,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     //     ->displayLabel();
     echo "<hr />";
     echo "<div style='height:50px;'><div class='float-right mb-2'><a style=' ' href=''  data-toggle='modal' data-target='#large-modal-new-invoice_stud' data-noti='2'  class='sendButton_stud_inv btn btn-primary' id='sendSMS'>Send SMS</a>&nbsp;&nbsp;<a style='' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new-invoice_stud' class='sendButton_stud_inv btn btn-primary' id='sendEmail'>Send Email</a>&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Finance/invoice_assign_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Class</a>";  
-    echo "&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Finance/invoice_assign_student_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Student</a>&nbsp;&nbsp;<a style='' id='deleteBulkInvoice' class='btn btn-primary'>Bulk Delete</a>&nbsp;&nbsp;<a style='color:#666;cursor:pointer;font-size: 15px;' id='export_invoice'><i title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i></a></div><div class='float-none'></div></div>";  
+    echo "&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Finance/invoice_assign_student_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Student</a>&nbsp;&nbsp;<a style='' id='deleteBulkInvoice' class='btn btn-primary'>Bulk Delete</a>&nbsp;&nbsp;<a style='' id='' class='btn btn-primary' href='index.php?q=/modules/Finance/import_invoice_bulk_data.php'>Bulk Import</a>&nbsp;&nbsp;<a style='' id='exportBulkInvoice' class='btn btn-primary' data-hrf='index.php?q=/modules/Finance/export_invoice_bulk_data.php'>Bulk Export</a><a style='display:none' href='' id='exportForBulkColl' >bulkex</a>&nbsp;&nbsp;<a style='color:#666;cursor:pointer;font-size: 15px;' id='export_invoice'><i title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i></a></div><div class='float-none'></div></div>";  
 
     
     
@@ -512,6 +512,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
         }, 100);
 
 
+    });
+
+    $(document).on('click', '#exportBulkInvoice', function() {
+        var favorite = [];
+        $.each($("input[name='insid[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var invId = favorite.join(",");
+        
+        if (invId) {
+            var val = invId;
+            var hrf = $(this).attr('data-hrf');
+            if (val != '') {
+                var newhrf = hrf + '&tid=' + val;
+                $("#exportForBulkColl").attr('href', newhrf);
+                $("#exportForBulkColl")[0].click();
+            }
+        } else {
+            alert('You Have to Select Invoice.');
+        }
     });
 
 </script>

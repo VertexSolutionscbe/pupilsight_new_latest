@@ -37,7 +37,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
     }
 
     //Proceed!
-    $page->breadcrumbs->add(__('Collection'));
+    $page->breadcrumbs
+    ->add(__('Finance'), 'fee_collection_manage.php')
+    ->add(__('Collection'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -734,7 +736,7 @@ echo " <style>
 
         if($(this).val() != ''){
             var len = $(this).val().length;
-            if(len < 6){
+            if(len != 6){
                 alert('Enter Proper DD / Cheque No');
                 $(this).addClass('erroralert');
             } else {

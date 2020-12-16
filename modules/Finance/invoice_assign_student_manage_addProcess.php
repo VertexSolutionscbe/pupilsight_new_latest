@@ -94,11 +94,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_assign_stu
 
                         if(!empty($assignvalues)){
                             foreach($assignvalues as $asv){
-                                $dataav = array('fn_fee_structure_id'=>$id, 'pupilsightPersonID' => $asv['pupilsightPersonID']);
-                                $sqlav = 'SELECT * FROM fn_fee_invoice_student_assign WHERE fn_fee_structure_id=:fn_fee_structure_id AND pupilsightPersonID=:pupilsightPersonID';
-                                $resultav = $connection2->prepare($sqlav);
-                                $resultav->execute($dataav);
-                                if ($resultav->rowCount() == 0) {
+                                // $dataav = array('fn_fee_structure_id'=>$id, 'pupilsightPersonID' => $asv['pupilsightPersonID'] , 'invoice_status' => $asv['pupilsightPersonID']);
+                                // $sqlav = 'SELECT * FROM fn_fee_invoice_student_assign WHERE fn_fee_structure_id=:fn_fee_structure_id AND pupilsightPersonID=:pupilsightPersonID';
+                                // $resultav = $connection2->prepare($sqlav);
+                                // $resultav->execute($dataav);
+
+                                $sqlp = 'SELECT COUNT(id) AS kount FROM fn_fee_invoice_student_assign WHERE fn_fee_structure_id =  '.$id.' AND pupilsightPersonID = '.$asv['pupilsightPersonID'].' AND invoice_status != "Canceled"';
+                                $resultp = $connection2->query($sqlp);
+                                $chkData = $resultp->fetchAll();
+
+                                if ($chkData['kount'] == 0) {
                                     $invSeriesId = $values['inv_fee_series_id'];
                                     //$invformat = explode('/',$values['format']);
                                     $invformat = explode('$',$values['formatval']);

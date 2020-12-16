@@ -302,25 +302,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $table->addColumn('transcation_amount', __('Transaction Amount'));
     $table->addColumn('amount_paying', __('Amount Paid'));
     $table->addColumn('payment_date', __('Payment Date'))
-    ->format(function ($dataSet) {
-        if (!empty($dataSet['payment_status_up_date'])) {
-            $pdate = $dataSet['payment_status_up_date'];
+    ->format(function ($feeTransaction) {
+        if (!empty($feeTransaction['payment_status_up_date'])) {
+            $pdate = $feeTransaction['payment_status_up_date'];
             return $pdate;
         } else {
-            $dt = $dataSet['payment_date'];
+            $dt = $feeTransaction['payment_date'];
            return $dt;
         }
-        return $dataSet['payment_date'];
+        return $feeTransaction['payment_date'];
     });
     $table->addColumn('payment_status', __('Payment Status'));
     $table->addColumn('print', __('Print Receipt'))
-         ->format(function ($dataSet) {
-             if (!empty($dataSet['transaction_id'])) {
-                 return '<a href="public/receipts/'.$dataSet['transaction_id'].'.docx"  download><i class="mdi mdi-receipt mdi-24px"></i></a>';
-             } else {
+         ->format(function ($feeTransaction) {
+            if (!empty($feeTransaction['filename'])) {
+                return '<a href="public/receipts/'.$feeTransaction['filename'].'.pdf"  download><i class="mdi mdi-receipt mdi-24px"></i></a>';
+            } else if (!empty($feeTransaction['transaction_id'])) {
+                 return '<a href="public/receipts/'.$feeTransaction['transaction_id'].'.pdf"  download><i class="mdi mdi-receipt mdi-24px"></i></a>';
+            } else {
                 return 'Stoped';
-             }
-             return $dataSet['status'];
+            }
+            return $feeTransaction['status'];
     });
 
 

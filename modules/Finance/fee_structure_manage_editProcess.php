@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
 
             if(!empty($_POST['update_invoices'])){
                 $update_invoices = '1';
-                $sql = 'SELECT id FROM fn_fee_invoice WHERE fn_fee_structure_id = '.$id.' ';
+                $sql = 'SELECT a.id FROM fn_fee_invoice AS a LEFT JOIN fn_fee_invoice_class_assign AS b ON a.id = b.fn_fee_invoice_id WHERE a.fn_fee_structure_id = '.$id.' ';
                 $result = $connection2->query($sql);
                 $invData = $result->fetch();
                 $prevInvId = $invData['id'];
