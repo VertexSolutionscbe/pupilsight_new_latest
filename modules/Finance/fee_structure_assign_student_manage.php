@@ -105,7 +105,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     $searchby2=array();  
     $searchby1=array(''=>'Select Field');
     foreach ($coldata as $ct) {
-        $searchby2[$ct['Field']] = $ct['Field'];
+        $sql = 'SELECT field_title FROM custom_field WHERE field_name = "'.$ct['Field'].'" ';
+        $result = $connection2->query($sql);
+        $cusdata = $result->fetch();
+        if(!empty($cusdata['field_title'])){
+            $searchby2[$ct['Field']] = $cusdata['field_title'];
+        } else {
+            $searchby2[$ct['Field']] = $ct['Field'];
+        }
     }
     $searchby= $searchby2 + $searchby1;  
     $searchby= array_reverse($searchby);

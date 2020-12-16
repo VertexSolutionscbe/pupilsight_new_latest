@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
         }
 
         if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
+            $URL .= '&return=error22';
             header("Location: {$URL}");
         } else {
             //Validate Inputs
@@ -69,11 +69,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
             $tax_percent = $_POST['tax_percent'];
             $udt = date('Y-m-d H:i:s');
 
-            // if(!empty($_POST['update_invoices'])){
-            //     $update_invoices = $_POST['update_invoices'];
-            // } else {
-            //     $update_invoices = '2';
-            // }
+            if(!empty($_POST['update_invoices'])){
+                $update_invoices = '1';
+                $sql = 'SELECT id FROM fn_fee_invoice WHERE fn_fee_structure_id = '.$id.' ';
+                $result = $connection2->query($sql);
+                $invData = $result->fetch();
+                $prevInvId = $invData['id'];
+            } else {
+                $update_invoices = '2';
+                $prevInvId = '';
+            }
             
 
             if ($name == ''  or $pupilsightSchoolYearID == '' or $invoice_title == ''  or $pupilsightSchoolFinanceYearID == '' or $fn_fees_head_id == '') {
@@ -87,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    $URL .= '&return=error2';
+                    $URL .= '&return=error23';
                     header("Location: {$URL}");
                     exit();
                 }
@@ -148,16 +153,84 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
                         }    
 
 
-                        // if(!empty($update_invoices)){
-                        //     $sql = 'SELECT GROUP_CONCAT(id) as invid FROM fn_fee_invoice WHERE fn_fee_structure_id = '.$id.' ';
-                        //     $result = $connection2->query($sql);
-                        //     $invData = $result->fetch();
+                        if($update_invoices == '1'){
+                            $cdt = date('Y-m-d H:i:s');
+                            
+                                $datas = array('id' => $id);
+                                $sqls = 'SELECT * FROM fn_fee_structure  WHERE id=:id';
+                                $results = $connection2->prepare($sqls);
+                                $results->execute($datas);
+                                $values = $results->fetch();
+                                
+                        
+                                $datac = array('fn_fee_structure_id' => $id);
+                                $sqlc = 'SELECT * FROM fn_fee_structure_item WHERE fn_fee_structure_id=:fn_fee_structure_id';
+                                $resultc = $connection2->prepare($sqlc);
+                                $resultc->execute($datac);
+                                $childvalues = $resultc->fetchAll();
+        
+                                $dataa = array('fn_fee_invoice_id' => $prevInvId);
+                                $sqla = 'SELECT * FROM fn_fee_invoice_class_assign WHERE fn_fee_invoice_id=:fn_fee_invoice_id';
+                                $resulta = $connection2->prepare($sqla);
+                                $resulta->execute($dataa);
+                                $assignvalues = $resulta->fetchAll();
+        
+                                $data = array('title' => $values['invoice_title'], 'fn_fee_structure_id' => $id , 'pupilsightSchoolYearID' => $values['pupilsightSchoolYearID'], 'pupilsightSchoolFinanceYearID' => $values['pupilsightSchoolFinanceYearID'], 'inv_fn_fee_series_id' => $values['inv_fee_series_id'], 'rec_fn_fee_series_id' => $values['recp_fee_series_id'], 'fn_fees_head_id' => $values['fn_fees_head_id'], 'fn_fees_fine_rule_id' => $values['fn_fees_fine_rule_id'], 'fn_fees_discount_id' => $values['fn_fees_discount_id'], 'due_date' => $values['due_date'],'amount_editable' => $values['amount_editable'],'display_fee_item' => $values['display_fee_item'], 'cdt' => $cdt);
+                            
+                                $sql = 'INSERT INTO fn_fee_invoice SET title=:title, fn_fee_structure_id=:fn_fee_structure_id, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightSchoolFinanceYearID=:pupilsightSchoolFinanceYearID, inv_fn_fee_series_id=:inv_fn_fee_series_id, rec_fn_fee_series_id=:rec_fn_fee_series_id, fn_fees_head_id=:fn_fees_head_id, fn_fees_fine_rule_id=:fn_fees_fine_rule_id, fn_fees_discount_id=:fn_fees_discount_id, due_date=:due_date, amount_editable=:amount_editable, display_fee_item=:display_fee_item, cdt=:cdt';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                                
+                                $invId = $connection2->lastInsertID();
+        
+                                if(!empty($childvalues)){
+                                    foreach($childvalues as $cv){
+                                        $feeitem = $cv['fn_fee_item_id'];
+                                        $desc = '';
+                                        $amt = $cv['amount'];
+                                        $taxdata = $cv['tax_percent'];
+                                        $disc = '';
+                                        $tamt = $cv['total_amount'];
+        
+                                        if(!empty($feeitem) && !empty($amt)){
+                                            $data1 = array('fn_fee_invoice_id' => $invId, 'fn_fee_item_id' => $feeitem, 'description' => $desc, 'amount' => $amt, 'tax' => $taxdata, 'discount' => $disc, 'total_amount' => $tamt);
+                                            $sql1 = "INSERT INTO fn_fee_invoice_item SET fn_fee_invoice_id=:fn_fee_invoice_id, fn_fee_item_id=:fn_fee_item_id, description=:description, amount=:amount,  tax=:tax, discount=:discount, total_amount=:total_amount";
+                                            $result1 = $connection2->prepare($sql1);
+                                            $result1->execute($data1);
+                                        }
+                                    }
+                                }
+        
+                                if(!empty($assignvalues)){
+                                    foreach($assignvalues as $asv){
+                                        $classId = $asv['pupilsightYearGroupID'];
+                                        $program = $asv['pupilsightProgramID'];
+                                        $dataav = array('fn_fee_invoice_id'=>$invId,'pupilsightProgramID' => $program, 'pupilsightYearGroupID' => $classId);
+                                        $sqlav = 'SELECT * FROM fn_fee_invoice_class_assign WHERE fn_fee_invoice_id=:fn_fee_invoice_id AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID';
+                                        $resultav = $connection2->prepare($sqlav);
+                                        $resultav->execute($dataav);
+                                        if ($resultav->rowCount() == 0) {
+                                            $sql1av = 'INSERT INTO fn_fee_invoice_class_assign SET fn_fee_invoice_id=:fn_fee_invoice_id,pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID';
+                                            $result1av = $connection2->prepare($sql1av);
+                                            $result1av->execute($dataav);
+                                        }
+                                        
+                                        
+                                    }
 
-                        // }
+                                    
+                                    $sq = "UPDATE fn_fee_invoice_student_assign SET fn_fee_invoice_id = ". $invId ." WHERE fn_fee_invoice_id = ".$prevInvId." AND invoice_status = 'Not Paid' ";
+                                    $connection2->query($sq);
+                                }
+
+
+        
+                        }
                     } catch (PDOException $e) {
-                        $URL .= '&return=error2';
-                        header("Location: {$URL}");
-                        exit();
+                        print_r($e);
+                        $URL .= '&return=error24';
+                        // header("Location: {$URL}");
+                         exit();
                     }
 
                     $URL .= '&return=success0';

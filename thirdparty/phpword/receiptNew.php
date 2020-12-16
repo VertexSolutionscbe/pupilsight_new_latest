@@ -20,6 +20,12 @@ $dts["total"]=$dts["transcation_amount"];*/
 $dts = $_POST["dts_receipt"];
 $fee_items = $_POST["dts_receipt_feeitem"];
 
+// echo '<pre>';
+// print_r($dts);
+// print_r($fee_items);
+// echo '</pre>';
+// die();
+
 $file = $dts['receiptTemplate'];
 
 $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);

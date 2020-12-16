@@ -2197,7 +2197,7 @@ if ($type == "getPaymentHistory") {
     // print_r($payhistory);die();
     if (!empty($payhistory)) {
         foreach ($payhistory as $ph) {
-            $sqli = "SELECT invoice_no FROM fn_fees_student_collection where transaction_id = '" . $ph['transaction_id'] . "' LIMIT 0,1";
+            $sqli = "SELECT invoice_no FROM fn_fees_student_collection where transaction_id = " . $ph['transaction_id'] . " OR partial_transaction_id = " . $ph['transaction_id'] . " LIMIT 0,1";
             $resulti = $connection2->query($sqli);
             $invdata = $resulti->fetch();
             $invnno = $invdata['invoice_no'];
@@ -2274,7 +2274,7 @@ if ($type == 'getAjaxMultiPlayment') {
         'debit_card' => 'Debit Card'
     );
 
-    $data = '<tr id="seatdiv" class="seatdiv fixedfine flex flex-col sm:flex-row justify-between content-center p-0 deltr' . $aid . '"><td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+    $data = '<div style="margin-bottom: 25px !important;" id="seatdiv" class="row mb-1 seatdiv fixedfine deltr' . $aid . '"><div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative">
             <select id="py_mode' . $disid . '" name="payment_mode_id[]" class="w-full  txtfield allFeeItemId payment_slt_mode" data-id="' . $disid . '">';
@@ -2282,8 +2282,8 @@ if ($type == 'getAjaxMultiPlayment') {
         $data .= '<option value="' . $k . '">' . $st . '</option>';
     }
     $data .= ' </select></div></div>
-        </div></td>
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+        </div></div>
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group">
             <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><select id="feeStructureItemDisableId" name="bank_id[]" class="w-full  txtfield allFeeItemId bank_' . $disid . '">';
     foreach ($bank as $k => $st) {
@@ -2292,22 +2292,22 @@ if ($type == 'getAjaxMultiPlayment') {
     $data .= ' </select>
     <input type="text" readonly placeholder="No option" class="d_bank_' . $disid . ' form-control" style="display:none">
     </div></div>
-        </div></td>
+        </div></div>
 
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+        <div class="col-sm  newdes nobrdbtm">
             <div class="input-group stylish-input-group">
                 <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="amount" name="amount[]" class="w-full  txtfield numfield kountAmt amt_' . $disid . '"></div></div>
-            </div></td>
+            </div></div>
             
-            <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+            <div class="col-sm  newdes nobrdbtm">
             <div class="input-group stylish-input-group">
                 <div class="dte mb-1"></div><div class="  txtfield mb-1"><div class="flex-1 relative"><input type="text" id="reference_no" name="reference_no[]" class="w-full  txtfield  ref_' . $disid . '"></div></div>
-            </div></td>
+            </div></div>
       
       
-        <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes nobrdbtm1">
+        <div class="col-sm  newdes nobrdbtm">
         <div class="input-group stylish-input-group" style="display:inline-flex;">
-            <div class="dte mb-1"></div><div class=" txtfield   mb-1"><div class="flex-1 relative"><input type="date" id="instrument_date" name="instrument_date[]" class="w-full  txtfield  due_' . $disid . '"style="background-color: #f0f1f3;height: 35px;width:140px;font-size: 14px; font-size: 14px;color: #111111;border-radius: 4px !important;"></div></div><div class="dte mb-1"  style="font-size: 20px; padding:  7px 0 0px 4px; width: 15px"><i style="cursor:pointer" class="far fa-times-circle delSeattr" data-id="' . $disid . '"></i></div></div></td></tr>';
+            <div class="dte mb-1"></div><div class=" txtfield   mb-1"><div class="flex-1 relative"><input type="date" id="instrument_date" name="instrument_date[]" class="w-full  txtfield  due_' . $disid . '"style="background-color: #f0f1f3;height: 35px;width:140px;font-size: 14px; font-size: 14px;color: #111111;border-radius: 4px !important;"></div></div><div class="dte mb-1"  style="font-size: 20px; padding:  7px 0 0px 4px; width: 15px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' . $disid . '"></i></div></div></div></div>';
     echo $data;
 }
 

@@ -2322,6 +2322,7 @@
     $(document).on('click', '.chkinvoice', function () {
         $("#collectionForm")[0].reset();
         $(".ddChequeRow").addClass('hiddencol');
+        $("#paymentMode").focus();
         var favorite = [];
         var account_heads = [];
         var series = [];
@@ -2374,11 +2375,11 @@
                         $('#fn_fees_head_id').val(account_heads[0]);
                         $('#recptSerId').val(series[0]);
                         $(".oCls_0").hide();
-                        $('.icon_0').removeClass('fa-arrow-down');
-                        $('.icon_0').addClass('fa-arrow-right');
+                        $('.icon_0').removeClass('mdi mdi-arrow-down-thick');
+                        $('.icon_0').addClass('mdi mdi-arrow-right-thick');
                         $(".oCls_1").hide();
-                        $('.icon_1').removeClass('fa-arrow-down');
-                        $('.icon_1').addClass('fa-arrow-right');
+                        $('.icon_1').removeClass('mdi mdi-arrow-down-thick');
+                        $('.icon_1').addClass('mdi mdi-arrow-right-thick');
 
                         if (aedt[0] == '1') {
                             $("#amount_paying").attr("readonly", false);
@@ -2567,6 +2568,7 @@
                     //$("#submitInvoice").show();
                     $("#hideStudentListContent").show();
                     $("#stuListTable").show();
+                    $("#searchCollectionType").val(2);
                 }
             });
         } else {
@@ -2618,6 +2620,7 @@
                     //$("#simplesubmitInvoice").show();
                     $("#hideStudentListContent").show();
                     $("#stuListTable").show();
+                    $("#searchCollectionType").val(1);
                 }
             });
         }
@@ -2786,7 +2789,7 @@
             }
 
         } else if (val == 'NEFT' || val == 'RTGS' || val == 'CREDIT CARD' || val == 'DEBIT CARD') {
-            $("#payment_status").val('Payment Received');
+            $("#payment_status").val('Payment Received').change();
             $("#cashPaymentStatus").val('Payment Received');
             $(".ddChequeRow").addClass('hiddencol');
             $(".neft_cls").removeClass('hiddencol');
@@ -2794,6 +2797,7 @@
         } else {
             $(".ddCashRow").removeClass('hiddencol');
             $("#cashPaymentStatus").val('Payment Received');
+            $("#payment_status").val('Payment Received').change();
             $(".neft_cls").addClass('hiddencol');
             $(".ddChequeRow").addClass('hiddencol');
         }
@@ -4757,22 +4761,11 @@
         var val = $(this).val();
         var chkval = $("input[name=chkamount]").val();
         if (val != '') {
-            // if (Number(val) < Number(chkval)) {
             if (Number(val) < Number(chkval)) {
-                if (confirm("Do you want to do partial payment")) {
-                    $("#amount_paying").val(val);
-                    $("input[name='invoice_status'").val("Partial Paid");
-                    return true;
-                } else {
-                    $("input[name='invoice_status'").val("Fully Paid");
-                    $("#amount_paying").val("");
-                }
+                $("input[name='invoice_status'").val("Partial Paid");
+            } else {
+                $("input[name='invoice_status'").val("Fully Paid");
             }
-
-            // alert("You Can't Enter Less Amount if you want to pay Less then Remove Any Fee Item ");
-            // $("#amount_paying").val(chkval);
-            // return false;
-            //  }
         }
     });
 
@@ -8326,31 +8319,115 @@ $(document).on('click', '#MultiPayment', function () {
     var total_amount = $('#fullamount').val();
     var paying_amount = $('#totalAmount').text();
     var chk = 0;
+    var bnk = 0;
+    var ink = 0;
+    var idk = 0;
+
     var formData = $("#multiPaymentForm").serialize();
+    var chkamt = 0;
+    var pmode = 0;
+
+    $.each($("input[name='amount[]']"), function () {
+        if ($(this).val() == '') {
+            chkamt++;
+            $(this).addClass('erroralert');
+        } else {
+            $(this).removeClass('erroralert');
+        }
+    });
+
+    if (chkamt) {
+        alert('You Have to Enter Amount');
+        return false;
+    }
+
     if (total_amount == paying_amount) {
         $.each($(".payment_slt_mode"), function () {
+            $(this).removeClass('erroralert');
             var did = '';
             var val = '';
             did = $(this).attr('data-id');
+
             val = $(this).val();
-            if (val == '3' || val == '2') {
-                //alert($("select.bank_" +did+ " option:selected").val());
-                if ($("select.bank_" + did + " option:selected").val() == '') {
-                    chk++;
-                    alert('You Have to Select Bank');
+            if (val) {
+                //alert('bank_' + did + ' option:selected');
+                if (val == '3' || val == '2') {
+                    //alert($("select.bank_" +did+ " option:selected").val());
+                    var selected = $(".bank_" + did + " option:selected");
+                    if (selected.val() == '') {
+                        chk++;
+                        bnk++;
+                        //alert('You Have to Select Bank');
+                        $("select.bank_" + did).addClass('erroralert');
+                    } else {
+                        $("select.bank_" + did).removeClass('erroralert');
+                    }
+
+                    if ($(".ref_" + did).val() == '') {
+                        chk++;
+                        ink++;
+                        //alert('You Have to give Instrument No');
+                        $(".ref_" + did).addClass('erroralert');
+                    } else {
+                        $(".ref_" + did).removeClass('erroralert');
+                    }
+
+                    if ($(".due_" + did).val() == '') {
+                        chk++;
+                        idk++;
+                        //alert('You Have to give Instrument Date');
+                        $(".due_" + did).addClass('erroralert');
+                    } else {
+                        $(".due_" + did).removeClass('erroralert');
+                    }
+                    $(this).removeClass('erroralert');
                 }
 
-                if ($(".ref_" + did).val() == '') {
-                    chk++;
-                    alert('You Have to give Instrument No');
-                }
+                if (val == '5') {
 
-                if ($(".due_" + did).val() == '') {
-                    chk++;
-                    alert('You Have to give Instrument Date');
+                    if ($(".ref_" + did).val() == '') {
+                        chk++;
+                        ink++;
+                        //alert('You Have to give Instrument No');
+                        $(".ref_" + did).addClass('erroralert');
+                    } else {
+                        $(".ref_" + did).removeClass('erroralert');
+                    }
+
+                    if ($(".due_" + did).val() == '') {
+                        chk++;
+                        idk++;
+                        //alert('You Have to give Instrument Date');
+                        $(".due_" + did).addClass('erroralert');
+                    } else {
+                        $(".due_" + did).removeClass('erroralert');
+                    }
+                    $(this).removeClass('erroralert');
                 }
+            } else {
+                pmode++;
+                $(this).addClass('erroralert');
             }
         });
+        if (pmode != '') {
+            alert('You Have to Select Payment Mode');
+            return false;
+        }
+
+        if (bnk != '') {
+            alert('You Have to Select Bank');
+            return false;
+        }
+
+        if (ink != '') {
+            alert('You Have to give Instrument No');
+            return false;
+        }
+
+        if (idk != '') {
+            alert('You Have to give Instrument Date');
+            return false;
+        }
 
         if (chk == 0) {
             $.ajax({

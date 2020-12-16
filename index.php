@@ -417,10 +417,13 @@ if ($isLoggedIn) {
     $paymentMenu = array('name' => "Payment", 'list' => $paymentList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
 
     if (isset($menuMainItems["Finance"])) {
-
-        $menuMainItems["Finance"][0] = $masterMenu;
-        $menuMainItems["Finance"][1] = array('name' => 'Fee Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
-        $menuMainItems["Finance"][2] = $paymentMenu;
+        if ($roleid == '003' || $roleid == '004') {
+            $menuMainItems["Finance"][0] = array('name' => 'Invoices', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_child_view.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
+        } else {
+            $menuMainItems["Finance"][0] = $masterMenu;
+            $menuMainItems["Finance"][1] = array('name' => 'Fee Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
+            $menuMainItems["Finance"][2] = $paymentMenu;
+        }
     }
 
     $routeList[0] = array('name' => 'Manage Route', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/routes.php');

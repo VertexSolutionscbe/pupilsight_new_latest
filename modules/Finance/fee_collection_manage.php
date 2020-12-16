@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
     $col->addContent('<a id="searchInvoice" class="transactionButton btn btn-primary">Search</a><button id="submitInvoice" style="display:none;" class="transactionButton btn btn-primary">Submit</button>&nbsp;&nbsp;<a id="normalSearch" class="transactionButton btn btn-primary" style="position:absolute; ">Normal Search</a>');   
     
    
-
+    echo '<input type="hidden" id="searchCollectionType" value="">';
     echo $searchform->getOutput();
     
     echo "<div class ='row fee_hdr hideStudentListContent' style='display:none'><div class='col-md-12'> Students</div></div>";
@@ -260,10 +260,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $resultstu = $connection2->query($sqlstu);
         $studetails = $resultstu->fetch();
         ?>
+        <div id="showPaymentScreen">
 <div style="background: lightgray;font-size: 18px;font-weight: 600;color: darkslategray; line-height:50px; margin-bottom:10px;">&nbsp;<span>Admission No :
         <?php echo $studetails['admission_no'];?></span>&nbsp;&nbsp;&nbsp;<span>Student Name :
         <?php echo $studetails['officialName'];?></span>&nbsp;&nbsp;&nbsp;<span>Class/Section :
-        <?php echo $studetails['class'].'/'.$studetails['section'];?></span></div>
+        <?php echo $studetails['class'].'/'.$studetails['section'];?></span><i id="closePaymentScreen" class="mdi mdi-close-circle mdi-24px" style="float: right;margin: 15px 10px 0 0;cursor: pointer;"></i></div>
 <?php
         // echo "<div style='height:50px;margin-top:10px;'><div class='float-left mb-2'>";  
         //          echo "<a  id='' data-type='student' class='chkinvoice btn btn-primary'>Apply Invoice</a></div><div class='float-none'></div></div>";
@@ -356,7 +357,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
     
             $col = $row->addColumn()->setClass('newdes ');
             $col->addLabel('payment_status', __('Payment Status'))->addClass('dte');
-            $col->addTextField('payment_status')->setValue('Payment Received')->readonly()->addClass('txtfield');
+            $chqArray = array('Cheque Received' => 'Cheque Received','Payment Received' => 'Payment Received', 'DD Received' => 'DD Received');
+            $col->addSelect('payment_status')->fromArray($chqArray)->addClass('txtfield');
 
             // $row = $form->addRow();
 
@@ -515,9 +517,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         <a  href='fullscreen.php?q=/modules/Finance/apply_discount.php&width=900px'  class='thickbox' id='apply_discount_popup' style='display:none'></a>
         <a  id='' data-type='student' class='chkinvoice btn btn-primary'>Proceed to next</a>
         </div><div class='float-none'></div></div>";
-        echo "<div class ='row fee_hdr FeeInvoiceListManage feeitem' data-type='1'><div class='col-md-12'> Invoices <i class='mdi mdi-arrow-down-thick icon_1 icon_m'></i></div></div>";
+        echo "<div class ='row fee_hdr FeeInvoiceListManage feeitem' data-type='1'><div class='col-md-12'> Invoices <i class='mdi mdi-arrow-down-thick icon_1 icon_m '></i></div></div>";
 
-        echo "<table class='table' cellspacing='0' style='width: 100%;' class='oCls_1 oClose' id='FeeInvoiceListManage'>";
+        echo "<table class='table oCls_1 oClose' cellspacing='0' style='width: 100%;' id='FeeInvoiceListManage'>";
         echo "<thead>";
         echo "<tr class='head'>";
         echo '<th>';
@@ -567,7 +569,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         echo __('Invoice No');
         echo '</th>';
         echo '<th>';
-        echo __('Amount Paid');
+        echo __('Amount');
         echo '</th>';
         echo '<th>';
         echo __('Fine');
@@ -583,7 +585,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         echo __('Payment date');
         echo '</th>';
         echo '<th>';
-        echo __('Paymet mode');
+        echo __('Payment mode');
         echo '</th>';
         echo '<th>';
         echo __('Status');
@@ -597,6 +599,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
 ?>
  <input type="hidden" class="p_stuId" value="<?php echo $stuId;?>">
  <input type="hidden" class="pSyd" value="<?php echo $pupilsightSchoolYearID;?>">
+ </div>
 <?php 
 echo " <style>
 .pagination .dataTable header
@@ -668,8 +671,8 @@ echo " <style>
             $("#getPaymentHistory").html(response);
             
             $(".oCls_2").show();
-            $('.icon_2').removeClass('fa-arrow-right');
-            $('.icon_2').addClass('fa-arrow-down');
+            $('.icon_2').removeClass('mdi mdi-arrow-right-thick');
+            $('.icon_2').addClass('mdi mdi-arrow-down-thick');
         }
         });
       }
@@ -680,13 +683,13 @@ echo " <style>
     var type="loadInvoicesCollections";
       if(pstid!="0"){
         $.ajax({
-        url: 'ajaxSwitch.php',
-        type: 'post',
-        data: { val: pstid, py: py,type:type},
-        async: true,
-        success: function(response) {
-            $("#getInvoiceFeeItem1").html(response);
-        }
+            url: 'ajaxSwitch.php',
+            type: 'post',
+            data: { val: pstid, py: py,type:type},
+            async: true,
+            success: function(response) {
+                $("#getInvoiceFeeItem1").html(response);
+            }
         });
       }
    }
@@ -747,6 +750,8 @@ echo " <style>
             if(parseFloat(val) != parseFloat(ap)){
                 alert('Please Enter Same Amount as Amount Paying Field!');
                 $(this).addClass('erroralert');
+                $(this).val('');
+                return false;
             } else {
                 $(this).removeClass('erroralert');
             }
@@ -772,10 +777,36 @@ echo " <style>
             err++;
         } 
 
+        var chkval = $("input[name=chkamount]").val();
+        if (amtpay != '') {
+            if (Number(amtpay) < Number(chkval)) {
+                if (confirm("Do you want to do partial payment")) {
+                    $("#amount_paying").val(amtpay);
+                    $("input[name='invoice_status'").val("Partial Paid");
+                    //return true;
+                } else {
+                    $("input[name='invoice_status'").val("Fully Paid");
+                    $("#amount_paying").val("");
+                    return false;
+                }
+            } 
+            
+            if (Number(amtpay) > Number(chkval)) {
+                if (confirm("Do you want to do Over payment")) {
+                    $("#amount_paying").val(amtpay);
+                    $("input[name='invoice_status'").val("Fully Paid");
+                    //return true;
+                } else {
+                    $("input[name='invoice_status'").val("Fully Paid");
+                    $("#amount_paying").val("");
+                    return false;
+                }
+            }
+        }
         if(paymentMode==""){
             err++;
             $("#paymentMode").addClass('LV_invalid_field');
-            alert("Please select payment mode");
+            alert("Please Select Payment Mode");
         } else {
             var val = $("#paymentMode option:selected").text();
             val = val.toUpperCase();
@@ -820,6 +851,7 @@ echo " <style>
             alert('Please Enter All Mandatory Fields!');
             return false;
         }
+        //alert(err);
         if(err==0){
             $("#preloader").show();
             setTimeout(function(){
@@ -829,14 +861,12 @@ echo " <style>
                     data: formData,
                     async: true,
                     success: function(response) {
-                    $("#preloader").hide();
-                    
-                    $('#getRecerptPop').click();
-                    $("#closePayment").trigger('click');
-                    loadInvoices();
-                    load();
-                // load();          
-                    
+                        $("#preloader").hide();
+                        
+                        $('#getRecerptPop').click();
+                        $("#closePayment").trigger('click');
+                        loadInvoices();
+                        load();
                     }
                 });
             }, 2000);
@@ -849,8 +879,8 @@ $(document).on('click', '.feeitem', function() {
     // $('.icon_m').addClass('fa-arrow-right');
 
     if ($(".oCls_" + id).is(":visible")) {
-        $('.icon_' + id).removeClass('fa-arrow-down');
-        $('.icon_' + id).addClass('fa-arrow-right');
+        $('.icon_' + id).removeClass('mdi mdi-arrow-down-thick');
+        $('.icon_' + id).addClass('mdi mdi-arrow-right-thick');
         // $('.oClose').hide();
         $(".oCls_" + id).hide();
 
@@ -859,9 +889,15 @@ $(document).on('click', '.feeitem', function() {
         if(id=="2"){
           load();
         }
+
+        if(id=="1"){
+            loadInvoices();
+        } 
+        
         $(".oCls_" + id).show();
-        $('.icon_' + id).removeClass('fa-arrow-right');
-        $('.icon_' + id).addClass('fa-arrow-down');
+        $('.icon_' + id).removeClass('mdi mdi-arrow-right-thick');
+        $('.icon_' + id).addClass('mdi mdi-arrow-down-thick');
+      
     }
 });
 $(document).on('click','#save_sp_discount',function(){
@@ -1030,11 +1066,11 @@ $(document).on('click','#updateInvoiceStnButton',function(){
      }
 
      
-     if($("#fn_fees_head_id").val() == ''){
+     if($("#fnFeesHeadId").val() == ''){
         err++;
-        $("#fn_fees_head_id").addClass('erroralert');
+        $("#fnFeesHeadId").addClass('erroralert');
      } else {
-        $("#fn_fees_head_id").removeClass('erroralert');
+        $("#fnFeesHeadId").removeClass('erroralert');
      }
 
      if($("#inv_fn_fee_series_id").val() == ''){
@@ -1050,7 +1086,7 @@ $(document).on('click','#updateInvoiceStnButton',function(){
      } else {
         $("#rec_fn_fee_series_id").removeClass('erroralert');
      }
-
+     
      if(err==0){
         var val = $("#fn_fees_fine_rule_id").val();
         if(val != ''){
@@ -1134,5 +1170,18 @@ $(document).on('keydown', '#search', function (e) {
             $("#searchInvoice")[0].click();
             return false;
         }
+    })
+
+    
+    
+    $(document).on('click', '#closePaymentScreen', function (e) {
+        $("#showPaymentScreen").hide();
+        var type = $("#searchCollectionType").val();
+        // alert(type);
+        // if(type == 1){
+            $("#searchStudent").click();
+        // } else {
+        //     $("#searchInvoice").click();
+        // }
     })
 </script>
