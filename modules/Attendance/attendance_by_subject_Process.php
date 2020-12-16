@@ -22,7 +22,7 @@ $pupilsightYearGroupID =$_POST['pupilsightYearGroupID'];
 $pupilsightDepartmentID = $_POST['pupilsightDepartmentID'];
 $pupilsightProgramID =  $_POST['pupilsightProgramID'];
 $time_slot = $_POST['time_slot'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_take_bysubject.php&pupilsightRollGroupID=$pupilsightRollGroupID&pupilsightDepartmentID=$pupilsightDepartmentID& time_slot=$time_slot & currentDate=".dateConvertBack($guid, $currentDate);
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_take_bysubject.php&pupilsightRollGroupID=$pupilsightRollGroupID&pupilsightProgramID=$pupilsightProgramID&pupilsightDepartmentID=$pupilsightDepartmentID&pupilsightYearGroupID=$pupilsightYearGroupID& time_slot=$time_slot & currentDate=".dateConvertBack($guid, $currentDate);
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_bysubject.php') == false) {
     $URL .= '&return=error0';

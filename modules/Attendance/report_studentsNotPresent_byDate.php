@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             $data = array('date' => $currentDate);
             $sql = 'SELECT *
                 FROM pupilsightAttendanceLogPerson
-                WHERE date=:date';
+                WHERE date=:date AND type="Absent"';
                 if ($countClassAsSchool == "N") {
                     $sql .= ' AND NOT context=\'Class\'';
                 }
@@ -99,11 +99,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         $lastStudent = '';
         $count = 0 ;
         while ($row = $result->fetch()) {
+
             $currentStudent = $row['pupilsightPersonID'];
             if ( $attendance->isTypePresent($row['type']) and $currentStudent != $lastStudent) {
                 $log[$row['pupilsightPersonID']] = true;
             }
-            $lastStudent = $currentStudent;
+            $lastStudent = $currentStudent.'<br/>';
         }
 
         try {
@@ -113,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             if ($sort == 'rollGroup')
                 $orderBy = 'ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
 
-            $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID']);
+            $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'],'edate' => $currentDate,);
 
             $whereExtra = '';
             if (is_array($pupilsightYearGroupIDList)) {
@@ -121,12 +122,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                 $whereExtra = ' AND FIND_IN_SET (pupilsightStudentEnrolment.pupilsightYearGroupID, :pupilsightYearGroupIDList)';
             }
 
-            $sql = "SELECT pupilsightPerson.pupilsightPersonID, surname, preferredName, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.name as rollGroupName, pupilsightRollGroup.nameShort AS rollGroup FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) LEFT JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID $whereExtra";
+            //$sql = "SELECT pupilsightPerson.pupilsightPersonID, surname, preferredName, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.name as rollGroupName, pupilsightRollGroup.nameShort AS rollGroup FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) LEFT JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID $whereExtra";
+            $sql = "SELECT pupilsightPerson.pupilsightPersonID, surname, preferredName, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.name as rollGroupName, pupilsightRollGroup.nameShort AS rollGroup FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) LEFT JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) LEFT JOIN pupilsightAttendanceLogPerson ON (pupilsightPerson.pupilsightPersonID=pupilsightAttendanceLogPerson.pupilsightPersonID) WHERE pupilsightAttendanceLogPerson.type='Absent' AND pupilsightAttendanceLogPerson.date=:edate AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID $whereExtra";
 
             $sql .= $orderBy;
-
+            //print_r($sql);
             $result = $connection2->prepare($sql);
             $result->execute($data);
+            //print_r($data);
+            //print_r($result);
         } catch (PDOException $e) {
             echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
         }
@@ -141,12 +145,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             if (is_array($pupilsightYearGroupIDList)) {
                 echo implode(",", $pupilsightYearGroupIDList);
             }
-            echo "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/print.png'/></a>";
+            //echo "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/print.png'/></a>";
+
             echo '</div>';
+            echo "<div style='height:50px; margin-top:10px;'><div class='float-right mb-2'>
+            <a style=' margin-bottom:10px;' class='btn btn-primary' id='downloadLink' onclick='exportF(this)'>Export to excel</a>";
+            echo " </div><div class='float-none'></div></div>";
 
             $lastPerson = '';
 
-            echo '<table class="table colorOddEven" >';
+            echo '<table id="table" class="table colorOddEven" >';
             echo "<tr class='head'>";
             echo '<th>';
             echo __('Count');
@@ -170,18 +178,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
 
             while ($row = $result->fetch()) {
-                if (isset($log[$row['pupilsightPersonID']]) == false) {
+                //print_r($row);
+                if ($row['pupilsightPersonID']) {
 
                     try {
                         $dataAttendance = array('date' => $currentDate, 'pupilsightPersonID' => $row['pupilsightPersonID']);
-                        $sqlAttendance = 'SELECT *
+                        $sqlAttendance = 'SELECT * 
                             FROM pupilsightAttendanceLogPerson
-                            WHERE date=:date
-                            AND pupilsightPersonID=:pupilsightPersonID';
+                            WHERE date=:date AND pupilsightPersonID=:pupilsightPersonID';
                             if ($countClassAsSchool == "N") {
                                 $sqlAttendance .= ' AND NOT context=\'Class\'';
                             }
                             $sqlAttendance .= ' ORDER BY pupilsightAttendanceLogPersonID DESC';
+                            //print_r($dataAttendance);
+                            //print_r($sqlAttendance);//die();
                         $resultAttendance = $connection2->prepare($sqlAttendance);
                         $resultAttendance->execute($dataAttendance);
                     } catch (PDOException $e) {
@@ -204,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                         echo $row['rollGroupName'];
                     echo '</td>';
                     echo '<td>';
-                        echo formatName('', $row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
+                        echo formatName('' .$row['preferredName'], $row['surname'], 'Student', ($sort != 'preferredName') );
                     echo '</td>';
                     echo '<td>';
                     $rowRollAttendance = null;
@@ -237,4 +247,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             echo '</table>';
         }
     }
-}
+} ?>
+<script type="text/javascript">
+    function exportF(elem) {
+        var table = document.getElementById("table");
+        var html = table.outerHTML;
+        var url = 'data:application/vnd.ms-excel,' + escape(html); // Set your html table into url
+        elem.setAttribute("href", url);
+        elem.setAttribute("download", "export.xls"); // Choose the file name
+        return false;
+    }
+</script>

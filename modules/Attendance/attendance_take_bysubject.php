@@ -545,8 +545,8 @@ if ($pupilsightRollGroupID != '') {
                     }
 
                     $form->addRow()->addAlert(__('Total students:').' '. $count, 'success')->setClass('right')
-                        ->append('<br/><span title="'.__('e.g. Present or Present - Late').'">'.__('Total students present in room:').' '. $countPresent.'</span>')
-                        ->append('<br/><span title="'.__('e.g. not Present and not Present - Late').'">'.__('Total students absent from room:').' '. ($count-$countPresent).'</span>')
+                        ->append('<br/><span title="'.__('e.g. Present or Present - Late').'">'.__('Total students present in room:').'</span>&nbsp;<span id="presentsTotal">'. $countPresent.'</span>')
+                        ->append('<br/><span title="'.__('e.g. not Present and not Present - Late').'">'.__('Total students absent from room:').'</span>&nbsp;<span id="absentsTotal">'. ($count-$countPresent).'</span> <i id="absentsNames" class="fa fa-eye" title="Total absents :" aria-hidden="true"></i>')
                         ->wrap('<b>', '</b>');
 
                     $row = $form->addRow();
@@ -668,7 +668,35 @@ if ($pupilsightRollGroupID != '') {
                 }
             }
         }*/
+   function showCount(){
+       var presents=0;
+       var absents_name="Total absents : ";
+       var absents=0;
+       $(".slt_att").each(function() {
+           var name = $(this).attr('data-id');
+           if ($(this).val() != '') {
+               var val = $(this).val();
+               if(val=="Present" || val=="Present - Late"){
+                   presents++;
+               } else {
+                   absents++;
+                   absents_name+=name+",";
+               }
+           }
+       });
 
+       if(absents==0){
+           $(".savePopUp").attr('id','attendanceSave');
+           $(".savePopUp").text('Save Attendance');
+       } else {
+           $(".savePopUp").attr('id','savePopUp');
+           $(".savePopUp").text('Save Attendance');
+       }
+       $("#presentsTotal").html(presents);
+       $("#absentsTotal").html(absents);
+       absents_name  = absents_name.replace(/,\s*$/, "");
+       $("#absentsNames").attr("title",absents_name);
+   }
        
       
     </script>

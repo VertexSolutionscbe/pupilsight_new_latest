@@ -238,6 +238,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
                 
                 $row = $form->addRow()->addClass(' ');
                 $row->addContent('<div id="session_table"><table align="center" class="table" border="1"><tbody><tr><td class=" ">Session No</td><td class=" ">Session Name</td></tr><tr id="" class="  deltr0">'.$data.'</tr></tbody></table></div>');
+            }else{
+                $row = $form->addRow()->addClass(' ');
+                $row->addContent('<div id="session_table"></div>');
             }
             
            
