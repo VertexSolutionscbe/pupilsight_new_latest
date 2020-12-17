@@ -70,6 +70,8 @@ $_SESSION['razorpay_order_id'] = $razorpayOrderId;
 
 $displayAmount = $amount = $orderData['amount'];
 
+$_SESSION['razorpay_amount'] = $orderData['amount'];
+
 $checkout = 'automatic';
 
 /*

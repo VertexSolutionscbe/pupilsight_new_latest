@@ -12,8 +12,7 @@ if ($adminlib->isCampaignActive($url_id) == FALSE) {
 $data = $adminlib->getPupilSightData();
 $section = $adminlib->getPupilSightSectionFrontendData();
 $campaign = $adminlib->getcampaign();
-$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-$responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
+
 
 //baseurl = http://testchristacademy.pupilpod.net
 // $app_status = $adminlib->getApp_statusData();
@@ -167,6 +166,16 @@ if (empty($campaignStatus)) {
                                         $random_number = mt_rand(1000, 9999);
                                         $today = time();
                                         $orderId = $today . $random_number;
+
+                                        $sqlchk = "SELECT name FROM fn_fee_payment_gateway";
+                                        $resultchk = database::doSelectOne($sqlchk);
+                                        $gateway = $resultchk['name'];
+
+                                        if(!empty($gateway)){
+                                            if($gateway == 'WORLDLINE'){
+
+                                                $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                                $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
                                     ?>
                                         <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 
@@ -186,7 +195,30 @@ if (empty($campaignStatus)) {
 
                                             <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
                                         </form>
-                                    <?php } ?>
+                                        <?php } elseif($gateway == 'RAZORPAY') { 
+                                                $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                                $responseLink = $base_url . "/cms/application_page.php";
+                                            
+                                            ?>
+                                            <form id="admissionPay" action="../thirdparty/paymentadm/razorpay/pay.php" method="post">
+
+                                            <input type="hidden" value="<?php echo $orderId;?>" id="OrderId" name="OrderId">
+                                            <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+                                            
+                                            <input type="hidden" name="mid" id="mid" value="WL0000000009424">
+                                            <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+                                            <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                            <input type="hidden" name="sid" value="0">
+                                            <!-- <input type="hidden" name="name" value="Bikash">
+                                <input type="hidden" name="email" value="bikash0389@gmail.com">
+                                <input type="hidden" name="phone" value="9883928942"> -->
+
+                                            <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+
+                                            <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
+                                        </form>
+
+                                    <?php } } } ?>
                                 </div>
                             </div>
                         </div>
