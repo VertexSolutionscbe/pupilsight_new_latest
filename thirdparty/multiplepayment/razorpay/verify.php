@@ -55,6 +55,12 @@ if ($success === true)
         $dtall = $_SESSION["paypost"];
         $newdt = json_decode($dtall['formdata']);
 
+        $data = array('gateway' => 'RAZORPAY', 'pupilsightPersonID' => $dt["stuid"], 'transaction_ref_no' => $_POST['razorpay_payment_id'], 'order_id' => $_SESSION['razorpay_order_id'], 'amount' => $_SESSION['razorpay_amount'], 'status' => 'S');
+
+		$sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+		$result = $connection2->prepare($sql);
+		$result->execute($data);
+
         // echo '<pre>';
         // print_r($newdt);
         // echo '</pre>';

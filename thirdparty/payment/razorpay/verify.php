@@ -54,6 +54,14 @@ if ($success === true)
     try{
         $dt = $_SESSION["paypost"];
 
+        $data = array('gateway' => 'RAZORPAY', 'pupilsightPersonID' => $dt["stuid"], 'transaction_ref_no' => $_POST['razorpay_payment_id'], 'order_id' => $_SESSION['razorpay_order_id'], 'amount' => $dt["amount"], 'status' => 'S');
+
+		$sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+		$result = $connection2->prepare($sql);
+		$result->execute($data);
+
+       
+
         $fn_fees_receipt_series_id = $dt['receipt_number'];
         if(!empty($fn_fees_receipt_series_id)){
             $sqlrec = 'SELECT id, formatval FROM fn_fee_series WHERE id = "'.$fn_fees_receipt_series_id.'" ';

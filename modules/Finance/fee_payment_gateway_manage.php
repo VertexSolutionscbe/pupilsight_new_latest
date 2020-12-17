@@ -28,6 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
         ->fromPOST();
 
     $yearGroups = $FeesGateway->getFeePaymentGateway($criteria);
+    
 
     // DATA TABLE
     $table = DataTable::createPaginated('FeePaymentGatewayManage', $criteria);
@@ -35,9 +36,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
     // $table->addHeaderAction('add', __('Add'))
     //     ->setURL('/modules/Finance/program_manage_add.php')
     //     ->displayLabel();
+
+    if(count($yearGroups) < 1){
     
     echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/Finance/fee_payment_gateway_manage_add.php' class='thickbox btn btn-primary'>Add</a></div><div class='float-none'></div></div>";  
-
+    }
     
     
     //$table->addColumn('sequenceNumber', __('sequenceNumber'));

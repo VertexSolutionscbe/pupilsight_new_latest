@@ -521,7 +521,7 @@ if(isset($_POST['type'])){
                 }
 
 
-                if(!empty($dts_receipt) && !empty($dts_receipt_feeitem)){ 
+                if(!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)){ 
                     $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receiptNew.php';
                     $datamerge = array_merge($dts_receipt, $dts_receipt_feeitem);
                     $postdata = http_build_query(

@@ -5,73 +5,63 @@ session_start();
 require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
 require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
-// $file = $_SERVER["DOCUMENT_ROOT"]."/pupilsight/thirdparty/phpword/templates/receipt_1.docx";
-
-// $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
-
-/*$dts = $_SESSION["dts_receipt"];
-$fee_items = $_SESSION["dts_receipt_feeitem"];
-
-//print_r($dts);
-//print_r($fee_items);
-
-$dts["total"]=$dts["transcation_amount"];*/
-$dts = $_POST["dts_receipt"];
-$fee_items = $_POST["dts_receipt_feeitem"];
-
-// echo '<pre>';
-// print_r($dts);
-// print_r($fee_items);
-// echo '</pre>';
-// die();
-
-$file = $dts['receiptTemplate'];
-
-$phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
-
-
-$dts["total"]=$dts["transcation_amount"];
-
-$stuName = str_replace(' ', '_', $dts["student_name"]);
-$receiptfilename = $stuName.'_'.$dts["transactionId"];
-// $_SESSION['doc_receipt_id']=$dts["transactionId"];
-$_SESSION['doc_receipt_id']=$receiptfilename;
-foreach ($dts as $key => $value) {
-    $phpword->setValue($key, $value);
-}
-
-if(!empty($dts["transcation_amount"])){
-    /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-    $total_in_words = $nf->format($dts["transcation_amount"]);*/
-    $total_in_words=convert_number_to_words($dts["transcation_amount"]);
-    $phpword->setValue('total_in_words', ucwords($total_in_words));
-}
-
-if(!empty($fee_items)){
-    try {
-        $phpword->cloneRowAndSetValues('serial.all', $fee_items);
-    } catch (Exception $ex) {
-        //print_r($ex);
-    }
-}
 
 try {
-    $dataiu = array('filename' => $receiptfilename,  'transaction_id' => $dts["transactionId"]);
-    $sqliu = 'UPDATE fn_fees_collection SET filename=:filename WHERE transaction_id=:transaction_id';
-    $resultiu = $connection2->prepare($sqliu);
-    $resultiu->execute($dataiu);
+    $dts = $_POST["dts_receipt"];
+    $fee_items = $_POST["dts_receipt_feeitem"];
 
-    // $fileName = $dts["transactionId"] . ".docx";
-    $fileName = $receiptfilename . ".docx";
-    $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/receipts/";
-    $savedocsx = $inFilePath . $fileName;
-    //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
-    //echo $savedocsx;
-    $phpword->saveAs($savedocsx);
 
-    convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+    $file = $dts['receiptTemplate'];
+
+    $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
+
+
+    $dts["total"]=$dts["transcation_amount"];
+
+    $stuName = str_replace(' ', '_', $dts["student_name"]);
+    $receiptfilename = $stuName.'_'.$dts["transactionId"];
+    // $_SESSION['doc_receipt_id']=$dts["transactionId"];
+    $_SESSION['doc_receipt_id']=$receiptfilename;
+    foreach ($dts as $key => $value) {
+        $phpword->setValue($key, $value);
+    }
+
+    if(!empty($dts["transcation_amount"])){
+        /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+        $total_in_words = $nf->format($dts["transcation_amount"]);*/
+        $total_in_words=convert_number_to_words($dts["transcation_amount"]);
+        $phpword->setValue('total_in_words', ucwords($total_in_words));
+    }
+
+    if(!empty($fee_items)){
+        try {
+            $phpword->cloneRowAndSetValues('serial.all', $fee_items);
+        } catch (Exception $ex) {
+            //print_r($ex);
+        }
+    }
+
+    try {
+        $dataiu = array('filename' => $receiptfilename,  'transaction_id' => $dts["transactionId"]);
+        $sqliu = 'UPDATE fn_fees_collection SET filename=:filename WHERE transaction_id=:transaction_id';
+        $resultiu = $connection2->prepare($sqliu);
+        $resultiu->execute($dataiu);
+
+        // $fileName = $dts["transactionId"] . ".docx";
+        $fileName = $receiptfilename . ".docx";
+        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/receipts/";
+        $savedocsx = $inFilePath . $fileName;
+        //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
+        //echo $savedocsx;
+        $phpword->saveAs($savedocsx);
+
+        convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+    } catch (Exception $ex) {
+    }
+
 } catch (Exception $ex) {
 }
+
 
 function convert_number_to_words($number) {
    
