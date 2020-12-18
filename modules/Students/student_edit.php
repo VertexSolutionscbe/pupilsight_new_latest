@@ -53,8 +53,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			$result = $connection2->prepare($sql);
 			$result->execute($data);
 
-			$data = array('pupilsightPersonID' => $pupilsightPersonID);
-			$sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightPersonID2=:pupilsightPersonID';
+			$sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= '.$pupilsightPersonID.' ';
+			$resultf = $connection2->query($sqlf);
+			$fdata = $resultf->fetch();
+			$pupilsightFamilyID = $fdata['pupilsightFamilyID'];
+
+			// $data = array('pupilsightPersonID' => $pupilsightPersonID);
+			// $sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightPersonID2=:pupilsightPersonID';
+			// $resultp = $connection2->prepare($sqlp);
+			// $resultp->execute($data);
+
+			$data = array('pupilsightFamilyID' => $pupilsightFamilyID);
+			$sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightFamilyID=:pupilsightFamilyID';
 			$resultp = $connection2->prepare($sqlp);
 			$resultp->execute($data);
 		} catch (PDOException $e) {

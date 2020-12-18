@@ -8876,3 +8876,109 @@ $(document).on('click', '#advancesubmitInvoice', function () {
     $(".searchType").val('2');
     $("#searchForm").submit();
 });
+
+
+function addInvoiceFeeAmtNew() {
+    var favorite = [];
+    var feetotal = 0;
+    var desctotal = 0;
+    var amtpay = 0;
+    var finefeetotal = 0;
+    var totalfineamt = 0;
+    var invoiceid = 0;
+    var tmp = new Array();
+
+    //only for number invoice
+    var percentageFlag = false;
+    $.each($(".selFeeItem:checked"), function () {
+
+        var flag = false;
+        var invid = $(this).attr('data-invid');
+        var finetype = $(".invoice" + invid).attr('data-ftype');
+        if (finetype == 'num') {
+            flag = true;
+        } else {
+            percentageFlag = true;
+        }
+
+        if (flag) {
+            console.log(this);
+            // feetotal += parseFloat($(this).attr('data-amt')) || 0; 
+            var tfeetotal = Number($(this).attr('data-totamt')) || 0;
+            feetotal += tfeetotal;
+            amtpay += Number($(this).attr('data-amt')) || 0;
+            favorite.push($(this).val());
+            desctotal += Number($(this).attr('data-dis')) || 0;
+            var fineamt = $(".invoice" + invid).attr('data-fper');
+            if (invoiceid != invid) {
+
+                totalfineamt += Number(fineamt);
+                console.log(fineamt, totalfineamt, tfeetotal);
+                invoiceid = invid;
+            }
+        }
+    });
+
+    var feetotal1 = 0;
+    var desctotal1 = 0;
+    var amtpay1 = 0;
+    var finefeetotal1 = 0;
+    var totalfineamt1 = 0;
+    var invoiceid1 = 0;
+
+    //only for percentage invoice
+    if (percentageFlag) {
+        //console.log("cehck perc");
+        $.each($(".selFeeItem:checked"), function () {
+            //console.log(this);
+            var flag = false;
+            var invid = $(this).attr('data-invid');
+            var finetype = $(".invoice" + invid).attr('data-ftype');
+            if (finetype != 'num') {
+                flag = true;
+            }
+            if (flag) {
+                // feetotal += parseFloat($(this).attr('data-amt')) || 0; 
+                var tfeetotal1 = Number($(this).attr('data-totamt')) || 0;
+                amtpay1 += Number($(this).attr('data-amt')) || 0;
+                favorite.push($(this).val());
+                desctotal1 += Number($(this).attr('data-dis')) || 0;
+                var fineamt = $(".invoice" + invid).attr('data-fper');
+                //if(invoiceid1 != invid){
+                //totalfineamt1 += Number(fineamt);
+                //var dec = (Number(fineamt) / 100); 
+                totalfineamt1 += (tfeetotal1 * Number(fineamt)) / 100;
+                feetotal1 += tfeetotal1;
+                //console.log(totalfineamt1,fineamt);
+                // invoiceid1 = invid;
+                // }        
+            }
+        });
+        //console.log(feetotal, totalfineamt);
+        feetotal += feetotal1;
+        totalfineamt += totalfineamt1;
+        desctotal += desctotal1;
+    }
+
+    //var totalamount = 0;
+    //totalamount += totalfineamt;
+    //alert(finefeetotal);
+    var invitemids = favorite.join(", ");
+    $("#fine").val(totalfineamt);
+    $("input[name=fineold]").val(totalfineamt);
+    var totalamount = Number(feetotal) + totalfineamt;
+    if (desctotal != '') {
+        var amtpaying = totalamount - desctotal;
+    } else {
+        var amtpaying = totalamount;
+    }
+
+    $("#total_amount_without_fine_discount").val(feetotal);
+    $("#transcation_amount").val(totalamount);
+    $("#amount_paying").val(amtpaying);
+    //$("#transcation_amount_old").val(totalamount);
+    $("#amount_paying_old").val(amtpaying);
+    $("#discount").val(desctotal);
+    $("input[name=invoice_item_id]").val(invitemids);
+    $("input[name=chkamount]").val(amtpaying);
+}

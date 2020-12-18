@@ -23,7 +23,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $types = array('' => 'Select Type', 'Fee Receipt' => 'Fee Receipt', 'Cancel Receipt' => 'Cancel Receipt', 'Refund Receipt' => 'Refund Receipt');
+    $types = array('' => 'Select Type', 'Fee Receipt' => 'Fee Receipt', 'Cancel Receipt' => 'Cancel Receipt', 'Refund Receipt' => 'Refund Receipt' , 'Invoice Template' => 'Invoice Template');
 
    
         echo '<h2>';

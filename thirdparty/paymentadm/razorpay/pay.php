@@ -54,7 +54,8 @@ if(empty($parms["amount"]) || empty($parms["callbackurl"])){
 $name = isset($parms["name"])?$parms["name"]:"";
 $email = isset($parms["email"])?$parms["email"]:"";
 $phone = isset($parms["phone"])?$parms["phone"]:"";
-$amount = $parms["amount"] * 100;
+// $amount = $parms["amount"] * 100;
+$amount = $parms["amount"];
 
 $orderData = [
     'receipt'         => $submissionId,
@@ -102,3 +103,10 @@ $json = json_encode($data);
 
 require("checkout/{$checkout}.php");
 ?>
+
+<script>
+    setTimeout(function () {
+        document.forms[0].submit();
+    }, 500);
+    
+</script>
