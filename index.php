@@ -396,19 +396,20 @@ if ($isLoggedIn) {
     $masterList[11] = array('name' => 'Fee Payment Gateway', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_payment_gateway_manage.php');
 
     $paymentList[0] = array('name' => 'Manage Invoice', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_manage.php');
+    $paymentList[1] = array('name' => 'Bulk Discount', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_discount_manage.php');
     //echo $session->get('counterid');
     if(!empty($counterData)){
         if ($session->get('counterid') == '') {
-            $paymentList[1] = array('name' => 'Collection', 'class' => 'thickbox', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_check_add.php');
+            $paymentList[2] = array('name' => 'Collection', 'class' => 'thickbox', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_check_add.php');
         } else {
-            $paymentList[1] = array('name' => 'Collection', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_collection_manage.php');
+            $paymentList[2] = array('name' => 'Collection', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_collection_manage.php');
         }
     } else {
-        $paymentList[1] = array('name' => 'Collection', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_collection_manage.php');
+        $paymentList[2] = array('name' => 'Collection', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_collection_manage.php');
     }
-    $paymentList[2] = array('name' => 'Transaction', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_transaction_manage.php');
-    $paymentList[3] = array('name' => 'Cancel Transaction', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_transaction_cancel_manage.php');
-    $paymentList[4] = array('name' => 'Refund Transaction', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_transaction_refund_manage.php');
+    $paymentList[3] = array('name' => 'Transaction', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_transaction_manage.php');
+    $paymentList[4] = array('name' => 'Cancel Transaction', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_transaction_cancel_manage.php');
+    $paymentList[5] = array('name' => 'Refund Transaction', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_transaction_refund_manage.php');
 
     //$structureList[0] = array('name'=>'Structure','url'=>$session->get('absoluteURL') .'/index.php?q=/modules/Finance/fee_structure_manage.php');
 
