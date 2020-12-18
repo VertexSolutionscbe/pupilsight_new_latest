@@ -202,7 +202,18 @@ else {
 
 		$row = $form->addRow();
 			$row->addLabel('subject', __('Subject'));
-			$row->addTextField('subject')->maxLength(60)->required();
+			$row->addTextField('subject')->maxLength(200)->required();
+
+        $display_fields = array();
+        $display_fields =  array(''=>'Select Category',
+            'Circular' =>'Circular',
+            'Timetable' =>'Timetable',
+            'Other' =>'Other',
+        );
+
+        $row = $form->addRow();
+        $row->addLabel('category', __('Category'));
+        $row->addSelect('category')->fromArray($display_fields)->selected($values['category'])->required();
 
 		$row = $form->addRow();
 	        $col = $row->addColumn('body');

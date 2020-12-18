@@ -44,6 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
             }
         }
         $subject = $_POST['subject'];
+        $category=$_POST["category"] ;
         $body = stripslashes($_POST['body']);
 
         if ($subject == '' or $body == '') {
@@ -75,8 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
             //Write to database
             try {
-                $data = array('email' => '', 'messageWall' => $messageWall, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
-                $sql = 'INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID, timestamp=:timestamp';
+                $data = array('email' => '', 'messageWall' => $messageWall, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject,"category"=>$category, 'body' => $body, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
+                $sql = 'INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

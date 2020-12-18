@@ -56,7 +56,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
     $row = $form->addRow();
         $row->addLabel('subject', __('Subject'));
-        $row->addTextField('subject')->required()->maxLength(60);
+        $row->addTextField('subject')->required()->maxLength(200);
+    $display_fields = array();
+    $display_fields =  array(''=>'Select Category',
+        'Circular' =>'Circular',
+        'Timetable' =>'Timetable',
+        'Other' =>'Other',
+    );
+
+    $row = $form->addRow();
+    $row->addLabel('category', __('Category'));
+    $row->addSelect('category')->fromArray($display_fields)->selected($values['category'])->required();
 
     $row = $form->addRow();
         $col = $row->addColumn('body');
