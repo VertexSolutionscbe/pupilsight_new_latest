@@ -3495,3 +3495,55 @@ if ($type == 'deleteBulkInvoice') {
         $result->execute($data);
     }
 }
+
+if ($type == 'getInvoice') {
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
+    $cid = $val;
+    $pid = $_POST['pid'];
+    
+    $sql = 'SELECT a.*, b.title, b.fn_fee_structure_id FROM fn_fee_invoice_class_assign AS a LEFT JOIN fn_fee_invoice AS b ON a.fn_fee_invoice_id = b.id WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND b.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" GROUP BY b.title';
+   
+    $result = $connection2->query($sql);
+    $sections = $result->fetchAll();
+    $data = '<option value="">Select Invoice</option>';
+    if (!empty($sections)) {
+        foreach ($sections as $k => $cl) {
+            $data .= '<option value="' . $cl['fn_fee_structure_id'] . '">' . $cl['title'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+if ($type == 'bulkItemDiscount') {
+   
+    $invId = $val;
+    $studentid = $_POST['stdId'];
+    if(!empty($studentid)){
+        $stuId = explode(',', $studentid);
+        foreach($stuId as $stid){
+            $stid=trim($stid);
+            $discountVal=$_POST['discountVal'];
+            $items=$_POST['items'];
+            $count=sizeof($items);
+            for($i=0;$i<$count;$i++){
+                $sqlpt = "SELECT id FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$stid."  AND item_id=".$items[$i]." ";
+                $resultpt = $connection2->query($sqlpt);
+                $valuept = $resultpt->fetch();
+                if(empty($valuept['id'])){
+                    $datau = array('pupilsightPersonID' => $stid, 'fn_fee_invoice_id' => $invId, 'item_id'=>$items[$i],'discount' => $discountVal[$i]);
+                    $sql = 'INSERT INTO fn_fee_item_level_discount SET pupilsightPersonID=:pupilsightPersonID, fn_fee_invoice_id=:fn_fee_invoice_id, item_id=:item_id, discount=:discount';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($datau);
+                } else {
+                    $datau = array('pupilsightPersonID' => $stid, 'fn_fee_invoice_id' => $invId, 'discount' => $discountVal[$i],'item_id'=>$items[$i]);
+                    $sqlu = 'UPDATE fn_fee_item_level_discount SET pupilsightPersonID=:pupilsightPersonID, fn_fee_invoice_id=:fn_fee_invoice_id, discount=:discount WHERE item_id=:item_id';
+                    $resultu = $connection2->prepare($sqlu);
+                    $resultu->execute($datau);
+                }
+            }
+        }
+    }
+}

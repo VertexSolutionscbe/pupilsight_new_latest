@@ -383,4 +383,19 @@ class HelperGateway extends QueryableGateway
 
     }
 
+    public function getInvoice($connection2, $pupilsightYearGroupID, $pupilsightProgramID, $pupilsightSchoolYearID) {
+        $sql = 'SELECT a.*, b.title, b.fn_fee_structure_id FROM fn_fee_invoice_class_assign AS a LEFT JOIN fn_fee_invoice AS b ON a.fn_fee_invoice_id = b.id WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND b.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" GROUP BY b.title';
+        $result = $connection2->query($sql);
+        $sectionsdata = $result->fetchAll();
+
+        $sections = array();
+        $sections2 = array();
+        $sections1 = array('' => 'Select Invoice');
+        foreach ($sectionsdata as $ct) {
+            $sections2[$ct['fn_fee_structure_id']] = $ct['title'];
+        }
+        $invoices = $sections1 + $sections2;
+        return $invoices;
+    }
+
 }

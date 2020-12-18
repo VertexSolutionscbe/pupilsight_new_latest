@@ -642,13 +642,32 @@ print_r($rs);
                         ->newQuery()
                         ->from('fn_fee_invoice_item')
                         ->cols([
-                            'SUM(fn_fee_invoice_item.total_amount) as tot_amount'
+                            'SUM(fn_fee_invoice_item.total_amount) as tot_amount','GROUP_CONCAT(fn_fee_invoice_item.id) AS itemid'
                         ])
                         ->where('fn_fee_invoice_item.fn_fee_invoice_id = "'.$invid.'" ');
                     
                         $newdata = $this->runQuery($query2, $criteria);
                         if(!empty($newdata->data[0]['tot_amount'])){
-                            $data[$k]['tot_amount'] = $newdata->data[0]['tot_amount'];
+                            if(!empty($newdata1->data[0]['itemid'])){
+                                $query3 = $this
+                                ->newQuery()
+                                ->from('fn_fee_item_level_discount')
+                                ->cols([
+                                    'SUM(fn_fee_item_level_discount.discount) as tot_discount'
+                                ])
+                                ->where('fn_fee_item_level_discount.item_id IN ('.$newdata1->data[0]['itemid'].') ')
+                                ->where('fn_fee_item_level_discount.pupilsightPersonID = "'.$d['std_id'].'" ');
+                            
+                                $newdata2 = $this->runQuery($query3, $criteria);
+                                if(!empty($newdata2->data[0]['tot_discount'])){
+                                    $amt = $newdata1->data[0]['tot_amount'] - $newdata2->data[0]['tot_discount'];
+                                    $data[$k]['inv_amount'] = $amt;
+                                } else {
+                                    $data[$k]['inv_amount'] = $newdata1->data[0]['tot_amount'];
+                                }
+                            } else {
+                                $data[$k]['inv_amount'] = '';
+                            }
                         } else {
                             $data[$k]['tot_amount'] = '';
                         }
@@ -666,11 +685,7 @@ print_r($rs);
     }
     public function getInvoice(QueryCriteria $criteria, $input, $pupilsightSchoolYearID)
     {
-       // print_r($pupilsightSchoolYearID);die();
-    //    echo '<pre>';
-    //    print_r($input); 
-    //    echo '</pre>';
-    //    die();
+     
 
         if(!empty($_SESSION['invoice_search'])){
             $input = $_SESSION['invoice_search'];
@@ -828,13 +843,32 @@ print_r($rs);
                     ->newQuery()
                     ->from('fn_fee_invoice_item')
                     ->cols([
-                        'SUM(fn_fee_invoice_item.total_amount) as tot_amount'
+                        'SUM(fn_fee_invoice_item.total_amount) as tot_amount','GROUP_CONCAT(fn_fee_invoice_item.id) AS itemid'
                     ])
                     ->where('fn_fee_invoice_item.fn_fee_invoice_id = "'.$invid.'" ');
                 
                     $newdata1 = $this->runQuery($query3, $criteria);
                     if(!empty($newdata1->data[0]['tot_amount'])){
-                        $data[$k]['inv_amount'] = $newdata1->data[0]['tot_amount'];
+                        if(!empty($newdata1->data[0]['itemid'])){
+                            $query3 = $this
+                            ->newQuery()
+                            ->from('fn_fee_item_level_discount')
+                            ->cols([
+                                'SUM(fn_fee_item_level_discount.discount) as tot_discount'
+                            ])
+                            ->where('fn_fee_item_level_discount.item_id IN ('.$newdata1->data[0]['itemid'].') ')
+                            ->where('fn_fee_item_level_discount.pupilsightPersonID = "'.$d['std_id'].'" ');
+                        
+                            $newdata2 = $this->runQuery($query3, $criteria);
+                            if(!empty($newdata2->data[0]['tot_discount'])){
+                                $amt = $newdata1->data[0]['tot_amount'] - $newdata2->data[0]['tot_discount'];
+                                $data[$k]['inv_amount'] = $amt;
+                            } else {
+                                $data[$k]['inv_amount'] = $newdata1->data[0]['tot_amount'];
+                            }
+                        } else {
+                            $data[$k]['inv_amount'] = '';
+                        }
                     } else {
                         $data[$k]['inv_amount'] = '';
                     }
@@ -1568,6 +1602,190 @@ print_r($rs);
         $db = new DBQuery();
         $rs = $db->select_serial("select id, name from fee_category");
         return $rs;
+    }
+
+    public function getInvoiceforDiscount(QueryCriteria $criteria, $input, $pupilsightSchoolYearID)
+    {
+     
+
+        if(!empty($_SESSION['invoice_discount_search'])){
+            $input = $_SESSION['invoice_discount_search'];
+        } 
+
+        if(!empty($input['fn_fee_invoice_id']) || !empty($input['pupilsightProgramID']) || !empty($input['pupilsightRollGroupID']) || !empty($input['pupilsightYearGroupID']) ){
+         
+            $query = $this
+                    ->newQuery()
+                    ->from('fn_fee_invoice')
+                    ->cols([
+                'fn_fee_invoice.*','fn_fee_series.series_name','fn_fees_head.name AS account_head','pupilsightProgram.name AS program','pupilsightYearGroup.name as class','pupilsightPerson.pupilsightPersonID as std_id','pupilsightPerson.officialName as std_name','pupilsightPerson.admission_no','pupilsightRollGroup.name as section', 'fn_fee_invoice_student_assign.invoice_no', 'fn_fee_invoice_student_assign.id as invid', 'fn_fee_invoice_student_assign.invoice_status as invstatus', 'fn_fee_invoice_student_assign.status as chkstatus', 'fn_fee_invoice_student_assign.id as insid'
+            ])
+                ->leftJoin('fn_fee_invoice_student_assign', ' fn_fee_invoice.id=fn_fee_invoice_student_assign.fn_fee_invoice_id')
+                
+                ->leftJoin('fn_fee_invoice_class_assign', ' fn_fee_invoice.id=fn_fee_invoice_class_assign.fn_fee_invoice_id')
+                    ->leftJoin('pupilsightProgram', ' fn_fee_invoice_class_assign.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+
+                    ->leftJoin('pupilsightPerson', ' fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+
+                    ->leftJoin('pupilsightYearGroup', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+
+                    ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
+                    ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+                    ->leftJoin('pupilsightStudentEnrolment', 'fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                    ->leftJoin('fn_fee_series', 'fn_fee_invoice.inv_fn_fee_series_id=fn_fee_series.id')
+                    ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id');
+                
+                if(!empty($input['pupilsightProgramID'])){
+                    $query->where('fn_fee_invoice_class_assign.pupilsightProgramID = "'.$input['pupilsightProgramID'].'" ');
+                }
+               
+                if(!empty($input['pupilsightYearGroupID'])){
+                    $query->where('fn_fee_invoice_class_assign.pupilsightYearGroupID = "'.$input['pupilsightYearGroupID'].'" ');
+                }
+                if(!empty($input['pupilsightRollGroupID'])){
+                    $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID IN ('.implode(',', $input['pupilsightRollGroupID']).') ');
+                }    
+
+                // if(!empty($input['admission_no'])){
+                //     $query->where('pupilsightPerson.admission_no = "'.$input['admission_no'].'" ');
+                // }
+
+                // if(!empty($input['student_name'])){
+                //     $query->where('pupilsightPerson.officialName LIKE "%'.$input['student_name'].'%" ');
+                // }
+                // if(!empty($input['due_date'])){
+                //     $sd = explode('/', $input['due_date']);
+                //     $sdate  = date('Y-m-d', strtotime(implode('-', array_reverse($sd))));
+                    
+                //     $query->where('fn_fee_invoice.due_date = "'.$sdate.'" ');
+                // }
+                // if(!empty($input['invoice_title'])){
+                //     $query->where('fn_fee_invoice.title = "'.$input['invoice_title'].'" ');
+                //     }
+                // if(!empty($input['invoice_no'])){
+                //     $query->where('fn_fee_invoice_student_assign.invoice_no LIKE "%'.$input['invoice_no'].'%" ');
+                // }
+                // if(!empty($input['invoice_date'])){
+                //     $fd = explode('/', $input['invoice_date']);
+                //     $fdate  = date('Y-m-d', strtotime(implode('-', array_reverse($fd))));
+                //     $query->where('fn_fee_invoice.cdt = "'.$fdate.'" ');
+                // }
+                // if(!empty($input['invoice_status'])){
+                //     $query->where('fn_fee_invoice_student_assign.invoice_status = "'.$input['invoice_status'].'" ');
+                // } 
+                // echo $query;
+                $query->where('fn_fee_invoice_student_assign.fn_fee_structure_id = "'.$input['fn_fee_invoice_id'].'" ')
+                ->where('fn_fee_invoice_student_assign.invoice_status = "Not Paid" ')
+                ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
+                //->where('fn_fee_invoice_student_assign.status = 1 ')
+                ->groupby(['fn_fee_invoice_student_assign.id'])
+                ->orderby(['fn_fee_invoice_student_assign.id DESC']);
+                //echo $query;
+                // die();
+        } else{
+	         $query = $this
+            ->newQuery()
+            ->from('fn_fee_invoice')
+            ->cols([
+                'fn_fee_invoice.*','fn_fee_series.series_name','fn_fees_head.name AS account_head','pupilsightProgram.name AS program','pupilsightYearGroup.name as class','pupilsightPerson.pupilsightPersonID as std_id','pupilsightPerson.officialName as std_name','pupilsightPerson.admission_no','pupilsightRollGroup.name as section', 'fn_fee_invoice_student_assign.invoice_no', 'fn_fee_invoice_student_assign.id as invid', 'fn_fee_invoice_student_assign.invoice_status as invstatus', 'fn_fee_invoice_student_assign.status as chkstatus', 'fn_fee_invoice_student_assign.id as insid'
+            ])
+            // ->leftJoin('pupilsightSchoolYear', 'fn_fee_structure.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+            ->leftJoin('fn_fee_series', 'fn_fee_invoice.inv_fn_fee_series_id=fn_fee_series.id')
+            ->leftJoin('fn_fee_invoice_class_assign', ' fn_fee_invoice.id=fn_fee_invoice_class_assign.fn_fee_invoice_id')
+             ->leftJoin('fn_fee_invoice_student_assign', ' fn_fee_invoice.id=fn_fee_invoice_student_assign.fn_fee_invoice_id')
+            ->leftJoin('pupilsightProgram', ' fn_fee_invoice_class_assign.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+                ->leftJoin('pupilsightPerson', ' fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+  
+              ->leftJoin('pupilsightYearGroup', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            
+            ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
+            ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+            ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id')
+            ->where('fn_fee_invoice.pupilsightSchoolYearID  = "'.$pupilsightSchoolYearID.'" AND fn_fee_invoice.status="1" ')
+            //->where('fn_fee_invoice_student_assign.status = 1 ')
+            ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
+            ->groupby(['fn_fee_invoice_student_assign.id'])
+            ->orderby(['fn_fee_invoice_student_assign.id DESC']);
+             //echo $query;
+        }
+        
+        
+        //return $this->runQuery($query, $criteria, true);
+        $res = $this->runQuery($query, $criteria, true);
+            $data = $res->data;
+            // echo '<pre>';
+            // print_r($data);
+            // echo '</pre>';
+            // die();
+            if(!empty($data)){
+                foreach($data as $k=>$d){
+                    $invid = $d['id'];
+                     $query2 = $this
+                        ->newQuery()
+                        ->from('fn_fees_student_collection')
+                        ->cols([
+                            'SUM(fn_fees_student_collection.total_amount_collection) as paid_amount'
+                        ])
+                        ->where('fn_fees_student_collection.fn_fees_invoice_id = "'.$invid.'" ')
+                        ->where('fn_fees_student_collection.pupilsightPersonID = "'.$d['std_id'].'" ');
+                       
+                        $newdata = $this->runQuery($query2, $criteria);
+                        if(!empty($newdata->data[0]['paid_amount'])){
+                            $data[$k]['chkinvstatus'] = 'paid';
+                            if(!empty($newdata->data[0]['paid_amount'])){
+                                $data[$k]['paid'] = $newdata->data[0]['paid_amount'];
+                            } else {
+                                $data[$k]['paid'] = '';
+                            }
+                        } else {
+                            $data[$k]['chkinvstatus'] = '';
+                            $data[$k]['paid'] = '';
+                        }
+
+                    $query3 = $this
+                    ->newQuery()
+                    ->from('fn_fee_invoice_item')
+                    ->cols([
+                        'SUM(fn_fee_invoice_item.total_amount) as tot_amount','GROUP_CONCAT(fn_fee_invoice_item.id) AS itemid'
+                    ])
+                    ->where('fn_fee_invoice_item.fn_fee_invoice_id = "'.$invid.'" ');
+                
+                    $newdata1 = $this->runQuery($query3, $criteria);
+                    if(!empty($newdata1->data[0]['tot_amount'])){
+                        if(!empty($newdata1->data[0]['itemid'])){
+                            $query3 = $this
+                            ->newQuery()
+                            ->from('fn_fee_item_level_discount')
+                            ->cols([
+                                'SUM(fn_fee_item_level_discount.discount) as tot_discount'
+                            ])
+                            ->where('fn_fee_item_level_discount.item_id IN ('.$newdata1->data[0]['itemid'].') ')
+                            ->where('fn_fee_item_level_discount.pupilsightPersonID = "'.$d['std_id'].'" ');
+                        
+                            $newdata2 = $this->runQuery($query3, $criteria);
+                            if(!empty($newdata2->data[0]['tot_discount'])){
+                                $amt = $newdata1->data[0]['tot_amount'] - $newdata2->data[0]['tot_discount'];
+                                $data[$k]['inv_amount'] = $amt;
+                            } else {
+                                $data[$k]['inv_amount'] = $newdata1->data[0]['tot_amount'];
+                            }
+                        } else {
+                            $data[$k]['inv_amount'] = '';
+                        }
+                        
+                    } else {
+                        $data[$k]['inv_amount'] = '';
+                    }
+                    
+                }
+               
+            }
+            // echo '<pre>';
+            // print_r($data);
+            // echo '</pre>';
+            // die();
+            $res->data = $data;
+            return $res;
     }
 
 }
