@@ -3,6 +3,11 @@ include_once 'w2f/adminLib.php';
 $adminlib = new adminlib();
 session_start();
 $url_id = $_REQUEST['url_id'];
+if(empty($url_id)){
+    header("Location: index.php");
+    exit;
+}
+
 if ($adminlib->isCampaignActive($url_id) == FALSE) {
     echo "<h2>Campaign is no longer active.</h2>";
     die();
@@ -197,7 +202,7 @@ if (empty($campaignStatus)) {
                                         </form>
                                         <?php } elseif($gateway == 'RAZORPAY') { 
                                                 $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                                $responseLink = $base_url . "/cms/application_page.php";
+                                                $responseLink = $base_url . "/cms/application_page.php?url_id=".$url_id."";
                                             
                                             ?>
                                             <form id="admissionPay" action="../thirdparty/paymentadm/razorpay/pay.php" method="post">

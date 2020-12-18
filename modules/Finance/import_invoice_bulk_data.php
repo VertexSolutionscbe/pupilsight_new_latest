@@ -9,9 +9,9 @@ use Pupilsight\Domain\DataSet;
 use Pupilsight\Services\Format;
 
 $session = $container->get('session');
-include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight.php';
+// include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight.php';
 include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
-require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
+include $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
 
 
 

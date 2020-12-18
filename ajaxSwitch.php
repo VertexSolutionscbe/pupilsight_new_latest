@@ -230,8 +230,7 @@ if(isset($_POST['type'])){
     $remarks = $_POST['remarks'];
     $status = '1';
     $cdt = date('Y-m-d H:i:s');
-    echo $invoice_status = $_POST['invoice_status'];
-    die();
+    $invoice_status = $_POST['invoice_status'];
 
     
     

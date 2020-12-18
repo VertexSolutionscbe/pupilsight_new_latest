@@ -31,10 +31,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/apply_discount.php
     echo __('Apply Discount');
     echo '</h2>';
 
-    $fn_fee_invoice_id = $_GET['id'];
+    $fn_fee_structure_id = $_GET['id'];
     $std_id = $_GET['tid'];
 
-    if(!empty($fn_fee_invoice_id) && !empty($std_id)){
+    if(!empty($fn_fee_structure_id) && !empty($std_id)){
+        $sqlc = 'SELECT fn_fee_invoice_id FROM fn_fee_invoice_student_assign WHERE pupilsightPersonID IN ('.$std_id.') AND fn_fee_structure_id = '.$fn_fee_structure_id.' ';
+        $resultc = $connection2->query($sqlc);
+        $invData = $resultc->fetch();
+
+        $fn_fee_invoice_id = $invData['fn_fee_invoice_id'];
 
         $sql = 'SELECT a.*, b.name FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_items AS b ON a.fn_fee_item_id = b.id WHERE fn_fee_invoice_id = '.$fn_fee_invoice_id.' ';
         $result = $connection2->query($sql);
