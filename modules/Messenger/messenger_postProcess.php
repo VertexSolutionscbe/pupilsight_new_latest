@@ -81,6 +81,7 @@ else {
 			$sms="N" ;
 		}
 		$subject=$_POST["subject"] ;
+		$category=$_POST["category"] ;
 		$body=stripslashes($_POST["body"]) ;
 		$emailReceipt = $_POST["emailReceipt"] ;
 		$emailReceiptText = null;
@@ -122,8 +123,8 @@ else {
 
 			//Write to database
 			try {
-				$data=array("email"=>$email, "messageWall"=>$messageWall, "messageWall_date1"=>$date1, "messageWall_date2"=>$date2, "messageWall_date3"=>$date3, "sms"=>$sms, "subject"=>$subject, "body"=>$body, "emailReceipt" => $emailReceipt, "emailReceiptText" => $emailReceiptText, "pupilsightPersonID"=>$_SESSION[$guid]["pupilsightPersonID"], "timestamp"=>date("Y-m-d H:i:s"));
-				$sql="INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, emailReceipt=:emailReceipt, emailReceiptText=:emailReceiptText, pupilsightPersonID=:pupilsightPersonID, timestamp=:timestamp" ;
+				$data=array("email"=>$email, "messageWall"=>$messageWall, "messageWall_date1"=>$date1, "messageWall_date2"=>$date2, "messageWall_date3"=>$date3, "sms"=>$sms, "subject"=>$subject, "body"=>$body, "emailReceipt" => $emailReceipt, "emailReceiptText" => $emailReceiptText, "pupilsightPersonID"=>$_SESSION[$guid]["pupilsightPersonID"],"category"=>$category, "timestamp"=>date("Y-m-d H:i:s"));
+				$sql="INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, emailReceipt=:emailReceipt, emailReceiptText=:emailReceiptText, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp" ;
 				$result=$connection2->prepare($sql);
 				$result->execute($data);
 			}
