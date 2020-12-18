@@ -427,7 +427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $col = $row->addColumn()->setClass('newdes hiddencol');
             $col->addLabel('total_amount_without_fine_discount', __(' Amount Paying'))->addClass('dte');
             $col->addTextField('total_amount_without_fine_discount')->addClass('txtfield   numfield')->setValue('');  
-            $col->addContent("<input type='hidden' id='transcation_amount_old'><input type='hidden' id='amount_paying_old'>");  
+            $col->addContent("<input type='hidden' name='transcation_amount_old' id='transcation_amount_old'><input type='hidden' id='amount_paying_old'>");  
     
         // $col = $row->addColumn()->setClass('newdes ');
         //     $col->addLabel('', __(''));
@@ -779,6 +779,7 @@ echo " <style>
             err++;
         } 
 
+        var tamtold = $("#transcation_amount_old").val();
         var chkval = $("input[name=chkamount]").val();
         if (amtpay != '') {
             if (Number(amtpay) < Number(chkval)) {
@@ -804,7 +805,15 @@ echo " <style>
                     return false;
                 }
             }
+
+            // if (Number(amtpay) < Number(tamtold)) {
+            //     $("input[name='invoice_status'").val("Partial Paid");
+            // }
         }
+
+       
+
+
         if(paymentMode==""){
             err++;
             $("#paymentMode").addClass('LV_invalid_field');
@@ -855,6 +864,7 @@ echo " <style>
         }
         //alert(err);
         if(err==0){
+            
             $("#preloader").show();
             setTimeout(function(){
                 $.ajax({

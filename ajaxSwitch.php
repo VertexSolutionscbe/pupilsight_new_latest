@@ -216,7 +216,8 @@ if(isset($_POST['type'])){
     $fn_fees_receipt_series_id = $_POST['fn_fees_receipt_series_id'];
     
     
-    $transcation_amount = $_POST['transcation_amount'];
+     $transcation_amount = $_POST['transcation_amount'];
+    //$transcation_amount = $_POST['transcation_amount_old'];
     $amount_paying = $_POST['amount_paying'];
     $total_amount_without_fine_discount = $_POST['total_amount_without_fine_discount'];
     if($amount_paying > $transcation_amount){
@@ -229,7 +230,8 @@ if(isset($_POST['type'])){
     $remarks = $_POST['remarks'];
     $status = '1';
     $cdt = date('Y-m-d H:i:s');
-    $invoice_status = $_POST['invoice_status'];
+    echo $invoice_status = $_POST['invoice_status'];
+    die();
 
     
     
