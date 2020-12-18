@@ -7123,7 +7123,7 @@ function CustomField() {
         if (obj.field_type) {
             //'varchar','text','date','url','select','checkboxes','radioboxes'
             //console.log("obj.field_type: ", obj.field_type);
-            if (obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file" || obj.field_type == "image") {
+            if (obj.field_type == "tinytext" || obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file" || obj.field_type == "image") {
                 _this.createTextField(obj);
             } else if (obj.field_type == "text") {
                 _this.createTextArea(obj);

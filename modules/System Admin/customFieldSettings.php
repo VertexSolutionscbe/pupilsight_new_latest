@@ -283,7 +283,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <div class="col-sm">Field Type</div>
                 <div class="col-sm">
                     <select class='w-full' id='fieldTypeSelect' name='field_type' onchange="activateOption();">
-                        <option value='varchar'>Text Field</option>
+                        <option value='tinytext'>Text Field</option>
                         <option value='text'>Text Area</option>
                         <option value='dropdown'>Dropdown</option>
                         <option value='email'>EMAIL</option>

@@ -19,9 +19,9 @@ $parms = array_merge($_POST, $_GET);
 
 
 if (!empty($_REQUEST['sid'])) {
-	$submissionId = $_REQUEST['sid'];
+    $submissionId = $_REQUEST['sid'];
 } else {
-	$submissionId = $_SESSION['submissionId'];
+    $submissionId = $_SESSION['submissionId'];
 }
 
 $campaignid = $parms['campaignid'];
@@ -36,11 +36,11 @@ $_SESSION["paypost"] = $parms;
 // echo '</pre>';
 // die();
 //amount //callbackurl // payid is important
-if(empty($parms["amount"]) || empty($parms["callbackurl"])){
-    if(isset($parms["callbackurl"])){
-        header('Location: '.$parms["callbackurl"]);
+if (empty($parms["amount"]) || empty($parms["callbackurl"])) {
+    if (isset($parms["callbackurl"])) {
+        header('Location: ' . $parms["callbackurl"]);
         exit;
-    }else{
+    } else {
         header('Location: index.php');
         exit;
     }
@@ -51,10 +51,11 @@ if(empty($parms["amount"]) || empty($parms["callbackurl"])){
 // Docs: https://docs.razorpay.com/docs/orders
 //
 
-$name = isset($parms["name"])?$parms["name"]:"";
-$email = isset($parms["email"])?$parms["email"]:"";
-$phone = isset($parms["phone"])?$parms["phone"]:"";
-$amount = $parms["amount"] * 100;
+$name = isset($parms["name"]) ? $parms["name"] : "";
+$email = isset($parms["email"]) ? $parms["email"] : "";
+$phone = isset($parms["phone"]) ? $parms["phone"] : "";
+//$amount = $parms["amount"] * 100;
+$amount = $parms["amount"];
 
 $orderData = [
     'receipt'         => $submissionId,
@@ -80,13 +81,12 @@ if (isset($_GET['checkout']) and in_array($_GET['checkout'], ['automatic', 'manu
 }*/
 
 
-
+//"image"             => "http://pupilsight.pupiltalk.com/themes/Default/img/logo.png",
 $data = [
     "key"               => $keyId,
     "amount"            => $amount,
     "name"              => "Parentof Solutions Pvt. Ltd.",
     "description"       => "Fees Payment",
-    "image"             => "http://pupilsight.pupiltalk.com/themes/Default/img/logo.png",
     "prefill"           => [
         "name"              => $name,
         "email"             => $email,
@@ -102,3 +102,9 @@ $json = json_encode($data);
 
 require("checkout/{$checkout}.php");
 ?>
+
+<script>
+    setTimeout(function() {
+        document.forms[0].submit();
+    }, 500);
+</script>

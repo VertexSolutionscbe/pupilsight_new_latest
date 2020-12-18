@@ -87,14 +87,15 @@ class CustomField extends QueryableGateway
     {
         $db = new DBQuery();
         $flag = FALSE;
+
         if ($dt["table_name"]) {
             $dt['field_title'] = addslashes($dt['field_title']); //addslashes
             $flag = $db->insertArray('custom_field', $dt);
             if ($flag) {
                 $colType = "TEXT NULL ";
                 $default_value = "NULL ";
-                if ($dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "number" || $dt["field_type"] == "image" || $dt["field_type"] == "file") {
-                    $colType = "VARCHAR(255) NULL ";
+                if ($dt["field_type"] == "tinytext" || $dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "number" || $dt["field_type"] == "image" || $dt["field_type"] == "file") {
+                    $colType = "TINYTEXT NULL ";
                 } else if ($dt["field_type"] == "mobile") {
                     $colType = "VARCHAR(12) NULL ";
                 } else if ($dt["field_type"] == "date") {
