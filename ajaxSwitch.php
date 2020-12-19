@@ -231,6 +231,8 @@ if (isset($_POST['type'])) {
             $cdt = date('Y-m-d H:i:s');
             $invoice_status = $_POST['invoice_status'];
 
+
+
             if ($pupilsightPersonID == '' or $transcation_amount == '') {
                 //$URL .= '&return=error1';
                 echo "Something went wrong";
