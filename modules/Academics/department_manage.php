@@ -58,15 +58,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
         }
     }
 
-    $types = array(
-        '' => __('Select Type'),
-        'Scholastic' => __('Scholastic'),
-        'Co-Scholastic' => __('Co-Scholastic'),
-        'Part A' => __('Part A'),
-        'Part B' => __('Part B'),
-        'Learning Area' => __('Learning Area'),
-        'Administration' => __('Administration'),
-    );
+    $sqlq = 'SELECT * FROM pupilsightDepartmentType ORDER BY id ASC';
+    $resultval = $connection2->query($sqlq);
+    $rowdata = $resultval->fetchAll();
+
+    if(!empty($rowdata)){
+        $types = array();
+        $types2 = array();
+        $types1 = array('' => 'Select Type');
+        foreach($rowdata as $rd){
+            $types2[$rd['name']] = $rd['name'];
+        }
+        $types = $types1 + $types2;
+    } else {
+        $types = array(
+            'Scholastic' => __('Scholastic'),
+            'Co-Scholastic' => __('Co-Scholastic'),
+            'Part A' => __('Part A'),
+            'Part B' => __('Part B'),
+            'Learning Area' => __('Learning Area'),
+            'Administration' => __('Administration'),
+        );
+    }
 
     if ($_POST) {
         if (!empty($_POST['search'])) {

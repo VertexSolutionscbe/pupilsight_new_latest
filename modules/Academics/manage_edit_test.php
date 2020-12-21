@@ -7,6 +7,7 @@ use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
+use Pupilsight\Domain\Helper\HelperGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test.php') == false) {
     //Acess denied
@@ -56,19 +57,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
     }
   
    
+    $HelperGateway = $container->get(HelperGateway::class);
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+
     if ($_POST) {
 
-             $pupilsightProgramID =  $_POST['pupilsightProgramID'];
-            $pupilsightSchoolYearIDpost = $_POST['pupilsightSchoolYearID'];
+        $pupilsightProgramID =  $_POST['pupilsightProgramID'];
+        $pupilsightSchoolYearIDpost = $_POST['pupilsightSchoolYearID'];
         $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
         $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
         $searchbyPost = '';
       
         //  $search =  $_POST['search'];
         $stuId = $_POST['studentId'];
+
+        $uid = $_SESSION[$guid]['pupilsightPersonID'];
+
+        if ($roleId == '2') {
+            $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
+            $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
+        } else {
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        }
+
     } else {
-            $pupilsightProgramID =  '';
-           $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
+        $classes = array('' => 'Select Class');
+        $sections = array('' => 'Select Section');
+        $pupilsightProgramID =  '';
+        $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
         $pupilsightYearGroupID = '';
         $pupilsightRollGroupID = '';
         $searchbyPost = '';
@@ -103,15 +120,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'));
-    $col->addSelectYearGroup('pupilsightYearGroupID')->selected($pupilsightYearGroupID)->required()->placeholder('Select Class');
+    $col->addSelect('pupilsightYearGroupID')->fromArray($classes)->selected($pupilsightYearGroupID)->required()->placeholder('Select Class');
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightRollGroupID', __('Section'));
-    $col->addSelectRollGroup('pupilsightRollGroupID', $pupilsightSchoolYearID)->selected($pupilsightRollGroupID)->placeholder('Select Section');
+    $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section');
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('', __(''));
 
-    $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Go</button>');
+    //$col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Go</button>');
+    $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
     echo $searchform->getOutput();
     echo  "<div style='height:10px'></div>";
     $CurriculamGateway = $container->get(CurriculamGateway::class);

@@ -56,6 +56,8 @@ $email = isset($parms["email"])?$parms["email"]:"";
 $phone = isset($parms["phone"])?$parms["phone"]:"";
 // $amount = $parms["amount"] * 100;
 $amount = $parms["amount"];
+$orgName = $parms["organisationName"];
+$orgLogo = $parms["organisationLogo"];
 
 $orderData = [
     'receipt'         => $submissionId,
@@ -80,14 +82,19 @@ if (isset($_GET['checkout']) and in_array($_GET['checkout'], ['automatic', 'manu
     $checkout = $_GET['checkout'];
 }*/
 
+if(!empty($orgLogo)){
+    $logo = '/cms/images/logo/'.$orgLogo;
+} else {
+    $logo = '';
+}
 
 
 $data = [
     "key"               => $keyId,
     "amount"            => $amount,
-    "name"              => "Parentof Solutions Pvt. Ltd.",
+    "name"              => $orgName,
     "description"       => "Fees Payment",
-    "image"             => "http://pupilsight.pupiltalk.com/themes/Default/img/logo.png",
+    "image"             => $logo,
     "prefill"           => [
         "name"              => $name,
         "email"             => $email,
@@ -109,6 +116,7 @@ require("checkout/{$checkout}.php");
   integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
   crossorigin="anonymous"></script>
 <script>
+    jQuery(".razorpay-payment-button").hide()
     setTimeout(function () {
         jQuery(".razorpay-payment-button").click();
     }, 500);

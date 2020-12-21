@@ -182,11 +182,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
 </style>
 
 <script>
+
+    $(document).ready(function () {
+      	$('#testId').selectize({
+      		plugins: ['remove_button'],
+      	});
+    });
+
     $(document).on('change', '#pupilsightRollGroupIDbyPP', function() {
         var id = $(this).val();
         var cid = $('#pupilsightYearGroupIDbyPP').val();
         var pid = $('#pupilsightProgramIDbyPP').val();
         var type = 'getTestBySection';
+        $('#testId').selectize()[0].selectize.destroy();
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
@@ -195,6 +203,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
             success: function(response) {
                 $("#testId").html();
                 $("#testId").html(response);
+                $("#testId").parent().children('.LV_validation_message').remove();
+                $('#testId').selectize({
+                    plugins: ['remove_button'],
+                });
             }
         });
     });

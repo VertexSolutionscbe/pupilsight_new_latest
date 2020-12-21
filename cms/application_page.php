@@ -63,6 +63,13 @@ $app_links = array();
 $sql = "SELECT id FROM campaign  WHERE id = " . $url_id . " AND  status = '2' AND CURDATE() between start_date and end_date order by id DESC";
 $campaignStatus = database::doSelect($sql);
 
+$sqlo = "SELECT * FROM pupilsight_cms  WHERE title != '' ";
+$orgData = database::doSelectOne($sqlo);
+// echo '<pre>';
+// print_r($orgData);
+// echo '</pre>';
+// die();
+
 if (empty($campaignStatus)) {
     header("Location: index.php");
     exit;
@@ -192,6 +199,7 @@ if (empty($campaignStatus)) {
                                             <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
                                             <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
                                             <input type="hidden" name="sid" value="0">
+                                            
                                             <!-- <input type="hidden" name="name" value="Bikash">
                                 <input type="hidden" name="email" value="bikash0389@gmail.com">
                                 <input type="hidden" name="phone" value="9883928942"> -->
@@ -202,7 +210,7 @@ if (empty($campaignStatus)) {
                                         </form>
                                         <?php } elseif($gateway == 'RAZORPAY') { 
                                                 $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                                $responseLink = $base_url . "/cms/application_page.php?url_id=".$url_id."";
+                                                $responseLink = $base_url . "/cms/index.php?return=1";
                                             
                                             ?>
                                             <form id="admissionPay" action="../thirdparty/paymentadm/razorpay/pay.php" method="post">
@@ -219,6 +227,8 @@ if (empty($campaignStatus)) {
                                 <input type="hidden" name="phone" value="9883928942"> -->
 
                                             <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+                                            <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                                            <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
 
                                             <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
                                         </form>

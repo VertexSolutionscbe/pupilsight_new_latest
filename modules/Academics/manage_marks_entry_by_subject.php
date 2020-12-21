@@ -381,7 +381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     $en_dis_grd_clss=($s_test['assesment_method']=='Grade')? '' : 'disable_input';   
                     
                     $marksobt = str_replace(".00","",$prevdata['marks_obtained']);
-                    $marksobt = rtrim($marksobt,'0');
+                    //$marksobt = rtrim($marksobt,'0');
 
                     echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab'.$f.'" value="'.$marksobt.'"  '.$disabled.'>';
                     echo '</td>';  
@@ -497,6 +497,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     }
 </style>
 <script>
+
+    $(document).ready(function () {
+      	$('#testId').selectize({
+      		plugins: ['remove_button'],
+      	});
+    });
+
     $(document).on('click','.remark_all',function(){
       var id = $(this).attr('data-id');
         if($(this). prop("checked") == true){
@@ -724,7 +731,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             success: function(response) {
                 alert('Marks Saved!');
                 $("#preloader").hide();
-                $("#searchForm").submit();
+                //$("#searchForm").submit();
                 //$('#marksbysubject')[0].reset();
             }
         });

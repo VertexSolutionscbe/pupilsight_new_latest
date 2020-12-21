@@ -9,11 +9,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    /*
-    echo '<pre>';
-    print_r($_POST);
-    echo '</pre>';
-    die();*/
+   
+    // echo '<pre>';
+    // print_r($_POST);
+    // echo '</pre>';
+    // die();
     //Proceed!
     $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
     $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
 
                     $entry_type = 2;
 
-                    if ($locksts != 1 && $mark_obtn != 0) {
+                    if ($locksts != 1 ) {
                         // $data1 = array('test_id' => $tid, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $student_id, 'skill_id' => $skill_id, 'entrytype' => $entry_type);
                         // $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id AND entrytype=:entrytype';
                         // $result1 = $connection2->prepare($sql1);

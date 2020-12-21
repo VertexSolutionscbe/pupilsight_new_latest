@@ -8497,6 +8497,7 @@ $(document).on('change', '#pupilsightDepartmentIDbyPP', function () {
     var cid = $('#pupilsightYearGroupIDbyPP').val();
     var sid = $('#pupilsightRollGroupIDbyPP').val();
     var type = 'getSkillBySubject';
+    $('#testId').selectize()[0].selectize.destroy();
     $.ajax({
         url: 'ajax_data.php',
         type: 'post',
@@ -8515,6 +8516,10 @@ $(document).on('change', '#pupilsightDepartmentIDbyPP', function () {
                 success: function (response) {
                     $("#testId").html();
                     $("#testId").html(response);
+                    $("#testId").parent().children('.LV_validation_message').remove();
+                    $('#testId').selectize({
+                        plugins: ['remove_button'],
+                    });
                 }
             });
         }
