@@ -43,7 +43,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->bindValue('pupilsightPersonID', $pupilsightPersonID)
             ->where('pupilsightAttendanceLogPerson.date=:date')
             ->bindValue('date', $date);
-           
+
         $criteria->addFilterRules([
             'notClass' => function ($query, $context) {
                 return $query->where('NOT pupilsightAttendanceLogPerson.context="Class"');
@@ -68,7 +68,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->bindValue('pupilsightPersonID', $pupilsightPersonID)
             ->where('pupilsightAttendanceLogPerson.date=:date')
             ->bindValue('date', $date);
-           
+
         $criteria->addFilterRules([
             'notClass' => function ($query, $context) {
                 return $query->where('NOT pupilsightAttendanceLogPerson.context="Class"');
@@ -86,7 +86,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     }
 
 
-   public function getUserLog($dt)
+    public function getUserLog($dt)
     {
 
         $sq = "select p.admission_no, l.pupilsightPersonID, p.officialName  from pupilsightAttendanceLogPerson as l, pupilsightPerson as p where p.pupilsightPersonID = l.pupilsightPersonID group by l.pupilsightPersonID ";
@@ -122,7 +122,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             $sq .= "group by l.pupilsightPersonID ";
             //echo $sq;
         }
-       // echo $sq;
+        // echo $sq;
         $db = new DBQuery();
         $rs = $db->selectRaw($sq, TRUE);
         if (empty($rs)) {
@@ -147,13 +147,12 @@ class AttendanceLogPersonGateway extends QueryableGateway
                 $perPresent = number_format(($present / $total) * 100, 2);
             }
             if ($flag) {
-               
+
                 if (($perPresent >= $minpercentage) && ($perPresent <= $maxpercentage)) {
                     $rs[$i]["percentage"] = $perPresent;
                 } else {
                     $rs[$i]["percentage"] = "";
                 }
-                
             } else {
                 $rs[$i]["percentage"] = $perPresent;
             }
@@ -289,9 +288,9 @@ class AttendanceLogPersonGateway extends QueryableGateway
 
     ////SELECT * FROM `pupilsightAttendanceBlocked` WHERE 1,`pupilsightAttendanceBlockID`,`pupilsightRollGroupID`,`pupilsightYearGroupID`,`name`,`type`,`start_date`,`end_date`,`remark`,`pupilsightPersonIDTaker`,`timestampTaken`
 
-    public function selectBlockedAttendanceLogs($criteria, $pupilsightYearGroup, $pupilsightRollGroupID, $sdate,$edate)
-    { 
-        
+    public function selectBlockedAttendanceLogs($criteria, $pupilsightYearGroup, $pupilsightRollGroupID, $sdate, $edate)
+    {
+
         $query = $this
             ->newSelect()
             ->from('pupilsightAttendanceBlocked')
@@ -300,26 +299,26 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ])
             ->leftJoin('pupilsightYearGroup', 'pupilsightAttendanceBlocked.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
             ->leftJoin('pupilsightRollGroup', 'pupilsightAttendanceBlocked.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID');
-            if(!empty($pupilsightYearGroupID)){
-                $query->where('pupilsightAttendanceBlocked.pupilsightYearGroupID IN ( '.implode(',', $pupilsightYearGroup).' )');
-            }
-            if(!empty($pupilsightRollGroupID)){
-                $query->where('pupilsightAttendanceBlocked.pupilsightRollGroupID IN ( '.implode(',', $pupilsightRollGroupID).' ) ');
-            }
-            if(!empty($sdate) && !empty($edate)){
-                $query->where('pupilsightAttendanceBlocked.start_date BETWEEN "' . $sdate . '" AND "' . $edate . '" ');
-            }
-           // AND pupilsightAttendanceBlocked.pupilsightRollGroupID="' . $pupilsightRollGroupID . '"
-            /*  ->where('pupilsightAttendanceBlocked.pupilsightYearGroupID=:pupilsightYearGroupID')
+        if (!empty($pupilsightYearGroupID)) {
+            $query->where('pupilsightAttendanceBlocked.pupilsightYearGroupID IN ( ' . implode(',', $pupilsightYearGroup) . ' )');
+        }
+        if (!empty($pupilsightRollGroupID)) {
+            $query->where('pupilsightAttendanceBlocked.pupilsightRollGroupID IN ( ' . implode(',', $pupilsightRollGroupID) . ' ) ');
+        }
+        if (!empty($sdate) && !empty($edate)) {
+            $query->where('pupilsightAttendanceBlocked.start_date BETWEEN "' . $sdate . '" AND "' . $edate . '" ');
+        }
+        // AND pupilsightAttendanceBlocked.pupilsightRollGroupID="' . $pupilsightRollGroupID . '"
+        /*  ->where('pupilsightAttendanceBlocked.pupilsightYearGroupID=:pupilsightYearGroupID')
             ->bindValue('pupilsightYearGroupID', $pupilsightYearGroupID)
            ->where('pupilsightAttendanceBlocked.pupilsightRollGroupID=:pupilsightRollGroupID')
             ->bindValue('pupilsightRollGroupID', $pupilsightRollGroupID)
            ->where('pupilsightAttendanceBlocked.start_date=:date OR pupilsightAttendanceBlocked.end_date=:date ')
             ->bindValue('date', $date)
          */
-            $query->orderBy(['pupilsightAttendanceBlocked.timestampTaken ASC']);
-                // echo $query;
-                // die();
+        $query->orderBy(['pupilsightAttendanceBlocked.timestampTaken ASC']);
+        // echo $query;
+        // die();
         return $this->runQuery($query, $criteria, TRUE);
     }
     public function selectBlockedAttendanceLogsAll($criteria)
@@ -329,12 +328,12 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->newSelect()
             ->from('pupilsightAttendanceBlocked')
             ->cols([
-                'pupilsightAttendanceBlocked.*', 'pupilsightYearGroup.nameShort AS yearGroup', "GROUP_CONCAT(DISTINCT pupilsightRollGroup.nameShort SEPARATOR ', ') as rollGroup",'pupilsightRollGroup.nameShort AS rollGroup1'
+                'pupilsightAttendanceBlocked.*', 'pupilsightYearGroup.nameShort AS yearGroup', "GROUP_CONCAT(DISTINCT pupilsightRollGroup.nameShort SEPARATOR ', ') as rollGroup", 'pupilsightRollGroup.nameShort AS rollGroup1'
             ])
             ->leftJoin('pupilsightYearGroup', 'pupilsightAttendanceBlocked.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
             ->leftJoin('pupilsightRollGroup', 'pupilsightAttendanceBlocked.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
 
-            ->groupBy(['pupilsightAttendanceBlocked.pupilsightYearGroupID','pupilsightAttendanceBlocked.start_date','pupilsightAttendanceBlocked.start_date'])     
+            ->groupBy(['pupilsightAttendanceBlocked.pupilsightYearGroupID', 'pupilsightAttendanceBlocked.start_date', 'pupilsightAttendanceBlocked.start_date'])
             ->orderBy(['pupilsightAttendanceBlocked.timestampTaken ASC']);
 
 
@@ -342,7 +341,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
     }
 
 
-    public function select_attendance_not_taken1($criteria, $pupilsightYearGroupID, $pupilsightRollGroupID,$from_date,$to_date)
+    public function select_attendance_not_taken1($criteria, $pupilsightYearGroupID, $pupilsightRollGroupID, $from_date, $to_date)
     {
 
 
