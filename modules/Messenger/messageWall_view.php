@@ -17,8 +17,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     $category = isset($_REQUEST['category'])? $_REQUEST['category'] : 'All';
 
     $page->breadcrumbs->add(($date === date($dateFormat)) ?
-        __('Today\'s Messages').' ('.$date.')' :
-        __('View Messages').' ('.$date.')');
+        __('Today\'s Messages').' ('.$fromdate.' to '.$date.')' :
+        __('View Messages').' ('.$fromdate.' to '.$date.')');
 
     if (isset($_GET['return'])) {
         $status = (!empty($_GET['status'])) ? $_GET['status'] : __('Unknown');
@@ -49,10 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 		$col->addButton(__('Next Day'))->addClass('btn btn-link')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
 	$col = $row->addColumn();
-        $col->addLabel('fromdate', __('From Date'));
+        $col->addLabel('fromdate', __('From Date'))->addClass('dte');
 	    $col->addDate('fromdate')->setValue($fromdate);
     $col = $row->addColumn();
-        $col->addLabel('date', __('To Date'));
+        $col->addLabel('date', __('To Date'))->addClass('dte');
 		$col->addDate('date')->setValue($date);
 
     $displaycategory = array();
