@@ -336,11 +336,14 @@ class CustomField extends QueryableGateway
 
     public function isColumnAvailable($tableName, $colName)
     {
+        // return TRUE;
         try {
             $sq = "SHOW COLUMNS FROM " . $tableName . " LIKE '" . $colName . "'";
+            //echo "\n" . $sq;
             $db = new DBQuery();
             $res = $db->selectRaw($sq);
             if ($res) {
+                //echo "column avail " . $colName;
                 return TRUE;
             }
         } catch (Exception $ex) {
