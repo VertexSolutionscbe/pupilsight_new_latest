@@ -5,13 +5,12 @@ Pupilsight, Flexible & Open School System
 This is a Pupilsight template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
 -->#}
-
 {% extends "components/dataTable.twig.html" %}
 {% import _self as attendance  %}
 
 {% block tableInner %}
 
-    <div class="flex flex-wrap justify-center md:justify-between rounded bg-gray border">
+    <div class="flex flex-wrap justify-center md:justify-between rounded border">
         <div class="md:flex-1 p-4 text-sm text-gray">
             <h3 class="mt-2 border-b-0">
                 {{ __('Summary') }}
@@ -42,6 +41,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <div id="studentHistory">
     {% for term in dataSet %}
+        <br/>
         <h4>
         {{ term.name }}
         </h4>
@@ -53,23 +53,25 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         <div class="flex flex-wrap border-t border-l border-gray">
 
             {#<!-- Days of the Week Header: only shows one week on mobile -->#}
-            <div class="w-full flex items-stretch text-xs text-center text-gray font-bold bg-gray border-b border-r border-gray">
+            <div class="w-full flex items-stretch text-xs text-center text-gray font-bold bg-white border-b border-r border-gray">
                 {% for day in daysOfWeek %}
-                    <div class="{{ blockWidth }} py-1" title="{{ __(day.name) }}">
+                    <div class="{{ blockWidth }} py-1" title="{{ __(day.name) }}" style="margin-right: 29px; margin-left: 26px;">
                         {{ __(day.nameShort) }}
                     </div>
                 {% endfor %}
 
                 {% for day in daysOfWeek %}
-                    <div class="hidden md:block {{ blockWidth }} py-1" title="{{ __(day.name) }}">
-                        {{ __(day.nameShort) }}
-                    </div>
+
+                <div class="mobileresponse py-1" title="{{ __(day.name) }}" style="margin-right: 30px; margin-left: 30px;">
+                    {{ __(day.nameShort) }}
+                </div>
+
                 {% endfor %}
             </div>
 
             {#<!-- Attendance Days: grouped by week -->#}
             {% for weekNumber, week in term.weeks %}
-                <div class="w-full md:w-1/2 flex items-stretch text-xxs text-center text-gray" style="min-height: 55px;">
+                <div class="md:w-1/2 flex items-stretch text-xxs text-center text-gray" style="min-height: 55px; box-sizing: border-box;">
 
                 {% for day in week %}
                     {% if day.outsideTerm %}
@@ -146,6 +148,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {{ log.contextName ? log.contextName : __(log.context) }}
             </li>
         {% endfor %}
+        </ul>
     </section>
 {% endmacro tooltip %}
 
@@ -184,6 +187,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
     .w-1\/7 {
         width: 14.28%;
     }
+
+
+
+
 </style>
 <script>
 $('#studentHistory').tooltip({
