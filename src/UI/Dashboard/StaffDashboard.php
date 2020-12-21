@@ -41,11 +41,11 @@ class StaffDashboard implements OutputableInterface
         }
         //return $output;
         $output = '';
-
-        $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid);
+//commented to avoid landing page msg display of one two three which was coming in large font
+        /*$smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid);
         if ($smartWorkflowHelp != false) {
             $output .= $smartWorkflowHelp;
-        }
+        }*/
 
         // if($_SESSION[$guid]['pupilsightRoleIDPrimary'] == '001'){
         //     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
