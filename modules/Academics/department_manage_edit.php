@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', 'Subject Code');
-                $row->addTextField('nameShort')->setId('subCode')->maxLength(4)->required();
+                $row->addTextField('nameShort')->setId('subCode')->required();
 
             // $row = $form->addRow();
             //     $row->addLabel('subjectListing', 'Subject Listing');
@@ -171,9 +171,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
 
 ?>
 <script>
-    $(document).on('keyup','#subCode', function () {
-		if (this.value.match(/[^a-zA-Z0-9 ]/g)) {
-			this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '');
-		}
-	});
+    // $(document).on('keyup','#subCode', function () {
+	// 	if (this.value.match(/[^a-zA-Z0-9 ]/g)) {
+	// 		this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '');
+	// 	}
+	// });
 </script>

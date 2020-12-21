@@ -105,7 +105,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('', __(''));
 
-    $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');
+    $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
+    //$col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');
     echo $searchform->getOutput();
 
 

@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/remove_assigned_
     $form->addHiddenValue('pupilsightDepartmentID', $pupilsightDepartmentID);
     $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
     $col = $row->addColumn()->setClass('newdes');
-    $col->addCheckbox('select')->setId('checkall')->setClass('checkall'); 
+    $col->addCheckbox('select')->setId('checkall')->setClass('checkall chkAll'); 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('Subject Name', __('Subject Name'))->addClass('dte bold_text');
     $col = $row->addColumn()->setClass('newdes');
@@ -69,7 +69,7 @@ foreach($getsub_assig as $g_sub){
      
         $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
         $col = $row->addColumn()->setClass('newdes');    
-        $col->addCheckbox('id_sub[]')->setValue($g_sub['pupilsightdepartmentID'])->setClass('fee_id'); 
+        $col->addCheckbox('id_sub[]')->setValue($g_sub['pupilsightdepartmentID'])->setClass('fee_id chkChild'); 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel($g_sub['name'], __($g_sub['name']))->addClass('dte');
 
@@ -95,3 +95,21 @@ foreach($getsub_assig as $g_sub){
     font-size: 14px!important;
 }
 </style>
+
+<script>
+    $(document).on('change', '.chkAll', function () {
+        if ($(".chkAll:checkbox").is(':checked')) {
+            $(".chkChild:checkbox").prop("checked", true);
+        } else {
+            $(".chkChild:checkbox").prop("checked", false);
+        }
+    });
+
+    $(document).on('change', '.chkChild', function () {
+        if ($(this).is(':checked')) {
+            //$(".chkChild"+id).prop("checked", true);
+        } else {
+            $(".chkAll:checkbox").prop("checked", false);
+        }
+    });
+</script>

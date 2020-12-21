@@ -23,7 +23,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_home_edit.p
     }
   
     $page->breadcrumbs
-        ->add(__(' Manage Test Home'), 'test_home.php')
+        ->add(__(' Manage Test'), 'test_home.php')
         ->add(__('Edit Test'));
 
         if ($testid == '') {
