@@ -4,7 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 include '../../pupilsight.php';
 include './moduleFunctions.php';
-$testid = $_POST['test_id'];
+$testid = $_POST['tid'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/manage_edit_test.php";
 
 if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sections.php') == false) {

@@ -731,7 +731,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             success: function(response) {
                 alert('Marks Saved!');
                 $("#preloader").hide();
-                //$("#searchForm").submit();
+                $("#searchForm").submit();
                 //$('#marksbysubject')[0].reset();
             }
         });
