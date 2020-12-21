@@ -42,6 +42,8 @@
     <link href="{{ absoluteURL }}/assets/css/tabler.css" rel="stylesheet" />
     <link href="{{ absoluteURL }}/assets/css/dev.css" rel="stylesheet" />
     <link href="{{ absoluteURL }}/assets/css/select2.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/Sortable.css?v=1.0" type="text/css" media="all" />
     <!--
 <link href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" />
     -->
@@ -74,6 +76,9 @@
     <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/js/select2.js"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/jquery.form.js?v=1.0"></script>
+
+
+    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/Sortable.js?v=1.0"></script>
     <!-- <script src="{{ absoluteURL }}/assets/js/print.js"></script> -->
     <!--
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap.min.css?v=1.0" type="text/css" media="all" />
@@ -155,7 +160,8 @@
                                 <path stroke="none" d="M0 0h24v24H0z" />
                                 <path
                                     d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
-                                <path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
+                                <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+                            </svg>
                             <span class="_badge bg-red"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-card">
@@ -337,7 +343,8 @@
                         <ul class="navbar-nav">
                             {% for categoryName, items in menuMain %}
 
-                            {% if categoryName != 'People' and categoryName != 'TimeTable' and categoryName != 'Communication' %}
+                            {% if categoryName != 'People' and categoryName != 'TimeTable' and categoryName !=
+                            'Communication' %}
 
                             {% set menuSelect = ''%}
                             {% if categoryName == currentModule %}
@@ -358,8 +365,8 @@
                             {% endif %}
 
                             <li class="nav-item {{ dropmenu }} {{menuSelect}}">
-                                <a class="nav-link {{ dropdownToggle }} chkCounter" href="{{ navlink }}"
-                                    {{ data_toggle }}>
+                                <a class="nav-link {{ dropdownToggle }} chkCounter" href="{{ navlink }}" {{ data_toggle
+                                    }}>
                                     <span
                                         class="nav-link-icon d-md-none d-lg-inline-block {{ menuMainIcon[categoryName] }}"></span>
                                     <span class="nav-link-title">

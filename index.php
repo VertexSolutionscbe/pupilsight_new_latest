@@ -440,12 +440,13 @@ if ($isLoggedIn) {
     }
 
 
-    $curriculumList[0] = array('name' => 'Subject Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/department_manage.php');
-    $curriculumList[1] = array('name' => 'Skill Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/ac_manage_skill.php');
-    $curriculumList[2] = array('name' => 'Subject To Class', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/subject_to_class_manage.php');
-    $curriculumList[3] = array('name' => 'Manage Elective Group', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_elective_group.php');
-    $curriculumList[4] = array('name' => 'Remarks Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/ac_manage_remarks.php');
-    $curriculumList[5] = array('name' => 'DI Mode', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/descriptive_indicator_config.php');
+    $curriculumList[0] = array('name' => 'Subject Type', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/subject_type_manage.php');
+    $curriculumList[1] = array('name' => 'Subject Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/department_manage.php');
+    $curriculumList[2] = array('name' => 'Skill Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/ac_manage_skill.php');
+    $curriculumList[3] = array('name' => 'Subject To Class', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/subject_to_class_manage.php');
+    $curriculumList[4] = array('name' => 'Manage Elective Group', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_elective_group.php');
+    $curriculumList[5] = array('name' => 'Remarks Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/ac_manage_remarks.php');
+    $curriculumList[6] = array('name' => 'DI Mode', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/descriptive_indicator_config.php');
 
 
     $curriculumMenu = array('name' => "Curriculum", 'list' => $curriculumList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2', 'url' => $session->get('absoluteURL') . "/cms.php");

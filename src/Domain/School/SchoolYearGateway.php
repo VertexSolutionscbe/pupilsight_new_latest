@@ -243,5 +243,19 @@ class SchoolYearGateway extends QueryableGateway
             return $res;
     }
 
+
+    public function getSubjectType(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('pupilsightDepartmentType')
+            ->cols([
+                'id', 'name'
+            ])
+            ->orderby(['id DESC']);
+
+        return $this->runQuery($query, $criteria,TRUE );
+    }
+
  
-  }
+}

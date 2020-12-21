@@ -16,8 +16,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_home_genera
     echo '</div>';
 } else {
     $page->breadcrumbs
-        ->add(__('Manage Remarks'), 'ac_manage_remarks.php')
-        ->add(__('Add Remarks'));
+        ->add(__('Manage Test'), 'test_home.php')
+        ->add(__('Add Test'));
 
     
     if (isset($_GET['return'])) {
@@ -44,11 +44,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_home_genera
         }
 
        echo ' <a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Academics/test_home_general_add.php" class=" btn btn-primary active">General</a>
-        <a id="noAddGeneralTest" class=" btn btn-primary">Create Tests</a>';
+        <a id="noAddGeneralTest" class=" btn btn-primary">Create Tests</a>
+        <a  href="'.$URL.'" id="" class=" btn btn-primary" >Close</a>
+        ';
     $form = Form::create('testhomeManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/test_home_general_addProcess.php?address='.$_SESSION[$guid]['address']);
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $row = $form->addRow();
+    $row->addFooter();
+    $row->addLabel('', __(''));
+    $row->addContent('<button type="submit" class="btn btn-primary subButt">Submit</button>');  
 
     $row = $form->addRow();
         $row->addLabel('testname', __('Name'));
@@ -64,12 +71,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_home_genera
         $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Academics'."/test_home.php";  
      
 
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addLabel('', __(''));
-        $row->addContent(' ');  
-        $row->addContent('<a  href="'.$URL.'" id="" class=" btn btn-primary" style=" font-size: 13px !important;padding: 5px 9px 2px 7px;">Close</a>')->setClass('exm_test_close');  
-        $row->addSubmit(__('Save'));
+   
+        //$row->addSubmit(__('Save'))->setClass('subButt');
 
     echo $form->getOutput();
 }
+
+
+?>
+
+<style>
+    .subButt{
+        margin: -63px 0px 0 -538px;
+    }
+</style>
