@@ -168,7 +168,7 @@ if (isset($_SESSION["loginstatus"])) {
 }*/
 
         <?php if (!empty($_GET['return'])) { ?>
-            alert('Your Application Submitted Successfully!');
+            alert('Your Application Submitted Successfully, Please Check Your Status from Registration Status!');
         <?php } ?>
 
         $(document).on('keydown', '#txtPhone', function(e) {

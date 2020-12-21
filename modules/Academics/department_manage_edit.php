@@ -57,11 +57,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
             $resultval = $connection2->query($sqlq);
             $rowdata = $resultval->fetchAll();
 
-            if(empty($rowdata)){
+            if(!empty($rowdata)){
                 $types = array();
+                $types2 = array();
+                $types1 = array('' => 'Select Type');
                 foreach($rowdata as $rd){
-                    $types[$rd['name']] = $rd['name'];
+                    $types2[$rd['name']] = $rd['name'];
                 }
+                $types = $types1 + $types2;
             } else {
                 $types = array(
                     'Scholastic' => __('Scholastic'),

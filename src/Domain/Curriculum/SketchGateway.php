@@ -58,9 +58,10 @@ class SketchGateway extends QueryableGateway
 
                     $classId= explode(',', $d['class_ids']);
                     $newclassId= implode(',', $classId);
-                    // echo $d['class_ids'];
+                    $newclassId= rtrim($newclassId, ", ");
+                    //echo $newclassId;
                     // print_r($classId);
-                    // die();
+                     //die();
                     $query3 = $this
                         ->newQuery()
                         ->from('pupilsightYearGroup')
@@ -68,7 +69,8 @@ class SketchGateway extends QueryableGateway
                             'pupilsightYearGroupID AS id','GROUP_CONCAT(DISTINCT name) AS class_name'
                         ])
                         ->where('pupilsightYearGroupID IN ('.$newclassId.') ');
-                      
+                    // echo $query3;
+                    // die(); 
                     $classdata = $this->runQuery($query3, $criteria);
 
                     if(!empty($classdata->data[0]['class_name'])){     
