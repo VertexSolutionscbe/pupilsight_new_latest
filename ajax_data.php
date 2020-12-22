@@ -1386,7 +1386,7 @@ if ($type == 'getSubjectSkills') {
     $pupilsightSchoolYearID = $_POST['academicId'];
     $pupilsightProgramID = $_POST['programId'];
     $classId = $_POST['classId'];
-    $chk = $_POST['chk'];
+    //$chk = $_POST['chk'];
     $sql = 'SELECT * FROM ac_manage_skill';
     $result = $connection2->query($sql);
     $subskills = $result->fetchAll();
@@ -1395,7 +1395,8 @@ if ($type == 'getSubjectSkills') {
         $sqls = 'SELECT * FROM subjectSkillMapping WHERE skill_id = ' . $subsk['id'] . ' AND pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND pupilsightProgramID= ' . $pupilsightProgramID . ' AND pupilsightYearGroupID= ' . $classId . ' AND pupilsightDepartmentID= ' . $subid . ' ';
         $results = $connection2->query($sqls);
         $skills = $results->fetch();
-        if (!empty($skills['skill_display_name']) && $chk == 'checked') {
+        // if (!empty($skills['skill_display_name']) && $chk == 'checked') {
+        if (!empty($skills['skill_display_name'])) {
             $sname = $skills['skill_display_name'];
             $checked = 'checked';
         } else {
@@ -1404,7 +1405,7 @@ if ($type == 'getSubjectSkills') {
         }
 
 
-        $data .= "<tr><td><input type='checkbox' class='skillId' name='skill_id[]'  data-id='" . $subsk["id"] . "' " . $checked . "></td><td>" . $subsk['name'] . "</td><td><input type='textbox'  name='skill_display_name' id='sname" . $subsk["id"] . "' value='" . $sname . "' style='border:1px solid gray'></td>/tr>";
+        $data .= "<tr><td><input type='checkbox' class='skillId' name='skill_id[]'  data-id='" . $subsk["id"] . "' " . $checked . "></td><td>" . $subsk['name'] . "</td><td><input type='textbox'  name='skill_display_name' id='sname" . $subsk["id"] . "' value='" . $sname . "' class='form-control'></td></tr>";
     }
     echo $data;
 }
@@ -2770,7 +2771,7 @@ if ($type == 'getTestBySubject') {
     $pupilsightProgramID = $_POST['pid'];
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-    $sql = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id LEFT JOIN examinationSubjectToTest AS c ON a.test_id = c.test_id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND a.pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' AND c.pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' GROUP BY a.test_id ';
+    $sql = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id LEFT JOIN examinationSubjectToTest AS c ON a.test_id = c.test_id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND a.pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' AND c.pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' AND c.is_tested = "1" GROUP BY a.test_id ';
     $result = $connection2->query($sql);
     $tests = $result->fetchAll();
     $returndata = '<option value="">Select Test</option>';

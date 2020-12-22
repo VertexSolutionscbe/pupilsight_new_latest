@@ -107,7 +107,7 @@ if(!empty($_GET['tid'])){
                 <td colspan="3" class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
                     <table class="tablewidth" border="0">
                         <tr>
-                            <th>Program</th>
+                            <th><input type="checkbox" class="chkAll" style="margin: 0 4px 0 8px;">Program</th>
                             <th>Test Status</th>
                         <tr>
                         <?php foreach($allprogclass as $pc) { ?>
@@ -117,7 +117,7 @@ if(!empty($_GET['tid'])){
                              }  else { 
                                 $pchk = '';
                              } */ ?>
-                            <td> <i class="col_header fa fa-chevron-circle-down rotate padding" style="cursor:pointer;"></i>&nbsp;<input type="checkbox" class="parentChkBox" id="chkParent<?php echo $pc['pupilsightProgramID']?>" value="<?php echo $pc['pupilsightProgramID']?>" >&nbsp;<?php echo $pc['name']?>
+                            <td> <i class="col_header fa fa-chevron-circle-down rotate padding" style="cursor:pointer;"></i>&nbsp;<input type="checkbox" class="parentChkBox chkChild" id="chkParent<?php echo $pc['pupilsightProgramID']?> " value="<?php echo $pc['pupilsightProgramID']?>" >&nbsp;<?php echo $pc['name']?>
                             </td>
                             <td>
                             <?php if($pc['countclass'] == $pc['countchkclass']){ ?>
@@ -130,7 +130,7 @@ if(!empty($_GET['tid'])){
                         <?php foreach($pc['class'] as $cl) { ?>
                         <tr>
                         <?php if($cl['check'] == 'checked') { $cls = 'assignCls'; } else { $cls = ''; } ?>
-                            <td><span class="childrow">&nbsp;<input name="class_id" type="checkbox" class="childChkBox chkChild<?php echo $pc['pupilsightProgramID']?>  <?php echo $cls;?>" data-par="<?php echo $pc['pupilsightProgramID']?>" data-tid="<?php echo $testId; ?>" data-cls="<?php echo $cl['pupilsightYearGroupID']?>" value="<?php echo $cl['pupilsightMappingID']?>" >&nbsp;<?php echo $cl['className']?></span></td>
+                            <td><span class="childrow">&nbsp;<input name="class_id" type="checkbox" class="childChkBox chkChild<?php echo $pc['pupilsightProgramID']?>  <?php echo $cls;?>  chkChild" data-par="<?php echo $pc['pupilsightProgramID']?>" data-tid="<?php echo $testId; ?>" data-cls="<?php echo $cl['pupilsightYearGroupID']?>" value="<?php echo $cl['pupilsightMappingID']?>" >&nbsp;<?php echo $cl['className']?></span></td>
                             <td>
                             <?php if($cl['check'] == 'checked'){ ?>
                             <i class="fas fa-check fa-2x" style="color:limegreen"></i>

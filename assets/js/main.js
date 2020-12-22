@@ -4945,11 +4945,12 @@
             var skid = skills.join(",");
             var skillname = sknames.join(",");
 
-            var sub = [];
-            $.each($(".subId:checked"), function () {
-                sub.push($(this).attr('data-id'));
-            });
-            var subid = sub.join(",");
+            // var sub = [];
+            // $.each($(".subId:checked"), function () {
+            //     sub.push($(this).attr('data-id'));
+            // });
+            // var subid = sub.join(",");
+            var subid = $("#deptId").val();
             var academicId = $("#pupilsightSchoolYearID").val();
             var programId = $("#pupilsightProgramID_MC").val();
             var classId = $("#pupilsightClassID").val();
@@ -4983,11 +4984,12 @@
         var skid = skills.join(",");
         var skillname = sknames.join(",");
 
-        var sub = [];
-        $.each($(".subId:checked"), function () {
-            sub.push($(this).attr('data-id'));
-        });
-        var subid = sub.join(",");
+        // var sub = [];
+        // $.each($(".subId:checked"), function () {
+        //     sub.push($(this).attr('data-id'));
+        // });
+        // var subid = sub.join(",");
+        var subid = $("#deptId").val();
         var academicId = $("#pupilsightSchoolYearID").val();
         var programId = $("#pupilsightProgramID_MC").val();
         var classId = $("#pupilsightClassID").val();
@@ -5005,12 +5007,12 @@
         }
     });
 
-    $(document).on('change', '.subId', function () {
-        if ($(this).is(':checked')) {
-            var chk = 'checked';
-        } else {
-            var chk = 'unchecked';
-        }
+    $(document).on('click', '.showSkillBySubId', function () {
+        // if ($(this).is(':checked')) {
+        //     var chk = 'checked';
+        // } else {
+        //     var chk = 'unchecked';
+        // }
         var subid = $(this).attr('data-id');
         var academicId = $("#pupilsightSchoolYearID").val();
         var programId = $("#pupilsightProgramID_MC").val();
@@ -5021,11 +5023,14 @@
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
-                data: { val: subid, type: type, academicId: academicId, programId: programId, classId: classId, chk: chk },
+                // data: { val: subid, type: type, academicId: academicId, programId: programId, classId: classId, chk: chk },
+                data: { val: subid, type: type, academicId: academicId, programId: programId, classId: classId },
                 async: true,
                 success: function (response) {
+                    $("#deptId").val(subid);
                     $("#skillList").html('');
                     $("#skillList").html(response);
+
                 }
             });
         }

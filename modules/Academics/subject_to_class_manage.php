@@ -137,6 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
             <input type="hidden" name="pupilsightSchoolYearID" value="' . $pupilsightSchoolYearID . '">
             <input type="hidden" name="pupilsightProgramID" value="' . $pupilsightProgramID . '">
             <input type="hidden" name="pupilsightYearGroupID" value="' . $pupilsightYearGroupID . '">
+            <input type="hidden" id="deptId" value="">
     ';
     $table = DataTable::createPaginated('FeeStructureManage', $criteria);
 
@@ -150,13 +151,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
             }
             return "<input type='checkbox' class='subId' name='pupilsightDepartmentID[]'  data-id='" . $subjects["pupilsightDepartmentID"] . "' data-sid='" . $subjects["id"] . "' value='" . $subjects["pupilsightDepartmentID"] . "' " . $checked . "><input type='hidden' name='subject_code[" . $subjects["pupilsightDepartmentID"] . "]' value='" . $subjects["nameShort"] . "' >";
         });
-    $table->addColumn('name', __('Subject'));
+    $table->addColumn('name', __('Subject'))
+        ->format(function ($subjects) {
+            if (!empty($subjects['subject_display_name'])) {
+                return "<a  class='showSkillBySubId' data-id='" . $subjects["pupilsightDepartmentID"] . "'   style='cursor:pointer'>" . $subjects['subject_display_name'] . "</a>";
+            } else {
+                return "<a  class='showSkillBySubId' data-id='" . $subjects["pupilsightDepartmentID"] . "'    style='cursor:pointer'>" . $subjects['name'] . "</a>";
+            }
+        });
+    
+
     $table->addColumn('', __('Display Name'))
         ->format(function ($subjects) {
             if (!empty($subjects['subject_display_name'])) {
-                return "<input type='textbox'  name='display_name[" . $subjects["pupilsightDepartmentID"] . "]' value='" . $subjects['subject_display_name'] . "' style='border:1px solid gray'>";
+                return "<input type='textbox' name='display_name[" . $subjects["pupilsightDepartmentID"] . "]' value='" . $subjects['subject_display_name'] . "' class='form-control'>";
             } else {
-                return "<input type='textbox'  name='display_name[" . $subjects["pupilsightDepartmentID"] . "]' value='" . $subjects['name'] . "' style='border:1px solid gray'>";
+                return "<input type='textbox' name='display_name[" . $subjects["pupilsightDepartmentID"] . "]' value='" . $subjects['name'] . "' class='form-control' >";
             }
         });
     $table->addColumn('nameShort', __('Code'));
@@ -208,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
     echo $table->render($subjects);
     echo '</form>';
 
-    echo "</br><table cellspacing='0' id='stuListTable' style='width: 100%;' >";
+    echo "</br><table cellspacing='0' id='stuListTable' style='width: 100%;' class='table'>";
     echo "<thead>";
     echo "<tr class='head'>";
     echo '<th style="width: 10%;">';

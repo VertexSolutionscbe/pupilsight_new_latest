@@ -221,6 +221,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     $aatChecked="checked";
                 }
 
+                $isTested = '';
+                if($fetchSubData['is_tested'] == 1){
+                    $isTested="checked";
+                }
+
                 if($testdata['subject_type'] == '2'){
                     $subcatsql = 'SELECT * FROM examinationTestSubjectCategory WHERE subject_type = "'.$sub['type'].'" AND test_master_id = '.$testMasterId.' ';
                     $resultsubcat = $connection2->query($subcatsql);
@@ -378,7 +383,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     <td >
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
-                               <input id="cpytsted<?php echo $i; ?>" type='checkbox' name="is_tested[<?php echo $k;?>]" class=" cpytsted" <?php echo $testedChecked;?> value="1">                            
+                               <input id="cpytsted<?php echo $i; ?>" type='checkbox' name="is_tested[<?php echo $k;?>]" class=" cpytsted" <?php echo $isTested;?> value="1">                            
                             </div>
                         </div>
                     </td>
@@ -522,6 +527,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                         $aatSklChecked="checked";
                     }
 
+                    $isSkillTested = '';
+                    if($fetchSubSklData['is_tested'] == 1){
+                        $isSkillTested="checked";
+                    }
+
                     if(!empty($fetchSubSklData['assesment_method'])){
                         $chassesment_method = $fetchSubSklData['assesment_method'];
                     } else {
@@ -647,7 +657,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     <td >
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
-                               <input id="cpytsted<?php echo $i; ?>" type='checkbox' name="is_tested[<?php echo $j;?>]" class=" cpytsted" <?php echo $testedChecked;?> value="1">                            
+                               <input id="cpytsted<?php echo $i; ?>" type='checkbox' name="is_tested[<?php echo $j;?>]" class=" cpytsted" <?php echo $isSkillTested;?> value="1">                            
                             </div>
                         </div>
                     </td>
