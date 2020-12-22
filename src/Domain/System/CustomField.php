@@ -125,7 +125,7 @@ class CustomField extends QueryableGateway
             if ($afterCol) {
                 $sq .= " AFTER " . $afterCol;
             }
-            //echo "\n".$sq;
+            //echo "\n" . $sq;
             $db->query($sq);
 
             if ($isunique == "Y") {
@@ -136,6 +136,7 @@ class CustomField extends QueryableGateway
         } catch (Exception $e) {
             echo 'CustomField->addCustomFieldToTable(): exception: ',  $e->getMessage(), "\n";
         }
+        //die();
     }
 
     //loading custom field in form
