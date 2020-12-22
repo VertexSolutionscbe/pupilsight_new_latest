@@ -125,8 +125,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $subject2[$dt['pupilsightDepartmentID']] = $dt['subject_display_name'];
     }
     $subjects=  $subject2; 
-    $test_types=array('' =>'Select test type','Term1'=>'Term 1','Term2');
+    //$test_types=array('' =>'Select test type','Term1'=>'Term 1','Term2');
     //$test_types = array(__('Select') => array ('Term1' => __('Term 1'), 'Term2' => __('Term 2')));
+
+    $sqlterm = 'SELECT * FROM pupilsightSchoolYearTerm WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' ORDER BY pupilsightSchoolYearTermID ASC';
+    $resultterm = $connection2->query($sqlterm);
+    $termdata = $resultterm->fetchAll();
+
+    $test_types = array();
+    $term1 = array(''=>'Please Select');
+    $term2 = array();
+    foreach($termdata as $trm){
+        $term2[$trm['pupilsightSchoolYearTermID']] = $trm['name'];
+    }
+    if(!empty($term2)){
+        $test_types = $term1 + $term2;
+    }
+
     $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'"  AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
     $result_test = $connection2->query($sql_tst);
     $tests = $result_test->fetchAll();
@@ -219,6 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         ->fromPOST();
         //print_r($criteria);
     $students = $CurriculamGateway->getstudent_subject_skill_test_mappingdata($criteria, $pupilsightSchoolYearID, $pupilsightProgramID,$pupilsightYearGroupID, $pupilsightRollGroupID,$pupilsightDepartmentID,$skill_id,$test_id1,$test_type);
+
     $subject_wise_tests =  $CurriculamGateway->getStudentTestSubjectClassWise($criteria,$pupilsightSchoolYearID,$pupilsightDepartmentID,$pupilsightYearGroupID,$pupilsightRollGroupID,$test_id1);
      
      $sql_check='SELECT di_mode  FROM `subjectToClassCurriculum` WHERE `pupilsightSchoolYearID` = "'.$pupilsightSchoolYearID.'" AND `pupilsightProgramID` = "'.$pupilsightProgramID.'" AND `pupilsightYearGroupID` = "'.$pupilsightYearGroupID.'" AND `pupilsightDepartmentID` = "'.$pupilsightDepartmentID.'" ';
@@ -380,8 +396,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     $en_dis_clss=($s_test['assesment_method']=='Marks')? '' : 'disable_input';
                     $en_dis_grd_clss=($s_test['assesment_method']=='Grade')? '' : 'disable_input';   
                     
-                    $marksobt = str_replace(".00","",$prevdata['marks_obtained']);
-                    //$marksobt = rtrim($marksobt,'0');
+                    if(!empty($prevdata['marks_abex'])){
+                        $marksobt = '';
+                    } else {
+                        $marksobt = str_replace(".00","",$prevdata['marks_obtained']);
+                        //$marksobt = rtrim($marksobt,'0');
+                    }
+                    
 
                     echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab'.$f.'" value="'.$marksobt.'"  '.$disabled.'>';
                     echo '</td>';  
@@ -731,7 +752,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             success: function(response) {
                 alert('Marks Saved!');
                 $("#preloader").hide();
-                $("#searchForm").submit();
+                //$("#searchForm").submit();
                 //$('#marksbysubject')[0].reset();
             }
         });

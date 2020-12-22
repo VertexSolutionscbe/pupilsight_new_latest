@@ -5,10 +5,12 @@ Pupilsight, Flexible & Open School System
 
 include '../../pupilsight.php';
 
-$getsql1 = 'SELECT * FROM subjectToClassCurriculum WHERE id IN ('.$_POST['subjectToClassId'].') GROUP BY pupilsightYearGroupID';
+$subjectToClassId = rtrim($_POST['subjectToClassId'], ',');
+$getsql1 = 'SELECT * FROM subjectToClassCurriculum WHERE id IN ('.$subjectToClassId.') GROUP BY pupilsightYearGroupID';
 $getresult1 = $connection2->query($getsql1);
 $getdata1 = $getresult1->fetch();
 $errorArray = array();
+
                 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/subject_to_class_manage.php&acaId='.$getdata1['pupilsightSchoolYearID'].'&proId='.$getdata1['pupilsightProgramID'].'&classId='.$getdata1['pupilsightYearGroupID'].'';
 
@@ -18,7 +20,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
 } else {
     
     //Proceed!
-    $subjectToClassId = $_POST['subjectToClassId'];
+    //$subjectToClassId = $_POST['subjectToClassId'];
     $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
     $pupilsightProgramID = $_POST['pupilsightProgramID'];
     $pupilsightYearGroupID1 = $_POST['pupilsightYearGroupID'];

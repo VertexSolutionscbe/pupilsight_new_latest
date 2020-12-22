@@ -36,9 +36,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $resulta = $connection2->query($sqla);
     $attrdata = $resulta->fetchAll();
 
-    // $sql = "SELECT table_label FROM examinationReportTemplateConfiguration GROUP BY table_label";
-    // $result = $connection2->query($sql);
-    // $labeldata = $result->fetchAll();
+    $sql = "SELECT table_label FROM examinationReportTemplateConfiguration GROUP BY table_label";
+    $result = $connection2->query($sql);
+    $labeldata = $result->fetchAll();
     //print_r($labeldata);
 
 ?>
@@ -60,11 +60,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         <div class="col-3">
             <select id="labeldata" name="attribute_type" class="form-control" id="attrtype">
                 <option>Select Type</option>
-                <?php /*?>
-                <option>Select Type</option>
+                
                 <?php foreach($labeldata as $ld) { ?>
                     <option value="<?php echo $ld['table_label'];?>"><?php echo $ld['table_label'];?></option>
-                <?php } */ ?>
+                <?php }  ?>
             </select>
         </div>
         <div class="col-3">
