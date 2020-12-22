@@ -11784,9 +11784,9 @@ span.flatpickr-weekday {
 /*# sourceMappingURL=tabler.css.map */
 
 
-@media (max-width: 600px) {
+@media all and(max-width: 600px) {
 
-  .mobileresponse {
+  .mobileresponse{
     visibility: hidden !important;
   }
 }

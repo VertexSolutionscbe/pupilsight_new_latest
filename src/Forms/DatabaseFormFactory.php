@@ -315,9 +315,22 @@ class DatabaseFormFactory extends FormFactory
                     AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) 
                     ORDER BY rollGroupName, pupilsightPerson.surname, pupilsightPerson.preferredName";
             $result = $this->pdo->executeQuery($data, $sql);
-        
+
             if ($result->rowCount() > 0) {
                 $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
+                    $group[$item['pupilsightPersonID']] = $item['rollGroupName'].' - '.formatName('', $item['preferredName'], $item['surname'], 'Student', true);
+                    return $group;
+                }, array());
+            }
+        }
+
+        if ($params['includeParent'] == true) {
+            $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'date' => date('Y-m-d'));
+            $sql = "SELECT pupilsightPerson.pupilsightPersonID, title, surname, preferredName, username, pupilsightRole.category FROM pupilsightPerson JOIN pupilsightRole ON (pupilsightRole.pupilsightRoleID=pupilsightPerson.pupilsightRoleIDPrimary) WHERE pupilsightPerson.pupilsightRoleIDPrimary=004 AND status='Full' OR status='Expected' ORDER BY surname, preferredName";
+            $result = $this->pdo->executeQuery($data, $sql);
+
+            if ($result->rowCount() > 0) {
+                $users[__('Parents')] = array_reduce($result->fetchAll(), function($group, $item) {
                     $group[$item['pupilsightPersonID']] = $item['rollGroupName'].' - '.formatName('', $item['preferredName'], $item['surname'], 'Student', true);
                     return $group;
                 }, array());
