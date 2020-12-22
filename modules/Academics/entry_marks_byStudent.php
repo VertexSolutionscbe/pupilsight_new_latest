@@ -217,8 +217,10 @@
       <td>
          <div class="input-group stylish-input-group">
             <div class="flex-1 relative">
+            <?php if($s_test['enable_remarks'] == '1'){ ?>
                <textarea type='text' name='remark_own' class="remark_textarea w-full "></textarea>
                <br><span></span>
+            <?php } ?>
             </div>
          </div>
       </td>
