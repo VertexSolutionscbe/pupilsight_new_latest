@@ -129,6 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
     // QUERY
     //echo $serchName;
     $criteria = $departmentGateway->newQueryCriteria()
+        ->pageSize(1000)
         ->sortBy('name')
         //->searchBy($search)
         ->searchBy('name', $serchName)
