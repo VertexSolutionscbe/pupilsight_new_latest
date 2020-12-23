@@ -5,7 +5,16 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 use Pupilsight\Contracts\Comms\SMS;
-
+use Pupilsight\Forms\DatabaseFormFactory;
+use Pupilsight\Domain\Helper\HelperGateway;
+use Pupilsight\Services\Format;
+?>
+<style>
+    #individualList{
+        width: 500px;
+    }
+</style>
+<?php
 require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('New Message'));
@@ -393,6 +402,8 @@ else {
                 $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
                 $sql = "SELECT pupilsightCourseClass.pupilsightCourseClassID as value, CONCAT(pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) as name FROM pupilsightCourse JOIN pupilsightCourseClass ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClassPerson.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND NOT role LIKE '%- Left' ORDER BY name";
             }
+            //print_r($data);
+            //print_r($sql);
 
 			$row = $form->addRow()->addClass('class hiddenReveal');
 				$row->addLabel('classes[]', __('Select Classes'));
@@ -608,13 +619,13 @@ else {
             // Build a set of individuals by ID => formatted name
             $individuals = ($result->rowCount() > 0)? $result->fetchAll() : array();
             $individuals = array_reduce($individuals, function($group, $item){
-                $group[$item['pupilsightPersonID']] = formatName("", $item['preferredName'], $item['surname'], 'Student', true) . ' ('.$item['username'].', '.__($item['category']).')';
+                $group[$item['pupilsightPersonID']] = formatName("". $item['preferredName'], $item['surname'], 'Student', true) . ' ('.$item['username'].', '.__($item['category']).')';
                 return $group;
             }, array());
 
 			$row = $form->addRow()->addClass('individuals hiddenReveal');
 				$row->addLabel('individualList[]', __('Select Individuals'));
-				$row->addSelect('individualList[]')->fromArray($individuals)->selectMultiple()->setSize(6)->required();
+				$row->addSelect('individualList[]')->setId('individualList')->fromArray($individuals)->selectMultiple()->setSize(6)->required();
         }
 
 		$row = $form->addRow();
@@ -624,3 +635,10 @@ else {
 		echo $form->getOutput();
 	}
 }
+?>
+<script type='text/javascript'>
+    $(document).ready(function () {
+        $('#individualList').select2();
+    });
+</script>
+
