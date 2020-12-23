@@ -404,14 +404,45 @@ if(isset($_POST['type'])){
                     $resultd->execute($datad);
                 }
 
+                if($checkmode == 'multiple'){
+                    $mdata = $session->get('m_data');
+                   // savePaymentModeData($transactionId, $mdata);
+                    $t_id = $transactionId;
+                    
+                    $pmode=$mdata['payment_mode_id'];
+                    $mcredit = $mdata['credit_id'];
+                    $bank_id = $mdata['bank_id'];
+                    $amount = $mdata['amount'];
+                    $mrefno = $mdata['reference_no'];
+                    $minstruDate = $mdata['instrument_date'];
+                    $l=sizeof($pmode);
+                    $i=1;
+                    for($i=0;$i<$l;$i++){
+                        $datam = array('transaction_id'=>$t_id,'payment_mode_id' => $pmode[$i],  'credit_id' => $mcredit[$i], 'bank_id' => $bank_id[$i],    'amount' =>$amount[$i],'reference_no'=>$mrefno[$i],'instrument_date' =>$minstruDate[$i]);
+                        $sqlm = 'INSERT INTO fn_multi_payment_mode SET transaction_id=:transaction_id, payment_mode_id=:payment_mode_id, credit_id=:credit_id, bank_id=:bank_id,amount=:amount,reference_no=:reference_no,instrument_date=:instrument_date';
+                        $resultm = $connection2->prepare($sqlm);
+                        $resultm->execute($datam);
+                
+                    }
+
+                    $pmId = implode(',', $payment_mode_id);
+                    $sqlpt = "SELECT GROUP_CONCAT(name) AS modeName FROM fn_masters WHERE id IN (".$pmId.") ";
+                    $resultpt = $connection2->query($sqlpt);
+                    $valuept = $resultpt->fetch();
+                    $paymentModeName = $valuept['modeName'];
+                } else {
+                    $sqlpt = "SELECT name FROM fn_masters WHERE id = ".$payment_mode_id." ";
+                    $resultpt = $connection2->query($sqlpt);
+                    $valuept = $resultpt->fetch();
+                    $paymentModeName = $valuept['name'];
+                }
+
 
                 $sqlstu = "SELECT a.officialName , a.admission_no, b.name as class, c.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = ".$pupilsightPersonID." ";
                 $resultstu = $connection2->query($sqlstu);
                 $valuestu = $resultstu->fetch();
 
-                $sqlpt = "SELECT name FROM fn_masters WHERE id = ".$payment_mode_id." ";
-                $resultpt = $connection2->query($sqlpt);
-                $valuept = $resultpt->fetch();
+               
 
                 $class_section = $valuestu["class"] ." ".$valuestu["section"];
                 $dts_receipt = array(
@@ -425,7 +456,7 @@ if(isset($_POST['type'])){
                     "transcation_amount" => $amount_paying,
                     "fine_amount" => $fine,
                     "other_amount" => "NA",
-                    "pay_mode" => $valuept['name'],
+                    "pay_mode" => $paymentModeName,
                     "transactionId" => $transactionId,
                     "receiptTemplate" => $receiptTemplate,
                     "bank_name" => $bank_name
@@ -499,29 +530,7 @@ if(isset($_POST['type'])){
                     }
                 }
                
-                if($checkmode == 'multiple'){
-                    $mdata = $session->get('m_data');
-                   // savePaymentModeData($transactionId, $mdata);
-                    $t_id = $transactionId;
-                    
-                    $pmode=$mdata['payment_mode_id'];
-                    $mcredit = $mdata['credit_id'];
-                    $bank_id = $mdata['bank_id'];
-                    $amount = $mdata['amount'];
-                    $mrefno = $mdata['reference_no'];
-                    $minstruDate = $mdata['instrument_date'];
-                    $l=sizeof($pmode);
-                    $i=1;
-                    for($i=0;$i<$l;$i++){
-                        $datam = array('transaction_id'=>$t_id,'payment_mode_id' => $pmode[$i],  'credit_id' => $mcredit[$i], 'bank_id' => $bank_id[$i],    'amount' =>$amount[$i],'reference_no'=>$mrefno[$i],'instrument_date' =>$minstruDate[$i]);
-                        $sqlm = 'INSERT INTO fn_multi_payment_mode SET transaction_id=:transaction_id, payment_mode_id=:payment_mode_id, credit_id=:credit_id, bank_id=:bank_id,amount=:amount,reference_no=:reference_no,instrument_date=:instrument_date';
-                        $resultm = $connection2->prepare($sqlm);
-                        $resultm->execute($datam);
                 
-                    }
-                }
-
-
                 if(!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)){ 
                     $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receiptNew.php';
                     $datamerge = array_merge($dts_receipt, $dts_receipt_feeitem);

@@ -355,8 +355,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     }
 
                     if (!empty($stu_id) && !empty($pupilsightSchoolYearID)) {
-                        $sqle = "INSERT INTO pupilsightStudentEnrolment (pupilsightPersonID,pupilsightSchoolYearID,pupilsightProgramID,pupilsightYearGroupID,pupilsightRollGroupID) VALUES (" . $stu_id . "," . $pupilsightSchoolYearID . "," . $pupilsightProgramID . "," . $pupilsightYearGroupID . "," . $pupilsightRollGroupID . ")";
-                        $enrol = $conn->query($sqle);
+                        $sqlche = 'SELECT pupilsightStudentEnrolmentID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = "' . $stu_id . '"';
+                        $resultche = $connection2->query($sqlche);
+                        $enrData = $resultche->fetch();
+
+                        if(empty($enrData)){
+                            $sqle = "INSERT INTO pupilsightStudentEnrolment (pupilsightPersonID,pupilsightSchoolYearID,pupilsightProgramID,pupilsightYearGroupID,pupilsightRollGroupID) VALUES (" . $stu_id . "," . $pupilsightSchoolYearID . "," . $pupilsightProgramID . "," . $pupilsightYearGroupID . "," . $pupilsightRollGroupID . ")";
+                            $enrol = $conn->query($sqle);
+                        }
 
                         //echo "\n<br/>pupilsightStudentEnrolment: ".$sqle;
                     }

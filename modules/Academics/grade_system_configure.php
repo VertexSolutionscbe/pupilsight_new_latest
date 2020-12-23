@@ -17,7 +17,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/grade_system_con
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $page->breadcrumbs->add(__('Manage  Configure'));
+    $page->breadcrumbs
+    ->add(__('Manage Grading System'), 'grade_system_manage.php')
+    ->add(__('Manage Grading Configure'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
