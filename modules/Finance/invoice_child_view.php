@@ -202,6 +202,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
         }
     }
 
+    $sqlo = "SELECT * FROM pupilsight_cms  WHERE title != '' ";
+    $resulto = $connection2->query($sqlo);
+    $orgData = $resulto->fetch();
+
     // echo '<pre>';
     // print_r($invdata);
     // echo '</pre>';
@@ -308,6 +312,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                         <input type="hidden" name="payid" value="<?= $ind['stu_invoice_no'] ?>">
                         <input type="hidden" name="stuid" value="<?= $stuId ?>">
                         <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
+                        <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                        <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
                        
                         <a class="terms_condition" ><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
                         <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>'style="display:none" class="btn btn-primary ">Pay</button>

@@ -121,9 +121,9 @@ if(!empty($_GET['tid'])){
                             </td>
                             <td>
                             <?php if($pc['countclass'] == $pc['countchkclass']){ ?>
-                            <i class="fas fa-check fa-2x" style="color:limegreen"></i>
+                            <i class="mdi mdi-checkbox-marked-circle mdi-24px" style="color:limegreen"></i>
                             <?php }  else { ?>
-                            <i class="fas fa-times fa-2x"></i>
+                            <i class="mdi mdi-close-circle mdi-24px"></i>
                             <?php } ?>
                             </td>
                         </tr>
@@ -133,9 +133,9 @@ if(!empty($_GET['tid'])){
                             <td><span class="childrow">&nbsp;<input name="class_id" type="checkbox" class="childChkBox chkChild<?php echo $pc['pupilsightProgramID']?>  <?php echo $cls;?>  chkChild" data-par="<?php echo $pc['pupilsightProgramID']?>" data-tid="<?php echo $testId; ?>" data-cls="<?php echo $cl['pupilsightYearGroupID']?>" value="<?php echo $cl['pupilsightMappingID']?>" >&nbsp;<?php echo $cl['className']?></span></td>
                             <td>
                             <?php if($cl['check'] == 'checked'){ ?>
-                            <i class="fas fa-check fa-2x" style="color:limegreen"></i>
+                            <i class="mdi mdi-checkbox-marked-circle mdi-24px" style="color:limegreen"></i>
                             <?php }  else { ?>
-                            <i class="fas fa-times fa-2x"></i>
+                            <i class="mdi mdi-close-circle mdi-24px"></i>
                             <?php } ?>
                             </td>
                         </tr>

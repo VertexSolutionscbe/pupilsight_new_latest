@@ -69,18 +69,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/select_sub_categ
     <form id="testSubjectCategoryForm" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/'?>select_sub_categories_addProcess.php" method="post" >
     <input type="hidden" name="test_master_id" value="<?php echo $tmId;?>">
     <a  id="saveTestSubjectCategory" class=" btn btn-primary" style=" font-size: 14px !important;">Save</a>
-        <table class="smallIntBorder fullWidth standardForm relative" cellspacing="0">
+        <table class="table" cellspacing="0">
 
-            <tbody>
-            <tr class="flex flex-col sm:flex-row justify-between content-center p-0">
-                    <th class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+            <thead>
+            <tr class="">
+                    <th class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                <lable>Select</lable>
                             </div>
                         </div>
                     </th>
-                    <th class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <th class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                <lable>Category</lable>
@@ -88,35 +88,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/select_sub_categ
                         </div>
                     </th>
 
-                    <th class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <th class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                <lable>Assesment Method</lable>
                             </div>
                         </div>
                     </th>
-                    <th class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <th class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                <lable>Assesment Option</lable>
                             </div>
                         </div>
                     </th>
-                    <th class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <th class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                <lable>Max Mark</lable>
                             </div>
                         </div>
                     </th>
-                    <th class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <th class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                <lable>Min Marks</lable>
                             </div>
                         </div>
                     </th>
-                    <th class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <th class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                <lable>Grading System</lable>
@@ -124,21 +124,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/select_sub_categ
                         </div>
                     </th>
             </tr>
+            </thead>
+            <tbody>
             <?php if(!empty($subjectType)){ 
                 foreach($subjectType as $st) {
                 ?>
                
                 <input type="hidden" name="subject_type[<?php echo $st['id']?>]" value="<?php echo $st['name']?>">
                 
-                <tr class="flex flex-col sm:flex-row justify-between content-center p-0">
-                    <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                <tr class="">
+                    <td class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                 <input type="checkbox" class="subject_type_id" name="subject_type_id[<?php echo $st['id']?>]" value="<?php echo $st['id']?>" <?php if($st['id'] == $st['subject_type_id']) { ?> checked <?php } ?>>
                             </div>
                         </div>
                     </td>
-                    <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <td class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                <p> <strong><?php echo $st['name']?></strong></p>
@@ -146,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/select_sub_categ
                         </div>
                     </td>
 
-                    <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <td class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                 <select id="subCatGrade" data-id="<?php echo $st['id']?>" name="assesment_method[<?php echo $st['id']?>]" class="w-full">
@@ -158,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/select_sub_categ
                         </div>
                     </td>
 
-                    <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <td class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                 <select id="" name="assesment_option[<?php echo $st['id']?>]" class="w-full">
@@ -169,21 +171,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/select_sub_categ
                             </div>
                         </div>
                     </td>
-                    <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <td class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                             <input type='number' class="marks<?php echo $st['id']?>" name="max_marks[<?php echo $st['id']?>]" style='width:50%' value="<?php echo $st['max_marks']?>" <?php if($st['assesment_method'] == 'Grade') { ?> disabled <?php } ?>>
                             </div>
                         </div>
                     </td>
-                    <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <td class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                 <input type='number' class="marks<?php echo $st['id']?>" name="min_marks[<?php echo $st['id']?>]" style='width:50%' value="<?php echo $st['min_marks']?>" <?php if($st['assesment_method'] == 'Grade') { ?> disabled <?php } ?>>
                             </div>
                         </div>
                     </td>
-                    <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <td class="">
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                                 <select id="" name="gradeSystemId[<?php echo $st['id']?>]" class="w-full">

@@ -443,7 +443,7 @@ if ($isLoggedIn) {
     $curriculumList[0] = array('name' => 'Subject Type', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/subject_type_manage.php');
     $curriculumList[1] = array('name' => 'Subject Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/department_manage.php');
     $curriculumList[2] = array('name' => 'Skill Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/ac_manage_skill.php');
-    $curriculumList[3] = array('name' => 'Subject To Class', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/subject_to_class_manage.php');
+    $curriculumList[3] = array('name' => 'Curriculum Configuration', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/subject_to_class_manage.php');
     $curriculumList[4] = array('name' => 'Manage Elective Group', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_elective_group.php');
     $curriculumList[5] = array('name' => 'Remarks Master', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/ac_manage_remarks.php');
     $curriculumList[6] = array('name' => 'DI Mode', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/descriptive_indicator_config.php');
@@ -457,13 +457,14 @@ if ($isLoggedIn) {
     $testList[2] = array('name' => 'Reports Template', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/examination_report_template_manage.php');
     $testList[3] = array('name' => 'Test Home', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/test_home.php');
     $testList[4] = array('name' => 'Edit Test', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_edit_test.php');
-    $testList[5] = array('name' => 'Marks Entry by Subject', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_marks_entry_by_subject.php');
-    $testList[6] = array('name' => 'Marks Entry by Student', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/marks_by_student.php');
-    $testList[7] = array('name' => 'Enter A.A.T', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_enter_aat.php');
-    $testList[8] = array('name' => 'Marks Upload', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/test_marks_upload.php');
-    $testList[9] = array('name' => 'Marks not Entered', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/marks_not_entered.php');
-    $testList[10] = array('name' => 'Test Results', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_test_results.php');
-    $testList[11] = array('name' => 'Sketch', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/sketch_manage.php');
+    $testList[5] = array('name' => 'Manage Test', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_test.php');
+    $testList[6] = array('name' => 'Marks Entry by Subject', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_marks_entry_by_subject.php');
+    $testList[7] = array('name' => 'Marks Entry by Student', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/marks_by_student.php');
+    $testList[8] = array('name' => 'Enter A.A.T', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_enter_aat.php');
+    $testList[9] = array('name' => 'Marks Upload', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/test_marks_upload.php');
+    $testList[10] = array('name' => 'Marks not Entered', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/marks_not_entered.php');
+    $testList[11] = array('name' => 'Test Results', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/manage_test_results.php');
+    $testList[12] = array('name' => 'Sketch', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Academics/sketch_manage.php');
 
 
     $testMenu = array('name' => "Test", 'list' => $testList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2', 'url' => $session->get('absoluteURL') . "/cms.php");

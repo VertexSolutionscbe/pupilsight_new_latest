@@ -81,6 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     
         <div class='table-responsive dataTables_wrapper '>
             <a id="copyAllData" class='btn btn-primary'>Copy Selected Row To all Selected Subjects</a>
+            <a href="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/manage_edit_test.php' ?>" class='btn btn-primary'>Back</a>
         <table class="table" cellspacing="0" style='overflow-x: scroll !important;margin-top: 10px;
     width: 162%;'>
             <thead  style="font-size:14px;">
@@ -224,6 +225,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                 $isTested = '';
                 if($fetchSubData['is_tested'] == 1){
                     $isTested="checked";
+                }
+
+                $enableRem = '';
+                if($fetchSubData['enable_remarks'] == 1){
+                    $enableRem="checked";
                 }
 
                 if($testdata['subject_type'] == '2'){
@@ -431,7 +437,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     <td >
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
-                               <input id="cpyenbrms<?php echo $i; ?>" type='checkbox' name="enable_remarks[<?php echo $k;?>]" class="w-full cpyenbrms" <?php echo $remarkChecked;?> value="1">                            
+                               <input id="cpyenbrms<?php echo $i; ?>" type='checkbox' name="enable_remarks[<?php echo $k;?>]" class="w-full cpyenbrms" <?php echo $enableRem;?> value="1">                            
                             </div>
                         </div>
                     </td>
@@ -530,6 +536,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     $isSkillTested = '';
                     if($fetchSubSklData['is_tested'] == 1){
                         $isSkillTested="checked";
+                    }
+
+                    $enableRemSkl = '';
+                    if($fetchSubSklData['enable_remarks'] == 1){
+                        $enableRemSkl="checked";
                     }
 
                     if(!empty($fetchSubSklData['assesment_method'])){
@@ -705,7 +716,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     <td >
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
-                               <input id="cpyenbrms<?php echo $i; ?>" type='checkbox' name="enable_remarks[<?php echo $j;?>]" class="w-full cpyenbrms" <?php echo $remarkChecked;?> value="1">                            
+                               <input id="cpyenbrms<?php echo $i; ?>" type='checkbox' name="enable_remarks[<?php echo $j;?>]" class="w-full cpyenbrms" <?php echo $enableRemSkl;?> value="1">                            
                             </div>
                         </div>
                     </td>

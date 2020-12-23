@@ -178,6 +178,11 @@
    <?php   $i=1;
       foreach($entrymarks as $s_test)
           { 
+
+            // echo '<pre>';
+            // print_r($s_test);
+            // echo '</pre>';
+            // die();
                $electshow = '1';
 
                if($s_test['subject_type'] == 'Elective'){
@@ -215,12 +220,22 @@
       <td></td>
       <td></td>
       <td>
+      <?php
+         $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $s_test['pupilsightDepartmentID'],'pupilsightPersonID' => $std_id);                    
+         $sql1 = 'SELECT remarks FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID ';
+         $result = $connection2->prepare($sql1);
+         $result->execute($data1);
+         $remdata =  $result->fetch();
+      ?>
          <div class="input-group stylish-input-group">
             <div class="flex-1 relative">
-               <textarea type='text' name='remark_own' class="remark_textarea w-full "></textarea>
+            <?php if($s_test['enable_remarks'] == '1'){ ?>
+               <textarea type='text' name='remark_own' class="remark_textarea w-full "><?php echo $remdata['remarks'];?></textarea>
                <br><span></span>
+            <?php } ?>
             </div>
          </div>
+      <?php  ?>
       </td>
       
    </tr>

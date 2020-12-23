@@ -457,7 +457,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                      <?php echo $data_sel;?>
                     </select>
                     <input id="remarklistval<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" type="hidden" name="remark_frmlst[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="">
-                    <textarea style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class=" remark_textarea text_remark_<?php echo $s_test['test_id']; ?>" ></textarea> 
+                    <textarea style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class=" remark_textarea text_remark_<?php echo $s_test['test_id']; ?>" ><?php echo $prevdata['remarks'] ?></textarea> 
                     <br/> 
                     <span class="rcount_<?php echo $s_test['test_id'];?>"></span>        
                     <?php
@@ -752,7 +752,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             success: function(response) {
                 alert('Marks Saved!');
                 $("#preloader").hide();
-                //$("#searchForm").submit();
+                $("#searchForm").submit();
                 //$('#marksbysubject')[0].reset();
             }
         });

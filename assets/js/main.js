@@ -6073,18 +6073,22 @@ $(document).on('click', '#copy_test_class_section_wise', function () {
     });
     var testid = favorite.join(",");
     if (testid) {
-        var val = testid;
-        var type = 'addtestIdinSession';
-        if (val != '') {
-            $.ajax({
-                url: 'ajax_data.php',
-                type: 'post',
-                data: { val: val, type: type },
-                async: true,
-                success: function (response) {
-                    $("#clickcopy_test_to_sections").click();
-                }
-            });
+        if (favorite.length == 1) {
+            var val = testid;
+            var type = 'addtestIdinSession';
+            if (val != '') {
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: val, type: type },
+                    async: true,
+                    success: function (response) {
+                        $("#clickcopy_test_to_sections").click();
+                    }
+                });
+            }
+        } else {
+            alert('Please Select One test at a Time!');
         }
     } else {
 
