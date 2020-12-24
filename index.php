@@ -39,7 +39,7 @@ $isLoggedIn = $session->has('username') && $session->has('pupilsightRoleIDCurren
 if ($isLoggedIn && $module = $page->getModule()) {
 
     $mid = $module->pupilsightModuleID;
-    $sql = 'SELECT category FROM pupilsightModule  WHERE pupilsightModuleID = "' . $mid . '"';
+    $sql = 'SELECT p.category FROM pupilsightModule AS p WHERE p.pupilsightModuleID = "' . $mid . '"';
     $result = $connection2->query($sql);
     $moduledata = $result->fetch();
     $moduleName = $moduledata['category'];

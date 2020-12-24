@@ -32,10 +32,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
         header("Location: {$URL}");
     } else {
         try {
-            $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID);
-            $sql1 = 'DELETE FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID';
-            $result1 = $connection2->prepare($sql1);
-            $result1->execute($data1);
+            // $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID);
+            // $sql1 = 'DELETE FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID';
+            // $result1 = $connection2->prepare($sql1);
+            // $result1->execute($data1);
 
             foreach($subId as $sid){
                 $pupilsightDepartmentID = $sid;
@@ -44,11 +44,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
                 $subject_type = $sub_type[$sid];
                 $di_mode = $dimode[$sid];
 
+                $sqlchk = 'SELECT * FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID= '.$pupilsightSchoolYearID.' AND pupilsightProgramID= '.$pupilsightProgramID.' AND pupilsightYearGroupID= '.$pupilsightYearGroupID.' AND pupilsightDepartmentID = '.$pupilsightDepartmentID.' ';
+                $resultchk = $connection2->query($sqlchk);
+                $curData = $resultchk->fetch();
 
-                $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'subject_code' => $subject_code, 'subject_display_name' => $subject_display_name, 'subject_type' => $subject_type, 'di_mode' => $di_mode);
-                $sql = 'INSERT INTO subjectToClassCurriculum SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, subject_code=:subject_code, subject_display_name=:subject_display_name, subject_type=:subject_type, di_mode=:di_mode';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                if(!empty($curData)){
+                    $curId = $curData['id'];
+                    $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'subject_code' => $subject_code, 'subject_display_name' => $subject_display_name, 'subject_type' => $subject_type, 'di_mode' => $di_mode , 'id' => $curId);
+                    $sql = 'UPDATE subjectToClassCurriculum SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, subject_code=:subject_code, subject_display_name=:subject_display_name, subject_type=:subject_type, di_mode=:di_mode WHERE id=:id';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } else {
+                    $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'subject_code' => $subject_code, 'subject_display_name' => $subject_display_name, 'subject_type' => $subject_type, 'di_mode' => $di_mode);
+                    $sql = 'INSERT INTO subjectToClassCurriculum SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, subject_code=:subject_code, subject_display_name=:subject_display_name, subject_type=:subject_type, di_mode=:di_mode';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                }
+
+
+                
             }
     
         } catch (PDOException $e) {

@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/modify_test_clas
 
     $col = $row->addColumn()->setClass('newdes ');
     $col->addLabel('report_template', __('Select Report Template'));
-    $col->addSelect('report_template')->fromArray($rt);
+    $col->addSelect('report_template')->fromArray($rt)->selected($values['report_template_id']);
 
     $col = $row->addColumn()->setClass('newdes ');
     $col->addLabel('pupilsightSchoolYearTermID', __('Test Type'));
