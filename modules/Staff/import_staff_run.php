@@ -133,41 +133,45 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
             print_r($all_rows);
             echo '</pre>';
             die();*/
-            foreach ($all_rows as  $alrow) {
+            try {
+                foreach ($all_rows as  $alrow) {
 
-                // Student Entry
-                $sql = "INSERT INTO pupilsightPerson (";
-                foreach ($alrow as $key => $ar) {
-                    if (strpos($key, '##_') !== false && !empty($ar)) {
-                        //$clname = ltrim($key, '##_'); 
-                        $clname = substr($key, 3, strlen($key));
-                        $sql .= $clname . ',';
+                    // Student Entry
+                    $sql = "INSERT INTO pupilsightPerson (";
+                    foreach ($alrow as $key => $ar) {
+                        if (strpos($key, '##_') !== false && !empty($ar)) {
+                            //$clname = ltrim($key, '##_'); 
+                            $clname = substr($key, 3, strlen($key));
+                            $sql .= $clname . ',';
+                        }
+                    }
+                    $sql .= 'preferredName,pupilsightRoleIDPrimary,pupilsightRoleIDAll';
+                    //$sql = rtrim($sql, ", ");
+                    $sql .= ") VALUES (";
+                    foreach ($alrow as $k => $value) {
+                        if ($k == "##_dob") {
+                            $value = date('Y-m-d', strtotime($value));
+                        }
+                        if (strpos($k, '##_') !== false && !empty($value)) {
+                            $val = str_replace('"', "", $value);
+                            $sql .= '"' . $val . '",';
+                        }
+                    }
+                    $sql .= '"' . $alrow['##_officialName'] . '","002","002"';
+                    //$sql = rtrim($sql, ", ");
+                    $sql .= ")";
+                    $sql = rtrim($sql, ", ");
+                    $conn->query($sql);
+                    $stu_id = $conn->insert_id;
+
+
+                    if (!empty($stu_id)) {
+                        $sqle = 'INSERT INTO pupilsightStaff (pupilsightPersonID,type) VALUES ("' . $stu_id . '","' . $alrow['at_type'] . '")';
+                        $enrol = $conn->query($sqle);
                     }
                 }
-                $sql .= 'preferredName,pupilsightRoleIDPrimary,pupilsightRoleIDAll';
-                //$sql = rtrim($sql, ", ");
-                $sql .= ") VALUES (";
-                foreach ($alrow as $k => $value) {
-                    if ($k == "##_dob") {
-                        $value = date('Y-m-d', strtotime($value));
-                    }
-                    if (strpos($k, '##_') !== false && !empty($value)) {
-                        $val = str_replace('"', "", $value);
-                        $sql .= '"' . $val . '",';
-                    }
-                }
-                $sql .= '"' . $alrow['##_officialName'] . '","002","002"';
-                //$sql = rtrim($sql, ", ");
-                $sql .= ")";
-                $sql = rtrim($sql, ", ");
-                $conn->query($sql);
-                $stu_id = $conn->insert_id;
-
-
-                if (!empty($stu_id)) {
-                    $sqle = 'INSERT INTO pupilsightStaff (pupilsightPersonID,type) VALUES ("' . $stu_id . '","' . $alrow['at_type'] . '")';
-                    $enrol = $conn->query($sqle);
-                }
+            } catch (Exception $ex) {
+                print_r($ex);
             }
         }
 

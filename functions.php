@@ -7,23 +7,24 @@ use Pupilsight\Forms\Form;
 use Pupilsight\Services\Format;
 use Pupilsight\Contracts\Comms\Mailer;
 
-require_once dirname(__FILE__).'/pupilsight.php';
+require_once dirname(__FILE__) . '/pupilsight.php';
 
-function getIPAddress() {
+function getIPAddress()
+{
     $return = false;
 
     if (getenv('HTTP_CLIENT_IP'))
-       $return = getenv('HTTP_CLIENT_IP');
-    else if(getenv('HTTP_X_FORWARDED_FOR'))
-       $return = getenv('HTTP_X_FORWARDED_FOR');
-    else if(getenv('HTTP_X_FORWARDED'))
-       $return = getenv('HTTP_X_FORWARDED');
-    else if(getenv('HTTP_FORWARDED_FOR'))
-       $return = getenv('HTTP_FORWARDED_FOR');
-    else if(getenv('HTTP_FORWARDED'))
-      $return = getenv('HTTP_FORWARDED');
-    else if(getenv('REMOTE_ADDR'))
-       $return = getenv('REMOTE_ADDR');
+        $return = getenv('HTTP_CLIENT_IP');
+    else if (getenv('HTTP_X_FORWARDED_FOR'))
+        $return = getenv('HTTP_X_FORWARDED_FOR');
+    else if (getenv('HTTP_X_FORWARDED'))
+        $return = getenv('HTTP_X_FORWARDED');
+    else if (getenv('HTTP_FORWARDED_FOR'))
+        $return = getenv('HTTP_FORWARDED_FOR');
+    else if (getenv('HTTP_FORWARDED'))
+        $return = getenv('HTTP_FORWARDED');
+    else if (getenv('REMOTE_ADDR'))
+        $return = getenv('REMOTE_ADDR');
 
     return $return;
 }
@@ -39,7 +40,7 @@ function emailBodyConvert($body)
     $return = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $return);
     $return = strip_tags($return, '<a>');
 
-    return $return ;
+    return $return;
 }
 
 /**
@@ -54,7 +55,7 @@ function emailBodyConvert($body)
  *
  * @return string The resulted translation string.
  */
-function __($text, $params=[], $options=[])
+function __($text, $params = [], $options = [])
 {
     global $pupilsight, $guid; // For backwards compatibilty
 
@@ -148,7 +149,7 @@ function renderGradeScaleSelect($connection2, $guid, $pupilsightScaleID, $fieldN
 {
     $return = false;
 
-    $return .= "<select name='$fieldName' id='$fieldName' style='width: ".$width."px'>";
+    $return .= "<select name='$fieldName' id='$fieldName' style='width: " . $width . "px'>";
     try {
         $dataSelect = array('pupilsightScaleID' => $pupilsightScaleID);
         $sqlSelect = 'SELECT * FROM pupilsightScaleGrade WHERE pupilsightScaleID=:pupilsightScaleID ORDER BY sequenceNumber';
@@ -175,9 +176,9 @@ function renderGradeScaleSelect($connection2, $guid, $pupilsightScaleID, $fieldN
             }
         }
         if ($valueMode == 'value') {
-            $return .= "<option $selected value='".htmlPrep($rowSelect['value'])."'>".htmlPrep(__($rowSelect['value'])).'</option>';
+            $return .= "<option $selected value='" . htmlPrep($rowSelect['value']) . "'>" . htmlPrep(__($rowSelect['value'])) . '</option>';
         } else {
-            $return .= "<option $selected value='".htmlPrep($rowSelect['pupilsightScaleGradeID'])."'>".htmlPrep(__($rowSelect['value'])).'</option>';
+            $return .= "<option $selected value='" . htmlPrep($rowSelect['pupilsightScaleGradeID']) . "'>" . htmlPrep(__($rowSelect['value'])) . '</option>';
         }
     }
     $return .= '</select>';
@@ -197,7 +198,7 @@ function tinymceStyleStripTags($string, $connection2)
     $allowableTagTokens = explode(',', $allowableTags);
     $allowableTags = '';
     foreach ($allowableTagTokens as $allowableTagToken) {
-        $allowableTags .= '&lt;'.$allowableTagToken.'&gt;';
+        $allowableTags .= '&lt;' . $allowableTagToken . '&gt;';
     }
     $allowableTags = html_entity_decode($allowableTags);
     $comment = strip_tags($comment, $allowableTags);
@@ -248,12 +249,12 @@ function ynExpander($guid, $yn, $translation = true)
 function daysUntilNextBirthday($birthday)
 {
     $today = date('Y-m-d');
-    $btsString = substr($today, 0, 4).'-'.substr($birthday, 5);
+    $btsString = substr($today, 0, 4) . '-' . substr($birthday, 5);
     $bts = strtotime($btsString);
     $ts = time();
 
     if ($bts < $ts) {
-        $bts = strtotime(date('y', strtotime('+1 year')).'-'.substr($birthday, 5));
+        $bts = strtotime(date('y', strtotime('+1 year')) . '-' . substr($birthday, 5));
     }
 
     $days = ceil(($bts - $ts) / 86400);
@@ -297,64 +298,64 @@ function getSmartWorkflowHelp($connection2, $guid, $step = '')
         if ($row['smartWorkflowHelp'] == 'Y') {
             $output = "<div id='smartWorkflowHelp' class='message' style='padding-top: 14px'>";
             $output .= "<div style='padding: 0 7px'>";
-            $output .= "<span style='font-size: 175%'><i><b>".__('Smart Workflow').'</b></i> '.__('Getting Started').'</span><br/>';
-            $output .= __("Designed and built by teachers, Pupilsight's Smart Workflow takes care of the boring stuff, so you can get on with teaching.").'<br/>';
+            $output .= "<span style='font-size: 175%'><i><b>" . __('Smart Workflow') . '</b></i> ' . __('Getting Started') . '</span><br/>';
+            $output .= __("Designed and built by teachers, Pupilsight's Smart Workflow takes care of the boring stuff, so you can get on with teaching.") . '<br/>';
             $output .= '</div>';
             $output .= "<table cellspacing='0' style='width: 100%; margin: 10px 0px; border-spacing: 4px;'>";
             $output .= '<tr>';
             if ($step == 1) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('One').'</span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Create %1$s Outcomes'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('One') . '</span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(__('Create %1$s Outcomes'), '<br/>') . '</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('One').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/outcomes.php'>".sprintf(__('Create %1$s Outcomes'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('One') . '</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Planner/outcomes.php'>" . sprintf(__('Create %1$s Outcomes'), '<br/>') . '</span><br/></a>';
                 $output .= '</td>';
             }
             if ($step == 2) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Two').'</span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Plan & Deploy %1$s Smart Units'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('Two') . '</span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(__('Plan & Deploy %1$s Smart Units'), '<br/>') . '</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Two').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units.php'>".sprintf(__('Plan & Deploy %1$s Smart Units'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('Two') . '</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Planner/units.php'>" . sprintf(__('Plan & Deploy %1$s Smart Units'), '<br/>') . '</span><br/></a>';
                 $output .= '</td>';
             }
             if ($step == 3) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Three').'</span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Share, Teach %1$s & Interact'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('Three') . '</span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(__('Share, Teach %1$s & Interact'), '<br/>') . '</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Three').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".sprintf(__('Share, Teach %1$s & Interact'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('Three') . '</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Planner/planner.php'>" . sprintf(__('Share, Teach %1$s & Interact'), '<br/>') . '</span><br/></a>';
                 $output .= '</td>';
             }
             if ($step == 4) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Four').'</span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Assign & Collect %1$s Work'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('Four') . '</span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(__('Assign & Collect %1$s Work'), '<br/>') . '</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Four').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php'>".sprintf(__('Assign & Collect %1$s Work'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('Four') . '</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Planner/planner_deadlines.php'>" . sprintf(__('Assign & Collect %1$s Work'), '<br/>') . '</span><br/></a>';
                 $output .= '</td>';
             }
             if ($step == 5) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Five').'</span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Assess & Give %1$s Feedback'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('Five') . '</span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>" . sprintf(__('Assess & Give %1$s Feedback'), '<br/>') . '</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Five').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_view.php'>".sprintf(__('Assess & Give %1$s Feedback'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>" . __('Five') . '</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Markbook/markbook_view.php'>" . sprintf(__('Assess & Give %1$s Feedback'), '<br/>') . '</span><br/></a>';
                 $output .= '</td>';
             }
             $output .= '</tr>';
@@ -362,27 +363,27 @@ function getSmartWorkflowHelp($connection2, $guid, $step = '')
                 $output .= '<tr>';
                 $output .= "<td style='text-align: justify; font-size: 125%; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 15px 4px' colspan=5>";
                 if ($step == 1) {
-                    $output .= __('<b>Outcomes</b> provide a way to plan and track what is being taught in school, and so are a great place to get started.<br/><br/>Click on the "Add" button (below this message, on the right) to add a new outcome, which can either be school-wide, or attached to a particular department.').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to be in a department, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= __('<b>Outcomes</b> provide a way to plan and track what is being taught in school, and so are a great place to get started.<br/><br/>Click on the "Add" button (below this message, on the right) to add a new outcome, which can either be school-wide, or attached to a particular department.') . '<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . __('<b>Note</b>: You need to be in a department, with the correct permissions, in order to be able to do this.') . ' ' . sprintf(__('Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]['organisationAdministratorEmail'] . "'>" . $_SESSION[$guid]['organisationAdministratorName'] . '</a>') . '</div>';
                 } elseif ($step == 2) {
-                    $output .= __('<b>Smart Units</b> support you in the design of course content, and can be quickly turned into individual lesson plans using intuitive drag and drop. Smart Units cut planning time dramatically, and support ongoing improvement and reuse of content.<br/><br/>Choose a course, using the dropdown menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit. Once your master unit is complete, deploy it to a class to create your lesson plans.').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to be in a department, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= __('<b>Smart Units</b> support you in the design of course content, and can be quickly turned into individual lesson plans using intuitive drag and drop. Smart Units cut planning time dramatically, and support ongoing improvement and reuse of content.<br/><br/>Choose a course, using the dropdown menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit. Once your master unit is complete, deploy it to a class to create your lesson plans.') . '<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . __('<b>Note</b>: You need to be in a department, with the correct permissions, in order to be able to do this.') . ' ' . sprintf(__('Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]['organisationAdministratorEmail'] . "'>" . $_SESSION[$guid]['organisationAdministratorName'] . '</a>') . '</div>';
                 } elseif ($step == 3) {
-                    $output .= sprintf(__('<b>Planner</b> supports online lesson plans which can be shared with students, parents and other teachers. Create your lesson by hand, or automatically via %1$sSmart Units%2$s. Lesson plans facilitate sharing of course content, homework assignment and submission, text chat, and attendance taking.<br/><br/>Choose a date or class, using the menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units.php'>", '</a>').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= sprintf(__('<b>Planner</b> supports online lesson plans which can be shared with students, parents and other teachers. Create your lesson by hand, or automatically via %1$sSmart Units%2$s. Lesson plans facilitate sharing of course content, homework assignment and submission, text chat, and attendance taking.<br/><br/>Choose a date or class, using the menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit.'), "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Planner/units.php'>", '</a>') . '<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . __('<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.') . ' ' . sprintf(__('Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]['organisationAdministratorEmail'] . "'>" . $_SESSION[$guid]['organisationAdministratorName'] . '</a>') . '</div>';
                 } elseif ($step == 4) {
-                    $output .= sprintf(__('<b>Homework + Deadlines</b> allows teachers and students to see upcoming deadlines, cleanly displayed in one place. Click on an entry to view the details for that piece of homework, and the lesson it is attached to.<br/><br/>Homework can be assigned using the %1$sPlanner%2$s, which also allows teachers to view all submitted work, and records late and incomplete work.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>", '</a>').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= sprintf(__('<b>Homework + Deadlines</b> allows teachers and students to see upcoming deadlines, cleanly displayed in one place. Click on an entry to view the details for that piece of homework, and the lesson it is attached to.<br/><br/>Homework can be assigned using the %1$sPlanner%2$s, which also allows teachers to view all submitted work, and records late and incomplete work.'), "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Planner/planner.php'>", '</a>') . '<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . __('<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.') . ' ' . sprintf(__('Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]['organisationAdministratorEmail'] . "'>" . $_SESSION[$guid]['organisationAdministratorName'] . '</a>') . '</div>';
                 } elseif ($step == 5) {
-                    $output .= sprintf(__('<b>Markbook</b> provides an organised way to assess, record and report on student progress. Use grade scales, rubrics, comments and file uploads to keep students and parents up to date. Link markbooks to the %1$sPlanner%2$s, and see student work as you are marking it.<br/><br/>Choose a class from the menu on the right, and then click on the "Add" button (below this message, on the right) to create a new markbook column.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>", '</a>').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= sprintf(__('<b>Markbook</b> provides an organised way to assess, record and report on student progress. Use grade scales, rubrics, comments and file uploads to keep students and parents up to date. Link markbooks to the %1$sPlanner%2$s, and see student work as you are marking it.<br/><br/>Choose a class from the menu on the right, and then click on the "Add" button (below this message, on the right) to create a new markbook column.'), "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Planner/planner.php'>", '</a>') . '<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>" . __('<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.') . ' ' . sprintf(__('Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]['organisationAdministratorEmail'] . "'>" . $_SESSION[$guid]['organisationAdministratorName'] . '</a>') . '</div>';
                 }
                 $output .= '</td>';
                 $output .= '</tr>';
             }
             $output .= '</table>';
             $output .= "<div style='text-align: right; font-size: 90%; padding: 0 7px'>";
-            $output .= "<a title='".__('Dismiss Smart Workflow Help')."' onclick='$(\"#smartWorkflowHelp\").fadeOut(1000); $.ajax({ url: \"".$_SESSION[$guid]['absoluteURL']."/index_SmartWorkflowHelpAjax.php\"})' href='#'>".__('Dismiss Smart Workflow Help').'</a>';
+            $output .= "<a title='" . __('Dismiss Smart Workflow Help') . "' onclick='$(\"#smartWorkflowHelp\").fadeOut(1000); $.ajax({ url: \"" . $_SESSION[$guid]['absoluteURL'] . "/index_SmartWorkflowHelpAjax.php\"})' href='#'>" . __('Dismiss Smart Workflow Help') . '</a>';
             $output .= '</div>';
             $output .= '</div>';
         }
@@ -442,19 +443,19 @@ function getPasswordPolicy($guid, $connection2)
     if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
         $output .= __('An error occurred.');
     } elseif ($alpha != 'N' or $numeric != 'N' or $punctuation != 'N' or $minLength >= 0) {
-        $output .= __('The password policy stipulates that passwords must:').'<br/>';
+        $output .= __('The password policy stipulates that passwords must:') . '<br/>';
         $output .= '<ul>';
         if ($alpha == 'Y') {
-            $output .= '<li>'.__('Contain at least one lowercase letter, and one uppercase letter.').'</li>';
+            $output .= '<li>' . __('Contain at least one lowercase letter, and one uppercase letter.') . '</li>';
         }
         if ($numeric == 'Y') {
-            $output .= '<li>'.__('Contain at least one number.').'</li>';
+            $output .= '<li>' . __('Contain at least one number.') . '</li>';
         }
         if ($punctuation == 'Y') {
-            $output .= '<li>'.__('Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).').'</li>';
+            $output .= '<li>' . __('Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).') . '</li>';
         }
         if ($minLength >= 0) {
-            $output .= '<li>'.sprintf(__('Must be at least %1$s characters in length.'), $minLength).'</li>';
+            $output .= '<li>' . sprintf(__('Must be at least %1$s characters in length.'), $minLength) . '</li>';
         }
         $output .= '</ul>';
     }
@@ -464,17 +465,17 @@ function getPasswordPolicy($guid, $connection2)
 
 function getFastFinder($connection2, $guid)
 {
-    $form = Form::create('fastFinder', $_SESSION[$guid]['absoluteURL'].'/indexFindRedirect.php', 'get');
+    $form = Form::create('fastFinder', $_SESSION[$guid]['absoluteURL'] . '/indexFindRedirect.php', 'get');
     $form->setClass('blank fullWidth ');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     // $row = $form->addRow();
-   
+
     //     $row->addFinder('fastFinderSearch')
     //         ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
     //         ->setClass('w-full text-selected bordercls')
-        
+
     //         ->setParameter('noResultsText', __('No results'))
     //         ->setParameter('searchingText', __('Searching...'))
     //         ->setParameter('tokenLimit', 1)
@@ -484,20 +485,20 @@ function getFastFinder($connection2, $guid)
     //         ->setClass('searchhomepagecls');
 
     $row = $form->addRow();
-        $row->addContent('<span class="flaticon-search mr-3 mbl_hide" aria-hidden="true"></span>');
-        $row->addFinder('fastFinderSearch')
-            ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
-            ->setClass('w-full bordercls')
-        
-            ->setParameter('noResultsText', __('No results'))
-            ->setParameter('searchingText', __('Searching...'))
-            ->setParameter('tokenLimit', 1)
-            ->setParameter('placeholder',__('Start typing a name...'))
-            ->addValidation('Validate.Presence', 'failureMessage: " "');
-        $row->addSubmit(__('Go'))
-            ->setClass('searchhomepagecls');
+    $row->addContent('<span class="flaticon-search mr-3 mbl_hide" aria-hidden="true"></span>');
+    $row->addFinder('fastFinderSearch')
+        ->fromAjax($_SESSION[$guid]['absoluteURL'] . '/index_fastFinder_ajax.php')
+        ->setClass('w-full bordercls')
 
-            
+        ->setParameter('noResultsText', __('No results'))
+        ->setParameter('searchingText', __('Searching...'))
+        ->setParameter('tokenLimit', 1)
+        ->setParameter('placeholder', __('Start typing a name...'))
+        ->addValidation('Validate.Presence', 'failureMessage: " "');
+    $row->addSubmit(__('Go'))
+        ->setClass('searchhomepagecls');
+
+
 
     $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
@@ -614,13 +615,13 @@ function getModuleEntry($address, $connection2, $guid)
 
     try {
         $data = array('moduleName' => getModuleName($address), 'pupilsightRoleID' => $_SESSION[$guid]['pupilsightRoleIDCurrent']);
-        $sql = "SELECT DISTINCT pupilsightModule.name, pupilsightModule.category, pupilsightModule.entryURL FROM `pupilsightModule`, pupilsightAction, pupilsightPermission WHERE pupilsightModule.name=:moduleName AND (active='Y') AND (pupilsightModule.pupilsightModuleID=pupilsightAction.pupilsightModuleID) AND (pupilsightAction.pupilsightActionID=pupilsightPermission.pupilsightActionID) AND (pupilsightPermission.pupilsightRoleID=:pupilsightRoleID) ORDER BY category, name";
+        $sql = "SELECT DISTINCT pupilsightModule.name, pupilsightModule.category, pupilsightModule.entryURL FROM `pupilsightModule`, pupilsightAction, pupilsightPermission WHERE pupilsightModule.name=:moduleName AND (active='Y') AND (pupilsightModule.pupilsightModuleID=pupilsightAction.pupilsightModuleID) AND (pupilsightAction.pupilsightActionID=pupilsightPermission.pupilsightActionID) AND (pupilsightPermission.pupilsightRoleID=:pupilsightRoleID) ORDER BY pupilsightModule.category, pupilsightModule.name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
         if ($result->rowCount() == 1) {
             $row = $result->fetch();
             $entryURL = $row['entryURL'];
-            if (isActionAccessible($guid, $connection2, '/modules/'.$row['name'].'/'.$entryURL) == false and $entryURL != 'index.php') {
+            if (isActionAccessible($guid, $connection2, '/modules/' . $row['name'] . '/' . $entryURL) == false and $entryURL != 'index.php') {
                 try {
                     $dataEntry = array('pupilsightRoleID' => $_SESSION[$guid]['pupilsightRoleIDCurrent'], 'moduleName' => $row['name']);
                     $sqlEntry = "SELECT DISTINCT pupilsightAction.entryURL FROM pupilsightModule, pupilsightAction, pupilsightPermission WHERE (active='Y') AND (pupilsightModule.pupilsightModuleID=pupilsightAction.pupilsightModuleID) AND (pupilsightAction.pupilsightActionID=pupilsightPermission.pupilsightActionID) AND (pupilsightPermission.pupilsightRoleID=:pupilsightRoleID) AND pupilsightModule.name=:moduleName ORDER BY pupilsightAction.name";
@@ -677,8 +678,8 @@ function getYearGroups($connection2)
         $sql = 'SELECT * FROM pupilsightYearGroup ORDER BY sequenceNumber';
         $result = $connection2->query($sql);
         while ($row = $result->fetch()) {
-            $output .= $row['pupilsightYearGroupID'].',';
-            $output .= $row['name'].',';
+            $output .= $row['pupilsightYearGroupID'] . ',';
+            $output .= $row['name'] . ',';
         }
     } catch (PDOException $e) {
     }
@@ -702,7 +703,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
         $years = explode(',', $ids);
         if (count($years) > 0 and $years[0] != '') {
             if (count($years) == $resultYears->rowCount()) {
-                $output = '<i>'.__('All').'</i>';
+                $output = '<i>' . __('All') . '</i>';
             } else {
                 try {
                     $dataYears = array();
@@ -710,10 +711,10 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
                     for ($i = 0; $i < count($years); ++$i) {
                         if ($i == 0) {
                             $dataYears[$years[$i]] = $years[$i];
-                            $sqlYearsOr = $sqlYearsOr.' WHERE pupilsightYearGroupID=:'.$years[$i];
+                            $sqlYearsOr = $sqlYearsOr . ' WHERE pupilsightYearGroupID=:' . $years[$i];
                         } else {
                             $dataYears[$years[$i]] = $years[$i];
-                            $sqlYearsOr = $sqlYearsOr.' OR pupilsightYearGroupID=:'.$years[$i];
+                            $sqlYearsOr = $sqlYearsOr . ' OR pupilsightYearGroupID=:' . $years[$i];
                         }
                     }
 
@@ -741,7 +742,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
                 }
             }
         } else {
-            $output = '<i>'.__('None').'</i>';
+            $output = '<i>' . __('None') . '</i>';
         }
     } catch (PDOException $e) {
     }
@@ -763,11 +764,11 @@ function getTerms($connection2, $pupilsightSchoolYearID, $short = false)
     }
 
     while ($row = $result->fetch()) {
-        $output .= $row['pupilsightSchoolYearTermID'].',';
+        $output .= $row['pupilsightSchoolYearTermID'] . ',';
         if ($short == true) {
-            $output .= $row['nameShort'].',';
+            $output .= $row['nameShort'] . ',';
         } else {
-            $output .= $row['name'].',';
+            $output .= $row['name'] . ',';
         }
     }
     if ($output != false) {
@@ -823,15 +824,15 @@ function getMaxUpload($guid, $multiple = '')
     $output .= "<div style='margin-top: 10px; font-style: italic; color: #c00'>";
     if ($multiple == true) {
         if ($post < $file) {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $post).'<br/>';
+            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $post) . '<br/>';
         } else {
-            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $file).'<br/>';
+            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $file) . '<br/>';
         }
     } else {
         if ($post < $file) {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $post).'<br/>';
+            $output .= sprintf(__('Maximum file size: %1$sMB'), $post) . '<br/>';
         } else {
-            $output .= sprintf(__('Maximum file size: %1$sMB'), $file).'<br/>';
+            $output .= sprintf(__('Maximum file size: %1$sMB'), $file) . '<br/>';
         }
     }
     $output .= '</div>';
@@ -886,7 +887,7 @@ function getHighestGroupedAction($guid, $address, $connection2)
     $moduleID = checkModuleReady($address, $connection2);
 
     try {
-        $data = array('actionName' => '%'.getActionName($address).'%', 'pupilsightRoleID' => $_SESSION[$guid]['pupilsightRoleIDCurrent'], 'moduleID' => $moduleID);
+        $data = array('actionName' => '%' . getActionName($address) . '%', 'pupilsightRoleID' => $_SESSION[$guid]['pupilsightRoleIDCurrent'], 'moduleID' => $moduleID);
         $sql = 'SELECT pupilsightAction.name FROM pupilsightAction, pupilsightPermission, pupilsightRole WHERE (pupilsightAction.URLList LIKE :actionName) AND (pupilsightAction.pupilsightActionID=pupilsightPermission.pupilsightActionID) AND (pupilsightPermission.pupilsightRoleID=pupilsightRole.pupilsightRoleID) AND (pupilsightPermission.pupilsightRoleID=:pupilsightRoleID) AND (pupilsightAction.pupilsightModuleID=:moduleID) ORDER BY precedence DESC';
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -904,7 +905,6 @@ function getHighestGroupedAction($guid, $address, $connection2)
 function getRoleCategory($pupilsightRoleID, $connection2)
 {
     $output = false;
-
     try {
         $data = array('pupilsightRoleID' => $pupilsightRoleID);
         $sql = 'SELECT * FROM pupilsightRole WHERE pupilsightRoleID=:pupilsightRoleID';
@@ -947,7 +947,7 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
         $sqlWhere = '';
         if ($allYears != true) {
             $data[$_SESSION[$guid]['pupilsightSchoolYearID']] = $_SESSION[$guid]['pupilsightSchoolYearID'];
-            $sqlWhere = ' AND pupilsightSchoolYear.pupilsightSchoolYearID=:'.$_SESSION[$guid]['pupilsightSchoolYearID'];
+            $sqlWhere = ' AND pupilsightSchoolYear.pupilsightSchoolYearID=:' . $_SESSION[$guid]['pupilsightSchoolYearID'];
         }
 
         $sql = "SELECT pupilsightSchoolYearTerm.firstDay, pupilsightSchoolYearTerm.lastDay FROM pupilsightSchoolYearTerm, pupilsightSchoolYear WHERE pupilsightSchoolYearTerm.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID $sqlWhere";
@@ -1023,12 +1023,13 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
             $sqlAlert = "SELECT * FROM pupilsightINPersonDescriptor JOIN pupilsightAlertLevel ON (pupilsightINPersonDescriptor.pupilsightAlertLevelID=pupilsightAlertLevel.pupilsightAlertLevelID) WHERE pupilsightPersonID=:pupilsightPersonID ORDER BY sequenceNumber DESC";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {}
+        } catch (PDOException $e) {
+        }
 
         if ($alert = $resultAlert->fetch()) {
             $title = $resultAlert->rowCount() == 1
-                ? $resultAlert->rowCount().' '.sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $alert['name'])
-                : $resultAlert->rowCount().' '.sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
+                ? $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $alert['name'])
+                : $resultAlert->rowCount() . ' ' . sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $alert['name']);
 
             $alerts[] = [
                 'highestLevel'    => __($alert['name']),
@@ -1036,7 +1037,7 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
                 'highestColourBG' => $alert['colorBG'],
                 'tag'             => __('IN'),
                 'title'           => $title,
-                'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID='.$pupilsightPersonID.'&subpage=Individual Needs',
+                'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID=' . $pupilsightPersonID . '&subpage=Individual Needs',
             ];
         }
 
@@ -1059,7 +1060,8 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
                 ";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {}
+        } catch (PDOException $e) {
+        }
 
         $academicAlertLowThreshold = getSettingByScope($connection2, 'Students', 'academicAlertLowThreshold');
         $academicAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'academicAlertMediumThreshold');
@@ -1070,10 +1072,10 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
             $alertThresholdText = sprintf(__('This alert level occurs when there are more than %1$s events recorded for a student.'), $academicAlertHighThreshold);
         } elseif ($resultAlert->rowCount() >= $academicAlertMediumThreshold) {
             $pupilsightAlertLevelID = 002;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertMediumThreshold, ($academicAlertHighThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertMediumThreshold, ($academicAlertHighThreshold - 1));
         } elseif ($resultAlert->rowCount() >= $academicAlertLowThreshold) {
             $pupilsightAlertLevelID = 003;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold - 1));
         }
         if ($pupilsightAlertLevelID != '') {
             if ($alert = getAlert($guid, $connection2, $pupilsightAlertLevelID)) {
@@ -1082,8 +1084,8 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
                     'highestColour'   => $alert['color'],
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('A'),
-                    'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID='.$pupilsightPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['pupilsightSchoolYearID'],
+                    'title'           => sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])) . ' ' . $alertThresholdText,
+                    'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID=' . $pupilsightPersonID . '&subpage=Markbook&filter=' . $_SESSION[$guid]['pupilsightSchoolYearID'],
                 ];
             }
         }
@@ -1096,7 +1098,8 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
             $sqlAlert = "SELECT * FROM pupilsightBehaviour WHERE pupilsightPersonID=:pupilsightPersonID AND type='Negative' AND date>:date";
             $resultAlert = $connection2->prepare($sqlAlert);
             $resultAlert->execute($dataAlert);
-        } catch (PDOException $e) {}
+        } catch (PDOException $e) {
+        }
 
         $behaviourAlertLowThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertLowThreshold');
         $behaviourAlertMediumThreshold = getSettingByScope($connection2, 'Students', 'behaviourAlertMediumThreshold');
@@ -1107,10 +1110,10 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
             $alertThresholdText = sprintf(__('This alert level occurs when there are more than %1$s events recorded for a student.'), $behaviourAlertHighThreshold);
         } elseif ($resultAlert->rowCount() >= $behaviourAlertMediumThreshold) {
             $pupilsightAlertLevelID = 002;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertMediumThreshold, ($behaviourAlertHighThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertMediumThreshold, ($behaviourAlertHighThreshold - 1));
         } elseif ($resultAlert->rowCount() >= $behaviourAlertLowThreshold) {
             $pupilsightAlertLevelID = 003;
-            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertLowThreshold, ($behaviourAlertMediumThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertLowThreshold, ($behaviourAlertMediumThreshold - 1));
         }
 
         if ($pupilsightAlertLevelID != '') {
@@ -1120,8 +1123,8 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
                     'highestColour'   => $alert['color'],
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('B'),
-                    'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText,
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID='.$pupilsightPersonID.'&subpage=Behaviour',
+                    'title'           => sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])) . ' ' . $alertThresholdText,
+                    'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID=' . $pupilsightPersonID . '&subpage=Behaviour',
                 ];
             }
         }
@@ -1134,7 +1137,7 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
                 'highestColourBG' => $alert[4],
                 'tag'             => __('M'),
                 'title'           => sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $alert[1]),
-                'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID='.$pupilsightPersonID.'&subpage=Medical',
+                'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID=' . $pupilsightPersonID . '&subpage=Medical',
             ];
         }
 
@@ -1148,7 +1151,7 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
                     'highestColourBG' => $alert['colorBG'],
                     'tag'             => __('P'),
                     'title'           => sprintf(__('Privacy is required: %1$s'), $privacy),
-                    'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID='.$pupilsightPersonID,
+                    'link'            => './index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID=' . $pupilsightPersonID,
                 ];
             }
         }
@@ -1161,7 +1164,7 @@ function getAlertBar($guid, $connection2, $pupilsightPersonID, $privacy = '', $d
 
         foreach ($alerts as $alert) {
             $style = "color: #{$alert['highestColour']}; border-color: #{$alert['highestColour']}; background-color: #{$alert['highestColourBG']};";
-            $class = $classDefault .' '. ($alert['class'] ?? 'float-left');
+            $class = $classDefault . ' ' . ($alert['class'] ?? 'float-left');
             $output .= Format::link($alert['link'], $alert['tag'], [
                 'title' => $alert['title'],
                 'class' => $class,
@@ -1300,7 +1303,7 @@ function setLanguageSession($guid, $row, $defaultLanguage = true)
 }
 
 //Gets the desired setting, specified by name and scope.
-function getSettingByScope($connection2, $scope, $name, $returnRow = false )
+function getSettingByScope($connection2, $scope, $name, $returnRow = false)
 {
     try {
         $data = array('scope' => $scope, 'name' => $name);
@@ -1355,7 +1358,7 @@ function isActionAccessible($guid, $connection2, $address, $sub = '')
             if ($moduleID != false) {
                 //Check current role has access rights to the current action.
                 try {
-                    $data = array('actionName' => '%'.getActionName($address).'%', 'pupilsightRoleID' => $_SESSION[$guid]['pupilsightRoleIDCurrent']);
+                    $data = array('actionName' => '%' . getActionName($address) . '%', 'pupilsightRoleID' => $_SESSION[$guid]['pupilsightRoleIDCurrent']);
                     $sqlWhere = '';
                     if ($sub != '') {
                         $data['sub'] = $sub;
@@ -1417,17 +1420,17 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
     } else {
         $class = 'paginationTop';
     }
-    
+
     echo "<div class='$class'>";
     $totalPages = ceil($total / $pagination);
     $i = 0;
-    echo __('Records').' '.(($page - 1) * $_SESSION[$guid]['pagination'] + 1).'-';
+    echo __('Records') . ' ' . (($page - 1) * $_SESSION[$guid]['pagination'] + 1) . '-';
     if (($page * $_SESSION[$guid]['pagination']) > $total) {
         echo $total;
     } else {
         echo $page * $_SESSION[$guid]['pagination'];
     }
-    echo ' '.__('of').' '.$total.' : ';
+    echo ' ' . __('of') . ' ' . $total . ' : ';
 
     // if ($totalPages <= 1) {
     //     for ($i = 0;$i <= ($total / $pagination);++$i) {
@@ -1438,30 +1441,30 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
     //         }
     //     }
     // } else {
-        if ($page > 1) {
-            // echo "<a class='padipag newpgn prv paginate rounded-l text-gray bg-gray border-gray hover:bg-gray border -ml-px px-2 py-1 font-bold leading-loose ml-1' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address']."&page=1&$get'>".__('First').'</a> ';
-            echo "<a class='padipag newpgn prv paginate rounded-l text-gray bg-gray border-gray hover:bg-gray border -ml-px px-2 py-1 font-bold leading-loose ml-1' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page - 1)."&$get'>".__('Prev').'</a> ';
-        } else {
-            // echo "<a class='padipag newpgn prv paginate rounded-r text-gray border-gray  border -ml-px px-2 py-1 font-bold leading-loose ml-1' >".__('First').'</a> ';
-            echo "<a class='padipag newpgn prv paginate rounded-r text-gray border-gray  border -ml-px px-2 py-1 font-bold leading-loose ml-1' >".__('Prev').'</a> ';
-        }
+    if ($page > 1) {
+        // echo "<a class='padipag newpgn prv paginate rounded-l text-gray bg-gray border-gray hover:bg-gray border -ml-px px-2 py-1 font-bold leading-loose ml-1' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address']."&page=1&$get'>".__('First').'</a> ';
+        echo "<a class='padipag newpgn prv paginate rounded-l text-gray bg-gray border-gray hover:bg-gray border -ml-px px-2 py-1 font-bold leading-loose ml-1' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_SESSION[$guid]['address'] . '&page=' . ($page - 1) . "&$get'>" . __('Prev') . '</a> ';
+    } else {
+        // echo "<a class='padipag newpgn prv paginate rounded-r text-gray border-gray  border -ml-px px-2 py-1 font-bold leading-loose ml-1' >".__('First').'</a> ';
+        echo "<a class='padipag newpgn prv paginate rounded-r text-gray border-gray  border -ml-px px-2 py-1 font-bold leading-loose ml-1' >" . __('Prev') . '</a> ';
+    }
 
-        $spread = 10;
-        for ($i = 0;$i <= ($total / $pagination);++$i) {
-            if ($i == ($page - 1)) {
-                echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose bg-blue-500 border-blue-700 text-selected relative z-10 ml-1' >".$page.'</a> ';
-            } elseif ($i > ($page - (($spread / 2) + 2)) and $i < ($page + (($spread / 2)))) {
-                echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose text-gray hover:bg-gray border-gray ml-1' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($i + 1)."&$get'>".($i + 1).'</a> ';
-            }
+    $spread = 10;
+    for ($i = 0; $i <= ($total / $pagination); ++$i) {
+        if ($i == ($page - 1)) {
+            echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose bg-blue-500 border-blue-700 text-selected relative z-10 ml-1' >" . $page . '</a> ';
+        } elseif ($i > ($page - (($spread / 2) + 2)) and $i < ($page + (($spread / 2)))) {
+            echo "<a class='padipag newpgn numbt paginate border -ml-px px-2 py-1 font-bold leading-loose text-gray hover:bg-gray border-gray ml-1' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_SESSION[$guid]['address'] . '&page=' . ($i + 1) . "&$get'>" . ($i + 1) . '</a> ';
         }
+    }
 
-        if ($page != $totalPages) {
-            echo "<a class='padipag newpgn prv paginate rounded-l text-gray bg-gray border-gray hover:bg-gray border -ml-px px-2 py-1 font-bold leading-loose ml-1'  href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page + 1)."&$get'>".__('Next').'</a> ';
-            // echo "<a class='padipag newpgn prv paginate rounded-l text-gray bg-gray border-gray hover:bg-gray border -ml-px px-2 py-1 font-bold leading-loose ml-1'  href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.$totalPages."&$get'>".__('Last').'</a> ';
-        } else {
-            echo "<a class='padipag newpgn prv paginate rounded-r text-gray border-gray  border -ml-px px-2 py-1 font-bold leading-loose ml-1' >".__('Next').'</a> ';
-            // echo "<a class='padipag newpgn prv paginate rounded-r text-gray border-gray  border -ml-px px-2 py-1 font-bold leading-loose ml-1' >".__('Last').'</a> ';
-        }
+    if ($page != $totalPages) {
+        echo "<a class='padipag newpgn prv paginate rounded-l text-gray bg-gray border-gray hover:bg-gray border -ml-px px-2 py-1 font-bold leading-loose ml-1'  href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_SESSION[$guid]['address'] . '&page=' . ($page + 1) . "&$get'>" . __('Next') . '</a> ';
+        // echo "<a class='padipag newpgn prv paginate rounded-l text-gray bg-gray border-gray hover:bg-gray border -ml-px px-2 py-1 font-bold leading-loose ml-1'  href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.$totalPages."&$get'>".__('Last').'</a> ';
+    } else {
+        echo "<a class='padipag newpgn prv paginate rounded-r text-gray border-gray  border -ml-px px-2 py-1 font-bold leading-loose ml-1' >" . __('Next') . '</a> ';
+        // echo "<a class='padipag newpgn prv paginate rounded-r text-gray border-gray  border -ml-px px-2 py-1 font-bold leading-loose ml-1' >".__('Last').'</a> ';
+    }
     // }
     echo '</div>';
 }
@@ -1684,7 +1687,8 @@ function getNextRollGroupID($pupilsightRollGroupID, $connection2)
         $sql = 'SELECT * FROM pupilsightRollGroup WHERE pupilsightRollGroupID=:pupilsightRollGroupID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) { }
+    } catch (PDOException $e) {
+    }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
         if (!is_null($row['pupilsightRollGroupIDNext'])) {
@@ -1726,8 +1730,8 @@ function randomPassword($length)
     $password = '';
 
     //Generate the password
-    for ($i = 0;$i < $length;++$i) {
-        $password = $password.substr($charList, rand(1, strlen($charList)), 1);
+    for ($i = 0; $i < $length; ++$i) {
+        $password = $password . substr($charList, rand(1, strlen($charList)), 1);
     }
 
     return $password;
@@ -1778,11 +1782,11 @@ function getLog($connection2, $pupilsightSchoolYearID, $pupilsightModuleID = nul
     if (is_array($array) && $array != null && $array != '' && !empty($array)) {
         $valNum = 0;
         foreach ($array as $key => $val) {
-            $keyName = 'key'.$valNum;
+            $keyName = 'key' . $valNum;
             $dataLog[$keyName] = $key;
-            $valName = 'val'.$valNum;
+            $valName = 'val' . $valNum;
             $dataLog[$valName] = $val;
-            $where .= " AND serialisedArray LIKE CONCAT('%', :".$keyName.", '%;%', :".$valName.", '%')";
+            $where .= " AND serialisedArray LIKE CONCAT('%', :" . $keyName . ", '%;%', :" . $valName . ", '%')";
             ++$valNum;
         }
     }
@@ -1828,7 +1832,7 @@ function getLog($connection2, $pupilsightSchoolYearID, $pupilsightModuleID = nul
     }
 
     try {
-        $sqlLog = 'SELECT * FROM pupilsightLog WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID '.$where.' ORDER BY timestamp DESC';
+        $sqlLog = 'SELECT * FROM pupilsightLog WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ' . $where . ' ORDER BY timestamp DESC';
         $resultLog = $connection2->prepare($sqlLog);
         $resultLog->execute($dataLog);
     } catch (PDOException $e) {
@@ -1885,7 +1889,8 @@ function getModuleIDFromName($connection2, $name)
  * @version 1st September 2016
  * @since   1st September 2016
  */
-function getPupilsightMailer($guid) {
+function getPupilsightMailer($guid)
+{
 
     global $container;
     $displayErrors = ini_get('display_errors');
@@ -1908,24 +1913,20 @@ function getPupilsightMailer($guid) {
  */
 function isCommandLineInterface()
 {
-    if (php_sapi_name() === 'cli')
-    {
+    if (php_sapi_name() === 'cli') {
         return true;
     }
 
     if (stripos(php_sapi_name(), 'cgi') !== false) {
-        if (defined('STDIN'))
-        {
+        if (defined('STDIN')) {
             return true;
         }
 
-        if (empty($_SERVER['REMOTE_ADDR']) and !isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv']) > 0)
-        {
+        if (empty($_SERVER['REMOTE_ADDR']) and !isset($_SERVER['HTTP_USER_AGENT']) and count($_SERVER['argv']) > 0) {
             return true;
         }
 
-        if (!array_key_exists('REQUEST_METHOD', $_SERVER))
-        {
+        if (!array_key_exists('REQUEST_METHOD', $_SERVER)) {
             return true;
         }
     }
@@ -1981,7 +1982,8 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
  * @return string
  *      The HTML ouput of the easy return display.
  */
-function returnProcessGetAlert($return, $editLink = null, $customReturns = null) {
+function returnProcessGetAlert($return, $editLink = null, $customReturns = null)
+{
     if (isset($return)) {
         $class = 'error';
         $returnMessage = 'Unknown Return';
@@ -2031,7 +2033,7 @@ function returnProcessGetAlert($return, $editLink = null, $customReturns = null)
             }
         }
         if ($class == 'success' && $editLink != null) {
-            $returnMessage .= ' '.sprintf(__('You can edit your newly created record %1$shere%2$s.'), "<a href='$editLink'>", '</a>');
+            $returnMessage .= ' ' . sprintf(__('You can edit your newly created record %1$shere%2$s.'), "<a href='$editLink'>", '</a>');
         }
 
         return ['context' => $class, 'text' => $returnMessage];

@@ -76,29 +76,30 @@ abstract class QueryableGateway extends Gateway
      * @return DataSet
      */
 
-    protected function runQuery(SelectInterface $query, QueryCriteria $criteria, $serial=FALSE)
+    protected function runQuery(SelectInterface $query, QueryCriteria $criteria, $serial = FALSE)
     {
+
+
         $query = $this->applyCriteria($query, $criteria);
         $result = $this->db()->select($query->getStatement(), $query->getBindValues());
-
+        
         $foundRows = $this->db()->selectOne("SELECT FOUND_ROWS()");
         $totalRows = $this->countAll();
         $dt = $result->toDataSet();
 
-        if($serial){
-            if($totalRows>0){
-                $len = count($dt->data);
-                $i = 0;
-                $cnt = 1;
-                while($i<$len){
-                    $dt->data[$i]["serial_number"] = $cnt;
-                    $cnt++;
-                    $i++;
-                }
+
+        if ($totalRows > 0 && $serial) {
+            $len = count($dt->data);
+            $i = 0;
+            $cnt = 1;
+            while ($i < $len) {
+                $dt->data[$i]["serial_number"] = $cnt;
+                $cnt++;
+                $i++;
             }
         }
-        
-       // die();
+
+        // die();
         return $dt->setResultCount($foundRows, $totalRows)->setPagination($criteria->getPage(), $criteria->getPageSize());
     }
 
@@ -107,14 +108,13 @@ abstract class QueryableGateway extends Gateway
         $query = $this->applyCriteria($query, $criteria);
 
         $result = $this->db()->select($query->getStatement(), $query->getBindValues());
-        
+
 
         $foundRows = $this->db()->selectOne("SELECT FOUND_ROWS()");
         $totalRows = $this->countAll();
-      
+
 
         return $result->toDataSetPublic()->setResultCount($foundRows, $totalRows)->setPagination($criteria->getPage(), $criteria->getPageSize());
-       
     }
 
     protected function runSelect(SelectInterface $query)
@@ -127,12 +127,12 @@ abstract class QueryableGateway extends Gateway
         return $this->db()->insert($query->getStatement(), $query->getBindValues());
     }
 
-    protected function runUpdate(UpdateInterface $query) : bool
+    protected function runUpdate(UpdateInterface $query): bool
     {
         return $this->db()->update($query->getStatement(), $query->getBindValues());
     }
 
-    protected function runDelete(DeleteInterface $query) : bool
+    protected function runDelete(DeleteInterface $query): bool
     {
         return $this->db()->delete($query->getStatement(), $query->getBindValues());
     }
@@ -161,7 +161,7 @@ abstract class QueryableGateway extends Gateway
         if ($criteria->hasSearchColumn() && $criteria->hasSearchText()) {
             $searchable = $this->getSearchableColumns();
 
-            $query->where(function($query) use ($criteria, $searchable) {
+            $query->where(function ($query) use ($criteria, $searchable) {
                 $searchText = $criteria->getSearchText();
                 foreach ($criteria->getSearchColumns() as $count => $column) {
                     if (!in_array($column, $searchable)) continue;
@@ -172,7 +172,7 @@ abstract class QueryableGateway extends Gateway
                 }
             });
         }
-        
+
         // Sort By
         if ($criteria->hasSort()) {
             foreach ($criteria->getSortBy() as $column => $direction) {
