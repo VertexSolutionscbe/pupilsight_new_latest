@@ -41,7 +41,7 @@ if ($isLoggedIn && $module = $page->getModule()) {
 
 
     $mid = $module->pupilsightModuleID;
-    $sql = 'SELECT p.category FROM pupilsightModule as p  WHERE p.pupilsightModuleID = "' . $mid . '"';
+    $sql = 'SELECT p.category FROM pupilsightModule AS p WHERE p.pupilsightModuleID = "' . $mid . '"';
     $result = $connection2->query($sql);
     $moduledata = $result->fetch();
     $moduleName = $moduledata['category'];

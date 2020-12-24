@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
     if ($pupilsightYearGroupID1 == '' or $subjectToClassId == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
+    } else {   
         try {
 
             $classId = explode(',', $subjectToClassId);
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
                 $subject_type = $getdata['subject_type'];
                 $di_mode = $getdata['di_mode'];
 
-                $getsqlskills = 'SELECT * FROM subjectSkillMapping WHERE pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" AND pupilsightSchoolYearID = "'.$academicID.'" AND pupilsightProgramID = "'.$programID.'" ';
+                $getsqlskills = 'SELECT * FROM subjectSkillMapping WHERE pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" AND pupilsightSchoolYearID = "'.$academicID.'" AND pupilsightProgramID = "'.$programID.'" AND pupilsightYearGroupID = "'.$cid.'" ';
                 $getresultskills = $connection2->query($getsqlskills);
                 $getskillsdata = $getresultskills->fetchAll();
 

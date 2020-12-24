@@ -275,16 +275,18 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         $chkFamily = 0;
                         if (!empty($alrow['&&_officialName'])) {
 
-                            $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE email = "' . $alrow['&&_email'] . '" ';
-                            $resultchk = $connection2->query($sqlchk);
-                            $pd = $resultchk->fetch();
-                            if (!empty($pd)) {
-                                $fat_id = $pd['pupilsightPersonID'];
-                                $family_id = $pd['pupilsightFamilyID'];
-                                $chkFamily = 1;
+                            if (!empty($alrow['&&_email'])) {
+                                $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE email = "' . $alrow['&&_email'] . '" ';
+                                $resultchk = $connection2->query($sqlchk);
+                                $pd = $resultchk->fetch();
+                                if (!empty($pd)) {
+                                    $fat_id = $pd['pupilsightPersonID'];
+                                    $family_id = $pd['pupilsightFamilyID'];
+                                    $chkFamily = 1;
 
-                                $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $fat_id . "," . $stu_id . ",'Father')";
-                                $conn->query($sqlf4);
+                                    $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $fat_id . "," . $stu_id . ",'Father')";
+                                    $conn->query($sqlf4);
+                                }
                             }
 
                             if ($chkFamily == '0') {

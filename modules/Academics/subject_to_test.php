@@ -74,6 +74,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     $result = $connection2->query($sql);
     $subjects = $result->fetchAll();
 
+    // echo '<pre>';
+    // print_r($subjects);
+    // echo '</pre>';
+    // die();
 ?>
 
     <h2> Subject To Test</h2>
