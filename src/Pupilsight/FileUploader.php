@@ -181,7 +181,7 @@ class FileUploader
      */
     public function getUploadsFolderByDate($timestamp = 0)
     {
-        if (empty($timestamp)) $timestamp = time();
+        if (empty($timestamp)){ $timestamp = time();}
 
         return 'uploads/'.date('Y', $timestamp).'/'.date('m', $timestamp);
     }
@@ -245,6 +245,7 @@ class FileUploader
             }
 
             $result = $this->pdo->executeQuery($data, $sql);
+
 
             if ($result && $result->rowCount() > 0) {
                 $fileExtensionsPreFilter = $result->fetchAll(\PDO::FETCH_COLUMN, 0);
