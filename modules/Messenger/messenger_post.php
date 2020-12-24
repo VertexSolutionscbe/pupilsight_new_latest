@@ -290,8 +290,8 @@ else {
 
 			$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
 
-			$data = array();
-			$sql = 'SELECT pupilsightYearGroupID AS value, name FROM pupilsightYearGroup ORDER BY sequenceNumber';
+			$data = array(pupilsightSchoolYearID=>$_SESSION[$guid]["pupilsightSchoolYearID"]);
+			$sql = 'SELECT pupilsightYearGroupID AS value, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY sequenceNumber';
 			$row = $form->addRow()->addClass('yearGroup hiddenReveal');
 				$row->addLabel('yearGroups[]', __('Select Year Groups'));
 				$row->addSelect('yearGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
@@ -353,7 +353,7 @@ else {
         }
 
         // Course
-        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
+        /*if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
             $row = $form->addRow();
 				$row->addLabel('course', __('Course'))->description(__('Members of a course of study.'));
 				$row->addYesNoRadio('course')->checked('N')->required();
@@ -385,10 +385,10 @@ else {
 			        $row->addLabel('coursesParents', __('Include Parents?'));
 					$row->addYesNo('coursesParents')->selected('N');
 			}
-        }
+        }*/
 
         // Class
-        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
+        /*if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
             $row = $form->addRow();
 				$row->addLabel('class', __('Class'))->description(__('Members of a class within a course.'));
 				$row->addYesNoRadio('class')->checked('N')->required();
@@ -402,8 +402,8 @@ else {
                 $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
                 $sql = "SELECT pupilsightCourseClass.pupilsightCourseClassID as value, CONCAT(pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) as name FROM pupilsightCourse JOIN pupilsightCourseClass ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClassPerson.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND NOT role LIKE '%- Left' ORDER BY name";
             }
-            //print_r($data);
-            //print_r($sql);
+            print_r($data);
+            print_r($sql);
 
 			$row = $form->addRow()->addClass('class hiddenReveal');
 				$row->addLabel('classes[]', __('Select Classes'));
@@ -422,7 +422,7 @@ else {
 			        $row->addLabel('classesParents', __('Include Parents?'));
 					$row->addYesNo('classesParents')->selected('N');
 			}
-        }
+        }*/
 
 
         // Activities

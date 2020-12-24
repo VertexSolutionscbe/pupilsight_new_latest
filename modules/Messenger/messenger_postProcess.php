@@ -4,7 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 use Pupilsight\Contracts\Comms\Mailer;
 use Pupilsight\Contracts\Comms\SMS;
-
+//print_r($_POST);die();
 include '../../pupilsight.php';
 
 //Increase max execution time, as this stuff gets big
