@@ -94,6 +94,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $headers[$key] = '##_religion';
                 } else if ($hd == 'National ID Card Number') {
                     $headers[$key] = '##_nationalIDCardNumber';
+                } else if ($hd == 'Fee Category') {
+                    $headers[$key] = '##_fee_category_id';
                 } else if ($hd == 'Father Official Name') {
                     $headers[$key] = '&&_officialName';
                 } else if ($hd == 'Father Date of Birth') {
@@ -183,12 +185,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                 $salt = getSaltNew();
                 $pass = 'Admin@123456';
                 $password = hash('sha256', $salt . $pass);
-                /*
-                echo '<pre>';
-                print_r($all_rows);
-                echo '</pre>';
-                die();
-                */
+               
+                // echo '<pre>';
+                // print_r($all_rows);
+                // echo '</pre>';
+                // die();
+                
                 try {
                     foreach ($all_rows as  $alrow) {
 
@@ -257,6 +259,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 $value = date('Y-m-d', strtotime($value));
                             }
                             
+                            if ($k == "##_fee_category_id" && !empty($value)) {
+                                $sqlfc = 'SELECT id FROM fee_category WHERE name = "' . $value . '"';
+                                $resultfc = $connection2->query($sqlfc);
+                                $fcData = $resultfc->fetch();
+                                $value = $fcData['id'];
+                            }
+
                             if (strpos($k, '##_') !== false && !empty($value)) {
                                 $val = str_replace('"', "", $value);
                                 $sql .= '"' . $val . '",';
