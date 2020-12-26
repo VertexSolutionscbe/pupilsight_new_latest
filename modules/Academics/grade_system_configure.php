@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/grade_system_con
    /* $table->addHeaderAction('add', __('Add'))
     ->setURL('/modules/Academics/subject_grade_add.php')
     ->displayLabel();*/
-    $table->addColumn('serial_number',__('Sl No'))->notSortable();
+    //$table->addColumn('serial_number',__('Sl No'))->notSortable();
     $table->addColumn('grade_name', __('Grade Name'));
     $table->addColumn('grade_point', __('Grade Point'))->translatable();
     $table->addColumn('lower_limit', __('Lower Limit'));

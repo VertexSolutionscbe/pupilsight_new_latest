@@ -380,8 +380,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     <td >
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
+                            <div style="display:inline-flex;">
                                 <span id="configureName-<?php echo $k;?>">None</span>
-                                <i class="fa fa-cog configure setSkillConfigure" style="cursor:pointer" data-id="<?php echo $k;?>" aria-hidden="true"></i>
+                                <i class="mdi mdi-cog-outline configure setSkillConfigure" style="cursor:pointer" data-id="<?php echo $k;?>" aria-hidden="true"></i>
+                            </div>
                                 <input type="hidden"  name="skill_id[<?php echo $k;?>]" value="m">
                                 <input type="hidden"  name="skill_configure[<?php echo $k;?>]" id="skill_configure<?php echo $k;?>" value="None">
                                 <a href="fullscreen.php?q=/modules/Academics/subject_to_test_configure.php<?php echo $allid;?>&kid=<?php echo $k;?>" class='thickbox ' id="clickSkillConfigure-<?php echo $k;?>" style="display:none;">Add</a>

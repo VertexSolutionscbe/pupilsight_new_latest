@@ -253,11 +253,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         //$sql = rtrim($sql, ", ");
                         $sql .= ") VALUES (";
                         foreach ($alrow as $k => $value) {
-                            if ($k == "##_dob") {
-                                $val = str_replace('"', "", $value);
-                                $val = date('Y-m-d', strtotime($val));
-                                $sql .= '"' . $val . '",';
-                            } else if (strpos($k, '##_') !== false && !empty($value)) {
+                            if ($k == "##_dob" && !empty($value)) {
+                                $value = date('Y-m-d', strtotime($value));
+                            }
+                            
+                            if (strpos($k, '##_') !== false && !empty($value)) {
                                 $val = str_replace('"', "", $value);
                                 $sql .= '"' . $val . '",';
                             }
@@ -302,11 +302,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 //$sqlf = rtrim($sqlf, ", ");
                                 $sqlf .= ") VALUES (";
                                 foreach ($alrow as $k => $value) {
-                                    if ($k == "&&_dob") {
-                                        $val = str_replace('"', "", $value);
-                                        $val = date('Y-m-d', strtotime($val));
-                                        $sqlf .= '"' . $val . '",';
-                                    } else if (strpos($k, '&&_') !== false  && !empty($value)) {
+                                    if ($k == "&&_dob" && !empty($value)) {
+                                        $value = date('Y-m-d', strtotime($value));
+                                    }
+                                    
+                                    if (strpos($k, '&&_') !== false  && !empty($value)) {
                                         $val = str_replace('"', "", $value);
                                         $sqlf .= '"' . $val . '",';
                                     }
@@ -338,11 +338,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 //$sqlm = rtrim($sqlm, ", ");
                                 $sqlm .= ") VALUES (";
                                 foreach ($alrow as $k => $value) {
-                                    if ($k == "$$" . "_dob") {
-                                        $val = str_replace('"', "", $value);
-                                        $val = date('Y-m-d', strtotime($val));
-                                        $sqlm .= '"' . $val . '",';
-                                    } else if (strpos($k, '$$_') !== false  && !empty($value)) {
+                                    if ($k == "$$" . "_dob" && !empty($value)) {
+                                        $value = date('Y-m-d', strtotime($value));
+                                    }
+                                    
+                                    if (strpos($k, '$$_') !== false  && !empty($value)) {
                                         $val = str_replace('"', "", $value);
                                         $sqlm .= '"' . $val . '",';
                                     }
