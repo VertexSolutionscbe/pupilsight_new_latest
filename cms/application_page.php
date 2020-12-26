@@ -232,7 +232,29 @@ if (empty($campaignStatus)) {
 
                                             <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
                                         </form>
+                                    
+                                    <?php } elseif($gateway == 'PAYU') { 
+                                        $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                        $responseLink = $base_url . "/cms/index.php?return=1";    
+                                    
+                                    ?>
+                                        <form id="admissionPay" action="../thirdparty/payment/payu/checkout.php" method="post">
 
+                                            <input type="hidden" value="<?php echo $orderId;?>" id="OrderId" name="OrderId">
+                                            <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+
+                                            <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                            <input type="hidden" name="sid" value="0">
+                                            <!-- <input type="hidden" name="name" value="Bikash">
+                                            <input type="hidden" name="email" value="bikash0389@gmail.com">
+                                            <input type="hidden" name="phone" value="9883928942"> -->
+
+                                            <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+                                            <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                                            <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+
+                                            <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
+                                            </form>
                                     <?php } } } ?>
                                 </div>
                             </div>
