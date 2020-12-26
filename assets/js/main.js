@@ -6991,7 +6991,7 @@ function CustomField() {
         str += "</table>";
         $("#" + obj.tab).after(str);
     };
-
+    /*
     this.createEditTab = function (obj) {
         var str = "<tbody id='tbody_" + obj.field_name + "'>";
         str += "<tr id='" + obj.field_name + "' class='break flex flex-col sm:flex-row justify-between content-center p-0'>";
@@ -7002,6 +7002,20 @@ function CustomField() {
         str += "</td>";
         str += "</tr>";
         str += "</tbody>";
+        $("#tbody_" + obj.tab).after(str);
+    };
+    */
+
+    this.createEditTab = function (obj) {
+        var str = "<div class='row mb-1' id='tbody_" + obj.field_name + "'>";
+        str += "<div id='" + obj.field_name + "' class='row mb-1 break'>";
+        str += "<div class='col-sm'>";
+        str += "<div><h3>" + obj.field_title + "</h3></div>";
+        str += "</div>";
+        str += "</div>";
+        str += "</div>";
+        console.log("tab_id", obj.tab);
+        console.log(str);
         $("#tbody_" + obj.tab).after(str);
     };
 

@@ -94,6 +94,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $headers[$key] = '##_religion';
                 } else if ($hd == 'National ID Card Number') {
                     $headers[$key] = '##_nationalIDCardNumber';
+                } else if ($hd == 'Fee Category') {
+                    $headers[$key] = '##_fee_category_id';
                 } else if ($hd == 'Father Official Name') {
                     $headers[$key] = '&&_officialName';
                 } else if ($hd == 'Father Date of Birth') {
@@ -256,7 +258,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                             if ($k == "##_dob" && !empty($value)) {
                                 $value = date('Y-m-d', strtotime($value));
                             }
-                            
+
+                            if ($k == "##_fee_category_id" && !empty($value)) {
+                                $sqlfc = 'SELECT id FROM fee_category WHERE name = "' . $value . '"';
+                                $resultfc = $connection2->query($sqlfc);
+                                $fcData = $resultfc->fetch();
+                                $value = $fcData['id'];
+                            }
+
                             if (strpos($k, '##_') !== false && !empty($value)) {
                                 $val = str_replace('"', "", $value);
                                 $sql .= '"' . $val . '",';
@@ -266,9 +275,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         //$sql = rtrim($sql, ", ");
                         $sql .= ")";
                         $sql = rtrim($sql, ", ");
-                        //echo "\n<br/>student " . $sql;
+                        echo "\n<br/>student " . $sql;
                         //mysqli_query($conn, $sql);
+
                         $conn->query($sql);
+                        //die();
                         $stu_id = $conn->insert_id;
 
                         // Father Entry
@@ -276,7 +287,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         if (!empty($alrow['&&_officialName'])) {
 
                             if (!empty($alrow['&&_email'])) {
-                                $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE email = "' . $alrow['&&_email'] . '" ';
+                                $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE a.email = "' . $alrow['&&_email'] . '" AND a.pupilsightRoleIDPrimary="004" ';
                                 $resultchk = $connection2->query($sqlchk);
                                 $pd = $resultchk->fetch();
                                 if (!empty($pd)) {
@@ -305,7 +316,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                     if ($k == "&&_dob" && !empty($value)) {
                                         $value = date('Y-m-d', strtotime($value));
                                     }
-                                    
+
                                     if (strpos($k, '&&_') !== false  && !empty($value)) {
                                         $val = str_replace('"', "", $value);
                                         $sqlf .= '"' . $val . '",';
@@ -316,7 +327,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 $sqlf .= ")";
                                 $sqlf = rtrim($sqlf, ", ");
 
-                                //echo "\n<br/>father ".$sqlf;
+                                echo "\n<br/>father " . $sqlf;
 
                                 $conn->query($sqlf);
                                 $fat_id = $conn->insert_id;
@@ -341,7 +352,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                     if ($k == "$$" . "_dob" && !empty($value)) {
                                         $value = date('Y-m-d', strtotime($value));
                                     }
-                                    
+
                                     if (strpos($k, '$$_') !== false  && !empty($value)) {
                                         $val = str_replace('"', "", $value);
                                         $sqlm .= '"' . $val . '",';
@@ -351,23 +362,25 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 //$sqlm = rtrim($sqlm, ", ");
                                 $sqlm .= ")";
                                 $sqlm = rtrim($sqlm, ", ");
-                                //echo "\n<br/>mother ".$sqlm;
+                                echo "\n<br/>mother " . $sqlm;
                                 $conn->query($sqlm);
                                 $mot_id = $conn->insert_id;
                             }
                         } else {
-                            $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE b.pupilsightFamilyID = ' . $family_id . ' AND b.relationship = "Mother" ';
-                            $resultchk = $connection2->query($sqlchk);
-                            $pd = $resultchk->fetch();
-                            if (!empty($pd)) {
-                                $mot_id = $pd['pupilsightPersonID'];
-                                $family_id = $pd['pupilsightFamilyID'];
-                                //$chkFamily = 1;
-                                try {
-                                    $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $mot_id . "," . $stu_id . ",'Mother')";
-                                    $conn->query($sqlf4);
-                                } catch (Exception $ex) {
-                                    print_r($ex);
+                            if ($family_id) {
+                                $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE b.pupilsightFamilyID = ' . $family_id . ' AND b.relationship = "Mother" ';
+                                $resultchk = $connection2->query($sqlchk);
+                                $pd = $resultchk->fetch();
+                                if (!empty($pd)) {
+                                    $mot_id = $pd['pupilsightPersonID'];
+                                    $family_id = $pd['pupilsightFamilyID'];
+                                    //$chkFamily = 1;
+                                    try {
+                                        $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $mot_id . "," . $stu_id . ",'Mother')";
+                                        $conn->query($sqlf4);
+                                    } catch (Exception $ex) {
+                                        print_r($ex);
+                                    }
                                 }
                             }
                         }
@@ -386,7 +399,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 }
                             }
 
-                            //echo "\n<br/>pupilsightStudentEnrolment: ".$sqle;
+                            echo "\n<br/>pupilsightStudentEnrolment: " . $sqle;
                         }
 
                         if ($chkFamily == '0') {
@@ -403,7 +416,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 }
 
                                 $sqlfamily = 'INSERT INTO pupilsightFamily (name,homeAddress,homeAddressDistrict,homeAddressCountry) VALUES ("' . $name . '","' . $homeAddress . '","' . $homeDistrict . '","' . $homeCountry . '")';
-                                //echo "\n<br/>family: ".$sqlfamily;
+                                echo "\n<br/>family: " . $sqlfamily;
                                 $conn->query($sqlfamily);
 
                                 $family_id = $conn->insert_id;
@@ -413,12 +426,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                         if (!empty($fat_id)) {
                                             $sqlf1 = "INSERT INTO pupilsightFamilyAdult (pupilsightFamilyID,pupilsightPersonID,childDataAccess,contactPriority,contactCall,contactSMS,contactEmail,contactMail) VALUES (" . $family_id . "," . $fat_id . ",'Y','1','N','N','N','N')";
                                             $conn->query($sqlf1);
-                                            //echo "\n<br/>pupilsightFamilyAdult: ".$sqlf1;
+                                            echo "\n<br/>pupilsightFamilyAdult: " . $sqlf1;
 
                                             $sqlf4 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $fat_id . "," . $stu_id . ",'Father')";
                                             $conn->query($sqlf4);
 
-                                            //echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf4;
+                                            echo "\n<br/>pupilsightFamilyRelationship: " . $sqlf4;
                                         }
                                     } catch (Exception $ex) {
                                         print_r($ex);
@@ -432,7 +445,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 
                                             $sqlf5 = "INSERT INTO pupilsightFamilyRelationship (pupilsightFamilyID,pupilsightPersonID1,pupilsightPersonID2,relationship) VALUES (" . $family_id . "," . $mot_id . "," . $stu_id . ",'Mother')";
 
-                                            //echo "\n<br/>pupilsightFamilyRelationship: ".$sqlf5;
+                                            echo "\n<br/>pupilsightFamilyRelationship: " . $sqlf5;
                                             $conn->query($sqlf5);
                                         }
                                     } catch (Exception $ex) {
@@ -445,8 +458,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 } catch (Exception $ex) {
                                     print_r($ex);
                                 }
-                                //echo "\n<br/>pupilsightFamilyChild: ".$sqlf3;
-
+                                echo "\n<br/>pupilsightFamilyChild: " . $sqlf3;
                             }
                         } else {
                             try {
