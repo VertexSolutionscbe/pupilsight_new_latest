@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			$result = $connection2->prepare($sql);
 			$result->execute($data);
 
-			$sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= '.$pupilsightPersonID.' ';
+			$sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= ' . $pupilsightPersonID . ' ';
 			$resultf = $connection2->query($sqlf);
 			$fdata = $resultf->fetch();
 			$pupilsightFamilyID = $fdata['pupilsightFamilyID'];
