@@ -10,7 +10,7 @@ Pupilsight, Flexible & Open School System
  */
 $databaseServer = '127.0.0.1';
 $databaseUsername = 'root';
-$databasePassword = '';
+//$databasePassword = '';
 //$databaseName = 'pupilsight'; //pd_demo
 //$databaseName = 'bips_erp'; //pd_demo
 //$databaseName = 'samitha'; //pd_demo
