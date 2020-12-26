@@ -442,7 +442,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     echo '</fieldset></td>';
                     echo '<td id="grade_status'.$s_test['test_id'].'row'.$row['stuid'].'"></td>';
                     echo '<td> ';
-                    echo '<i class="mdi mdi-book-open-outline mdi-24px px-4 remark_enter_type icon_re_'.$s_test['test_id'].'" id="rmk'.$s_test['test_id'].'stu'.$row['stuid'].'" data-id="'.$s_test['test_id'].'stu'.$row['stuid'].'"></i>';
+                    if(!empty($prevdata['remarks'])){
+                        $colrCls = 'grnRemark';
+                    } else {
+                        $colrCls = '';
+                    }
+                    echo '<i class="mdi mdi-book-open-outline mdi-24px px-4 remark_enter_type icon_re_'.$s_test['test_id'].' '.$colrCls.' " id="rmk'.$s_test['test_id'].'stu'.$row['stuid'].'" data-id="'.$s_test['test_id'].'stu'.$row['stuid'].'"></i>';
                   
                     ?>
                     <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?>" style="display:none;width:190px"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
@@ -515,6 +520,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     }
     .text-xxs {
         display: none;
+    }
+
+    .grnRemark {
+        color:green;
     }
 </style>
 <script>

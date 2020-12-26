@@ -285,7 +285,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         if (!empty($alrow['&&_officialName'])) {
 
                             if(!empty($alrow['&&_email'])){
-                                $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE email = "' . $alrow['&&_email'] . '" ';
+                                $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE a.email = "' . $alrow['&&_email'] . '" AND a.pupilsightRoleIDPrimary = "004" ';
                                 $resultchk = $connection2->query($sqlchk);
                                 $pd = $resultchk->fetch();
                                 if (!empty($pd)) {
