@@ -102,7 +102,7 @@
    <a style='display:none' id='showMarkHistory' href='fullscreen.php?q=/modules/Academics/show_mark_history.php&width=800'  class='thickbox '></a>
    <span class="badge bg-cyan font16px">Admission No <span class="badge-addon "><?php echo $rowdataprog['admission_no']; ?></span></span>
    <span class="ml-2 badge bg-cyan font16px">Name <span class="badge-addon "><?php echo $rowdataprog['officialName']; ?></span></span>
-   <span class="ml-2 badge bg-cyan font16px">Class <span class="badge-addon "><?php echo $rowdataprog['section']; ?></span></span>
+   <span class="ml-2 badge bg-cyan font16px">Class <span class="badge-addon "><?php echo $rowdataprog['class']; ?></span></span>
    <span class="ml-2 badge bg-cyan font16px">Section <span class="badge-addon "><?php echo $rowdataprog['section']; ?></span></span>
 </div>
 <?php

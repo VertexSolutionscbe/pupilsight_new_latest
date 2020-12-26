@@ -129,10 +129,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
             $salt = getSaltNew();
             $pass = 'Admin@123456';
             $password = hash('sha256', $salt . $pass);
-            /*echo '<pre>';
-            print_r($all_rows);
-            echo '</pre>';
-            die();*/
+            // echo '<pre>';
+            // print_r($all_rows);
+            // echo '</pre>';
+            // die();
             try {
                 foreach ($all_rows as  $alrow) {
 
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                     //$sql = rtrim($sql, ", ");
                     $sql .= ") VALUES (";
                     foreach ($alrow as $k => $value) {
-                        if ($k == "##_dob") {
+                        if ($k == "##_dob" && !empty($value)) {
                             $value = date('Y-m-d', strtotime($value));
                         }
                         if (strpos($k, '##_') !== false && !empty($value)) {
@@ -161,6 +161,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                     //$sql = rtrim($sql, ", ");
                     $sql .= ")";
                     $sql = rtrim($sql, ", ");
+                    // echo $sql;
                     $conn->query($sql);
                     $stu_id = $conn->insert_id;
 
