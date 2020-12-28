@@ -199,10 +199,9 @@ if (empty($campaignStatus)) {
                                             <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
                                             <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
                                             <input type="hidden" name="sid" value="0">
-                                            
-                                            <!-- <input type="hidden" name="name" value="Bikash">
-                                <input type="hidden" name="email" value="bikash0389@gmail.com">
-                                <input type="hidden" name="phone" value="9883928942"> -->
+                                            <input type="hidden" class="applicantName" name="name" value="">
+                                            <input type="hidden" class="applicantEmail" name="email" value="">
+                                            <input type="hidden" class="applicantPhone" name="phone" value="">
 
                                             <input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
 
@@ -222,9 +221,9 @@ if (empty($campaignStatus)) {
                                             <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
                                             <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
                                             <input type="hidden" name="sid" value="0">
-                                            <!-- <input type="hidden" name="name" value="Bikash">
-                                <input type="hidden" name="email" value="bikash0389@gmail.com">
-                                <input type="hidden" name="phone" value="9883928942"> -->
+                                            <input type="hidden" class="applicantName" name="name" value="">
+                                            <input type="hidden" class="applicantEmail" name="email" value="">
+                                            <input type="hidden" class="applicantPhone" name="phone" value="">
 
                                             <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
                                             <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
