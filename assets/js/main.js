@@ -7451,8 +7451,11 @@ function CustomField() {
             tfVal = pcdt.dt[obj.field_name];
             if (_this.isEmpty(tfVal)) {
                 tfVal = "";
+            } else {
+                tfVal = $.trim(tfVal);
             }
         }
+
         var opt = new Array();
 
         if (obj.options) {
@@ -7468,6 +7471,7 @@ function CustomField() {
         }
 
         var elementName = _this.createName(obj);
+        var selectStr = "";
         var str = `<div class="row mb-1">                       
             <div class="col-sm">
                 <div>
@@ -7479,7 +7483,11 @@ function CustomField() {
                     <div class="flex-1 relative">
                     <select id="`+ obj.field_name + `" ` + elementName + ` class="w-full">`
         while (i < len) {
-            str += `<option value="` + opt[i] + `">` + opt[i] + `</option>`;
+            selectStr = "";
+            if (tfVal == $.trim(opt[i])) {
+                selectStr = " selected ";
+            }
+            str += `<option value="` + opt[i] + `" ` + selectStr + `>` + opt[i] + `</option>`;
             i++;
         }
         `</select>
