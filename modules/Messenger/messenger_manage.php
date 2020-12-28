@@ -71,21 +71,21 @@ else {
 			if ($highestAction=="Manage Messages_all") {
 				if ($search=="") {
 					$data=array();
-					$sql="SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) ORDER BY timestamp DESC" ;
+					$sql="SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) ORDER BY timestamp DESC" ;
 				}
 				else {
 					$data=array("search1"=>"%$search%", "search2"=>"%$search%");
-					$sql="SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
+					$sql="SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			else {
 				if ($search=="") {
 					$data=array("pupilsightPersonID"=>$_SESSION[$guid]["pupilsightPersonID"]);
-					$sql="SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID ORDER BY timestamp DESC" ;
+					$sql="SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID ORDER BY timestamp DESC" ;
 				}
 				else {
 					$data=array("pupilsightPersonID"=>$_SESSION[$guid]["pupilsightPersonID"], "search1"=>"%$search%", "search2"=>"%$search%");
-					$sql="SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
+					$sql="SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC" ;
 				}
 			}
 			$result=$connection2->prepare($sql);
