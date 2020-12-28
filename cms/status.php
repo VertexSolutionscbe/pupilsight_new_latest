@@ -35,6 +35,8 @@ $chkstatus = $adminlib->getStatus($sid);
 <?php include("index_header.php"); ?>
 
 
+<!-- status -->
+
 <body class="home page-template page-template-templates page-template-home-page page-template-templateshome-page-php page page-id-17 wp-embed-responsive theme-ivy-school pmpro-body-has-access woocommerce-no-js bg-type-color responsive auto-login left_courses wpb-js-composer js-comp-ver-6.0.5 vc_responsive">
 
     <div id="wrapper-container" class="content-pusher creative-right bg-type-color">

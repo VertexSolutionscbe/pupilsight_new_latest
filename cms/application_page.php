@@ -245,9 +245,9 @@ if (empty($campaignStatus)) {
 
                                             <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
                                             <input type="hidden" name="sid" value="0">
-                                            <!-- <input type="hidden" name="name" value="Bikash">
-                                            <input type="hidden" name="email" value="bikash0389@gmail.com">
-                                            <input type="hidden" name="phone" value="9883928942"> -->
+                                            <input type="hidden" class="applicantName" name="name" value="">
+                                            <input type="hidden" class="applicantEmail" name="email" value="">
+                                            <input type="hidden" class="applicantPhone" name="phone" value="">
 
                                             <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
                                             <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
@@ -573,6 +573,36 @@ if (empty($campaignStatus)) {
             //         }
             //     });
             // }
+
+            iframe.find("input[name=father_email]").change(function() {
+                var val = $(this).val();
+                if (val != '') {
+                   $(".applicantEmail").val(val);
+                }
+            });
+
+            iframe.find("input[name=student_name]").change(function() {
+                var val = $(this).val();
+                if (val != '') {
+                   $(".applicantName").val(val);
+                }
+            });
+
+            iframe.find("input[name='student_name[first_name]']").change(function() {
+                var val = $(this).val();
+                //alert(val);
+                if (val != '') {
+                   $(".applicantName").val(val);
+                }
+            });
+
+            iframe.find("input[name=father_mobile]").change(function() {
+                var val = '+91'+$(this).val();
+                //alert(val);
+                if (val != '') {
+                   $(".applicantPhone").val(val);
+                }
+            });
 
             iframe.find(".ff-el-form-control").change(function() {
                 $.each($(this), function() {
