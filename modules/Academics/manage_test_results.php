@@ -52,11 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
         $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
         $pupilsightProgramID = $_POST['pupilsightProgramID'];
 
-        $tesid = $_POST['test_id'];
+        //$tesid = $_POST['test_id'];
 
-        $test_id = $tesid[0];
+        $test_id = $_POST['test_id'];
         $testIds = implode(',',$tesid);
-        $kount = count($tesid);
+        $kount = 1;
   // $pupilsightDepartmentID = $_POST['pupilsightDepartmentID'];
         $searchbyPost = '';
       
@@ -140,21 +140,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
     echo "<a style='display:none' id='modifyMarks' class='btn btn-primary butt'>test Mark Entry</a>"; 
     echo "<a id='modifyMarksEntry'  data-type='student' class='btn btn-primary butt'>Mark Entry</a>&nbsp;&nbsp;";
 
-    echo "<a  id='sendSMS' style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-stud_test_result' data-noti='2'  class='sendButton_test_result btn btn-primary butt' >Send SMS</a>&nbsp;&nbsp;";
-    echo "<a  id='sendEmail' style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-stud_test_result' class='sendButton_test_result btn btn-primary butt' >Send Email</a>&nbsp;&nbsp;";
+    echo "<a  id='sendSMS'  href=''  data-toggle='modal' data-target='#large-modal-stud_test_result' data-noti='2'  class='sendButton_test_result btn btn-primary butt' >Send SMS</a>&nbsp;&nbsp;";
+    echo "<a  id='sendEmail'  href='' data-toggle='modal' data-noti='1' data-target='#large-modal-stud_test_result' class='sendButton_test_result btn btn-primary butt' >Send Email</a>&nbsp;&nbsp;";
     // echo "<div style='margin-top: 10px;'>";
  
     echo "<a  id='result_show_pdf' data-type='test' class='btn btn-primary butt'>Show Pdf</a>&nbsp;&nbsp;";
     echo "<a  id='result_hide_pdf' data-type='test' class='btn btn-primary butt'>Hide Pdf</a>&nbsp;&nbsp;";
     echo "<a  id='result_show_html' data-type='test' class='btn btn-primary butt'>Show HTML</a>&nbsp;&nbsp;";
-    echo "<a  id='result_hide_html' data-type='test' class='btn btn-primary butt'>Hide HTML</a>&nbsp;&nbsp;";
-    echo "<a  id='result_lock_tr' data-type='test' class='btn btn-primary butt'>Lock T.R</a>&nbsp;&nbsp;";
-    echo "<a  id='result_unlock_tr' data-type='test' class='btn btn-primary butt'>Unlock T.R</a>&nbsp;&nbsp;";
-    echo "<a  id='result_send_mark' data-type='test' class='btn btn-primary butt'>Send Mark</a>&nbsp;&nbsp;";
+    echo "<a  id='result_hide_html' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Hide HTML</a>&nbsp;&nbsp;";
+    echo "<a  id='result_lock_tr' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Lock T.R</a>&nbsp;&nbsp;";
+    echo "<a  id='result_unlock_tr' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Unlock T.R</a>&nbsp;&nbsp;";
+    echo "<a  id='result_send_mark' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Send Mark</a>&nbsp;&nbsp;";
     // echo "</div><div style='margin-top: 10px;'>";
     
-    echo "<a  id='mass_student_tests_xl' title='' data-type='test' class='btn btn-primary butt'>Mass Download</a>&nbsp;&nbsp;";
-    echo "<a  id='result_publish_history' data-type='test' class='btn btn-primary butt'>Publish History</a>&nbsp;&nbsp;";
+    echo "<a  id='mass_student_tests_xl' style='margin-top: 10px;' title='' data-type='test' class='btn btn-primary butt'>Mass Download</a>&nbsp;&nbsp;";
+    echo "<a  id='result_publish_history' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Publish History</a>&nbsp;&nbsp;";
     echo "</div></div>";
     echo  "<div style='height:10px'></div>";
     $searchform = Form::create('searchForm', '');
@@ -267,13 +267,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
                 if($row['marks_obtained']!='0.00' || $row['gradeId']!='0' )
                 {
                     //$row['marks_obtained']
-                    echo '<i class="fas fa-1x fa-check px-4  greenicon "></i>';
+                    echo '<i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon "></i>';
                    
                    
                 }
                 else
                 {
-                    echo '<i class="fas fa-2x fa-times px-4 x_icon "></i>';
+                    echo '<i class="mdi mdi-close-circle mdi-24px x_icon "></i>';
                    
                 }
                
@@ -281,31 +281,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
                 echo '<td>';  
                 if($row['status']==1) 
                 {
-                    echo '<i class="fas fa-1x fa-lock px-4   "></i>';
+                    echo '<i class="mdi mdi-lock mdi-24px   "></i>';
                 }    
                 else
                 {
-                    echo '<i class="fas fa-2x fa-times px-4 x_icon "></i>';
+                    echo '<i class="mdi mdi-close-circle mdi-24px x_icon "></i>';
                 }          
                
                 echo '</td>';
                 echo '<td> ';
-                echo '<i class="fas fa-1x fa-check px-4  greenicon "></i>';           
+                echo '<i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon "></i>';           
                 echo '</td>';
                 echo '<td class="td_texfield">';
-                echo '<i class="fas fa-2x fa-times px-4 x_icon"></i>';
+                echo '<i class="mdi mdi-close-circle mdi-24px x_icon"></i>';
                 echo '</td>';
                 echo '<td> ';
-                echo '<i class="fas fa-2x fa-times px-4 x_icon"></i>';
+                echo '<i class="mdi mdi-close-circle mdi-24px x_icon"></i>';
                 echo '</td>';
                 echo '<td> ';
-                echo '<i class="fas fa-1x fa-check px-4  greenicon "></i>';
+                echo '<i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon "></i>';
                 echo '</td>';
                 echo '<td> ';
-                echo '<i class="fas fa-2x fa-times px-4 x_icon""></i>';
+                echo '<i class="mdi mdi-close-circle mdi-24px x_icon""></i>';
                 echo '</td>';
                 echo '<td> ';
-                echo '<a href="thirdparty/phpword/reportcardsingle.php?tid='.$test_id.'&stid='.$row['stuid'].'"><i class="fas fa-2x fa-file-pdf px-4  small_icon"></i></a>';
+                echo '<a href="thirdparty/phpword/reportcardsingle.php?tid='.$test_id.'&stid='.$row['stuid'].'"><i class="mdi mdi-file-pdf mdi-24px  small_icon"></i></a>';
                 echo '</td>';     
                 echo '</tr>';
             }
