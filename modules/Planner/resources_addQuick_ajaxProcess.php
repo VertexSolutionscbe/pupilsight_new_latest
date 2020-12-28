@@ -41,7 +41,7 @@ if (empty($_POST) or empty($_FILES)) {
         $fileUploader = new Pupilsight\FileUploader($pdo, $pupilsight->session);
 
         //Insert files
-        for ($i = 1; $i < 5; ++$i) {
+        for ($i = 1; $i < 6; ++$i) {
             $html = '';
             if (isset($_FILES[$id.'file'.$i])) {
                 $file = $_FILES[$id.'file'.$i];
