@@ -225,8 +225,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Role', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -243,8 +244,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Role', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -310,8 +312,9 @@ else {
 									catch(PDOException $e) { print $e->getMessage() ;}
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Role Category', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -328,8 +331,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Role Category', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -451,8 +455,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Year Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -469,8 +474,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Year Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -503,8 +509,9 @@ else {
 											catch(PDOException $e) { }
 											while ($rowEmail=$resultEmail->fetch()) {
 												$countryCodeTemp = $countryCode;
-												if ($rowEmail["countryCode"]=="")
-													$countryCodeTemp = $rowEmail["countryCode"];
+												if ($rowEmail["countryCode"]=="") {
+                                                    $countryCodeTemp = $rowEmail["countryCode"];
+                                                }
 												$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Year Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 											}
 										}
@@ -609,8 +616,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -627,8 +635,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -661,8 +670,9 @@ else {
 											catch(PDOException $e) { }
 											while ($rowEmail=$resultEmail->fetch()) {
 												$countryCodeTemp = $countryCode;
-												if ($rowEmail["countryCode"]=="")
-													$countryCodeTemp = $rowEmail["countryCode"];
+												if ($rowEmail["countryCode"]=="") {
+                                                    $countryCodeTemp = $rowEmail["countryCode"];
+                                                }
 												$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 											}
 										}
@@ -777,8 +787,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Course', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -795,8 +806,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Course', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -829,8 +841,9 @@ else {
 											catch(PDOException $e) { }
 											while ($rowEmail=$resultEmail->fetch()) {
 												$countryCodeTemp = $countryCode;
-												if ($rowEmail["countryCode"]=="")
-													$countryCodeTemp = $rowEmail["countryCode"];
+												if ($rowEmail["countryCode"]=="") {
+                                                    $countryCodeTemp = $rowEmail["countryCode"];
+                                                }
 												$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Course', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 											}
 										}
@@ -847,8 +860,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Course', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -961,8 +975,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Class', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -979,8 +994,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Class', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -1013,8 +1029,9 @@ else {
 											catch(PDOException $e) { }
 											while ($rowEmail=$resultEmail->fetch()) {
 												$countryCodeTemp = $countryCode;
-												if ($rowEmail["countryCode"]=="")
-													$countryCodeTemp = $rowEmail["countryCode"];
+												if ($rowEmail["countryCode"]=="") {
+                                                    $countryCodeTemp = $rowEmail["countryCode"];
+                                                }
 												$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Class', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 											}
 										}
@@ -1031,8 +1048,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Class', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -1135,8 +1153,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Activity', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -1153,8 +1172,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Activity', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -1187,8 +1207,9 @@ else {
 											catch(PDOException $e) { print $e->getMessage() ;}
 											while ($rowEmail=$resultEmail->fetch()) {
 												$countryCodeTemp = $countryCode;
-												if ($rowEmail["countryCode"]=="")
-													$countryCodeTemp = $rowEmail["countryCode"];
+												if ($rowEmail["countryCode"]=="") {
+                                                    $countryCodeTemp = $rowEmail["countryCode"];
+                                                }
 												$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Activity', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 											}
 										}
@@ -1300,8 +1321,9 @@ else {
 								catch(PDOException $e) { }
 								while ($rowEmail=$resultEmail->fetch()) {
 									$countryCodeTemp = $countryCode;
-									if ($rowEmail["countryCode"]=="")
-										$countryCodeTemp = $rowEmail["countryCode"];
+									if ($rowEmail["countryCode"]=="") {
+                                        $countryCodeTemp = $rowEmail["countryCode"];
+                                    }
 									$report = reportAdd($report, $emailReceipt, NULL, 'Applicants', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 								}
 
@@ -1316,8 +1338,9 @@ else {
 								catch(PDOException $e) { }
 								while ($rowEmail=$resultEmail->fetch()) {
 									$countryCodeTemp = $countryCode;
-									if ($rowEmail["countryCode"]=="")
-										$countryCodeTemp = $rowEmail["countryCode"];
+									if ($rowEmail["countryCode"]=="") {
+                                        $countryCodeTemp = $rowEmail["countryCode"];
+                                    }
 									$report = reportAdd($report, $emailReceipt, NULL, 'Applicants', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 								}
 
@@ -1332,8 +1355,9 @@ else {
 								catch(PDOException $e) { }
 								while ($rowEmail=$resultEmail->fetch()) {
 									$countryCodeTemp = $countryCode;
-									if ($rowEmail["countryCode"]=="")
-										$countryCodeTemp = $rowEmail["countryCode"];
+									if ($rowEmail["countryCode"]=="") {
+                                        $countryCodeTemp = $rowEmail["countryCode"];
+                                    }
 									$report = reportAdd($report, $emailReceipt, NULL, 'Applicants', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 								}
 
@@ -1350,8 +1374,9 @@ else {
 								catch(PDOException $e) { }
 								while ($rowEmail=$resultEmail->fetch()) {
 									$countryCodeTemp = $countryCode;
-									if ($rowEmail["countryCode"]=="")
-										$countryCodeTemp = $rowEmail["countryCode"];
+									if ($rowEmail["countryCode"]=="") {
+                                        $countryCodeTemp = $rowEmail["countryCode"];
+                                    }
 									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Applicants', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 								}
 
@@ -1428,8 +1453,9 @@ else {
 								catch(PDOException $e) { }
 								while ($rowEmail=$resultEmail->fetch()) {
 									$countryCodeTemp = $countryCode;
-									if ($rowEmail["countryCode"]=="")
-										$countryCodeTemp = $rowEmail["countryCode"];
+									if ($rowEmail["countryCode"]=="") {
+                                        $countryCodeTemp = $rowEmail["countryCode"];
+                                    }
 									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Houses', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 								}
 							}
@@ -1531,8 +1557,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Transport', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -1549,8 +1576,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Transport', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -1583,8 +1611,9 @@ else {
 											catch(PDOException $e) { }
 											while ($rowEmail=$resultEmail->fetch()) {
 												$countryCodeTemp = $countryCode;
-												if ($rowEmail["countryCode"]=="")
-													$countryCodeTemp = $rowEmail["countryCode"];
+												if ($rowEmail["countryCode"]=="") {
+                                                    $countryCodeTemp = $rowEmail["countryCode"];
+                                                }
 												$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Transport', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 											}
 										}
@@ -1708,8 +1737,9 @@ else {
                                     catch(PDOException $e) { }
                                     while ($rowSMS=$resultSMS->fetch()) {
 										$countryCodeTemp = $countryCode;
-	  									  if ($rowEmail["countryCode"]=="")
-	  										  $countryCodeTemp = $rowEmail["countryCode"];
+	  									  if ($rowEmail["countryCode"]=="") {
+                                              $countryCodeTemp = $rowEmail["countryCode"];
+                                          }
 	  									  $report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Role', $t, 'Attendance', $countryCodeTemp.$rowEmail["phone"]);
                                     }
                                   }
@@ -1730,8 +1760,9 @@ else {
                                 catch(PDOException $e) { }
                                 while ($rowSMS=$resultSMS->fetch()) {
 									$countryCodeTemp = $countryCode;
-	   								 if ($rowEmail["countryCode"]=="")
-	   									 $countryCodeTemp = $rowEmail["countryCode"];
+	   								 if ($rowEmail["countryCode"]=="") {
+                                         $countryCodeTemp = $rowEmail["countryCode"];
+                                     }
 	   								 $report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Attendance', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
                                 }
                               }
@@ -1820,8 +1851,9 @@ else {
 									catch(PDOException $e) { echo $e->getMessage(); }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -1838,8 +1870,9 @@ else {
 									catch(PDOException $e) { }
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -1860,8 +1893,9 @@ else {
 									catch(PDOException $e) {}
 									while ($rowEmail=$resultEmail->fetch()) {
 										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"]=="")
-											$countryCodeTemp = $rowEmail["countryCode"];
+										if ($rowEmail["countryCode"]=="") {
+                                            $countryCodeTemp = $rowEmail["countryCode"];
+                                        }
 										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Group', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 									}
 								}
@@ -1912,8 +1946,9 @@ else {
 								catch(PDOException $e) { }
 								while ($rowEmail=$resultEmail->fetch()) {
 									$countryCodeTemp = $countryCode;
-									if ($rowEmail["countryCode"]=="")
-										$countryCodeTemp = $rowEmail["countryCode"];
+									if ($rowEmail["countryCode"]=="") {
+                                        $countryCodeTemp = $rowEmail["countryCode"];
+                                    }
 									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 								}
 							}

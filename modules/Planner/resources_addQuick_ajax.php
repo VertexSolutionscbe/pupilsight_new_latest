@@ -47,7 +47,7 @@ $row = $form->addRow();
     $row->addWebLink("<img title='".__('Close')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/iconCross.png'/>")
         ->onClick("formReset(); \$(\".".$id."resourceQuickSlider\").slideUp();")->addClass('right');
 
-for ($i = 1; $i < 5; ++$i) {
+for ($i = 1; $i < 6; ++$i) {
     $row = $form->addRow();
         $row->addLabel($id.'file'.$i, sprintf(__('File %1$s'), $i));
         $row->addFileUpload($id.'file'.$i)->setMaxUpload(false);
