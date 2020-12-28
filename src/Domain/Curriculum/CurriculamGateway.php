@@ -660,7 +660,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
         //  $query->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
         $query->groupBy(['examinationMarksEntrybySubject.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
-        //  echo $query;    
+         //echo $query;    
         $res = $this->runQuery($query, $criteria);
         $data = $res->data;
 
