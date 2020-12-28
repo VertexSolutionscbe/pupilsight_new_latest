@@ -207,6 +207,21 @@ class adminlib
 			$result1 = database::doSelectOne($sql1);
 			$result[$k]['username'] = $result1['names'];
 
+			$sql2 = "SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = " . $subId . "  AND field_name = 'father_email' ";
+			$result2 = database::doSelectOne($sql2);
+			if(!empty($result2['field_value'])){
+				$result[$k]['email'] = $result2['field_value'];
+			} else {
+				$result[$k]['email'] = '';
+			}
+			$sql3 = "SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = " . $subId . "  AND field_name = 'father_mobile' ";
+			$result3 = database::doSelectOne($sql3);
+			if(!empty($result3['field_value'])){
+				$result[$k]['phone'] = $result3['field_value'];
+			} else {
+				$result[$k]['phone'] = '';
+			}
+
 			$sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $subId . "  ";
 			$result2 = database::doSelectOne($sql2);
 			if (!empty($result2['transaction_id'])) {

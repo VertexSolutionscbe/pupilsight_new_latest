@@ -28,9 +28,9 @@ if(!empty($value)){
 //$KEY = "gtKFFx"; //Please change this value with live KEY for production
 //$SALT = "eCwWELxi"; //Please change this value with live SALT for production
 
-$PAYU_BASE_URL = "https://test.payu.in"; // for test server
+//$PAYU_BASE_URL = "https://test.payu.in"; // for test server
 
-//$PAYU_BASE_URL = "https://secure.payu.in";  // for Live server
+$PAYU_BASE_URL = "https://secure.payu.in";  // for Live server
 $action = $PAYU_BASE_URL . '/_payment';
 // $action = "http://localhost:8888/PHP_SAMPLE_APP 2/checkout.php";
 
@@ -56,7 +56,13 @@ if(!empty($_POST['phone'])){
 }
 
 $campaignid = $_POST['campaignid'];
-$submissionId = $_SESSION['submissionId'];
+
+if (!empty($_REQUEST['sid'])) {
+	$submissionId = $_REQUEST['sid'];
+} else {
+	$submissionId = $_SESSION['submissionId'];
+}
+
 
 // $campaignid = 1;
 // $submissionId = 111;
