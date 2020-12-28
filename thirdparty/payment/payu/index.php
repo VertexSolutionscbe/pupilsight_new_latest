@@ -36,7 +36,7 @@
 
 <div class="form-white-box">
 <div class="form-hd">Complete Or<span>Generate</span>your test payment details below</div>
-<form action="http://localhost:8888/PHP_SAMPLE_APP 2/checkout.php" method="post">
+<form action="checkout.php" method="post">
 <div class="frm-bx-content">
 <div class="form-row">
 <label>Name</label>

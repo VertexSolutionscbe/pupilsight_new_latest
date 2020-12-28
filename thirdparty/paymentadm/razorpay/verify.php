@@ -54,12 +54,14 @@ if ($success === true)
     try{
         $dt = $_SESSION["paypost"];
 
-        $stuId = $_SESSION['submissionId'];
+        $sid = $_SESSION['submissionId'];
         $cid = $_SESSION['campaign_id'];
 
-        if(!empty($stuId) && !empty($cid)){
+        $amount = $dt["amount"];
 
-            $data = array('gateway' => 'RAZORPAY', 'submission_id' => $stuId, 'transaction_ref_no' => $_POST['razorpay_payment_id'], 'order_id' => $_SESSION['razorpay_order_id'], 'amount' => $dt["amount"], 'status' => 'S');
+        if(!empty($sid) && !empty($cid)){
+
+            $data = array('gateway' => 'RAZORPAY', 'submission_id' => $sid, 'transaction_ref_no' => $_POST['razorpay_payment_id'], 'order_id' => $_SESSION['razorpay_order_id'], 'amount' => $dt["amount"], 'status' => 'S');
 
             $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
             $result = $connection2->prepare($sql);
@@ -248,16 +250,20 @@ if ($success === true)
                     $is_custom = '';
 
 
-                    $payment_mode_id = $_POST['payment_mode_id'];
-                    $bank_id = $_POST['bank_id'];
-                    if (!empty($bank_id)) {
-                        $sqlbn = 'SELECT name FROM fn_masters WHERE id = ' . $bank_id . ' ';
-                        $resultbn = $connection2->query($sqlbn);
-                        $bankNameData = $resultbn->fetch();
-                        $bank_name = $bankNameData['name'];
-                    } else {
-                        $bank_name = '';
-                    }
+                    // $payment_mode_id = $_POST['payment_mode_id'];
+                    // $bank_id = $_POST['bank_id'];
+                    // if (!empty($bank_id)) {
+                    //     $sqlbn = 'SELECT name FROM fn_masters WHERE id = ' . $bank_id . ' ';
+                    //     $resultbn = $connection2->query($sqlbn);
+                    //     $bankNameData = $resultbn->fetch();
+                    //     $bank_name = $bankNameData['name'];
+                    // } else {
+                    //     $bank_name = '';
+                    // }
+
+                    $payment_mode_id = '';
+					$bank_name = '';
+					$bank_id = '';
                     $dd_cheque_no = '';
                     $dd_cheque_date  = '';
 
@@ -267,7 +273,8 @@ if ($success === true)
                     $fn_fees_head_id = $values['fn_fees_head_id'];
                     $fn_fees_receipt_series_id = $values['recp_fee_series_id'];
 
-                    $TrnAmt = ($response->getTrnAmt()) / 100;
+                    // $TrnAmt = ($response->getTrnAmt()) / 100;
+                    $TrnAmt = $amount;
                     $transcation_amount = $TrnAmt;
                     $amount_paying = $TrnAmt;
 

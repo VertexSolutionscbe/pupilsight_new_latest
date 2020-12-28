@@ -73,6 +73,12 @@ if (!empty($camdata)) {
 						$today = time();
 						$OrderId = $today . $random_number;
 
+						$sqlchk = "SELECT name FROM fn_fee_payment_gateway";
+						$resultchk = database::doSelectOne($sqlchk);
+						$gateway = $resultchk['name'];
+
+						if(!empty($gateway)){
+							if($gateway == 'WORLDLINE'){
 ?>
 						<form id="admissionPay" action="<?php echo $base_url; ?>/thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 							<input type="hidden" value="<?php echo $OrderId; ?>" id="OrderId" name="OrderId">
@@ -86,9 +92,48 @@ if (!empty($camdata)) {
 							<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
 							<button type="submit" class="btnPayNew" id="payAdmissionFee">Pay</button>
 						</form>
-<?php }
-				}
-			}
+					<?php } elseif($gateway == 'RAZORPAY') { 
+							$sqlo = "SELECT * FROM pupilsight_cms  WHERE title != '' ";
+							$orgData = database::doSelectOne($sqlo);	
+
+							$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                            $responseLink = $base_url . "/cms/index.php?return=1";
+					?>
+
+						<form id="admissionPay" action="<?php echo $base_url; ?>/thirdparty/paymentadm/razorpay/pay.php" method="post">
+						<input type="hidden" value="<?php echo $OrderId; ?>" id="OrderId" name="OrderId">
+						<input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+						<input type="hidden" value="INR" id="currencyName" name="currencyName">
+						<input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
+						<input type="hidden" name="mid" id="mid" value="WL0000000009424">
+						<input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+						<input type="hidden" name="campaignid" value="<?php echo $cid; ?>">
+						<input type="hidden" name="sid" value="<?php echo $sid; ?>">
+						<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
+
+						<input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                        <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+						<button type="submit" class="btnPayNew" id="payAdmissionFee">Pay</button>
+						</form>
+
+					<?php } elseif($gateway == 'PAYU') { ?>
+						<form id="admissionPay" action="<?php echo $base_url; ?>/thirdparty/payment/payu/checkout.php" method="post">
+							<input type="hidden" value="<?php echo $OrderId; ?>" id="OrderId" name="OrderId">
+							<input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+							<input type="hidden" value="INR" id="currencyName" name="currencyName">
+							<input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
+							
+							<input type="hidden" class="applicantName" name="name" value="<?php echo $row['username']?>">
+							<input type="hidden" class="applicantEmail" name="email" value="<?php echo $row['email']?>">
+							<input type="hidden" class="applicantPhone" name="phone" value="<?php echo $row['phone']?>">
+							<input type="hidden" name="campaignid" value="<?php echo $cid; ?>">
+							<input type="hidden" name="sid" value="<?php echo $sid; ?>">
+							<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
+							<button type="submit" class="btnPayNew" id="payAdmissionFee">Pay</button>
+						</form>
+					<?php } } ?>
+<?php 			
+			} } }
 			echo '</td>';
 			echo '</tr>';
 		} else {
