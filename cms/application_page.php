@@ -487,10 +487,12 @@ if (empty($campaignStatus)) {
                 var duration = moment.duration(diff_date, 'milliseconds');
                 var totDays = duration.asDays();
                 //console.log(totDays);
-                if (totDays > 1491 || totDays < 1035) {
-                    $(this).val("");
-                    alert("Kindly Note: 3 Years to be completed as on 31st May 2021");
-                }
+                
+                
+                // if (totDays > 1491 || totDays < 1035) {
+                //     $(this).val("");
+                //     alert("Kindly Note: 3 Years to be completed as on 31st May 2021");
+                // }
 
                 /*
                 var ageMonths = Number(years * 12) + months;
@@ -508,9 +510,9 @@ if (empty($campaignStatus)) {
 
                 var ageval = years + " years " + months + " months and " + days + " days";
                 iframe.find("input[name=age_value]").val(ageval);
-                if (years < 3) {
-                    iframe.find("input[name=dob_in_words]").after('<span class="dobval" style="color:red;font-size: 15px;font-weight: 600;">Kindly Note: 3 Years to be completed as on 31st May 2021<span>');
-                }
+                // if (years < 3) {
+                //     iframe.find("input[name=dob_in_words]").after('<span class="dobval" style="color:red;font-size: 15px;font-weight: 600;">Kindly Note: 3 Years to be completed as on 31st May 2021<span>');
+                // }
 
                 var dateTime = new Date(From_date);
                 var month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
