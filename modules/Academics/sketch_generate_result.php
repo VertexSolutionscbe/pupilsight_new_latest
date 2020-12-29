@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $resulta = $connection2->query($sqla);
     $attrdata = $resulta->fetchAll();
 
-    $sql = "SELECT a.*, b.officialName, p.name as progname,  d.name as classname, e.name as sectionname FROM examinationReportTemplateSketchData AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON c.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE a.sketch_id = ".$sketchId." GROUP BY a.pupilsightPersonID";
+    echo $sql = "SELECT a.*, b.officialName, p.name as progname,  d.name as classname, e.name as sectionname FROM examinationReportTemplateSketchData AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON c.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE a.sketch_id = ".$sketchId." GROUP BY a.pupilsightPersonID";
     $result = $connection2->query($sql);
     $studata = $result->fetchAll();
     //print_r($labeldata);

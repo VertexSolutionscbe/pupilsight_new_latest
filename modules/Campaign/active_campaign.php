@@ -122,14 +122,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/application_statu
                     echo $arr[$i]['name'];
                     echo '</span>';
                     //echo $arr[$i]['name'].'----'.$arr[$i]['allow_multiple_submission'];
+                    // if ($arr[$i]['allow_multiple_submission'] == '1') {
+                    //     echo "<center><a class='thickbox' href='" . $_SESSION[$guid]['absoluteURL'] . '/fullscreen.php?q=/modules/' . $_SESSION[$guid]['module'] . '/popup.php&id=' . $arr[$i]['id'] . '' . "&width=500&height=250'> ";
+                    //     echo '<button class="btn btn-primary my-2">Apply Here</button></a>';
+                    // } else {
+                    //     if (!empty($rowdatachk)) {
+                    //         echo '<center><button class="btn btn-primary my-2">Already Applied</button>';
+                    //     } else {
+                    //         echo "<center><a class='thickbox' href='" . $_SESSION[$guid]['absoluteURL'] . '/fullscreen.php?q=/modules/' . $_SESSION[$guid]['module'] . '/popup.php&id=' . $arr[$i]['id'] . '' . "&width=500&height=250'> ";
+                    //         echo '<button class="btn btn-primary my-2">Apply Here</button></a>';
+                    //     }
+                    // }
+
                     if ($arr[$i]['allow_multiple_submission'] == '1') {
-                        echo "<center><a class='thickbox' href='" . $_SESSION[$guid]['absoluteURL'] . '/fullscreen.php?q=/modules/' . $_SESSION[$guid]['module'] . '/popup.php&id=' . $arr[$i]['id'] . '' . "&width=500&height=250'> ";
+                        echo "<center><a class='' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/formopen.php&id=' . $arr[$i]['id'] ."'> ";
                         echo '<button class="btn btn-primary my-2">Apply Here</button></a>';
                     } else {
                         if (!empty($rowdatachk)) {
                             echo '<center><button class="btn btn-primary my-2">Already Applied</button>';
                         } else {
-                            echo "<center><a class='thickbox' href='" . $_SESSION[$guid]['absoluteURL'] . '/fullscreen.php?q=/modules/' . $_SESSION[$guid]['module'] . '/popup.php&id=' . $arr[$i]['id'] . '' . "&width=500&height=250'> ";
+                            echo "<center><a class='' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/formopen.php&id=' . $arr[$i]['id'] ."'> ";
                             echo '<button class="btn btn-primary my-2">Apply Here</button></a>';
                         }
                     }
