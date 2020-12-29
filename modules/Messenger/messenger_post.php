@@ -82,7 +82,7 @@ else {
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail")) {
 			$row = $form->addRow();
 				$row->addLabel('email', __('Email'))->description(__('Deliver this message to user\'s primary email account?'));
-				$row->addYesNoRadio('email')->checked('Y')->required();
+				$row->addYesNoRadio('email')->checked('N')->required();
 
 			$form->toggleVisibilityByClass('email')->onRadio('email')->when('Y');
 
@@ -224,11 +224,15 @@ else {
         $row->addLabel('category', __('Category'));
         $row->addSelect('category')->fromArray($display_fields)->selected($values['category'])->required();
 
+        //echo "<span type='text' id='count'>Character Count</span>";
+
 		$row = $form->addRow();
 	        $col = $row->addColumn('body');
 	        $col->addLabel('body', __('Body'));
 	        $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
 
+        $row = $form->addRow()->addAlert(__('For SMS message 140 Characters per message '))->setClass('right')
+        ->append('<span id="count" title="countchars"></span>');
 
 		//READ RECEIPTS
 		if (!isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
@@ -642,3 +646,9 @@ else {
     });
 </script>
 
+<script type="text/javascript">
+    $("#body").keyup(function(){
+        //$("#count").text("Characters left: " + (500 - $(this).val().length));
+        $("#count").text("Characters Count : " +$(this).val().length);
+    });
+</script>
