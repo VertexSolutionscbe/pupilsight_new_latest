@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			if ($values['address1'] != '') {
 				try {
 					$dataAddress = array('pupilsightPersonID' => $values['pupilsightPersonID'], 'addressMatch' => '%' . strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))) . '%');
-					$sqlAddress = "SELECT pupilsightPersonID, title, preferredName, surname, category FROM pupilsightPerson JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT pupilsightPersonID=:pupilsightPersonID ORDER BY surname, preferredName";
+					$sqlAddress = "SELECT pupilsightPersonID, title, preferredName, surname, pupilsightRole.category FROM pupilsightPerson JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT pupilsightPersonID=:pupilsightPersonID ORDER BY surname, preferredName";
 					$resultAddress = $connection2->prepare($sqlAddress);
 					$resultAddress->execute($dataAddress);
 				} catch (PDOException $e) {

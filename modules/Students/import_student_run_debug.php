@@ -510,7 +510,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $exception_count++;
                 }
             }
-            //die();
+            die();
             fclose($handle);
             echo "\n<a href='" . $URL . "'>Back</a>\n<br>";
             if ($exception_result) {
