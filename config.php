@@ -13,7 +13,7 @@ $databaseUsername = 'root';
 //$databasePassword = '';
 //$databaseName = 'pupilsight'; //pd_demo
 //$databaseName = 'bips_erp'; //pd_demo
-//$databaseName = 'samitha'; //pd_demo
+//$databaseName = 'hillrock_nps'; //pd_demo
 //live
 $databasePassword = 'xyz'; //xyz
 $databaseName = 'pd_demo'; //pd_demo
