@@ -309,16 +309,31 @@ class CustomField extends QueryableGateway
     public function getPostData($tableName, $primaryCol, $primaryColVal, $modules = NULL)
     {
         try {
-            $sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' ";
+            //$sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' ";
+            $sq = "select field_name as fields from custom_field where table_name='" . $tableName . "' ";
             $sq .= "and active='Y' and field_type in('tinytext','varchar','text','email','number','mobile','image','date','file','url','dropdown','checkboxes','radioboxes','tab') ";
             if ($modules) {
                 $sq .= "and modules like '%" . $modules . "%'";
             }
-
+            //echo "\n<br>" . $sq;
             $db = new DBQuery();
             $res = $db->selectRaw($sq);
+            //print_r($res);
             if ($res) {
-                $sq = "select " . $res[0]["fields"] . " from " . $tableName . " where " . $primaryCol . "='" . $primaryColVal . "' ";
+                $len = count($res);
+                $i = 0;
+                $colstr = "";
+                while ($i < $len) {
+                    if ($colstr) {
+                        $colstr .= ",";
+                    }
+                    $colstr .= $res[$i]["fields"];
+                    $i++;
+                }
+
+                //$sq = "select " . $res[0]["fields"] . " from " . $tableName . " where " . $primaryCol . "='" . $primaryColVal . "' ";
+                $sq = "select " . $colstr . " from " . $tableName . " where " . $primaryCol . "='" . $primaryColVal . "' ";
+                //echo "\n<br>" . $sq;
                 $st = $db->selectRaw($sq);
                 if ($st) {
                     $result["t"] = $tableName;
@@ -330,6 +345,7 @@ class CustomField extends QueryableGateway
                     echo "\n<script>pcdt=\"\";</script>";
                 }
             }
+            // die();
         } catch (Exception $ex) {
             echo 'CustomField->updateCustomField(): exception: ',  $ex->getMessage(), "\n";
         }
