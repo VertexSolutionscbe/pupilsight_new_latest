@@ -185,6 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
     $CurriculamGateway = $container->get(CurriculamGateway::class);
     $criteria = $CurriculamGateway->newQueryCriteria()
     //->sortBy(['id'])
+        ->pageSize(1000)
         ->fromPOST();
         if(isset($_POST['pupilsightYearGroupID']) && $_POST['pupilsightRollGroupID'] )
         {
@@ -222,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
                 <th style="width:80px" rowspan="2">
                 <input type="checkbox" name="checkall" id="checkall" value="on" class="floatNone checkall">
                 </th>
-                <th>Roll No <br/></th>
+                <th>Sl No <br/></th>
                 <th>Name <br/> </th>
                 <th  class="bdr_right"> Id </th>
                 <th>Marks <br/>Entered</th>
@@ -264,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
                 echo '<td class="td_texfield">';
                 echo '<input type="hidden" name="test_id['.$row['test_id'].']">';
                 //if marks is enabled
-                if($row['marks_obtained']!='0.00' || $row['gradeId']!='0' )
+                if(!empty($row['marks_obtained']) || !empty($row['gradeId']) )
                 {
                     //$row['marks_obtained']
                     echo '<i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon "></i>';

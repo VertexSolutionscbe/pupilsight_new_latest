@@ -249,17 +249,26 @@ class adminlib
 			$sql = "SELECT state FROM campaign_form_status WHERE campaign_id = " . $cid . " AND form_id = " . $fid . " AND submission_id = " . $sid . " ORDER BY id DESC LIMIT 1";
 			$result = database::doSelectOne($sql);
 
-			if (!empty($result)) {
-				$state = $result['state'];
-			} else {
-				// $sql = "Select workflow_id  FROM workflow_map WHERE campaign_id = ".$cid." ";
-				// $result = database::doSelectOne($sql);
+			$sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $sid . "  ";
+			$result2 = database::doSelectOne($sql2);
 
-				// $sql1 = "Select name FROM workflow_state WHERE workflowid = ".$result['workflow_id']." AND order_wise = '1' ";
-				// $result1 = database::doSelectOne($sql1);
-				// $state = $result1['name'];
+			if (!empty($result2['transaction_id'])) {
 				$state = 'Submitted';
+			} else {
+				$state = 'Created';
 			}
+
+			// if (!empty($result)) {
+			// 	$state = $result['state'];
+			// } else {
+			// 	// $sql = "Select workflow_id  FROM workflow_map WHERE campaign_id = ".$cid." ";
+			// 	// $result = database::doSelectOne($sql);
+
+			// 	// $sql1 = "Select name FROM workflow_state WHERE workflowid = ".$result['workflow_id']." AND order_wise = '1' ";
+			// 	// $result1 = database::doSelectOne($sql1);
+			// 	// $state = $result1['name'];
+			// 	$state = 'Submitted';
+			// }
 			return $state;
 		} else {
 			$state = 'Submitted';

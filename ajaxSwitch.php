@@ -390,63 +390,7 @@ if (isset($_POST['type'])) {
                     }
                     //die();
 
-                if($checkmode == 'multiple'){
-                    $mdata = $session->get('m_data');
-                   // savePaymentModeData($transactionId, $mdata);
-                    $t_id = $transactionId;
-                    
-                    $pmode=$mdata['payment_mode_id'];
-                    $mcredit = $mdata['credit_id'];
-                    $bank_id = $mdata['bank_id'];
-                    $amount = $mdata['amount'];
-                    $mrefno = $mdata['reference_no'];
-                    $minstruDate = $mdata['instrument_date'];
-                    $l=sizeof($pmode);
-                    $i=1;
-                    for($i=0;$i<$l;$i++){
-                        $datam = array('transaction_id'=>$t_id,'payment_mode_id' => $pmode[$i],  'credit_id' => $mcredit[$i], 'bank_id' => $bank_id[$i],    'amount' =>$amount[$i],'reference_no'=>$mrefno[$i],'instrument_date' =>$minstruDate[$i]);
-                        $sqlm = 'INSERT INTO fn_multi_payment_mode SET transaction_id=:transaction_id, payment_mode_id=:payment_mode_id, credit_id=:credit_id, bank_id=:bank_id,amount=:amount,reference_no=:reference_no,instrument_date=:instrument_date';
-                        $resultm = $connection2->prepare($sqlm);
-                        $resultm->execute($datam);
-                
-                    }
 
-                    $pmId = implode(',', $payment_mode_id);
-                    $sqlpt = "SELECT GROUP_CONCAT(name) AS modeName FROM fn_masters WHERE id IN (".$pmId.") ";
-                    $resultpt = $connection2->query($sqlpt);
-                    $valuept = $resultpt->fetch();
-                    $paymentModeName = $valuept['modeName'];
-                } else {
-                    $sqlpt = "SELECT name FROM fn_masters WHERE id = ".$payment_mode_id." ";
-                    $resultpt = $connection2->query($sqlpt);
-                    $valuept = $resultpt->fetch();
-                    $paymentModeName = $valuept['name'];
-                }
-
-
-                $sqlstu = "SELECT a.officialName , a.admission_no, b.name as class, c.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = ".$pupilsightPersonID." ";
-                $resultstu = $connection2->query($sqlstu);
-                $valuestu = $resultstu->fetch();
-
-               
-
-                $class_section = $valuestu["class"] ." ".$valuestu["section"];
-                $dts_receipt = array(
-                    "receipt_no" => $receipt_number,
-                    "date" => date("d-M-Y"),
-                    "student_name" => $valuestu["officialName"],
-                    "student_id" => $valuestu["admission_no"],
-                    "class_section" => $class_section,
-                    "instrument_date" => $instrument_date,
-                    "instrument_no" => $instrument_no,
-                    "transcation_amount" => $amount_paying,
-                    "fine_amount" => $fine,
-                    "other_amount" => "NA",
-                    "pay_mode" => $paymentModeName,
-                    "transactionId" => $transactionId,
-                    "receiptTemplate" => $receiptTemplate,
-                    "bank_name" => $bank_name
-                );
 
                     if (!empty($deposit)) {
                         $datad = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID,  'deposit' => $deposit, 'cdt' => $cdt);
@@ -455,14 +399,44 @@ if (isset($_POST['type'])) {
                         $resultd->execute($datad);
                     }
 
+                    if ($checkmode == 'multiple') {
+                        $mdata = $session->get('m_data');
+                        // savePaymentModeData($transactionId, $mdata);
+                        $t_id = $transactionId;
+
+                        $pmode = $mdata['payment_mode_id'];
+                        $mcredit = $mdata['credit_id'];
+                        $bank_id = $mdata['bank_id'];
+                        $amount = $mdata['amount'];
+                        $mrefno = $mdata['reference_no'];
+                        $minstruDate = $mdata['instrument_date'];
+                        $l = sizeof($pmode);
+                        $i = 1;
+                        for ($i = 0; $i < $l; $i++) {
+                            $datam = array('transaction_id' => $t_id, 'payment_mode_id' => $pmode[$i],  'credit_id' => $mcredit[$i], 'bank_id' => $bank_id[$i],    'amount' => $amount[$i], 'reference_no' => $mrefno[$i], 'instrument_date' => $minstruDate[$i]);
+                            $sqlm = 'INSERT INTO fn_multi_payment_mode SET transaction_id=:transaction_id, payment_mode_id=:payment_mode_id, credit_id=:credit_id, bank_id=:bank_id,amount=:amount,reference_no=:reference_no,instrument_date=:instrument_date';
+                            $resultm = $connection2->prepare($sqlm);
+                            $resultm->execute($datam);
+                        }
+
+                        $pmId = implode(',', $payment_mode_id);
+                        $sqlpt = "SELECT GROUP_CONCAT(name) AS modeName FROM fn_masters WHERE id IN (" . $pmId . ") ";
+                        $resultpt = $connection2->query($sqlpt);
+                        $valuept = $resultpt->fetch();
+                        $paymentModeName = $valuept['modeName'];
+                    } else {
+                        $sqlpt = "SELECT name FROM fn_masters WHERE id = " . $payment_mode_id . " ";
+                        $resultpt = $connection2->query($sqlpt);
+                        $valuept = $resultpt->fetch();
+                        $paymentModeName = $valuept['name'];
+                    }
+
 
                     $sqlstu = "SELECT a.officialName , a.admission_no, b.name as class, c.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " ";
                     $resultstu = $connection2->query($sqlstu);
                     $valuestu = $resultstu->fetch();
 
-                    $sqlpt = "SELECT name FROM fn_masters WHERE id = " . $payment_mode_id . " ";
-                    $resultpt = $connection2->query($sqlpt);
-                    $valuept = $resultpt->fetch();
+
 
                     $class_section = $valuestu["class"] . " " . $valuestu["section"];
                     $dts_receipt = array(
@@ -476,7 +450,7 @@ if (isset($_POST['type'])) {
                         "transcation_amount" => $amount_paying,
                         "fine_amount" => $fine,
                         "other_amount" => "NA",
-                        "pay_mode" => $valuept['name'],
+                        "pay_mode" => $paymentModeName,
                         "transactionId" => $transactionId,
                         "receiptTemplate" => $receiptTemplate,
                         "bank_name" => $bank_name
@@ -548,43 +522,7 @@ if (isset($_POST['type'])) {
                             }
                         }
                     }
-<<<<<<< HEAD
 
-                    if ($checkmode == 'multiple') {
-                        $mdata = $session->get('m_data');
-                        // savePaymentModeData($transactionId, $mdata);
-                        $t_id = $transactionId;
-
-                        $pmode = $mdata['payment_mode_id'];
-                        $mcredit = $mdata['credit_id'];
-                        $bank_id = $mdata['bank_id'];
-                        $amount = $mdata['amount'];
-                        $mrefno = $mdata['reference_no'];
-                        $minstruDate = $mdata['instrument_date'];
-                        $l = sizeof($pmode);
-                        $i = 1;
-                        for ($i = 0; $i < $l; $i++) {
-                            $datam = array('transaction_id' => $t_id, 'payment_mode_id' => $pmode[$i],  'credit_id' => $mcredit[$i], 'bank_id' => $bank_id[$i],    'amount' => $amount[$i], 'reference_no' => $mrefno[$i], 'instrument_date' => $minstruDate[$i]);
-                            $sqlm = 'INSERT INTO fn_multi_payment_mode SET transaction_id=:transaction_id, payment_mode_id=:payment_mode_id, credit_id=:credit_id, bank_id=:bank_id,amount=:amount,reference_no=:reference_no,instrument_date=:instrument_date';
-                            $resultm = $connection2->prepare($sqlm);
-                            $resultm->execute($datam);
-                        }
-                    }
-
-=======
-                }
-               
-                
-                if(!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)){ 
-                    $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receiptNew.php';
-                    $datamerge = array_merge($dts_receipt, $dts_receipt_feeitem);
-                    $postdata = http_build_query(
-                    array(
-                    'dts_receipt' => $dts_receipt,
-                    'dts_receipt_feeitem' => $dts_receipt_feeitem
-                    )
-                    );
->>>>>>> 5d775721485438517adf8624655e348be12cf296
 
                     if (!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)) {
                         $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/phpword/receiptNew.php';
@@ -1406,7 +1344,7 @@ if (isset($_POST['type'])) {
             WHERE examTAC.test_master_id ="' . $test_id . '" AND examTAC.pupilsightProgramID="' . $pupilsightProgramID . '"  GROUP BY examTAC.pupilsightYearGroupID ORDER bY g.name ASC';
             $test_res = $connection2->query($test_sql);
             $tests = $test_res->fetchAll();
-            $options = '<option value="">Select program</option>';
+            $options = '<option value="">Select Class</option>';
             foreach ($tests as $val) {
                 $options .= "<option value='" . $val['pupilsightYearGroupID'] . "'>" . $val['name'] . "</option>";
             }
@@ -1682,7 +1620,7 @@ if (isset($_POST['type'])) {
                             </tr>
                         <?php } ?>
                     </table>
-        <?php
+                <?php
                 break;
             case "load_Student_data":
                 $cid = $_POST['val'];
@@ -1699,6 +1637,92 @@ if (isset($_POST['type'])) {
                     }
                 }
                 break;
+
+            case 'subjectMarks_excelNew';
+                $testId = implode(',', $_POST['testId']);
+                //   $sql = "SELECT a.* ,b.skill_display_name ,d.name as test,c.name as subject,GROUP_CONCAT(DISTINCT b.skill_id SEPARATOR ', ') as skill_ids,GROUP_CONCAT(DISTINCT b.skill_display_name SEPARATOR ', ') as skillname FROM examinationMarksEntrybySubject AS a LEFT JOIN subjectSkillMapping AS b ON a.`skill_id` = b.skill_id LEFT JOIN pupilsightDepartment as c ON a.pupilsightDepartmentID=c.pupilsightDepartmentID LEFT JOIN  examinationTest as d ON a.test_id = d.id LEFT JOIN examinationTest as e ON a.test_id = e.id  WHERE   a.test_id = ".$testId." GROUP BY a.pupilsightPersonID";
+                $sql = 'SELECT b.officialName, b.pupilsightPersonID, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id = ' . $testId . ' GROUP BY a.pupilsightPersonID';
+                $result = $connection2->query($sql);
+                $data = $result->fetchAll();
+                // echo '<pre>';
+                //  print_r($data);
+                // echo '</pre>';
+                foreach ($data as $k => $dt) {
+                    $sqlm = 'SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
+            LEFT JOIN examinationSubjectToTest AS m ON a.pupilsightDepartmentID = m.pupilsightDepartmentID
+            WHERE a.test_id = ' . $testId . ' AND a.pupilsightPersonID = ' . $dt['pupilsightPersonID'] . ' AND a.pupilsightDepartmentID = ' . $_POST['sub'] . ' GROUP by a.pupilsightDepartmentID,c.skill_id';
+                    $resultm = $connection2->query($sqlm);
+                    $datam = $resultm->fetchAll();
+                    if (!empty($datam)) {
+                        $data[$k]['marks'] = $datam;
+                    }
+                }
+
+                $sql1 = 'SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
+    LEFT JOIN examinationSubjectToTest AS m ON a.pupilsightDepartmentID = m.pupilsightDepartmentID
+    WHERE a.test_id = ' . $testId . ' AND a.pupilsightDepartmentID = ' . $_POST['sub'] . ' GROUP by a.pupilsightDepartmentID,c.skill_id';
+                $resu_h = $connection2->query($sql1);
+                $datam_h = $resu_h->fetchAll();
+                ?>
+
+                    <table id="subexcelexport">
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Student ID</th>
+                            <th>Class</th>
+                            <th>Section</th>
+                            <?php
+                            foreach ($datam_h as $m) {
+                            ?>
+                                <th><?php echo $m['subject_name'] . "-" . $m['skill_display_name'] . "/" . ceil($m['max_marks']); ?></th>
+                            <?php
+                            }
+                            ?>
+                        </tr>
+
+                        <?php foreach ($data as $row) {
+                            echo "<tr>
+<td>" . $row['officialName'] . "</td>
+<td>" . $row['pupilsightPersonID'] . "</td>
+<td>" . $row['classname'] . "</td>
+<td>" . $row['sectionname'] . "</td>";
+                            $marks = $row['marks'];
+                            foreach ($data as $val) {
+                                $marks = $val['marks'];
+                                foreach ($marks as $m) {
+                                    $sql = 'SELECT grade_name FROM  examinationGradeSystemConfiguration WHERE id="' . $m['gradeId'] . '"';
+                                    $result = $connection2->query($sql);
+                                    $gradeName = $result->fetch();
+                                    $grade_name = '';
+
+                                    if (!empty($gradeName['grade_name'])) {
+                                        $grade_name = $gradeName['grade_name'];
+                                    }
+
+                                    if ($row['pupilsightPersonID'] == $val['pupilsightPersonID']) {
+
+                                        $marks = str_replace(".00", "", $m['marks_obtained']);
+                                        if ($marks == 0) {
+                                            if ($m['marks_abex']) {
+                                                $marks = $m['marks_abex'];
+                                            }
+                                        }
+                                        if (!empty($grade_name)) {
+                                            echo "<td>" . $marks . "(" . $grade_name . ")</td>";
+                                        } else {
+                                            echo "<td>" . $marks . "</td>";
+                                        }
+                                    }
+                                }
+                            }
+                        ?>
+                            </tr>
+                        <?php } ?>
+                    </table>
+        <?php
+                break;
+
+
             default:
                 echo "Invalid request";
         }

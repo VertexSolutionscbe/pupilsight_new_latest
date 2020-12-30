@@ -31,19 +31,21 @@ $payuClient = new PayUClient($key,$salt);
 $params = array("status"=>$status,"txnid"=>$txnid,"amount"=>$amount,"productinfo"=>$productinfo,"firstname"=>$firstname,"email"=>$email,"udf1"=>$udf1,"udf2"=>$udf2,"udf3"=>$udf3,"udf4"=>$udf4,"udf5"=>$udf5);
 
 # you can generate payment hash as follows:
-$hash = new Hasher();
-$reverse_hash = $hash->validate_hash($params);
-echo "<br>";
-echo $reverse_hash;
-echo "<br>";
+// $hash = new Hasher();
+// $reverse_hash = $hash->validate_hash($params);
+// echo "<br>";
+// echo $reverse_hash;
+// echo "<br>";
 
-print_r($params);
-echo "<br>";
-echo $posted_hash;
+// print_r($params);
+// echo "<br>";
+// echo $posted_hash;
 
-       if ($reverse_hash != $posted_hash) {
-	       echo "Transaction has been tampered. Please try again";
-		   }
+    //    if ($reverse_hash != $posted_hash) {
+	//        echo "Transaction has been tampered. Please try again";
+	// 	   }
+
+$URL = $_SESSION[$guid]['absoluteURL'] . "/cms/index.php";
 
 ?>
 
@@ -66,7 +68,7 @@ echo $posted_hash;
 <div class="hd-logo"><img src="images/logo.svg" alt="PayU Logo"></div>
 <div class="hd-nav">
 <ul>
-<li><a href="https://github.com/payu-india/payu-sdk-php"><i><img src="images/github-icon.svg"></i>View on Github</a></li>
+<li><a href="<?php echo $URL;?>" style="font-size: 21px !important;">Back</a></li>
 </ul>
 </div>
 </div>

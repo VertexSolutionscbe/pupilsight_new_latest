@@ -27,15 +27,20 @@ if (!empty($camdata)) {
 			echo '</td>';
 			echo '<td>';
 
-			if (!empty($row['transaction_id'])) {
-				echo $statedata;
+			if(!empty($row['transaction_id'])){
+				echo "Submitted";
 			} else {
-				if ($row['is_fee_generate'] == '2') {
-					echo "Created";
-				} else {
-					echo "Submitted";
-				}
+				echo "Created";
 			}
+			// if (!empty($row['transaction_id'])) {
+			// 	echo $statedata;
+			// } else {
+			// 	if ($row['is_fee_generate'] == '2') {
+			// 		echo "Created";
+			// 	} else {
+			// 		echo "Submitted";
+			// 	}
+			// }
 
 			echo '</td>';
 			echo '<td>';

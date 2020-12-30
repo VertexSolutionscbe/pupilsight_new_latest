@@ -35,6 +35,9 @@ $action = $PAYU_BASE_URL . '/_payment';
 // $action = "http://localhost:8888/PHP_SAMPLE_APP 2/checkout.php";
 
 $txnid = substr(hash('sha256', mt_rand() . microtime()), 0, 20);
+
+$_SESSION["paypost"] = $_POST;
+
 $amount = $_POST['amount'] / 100;
 
 if(!empty($_POST['name'])){
@@ -55,20 +58,18 @@ if(!empty($_POST['phone'])){
   $phone = '9000000009';
 }
 
-$campaignid = $_POST['campaignid'];
+//$campaignid = $_POST['campaignid'];
 
-if (!empty($_REQUEST['sid'])) {
-	$submissionId = $_REQUEST['sid'];
-} else {
-	$submissionId = $_SESSION['submissionId'];
-}
+
+$submissionId = $_POST['stuid'];
+
 
 
 // $campaignid = 1;
 // $submissionId = 111;
 
 $productinfo = "Admission Fee";
-$udf1 = $campaignid;
+$udf1 = "";
 $udf2 = $submissionId;
 $udf3 = "";
 $udf4 = "";
@@ -88,7 +89,7 @@ $payment_hash = $hash->generate_hash($params);
 
 $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 
-$surl = $base_url . '/thirdparty/payment/payu/success.php';
+$surl = $base_url . '/thirdparty/payment/payu/success_parent.php';
 $furl = $base_url . '/thirdparty/payment/payu/failure.php';
 ?>
 
@@ -155,7 +156,7 @@ $furl = $base_url . '/thirdparty/payment/payu/failure.php';
     <input type="hidden" name="furl" value="<?php echo $furl;?>" />
     <!--Please change this parameter value with your failure page absolute url like http://mywebsite.com/response.php. -->
     <input name="curl" type="hidden" value="" />
-    <input name="udf1" type="hidden" value="<?php echo $udf1?>" />
+    <input name="udf1" type="hidden" value="" />
     <input name="udf2" type="hidden" value="<?php echo $udf2?>" />
     <input name="udf3" type="hidden" value="" />
     <input name="udf4" type="hidden" value="" />

@@ -168,6 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
     }else{
     $marksNotEnterted = $curriculamGateway->getExamMarksNotEntered();
     }
+   
     $row = $form->addRow();
     $test_sql = 'SELECT  examinationTestMaster.id,examinationTestMaster.name FROM `examinationTestMaster` LEFT JOIN `pupilsightSchoolYear` ON `examinationTestMaster`.`pupilsightSchoolYearID`=`pupilsightSchoolYear`.`pupilsightSchoolYearID` WHERE `examinationTestMaster`.`pupilsightSchoolYearID` = "'.$pupilsightSchoolYearID.'" ORDER BY examinationTestMaster.name ASC';
     $test_res = $connection2->query($test_sql);
@@ -180,26 +181,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
     /*$col=$row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
     $col->addSelect('pupilsightSchoolYearID')->fromArray($academic)->selected($pupilsightSchoolYearID)->required()->placeholder('Select Academic');*/
+
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('test_id', __('Test Name'));
     $col->addSelect('test_id')->fromArray($testList)->selected($search["test_id"])->required();
+   
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramIDBytest', __('Program'));
     $col->addSelect('pupilsightProgramIDBytest')->fromArray($program)->selected($pupilsightProgramIDBytest)->required()->placeholder('Select Program');
+
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupIDT', __('Class'));
-    $col->addSelect('pupilsightYearGroupIDT')->setId('pupilsightYearGroupIDT')->selectMultiple()->fromArray($class_option)->selected($pupilsightYearGroupIDT)->setClass('test_lngth');
+    $col->addSelect('pupilsightYearGroupIDT')->setId('pupilsightYearGroupIDT')->fromArray($class_option)->selected($pupilsightYearGroupIDT)->setClass('test_lngth')->required()->selectMultiple();
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightRollGroupID', __('Section'));
     
-    $col->addSelect('pupilsightRollGroupID')->fromArray($sectionData)->selected($search["pupilsightRollGroupID"])->placeholder('Select Section');
+    $col->addSelect('pupilsightRollGroupID')->fromArray($sectionData)->selected($search["pupilsightRollGroupID"])->placeholder('Select Section')->required();
 
     $sub[""] = "";
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightDepartmentID', __('Subject'));
     $col->addSelect('pupilsightDepartmentID')->fromArray($subjects)->selected($search["pupilsightDepartmentID"]);
+
+    
 
     $skill[""] = "";
    /* $col = $row->addColumn()->setClass('newdes');
@@ -246,6 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
  $(document).on('change','#pupilsightProgramIDBytest',function(){
     var pupilsightProgramID=$(this).val();
     var test_id = $("#test_id").val();
+    $('#pupilsightYearGroupIDT').selectize()[0].selectize.destroy();
      var type = "loadClassesByTest";
         $.ajax({
         url: 'ajaxSwitch.php',
@@ -253,11 +260,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
         data: { test_id:test_id,pupilsightProgramID: pupilsightProgramID,type:type},
         async: true,
         success: function(response) {
-           $("#pupilsightYearGroupIDT").html(response);
-           $("#pupilsightRollGroupID").html('<option value="">Select section</option>');
-           $("#pupilsightDepartmentID").html('<option value="">Select subject</option>');
+            $("#pupilsightYearGroupIDT").html(response);
+            $("#pupilsightRollGroupID").html('<option value="">Select section</option>');
+            $("#pupilsightDepartmentID").html('<option value="">Select subject</option>');
+            $('#pupilsightYearGroupIDT').selectize({
+                plugins: ['remove_button'],
+            });
         }
-        });
+    });
  });   
  $(document).on('change','#pupilsightYearGroupIDT',function(){
   var   pupilsightYearGroup=$(this).val();
@@ -324,3 +334,14 @@ echo "<br>" . $table->render($marksNotEnterted);
 echo "</div>";
 
 }
+
+
+?>
+
+<script>
+    $(document).ready(function () {
+      	$('#pupilsightYearGroupIDT').selectize({
+      		plugins: ['remove_button'],
+      	});
+    });
+</script>

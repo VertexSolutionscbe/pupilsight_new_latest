@@ -355,7 +355,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                     $studetails = $resultstu->fetch();
 
 
-                    
+                    $sqlchk = "SELECT name FROM fn_fee_payment_gateway";
+                    $resultchk = $connection2->query($sqlchk);
+                    $gatewayData = $resultchk->fetch();
+
+                    if($gatewayData['name'] == 'RAZORPAY'){
     ?>
                     <td>
                         <form action="thirdparty/applicantpayment/razorpay/pay.php" method="post">
@@ -382,7 +386,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                             <button type="submit" class="btn btn-primary">Pay</button>
                         </form> 
                     </td>
-            <?php
+                <?php } elseif($gatewayData['name'] == 'PAYU'){ ?>
+                    <td>
+                        <form action="thirdparty/payment/payu/checkout_parent.php" method="post">
+                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
+                            <input type="hidden" name="classid" value="<?=$campstatus['pupilsightYearGroupID'] ?>">
+                            <input type="hidden" name="sectionid" value="">
+                            <input type="hidden" name="fn_fees_invoice_id" value="<?= $invoiceId ?>">
+                            <input type="hidden" name="fn_fees_head_id" value="<?= $invdata['fn_fees_head_id'] ?>">
+                            <input type="hidden" name="rec_fn_fee_series_id" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
+                            <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $fn_fee_invoice_item_id ?>">
+
+                            <input type="hidden" name="total_amount_without_fine_discount" value="<?= $finalamount ?>">
+                            <input type="hidden" name="amount" value="<?= $totalamountnew ?>">
+                            <input type="hidden" name="fine" value="<?= $fineamount ?>">
+                            <input type="hidden" name="discount" value="0">
+                            
+                            <input type="hidden" name="receipt_number" value="<?= $invdata['stu_invoice_no'] ?>">
+                            <input type="hidden" name="name" value="<?= $studetails['field_value'] ?>">
+                            <input type="hidden" name="email" value="<?= $campstatus['email'] ?>">
+                            <input type="hidden" name="phone" value="<?= $campstatus['phone1'] ?>">
+                            <input type="hidden" name="payid" value="<?= $invdata['stu_invoice_no'] ?>">
+                            <input type="hidden" name="stuid" value="<?= $campstatus['subid'] ?>">
+                            <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
+                            <button type="submit" class="btn btn-primary">Pay</button>
+                        </form> 
+                    </td>
+
+
+                <?php } ?>
+                <?php
                     echo '<td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     echo "<td>NA</td></tr>";
                 }

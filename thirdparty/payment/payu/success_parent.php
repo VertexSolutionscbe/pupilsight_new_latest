@@ -1,63 +1,59 @@
+
 <?php
 
-require('config.php');
+error_reporting(E_ERROR | E_PARSE);
 
-session_start();
-
-require('razorpay/Razorpay.php');
-use Razorpay\Api\Api;
-use Razorpay\Api\Errors\SignatureVerificationError;
+include "payu/PayUClient.php";
 include $_SERVER['DOCUMENT_ROOT'].'/pupilsight.php';
 
-$success = true;
+use payu\PayUClient;
 
-$error = "Payment Failed";
+// echo '<pre>';
+// print_r($_POST);
+// echo '</pre>';
+// die();
+$status=$_POST["status"];
+$firstname=$_POST["firstname"];
+$amount=$_POST["amount"]; //Please use the amount value from database
+$txnid=$_POST["txnid"];
+$posted_hash=$_POST["hash"];
+$key=$_POST["key"];
+$productinfo=$_POST["productinfo"];
+$email=$_POST["email"];
+$udf1 = $_POST["udf1"];
+$udf2 = $_POST["udf2"];
+$udf3 = $_POST["udf3"];
+$udf4 = $_POST["udf4"];
+$udf5 = $_POST["udf5"];
 
-if (empty($_POST['razorpay_payment_id']) === false)
-{
-    $api = new Api($keyId, $keySecret);
+// echo $key;
 
-    try
-    {
-        // Please note that the razorpay order ID must
-        // come from a trusted source (session here, but
-        // could be database or something else)
-        $attributes = array(
-            'razorpay_order_id' => $_SESSION['razorpay_order_id'],
-            'razorpay_payment_id' => $_POST['razorpay_payment_id'],
-            'razorpay_signature' => $_POST['razorpay_signature']
-        );
 
-        $api->utility->verifyPaymentSignature($attributes);
-    }
-    catch(SignatureVerificationError $e)
-    {
-        $success = false;
-        $error = 'Razorpay Error : ' . $e->getMessage();
-    }
-}
+$salt="OEyWyUkn"; //Please change the value with the live salt for production environment
+// You should set your key & salt values to the function as below:
+$payuClient = new PayUClient($key,$salt);
 
-if ($success === true)
-{
-    $html = "<p>Your payment was successful</p>
-             <p>Payment ID: {$_POST['razorpay_payment_id']}</p>";
-    //$parms = $_SESSION["paypost"];
-    $_SESSION['payment_gateway_id'] = $_POST['razorpay_payment_id'];
-    //$callback = $_SESSION["paypost"]["callbackurl"];
-    $baseurl = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-    $callback = "/thirdparty/phpword/receipt.php";
-    include $_SERVER['DOCUMENT_ROOT'].'/pupilsight/db.php';
+# Set params as follows
+$params = array("status"=>$status,"txnid"=>$txnid,"amount"=>$amount,"productinfo"=>$productinfo,"firstname"=>$firstname,"email"=>$email,"udf1"=>$udf1,"udf2"=>$udf2,"udf3"=>$udf3,"udf4"=>$udf4,"udf5"=>$udf5);
 
-    
+# you can generate payment hash as follows:
+$hash = new Hasher();
+$reverse_hash = $hash->validate_hash($params);
+// echo $reverse_hash;
+// echo $posted_hash;
 
-    //$conn
-    try{
+	if ($reverse_hash != $posted_hash) {
+		echo "Transaction has been tampered. Please try again";
+	}
+
+	try{
+
+
         $dt = $_SESSION["paypost"];
 
-        $sid = $_SESSION['submissionId'];
+        $sid = $udf2;
 
-
-        $data = array('gateway' => 'RAZORPAY', 'submission_id' => $sid, 'transaction_ref_no' => $_POST['razorpay_payment_id'], 'order_id' => $_SESSION['razorpay_order_id'], 'amount' => $dt["amount"], 'status' => 'S');
+        $data = array('gateway' => 'PAYU', 'submission_id' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
 
         $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
         $result = $connection2->prepare($sql);
@@ -225,11 +221,78 @@ if ($success === true)
         header('Location: index.php');
         exit;
     }
-}
-else
-{
-    $html = "<p>Your payment failed</p>
-             <p>{$error}</p>";
-}
+	
 
-echo $html;
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<title>PayU</title>
+<meta name="description" content="">
+<link rel="stylesheet" type="text/css" href="css/layout.css">
+<link rel="stylesheet" type="text/css" href="css/typography.css">
+</head>
+<body class="page-bg-gray">
+<div class="main">
+<header>
+<div class="header-main gray-hdr">
+<div class="hd-logo"><img src="images/logo.svg" alt="PayU Logo"></div>
+<div class="hd-nav">
+<ul>
+<li><a href="https://github.com/payu-india/payu-sdk-php"><i><img src="images/github-icon.svg"></i>View on Github</a></li>
+</ul>
+</div>
+</div>
+</header>
+
+<section>
+<div class="common-container">
+<div class="container">
+<div class="code-main-wrap">
+<div class="code-container">
+<i class="pay-icon">
+<img src="images/success-icon.png">
+</i>
+<h1>Payment Success</h1>
+<p>Your Payment has been successful.></p>
+<div class="vs-code-main">
+<h2>PAYMENT S0URCE OBJECT</h2>
+<div class="code-main">
+<code>
+<p>{</p>
+<p>"txnid": <?php echo $txnid ?>,</p>
+<p>"status": <?php echo $status ?>,</p>
+<p>"details": {</p>
+<!-- <p>"statement_descriptor": <span>null,</span></p>
+ --><!-- <p>"native_url": <span>null,</span></p>
+<p>"data_string": <span>null</span></p> -->
+<!-- <p>},</p> -->
+<p>"amount": <?php echo $amount ?>,</p>
+<p>"productinfo": <?php $firstname ?>,</p>
+<p>"firstname": <?php $firstname ?>,</p>
+<p>"emailid": <?php $email ?></p>
+<!-- <p>"currency": "eur",</p>
+<p>"flow": "redirect",</p>
+<p>"livemode": false,</p>
+<p>"metadata": {</p>
+<p>"paymentIntent": "pi_1GaGJvLqkZN1XDm1WnK8JsLo"</p>
+<p>},</p> -->
+<p>}</p>
+<p>}</p>
+</code>
+</div>
+
+</div>
+</div>
+
+</div>
+</section>
+</div>
+
+</body>
+</html>

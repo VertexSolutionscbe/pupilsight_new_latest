@@ -1016,6 +1016,7 @@
         var program = $('#pupilsightProgramIDbyPP').val();
         var testId = $('#testId').val();
         var sub = $('#pupilsightDepartmentID').val();
+
         //alert(section);
 
         $.ajax({
@@ -5293,7 +5294,7 @@
                 }
             });
         } else {
-            alert('Please Fill all The Fields');
+            alert('Please Select at Least One Subject Category');
         }
     });
 
@@ -6112,7 +6113,7 @@ $(document).on('click', '#modifyMarksEntry', function () {
             test_status.push($(this).attr('data_status'));
 
         });
-        var test_ids = test_id.join(",");
+        //var test_ids = test_id.join(",");
         var testid = favorite.join(",");
         var t_status = test_status.join(",")
 
@@ -6124,21 +6125,23 @@ $(document).on('click', '#modifyMarksEntry', function () {
                     $.ajax({
                         url: 'ajax_data.php',
                         type: 'post',
-                        data: { val: val, type: type },
+                        data: { val: val, type: type, test_id: test_id },
                         async: true,
                         success: function (response) {
-                            var val = test_ids;
-                            var type = 'storetestId';
-                            $.ajax({
-                                url: 'ajax_data.php',
-                                type: 'post',
-                                data: { val: val, type: type },
-                                async: true,
-                                success: function (response) {
-                                    window.location.href = response;
-                                    $("#modifyMarks").click();
-                                }
-                            });
+                            window.location.href = response;
+                            $("#modifyMarks").click();
+                            // var val = test_ids;
+                            // var type = 'storetestId';
+                            // $.ajax({
+                            //     url: 'ajax_data.php',
+                            //     type: 'post',
+                            //     data: { val: val, type: type },
+                            //     async: true,
+                            //     success: function (response) {
+                            //         window.location.href = response;
+                            //         $("#modifyMarks").click();
+                            //     }
+                            // });
                         }
                     });
                 }
@@ -9055,3 +9058,35 @@ function addInvoiceFeeAmtNew() {
     $("input[name=invoice_item_id]").val(invitemids);
     $("input[name=chkamount]").val(amtpaying);
 }
+
+
+$(document).on('click', '#exportExcel', function () {
+    var type = 'subjectMarks_excelNew';
+    var section = $('#pupilsightRollGroupIDbyPP').val();
+    var cls = $('#pupilsightYearGroupIDbyPP').val();
+    var program = $('#pupilsightProgramIDbyPP').val();
+    var testId = $('#testId').val();
+    var sub = $('#pupilsightDepartmentIDbyPP').val();
+    var val = '1';
+    //alert(section);
+
+    $.ajax({
+        url: 'ajaxSwitch.php',
+        type: 'post',
+        data: { val: val, type: type, program: program, cls: cls, section: section, testId: testId, sub: sub },
+        async: true,
+        success: function (response) {
+            //console.log(response);
+            $("#marks_subjectExcel").html(response);
+            $("#subexcelexport").table2excel({
+                name: "subject Marks",
+                filename: "subject_marks.xls",
+                fileext: ".xls",
+                exclude: ".checkall",
+                exclude_inputs: true,
+                exclude_links: true
+
+            });
+        }
+    });
+});

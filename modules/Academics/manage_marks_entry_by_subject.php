@@ -276,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         <input type="hidden" id="gradeId" value="'.$gradeId.'">
         ';       
         ?>  
-        <a  id='expore_marks_sub_xl' data-type='student' class='btn btn-primary' style='float: right;'>Export To Excel</a>
+        <a  id='exportExcel' data-type='student' class='btn btn-primary' style='float: right;'>Export To Excel</a>
         <a style='display:none' id='showMarkHistory' href='fullscreen.php?q=/modules/Academics/show_subject_mark_history.php&width=800'  class='thickbox '></a>      
          <a id='save_marks_by_subject' data-type='test' class='btn btn-primary' <?php echo $disabledButt; ?>>Save</a>     
          <div style="overflow-x:auto;">
@@ -797,6 +797,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     $(document).on('change', '.chkData', function(e) {
         $("#chkMarksSaveData").val(1);
     }); 
+
+
+    
 
      
 </script>
