@@ -56,11 +56,14 @@ else {
 			$messageWall="N" ;
 		}
 		$date1=NULL ;
-		if (isset($_POST["date1"])) {
+		//if (isset($_POST["date1"])) {
 			if ($_POST["date1"]!="") {
 				$date1=dateConvert($guid, $_POST["date1"]) ;
+			}else{
+                $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
+                $date1=date('Y-m-d');
 			}
-		}
+		//}
 		$date2=NULL ;
 		if (isset($_POST["date2"])) {
 			if ($_POST["date2"]!="") {
@@ -685,7 +688,7 @@ else {
 			}
 
 			//Course Groups
-			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
+			/*if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
 				if ($_POST["course"]=="Y") {
 					$staff=$_POST["coursesStaff"] ;
 					$students=$_POST["coursesStudents"] ;
@@ -870,10 +873,10 @@ else {
 						}
 					}
 				}
-			}
+			}*/
 
 			//Class Groups
-			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
+			/*if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
 				if ($_POST["class"]=="Y") {
 					$staff=$_POST["classesStaff"] ;
 					$students=$_POST["classesStudents"] ;
@@ -1058,7 +1061,7 @@ else {
 						}
 					}
 				}
-			}
+			}*/
 
 			//Activity Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_any")) {
@@ -2075,8 +2078,10 @@ else {
 					$partialFail = true;
 				} else {
                     $recipients = array_filter(array_reduce($report, function ($phoneNumbers, $reportEntry) {
-                        if ($reportEntry[3] == 'SMS') $phoneNumbers[] = '+'.$reportEntry[4];
-                        return $phoneNumbers;
+                        if ($reportEntry[3] == 'SMS')  $phoneNumbers[] = '+'.$reportEntry[4];
+
+                            return $phoneNumbers;
+
                     }, []));
 
                     $sms = $container->get(SMS::class);
