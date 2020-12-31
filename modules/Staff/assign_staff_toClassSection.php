@@ -75,9 +75,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClass
     $StaffGateway = $container->get(StaffGateway::class);
     $criteria = $StaffGateway->newQueryCriteria()
         //->sortBy(['id'])
+        ->pageSize(1000)
         ->fromPOST();
 
-   $staff = $StaffGateway->getassignedstaff($criteria, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
+   $staff = $StaffGateway->getassignedstaff($criteria);
 /*
 echo "<pre>";
 print_r($staff);
