@@ -9,6 +9,8 @@ use Pupilsight\Domain\Traits\TableAware;
 use Pupilsight\Domain\QueryCriteria;
 use Pupilsight\Domain\QueryableGateway;
 
+
+
 /**
  * School Year Gateway
  *
@@ -73,7 +75,7 @@ class HelperGateway extends QueryableGateway
         return $classes;
     }
     public function getClassByProgram_Attconfig($connection2, $pupilsightProgramID) {
-       $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
+      $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
       //  echo  $sql;
         $result = $connection2->query($sql);
         $classesdata = $result->fetchAll();
@@ -184,111 +186,111 @@ class HelperGateway extends QueryableGateway
          }
           
          // check PupilsightAttendanceBlocked
-         public function checkPupilsightAttendanceBlocked($connection2, $pupilsightProgramID,$pupilsightYearGroupID,$pupilsightRollGroupID,$currentDate){
-              $sql='SELECT * FROM `pupilsightAttendanceBlocked` WHERE pupilsightProgramID="'.$pupilsightProgramID.'" AND pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" AND pupilsightYearGroupID="'.$pupilsightYearGroupID.'"';
-              $result=$connection2->query($sql);
-              $data=$result->fetch();
-              $array=array();
-              if(!empty($data['pupilsightAttendanceBlockID'])){
-                if($data['start_date']<=$currentDate AND $data['end_date']>=$currentDate){
-                   $array['status']="Yes";
-                   $array['msg']="This  Attendance blocked by admin because of ".$data['name']." (between ".date('d/m/Y',strtotime($data['start_date']))." To ".date('d/m/Y',strtotime($data['end_date']))."), Please Contact Admin.";
-                }
-              } 
-              return $array;
-         }
-         //get sort val name in attendance_take_byRollGroupListView using
-         public function getSortValByName($type){
-            switch ($type) {
-                case "Student ID":
-                    return "pupilsightPersonID";
-                  break;
-                  case "Admission No":
-                    return "admission_no";
-                  break;
-                  case "gender":
-                    return "gender";
-                  break;
-                  case "gender":
-                    return "gender";
-                  break;
-                  case " Date OF Birth":
-                    return "dob";
-                  break;
-                  case "Class":
-                    return "classname";
-                  break;
-                default:
-                 return '';
-              }
-            
-         }
-
-
-         public function getClassByProgramInSection_Attconfig($connection2, $pupilsightProgramID) {
-            $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.attn_type="1" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
-           //  echo  $sql;
-             $result = $connection2->query($sql);
-             $classesdata = $result->fetchAll();
-     
-             $classes = array();
-             $classes2 = array();
-             $classes1 = array('' => 'Select Class');
-              if (!empty($classesdata)) {
-                 foreach ($classesdata as  $cl) {
-                    
-                     $class = explode(',' , $cl['name']);
-                     $cid = explode(',' , $cl['clid']);            
-                     $count=count($class);
-                     for($i=0;$i<$count;$i++){                     
-                     $classes2[$cid[$i]]=  $class[$i];
-                 }
-                                  
-                 }
-             }
-             $classes = $classes1 + $classes2;
-             return $classes;
-         }
-
-         public function getClassByProgramInperiodWise_Attconfig($connection2, $pupilsightProgramID) {
-            $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.attn_type="2" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
-           //  echo  $sql;
-             $result = $connection2->query($sql);
-             $classesdata = $result->fetchAll();
-     
-             $classes = array();
-             $classes2 = array();
-             $classes1 = array('' => 'Select Class');
-              if (!empty($classesdata)) {
-                 foreach ($classesdata as  $cl) {
-                    
-                     $class = explode(',' , $cl['name']);
-                     $cid = explode(',' , $cl['clid']);            
-                     $count=count($class);
-                     for($i=0;$i<$count;$i++){                     
-                     $classes2[$cid[$i]]=  $class[$i];
-                 }
-                                  
-                 }
-             }
-             $classes = $classes1 + $classes2;
-             return $classes;
-         }
-
-         public function getSubjectByClassWise($connection2,$pupilsightSchoolYearID,$pupilsightProgramID,$pupilsightYearGroupID) {
-             $sqlt = 'SELECT `pupilsightDepartment`.`pupilsightDepartmentID`, `pupilsightDepartment`.`name`, `pupilsightDepartment`.`type`, `pupilsightDepartment`.`nameShort` FROM `assign_core_subjects_toclass` LEFT JOIN `pupilsightProgramClassSectionMapping` ON `assign_core_subjects_toclass`.`pupilsightYearGroupID`=`pupilsightProgramClassSectionMapping`.`pupilsightYearGroupID` LEFT JOIN `pupilsightDepartment` ON `assign_core_subjects_toclass`.`pupilsightDepartmentID`=`pupilsightDepartment`.`pupilsightDepartmentID` WHERE `assign_core_subjects_toclass`.`pupilsightYearGroupID` ="'.$pupilsightYearGroupID.'" AND `assign_core_subjects_toclass`.`pupilsightProgramID` = "'.$pupilsightProgramID.'" AND `pupilsightProgramClassSectionMapping`.`pupilsightSchoolYearID` = "'.$pupilsightSchoolYearID.'" GROUP BY `assign_core_subjects_toclass`.`pupilsightDepartmentID` ORDER BY `assign_core_subjects_toclass`.`pos` ASC';
-            $resultt = $connection2->query($sqlt);  
-            $subjects_data = $resultt->fetchAll();
-    
-            $subjects = array();
-            $subjects2 = array();
-            $subjects1 = array('' => 'Select Subject');
-            foreach ($subjects_data as $ct) {
-                $subjects2[$ct['pupilsightDepartmentID']] = $ct['name'];
-            }
-            $subjects = $subjects1 + $subjects2;
-            return $subjects;
+    public function checkPupilsightAttendanceBlocked($connection2, $pupilsightProgramID,$pupilsightYearGroupID,$pupilsightRollGroupID,$currentDate){
+        $sql='SELECT * FROM `pupilsightAttendanceBlocked` WHERE pupilsightProgramID="'.$pupilsightProgramID.'" AND pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" AND pupilsightYearGroupID="'.$pupilsightYearGroupID.'"';
+        $result=$connection2->query($sql);
+        $data=$result->fetch();
+        $array=array();
+        if(!empty($data['pupilsightAttendanceBlockID'])){
+        if($data['start_date']<=$currentDate AND $data['end_date']>=$currentDate){
+            $array['status']="Yes";
+            $array['msg']="This  Attendance blocked by admin because of ".$data['name']." (between ".date('d/m/Y',strtotime($data['start_date']))." To ".date('d/m/Y',strtotime($data['end_date']))."), Please Contact Admin.";
         }
+        } 
+        return $array;
+    }
+         //get sort val name in attendance_take_byRollGroupListView using
+    public function getSortValByName($type){
+        switch ($type) {
+            case "Student ID":
+                return "pupilsightPersonID";
+                break;
+                case "Admission No":
+                return "admission_no";
+                break;
+                case "gender":
+                return "gender";
+                break;
+                case "gender":
+                return "gender";
+                break;
+                case " Date OF Birth":
+                return "dob";
+                break;
+                case "Class":
+                return "classname";
+                break;
+                default:
+                return '';
+        }
+
+    }
+
+
+    public function getClassByProgramInSection_Attconfig($connection2, $pupilsightProgramID) {
+        $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.attn_type="1" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
+        //  echo  $sql;
+            $result = $connection2->query($sql);
+            $classesdata = $result->fetchAll();
+    
+            $classes = array();
+            $classes2 = array();
+            $classes1 = array('' => 'Select Class');
+            if (!empty($classesdata)) {
+                foreach ($classesdata as  $cl) {
+                
+                    $class = explode(',' , $cl['name']);
+                    $cid = explode(',' , $cl['clid']);            
+                    $count=count($class);
+                    for($i=0;$i<$count;$i++){                     
+                    $classes2[$cid[$i]]=  $class[$i];
+                }
+                                
+                }
+            }
+            $classes = $classes1 + $classes2;
+            return $classes;
+    }
+
+    public function getClassByProgramInperiodWise_Attconfig($connection2, $pupilsightProgramID) {
+        $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.attn_type="2" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
+        //  echo  $sql;
+            $result = $connection2->query($sql);
+            $classesdata = $result->fetchAll();
+
+            $classes = array();
+            $classes2 = array();
+            $classes1 = array('' => 'Select Class');
+            if (!empty($classesdata)) {
+                foreach ($classesdata as  $cl) {
+                
+                    $class = explode(',' , $cl['name']);
+                    $cid = explode(',' , $cl['clid']);            
+                    $count=count($class);
+                    for($i=0;$i<$count;$i++){                     
+                    $classes2[$cid[$i]]=  $class[$i];
+                }
+                                
+                }
+            }
+            $classes = $classes1 + $classes2;
+            return $classes;
+    }
+
+    public function getSubjectByClassWise($connection2,$pupilsightSchoolYearID,$pupilsightProgramID,$pupilsightYearGroupID) {
+            $sqlt = 'SELECT `pupilsightDepartment`.`pupilsightDepartmentID`, `pupilsightDepartment`.`name`, `pupilsightDepartment`.`type`, `pupilsightDepartment`.`nameShort` FROM `assign_core_subjects_toclass` LEFT JOIN `pupilsightProgramClassSectionMapping` ON `assign_core_subjects_toclass`.`pupilsightYearGroupID`=`pupilsightProgramClassSectionMapping`.`pupilsightYearGroupID` LEFT JOIN `pupilsightDepartment` ON `assign_core_subjects_toclass`.`pupilsightDepartmentID`=`pupilsightDepartment`.`pupilsightDepartmentID` WHERE `assign_core_subjects_toclass`.`pupilsightYearGroupID` ="'.$pupilsightYearGroupID.'" AND `assign_core_subjects_toclass`.`pupilsightProgramID` = "'.$pupilsightProgramID.'" AND `pupilsightProgramClassSectionMapping`.`pupilsightSchoolYearID` = "'.$pupilsightSchoolYearID.'" GROUP BY `assign_core_subjects_toclass`.`pupilsightDepartmentID` ORDER BY `assign_core_subjects_toclass`.`pos` ASC';
+        $resultt = $connection2->query($sqlt);  
+        $subjects_data = $resultt->fetchAll();
+
+        $subjects = array();
+        $subjects2 = array();
+        $subjects1 = array('' => 'Select Subject');
+        foreach ($subjects_data as $ct) {
+            $subjects2[$ct['pupilsightDepartmentID']] = $ct['name'];
+        }
+        $subjects = $subjects1 + $subjects2;
+        return $subjects;
+    }
 
 
     public function getMultipleSectionByProgram($connection2, $pupilsightYearGroupID, $pupilsightProgramID) {
@@ -396,6 +398,36 @@ class HelperGateway extends QueryableGateway
         }
         $invoices = $sections1 + $sections2;
         return $invoices;
+    }
+
+    public function getClassByProgramAcademic($connection2, $pupilsightProgramID, $pupilsightSchoolYearID) {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND b.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" GROUP BY a.pupilsightYearGroupID';
+        $result = $connection2->query($sql);
+        $classesdata = $result->fetchAll();
+
+        $classes = array();
+        $classes2 = array();
+        $classes1 = array('' => 'Select Class');
+        foreach ($classesdata as $ct) {
+            $classes2[$ct['pupilsightYearGroupID']] = $ct['name'];
+        }
+        $classes = $classes1 + $classes2;
+        return $classes;
+    }
+
+    public function getClassByProgramAcademicForTeacher($connection2, $pupilsightProgramID, $uid, $pupilsightSchoolYearID) {
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "'.$uid.'" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND b.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" GROUP BY a.pupilsightYearGroupID';
+        $result = $connection2->query($sql);
+        $classesdata = $result->fetchAll();
+
+        $classes = array();
+        $classes2 = array();
+        $classes1 = array('' => 'Select Class');
+        foreach ($classesdata as $ct) {
+            $classes2[$ct['pupilsightYearGroupID']] = $ct['name'];
+        }
+        $classes = $classes1 + $classes2;
+        return $classes;
     }
 
 }

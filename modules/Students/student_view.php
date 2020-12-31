@@ -134,10 +134,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $uid = $_SESSION[$guid]['pupilsightPersonID'];
 
                 if ($roleId == '2') {
-                    $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
+                    $classes =  $HelperGateway->getClassByProgramAcademicForTeacher($connection2, $pupilsightProgramID, $uid, $pupilsightSchoolYearID);
                     $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
                 } else {
-                    $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+                    $classes =  $HelperGateway->getClassByProgramAcademic($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
                     $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
                 }
 
