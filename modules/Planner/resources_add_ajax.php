@@ -132,7 +132,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             $row->addLabel($id.'tags', __('Tags'))->description(__('Use lots of tags!'));
             $row->addFinder($id.'tags')
                 ->fromQuery($pdo, $sql)
-                ->required()
                 ->setParameter('hintText', __('Type a tag...'))
                 ->setParameter('allowFreeTagging', true);
 

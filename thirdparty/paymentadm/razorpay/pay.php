@@ -19,9 +19,9 @@ $parms = array_merge($_POST, $_GET);
 
 
 if (!empty($_REQUEST['sid'])) {
-	$submissionId = $_REQUEST['sid'];
+    $submissionId = $_REQUEST['sid'];
 } else {
-	$submissionId = $_SESSION['submissionId'];
+    $submissionId = $_SESSION['submissionId'];
 }
 
 $campaignid = $parms['campaignid'];
@@ -36,11 +36,11 @@ $_SESSION["paypost"] = $parms;
 // echo '</pre>';
 // die();
 //amount //callbackurl // payid is important
-if(empty($parms["amount"]) || empty($parms["callbackurl"])){
-    if(isset($parms["callbackurl"])){
-        header('Location: '.$parms["callbackurl"]);
+if (empty($parms["amount"]) || empty($parms["callbackurl"])) {
+    if (isset($parms["callbackurl"])) {
+        header('Location: ' . $parms["callbackurl"]);
         exit;
-    }else{
+    } else {
         header('Location: index.php');
         exit;
     }
@@ -51,10 +51,10 @@ if(empty($parms["amount"]) || empty($parms["callbackurl"])){
 // Docs: https://docs.razorpay.com/docs/orders
 //
 
-$name = isset($parms["name"])?$parms["name"]:"";
-$email = isset($parms["email"])?$parms["email"]:"";
-$phone = isset($parms["phone"])?$parms["phone"]:"";
-// $amount = $parms["amount"] * 100;
+$name = isset($parms["name"]) ? $parms["name"] : "";
+$email = isset($parms["email"]) ? $parms["email"] : "";
+$phone = isset($parms["phone"]) ? $parms["phone"] : "";
+//$amount = $parms["amount"] * 100;
 $amount = $parms["amount"];
 $orgName = $parms["organisationName"];
 $orgLogo = $parms["organisationLogo"];
@@ -82,13 +82,13 @@ if (isset($_GET['checkout']) and in_array($_GET['checkout'], ['automatic', 'manu
     $checkout = $_GET['checkout'];
 }*/
 
-if(!empty($orgLogo)){
-    $logo = '/cms/images/logo/'.$orgLogo;
+if (!empty($orgLogo)) {
+    $logo = '/cms/images/logo/' . $orgLogo;
 } else {
     $logo = '';
 }
 
-
+//"image"             => "http://pupilsight.pupiltalk.com/themes/Default/img/logo.png",
 $data = [
     "key"               => $keyId,
     "amount"            => $amount,
@@ -111,14 +111,10 @@ $json = json_encode($data);
 require("checkout/{$checkout}.php");
 ?>
 
-<script
-  src="https://code.jquery.com/jquery-3.5.1.min.js"
-  integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-  crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 <script>
     jQuery(".razorpay-payment-button").hide()
-    setTimeout(function () {
+    setTimeout(function() {
         jQuery(".razorpay-payment-button").click();
     }, 500);
-    
 </script>

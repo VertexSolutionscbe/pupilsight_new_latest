@@ -27,8 +27,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/fee_master_manage.
     }
 
     $page->breadcrumbs
-    ->add(__('Manage Bank And Payment Mode'), 'fee_master_manage.php')
-    ->add(__('Manage Bank And Payment Mode Import'));
+        ->add(__('Manage Bank And Payment Mode'), 'fee_master_manage.php')
+        ->add(__('Manage Bank And Payment Mode Import'));
 
 
     $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_fee_master_run.php');
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/fee_master_manage.
 
         if (!empty($all_rows)) {
 
-           
+
             // echo '<pre>';
             //     print_r($all_rows);
             //     echo '</pre>';
@@ -89,10 +89,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/fee_master_manage.
                 $sql = rtrim($sql, ", ");
                 $sql .= ") VALUES (";
                 foreach ($alrow as $k => $value) {
-                    if($k == 'type'){
-                        if($value == 'Bank Name'){
+                    if ($k == 'type') {
+                        if ($value == 'Bank Name') {
                             $val = 'bank';
-                        } else if($value == 'Payment Mode') {
+                        } else if ($value == 'Payment Mode') {
                             $val = 'payment_mode';
                         } else {
                             $val = '';
@@ -100,15 +100,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Finance/fee_master_manage.
                     } else {
                         $val = $value;
                     }
-                        $vals = str_replace('"', "", $val);
-                        $sql .= '"' . $vals . '",';
-                    
+                    $vals = str_replace('"', "", $val);
+                    $sql .= '"' . $vals . '",';
                 }
                 $sql = rtrim($sql, ", ");
                 $sql .= ")";
                 $sql = rtrim($sql, ", ");
                 //echo $sql;
-                 $conn->query($sql);
+                $conn->query($sql);
                 // $stu_id = $conn->insert_id;
 
             }

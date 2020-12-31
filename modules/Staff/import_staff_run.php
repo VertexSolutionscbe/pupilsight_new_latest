@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                     //$sql = rtrim($sql, ", ");
                     $sql .= ")";
                     $sql = rtrim($sql, ", ");
-                   // echo $sql;
+                    // echo $sql;
                     $conn->query($sql);
                     $stu_id = $conn->insert_id;
 

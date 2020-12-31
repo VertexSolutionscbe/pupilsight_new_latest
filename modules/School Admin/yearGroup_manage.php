@@ -84,19 +84,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     //             return Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
     //         }
     //     });
-        
+
     // ACTIONS
     $table->addActionColumn()
         ->addParam('pupilsightYearGroupID')
         ->format(function ($facilities, $actions) use ($guid) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/School Admin/yearGroup_manage_edit.php');
+                ->setURL('/modules/School Admin/yearGroup_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/School Admin/yearGroup_manage_delete.php');
+                ->setURL('/modules/School Admin/yearGroup_manage_delete.php');
         });
 
     echo $table->render($yearGroups);
-
-   
 }

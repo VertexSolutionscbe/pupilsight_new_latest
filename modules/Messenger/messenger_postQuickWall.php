@@ -32,12 +32,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                 
 	$form->addHiddenValue('messageWall', 'Y');
 
-	$sql = "SELECT DISTINCT category FROM pupilsightRole ORDER BY category";
+	/*$sql = "SELECT DISTINCT category FROM pupilsightRole ORDER BY category";
 	$result = $pdo->executeQuery(array(), $sql);
 	$categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
 	foreach($categories as $key => $category) {
 		$form->addHiddenValue("roleCategories[$key]", $category);
-	}
+	}*/
 	
 	$form->addRow()->addHeading(__('Delivery Mode'));
 
@@ -56,12 +56,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
     $row = $form->addRow();
         $row->addLabel('subject', __('Subject'));
-        $row->addTextField('subject')->required()->maxLength(60);
+        $row->addTextField('subject')->required()->maxLength(200);
+    $display_fields = array();
+    $display_fields =  array(''=>'Select Category',
+        'Circular' =>'Circular',
+        'Timetable' =>'Timetable',
+        'Other' =>'Other',
+    );
+
+    $row = $form->addRow();
+    $row->addLabel('category', __('Category'));
+    $row->addSelect('category')->fromArray($display_fields)->selected($values['category'])->required();
 
     $row = $form->addRow();
         $col = $row->addColumn('body');
         $col->addLabel('body', __('Body'));
         $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true);
+
+    //TARGETS
+    $form->addRow()->addHeading(__('Targets'));
+    $roleCategory = getRoleCategory($_SESSION[$guid]["pupilsightRoleIDCurrent"], $connection2);
+    //Role
+    if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_role")) {
+        $row = $form->addRow();
+        $row->addLabel('role', __('Role'))->description(__('Users of a certain type.'));
+        $row->addYesNoRadio('role')->checked('N')->required();
+
+        $form->toggleVisibilityByClass('role')->onRadio('role')->when('Y');
+
+        $data = array();
+        $sql = 'SELECT pupilsightRoleID AS value, CONCAT(name," (",category,")") AS name FROM pupilsightRole ORDER BY name';
+        $row = $form->addRow()->addClass('role hiddenReveal');
+        $row->addLabel('roles[]', __('Select Roles'));
+        $row->addSelect('roles[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
+
+        //Role Category
+        $row = $form->addRow();
+        $row->addLabel('roleCategory', __('Role Category'))->description(__('Users of a certain type.'));
+        $row->addYesNoRadio('roleCategory')->checked('N')->required();
+
+        $form->toggleVisibilityByClass('roleCategory')->onRadio('roleCategory')->when('Y');
+
+        $data = array();
+        $sql = 'SELECT DISTINCT category AS value, category AS name FROM pupilsightRole ORDER BY category';
+        $row = $form->addRow()->addClass('roleCategory hiddenReveal');
+        $row->addLabel('roleCategories[]', __('Select Role Categories'));
+        $row->addSelect('roleCategories[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->required()->placeholder();
+    }
 
     $row = $form->addRow();
         $row->addFooter();

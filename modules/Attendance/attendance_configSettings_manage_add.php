@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
     }
     
     $smsTemplate = $smsTemplate1 + $smsTemplate2;
-    if (isset(($_GET))) {
+    if (isset($_GET)) {
         $pupilsightProgramID =  isset($_GET['pupilsightProgramID']) ? $_GET['pupilsightProgramID'] : '';
         $pupilsightYearGroupID = isset($_GET['classes']) ? $_GET['classes'] : '';
         $setclasss = isset($_GET['classes']) ? $_GET['classes'] : '';
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
     
     $row = $form->addRow()->addClass('showClass');
     $row->addLabel('classes', __('Class'));
-    $row->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple()->selected($setclass);
+    $row->addSelect('classes')->setId('showMultiClassByProg')->addClass('txtfield')->placeholder('Select Class')->selectMultiple()->selected($setclass)->required();
     
     $row = $form->addRow();
     $row->addLabel('attn_type', __('Attendance Type'));
@@ -201,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
 
     $row = $form->addRow();
     $row->addFooter();
-    $row->addContent('<button type="button" id="attnSettingsSubmit" class=" btn btn-primary" style="position:absolute; right:0; margin-top: -18px;">Submit</button>');
+    $row->addContent('<button type="button" id="attnSettingsSubmit" class=" btn btn-primary" style="position:absolute; right:9px; margin-top: 0px;">Submit</button>');
 
 
     echo $form->getOutput();

@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
                 $sqlp = 'SELECT name FROM pupilsightYearGroup WHERE pupilsightYearGroupID ="'.$clid.'"';
                 $resultp = $connection2->query($sqlp);
                 $class = $resultp->fetch();
-                $cls.=$class['name'].",";
+                $cls.=$class['name']." ";
                 }
                 ?>
             <tr>

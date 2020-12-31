@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			$result = $connection2->prepare($sql);
 			$result->execute($data);
 
-			$sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= '.$pupilsightPersonID.' ';
+			$sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= ' . $pupilsightPersonID . ' ';
 			$resultf = $connection2->query($sqlf);
 			$fdata = $resultf->fetch();
 			$pupilsightFamilyID = $fdata['pupilsightFamilyID'];
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			echo "<div style='height:50px;'><div class='float-left mb-2'><a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=" . $pupilsightPersonID . "&search=' class='btn btn-primary active'>Student</a>";
 
 			foreach ($parents as $par) {
-				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=" . $par['pupilsightPersonID1'] . "&child_id=" . $pupilsightPersonID . "&search=' class='btn btn-primary'>" . $par['relationship'] . "</a>";
+				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=" . $par['pupilsightPersonID1'] . "&child_id=" . $pupilsightPersonID . "&relation=" . $par['relationship'] . "&search=' class='btn btn-primary'>" . $par['relationship'] . "</a>";
 			}
 			echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=" . $parents[0]['pupilsightFamilyID'] . "&child_id=" . $pupilsightPersonID . "' class='btn btn-primary'>Family</a></div><div class='float-none'></div></div>";
 
@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			if ($values['address1'] != '') {
 				try {
 					$dataAddress = array('pupilsightPersonID' => $values['pupilsightPersonID'], 'addressMatch' => '%' . strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))) . '%');
-					$sqlAddress = "SELECT pupilsightPersonID, title, preferredName, surname, category FROM pupilsightPerson JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT pupilsightPersonID=:pupilsightPersonID ORDER BY surname, preferredName";
+					$sqlAddress = "SELECT pupilsightPersonID, title, preferredName, surname, pupilsightRole.category FROM pupilsightPerson JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT pupilsightPersonID=:pupilsightPersonID ORDER BY surname, preferredName";
 					$resultAddress = $connection2->prepare($sqlAddress);
 					$resultAddress->execute($dataAddress);
 				} catch (PDOException $e) {

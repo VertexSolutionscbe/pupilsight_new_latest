@@ -6,6 +6,7 @@ Pupilsight, Flexible & Open School System
 
 //echo  "http://localhost/pupilsight/wp/wp-login.php?user=".urlencode('admin')."&pass=".urlencode('Admin@123456');
 error_reporting(E_ERROR | E_PARSE);
+//error_reporting(0);
 
 use Pupilsight\Domain\System\ModuleGateway;
 use Pupilsight\Domain\DataUpdater\DataUpdaterGateway;
@@ -32,11 +33,12 @@ $session = $container->get('session');
 
 $isLoggedIn = $session->has('username') && $session->has('pupilsightRoleIDCurrent');
 
-
 /**
  * MODULE BREADCRUMBS
  */
+
 if ($isLoggedIn && $module = $page->getModule()) {
+
 
     $mid = $module->pupilsightModuleID;
     $sql = 'SELECT p.category FROM pupilsightModule AS p WHERE p.pupilsightModuleID = "' . $mid . '"';
@@ -107,6 +109,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
 
     if ($session->has('username')) { // Are we logged in?
         $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+
         $roleCategory = getRoleCategory($session->get('pupilsightRoleIDCurrent'), $connection2);
 
         // Deal with attendance self-registration redirect
@@ -398,7 +401,7 @@ if ($isLoggedIn) {
     $paymentList[0] = array('name' => 'Manage Invoice', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_manage.php');
     $paymentList[1] = array('name' => 'Bulk Discount', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_discount_manage.php');
     //echo $session->get('counterid');
-    if(!empty($counterData)){
+    if (!empty($counterData)) {
         if ($session->get('counterid') == '') {
             $paymentList[2] = array('name' => 'Collection', 'class' => 'thickbox', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_counter_check_add.php');
         } else {
@@ -425,8 +428,6 @@ if ($isLoggedIn) {
             $menuMainItems["Finance"][1] = array('name' => 'Fee Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
             $menuMainItems["Finance"][2] = $paymentMenu;
         }
-        
-        
     }
 
     $routeList[0] = array('name' => 'Manage Route', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/routes.php');
@@ -567,25 +568,33 @@ if ($isLoggedIn) {
  * into the template engine for rendering. They're a work in progress, but once
  * they're more finalized we can document them for theme developers.
  */
+
 $header = $container->get(Pupilsight\UI\Components\Header::class);
 
+try {
+    if (isset($roleCategory) == FALSE) {
+        $roleCategory = NULL;
+    }
 
-$page->addData([
-    'isLoggedIn'        => $isLoggedIn,
-    'pupilsightThemeName'   => $session->get('pupilsightThemeName'),
-    'pupilsightHouseIDLogo' => $session->get('pupilsightHouseIDLogo'),
-    'organisationLogo'  => $session->get('organisationLogo'),
-    'minorLinks'        => $header->getMinorLinks($cacheLoad),
-    'uname'                => $session->get('preferredName') . ' ' . $session->get('surname'),
-    'notificationTray'  => $header->getNotificationTray($cacheLoad),
-    'sidebar'           => $showSidebar,
-    'roleCategory'      => $roleCategory,
-    'version'           => $pupilsight->getVersion(),
-    'versionName'       => 'v' . $pupilsight->getVersion() . ($session->get('cuttingEdgeCode') == 'Y' ? 'dev' : ''),
-    'rightToLeft'       => $session->get('i18n')['rtl'] == 'Y'
-]);
+    $page->addData([
+        'isLoggedIn'        => $isLoggedIn,
+        'pupilsightThemeName'   => $session->get('pupilsightThemeName'),
+        'pupilsightHouseIDLogo' => $session->get('pupilsightHouseIDLogo'),
+        'organisationLogo'  => $session->get('organisationLogo'),
+        'minorLinks'        => $header->getMinorLinks($cacheLoad),
+        'uname'                => $session->get('preferredName') . ' ' . $session->get('surname'),
+        'notificationTray'  => $header->getNotificationTray($cacheLoad),
+        'sidebar'           => $showSidebar,
+        'roleCategory'      => $roleCategory,
+        'version'           => $pupilsight->getVersion(),
+        'versionName'       => 'v' . $pupilsight->getVersion() . ($session->get('cuttingEdgeCode') == 'Y' ? 'dev' : ''),
+        'rightToLeft'       => $session->get('i18n')['rtl'] == 'Y'
+    ]);
+} catch (Exception $ex) {
+    print_r($ex);
+}
 
-
+//here to catch
 $peopleMenu = array("NA", "Students", "Alumni", "Behaviour", "Data Updater", "Roll Groups", "Staff", "Students");
 $otherMenu = array("NA", "Help Desk", "Higher Education", "CMS");
 $learnMenu = array("NA", "Activities", "Departments", "Individual Needs", "Library", "Planner", "Timetable");
@@ -630,6 +639,9 @@ if (isset($_GET["q"])) {
             $customSelect = "LMS";
         }
     }
+}
+if (isset($currentModule) == FALSE) {
+    $currentModule = "";
 }
 
 if ($currentModule) {
@@ -710,7 +722,7 @@ if ($isLoggedIn) {
 
 
 
-//die();
+
 /**
  * GET PAGE CONTENT
  *
@@ -768,7 +780,7 @@ if (!$session->has('address')) {
 
         // DASHBOARDS!
         $category = getRoleCategory($session->get('pupilsightRoleIDCurrent'), $connection2);
-
+        //$category = "";
         switch ($category) {
             case 'Parent':
                 $page->write($container->get(Pupilsight\UI\Dashboard\ParentDashboard::class)->getOutput());

@@ -11,41 +11,48 @@ all stylesheets and scripts with a 'head' context.
 -->#}
 
 {% block meta %}
-    
-	<meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{{ page.title }}</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title>{{ page.title }}</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Favicon -->
+<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
 {% endblock meta %}
 
 
 {% block styles %}
-    {% for asset in page.stylesheets %}
-        {% set assetVersion = asset.version is not empty ? asset.version : version %}
-        {% if asset.type == 'inline' %}
-            <style type="text/css" >{{ asset.src|raw }}</style>
-        {% else %}
-            <link rel="stylesheet" href="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}" type="text/css" media="{{ asset.media }}" />
-        {% endif %}
-    {% endfor %}
-	
+{% for asset in page.stylesheets %}
+{% set assetVersion = asset.version is not empty ? asset.version : version %}
+{% if asset.type == 'inline' %}
+<style type="text/css">
+    {
+            {
+            asset.src|raw
+        }
+    }
+</style>
+{% else %}
+<link rel="stylesheet" href="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}" type="text/css"
+    media="{{ asset.media }}" />
+{% endif %}
+{% endfor %}
+
 {% endblock styles %}
 
 
 {% block scripts %}
-    {% for asset in page.scriptsHead %}
-        {% set assetVersion = asset.version is not empty ? asset.version : version %}
-        {% if asset.type == 'inline' %}
-            <script type="text/javascript">{{ asset.src|raw }}</script>
-        {% else %}
-            <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}"></script>
-        {% endif %}
-    {% endfor %}
+{% for asset in page.scriptsHead %}
+{% set assetVersion = asset.version is not empty ? asset.version : version %}
+{% if asset.type == 'inline' %}
+<script type="text/javascript">{ { asset.src | raw } }</script>
+{% else %}
+<script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}"></script>
+{% endif %}
+{% endfor %}
 
-    {% for code in page.extraHead %}
-        {{ code|raw }}
-    {% endfor %}
+{% for code in page.extraHead %}
+{{ code|raw }}
+{% endfor %}
 {% endblock scripts %}

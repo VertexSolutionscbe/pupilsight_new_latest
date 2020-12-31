@@ -40,7 +40,7 @@ $sqlchk = "SELECT a.id, a.pupilsightProgramID, a.campaign_id, b.name FROM campai
 $cmpProClsChkData = database::doSelect($sqlchk);
 
 $programData = array();
-if(!empty($cmpProClsChkData)){
+if (!empty($cmpProClsChkData)) {
     $programData = $cmpProClsChkData;
 } else {
     $program = $campaign_byid['progname'];
@@ -118,50 +118,50 @@ if (empty($campaignStatus)) {
 										
                                     </div>-->
                                 <input type="hidden" id="chkemph" value="0">
-                                
+
                                 <input type="hidden" id="fid" value="<?php echo $campaign_byid['form_id']; ?>">
                                 <input type="hidden" id="allowms" value="<?php echo $campaign_byid['allow_multiple_submission']; ?>">
                                 <input type="hidden" id="chkfeesett" value="<?php echo $campaign_byid['is_fee_generate']; ?>">
                                 <input type="hidden" id="cid" value="<?php echo $url_id; ?>">
 
-                            <?php if(!empty($programData)){ ?>
-                                <div id="progClassDiv">
-                                    <span>Program<span style="color:red">* </span>: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <select id="pid">
-                                        <option value="">Select Program</option>
-                                        <?php if (!empty($programData)) {
-                                            foreach ($programData as $prg) {
-                                        ?>
-                                                <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
-                                        <?php }
-                                        } ?>
-                                    </select>
-                                    <span>Class <span style="color:red">* </span>: </span>
-                                    <select id="class">
-                                        <option value="">Select Class</option>
-                                        
-                                    </select>
-                                    <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
-                                </div>
-                                <input type="hidden" id="chkProg" value="1">
-                            <?php } else { ?>
-                                <input type="hidden" id="chkProg" value="2">
-                                <input type="hidden" id="pid" value="<?php echo $campaign_byid['pupilsightProgramID']; ?>">
-                                <div id="progClassDiv">
-                                    <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <span>Class <span style="color:red">* </span>: </span>
-                                    <select id="class">
-                                        <option value="">Select Class</option>
-                                        <?php if (!empty($getClass)) {
-                                            foreach ($getClass as $cls) {
-                                        ?>
-                                                <option value="<?php echo  $cls['pupilsightYearGroupID']; ?>"><?php echo  $cls['name']; ?></option>
-                                        <?php }
-                                        } ?>
-                                    </select>
-                                    <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
-                                </div>
-                            <?php } ?>
+                                <?php if (!empty($programData)) { ?>
+                                    <div id="progClassDiv">
+                                        <span>Program<span style="color:red">* </span>: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <select id="pid">
+                                            <option value="">Select Program</option>
+                                            <?php if (!empty($programData)) {
+                                                foreach ($programData as $prg) {
+                                            ?>
+                                                    <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
+                                            <?php }
+                                            } ?>
+                                        </select>
+                                        <span>Class <span style="color:red">* </span>: </span>
+                                        <select id="class">
+                                            <option value="">Select Class</option>
+
+                                        </select>
+                                        <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
+                                    </div>
+                                    <input type="hidden" id="chkProg" value="1">
+                                <?php } else { ?>
+                                    <input type="hidden" id="chkProg" value="2">
+                                    <input type="hidden" id="pid" value="<?php echo $campaign_byid['pupilsightProgramID']; ?>">
+                                    <div id="progClassDiv">
+                                        <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span>Class <span style="color:red">* </span>: </span>
+                                        <select id="class">
+                                            <option value="">Select Class</option>
+                                            <?php if (!empty($getClass)) {
+                                                foreach ($getClass as $cls) {
+                                            ?>
+                                                    <option value="<?php echo  $cls['pupilsightYearGroupID']; ?>"><?php echo  $cls['name']; ?></option>
+                                            <?php }
+                                            } ?>
+                                        </select>
+                                        <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
+                                    </div>
+                                <?php } ?>
                             </div>
                             <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
                                 <div class="wpb_wrapper">
@@ -169,7 +169,7 @@ if (empty($campaignStatus)) {
                                     <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="100%" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
                                     </iframe>
 
-                                    
+
                                     <?php if (!empty($campaign_byid['fn_fee_structure_id']) && $campaign_byid['is_fee_generate'] == '2') {
                                         $sql = "SELECT SUM(total_amount) AS amt FROM fn_fee_structure_item WHERE fn_fee_structure_id = " . $campaign_byid['fn_fee_structure_id'] . " ";
                                         $result = database::doSelectOne($sql);
@@ -191,7 +191,7 @@ if (empty($campaignStatus)) {
                                     ?>
                                         <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 
-                                            <input type="hidden" value="<?php echo $orderId;?>" id="OrderId" name="OrderId">
+                                            <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                             <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
                                             <input type="hidden" value="INR" id="currencyName" name="currencyName">
                                             <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
@@ -613,7 +613,7 @@ if (empty($campaignStatus)) {
                         $("#class").addClass('error').focus();
                         iframe.find(".ff-btn-submit").prop('disabled', true);
                         alert('You Have to Select Class');
-                        if(chkprog == '1'){
+                        if (chkprog == '1') {
                             var pval = $("#pid option:selected").val();
                             if (pval == '') {
                                 $("#pid").addClass('error').focus();
@@ -630,7 +630,7 @@ if (empty($campaignStatus)) {
                     } else {
                         $("#class").removeClass('error');
                         iframe.find(".ff-btn-submit").prop('disabled', false);
-                        if(chkprog == '1'){
+                        if (chkprog == '1') {
                             var pval = $("#pid option:selected").val();
                             if (pval == '') {
                                 $("#pid").addClass('error').focus();
@@ -770,7 +770,7 @@ if (empty($campaignStatus)) {
             var pid = $("#pid").val();
             var fid = $("#fid").val();
             var clid = $("#class option:selected").val();
-            var chkfeeSett = $("#chkfeesett").val(); 
+            var chkfeeSett = $("#chkfeesett").val();
             if (val != '') {
                 var type = 'insertcampaigndetails';
                 setTimeout(function() {
@@ -790,7 +790,7 @@ if (empty($campaignStatus)) {
                             $("#progClassDiv").remove();
                             //$("#downloadLink")[0].click();
                             $("#application_view").addClass('iheight');
-                            if(chkfeeSett == '2'){
+                            if (chkfeeSett == '2') {
                                 $("#payAdmissionFee").show();
                             }
                         }
@@ -799,7 +799,7 @@ if (empty($campaignStatus)) {
             }
         }
 
-        $(document).on('change', '#pid', function () {
+        $(document).on('change', '#pid', function() {
             var val = $(this).val();
             var cid = $("#cid").val();
             if (val != '') {
@@ -807,7 +807,11 @@ if (empty($campaignStatus)) {
                 $.ajax({
                     url: 'ajax_data.php',
                     type: 'post',
-                    data: {val: val,type: type, cid: cid},
+                    data: {
+                        val: val,
+                        type: type,
+                        cid: cid
+                    },
                     async: true,
                     success: function(response) {
                         $("#class").html('');
@@ -815,7 +819,7 @@ if (empty($campaignStatus)) {
                     }
                 });
             }
-        });        
+        });
     </script>
 
 

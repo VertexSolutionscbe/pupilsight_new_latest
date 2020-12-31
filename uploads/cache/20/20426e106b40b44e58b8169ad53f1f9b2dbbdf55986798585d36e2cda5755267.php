@@ -42,139 +42,145 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
     <link rel=\"shortcut icon\" href=\"./favicon.ico\" type=\"image/x-icon\" />
 
     <!-- CSS files -->
-    <link rel=\"stylesheet\" href=\"//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css\">
+    <!--
+<link rel=\"stylesheet\" href=\"//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css\">
+    -->
+
+    <link rel=\"stylesheet\"
+        href=\"//cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css\">
+
     <link rel=\"stylesheet\" href=\"";
-        // line 23
+        // line 29
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/fullcalendar.min.css?v=1.0\" type=\"text/css\" media=\"all\" />
     <link rel=\"stylesheet\" href=\"";
-        // line 24
+        // line 30
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/jquery.dataTables.min.css?v=1.0\" />
     <link rel=\"stylesheet\" href=\"";
-        // line 25
+        // line 31
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/bootstrap-multiselect.css?v=1.0\" type=\"text/css\"
         media=\"all\" />
     <!--
 <link rel=\"stylesheet\" href=\"";
-        // line 28
+        // line 34
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/jquery-ui/css/blitzer/jquery-ui.css?v=1.0\" type=\"text/css\" media=\"all\" />
     -->
 
     <link rel=\"stylesheet\" href=\"";
-        // line 31
+        // line 37
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/jquery-timepicker/jquery.timepicker.css?v=1.0\"
         type=\"text/css\" media=\"all\" />
     <link rel=\"stylesheet\" href=\"";
-        // line 33
+        // line 39
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/thickbox/thickbox.css?v=1.0\" type=\"text/css\"
         media=\"all\" />
     <link rel=\"stylesheet\" href=\"";
-        // line 35
+        // line 41
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/normalize.css?v=1.0\" type=\"text/css\" media=\"all\" />
     <link href=\"";
-        // line 36
+        // line 42
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/selectize.css\" rel=\"stylesheet\" />
     <link href=\"";
-        // line 37
+        // line 43
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/tabler.css\" rel=\"stylesheet\" />
     <link href=\"";
-        // line 38
+        // line 44
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/dev.css\" rel=\"stylesheet\" />
 
     <!-- Libs JS -->
     <script src=\"";
-        // line 41
+        // line 47
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js\"></script>
     <script src=\"";
-        // line 42
+        // line 48
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/jquery/dist/jquery-3.5.1.min.js\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 43
+        // line 49
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/jquery/jquery-migrate.min.js?v=1.0\"></script>
     <script src=\"";
-        // line 44
+        // line 50
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/jquery-ui/js/jquery-ui.min.js?v=1.0\"></script>
     <script src=\"";
-        // line 45
+        // line 51
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/jquery.dataTables.min.js?v=1.0v=1.0\"></script>
     <script src=\"";
-        // line 46
+        // line 52
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/jquery-timepicker/jquery.timepicker.min.js?v=1.0\"></script>
     <script src=\"";
-        // line 47
+        // line 53
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/livevalidation/livevalidation_standalone.compressed.js\"></script>
 
 
     <script src=\"";
-        // line 50
+        // line 56
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/core.js\"></script>
     <script src=\"";
-        // line 51
+        // line 57
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/main.js\"></script>
     <script src=\"";
-        // line 52
+        // line 58
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/jquery.table2excel.js\"></script>
     <script
         type=\"text/javascript\">var tb_pathToImage = \"";
-        // line 54
+        // line 60
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/thickbox/loadingAnimation.gif\";</script>
     <script type=\"text/javascript\" src=\"";
-        // line 55
+        // line 61
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/tinymce/tinymce.min.js?v=1.0\"></script>
     <script type=\"text/javascript\"
         src=\"";
-        // line 57
+        // line 63
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/jquery-tokeninput/src/jquery.tokeninput.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 58
+        // line 64
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/moment.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 59
+        // line 65
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/fullcalendar.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 60
+        // line 66
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/libs/thickbox/thickbox-compressed.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 61
+        // line 67
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/bootstrap-multiselect.js?v=1.0\"></script>
     <script src=\"";
-        // line 62
+        // line 68
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/selectize.min.js\"></script>
     <script src=\"";
-        // line 63
+        // line 69
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/tabler.min.js\"></script>
 
     <!--
     <link rel=\"stylesheet\" href=\"";
-        // line 66
+        // line 72
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/bootstrap.min.css?v=1.0\" type=\"text/css\" media=\"all\" />
     
@@ -184,28 +190,28 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
     
 
     <link rel=\"stylesheet\" href=\"";
-        // line 73
+        // line 79
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/all.min.css?v=1.0\" type=\"text/css\" media=\"all\" />
     <link rel=\"stylesheet\" href=\"";
-        // line 74
+        // line 80
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/fonts/flaticon.css?v=1.0\" type=\"text/css\" media=\"all\" />
 
     <link rel=\"stylesheet\" href=\"";
-        // line 76
+        // line 82
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/animate.min.css?v=1.0\" type=\"text/css\" media=\"all\" />
     <link rel=\"stylesheet\" href=\"";
-        // line 77
+        // line 83
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/sortable/css/Sortable.css?v=1.0\" type=\"text/css\" media=\"all\" />
     <link rel=\"stylesheet\" href=\"";
-        // line 78
+        // line 84
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/style.css?v=1.0\" type=\"text/css\" media=\"all\" />
     <link rel=\"stylesheet\" href=\"";
-        // line 79
+        // line 85
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/css/jquery.dropdown.css?v=1.0\" type=\"text/css\" media=\"all\" />
     <link rel=\"stylesheet\" href=\"http://testoxygen.pupilpod.net/themes/Default/css/main.css?v=1.0.00\" type=\"text/css\" media=\"all\" />
@@ -213,68 +219,68 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
     <link rel=\"stylesheet\" href=\"http://testoxygen.pupilpod.net/resources/assets/css/core.min.css?v=1.0\" 
 
     <script type=\"text/javascript\" src=\"";
-        // line 84
+        // line 90
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/popper.min.js?v=1.0\"></script>
     
     <script type=\"text/javascript\" src=\"";
-        // line 86
+        // line 92
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/chained/jquery.chained.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 87
+        // line 93
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/modernizr-3.6.0.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 88
+        // line 94
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/jquery.dropdown.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 89
+        // line 95
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/jszip.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 90
+        // line 96
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/plugins.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 91
+        // line 97
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/jquery.counterup.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 92
+        // line 98
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/jquery.waypoints.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 93
+        // line 99
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/jquery.scrollUp.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 94
+        // line 100
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/js/Chart.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 95
+        // line 101
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/jquery-jslatex/jquery.jslatex.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 96
+        // line 102
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/jquery-form/jquery.form.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 97
+        // line 103
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/jquery-ui/i18n/jquery.ui.datepicker-en-GB.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 98
+        // line 104
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/jquery-autosize/jquery.autosize.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 99
+        // line 105
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/jquery-sessionTimeout/jquery.sessionTimeout.min.js?v=1.0\"></script>
     <script type=\"text/javascript\" src=\"";
-        // line 100
+        // line 106
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/assets/sortable/js/Sortable.js?v=1.0\"></script>
 -->
@@ -287,7 +293,7 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
 </head>
 
 <body id='chkCounterSession' data-val='";
-        // line 110
+        // line 116
         echo twig_escape_filter($this->env, ($context["counterid"] ?? null), "html", null, true);
         echo "' data-chkCounter=\"\" class='antialiased'>
     <!-- Preloader Start Here -->
@@ -301,12 +307,12 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
                     <span class=\"navbar-toggler-icon\"></span>
                 </button>
                 <a href=\"";
-        // line 121
+        // line 127
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/index.php\"
                     class=\"navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3\">
                     <img src=\"";
-        // line 123
+        // line 129
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/";
         echo twig_escape_filter($this->env, (((isset($context["organisationLogo"]) || array_key_exists("organisationLogo", $context))) ? (_twig_default_filter(($context["organisationLogo"] ?? null), " /themes/Default/img/logo.png ")) : (" /themes/Default/img/logo.png ")), "html", null, true);
@@ -322,7 +328,8 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
                                 <path stroke=\"none\" d=\"M0 0h24v24H0z\" />
                                 <path
                                     d=\"M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6\" />
-                                <path d=\"M9 17v1a3 3 0 0 0 6 0v-1\" /></svg>
+                                <path d=\"M9 17v1a3 3 0 0 0 6 0v-1\" />
+                            </svg>
                             <span class=\"_badge bg-red\"></span>
                         </a>
                         <div class=\"dropdown-menu dropdown-menu-right dropdown-menu-card\">
@@ -339,18 +346,18 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
                             <span class=\"avatar\" style=\"background-image: url(./static/avatars/000m.jpg)\"></span>
                             <div class=\"d-none d-xl-block pl-2\">
                                 <div>";
-        // line 151
+        // line 158
         echo ($context["uname"] ?? null);
         echo "</div>
                                 <div class=\"mt-1 small text-muted\">";
-        // line 152
+        // line 159
         echo twig_escape_filter($this->env, ($context["roleCategory"] ?? null), "html", null, true);
         echo "</div>
                             </div>
                         </a>
                         <div class=\"dropdown-menu dropdown-menu-right\">
                             <a class=\"dropdown-item\" href=\"";
-        // line 156
+        // line 163
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/index.php?q=preferences.php\">
                                 <span class=\"mdi mdi-account-cog-outline mr-2\"></span>
@@ -358,7 +365,7 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
                             </a>
                             <div class=\"dropdown-divider\"></div>
                             <a class=\"dropdown-item\" href=\"";
-        // line 161
+        // line 168
         echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
         echo "/logout.php\">
                                 <span class=\"mdi mdi-logout-variant mr-2\"></span>
@@ -375,71 +382,71 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
                     <div class=\"container-fluid\">
                         <ul class=\"navbar-nav\">
                             ";
-        // line 175
+        // line 182
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable(($context["menuMain"] ?? null));
         foreach ($context['_seq'] as $context["categoryName"] => $context["items"]) {
-            // line 176
-            echo "
-                            ";
-            // line 177
-            $context["menuSelect"] = "";
-            // line 178
-            echo "                            ";
-            if (($context["categoryName"] == ($context["currentModule"] ?? null))) {
-                // line 179
-                echo "                            ";
-                $context["menuSelect"] = "active";
-                // line 180
-                echo "                            ";
-            }
-            // line 181
-            echo "
-                            ";
-            // line 182
-            $context["dropmenu"] = "";
             // line 183
-            echo "                            ";
-            $context["dropdownToggle"] = "";
+            echo "
+                            ";
             // line 184
-            echo "                            ";
-            $context["navlink"] = "#navbar-base";
+            $context["menuSelect"] = "";
             // line 185
             echo "                            ";
-            $context["data_toggle"] = "";
-            // line 186
-            echo "
-                            ";
-            // line 187
-            if ((twig_length_filter($this->env, $context["items"]) > 1)) {
-                // line 188
+            if (($context["categoryName"] == ($context["currentModule"] ?? null))) {
+                // line 186
                 echo "                            ";
-                $context["dropmenu"] = "dropdown";
-                // line 189
-                echo "                            ";
-                $context["dropdownToggle"] = "dropdown-toggle";
-                // line 190
-                echo "                            ";
-                $context["data_toggle"] = "data-toggle=dropdown role=button aria-expanded=false";
-                // line 191
-                echo "                            ";
-            } else {
-                // line 192
-                echo "                            ";
-                $context["navlink"] = twig_get_attribute($this->env, $this->source, (($__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5 = $context["items"]) && is_array($__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5) || $__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5 instanceof ArrayAccess ? ($__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5[0] ?? null) : null), "url", array());
-                // line 193
+                $context["menuSelect"] = "active";
+                // line 187
                 echo "                            ";
             }
+            // line 188
+            echo "
+                            ";
+            // line 189
+            $context["dropmenu"] = "";
+            // line 190
+            echo "                            ";
+            $context["dropdownToggle"] = "";
+            // line 191
+            echo "                            ";
+            $context["navlink"] = "#navbar-base";
+            // line 192
+            echo "                            ";
+            $context["data_toggle"] = "";
+            // line 193
+            echo "
+                            ";
             // line 194
+            if ((twig_length_filter($this->env, $context["items"]) > 1)) {
+                // line 195
+                echo "                            ";
+                $context["dropmenu"] = "dropdown";
+                // line 196
+                echo "                            ";
+                $context["dropdownToggle"] = "dropdown-toggle";
+                // line 197
+                echo "                            ";
+                $context["data_toggle"] = "data-toggle=dropdown role=button aria-expanded=false";
+                // line 198
+                echo "                            ";
+            } else {
+                // line 199
+                echo "                            ";
+                $context["navlink"] = twig_get_attribute($this->env, $this->source, (($__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5 = $context["items"]) && is_array($__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5) || $__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5 instanceof ArrayAccess ? ($__internal_7cd7461123377b8c9c1b6a01f46c7bbd94bd12e59266005df5e93029ddbc0ec5[0] ?? null) : null), "url", array());
+                // line 200
+                echo "                            ";
+            }
+            // line 201
             echo "
                             <li class=\"nav-item ";
-            // line 195
+            // line 202
             echo twig_escape_filter($this->env, ($context["dropmenu"] ?? null), "html", null, true);
             echo " ";
             echo twig_escape_filter($this->env, ($context["menuSelect"] ?? null), "html", null, true);
             echo "\">
                                 <a class=\"nav-link ";
-            // line 196
+            // line 203
             echo twig_escape_filter($this->env, ($context["dropdownToggle"] ?? null), "html", null, true);
             echo "\" href=\"";
             echo twig_escape_filter($this->env, ($context["navlink"] ?? null), "html", null, true);
@@ -448,117 +455,117 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
             echo ">
                                     <span
                                         class=\"nav-link-icon d-md-none d-lg-inline-block ";
-            // line 198
+            // line 205
             echo twig_escape_filter($this->env, (($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a = ($context["menuMainIcon"] ?? null)) && is_array($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a) || $__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a instanceof ArrayAccess ? ($__internal_3e28b7f596c58d7729642bcf2acc6efc894803703bf5fa7e74cd8d2aa1f8c68a[$context["categoryName"]] ?? null) : null), "html", null, true);
             echo "\"></span>
                                     <span class=\"nav-link-title\">
                                         ";
-            // line 200
+            // line 207
             echo twig_escape_filter($this->env, $context["categoryName"], "html", null, true);
             echo "
                                     </span>
                                 </a>
                                 ";
-            // line 203
+            // line 210
             if ((($context["dropmenu"] ?? null) == "dropdown")) {
-                // line 204
+                // line 211
                 echo "
                                 ";
-                // line 205
+                // line 212
                 $context["menucol"] = "";
-                // line 206
+                // line 213
                 echo "                                ";
                 if (twig_get_attribute($this->env, $this->source, (($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57 = $context["items"]) && is_array($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57) || $__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57 instanceof ArrayAccess ? ($__internal_b0b3d6199cdf4d15a08b3fb98fe017ecb01164300193d18d78027218d843fc57[0] ?? null) : null), "col", array())) {
-                    // line 207
+                    // line 214
                     echo "                                ";
                     $context["menucol"] = twig_get_attribute($this->env, $this->source, (($__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9 = $context["items"]) && is_array($__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9) || $__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9 instanceof ArrayAccess ? ($__internal_81ccf322d0988ca0aa9ae9943d772c435c5ff01fb50b956278e245e40ae66ab9[0] ?? null) : null), "col", array());
-                    // line 208
+                    // line 215
                     echo "                                ";
                 }
-                // line 209
+                // line 216
                 echo "
                                 <ul class=\"dropdown-menu ";
-                // line 210
+                // line 217
                 echo twig_escape_filter($this->env, ($context["menucol"] ?? null), "html", null, true);
                 echo "\">
                                     ";
-                // line 211
+                // line 218
                 $context['_parent'] = $context;
                 $context['_seq'] = twig_ensure_traversable($context["items"]);
                 foreach ($context['_seq'] as $context["_key"] => $context["item"]) {
-                    // line 212
+                    // line 219
                     echo "                                    <li>
                                         ";
-                    // line 213
+                    // line 220
                     if (twig_get_attribute($this->env, $this->source, $context["item"], "list", array())) {
-                        // line 214
+                        // line 221
                         echo "                                        <span class=\"dropdown-item mdi mdi-arrow-down\">
                                             <strong class='ml-1 badge bg-indigo'>";
-                        // line 215
+                        // line 222
                         echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["item"], "name", array()), "html", null, true);
                         echo "</strong>
                                         </span>
                                         <div class='ml-2'>
                                             ";
-                        // line 218
+                        // line 225
                         $context['_parent'] = $context;
                         $context['_seq'] = twig_ensure_traversable(twig_get_attribute($this->env, $this->source, $context["item"], "list", array()));
                         foreach ($context['_seq'] as $context["_key"] => $context["sitem"]) {
-                            // line 219
+                            // line 226
                             echo "                                            <div>
                                                 ";
-                            // line 220
+                            // line 227
                             if (twig_get_attribute($this->env, $this->source, $context["sitem"], "name", array())) {
-                                // line 221
+                                // line 228
                                 echo "                                                <a class=\"dropdown-item\" href=\"";
                                 echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["sitem"], "url", array()), "html", null, true);
                                 echo "\">
                                                     <span class=\"badge bg-indigo\"></span>
                                                     <span class='ml-2'>";
-                                // line 223
+                                // line 230
                                 echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["sitem"], "name", array()), "html", null, true);
                                 echo "</span>
                                                 </a>
                                                 ";
                             } else {
-                                // line 226
+                                // line 233
                                 echo "                                                &nbsp;
                                                 ";
                             }
-                            // line 228
+                            // line 235
                             echo "                                            </div>
                                             ";
                         }
                         $_parent = $context['_parent'];
                         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['sitem'], $context['_parent'], $context['loop']);
                         $context = array_intersect_key($context, $_parent) + $_parent;
-                        // line 230
+                        // line 237
                         echo "                                        </div>
                                         ";
                     } else {
-                        // line 232
+                        // line 239
                         echo "                                        <a class=\"dropdown-item\" href=\"";
                         echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["item"], "url", array()), "html", null, true);
                         echo "\">
                                             ";
-                        // line 233
+                        // line 240
                         echo twig_escape_filter($this->env, twig_get_attribute($this->env, $this->source, $context["item"], "name", array()), "html", null, true);
                         echo "
                                         </a>
                                         ";
                     }
-                    // line 236
+                    // line 243
                     echo "                                    </li>
                                     ";
                 }
                 $_parent = $context['_parent'];
                 unset($context['_seq'], $context['_iterated'], $context['_key'], $context['item'], $context['_parent'], $context['loop']);
                 $context = array_intersect_key($context, $_parent) + $_parent;
-                // line 238
+                // line 245
                 echo "                                </ul>
                                 ";
             }
-            // line 240
+            // line 247
             echo "
                             </li>
                             ";
@@ -566,7 +573,7 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['categoryName'], $context['items'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 243
+        // line 250
         echo "                        </ul>
                     </div>
                 </div>
@@ -583,9 +590,9 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
                                 <div class=\"col-auto\">
                                     <h2 class=\"page-title\">
                                         ";
-        // line 258
+        // line 265
         if (twig_get_attribute($this->env, $this->source, ($context["page"] ?? null), "breadcrumbs", array())) {
-            // line 259
+            // line 266
             echo "                                        ";
             $context['_parent'] = $context;
             $context['_seq'] = twig_ensure_traversable(twig_get_attribute($this->env, $this->source, ($context["page"] ?? null), "breadcrumbs", array()));
@@ -603,16 +610,16 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
                 $context['loop']['last'] = 1 === $length;
             }
             foreach ($context['_seq'] as $context["title"] => $context["src"]) {
-                // line 260
+                // line 267
                 echo "                                        ";
                 if (twig_get_attribute($this->env, $this->source, $context["loop"], "last", array())) {
-                    // line 261
+                    // line 268
                     echo "                                        ";
                     echo twig_escape_filter($this->env, $context["title"], "html", null, true);
                     echo "
                                         ";
                 }
-                // line 263
+                // line 270
                 echo "                                        ";
                 ++$context['loop']['index0'];
                 ++$context['loop']['index'];
@@ -626,10 +633,10 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['title'], $context['src'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 264
+            // line 271
             echo "                                        ";
         }
-        // line 265
+        // line 272
         echo "                                    </h2>
                                 </div>
                                 <!-- Page title actions -->
@@ -638,12 +645,12 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
 
 
                                         ";
-        // line 272
+        // line 279
         if (twig_get_attribute($this->env, $this->source, ($context["page"] ?? null), "breadcrumbs", array())) {
-            // line 273
+            // line 280
             echo "
                                         ";
-            // line 274
+            // line 281
             $context['_parent'] = $context;
             $context['_seq'] = twig_ensure_traversable(twig_get_attribute($this->env, $this->source, ($context["page"] ?? null), "breadcrumbs", array()));
             $context['loop'] = array(
@@ -662,17 +669,17 @@ class __TwigTemplate_a97cd2014efffb377be8dad32f50a53298de92795df1c20edb86ce28b5a
             foreach ($context['_seq'] as $context["title"] => $context["src"]) {
                 echo " ";
                 if (twig_get_attribute($this->env, $this->source, $context["loop"], "last", array())) {
-                    // line 275
+                    // line 282
                     echo "                                        <li class=\"breadcrumb-item active\" aria-current=\"page\">";
                     echo twig_escape_filter($this->env, $context["title"], "html", null, true);
                     echo "</li>
                                         ";
-                } elseif (((twig_get_attribute($this->env, $this->source,                 // line 276
+                } elseif (((twig_get_attribute($this->env, $this->source,                 // line 283
 $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $this->source, $context["loop"], "index", array()) != 1))) {
-                    // line 277
+                    // line 284
                     echo "                                        <li class=\"breadcrumb-item\">
                                             <a href=\"";
-                    // line 278
+                    // line 285
                     echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
                     echo "/";
                     echo twig_escape_filter($this->env, $context["src"], "html", null, true);
@@ -680,10 +687,10 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
                                         </li>
                                         ";
                 } else {
-                    // line 281
+                    // line 288
                     echo "                                        <li class=\"breadcrumb-item\">
                                             <a href=\"";
-                    // line 282
+                    // line 289
                     echo twig_escape_filter($this->env, ($context["absoluteURL"] ?? null), "html", null, true);
                     echo "/";
                     echo twig_escape_filter($this->env, $context["src"], "html", null, true);
@@ -693,7 +700,7 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
                                         </li>
                                         ";
                 }
-                // line 284
+                // line 291
                 echo " ";
                 ++$context['loop']['index0'];
                 ++$context['loop']['index'];
@@ -707,14 +714,14 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['title'], $context['src'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 285
+            // line 292
             echo "
                                         ";
         }
-        // line 286
+        // line 293
         echo " ";
         $this->displayBlock('page', $context, $blocks);
-        // line 303
+        // line 310
         echo "                            </div>
                         </div>
 
@@ -743,7 +750,7 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
 
     </div>
     ";
-        // line 330
+        // line 337
         echo twig_include($this->env, $context, "alert.twig.html");
         echo "
 
@@ -759,14 +766,14 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
 </html>";
     }
 
-    // line 286
+    // line 293
     public function block_page($context, array $blocks = array())
     {
         echo " ";
         if (twig_get_attribute($this->env, $this->source, ($context["page"] ?? null), "breadcrumbs", array())) {
             echo " ";
         }
-        // line 287
+        // line 294
         echo "                                    </ol>
                                 </div>
                             </div>
@@ -775,21 +782,21 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
                         <div class='card'>
                             <div class='card-body'>
                                 ";
-        // line 294
+        // line 301
         if (($context["submenu"] ?? null)) {
-            // line 295
+            // line 302
             echo "                                <div class=\"mb-2\">
                                     ";
-            // line 296
+            // line 303
             echo twig_include($this->env, $context, "navigation.twig.html");
             echo "
                                 </div>
                                 ";
         }
-        // line 299
+        // line 306
         echo "
                                 ";
-        // line 300
+        // line 307
         $context['_parent'] = $context;
         $context['_seq'] = twig_ensure_traversable(twig_get_attribute($this->env, $this->source, ($context["page"] ?? null), "alerts", array()));
         foreach ($context['_seq'] as $context["type"] => $context["alerts"]) {
@@ -797,7 +804,7 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
             $context['_parent'] = $context;
             $context['_seq'] = twig_ensure_traversable($context["alerts"]);
             foreach ($context['_seq'] as $context["_key"] => $context["text"]) {
-                // line 301
+                // line 308
                 echo "                                <div class=\"";
                 echo twig_escape_filter($this->env, $context["type"], "html", null, true);
                 echo "\">";
@@ -808,7 +815,7 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['text'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 302
+            // line 309
             echo " ";
         }
         $_parent = $context['_parent'];
@@ -832,7 +839,7 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
 
     public function getDebugInfo()
     {
-        return array (  812 => 302,  801 => 301,  793 => 300,  790 => 299,  784 => 296,  781 => 295,  779 => 294,  770 => 287,  763 => 286,  747 => 330,  718 => 303,  715 => 286,  711 => 285,  697 => 284,  687 => 282,  684 => 281,  676 => 278,  673 => 277,  671 => 276,  666 => 275,  647 => 274,  644 => 273,  642 => 272,  633 => 265,  630 => 264,  616 => 263,  610 => 261,  607 => 260,  589 => 259,  587 => 258,  570 => 243,  562 => 240,  558 => 238,  551 => 236,  545 => 233,  540 => 232,  536 => 230,  529 => 228,  525 => 226,  519 => 223,  513 => 221,  511 => 220,  508 => 219,  504 => 218,  498 => 215,  495 => 214,  493 => 213,  490 => 212,  486 => 211,  482 => 210,  479 => 209,  476 => 208,  473 => 207,  470 => 206,  468 => 205,  465 => 204,  463 => 203,  457 => 200,  452 => 198,  443 => 196,  437 => 195,  434 => 194,  431 => 193,  428 => 192,  425 => 191,  422 => 190,  419 => 189,  416 => 188,  414 => 187,  411 => 186,  408 => 185,  405 => 184,  402 => 183,  400 => 182,  397 => 181,  394 => 180,  391 => 179,  388 => 178,  386 => 177,  383 => 176,  379 => 175,  362 => 161,  354 => 156,  347 => 152,  343 => 151,  310 => 123,  305 => 121,  291 => 110,  278 => 100,  274 => 99,  270 => 98,  266 => 97,  262 => 96,  258 => 95,  254 => 94,  250 => 93,  246 => 92,  242 => 91,  238 => 90,  234 => 89,  230 => 88,  226 => 87,  222 => 86,  217 => 84,  209 => 79,  205 => 78,  201 => 77,  197 => 76,  192 => 74,  188 => 73,  178 => 66,  172 => 63,  168 => 62,  164 => 61,  160 => 60,  156 => 59,  152 => 58,  148 => 57,  143 => 55,  139 => 54,  134 => 52,  130 => 51,  126 => 50,  120 => 47,  116 => 46,  112 => 45,  108 => 44,  104 => 43,  100 => 42,  96 => 41,  90 => 38,  86 => 37,  82 => 36,  78 => 35,  73 => 33,  68 => 31,  62 => 28,  56 => 25,  52 => 24,  48 => 23,  24 => 1,);
+        return array (  819 => 309,  808 => 308,  800 => 307,  797 => 306,  791 => 303,  788 => 302,  786 => 301,  777 => 294,  770 => 293,  754 => 337,  725 => 310,  722 => 293,  718 => 292,  704 => 291,  694 => 289,  691 => 288,  683 => 285,  680 => 284,  678 => 283,  673 => 282,  654 => 281,  651 => 280,  649 => 279,  640 => 272,  637 => 271,  623 => 270,  617 => 268,  614 => 267,  596 => 266,  594 => 265,  577 => 250,  569 => 247,  565 => 245,  558 => 243,  552 => 240,  547 => 239,  543 => 237,  536 => 235,  532 => 233,  526 => 230,  520 => 228,  518 => 227,  515 => 226,  511 => 225,  505 => 222,  502 => 221,  500 => 220,  497 => 219,  493 => 218,  489 => 217,  486 => 216,  483 => 215,  480 => 214,  477 => 213,  475 => 212,  472 => 211,  470 => 210,  464 => 207,  459 => 205,  450 => 203,  444 => 202,  441 => 201,  438 => 200,  435 => 199,  432 => 198,  429 => 197,  426 => 196,  423 => 195,  421 => 194,  418 => 193,  415 => 192,  412 => 191,  409 => 190,  407 => 189,  404 => 188,  401 => 187,  398 => 186,  395 => 185,  393 => 184,  390 => 183,  386 => 182,  369 => 168,  361 => 163,  354 => 159,  350 => 158,  316 => 129,  311 => 127,  297 => 116,  284 => 106,  280 => 105,  276 => 104,  272 => 103,  268 => 102,  264 => 101,  260 => 100,  256 => 99,  252 => 98,  248 => 97,  244 => 96,  240 => 95,  236 => 94,  232 => 93,  228 => 92,  223 => 90,  215 => 85,  211 => 84,  207 => 83,  203 => 82,  198 => 80,  194 => 79,  184 => 72,  178 => 69,  174 => 68,  170 => 67,  166 => 66,  162 => 65,  158 => 64,  154 => 63,  149 => 61,  145 => 60,  140 => 58,  136 => 57,  132 => 56,  126 => 53,  122 => 52,  118 => 51,  114 => 50,  110 => 49,  106 => 48,  102 => 47,  96 => 44,  92 => 43,  88 => 42,  84 => 41,  79 => 39,  74 => 37,  68 => 34,  62 => 31,  58 => 30,  54 => 29,  24 => 1,);
     }
 
     public function getSourceContext()
@@ -858,7 +865,13 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
     <link rel=\"shortcut icon\" href=\"./favicon.ico\" type=\"image/x-icon\" />
 
     <!-- CSS files -->
-    <link rel=\"stylesheet\" href=\"//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css\">
+    <!--
+<link rel=\"stylesheet\" href=\"//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css\">
+    -->
+
+    <link rel=\"stylesheet\"
+        href=\"//cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css\">
+
     <link rel=\"stylesheet\" href=\"{{ absoluteURL }}/assets/css/fullcalendar.min.css?v=1.0\" type=\"text/css\" media=\"all\" />
     <link rel=\"stylesheet\" href=\"{{ absoluteURL }}/assets/css/jquery.dataTables.min.css?v=1.0\" />
     <link rel=\"stylesheet\" href=\"{{ absoluteURL }}/assets/css/bootstrap-multiselect.css?v=1.0\" type=\"text/css\"
@@ -971,7 +984,8 @@ $context["loop"], "revindex", array()) > 5) && (twig_get_attribute($this->env, $
                                 <path stroke=\"none\" d=\"M0 0h24v24H0z\" />
                                 <path
                                     d=\"M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6\" />
-                                <path d=\"M9 17v1a3 3 0 0 0 6 0v-1\" /></svg>
+                                <path d=\"M9 17v1a3 3 0 0 0 6 0v-1\" />
+                            </svg>
                             <span class=\"_badge bg-red\"></span>
                         </a>
                         <div class=\"dropdown-menu dropdown-menu-right dropdown-menu-card\">

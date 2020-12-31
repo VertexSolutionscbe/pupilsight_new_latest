@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $pupilsightYearGroupIDList = (!empty($_POST[$id.'pupilsightYearGroupID']))? implode(',', $_POST[$id.'pupilsightYearGroupID']) : '';
         $description = $_POST[$id.'description'];
 
-        if (($type != 'File' and $type != 'Link') or is_null($content) or $name == '' or $category == '' or $tags == '' or $id == '') {
+        if (($type != 'File' and $type != 'Link') or is_null($content) or $name == '' or $category == '' /*or $tags == ''*/ or $id == '') {
             echo "<span style='font-weight: bold; color: #ff0000'>";
             echo __('Your request failed because your inputs were invalid.');
             echo '</span>';

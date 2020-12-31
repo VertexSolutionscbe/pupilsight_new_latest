@@ -704,33 +704,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     //PERSONAL DATA MENU ITEMS
                     $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
                     $_SESSION[$guid]['sidebarExtra'] .= '<h4>Personal</h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu' style='display:inline !important;'>";
+                    $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu' style='display:inline !important;padding: 0 !important;'>";
                     $style = '';
                     if ($subpage == 'Overview') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Overview'>" . __('Overview') . '</a></li>';
+                    $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;margin-right: 10px !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Overview'>" . __('Overview') . '</a></li>';
                     $style = '';
                     if ($subpage == 'Personal') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Personal'>" . __('Personal') . '</a></li>';
+                    $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;margin-right: 10px !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Personal'>" . __('Personal') . '</a></li>';
                     $style = '';
                     if ($subpage == 'Facilities') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Facilities'>" . __('Facilities') . '</a></li>';
+                    $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;margin-right: 10px !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Facilities'>" . __('Facilities') . '</a></li>';
                     $style = '';
                     if ($subpage == 'Emergency Contacts') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Emergency Contacts'>" . __('Emergency Contacts') . '</a></li>';
+                    $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;margin-right: 10px !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Emergency Contacts'>" . __('Emergency Contacts') . '</a></li>';
                     if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php')) {
                         $style = '';
                         if ($subpage == 'Timetable') {
                             $style = "style='font-weight: bold'";
                         }
-                        $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Timetable'>" . __('Timetable') . '</a></li>';
+                        $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;margin-right: 10px !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&allStaff=$allStaff&subpage=Timetable'>" . __('Timetable') . '</a></li>';
                     }
                     $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
                     $_SESSION[$guid]['sidebarExtra'] .= '</div>';

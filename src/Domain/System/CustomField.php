@@ -87,14 +87,15 @@ class CustomField extends QueryableGateway
     {
         $db = new DBQuery();
         $flag = FALSE;
+
         if ($dt["table_name"]) {
             $dt['field_title'] = addslashes($dt['field_title']); //addslashes
             $flag = $db->insertArray('custom_field', $dt);
             if ($flag) {
                 $colType = "TEXT NULL ";
                 $default_value = "NULL ";
-                if ($dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "number" || $dt["field_type"] == "image" || $dt["field_type"] == "file") {
-                    $colType = "VARCHAR(255) NULL ";
+                if ($dt["field_type"] == "tinytext" || $dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "number" || $dt["field_type"] == "image" || $dt["field_type"] == "file") {
+                    $colType = "TINYTEXT NULL ";
                 } else if ($dt["field_type"] == "mobile") {
                     $colType = "VARCHAR(12) NULL ";
                 } else if ($dt["field_type"] == "date") {
@@ -124,7 +125,7 @@ class CustomField extends QueryableGateway
             if ($afterCol) {
                 $sq .= " AFTER " . $afterCol;
             }
-            //echo "\n".$sq;
+            //echo "\n" . $sq;
             $db->query($sq);
 
             if ($isunique == "Y") {
@@ -135,6 +136,7 @@ class CustomField extends QueryableGateway
         } catch (Exception $e) {
             echo 'CustomField->addCustomFieldToTable(): exception: ',  $e->getMessage(), "\n";
         }
+        //die();
     }
 
     //loading custom field in form
@@ -230,7 +232,7 @@ class CustomField extends QueryableGateway
         try {
             $sq = "";
             try {
-                if ($_FILES["custom"]) {
+                if (isset($_FILES["custom"])) {
                     foreach ($_FILES["custom"]["name"] as $table => $files) {
                         //file
                         foreach ($files["file"]  as $fieldName => $fileName) {
@@ -307,16 +309,31 @@ class CustomField extends QueryableGateway
     public function getPostData($tableName, $primaryCol, $primaryColVal, $modules = NULL)
     {
         try {
-            $sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' ";
-            $sq .= "and active='Y' and field_type in('varchar','text','email','number','mobile','image','date','file','url','dropdown','checkboxes','radioboxes','tab') ";
+            //$sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' ";
+            $sq = "select field_name as fields from custom_field where table_name='" . $tableName . "' ";
+            $sq .= "and active='Y' and field_type in('tinytext','varchar','text','email','number','mobile','image','date','file','url','dropdown','checkboxes','radioboxes','tab') ";
             if ($modules) {
                 $sq .= "and modules like '%" . $modules . "%'";
             }
-
+            //echo "\n<br>" . $sq;
             $db = new DBQuery();
             $res = $db->selectRaw($sq);
+            //print_r($res);
             if ($res) {
-                $sq = "select " . $res[0]["fields"] . " from " . $tableName . " where " . $primaryCol . "='" . $primaryColVal . "' ";
+                $len = count($res);
+                $i = 0;
+                $colstr = "";
+                while ($i < $len) {
+                    if ($colstr) {
+                        $colstr .= ",";
+                    }
+                    $colstr .= $res[$i]["fields"];
+                    $i++;
+                }
+
+                //$sq = "select " . $res[0]["fields"] . " from " . $tableName . " where " . $primaryCol . "='" . $primaryColVal . "' ";
+                $sq = "select " . $colstr . " from " . $tableName . " where " . $primaryCol . "='" . $primaryColVal . "' ";
+                //echo "\n<br>" . $sq;
                 $st = $db->selectRaw($sq);
                 if ($st) {
                     $result["t"] = $tableName;
@@ -328,6 +345,7 @@ class CustomField extends QueryableGateway
                     echo "\n<script>pcdt=\"\";</script>";
                 }
             }
+            // die();
         } catch (Exception $ex) {
             echo 'CustomField->updateCustomField(): exception: ',  $ex->getMessage(), "\n";
         }
@@ -335,11 +353,14 @@ class CustomField extends QueryableGateway
 
     public function isColumnAvailable($tableName, $colName)
     {
+        // return TRUE;
         try {
             $sq = "SHOW COLUMNS FROM " . $tableName . " LIKE '" . $colName . "'";
+            //echo "\n" . $sq;
             $db = new DBQuery();
             $res = $db->selectRaw($sq);
             if ($res) {
+                //echo "column avail " . $colName;
                 return TRUE;
             }
         } catch (Exception $ex) {

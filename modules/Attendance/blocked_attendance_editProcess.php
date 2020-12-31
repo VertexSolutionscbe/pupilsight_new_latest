@@ -79,12 +79,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_att
                         if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart)  ) {
                             $URL .= '&return=error8';
                             header("Location: {$URL}");
-                        } /*else {
+                        } else {        //this was previously commented and delete query try block was enabled. if this creates any problem comment this and enable below commented code.
 
                                 try {
-                                    $dataUpdate = array('pupilsightPersonIDTaker' => $_SESSION[$guid]['pupilsightPersonID'],'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'name' => $name, 'type' => $type, 'start_date' => $dateStart, 'end_date' => $dateEnd, 'remark'=> $remark,'pupilsightAttendanceBlockID'=> $pupilsightAttendanceBlockID ,'timestampTaken' => date('Y-m-d H:i:s'));
+                                    $dataUpdate = array('pupilsightPersonIDTaker' => $_SESSION[$guid]['pupilsightPersonID'],'pupilsightRollGroupID' => $pupilsightRollGroupIDs, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'name' => $name, 'type' => $type, 'start_date' => $dateStart, 'end_date' => $dateEnd, 'remark'=> $remark,'pupilsightAttendanceBlockID'=> $pupilsightAttendanceBlockID ,'timestampTaken' => date('Y-m-d H:i:s'));
                                 
                                     $sql = 'UPDATE pupilsightAttendanceBlocked SET pupilsightPersonIDTaker=:pupilsightPersonIDTaker, pupilsightRollGroupID=:pupilsightRollGroupID, pupilsightYearGroupID=:pupilsightYearGroupID, name=:name, type=:type, start_date=:start_date, end_date=:end_date, remark=:remark ,timestampTaken=:timestampTaken WHERE pupilsightAttendanceBlockID=:pupilsightAttendanceBlockID';
+                                    //print_r($dataUpdate);print_r($sql);die();
                                     $result = $connection2->prepare($sql);
                                     $result->execute($dataUpdate);
                                 } catch (PDOException $e) {
@@ -96,12 +97,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_att
                                 $URL .= '&return=success0';
                                 header("Location: {$URL}");
                         
-                            }*/
+                            }
 
 
-                      else {
+                      /*else {
                         $data1 = array('pupilsightPersonIDTaker' => $_SESSION[$guid]['pupilsightPersonID'],'type'=>$type,'start_date' => $dateStart, 'end_date' => $dateEnd);
                         $sql1 = 'DELETE FROM pupilsightAttendanceBlocked WHERE pupilsightPersonIDTaker=:pupilsightPersonIDTaker  AND type=:type AND  start_date=:start_date AND end_date=:end_date ';
+                        print_r($data1);print_r($sql1);die();
                         $result1 = $connection2->prepare($sql1);
                         $result1->execute($data1);
                
@@ -123,10 +125,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_att
                                 //  $URL .= '&return=error7';            
                                 // header("Location: {$URL}");                             
                 
-                                }
-                        $URL .= '&return=success0';
-                        header("Location: {$URL}");
-                    }
+                                }*/
+                        //$URL .= '&return=success0';
+                        //header("Location: {$URL}");
+                    //}
 
 
 

@@ -10,8 +10,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    
-    // die();
+
+     //die();
     //Proceed!
     //Validate Inputs
     $pupilsightProgramID = (isset($_POST['pupilsightProgramID']))? $_POST['pupilsightProgramID'] : '0';
@@ -41,8 +41,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
         $fromDate=implode("-", array_reverse(explode("/", $_POST['fromDate'])));
         $toDate=implode("-", array_reverse(explode("/", $_POST['toDate'])));
     }
+    if($classes == null){
+        $URL .= '&return=error1';
+        header("Location: {$URL}");
+    }
     $pupilsightYearGroupID = implode(',' , $classes);
-    if ($pupilsightProgramID == '' or $attn_type == '') {
+    if ($pupilsightProgramID == '' or $attn_type == '' or $fromDate>$toDate) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -62,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
                 exit();
             }
             }
-           
+
            // print_r($data);die();
         } catch (PDOException $e) {
             $URL .= '&return=error5';

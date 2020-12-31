@@ -5,7 +5,16 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 use Pupilsight\Contracts\Comms\SMS;
-
+use Pupilsight\Forms\DatabaseFormFactory;
+use Pupilsight\Domain\Helper\HelperGateway;
+use Pupilsight\Services\Format;
+?>
+<style>
+    #individualList{
+        width: 500px;
+    }
+</style>
+<?php
 require_once __DIR__ . '/moduleFunctions.php';
 
 $page->breadcrumbs->add(__('New Message'));
@@ -73,7 +82,7 @@ else {
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail")) {
 			$row = $form->addRow();
 				$row->addLabel('email', __('Email'))->description(__('Deliver this message to user\'s primary email account?'));
-				$row->addYesNoRadio('email')->checked('Y')->required();
+				$row->addYesNoRadio('email')->checked('N')->required();
 
 			$form->toggleVisibilityByClass('email')->onRadio('email')->when('Y');
 
@@ -202,13 +211,28 @@ else {
 
 		$row = $form->addRow();
 			$row->addLabel('subject', __('Subject'));
-			$row->addTextField('subject')->maxLength(60)->required();
+			$row->addTextField('subject')->maxLength(200)->required();
+
+        $display_fields = array();
+        $display_fields =  array(''=>'Select Category',
+            'Circular' =>'Circular',
+            'Timetable' =>'Timetable',
+            'Other' =>'Other',
+        );
+
+        $row = $form->addRow();
+        $row->addLabel('category', __('Category'));
+        $row->addSelect('category')->fromArray($display_fields)->selected($values['category'])->required();
+
+        //echo "<span type='text' id='count'>Character Count</span>";
 
 		$row = $form->addRow();
 	        $col = $row->addColumn('body');
 	        $col->addLabel('body', __('Body'));
 	        $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
 
+        $row = $form->addRow()->addAlert(__('For SMS message 140 Characters per message '))->setClass('right')
+        ->append('<span id="count" title="countchars"></span>');
 
 		//READ RECEIPTS
 		if (!isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_readReceipts")) {
@@ -270,8 +294,8 @@ else {
 
 			$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
 
-			$data = array();
-			$sql = 'SELECT pupilsightYearGroupID AS value, name FROM pupilsightYearGroup ORDER BY sequenceNumber';
+			$data = array(pupilsightSchoolYearID=>$_SESSION[$guid]["pupilsightSchoolYearID"]);
+			$sql = 'SELECT pupilsightYearGroupID AS value, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY sequenceNumber';
 			$row = $form->addRow()->addClass('yearGroup hiddenReveal');
 				$row->addLabel('yearGroups[]', __('Select Year Groups'));
 				$row->addSelect('yearGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
@@ -333,7 +357,7 @@ else {
         }
 
         // Course
-        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
+        /*if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
             $row = $form->addRow();
 				$row->addLabel('course', __('Course'))->description(__('Members of a course of study.'));
 				$row->addYesNoRadio('course')->checked('N')->required();
@@ -365,10 +389,10 @@ else {
 			        $row->addLabel('coursesParents', __('Include Parents?'));
 					$row->addYesNo('coursesParents')->selected('N');
 			}
-        }
+        }*/
 
         // Class
-        if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
+        /*if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_classes_any")) {
             $row = $form->addRow();
 				$row->addLabel('class', __('Class'))->description(__('Members of a class within a course.'));
 				$row->addYesNoRadio('class')->checked('N')->required();
@@ -382,6 +406,8 @@ else {
                 $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
                 $sql = "SELECT pupilsightCourseClass.pupilsightCourseClassID as value, CONCAT(pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) as name FROM pupilsightCourse JOIN pupilsightCourseClass ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) JOIN pupilsightCourseClassPerson ON (pupilsightCourseClassPerson.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND NOT role LIKE '%- Left' ORDER BY name";
             }
+            print_r($data);
+            print_r($sql);
 
 			$row = $form->addRow()->addClass('class hiddenReveal');
 				$row->addLabel('classes[]', __('Select Classes'));
@@ -400,7 +426,7 @@ else {
 			        $row->addLabel('classesParents', __('Include Parents?'));
 					$row->addYesNo('classesParents')->selected('N');
 			}
-        }
+        }*/
 
 
         // Activities
@@ -597,13 +623,13 @@ else {
             // Build a set of individuals by ID => formatted name
             $individuals = ($result->rowCount() > 0)? $result->fetchAll() : array();
             $individuals = array_reduce($individuals, function($group, $item){
-                $group[$item['pupilsightPersonID']] = formatName("", $item['preferredName'], $item['surname'], 'Student', true) . ' ('.$item['username'].', '.__($item['category']).')';
+                $group[$item['pupilsightPersonID']] = formatName("". $item['preferredName'], $item['surname'], 'Student', true) . ' ('.$item['username'].', '.__($item['category']).')';
                 return $group;
             }, array());
 
 			$row = $form->addRow()->addClass('individuals hiddenReveal');
 				$row->addLabel('individualList[]', __('Select Individuals'));
-				$row->addSelect('individualList[]')->fromArray($individuals)->selectMultiple()->setSize(6)->required();
+				$row->addSelect('individualList[]')->setId('individualList')->fromArray($individuals)->selectMultiple()->setSize(6)->required();
         }
 
 		$row = $form->addRow();
@@ -613,3 +639,16 @@ else {
 		echo $form->getOutput();
 	}
 }
+?>
+<script type='text/javascript'>
+    $(document).ready(function () {
+        $('#individualList').select2();
+    });
+</script>
+
+<script type="text/javascript">
+    $("#body").keyup(function(){
+        //$("#count").text("Characters left: " + (500 - $(this).val().length));
+        $("#count").text("Characters Count : " +$(this).val().length);
+    });
+</script>

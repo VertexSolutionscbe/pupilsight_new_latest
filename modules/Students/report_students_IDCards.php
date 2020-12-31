@@ -31,23 +31,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
         $choices = $_POST['pupilsightPersonID'];
     }
 
-    $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_students_IDCards.php");
+    $form = Form::create('action',  $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/report_students_IDCards.php");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
     $row = $form->addRow();
-        $row->addLabel('pupilsightPersonID', __('Students'));
-        $row->addSelectStudent('pupilsightPersonID', $_SESSION[$guid]['pupilsightSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selectMultiple()->selected($choices);
+    $row->addLabel('pupilsightPersonID', __('Students'));
+    $row->addSelectStudent('pupilsightPersonID', $_SESSION[$guid]['pupilsightSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selectMultiple()->selected($choices);
 
     $row = $form->addRow();
-        $row->addLabel('file', __('Card Background'))->description('.png or .jpg file, 448 x 268px.');
-        $row->addFileUpload('file')
-            ->accepts('.jpg,.jpeg,.png');
+    $row->addLabel('file', __('Card Background'))->description('.png or .jpg file, 448 x 268px.');
+    $row->addFileUpload('file')
+        ->accepts('.jpg,.jpeg,.png');
 
     $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($pupilsight->session);
+    $row->addFooter();
+    $row->addSearchSubmit($pupilsight->session);
 
     echo $form->getOutput();
 
@@ -61,15 +61,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
             $sqlWhere = ' AND (';
             for ($i = 0; $i < count($choices); ++$i) {
                 $data[$choices[$i]] = $choices[$i];
-                $sqlWhere = $sqlWhere.'pupilsightPerson.pupilsightPersonID=:'.$choices[$i].' OR ';
+                $sqlWhere = $sqlWhere . 'pupilsightPerson.pupilsightPersonID=:' . $choices[$i] . ' OR ';
             }
             $sqlWhere = substr($sqlWhere, 0, -4);
-            $sqlWhere = $sqlWhere.')';
+            $sqlWhere = $sqlWhere . ')';
             $sql = "SELECT officialName, image_240, dob, studentID, pupilsightPerson.pupilsightPersonID, pupilsightYearGroup.name AS year, pupilsightRollGroup.name AS roll FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE status='Full' AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID $sqlWhere ORDER BY surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+            echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
         }
 
         if ($result->rowCount() < 1) {
@@ -86,18 +86,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
             if (!empty($_FILES['file']['tmp_name'])) {
                 $fileUploader = new Pupilsight\FileUploader($pdo, $pupilsight->session);
 
-                $file = (isset($_FILES['file']))? $_FILES['file'] : null;
+                $file = (isset($_FILES['file'])) ? $_FILES['file'] : null;
 
                 // Upload the file, return the /uploads relative path
                 $attachment = $fileUploader->uploadFromPost($file, 'Card_BG');
 
                 if (empty($attachment)) {
                     echo '<div class="alert alert-danger">';
-                        echo __('Your request failed due to an attachment error.');
-                        echo ' '.$fileUploader->getLastError();
+                    echo __('Your request failed due to an attachment error.');
+                    echo ' ' . $fileUploader->getLastError();
                     echo '</div>';
                 } else {
-                    $bg = 'background: url("'.$_SESSION[$guid]['absoluteURL']."/$attachment\") repeat left top #fff;";
+                    $bg = 'background: url("' . $_SESSION[$guid]['absoluteURL'] . "/$attachment\") repeat left top #fff;";
                 }
             }
 
@@ -110,26 +110,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 if ($count % $columns == 0) {
                     echo '<tr>';
                 }
-                echo "<td style='width:".(100 / $columns)."%; text-align: center; vertical-align: top'>";
+                echo "<td style='width:" . (100 / $columns) . "%; text-align: center; vertical-align: top'>";
                 echo "<div style='width: 488px; height: 308px; border: 1px solid black; $bg'>";
                 echo "<table class='blank' cellspacing='0' style='width 448px; max-width 448px; height: 268px; max-height: 268px; margin: 45px 10px 10px 10px'>";
                 echo '<tr>';
                 echo "<td style='padding: 0px ; width: 150px; height: 200px; vertical-align: top' rowspan=5>";
-                if ($row['image_240'] == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$row['image_240']) == false) {
-                    echo "<img style='width: 150px; height: 200px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['pupilsightThemeName']."/img/anonymous_240.jpg'/><br/>";
+                if ($row['image_240'] == '' or file_exists($_SESSION[$guid]['absolutePath'] . '/' . $row['image_240']) == false) {
+                    echo "<img style='width: 150px; height: 200px' class='user' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/anonymous_240.jpg'/><br/>";
                 } else {
-                    echo "<img style='width: 150px; height: 200px' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/'.$row['image_240']."'/><br/>";
+                    echo "<img style='width: 150px; height: 200px' class='user' src='" . $_SESSION[$guid]['absoluteURL'] . '/' . $row['image_240'] . "'/><br/>";
                 }
                 echo '</td>';
                 echo "<td style='padding: 0px ; width: 18px'></td>";
                 echo "<td style='padding: 15px 0 0 0 ; text-align: left; width: 280px; vertical-align: top; font-size: 22px'>";
                 echo "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>";
-                $size = (strlen($row['officialName']) <= 28) ? 30 : 20 ;
-                echo "<div style='font-weight: bold; font-size: ".$size."px'>".$row['officialName'].'</div><br/>';
-                echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
-                echo '<b>'.$_SESSION[$guid]['organisationNameShort'].' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
-                echo '<b>'.__('Class/Section')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['roll'].'</span><br/>';
-                echo '<b>'.__('School Year')."</b>: <span style='float: right'><i>".$_SESSION[$guid]['pupilsightSchoolYearName'].'</span><br/>';
+                $size = (strlen($row['officialName']) <= 28) ? 30 : 20;
+                echo "<div style='font-weight: bold; font-size: " . $size . "px'>" . $row['officialName'] . '</div><br/>';
+                echo '<b>' . __('DOB') . "</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row['dob']) . '</span><br/>';
+                echo '<b>' . $_SESSION[$guid]['organisationNameShort'] . ' ' . __('ID') . "</b>: <span style='float: right'><i>" . $row['studentID'] . '</span><br/>';
+                echo '<b>' . __('Class/Section') . "</b>: <span style='float: right'><i>" . __($row['year']) . ' / ' . $row['roll'] . '</span><br/>';
+                echo '<b>' . __('School Year') . "</b>: <span style='float: right'><i>" . $_SESSION[$guid]['pupilsightSchoolYearName'] . '</span><br/>';
                 echo '</div>';
                 echo '</td>';
                 echo '</tr>';
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 }
                 ++$count;
             }
-            for ($i = 0;$i < $columns - ($count % $columns);++$i) {
+            for ($i = 0; $i < $columns - ($count % $columns); ++$i) {
                 echo '<td></td>';
             }
 

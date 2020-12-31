@@ -75,7 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_not_
         $group = 'rollGroup';
        // $group = !empty($_REQUEST['group'])? $_REQUEST['group'] : '';
         $sort = !empty($_REQUEST['sort'])? $_REQUEST['sort'] : 'surname';
-    
+
+    $pupilsightProgramID = (isset($_REQUEST["pupilsightProgramID"]))? $_REQUEST["pupilsightProgramID"] : 0;
         $pupilsightCourseClassID = (isset($_REQUEST["pupilsightCourseClassID"]))? $_REQUEST["pupilsightCourseClassID"] : 0;
         $pupilsightRollGroupID = (isset($_REQUEST["pupilsightRollGroupID"]))? $_REQUEST["pupilsightRollGroupID"] : 0;
         $pupilsightYearGroupID = (isset($_REQUEST["pupilsightYearGroupID"]))? $_REQUEST["pupilsightYearGroupID"] : 0;
@@ -137,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_not_
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder();     
+            $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->required();
                 
         
             $col = $row->addColumn()->setClass('newdes');

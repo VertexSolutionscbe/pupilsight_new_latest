@@ -8,6 +8,8 @@ include '../../pupilsight.php';
 //Module includes
 include './moduleFunctions.php';
 
+//print_r($_POST['roles']);
+//print_r($_POST['roleCategories']);die();
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address']).'/messenger_postQuickWall.php';
 $time = time();
 
@@ -44,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
             }
         }
         $subject = $_POST['subject'];
+        $category=$_POST["category"] ;
         $body = stripslashes($_POST['body']);
 
         if ($subject == '' or $body == '') {
@@ -75,8 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
             //Write to database
             try {
-                $data = array('email' => '', 'messageWall' => $messageWall, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject, 'body' => $body, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
-                $sql = 'INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID, timestamp=:timestamp';
+                $data = array('email' => '', 'messageWall' => $messageWall, 'messageWall_date1' => $date1, 'messageWall_date2' => $date2, 'messageWall_date3' => $date3, 'sms' => '', 'subject' => $subject,"category"=>$category, 'body' => $body, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
+                $sql = 'INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -113,6 +116,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                     }
                 }
             }
+            $choices1 = $_POST['roles'];
+            if ($choices1 != '') {
+                foreach ($choices1 as $t) {
+                    try {
+                        $data = array('AI' => $AI, 't' => $t);
+                        $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Role Category', id=:t";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $partialFail = true;
+                    }
+                }
+            }
+            if ($_POST['roles']=='' && $_POST['roleCategories']=='' ){
+                $sql = "SELECT DISTINCT category FROM pupilsightRole ORDER BY category";
+                $result = $pdo->executeQuery(array(), $sql);
+                $categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
+                foreach($categories as $t) {
+                    try {
+                        $data = array('AI' => $AI, 't' => $t);
+                        $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Role Category', id=:t";
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        $partialFail = true;
+                    }
+                }
+            }
+
 
             if ($partialFail == true) {
                 $URL .= '&return=warning1';

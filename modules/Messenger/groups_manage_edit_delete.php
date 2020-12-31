@@ -14,7 +14,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 } else {
     //Proceed!
     $pupilsightGroupID = (isset($_GET['pupilsightGroupID']))? $_GET['pupilsightGroupID'] : null;
-    $pupilsightPersonID = (isset($_GET['pupilsightPersonID']))? $_GET['pupilsightPersonID'] : null;
+    $pupilsightPersonID = (isset($_GET['ppid']))? $_GET['ppid'] : null;
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

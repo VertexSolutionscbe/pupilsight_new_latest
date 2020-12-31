@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
         $resultsessdata = $connection2->query($sqlsessdata);
         $sessionvalues = $resultsessdata->fetchAll();
     }
-    if(isset(($_GET))){        
+    if(isset($_GET)){
         $pupilsightProgramID =  isset($_GET['pupilsightProgramID'])? $_GET['pupilsightProgramID'] : '';
         $pupilsightYearGroupID = isset($_GET['classes'])? $_GET['classes'] : '';
         $setclasss = isset($_GET['classes'])? $_GET['classes'] : '';
@@ -238,6 +238,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
                 
                 $row = $form->addRow()->addClass(' ');
                 $row->addContent('<div id="session_table"><table align="center" class="table" border="1"><tbody><tr><td class=" ">Session No</td><td class=" ">Session Name</td></tr><tr id="" class="  deltr0">'.$data.'</tr></tbody></table></div>');
+            }else{
+                $row = $form->addRow()->addClass(' ');
+                $row->addContent('<div id="session_table"></div>');
             }
             
            
@@ -245,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
    
             $row = $form->addRow();
             $row->addFooter();
-            $row->addContent('<button type="button" id="attnSettingsSubmit" class=" btn btn-primary" style="position:absolute; right:0; margin-top: -18px;">Submit</button>');
+            $row->addContent('<button type="button" id="attnSettingsSubmit" class=" btn btn-primary" style="position:absolute; right:9px; margin-top: 0px;">Submit</button>');
 
 
     echo $form->getOutput();

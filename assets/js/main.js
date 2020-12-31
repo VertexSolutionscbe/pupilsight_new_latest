@@ -6770,6 +6770,8 @@ function CustomField() {
         try {
             var link = "ajax_custom_data.php";
             var val = _this.getPageNames();
+            var relation = _this.getParameterByName("relation");
+            console.log("relation: ", relation);
             //var val = "user_manage_edit.php";
             if (val) {
                 var type = "getCustomControl";
@@ -6778,7 +6780,8 @@ function CustomField() {
                     url: link,
                     data: {
                         val: val,
-                        type: type
+                        type: type,
+                        relation: relation
                     },
                 }).done(function (msg) {
                     if (msg) {
@@ -6793,25 +6796,40 @@ function CustomField() {
         }
     };
 
+    this.getPreviousTab = function (tabName, obj) {
+        var tabs = obj["data"][0]["tabs"].split(",");
+        var len = tabs.length;
+        var i = 0;
+        var lastTab = "";
+        while (i < len) {
+            if (tabs[i] == tabName) {
+                break;
+            }
+            if ($("#" + tabs[i]).length > 0) {
+                lastTab = tabs[i];
+            }
+            i++;
+        }
+        return lastTab;
+    }
+
     this.loadAction = function (obj) {
         try {
-            //console.log("load action");
             var len = obj["data"].length;
-            //console.log("load len " + len);
             var i = 0;
             var deactivateIds = "";
             //first create tab
             while (i < len) {
-                if (obj["data"][i].active == "Y" && obj["data"][i].field_type == "tab") {
-                    //add Field
-                    //console.log("view ", obj.view);
+                console.log(obj["data"][i].tab, ":", $("#" + obj["data"][i].tab).length);
+                if ($("#" + obj["data"][i].tab).length == 0) {
+                    var tabName = obj["data"][i].tab;
+                    var lastTab = _this.getPreviousTab(tabName, obj);
                     if (obj.view) {
-                        //show
-                        //console.log("create view ",obj["data"][i]);
-                        _this.createViewTab(obj["data"][i]);
+                        //_this.createViewTab(tabName);
+                        _this.createViewTab(tabName, lastTab);
                     } else {
-                        //create input
-                        _this.createEditTab(obj["data"][i]);
+                        //console.log("create Edit tab ", lastTab, " tabName ", tabName);
+                        _this.createEditTab(tabName, lastTab);
                     }
                 }
                 i++;
@@ -6984,6 +7002,7 @@ function CustomField() {
         return htag;
     }
 
+    /*
     this.createViewTab = function (obj) {
         var str = "<h4>" + obj.field_title + "</h4>";
         str += "<table id='" + obj.field_name + "' class='smallIntBorder' cellspacing='0' style='width: 100%'>";
@@ -6991,7 +7010,7 @@ function CustomField() {
         str += "</table>";
         $("#" + obj.tab).after(str);
     };
-
+    
     this.createEditTab = function (obj) {
         var str = "<tbody id='tbody_" + obj.field_name + "'>";
         str += "<tr id='" + obj.field_name + "' class='break flex flex-col sm:flex-row justify-between content-center p-0'>";
@@ -7004,6 +7023,38 @@ function CustomField() {
         str += "</tbody>";
         $("#tbody_" + obj.tab).after(str);
     };
+    */
+
+    this.createViewTab = function (tab_name, lastTab) {
+        var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
+        var str = "<h4>" + tabTitle + "</h4>";
+        str += "<table id='" + tab_name + "' class='table'>";
+        str += "<tbody></tbody>";
+        str += "</table>";
+        $("#" + lastTab).after(str);
+    };
+
+    this.createEditTab = function (tab_name, lastTab) {
+        var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
+        var str = "<div class='row mb-1' id='tbody_" + tab_name + "'>";
+        str += "<div id='" + tab_name + "' class='row mb-1 break'>";
+        str += "<div class='col-sm'>";
+        str += "<div><h3>" + tabTitle + "</h3></div>";
+        str += "</div>";
+        str += "</div>";
+        str += "</div>";
+        //console.log("tab_id", tab_name);
+        //console.log(str);
+        $("#tbody_" + lastTab).after(str);
+    };
+
+    this.titleCase = function (str) {
+        str = str.toLowerCase().split(' ');
+        for (var i = 0; i < str.length; i++) {
+            str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+        }
+        return str.join(' ');
+    }
 
 
     this.getPageNames = function () {
@@ -7132,7 +7183,7 @@ function CustomField() {
         if (obj.field_type) {
             //'varchar','text','date','url','select','checkboxes','radioboxes'
             //console.log("obj.field_type: ", obj.field_type);
-            if (obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file" || obj.field_type == "image") {
+            if (obj.field_type == "tinytext" || obj.field_type == "varchar" || obj.field_type == "date" || obj.field_type == "email" || obj.field_type == "file" || obj.field_type == "image") {
                 _this.createTextField(obj);
             } else if (obj.field_type == "text") {
                 _this.createTextArea(obj);
@@ -7403,8 +7454,11 @@ function CustomField() {
             tfVal = pcdt.dt[obj.field_name];
             if (_this.isEmpty(tfVal)) {
                 tfVal = "";
+            } else {
+                tfVal = $.trim(tfVal);
             }
         }
+
         var opt = new Array();
 
         if (obj.options) {
@@ -7420,6 +7474,7 @@ function CustomField() {
         }
 
         var elementName = _this.createName(obj);
+        var selectStr = "";
         var str = `<div class="row mb-1">                       
             <div class="col-sm">
                 <div>
@@ -7431,7 +7486,11 @@ function CustomField() {
                     <div class="flex-1 relative">
                     <select id="`+ obj.field_name + `" ` + elementName + ` class="w-full">`
         while (i < len) {
-            str += `<option value="` + opt[i] + `">` + opt[i] + `</option>`;
+            selectStr = "";
+            if (tfVal == $.trim(opt[i])) {
+                selectStr = " selected ";
+            }
+            str += `<option value="` + opt[i] + `" ` + selectStr + `>` + opt[i] + `</option>`;
             i++;
         }
         `</select>

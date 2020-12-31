@@ -28,12 +28,11 @@ class YearGroupGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightYearGroupID', 'name', 'nameShort', 'sequenceNumber', 'pupilsightPersonIDHOY', 'preferredName', 'surname'
+                'pupilsightYearGroupID', 'pupilsightYearGroup.name', 'nameShort', 'sequenceNumber', 'pupilsightPersonIDHOY', 'preferredName', 'surname'
             ])
             ->leftJoin('pupilsightPerson', 'pupilsightYearGroup.pupilsightPersonIDHOY=pupilsightPerson.pupilsightPersonID')
             ->where('pupilsightYearGroup.pupilsightSchoolYearID = :pupilsightSchoolYearID')
             ->bindValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
-
         return $this->runQuery($query, $criteria);
     }
 }

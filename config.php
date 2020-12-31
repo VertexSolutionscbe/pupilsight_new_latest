@@ -12,13 +12,15 @@ $databaseServer = '127.0.0.1';
 $databaseUsername = 'root';
 //$databasePassword = '';
 //$databaseName = 'pupilsight'; //pd_demo
+//$databaseName = 'bips_erp'; //pd_demo
+//$databaseName = 'ups'; //pd_demo
 //live
-$databasePassword = '';
+$databasePassword = ''; //xyz
 $databaseName = 'pd_demo_new'; //pd_demo
 
-// if (session_status() == PHP_SESSION_NONE) {
-//     session_start();
-// }
+//if (session_status() == PHP_SESSION_NONE) {
+//    session_start();
+//}
 
 $_SESSION["databaseName"] = $databaseName;
 /**

@@ -13,7 +13,7 @@ function getBorrowingRecord($guid, $connection2, $pupilsightPersonID)
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        $output .= "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+        $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
     }
     if ($result->rowCount() < 1) {
         $output .= "<div class='alert alert-danger'>";
@@ -26,8 +26,8 @@ function getBorrowingRecord($guid, $connection2, $pupilsightPersonID)
 
         $output .= '</th>';
         $output .= '<th>';
-        $output .= __('Name').'<br/>';
-        $output .= "<span style='font-size: 85%; font-style: italic'>".__('Author/Producer').'</span>';
+        $output .= __('Name') . '<br/>';
+        $output .= "<span style='font-size: 85%; font-style: italic'>" . __('Author/Producer') . '</span>';
         $output .= '</th>';
         $output .= '<th>';
         $output .= __('ID');
@@ -36,8 +36,8 @@ function getBorrowingRecord($guid, $connection2, $pupilsightPersonID)
         $output .= __('Location');
         $output .= '</th>';
         $output .= '<th>';
-        $output .= __('Borrow Date').'<br/>';
-        $output .= "<span style='font-size: 85%; font-style: italic'>".__('Return Date').'</span>';
+        $output .= __('Borrow Date') . '<br/>';
+        $output .= "<span style='font-size: 85%; font-style: italic'>" . __('Return Date') . '</span>';
         $output .= '</th>';
         $output .= '<th>';
         $output .= __('Actions');
@@ -56,17 +56,17 @@ function getBorrowingRecord($guid, $connection2, $pupilsightPersonID)
                 $rowNum = 'error';
             }
 
-                //COLOR ROW BY STATUS!
-                $output .= "<tr class=$rowNum style='opacity: 1.0'>";
+            //COLOR ROW BY STATUS!
+            $output .= "<tr class=$rowNum style='opacity: 1.0'>";
             $output .= "<td style='width: 260px'>";
             $output .= getImage($guid, $row['imageType'], $row['imageLocation'], false);
             $output .= '</td>';
             $output .= "<td style='width: 130px'>";
-            $output .= '<b>'.$row['name'].'</b><br/>';
-            $output .= "<span style='font-size: 85%; font-style: italic'>".$row['producer'].'</span>';
+            $output .= '<b>' . $row['name'] . '</b><br/>';
+            $output .= "<span style='font-size: 85%; font-style: italic'>" . $row['producer'] . '</span>';
             $output .= '</td>';
             $output .= "<td style='width: 130px'>";
-            $output .= '<b>'.$row['id'].'</b><br/>';
+            $output .= '<b>' . $row['id'] . '</b><br/>';
             $output .= '</td>';
             $output .= "<td style='width: 130px'>";
             if ($row['pupilsightSpaceID'] != '') {
@@ -76,21 +76,21 @@ function getBorrowingRecord($guid, $connection2, $pupilsightPersonID)
                     $resultSpace = $connection2->prepare($sqlSpace);
                     $resultSpace->execute($dataSpace);
                 } catch (PDOException $e) {
-                    $output .= "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                    $output .= "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                 }
                 if ($resultSpace->rowCount() == 1) {
                     $rowSpace = $resultSpace->fetch();
-                    $output .= '<b>'.$rowSpace['name'].'</b><br/>';
+                    $output .= '<b>' . $rowSpace['name'] . '</b><br/>';
                 }
             }
             if ($row['locationDetail'] != '') {
-                $output .= "<span style='font-size: 85%; font-style: italic'>".$row['locationDetail'].'</span>';
+                $output .= "<span style='font-size: 85%; font-style: italic'>" . $row['locationDetail'] . '</span>';
             }
             $output .= '</td>';
             $output .= "<td style='width: 130px'>";
-            $output .= dateConvertBack($guid, substr($row['timestampOut'], 0, 10)).'<br/>';
+            $output .= dateConvertBack($guid, substr($row['timestampOut'], 0, 10)) . '<br/>';
             if ($row['status'] == 'On Loan') {
-                $output .= "<span style='font-size: 85%; font-style: italic'>".dateConvertBack($guid, $row['returnExpected']).'</span>';
+                $output .= "<span style='font-size: 85%; font-style: italic'>" . dateConvertBack($guid, $row['returnExpected']) . '</span>';
             }
             $output .= '</td>';
             $output .= '<td>';
@@ -104,7 +104,7 @@ function getBorrowingRecord($guid, $connection2, $pupilsightPersonID)
             $output .= '});';
             $output .= '</script>';
             if ($row['fields'] != '') {
-                $output .= "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['pupilsightThemeName']."/img/page_down.png' alt='Show Details' onclick='return false;' /></a>";
+                $output .= "<a title='" . __('View Description') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/page_down.png' alt='Show Details' onclick='return false;' /></a>";
             }
             $output .= '</td>';
             $output .= '</tr>';
@@ -118,13 +118,13 @@ function getBorrowingRecord($guid, $connection2, $pupilsightPersonID)
                     if ($fields[$typeField['name']] != '') {
                         $output .= '<tr>';
                         $output .= "<td style='vertical-align: top; width: 200px'>";
-                        $output .= '<b>'.__($typeField['name']).'</b>';
+                        $output .= '<b>' . __($typeField['name']) . '</b>';
                         $output .= '</td>';
                         $output .= "<td style='vertical-align: top'>";
                         if ($typeField['type'] == 'URL') {
-                            $output .= "<a target='_blank' href='".$fields[$typeField['name']]."'>".$fields[$typeField['name']].'</a><br/>';
+                            $output .= "<a target='_blank' href='" . $fields[$typeField['name']] . "'>" . $fields[$typeField['name']] . '</a><br/>';
                         } else {
-                            $output .= $fields[$typeField['name']].'<br/>';
+                            $output .= $fields[$typeField['name']] . '<br/>';
                         }
                         $output .= '</td>';
                         $output .= '</tr>';
@@ -154,20 +154,20 @@ function getImage($guid, $type, $location, $border = true)
     }
 
     if ($location == '') {
-        $output .= "<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['pupilsightThemeName']."/img/anonymous_240_square.jpg'/><br/>";
+        $output .= "<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/anonymous_75.jpg'/><br/>";
     } else {
         if ($type == 'Link') {
             $output .= "<div style='height: 240px; width: 240px; display:table-cell; vertical-align:middle; text-align:center $borderStyle'>";
-            $output .= "<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' src='".$location."'/><br/>";
+            $output .= "<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' src='" . $location . "'/><br/>";
             $output .= '</div>';
         }
         if ($type == 'File') {
-            if (is_file($_SESSION[$guid]['absolutePath'].'/'.$location)) {
+            if (is_file($_SESSION[$guid]['absolutePath'] . '/' . $location)) {
                 $output .= "<div style='height: 240px; width: 240px; display:table-cell; vertical-align:middle; text-align:center; $borderStyle'>";
-                $output .= "<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' title='' src='".$_SESSION[$guid]['absoluteURL'].'/'.$location."'/><br/>";
+                $output .= "<img class='user' style='max-height: 240px; max-width: 240px; opacity: 1.0; margin: auto' title='' src='" . $_SESSION[$guid]['absoluteURL'] . '/' . $location . "'/><br/>";
                 $output .= '</div>';
             } else {
-                $output .= "<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['pupilsightThemeName']."/img/anonymous_240_square.jpg'/><br/>";
+                $output .= "<img style='height: 240px; width: 240px; opacity: 1.0' class='user' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/anonymous_75.jpg'/><br/>";
             }
         }
     }

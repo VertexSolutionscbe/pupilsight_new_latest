@@ -33,7 +33,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
         }
         echo '<h3>';
-        echo __('Attendance By Subject');
+        if(isset($_GET['timetableattendance'])) {    //checking for extra parameter sent by module function for attendance by timetable
+            echo __('Attendance By TimeTable');
+        }else {
+            echo __('Attendance By Subject');
+        }
         echo '</h3>';
 
         $HelperGateway = $container->get(HelperGateway::class);   
@@ -78,14 +82,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             }
             $program = $program1 + $program2;            
         }
-        if(isset(($_GET))){
+        if(isset($_GET)){
         
             $pupilsightProgramID =  isset($_GET['pupilsightProgramID'])? $_GET['pupilsightProgramID'] : '';
             $pupilsightYearGroupID = isset($_GET['pupilsightYearGroupID'])? $_GET['pupilsightYearGroupID'] : '';
             $pupilsightRollGroupID = isset($_GET['pupilsightRollGroupID'])? $_GET['pupilsightRollGroupID'] : '';
             $pupilsightDepartmentID = isset($_GET['pupilsightDepartmentID'])? $_GET['pupilsightDepartmentID'] : '';
             $time_slot  = isset($_GET['time_slot'])? $_GET['time_slot'] : '';
-          
+
             $stuId = isset($_GET['studentId'])? $_GET['studentId'] : '';
 
             $classes =  $HelperGateway->getClassByProgram_staff($connection2, $pupilsightProgramID,$staff_person_id);
@@ -125,9 +129,13 @@ $subject2=array();
 foreach ($rowdatadept as $dt) {
     $subject2[$dt['pupilsightDepartmentID']] = $dt['name'];
 }
-$subjects=  $subject2;  
+$subjects=  $subject2;
+        if(isset($_GET['timetableattendance'])) {    //checking for extra parameter sent by module function for attendance by timetable
+            $page->breadcrumbs->add(__('Attendance By TimeTable'));
+        }else {
+            $page->breadcrumbs->add(__('Attendance By Subject'));
+        }
 
-        $page->breadcrumbs->add(__('Attendance By Subject'));
     }
     
     $sql = "SELECT pupilsightSchoolYear.name as groupedBy, pupilsightTTID as value, pupilsightTT.name AS name FROM pupilsightTT JOIN pupilsightSchoolYear ON (pupilsightTT.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) ORDER BY pupilsightSchoolYear.sequenceNumber, pupilsightTT.name";
@@ -537,8 +545,8 @@ if ($pupilsightRollGroupID != '') {
                     }
 
                     $form->addRow()->addAlert(__('Total students:').' '. $count, 'success')->setClass('right')
-                        ->append('<br/><span title="'.__('e.g. Present or Present - Late').'">'.__('Total students present in room:').' '. $countPresent.'</span>')
-                        ->append('<br/><span title="'.__('e.g. not Present and not Present - Late').'">'.__('Total students absent from room:').' '. ($count-$countPresent).'</span>')
+                        ->append('<br/><span title="'.__('e.g. Present or Present - Late').'">'.__('Total students present in room:').'</span>&nbsp;<span id="presentsTotal">'. $countPresent.'</span>')
+                        ->append('<br/><span title="'.__('e.g. not Present and not Present - Late').'">'.__('Total students absent from room:').'</span>&nbsp;<span id="absentsTotal">'. ($count-$countPresent).'</span> <i id="absentsNames" class="fa fa-eye" title="Total absents :" aria-hidden="true"></i>')
                         ->wrap('<b>', '</b>');
 
                     $row = $form->addRow();
@@ -660,7 +668,35 @@ if ($pupilsightRollGroupID != '') {
                 }
             }
         }*/
+   function showCount(){
+       var presents=0;
+       var absents_name="Total absents : ";
+       var absents=0;
+       $(".slt_att").each(function() {
+           var name = $(this).attr('data-id');
+           if ($(this).val() != '') {
+               var val = $(this).val();
+               if(val=="Present" || val=="Present - Late"){
+                   presents++;
+               } else {
+                   absents++;
+                   absents_name+=name+",";
+               }
+           }
+       });
 
+       if(absents==0){
+           $(".savePopUp").attr('id','attendanceSave');
+           $(".savePopUp").text('Save Attendance');
+       } else {
+           $(".savePopUp").attr('id','savePopUp');
+           $(".savePopUp").text('Save Attendance');
+       }
+       $("#presentsTotal").html(presents);
+       $("#absentsTotal").html(absents);
+       absents_name  = absents_name.replace(/,\s*$/, "");
+       $("#absentsNames").attr("title",absents_name);
+   }
        
       
     </script>
