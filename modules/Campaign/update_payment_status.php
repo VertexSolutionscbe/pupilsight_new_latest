@@ -22,9 +22,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/ajax_add_wf_trans
 		$resultfs = $connection2->query($sqlfs);
 		$campData = $resultfs->fetch();
 
-		$sqlfs1 = 'SELECT pupilsightProgramID, pupilsightYearGroupID  FROM wp_fluentform_submissions WHERE id = ' . $sid . ' ';
+		$sqlfs1 = 'SELECT pupilsightProgramID, pupilsightYearGroupID, created_at  FROM wp_fluentform_submissions WHERE id = ' . $sid . ' ';
 		$resultfs1 = $connection2->query($sqlfs1);
 		$submissionData = $resultfs1->fetch();
+
+		$feeReceiptdate = date('d-M-Y', strtotime($submissionData['created_at']));
+		
 
 		$pupilsightProgramID = $campData['pupilsightProgramID'];
 		$pupilsightYearGroupID = $submissionData['pupilsightYearGroupID'];
@@ -294,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/ajax_add_wf_trans
 					$dts_receipt = array(
 						"application_no" => $valuestu["application_id"],
 						"receipt_no" => $receipt_number,
-						"date" => '28-Oct-2020',
+						"date" => $feeReceiptdate,
 						"student_name" => $studetails['field_value'],
 						"student_id" => $submission_id,
 						"class_section" => $class_section,
