@@ -14,9 +14,14 @@ if ($type == 'insertcampaigndetails') {
     $submissionId = $_SESSION['submissionId'];
     $chkfeeSett = $_POST['chkfeeSett'];
     if (!empty($pupilsightYearGroupID) && !empty($submissionId)) {
-        //$insert = $adminlib->createCampaignRegistration($input, $campid);
+		//$insert = $adminlib->createCampaignRegistration($input, $campid);
+		
+		$sqlchfee = "SELECT is_fee_generate FROM campaign WHERE id = " . $campid . " ";
+		$resultchkfee = database::doSelectOne($sqlchfee);
+		$chkfeeSettNew = $resultchkfee['is_fee_generate'];
 
-        if($chkfeeSett == '2'){
+        // if($chkfeeSett == '2'){
+		if($chkfeeSettNew == '2'){
             $insert = $adminlib->updateApplicantData($submissionId, $pupilsightProgramID, $pupilsightYearGroupID);
         } else {
             $sql = "SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = " . $campid . " ";

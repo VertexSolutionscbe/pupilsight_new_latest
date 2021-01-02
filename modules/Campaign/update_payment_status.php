@@ -12,7 +12,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/ajax_add_wf_trans
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {  
-    $cid = '9';
+    $cid = '8';
     $sid = $_GET['sid'];
     $crtd =  date('Y-m-d H:i:s');
 	$cdt = date('Y-m-d H:i:s');
