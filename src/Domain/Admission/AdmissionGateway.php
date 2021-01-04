@@ -442,4 +442,17 @@ class AdmissionGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria, TRUE);
     }
+
+    public function getAllPaymentDetails(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('fn_fee_payment_details')
+            ->cols([
+                'fn_fee_payment_details.*'
+            ])
+            ->orderBy(['fn_fee_payment_details.id DESC']);
+
+        return $this->runQuery($query, $criteria, TRUE);
+    }
 }

@@ -66,7 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
                 $academicData[$dt['pupilsightSchoolYearID']] = $dt['name'];
             }
 
-            $sql = 'SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=' . $pupilsightSchoolYearID . '  ';
+            // $sql = 'SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=' . $pupilsightSchoolYearID . '  ';
+            $sql = 'SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup ';
             $result = $connection2->query($sql);
             $classes = $result->fetchAll();
         
