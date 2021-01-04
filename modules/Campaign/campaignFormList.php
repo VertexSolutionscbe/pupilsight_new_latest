@@ -145,6 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     // echo '<pre>';
     //  print_r($dataSet);
     // echo '</pre>';
+    // die();
     //  foreach($stats as $s){
     //     echo $butt = '<button class="btn btn-primary statesButton" data-toggle="modal" data-target="#large-modal" data-formid = '.$formId.' data-name="'.$s['transition_display_name'].'" data-sid='.$s['id'].' data-cid='.$id.' data-noti='.$s['notification'].' style="margin:5px" >'.ucwords($s['transition_display_name']).'</button>';
 
@@ -280,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 $cls = $resultcls->fetch();
                 $clsname = $cls['name'];
 
-                $sqlname = 'Select GROUP_CONCAT(field_value) AS name FROM wp_fluentform_entry_details WHERE field_name = "names" AND submission_id = ' . $sid . ' ';
+                $sqlname = 'Select GROUP_CONCAT(field_value) AS name FROM wp_fluentform_entry_details WHERE field_name = "student_name" AND submission_id = ' . $sid . ' ';
                 $resultname = $connection2->query($sqlname);
                 $aname = $resultname->fetch();
                 $usrname = str_replace(',', ' ', $aname['name']);
@@ -314,7 +315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                         $dataSet->data[$i]["workflowstate"] = 'Created';
                     }
                 } else {
-                    $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                    $dataSet->data[$i]["workflowstate"] = 'Created';
                 }
             }
 

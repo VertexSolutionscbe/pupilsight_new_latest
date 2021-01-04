@@ -107,6 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
         echo "<a href='index.php?q=%2Fmodules%2FCampaign%2Fadd.php' class='btn btn-secondary mb-2 mr-2'>Add Campaign</a>";
         echo "<a href='index.php?q=%2Fmodules%2FCampaign%2FtransitionsList.php' class='btn btn-secondary mb-2 mr-2'>Transition</a>";
         echo "<a href='index.php?q=/modules/Campaign/button_permission.php' class='btn btn-secondary mb-2'>Button Permission</a>";
+        // echo "<a href='index.php?q=/modules/Campaign/button_permission.php' class='btn btn-secondary mb-2'>Online Fee Details</a>";
         echo "</div><div class='float-none'></div></div>";
     } else {
         if(!empty($permissionChk)){

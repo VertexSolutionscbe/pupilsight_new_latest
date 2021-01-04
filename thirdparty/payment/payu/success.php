@@ -26,6 +26,8 @@ $udf3 = $_POST["udf3"];
 $udf4 = $_POST["udf4"];
 $udf5 = $_POST["udf5"];
 
+$returnArr = json_encode($_POST);
+
 // echo $key;
 
 
@@ -568,6 +570,12 @@ $reverse_hash = $hash->validate_hash($params);
                 }
             }
             
+        } else {
+            $data = array('gateway' => 'PAYU', 'return_data' => $returnArr, 'status' => 'F1');
+
+            $sql = 'INSERT INTO fn_fee_failed_payment_details SET gateway=:gateway, return_data=:return_data, status=:status';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
         }
 
 

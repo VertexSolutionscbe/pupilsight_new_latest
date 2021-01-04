@@ -98,7 +98,7 @@ class __TwigTemplate_4495a0af3ce1a0af6f85299d578f502ce9a8044fe4f36b782751da33d9c
             $context = array_intersect_key($context, $_parent) + $_parent;
             // line 37
             echo "                    </ul>
-                    
+
                     <!-- Sidebar -->
                     ";
             // line 40
@@ -106,18 +106,19 @@ class __TwigTemplate_4495a0af3ce1a0af6f85299d578f502ce9a8044fe4f36b782751da33d9c
             $context['_seq'] = twig_ensure_traversable(twig_get_attribute($this->env, $this->source, ($context["page"] ?? null), "extraSidebar", array()));
             foreach ($context['_seq'] as $context["_key"] => $context["code"]) {
                 if ((($context["sidebar"] ?? null) && (($context["sidebarPosition"] ?? null) != "bottom"))) {
-                    echo " ";
+                    // line 41
+                    echo "                    ";
                     if ( !twig_test_empty($context["code"])) {
-                        // line 41
-                        echo "                    <div class=\"md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-6\">
-                        ";
                         // line 42
+                        echo "                    <div class=\"md:column-2 lg:column-1 pt-2 sm:pt-16 lg:pt-6\">
+                        ";
+                        // line 43
                         echo $context["code"];
                         echo "
                     </div>
                     ";
                     }
-                    // line 44
+                    // line 45
                     echo " ";
                 }
             }
@@ -126,28 +127,28 @@ class __TwigTemplate_4495a0af3ce1a0af6f85299d578f502ce9a8044fe4f36b782751da33d9c
             $context = array_intersect_key($context, $_parent) + $_parent;
             echo " ";
             if ((($context["sidebar"] ?? null) && ($context["sidebarContents"] ?? null))) {
-                // line 45
+                // line 46
                 echo "                    <div class=\"md:column-2 lg:column-1 ";
                 echo ((twig_get_attribute($this->env, $this->source, ($context["page"] ?? null), "breadcrumbs", array())) ? ("pt-10 lg:pt-0") : (""));
                 echo " \">
                         ";
-                // line 46
+                // line 47
                 echo ($context["sidebarContents"] ?? null);
                 echo "
                     </div>
-                
+
                     ";
             }
-            // line 49
-            echo "  ";
+            // line 50
+            echo " ";
             $context['_parent'] = $context;
             $context['_seq'] = twig_ensure_traversable(twig_get_attribute($this->env, $this->source, ($context["page"] ?? null), "extraSidebar", array()));
             foreach ($context['_seq'] as $context["_key"] => $context["code"]) {
                 if ((($context["sidebar"] ?? null) && (($context["sidebarPosition"] ?? null) == "bottom"))) {
-                    // line 50
+                    // line 51
                     echo "                    <div class=\"md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-0\">
                         ";
-                    // line 51
+                    // line 52
                     echo $context["code"];
                     echo "
                     </div>
@@ -157,10 +158,10 @@ class __TwigTemplate_4495a0af3ce1a0af6f85299d578f502ce9a8044fe4f36b782751da33d9c
             $_parent = $context['_parent'];
             unset($context['_seq'], $context['_iterated'], $context['_key'], $context['code'], $context['_parent'], $context['loop']);
             $context = array_intersect_key($context, $_parent) + $_parent;
-            // line 54
+            // line 55
             echo "                    <!-- Sidebar -->
                 </div>
-                
+
             </div>
         </div>
     </div>
@@ -181,7 +182,7 @@ class __TwigTemplate_4495a0af3ce1a0af6f85299d578f502ce9a8044fe4f36b782751da33d9c
 
     public function getDebugInfo()
     {
-        return array (  161 => 54,  151 => 51,  148 => 50,  142 => 49,  135 => 46,  130 => 45,  121 => 44,  115 => 42,  112 => 41,  105 => 40,  100 => 37,  92 => 36,  85 => 32,  75 => 28,  71 => 27,  68 => 26,  64 => 25,  56 => 20,  48 => 14,  45 => 13,  42 => 12,  36 => 11,  25 => 2,  23 => 1,);
+        return array (  162 => 55,  152 => 52,  149 => 51,  143 => 50,  136 => 47,  131 => 46,  122 => 45,  116 => 43,  113 => 42,  110 => 41,  105 => 40,  100 => 37,  92 => 36,  85 => 32,  75 => 28,  71 => 27,  68 => 26,  64 => 25,  56 => 20,  48 => 14,  45 => 13,  42 => 12,  36 => 11,  25 => 2,  23 => 1,);
     }
 
     public function getSourceContext()
@@ -223,25 +224,26 @@ class __TwigTemplate_4495a0af3ce1a0af6f85299d578f502ce9a8044fe4f36b782751da33d9c
 
                         {% endif %} {% endif %} {% endfor %}
                     </ul>
-                    
+
                     <!-- Sidebar -->
-                    {% for code in page.extraSidebar if sidebar and sidebarPosition != 'bottom' %} {% if code is not empty %}
-                    <div class=\"md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-6\">
+                    {% for code in page.extraSidebar if sidebar and sidebarPosition != 'bottom' %}
+                    {% if code is not empty %}
+                    <div class=\"md:column-2 lg:column-1 pt-2 sm:pt-16 lg:pt-6\">
                         {{ code|raw }}
                     </div>
                     {% endif %} {% endfor %} {% if sidebar and sidebarContents %}
                     <div class=\"md:column-2 lg:column-1 {{ page.breadcrumbs ? 'pt-10 lg:pt-0' }} \">
                         {{ sidebarContents|raw }}
                     </div>
-                
-                    {% endif %}  {% for code in page.extraSidebar if sidebar and sidebarPosition == 'bottom' %}
+
+                    {% endif %} {% for code in page.extraSidebar if sidebar and sidebarPosition == 'bottom' %}
                     <div class=\"md:column-2 lg:column-1 pt-6 sm:pt-16 lg:pt-0\">
                         {{ code|raw }}
                     </div>
                     {% endfor %}
                     <!-- Sidebar -->
                 </div>
-                
+
             </div>
         </div>
     </div>

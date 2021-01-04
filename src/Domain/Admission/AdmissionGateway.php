@@ -450,9 +450,9 @@ class AdmissionGateway extends QueryableGateway
             ->from('fn_fee_payment_details')
             ->cols([
                 'fn_fee_payment_details.*'
-            ]);
+            ])
+            ->orderBy(['fn_fee_payment_details.id DESC']);
 
         return $this->runQuery($query, $criteria, TRUE);
     }
-
 }
