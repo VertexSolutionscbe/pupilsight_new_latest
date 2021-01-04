@@ -188,12 +188,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
+            $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
 
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightYearGroupID', __('Class'));
-            $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
+            $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
 
 
             $col = $row->addColumn()->setClass('newdes');
@@ -778,7 +778,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     var hrf = $(this).attr('data-hrf');
                     var newhrf = hrf + stuId;
                     $("#generateTC").attr('href', newhrf);
-                    window.setTimeout(function () {
+                    window.setTimeout(function() {
                         $("#generateTC")[0].click();
                     }, 10);
                 } else {

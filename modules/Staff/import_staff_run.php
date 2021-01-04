@@ -176,7 +176,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
             }
         }
 
-
         fclose($handle);
 
         $URL .= '&return=success1';

@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 $dusername_stock = array();
                 $dtable_str = "";
                 foreach ($all_rows as  $alrow) {
-                    try { 
+                    try {
                         // Staff Entry
                         $sql = "INSERT INTO pupilsightPerson (";
                         foreach ($alrow as $key => $ar) {
@@ -200,6 +200,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
 
                             if (!empty($stu_id)) {
                                 $sqle = 'INSERT INTO pupilsightStaff (pupilsightPersonID,type) VALUES ("' . $stu_id . '","' . $alrow['at_type'] . '")';
+                                echo "\n" . $sqle . ";";
                                 $enrol = $conn->query($sqle);
                             }
                             $conn->commit();

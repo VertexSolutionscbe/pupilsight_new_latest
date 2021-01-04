@@ -38,6 +38,20 @@ class StudentGateway extends QueryableGateway
 
         //echo $pupilsightProgramID;
         //die();
+        $pupilsightPersonCols = `"CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightStudentEnrolmentID', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program', 'parent1.officialName as fatherName', 'parent1.email as fatherEmail', 'parent1.phone1 as fatherPhone', 'parent2.officialName as motherName', 'parent2.email as motherEmail', 'parent2.phone1 as motherPhone' ,'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.admission_no',
+        'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'officialName, pupilsightPerson.dob', 'pupilsightPerson.gender', 'pupilsightPerson.username', 'pupilsightPerson.phone1', 'pupilsightPerson.email', 'pupilsightPerson.address1', 'pupilsightPerson.address1District', 'pupilsightPerson.address1Country',
+        'pupilsightPerson.languageFirst', 'pupilsightPerson.languageSecond', 'pupilsightPerson.languageThird', 'pupilsightPerson.religion'`;
+        /*
+
+        // "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightStudentEnrolmentID', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program', 'parent1.officialName as fatherName', 'parent1.email as fatherEmail', 'parent1.phone1 as fatherPhone', 'parent2.officialName as motherName', 'parent2.email as motherEmail', 'parent2.phone1 as motherPhone', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.admission_no',
+                'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'officialName, pupilsightPerson.dob', 'pupilsightPerson.gender', 'pupilsightPerson.username', 'pupilsightPerson.phone1', 'pupilsightPerson.email', 'pupilsightPerson.address1', 'pupilsightPerson.address1District', 'pupilsightPerson.address1Country',
+                'pupilsightPerson.languageFirst', 'pupilsightPerson.languageSecond', 'pupilsightPerson.languageThird', 'pupilsightPerson.religion'
+
+        $pupilsightPersonCols = `CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightStudentEnrolmentID', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program', 'parent1.officialName as fatherName', 'parent1.email as fatherEmail', 'parent1.phone1 as fatherPhone', 'parent2.officialName as motherName', 'parent2.email as motherEmail', 'parent2.phone1 as motherPhone', 
+        pupilsightPerson.pupilsightPersonID, pupilsightPerson.admission_no,
+        pupilsightPerson.surname, pupilsightPerson.preferredName, officialName, pupilsightPerson.dob, pupilsightPerson.gender, pupilsightPerson.username, pupilsightPerson.phone1, pupilsightPerson.email, pupilsightPerson.address1, pupilsightPerson.address1District, pupilsightPerson.address1Country,
+        pupilsightPerson.languageFirst, pupilsightPerson.languageSecond, pupilsightPerson.languageThird, pupilsightPerson.religion`;
+*/
 
         $query = $this
             ->newQuery()
@@ -107,6 +121,7 @@ class StudentGateway extends QueryableGateway
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
         //echo $query;
+        //die();
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
         return $this->runQuery($query, $criteria, TRUE);

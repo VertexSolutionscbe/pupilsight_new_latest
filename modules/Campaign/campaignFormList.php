@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 // $resultvals = $connection2->query($sqls);
                 // $states = $resultvals->fetch();
                 // $statename = $states['name'];
-                if($isFeeGenerate == '2'){
+                if ($isFeeGenerate == '2') {
                     $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $sid . "  ";
                     $resulttr = $connection2->query($sql2);
                     $stateChk = $resulttr->fetch();
@@ -317,7 +317,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 } else {
                     $dataSet->data[$i]["workflowstate"] = 'Created';
                 }
-                
             }
 
             echo $dataSet->data[$i]["created_at"];
@@ -745,7 +744,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                         alert('Seats are Full!');
                     } else {
                         alert('Your Applicant Admitted Successfully! Click Ok to Continue');
-                         location.reload();
+                        location.reload();
                     }
 
                 }

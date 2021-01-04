@@ -4,9 +4,9 @@
 error_reporting(E_ERROR | E_PARSE);
 
 include "payu/PayUClient.php";
+include $_SERVER['DOCUMENT_ROOT'].'/pupilsight.php';
 
 use payu\PayUClient;
-
 
 $status=$_POST["status"];
 $firstname=$_POST["firstname"];
@@ -46,6 +46,15 @@ $params = array("status"=>$status,"txnid"=>$txnid,"amount"=>$amount,"productinfo
 	// 	   }
 
 $URL = $_SESSION[$guid]['absoluteURL'] . "/cms/index.php";
+
+$returnArr = json_encode($_POST);
+
+
+$data = array('gateway' => 'PAYU', 'return_data' => $returnArr, 'status' => 'F2');
+
+$sql = 'INSERT INTO fn_fee_failed_payment_details SET gateway=:gateway, return_data=:return_data, status=:status';
+$result = $connection2->prepare($sql);
+$result->execute($data);
 
 ?>
 

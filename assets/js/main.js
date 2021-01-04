@@ -5906,8 +5906,6 @@ $(document).on('click', '.copy_test_cls', function () {
         alert('You Have to Select Test.');
         return false;
     }
-
-
 });
 
 $(document).on('click', '#electiveSub', function () {
@@ -7484,7 +7482,8 @@ function CustomField() {
             <div class="col-sm  standardWidth">
                 <div>
                     <div class="flex-1 relative">
-                    <select id="`+ obj.field_name + `" ` + elementName + ` class="w-full">`
+                    <select id="`+ obj.field_name + `" ` + elementName + ` class="w-full">
+                    <option></option>`
         while (i < len) {
             selectStr = "";
             if (tfVal == $.trim(opt[i])) {
