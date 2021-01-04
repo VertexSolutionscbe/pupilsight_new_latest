@@ -62,52 +62,6 @@ $reverse_hash = $hash->validate_hash($params);
             $crtd =  date('Y-m-d H:i:s');
             $cdt = date('Y-m-d H:i:s');
 
-            $sqlrec = 'SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = "' . $cid . '" ';
-            $resultrec = $connection2->query($sqlrec);
-            $recptser = $resultrec->fetch();
-
-            $seriesId = $recptser['id'];
-
-            if (!empty($seriesId)) {
-                $invformat = explode('$', $recptser['formatval']);
-                $iformat = '';
-                $orderwise = 0;
-                foreach ($invformat as $inv) {
-                    if ($inv == '{AB}') {
-                        $datafort = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise');
-                        $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type';
-                        $resultfort = $connection2->prepare($sqlfort);
-                        $resultfort->execute($datafort);
-                        $formatvalues = $resultfort->fetch();
-
-                        $str_length = $formatvalues['no_of_digit'];
-
-                        $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
-
-                        $lastnoadd = $formatvalues['last_no'] + 1;
-
-                        $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
-
-                        $datafort1 = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise', 'last_no' => $lastno);
-                        $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type ';
-                        $resultfort1 = $connection2->prepare($sqlfort1);
-                        $resultfort1->execute($datafort1);
-                    } else {
-                        $iformat .= $inv;
-                    }
-                    $orderwise++;
-                }
-                $application_id = $iformat;
-            } else {
-                $application_id = '';
-            }
-
-            $datafort12 = array('application_id' => $application_id, 'id' => $sid);
-            $sqlfort12 = 'UPDATE wp_fluentform_submissions SET application_id=:application_id WHERE id=:id';
-            $resultfort12 = $connection2->prepare($sqlfort12);
-            $resultfort12->execute($datafort12);
-
-
             $sqlfs = 'SELECT academic_id, pupilsightProgramID, fn_fee_structure_id, fn_fees_receipt_template_id  FROM campaign WHERE id = ' . $cid . ' ';
             $resultfs = $connection2->query($sqlfs);
             $campData = $resultfs->fetch();
@@ -357,6 +311,51 @@ $reverse_hash = $hash->validate_hash($params);
                             $resulti->execute($datai);
                         }
                     }
+
+                    $sqlrec = 'SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = "' . $cid . '" ';
+                    $resultrec = $connection2->query($sqlrec);
+                    $recptser = $resultrec->fetch();
+        
+                    $seriesId = $recptser['id'];
+        
+                    if (!empty($seriesId)) {
+                        $invformat = explode('$', $recptser['formatval']);
+                        $iformat = '';
+                        $orderwise = 0;
+                        foreach ($invformat as $inv) {
+                            if ($inv == '{AB}') {
+                                $datafort = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise');
+                                $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type';
+                                $resultfort = $connection2->prepare($sqlfort);
+                                $resultfort->execute($datafort);
+                                $formatvalues = $resultfort->fetch();
+        
+                                $str_length = $formatvalues['no_of_digit'];
+        
+                                $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
+        
+                                $lastnoadd = $formatvalues['last_no'] + 1;
+        
+                                $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
+        
+                                $datafort1 = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise', 'last_no' => $lastno);
+                                $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type ';
+                                $resultfort1 = $connection2->prepare($sqlfort1);
+                                $resultfort1->execute($datafort1);
+                            } else {
+                                $iformat .= $inv;
+                            }
+                            $orderwise++;
+                        }
+                        $application_id = $iformat;
+                    } else {
+                        $application_id = '';
+                    }
+        
+                    $datafort12 = array('application_id' => $application_id, 'id' => $sid);
+                    $sqlfort12 = 'UPDATE wp_fluentform_submissions SET application_id=:application_id WHERE id=:id';
+                    $resultfort12 = $connection2->prepare($sqlfort12);
+                    $resultfort12->execute($datafort12);
 
                     if (!empty($fn_fees_receipt_template_id)) {
                         $sqlstu = "SELECT  a.application_id, b.name as prog,c.name as class FROM wp_fluentform_submissions AS a LEFT JOIN pupilsightProgram AS b ON a.pupilsightProgramID = b.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS c ON a.pupilsightYearGroupID = c.pupilsightYearGroupID WHERE a.id = " . $submission_id . " ";
