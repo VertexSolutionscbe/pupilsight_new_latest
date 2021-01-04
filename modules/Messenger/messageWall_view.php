@@ -15,7 +15,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
     $fromdate = isset($_REQUEST['fromdate'])? $_REQUEST['fromdate'] : date($dateFormat);
     $category = isset($_REQUEST['category'])? $_REQUEST['category'] : 'All';
-    $msgtype = isset($_REQUEST['msgtype'])? $_REQUEST['msgtype'] : 'messageWall';
+    $msgtype = isset($_REQUEST['msgtype'])? $_REQUEST['msgtype'] : 'All';
 
     $page->breadcrumbs->add(($date === date($dateFormat)) ?
         __('Today\'s Messages').' ('.$fromdate.' to '.$date.')' :
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     );
 
     $displaymsgwalltype = array();
-    $displaymsgwalltype =  array(''=>'Select Message Type',
+    $displaymsgwalltype =  array('All'=>'All',
         'msgwall' =>'Message Wall',
         'sms' =>'SMS',
         'email' =>'Email',
@@ -83,6 +83,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
 	echo $form->getOutput();
 
-    echo getMessages($guid, $connection2, 'print', dateConvert($guid, $date), dateConvert($guid, $fromdate) , $category, $msgtype);
+    echo getMessages1($guid, $connection2, 'print', dateConvert($guid, $date), dateConvert($guid, $fromdate) , $category, $msgtype);
 }
 ?>
