@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 */
 
 //echo  "http://localhost/pupilsight/wp/wp-login.php?user=".urlencode('admin')."&pass=".urlencode('Admin@123456');
-error_reporting(E_ERROR | E_PARSE);
+//error_reporting(E_ERROR | E_PARSE);
 //error_reporting(0);
 
 use Pupilsight\Domain\System\ModuleGateway;
@@ -490,6 +490,10 @@ if ($isLoggedIn) {
         $menuMainItems = array();
         $menuMainItems["Admission"] = $tm2;
         $menuMainItems["Reports"][0] = array('name' => "Reports", 'url' => $session->get('absoluteURL') . "/index.php?q=/modules/custom/reports.php");
+    } else if ($_SESSION[$guid]['username'] == "munirajk") {
+        $tm2 = $menuMainItems["Admission"];
+        $menuMainItems = array();
+        $menuMainItems["Admission"] = $tm2;
     } else if ($_SESSION[$guid]['username'] == "Geesha") {
         $tm2 = $menuMainItems["Admission"];
         $menuMainItems = array();

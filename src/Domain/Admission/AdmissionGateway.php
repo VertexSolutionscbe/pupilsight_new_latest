@@ -9,7 +9,6 @@ use Pupilsight\Domain\Traits\TableAware;
 use Pupilsight\Domain\QueryCriteria;
 use Pupilsight\Domain\QueryableGateway;
 
-
 /**
  * School Year Gateway
  *
@@ -94,7 +93,7 @@ class AdmissionGateway extends QueryableGateway
                 //     'fd.submission_id', "GROUP_CONCAT(case when fd.sub_field_name IS NULL OR fd.sub_field_name = '' OR fd.sub_field_name = '0' then fd.field_name else fd.sub_field_name end) as field_name", "GROUP_CONCAT(field_value) as field_value",'(select state from campaign_form_status where submission_id=fd.submission_id and status=1 order by id desc limit 1) as workflowstate'
                 // ]);
                 ->cols([
-                    'fd.submission_id as submission_no', 'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", 'fd.status', "GROUP_CONCAT(field_value SEPARATOR '|$$|') as field_value", '(select workflow_transition.transition_display_name AS state from campaign_form_status LEFT JOIN workflow_transition ON campaign_form_status.state_id = workflow_transition.id where campaign_form_status.submission_id=fd.submission_id and campaign_form_status.status=1 order by campaign_form_status.id desc limit 1) as workflowstate'
+                    'fd.submission_id as submission_no', 'fd.submission_id', "GROUP_CONCAT(fd.field_name order by fd.id) as field_name", 'fd.status', "GROUP_CONCAT(field_value order by fd.id SEPARATOR '|$$|') as field_value", '(select workflow_transition.transition_display_name AS state from campaign_form_status LEFT JOIN workflow_transition ON campaign_form_status.state_id = workflow_transition.id where campaign_form_status.submission_id=fd.submission_id and campaign_form_status.status=1 order by campaign_form_status.id desc limit 1) as workflowstate'
                 ])
                 ->where('fd.form_id = ' . $form_id . ' ')
                 ->groupBy(['fd.submission_id'])

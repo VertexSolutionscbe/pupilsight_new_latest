@@ -51,7 +51,7 @@ $reverse_hash = $hash->validate_hash($params);
         $sid = $udf2;
         $cid = $udf1;
 
-        if(!empty($sid) && !empty($cid)){
+        if(!empty($sid) && !empty($cid) && !empty($txnid)){
 
             $data = array('gateway' => 'PAYU', 'submission_id' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
 
