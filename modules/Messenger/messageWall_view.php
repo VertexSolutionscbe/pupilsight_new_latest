@@ -45,9 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 	$prevDay = DateTime::createFromFormat($dateFormat, $date)->modify('-1 day')->format($dateFormat);
 	$nextDay = DateTime::createFromFormat($dateFormat, $date)->modify('+1 day')->format($dateFormat);
 
-	$col = $row->addColumn()->addClass('flex items-center');
-		$col->addButton(__('Previous Day'))->addClass('btn btn-link mr-px')->onClick("window.location.href='{$link}&date={$prevDay}'");
-		$col->addButton(__('Next Day'))->addClass('btn btn-link')->onClick("window.location.href='{$link}&date={$nextDay}'");
+	//$col = $row->addColumn()->addClass('flex items-center');
+	//	$col->addButton(__('Previous Day'))->addClass('btn btn-link mr-px')->onClick("window.location.href='{$link}&date={$prevDay}'");
+	//	$col->addButton(__('Next Day'))->addClass('btn btn-link')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
 	$col = $row->addColumn();
         $col->addLabel('fromdate', __('From Date'))->addClass('dte');
@@ -73,11 +73,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
     $col = $row->addColumn();
     $col->addLabel('category', __('Category'));
-    $col->addSelect('category')->fromArray($displaycategory)->selected($values['category']);
+    $col->addSelect('category')->fromArray($displaycategory)->selected($category);
 
     $col = $row->addColumn();
     $col->addLabel('msgtype', __('Message Type'));
-    $col->addSelect('msgtype')->fromArray($displaymsgwalltype)->selected($values['msgtype']);
+    $col->addSelect('msgtype')->fromArray($displaymsgwalltype)->selected($msgtype);
 
         $col->addSubmit(__('Go'));
 

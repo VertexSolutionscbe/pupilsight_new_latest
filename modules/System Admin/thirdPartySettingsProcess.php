@@ -27,6 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $smsGateway = $_POST['smsGateway'] ?? '';
     $smsSenderID = $_POST['smsSenderID'] ?? '';
     $smsUsername = (isset($_POST['smsUsername']))? $_POST['smsUsername'] : '';
+    if($smsUsername==''){
+        $smsUsername=$smsGateway;
+    }
     $smsPassword = (isset($_POST['smsPassword']))? $_POST['smsPassword'] : '';
     $smsURL = (isset($_POST['smsURL']))? $_POST['smsURL'] : '';
     $smsURLCredit = (isset($_POST['smsURLCredit']))? $_POST['smsURLCredit'] : '';

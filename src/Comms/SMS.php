@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Pupilsight\Comms;
 
+use function Gears\String\length;
 use Pupilsight\Comms\Drivers\MailDriver;
 use Pupilsight\Comms\Drivers\OneWaySMSDriver;
 use Pupilsight\Comms\Drivers\UnknownDriver;
@@ -31,7 +32,7 @@ use Matthewbdaly\SMS\Drivers\Nexmo;
 use Matthewbdaly\SMS\Drivers\Clockwork;
 use Matthewbdaly\SMS\Drivers\TextLocal;
 use Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException;
-
+use Pupilsight\Domain\DBQuery;
 
 /**
  * Factory class to create a fully configured SMS client based on the chosen gateway.
@@ -52,6 +53,12 @@ class SMS implements SMSInterface
     protected $content;
 
     protected $batchSize;
+
+    protected $noofrecipents = 0;
+
+    protected $totalchars = 0;
+
+
 
     public function __construct(array $config)
     {
@@ -167,7 +174,7 @@ class SMS implements SMSInterface
     public function content(string $content)
     {
         $this->content = stripslashes(strip_tags($content));
-
+        $this->totalchars=length($this->content);
         return $this;
     }
 
@@ -178,8 +185,10 @@ class SMS implements SMSInterface
      *
      * @return array Array of successful recipients.
      */
+
     public function send(array $recipients = []) : array
     {
+        $this->noofrecipents=sizeof($recipients);
         $sent = [];
         $recipients += array_merge($this->to, $recipients);
 
@@ -225,17 +234,81 @@ class SMS implements SMSInterface
 
     public function sendSMS($numbers, $msg){
         try{
-            $url = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
-            $url .="&send_to=".$numbers;
-            $url .="&msg=".rawurlencode($msg);
-            $url .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
-            //echo $url;
-            //$this->getAsyncCurl($url);
-            $res = file_get_contents($url);
-            
-            //echo $res;
+            $sql = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsGateway'";
+            $db = new DBQuery();
+            $rs = $db->selectRaw($sql, TRUE);
+            if (empty($rs)) {
+                $dsempty = array();
+                return $db->convertDataset($dsempty);
+            }else {
+                $activeGateway= $rs[0]['value'];
+            }
+
+            $sql1 = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND description='$activeGateway'";
+            $db1 = new DBQuery();
+            $rs1 = $db1->selectRaw($sql1, TRUE);
+            if (empty($rs1)) {
+                $dsempty1 = array();
+                //return $db1->convertDataset($dsempty1);
+            }else {
+                $val= $rs1[0]['value'];
+            }
+
+            $charcount=$this->totalchars;
+            $cal=ceil($charcount/160);
+            $totalmsges=$cal*$this->noofrecipents;
+            $val=$val+$totalmsges;
+//die();
+            switch ($activeGateway) {
+                case 'Karix':
+                    $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=PUPLPD";
+                    $url1 .="&text=".urlencode($msg);
+                    $url1 .="&dest=".$numbers;
+                    echo $res = file_get_contents($url1);
+                    $res1=explode('&',$res);
+                    $res2=explode('=',$res1[1]);
+                    if($res2[1]=='200')
+                    {
+                        echo "success";
+                        $sq = "UPDATE pupilsightSetting SET value=". $val ." WHERE scope='Messenger' AND description='Karix' ";
+                        $db2 = new DBQuery();
+                        //echo "\n".$sq;
+                        $db2->query($sq);
+                    }else{
+                        echo "error";
+                }
+
+                    break;
+
+                case 'Gupshup':
+                    $url = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
+                    $url .="&send_to=".$numbers;
+                    //$url .="&msg=".rawurlencode($msg);
+                    $url .="&msg=".urlencode($msg);
+                    $url .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
+                    //echo $url;
+                    //$this->getAsyncCurl($url);
+                    $res = file_get_contents($url);
+                    $res1=explode('|',$res);
+                    if($res1[0]=='success')
+                    {
+                        echo "success";
+                        $sq = "UPDATE pupilsightSetting SET value=". $val ." WHERE scope='Messenger' AND description='Gupshup' ";
+                        $db2 = new DBQuery();
+                        //echo "\n".$sq;
+                        $db2->query($sq);
+                    }else{
+                        echo "error";
+                    }
+                    break;
+
+                default :
+                    echo "sms not configured";
+            }
+
         }catch(Exception $ex){
             print_r($ex);
+
         }
     }
 }

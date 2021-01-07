@@ -1935,13 +1935,17 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                         $output[$count]['date'] = $rowPosts['messageWall_date1'];
                         $output[$count]['date1'] = $rowPosts['messageWall_date2'];
                         $output[$count]['date2'] = $rowPosts['messageWall_date3'];
+                        $output[$count]['messengercategory'] = $rowPosts['messengercategory'];
+                        $output[$count]['messageWall'] = $rowPosts['messageWall'];
+                        $output[$count]['email'] = $rowPosts['email'];
+                        $output[$count]['sms'] = $rowPosts['sms'];
 
                         ++$count;
                         $last = $rowPosts['pupilsightMessengerID'];
                     }
                 }
 
-                $return .= "<table cellspacing='0' style='margin-top: 10px'>";
+                $return .= "<table cellspacing='0' style='margin-top: 10px'; width='100%';>";
                 $return .= '<tr>';
                 $return .= "<th style='text-align: center'>";
                 $return .= __('Date');
@@ -1978,6 +1982,16 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     //$return .= $output[$i]['source'].'<br/><br/>';
                     $return .= '</td>';
                     $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
+                    $return .= "<span class='badge bg-blue-lt'>";
+                    if($output[$i]['sms']=='Y'){
+                        $return .= 'SMS';
+                    }if($output[$i]['email']=='Y'){
+                        $return .= 'Email';
+                    }if($output[$i]['messageWall']=='Y'){
+                        $return .= 'Message Wall';
+                    }
+                    $return .= "</span>";
+                    $return .= "<span class='badge bg-azure-lt' style='margin-left: 10px;'>".$output[$i]['messengercategory']."</span>";
                     $return .= "<h3 style='margin-top: 3px'>";
                     $return .= $output[$i]['subject'];
                     $return .= '</h3>';
@@ -2548,13 +2562,17 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                         $output[$count]['date'] = $rowPosts['messageWall_date1'];
                         $output[$count]['date1'] = $rowPosts['messageWall_date2'];
                         $output[$count]['date2'] = $rowPosts['messageWall_date3'];
+                        $output[$count]['messengercategory'] = $rowPosts['messengercategory'];
+                        $output[$count]['messageWall'] = $rowPosts['messageWall'];
+                        $output[$count]['email'] = $rowPosts['email'];
+                        $output[$count]['sms'] = $rowPosts['sms'];
 
                         ++$count;
                         $last = $rowPosts['pupilsightMessengerID'];
                     }
                 }
 
-                $return .= "<table cellspacing='0' style='margin-top: 10px'>";
+                $return .= "<table cellspacing='0' style='margin-top: 10px'; width='100%';>";
                 $return .= '<tr>';
                 $return .= "<th style='text-align: center'>";
                 $return .= __('Date');
@@ -2590,6 +2608,16 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     //$return .= $output[$i]['source'].'<br/><br/>';
                     $return .= '</td>';
                     $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
+                    $return .= "<span class='badge bg-blue-lt'>";
+                    if($output[$i]['sms']=='Y'){
+                        $return .= 'SMS';
+                    }if($output[$i]['email']=='Y'){
+                        $return .= 'Email';
+                    }if($output[$i]['messageWall']=='Y'){
+                        $return .= 'Message Wall';
+                    }
+                    $return .= "</span>";
+                    $return .= "<span class='badge bg-azure-lt' style='margin-left: 10px;'>".$output[$i]['messengercategory']."</span>";
                     $return .= "<h3 style='margin-top: 3px'>";
                     $return .= $output[$i]['subject'];
                     $return .= '</h3>';
