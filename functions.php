@@ -1345,6 +1345,7 @@ function getsmsBalance($connection2, $scope, $name, $returnRow = false )
 function gettotalsmsBalance($connection2, $returnRow = false )
 {
     try{
+        $data = array();
         $smscount = "SELECT * FROM smsCreditsHistory ";
         $smscountresult = $connection2->prepare($smscount);
         $smscountresult->execute($data);
