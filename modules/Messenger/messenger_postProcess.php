@@ -87,6 +87,8 @@ else {
 		$category=$_POST["category"] ;
 		$body=stripslashes($_POST["body"]) ;
 		$emailReceipt = $_POST["emailReceipt"] ;
+		$emailbcc = $_POST["emailbcc"] ;
+		$copysms = $_POST["copysms"] ;
 		$emailReceiptText = null;
 		if (isset($_POST["emailReceiptText"]))
 			$emailReceiptText = $_POST["emailReceiptText"] ;
@@ -1935,6 +1937,9 @@ else {
 								while ($rowEmail=$resultEmail->fetch()) {
 									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'Email', $rowEmail["email"]);
 								}
+								if($emailbcc!='') {
+                                    $report = reportAdd($report, 'BCC', 'bcc', 'Individuals', 'Bcc', 'Email', $emailbcc);
+                                }
 							}
 							if ($sms=="Y" AND $countryCode!="") {
 								try {
@@ -1954,6 +1959,7 @@ else {
                                     }
 									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 								}
+                                $report = reportAdd($report, $emailReceipt, 'smscopy', 'Individuals', 'smscopy', 'SMS', $copysms);
 							}
 						}
 					}
@@ -2018,7 +2024,9 @@ else {
 				}
 
 				//Send to each recipient
+				//print_r($report);die();
 				foreach ($report as $reportEntry) {
+					//print_r($reportEntry);die();
 					if ($reportEntry[3] == 'Email') {
 						$emailCount ++;
 						$mail->ClearAddresses();
@@ -2074,6 +2082,7 @@ else {
 			}
 
 			if ($sms=="Y") {
+				//print_r($report);die();
 				if ($countryCode=="") {
 					$partialFail = true;
 				} else {

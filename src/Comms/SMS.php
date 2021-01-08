@@ -264,19 +264,20 @@ class SMS implements SMSInterface
                     $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=PUPLPD";
                     $url1 .="&text=".urlencode($msg);
                     $url1 .="&dest=".$numbers;
-                    echo $res = file_get_contents($url1);
+                    $res = file_get_contents($url1);
                     $res1=explode('&',$res);
                     $res2=explode('=',$res1[1]);
-                    if($res2[1]=='200')
+                    $res3=$res2[1];
+                    if($res3==200)
                     {
-                        echo "success";
+                        //echo "success";
                         $sq = "UPDATE pupilsightSetting SET value=". $val ." WHERE scope='Messenger' AND description='Karix' ";
                         $db2 = new DBQuery();
                         //echo "\n".$sq;
                         $db2->query($sq);
                     }else{
                         echo "error";
-                }
+                    }
 
                     break;
 
@@ -290,13 +291,17 @@ class SMS implements SMSInterface
                     //$this->getAsyncCurl($url);
                     $res = file_get_contents($url);
                     $res1=explode('|',$res);
-                    if($res1[0]=='success')
+                    $res2=trim($res1[0]);
+                    $res3='success';
+                    //print_r(strcmp($res2,$res3));die();
+                    if(strcmp($res2, $res3) === 0)
                     {
-                        echo "success";
+                        //echo "success"; die();
                         $sq = "UPDATE pupilsightSetting SET value=". $val ." WHERE scope='Messenger' AND description='Gupshup' ";
                         $db2 = new DBQuery();
                         //echo "\n".$sq;
                         $db2->query($sq);
+                        //die();
                     }else{
                         echo "error";
                     }

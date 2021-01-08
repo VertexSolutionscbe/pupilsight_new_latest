@@ -176,11 +176,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
         ->setId('staffmembers')
         ->selectMultiple();
 
-    $row = $form->addRow();
+    /*$row = $form->addRow();
     $row->addLabel('parentmembers', __('Parents Members'));
     $row->addSelectUsers('parentmembers', $_SESSION[$guid]['pupilsightSchoolYearID'], ['includeParent' => true])
         ->setId('parentmembers')
-        ->selectMultiple();
+        ->selectMultiple();*/
 
     $row = $form->addRow();
     $row->addLabel('allmembers', __('All Members'));

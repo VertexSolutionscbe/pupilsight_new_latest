@@ -118,6 +118,10 @@ else {
 				$row = $form->addRow()->addClass('email');
 					$row->addLabel('emailReplyTo', __('Reply To'));
 					$row->addEmail('emailReplyTo');
+
+                $row = $form->addRow()->addClass('email');
+                $row->addLabel('emailbcc', __('BCC'));
+                $row->addEmail('emailbcc');
 			}
 		}
 
@@ -154,6 +158,10 @@ else {
 					$row->addYesNoRadio('sms')->checked('N')->required();
 
 				$form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
+
+                $row = $form->addRow()->addClass('sms');
+                $row->addLabel('copysms', __('Copy SMS to'));
+                $row->addTextField('copysms')->maxLength(12)->addClass('numfield')->placeholder('include country code');
 
 				$smsAlert = __('SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider\'s documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.');
                 
