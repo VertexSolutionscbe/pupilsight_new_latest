@@ -27,15 +27,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $supported_attribute = $_POST['supported_attribute'];
 
     if(!empty($formula_id) && !empty($erta_id)){
-        
-
         $data = array('erta_id' => $erta_id);
         $sqldel = 'DELETE FROM examinationReportTemplateFormulaAttributeMapping WHERE erta_id=:erta_id';
         $resultdel = $connection2->prepare($sqldel);
         $resultdel->execute($data);
 
         foreach($test_master_id as $testmasterid){
-
             $datau = array('test_master_id' => $testmasterid, 'grade_id' => $grade_id, 'supported_attribute' => $supported_attribute, 'id' => $erta_id);
             $sqlupd = 'UPDATE examinationReportTemplateAttributes SET test_master_id=:test_master_id, grade_id=:grade_id, supported_attribute=:supported_attribute  WHERE id=:id';
             $resultupd = $connection2->prepare($sqlupd);

@@ -35,8 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-
-
     $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
     $resulta = $connection2->query($sqla);
     $academic = $resulta->fetchAll();

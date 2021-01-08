@@ -29,21 +29,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $supported_attribute = $_POST['supported_attribute'];
 
     if(!empty($formula_id) && !empty($erta_id)){
-
         $datau = array('attr_ids' => $attrId, 'final_formula' => $final_formula, 'grade_id' => $grade_id, 'supported_attribute' => $supported_attribute, 'id' => $erta_id);
         $sqlupd = 'UPDATE examinationReportTemplateAttributes SET attr_ids=:attr_ids, final_formula=:final_formula, grade_id=:grade_id, supported_attribute=:supported_attribute  WHERE id=:id';
         $resultupd = $connection2->prepare($sqlupd);
         $resultupd->execute($datau);
         
-
-        
         foreach($attr_id as $attrid){
-
             $data = array('erta_id' => $attrid);
             $sqldel = 'DELETE FROM examinationReportTemplateFormulaAttributeMapping WHERE erta_id=:erta_id';
             $resultdel = $connection2->prepare($sqldel);
             $resultdel->execute($data);
-
 
             $fid = $formula_id[$attrid];
             $fval = $formula_val[$attrid];

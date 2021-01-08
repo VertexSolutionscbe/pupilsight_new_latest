@@ -44,23 +44,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_ad
             $URL .= '&return=error3';
             header("Location: {$URL}");
         } else {
-            
-                //Write to database
-                try {
-                    $data = array('sketch_name' => $name, 'sketch_code' => $code, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'class_ids' => $class_ids);
-                    $sql = "INSERT INTO examinationReportTemplateSketch SET sketch_name=:sketch_name, sketch_code=:sketch_code, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID,class_ids=:class_ids";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                }
-   
-                // $URL .= "&return=success0&editID=$AI";
-              
-                $URL .= '&return=success0';
+            //Write to database
+            try {
+                $data = array('sketch_name' => $name, 'sketch_code' => $code, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'class_ids' => $class_ids);
+                $sql = "INSERT INTO examinationReportTemplateSketch SET sketch_name=:sketch_name, sketch_code=:sketch_code, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID,class_ids=:class_ids";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $URL .= '&return=error2';
                 header("Location: {$URL}");
-           
+            }
+
+            // $URL .= "&return=success0&editID=$AI";
+            
+            $URL .= '&return=success0';
+            header("Location: {$URL}");
         }
     }
 }

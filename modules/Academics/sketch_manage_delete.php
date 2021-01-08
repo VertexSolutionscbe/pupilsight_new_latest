@@ -28,14 +28,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_de
             $sql = 'SELECT * FROM examinationReportTemplateSketch WHERE id=:id';           
             $result = $connection2->prepare($sql);
             $result->execute($data);
-
-           
         } catch (PDOException $e) {
             echo "<div class='error'>".$e->getMessage().'</div>';
         }
         
-    
-
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
             echo __('The specified record cannot be found.');

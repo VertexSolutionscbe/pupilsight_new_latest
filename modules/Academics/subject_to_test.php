@@ -338,8 +338,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     $readonly = '';
                 }
 
-                
-
                 $sqlskl = 'SELECT * FROM subjectSkillMapping WHERE
                 pupilsightSchoolYearID = '.$sub['pupilsightSchoolYearID'].' AND pupilsightProgramID = '.$sub['pupilsightProgramID'].' AND pupilsightYearGroupID = '.$sub['pupilsightYearGroupID'].'  AND pupilsightDepartmentID = '.$sub['pupilsightDepartmentID'].' ';
                 $resultskl = $connection2->query($sqlskl);
@@ -350,7 +348,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                 // echo '<pre>';
                 // print_r($getSkills);
                 // echo '</pre>';
-
+                // die();
             ?>
             <input type="hidden" name="test_id" value="<?php echo $test_id;?>">
             <input type="hidden" name="pupilsightDepartmentID[<?php echo $k;?>]" value="<?php echo $sub['pupilsightDepartmentID']?>">

@@ -13,6 +13,10 @@
        echo '</div>';
    } else {
        //Proceed!  
+
+       $page->breadcrumbs
+       ->add(__('Manage Test'), 'manage_test.php')
+       ->add(__('Update Test'));
    
        if (isset($_GET['return'])) {
            returnProcess($guid, $_GET['return'], null, null);
@@ -103,11 +107,11 @@
       &nbsp;&nbsp;
       <i id="sent_message_icon" data-hrf='fullscreen.php?q=/modules/Academics/send_email_sms.php'  title="Send Marks SMS/EMAIL" class="fas fa-paper-plane iconsize"></i>
       <span style="font-size: 25px;padding: 5px;">|</span>
-      <i id="updateTestSettings" data-type="lock_marks_entry" data-val="1" title="Lock Marks Entry" class="fas fa-lock iconsize"></i>
+      <i id="updateTestSettings" data-type="lock_marks_entry" data-val="1" title="Lock Marks Entry" class="mdi mdi-lock mdi-24px iconsize"></i>
       
       <span style="font-size: 25px;padding: 5px;">|</span>
       
-      <i id="updateTestSettings" data-type="lock_marks_entry" data-val="0" title="UnLock Marks Entry" class="fas fa-lock-open iconsize"></i>
+      <i id="updateTestSettings" data-type="lock_marks_entry" data-val="0" title="UnLock Marks Entry" class="mdi mdi-lock-open mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
@@ -135,11 +139,11 @@
 
       <span style="font-size: 25px;padding: 5px;">|</span>
       
-      <i id="updateTestSettings" data-type="enable_test_report" data-val="1" title="Lock Test Report" class="fas fa-lock iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_test_report" data-val="1" title="Lock Test Report" class="mdi mdi-lock mdi-24px iconsize"></i>
       
       <span style="font-size: 25px;padding: 5px;">|</span>
       
-      <i id="updateTestSettings" data-type="enable_test_report" data-val="0" title="UnLock Test Report" class="fas fa-lock-open iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_test_report" data-val="0" title="UnLock Test Report" class="mdi mdi-lock-open mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
@@ -151,7 +155,7 @@
 </div>
 <form name="">
    <div class='table-responsive dataTables_wrapper '>
-      <table class="" style="width:150%; margin-top:10px;">
+      <table class="table" >
          <thead>
             <tr>
                <th >
