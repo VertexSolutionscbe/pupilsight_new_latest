@@ -198,6 +198,7 @@ print_r($rs);
         $res->data = $data;
         return $res;
     }
+    
     public function getFeesCounterUsedTotal(QueryCriteria $criteria, $id, $input)
     {
         if(!empty($_SESSION['fee_counter_search'])){

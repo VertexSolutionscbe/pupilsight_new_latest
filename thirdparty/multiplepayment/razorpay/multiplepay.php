@@ -4,7 +4,9 @@ require('razorpay/Razorpay.php');
 
 use Razorpay\Api\Api;
 
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 $newpost = json_decode($_POST['formdata']);
 // echo '<pre>';
@@ -102,4 +104,3 @@ $data = [
 $json = json_encode($data);
 
 require("checkout/{$checkout}.php");
-?>

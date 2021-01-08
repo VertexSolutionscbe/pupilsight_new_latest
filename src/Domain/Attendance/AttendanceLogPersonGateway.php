@@ -77,6 +77,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
         $query->groupBy(['attn_session_settings.session_no']);
         return $this->runQuery($query, $criteria);
     }
+
+
     public function attendanceNotTaken()
     {
         $sq = "select count(direction) as direction from pupilsightAttendanceLogPerson where pupilsightPersonID = '" . $pupilsightPersonID . "' and direction='" . $direction . "'";

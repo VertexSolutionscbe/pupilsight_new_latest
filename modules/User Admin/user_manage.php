@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $search = isset($_GET['search']) ? $_GET['search'] : '';
 
     // CRITERIA
     $userGateway = $container->get(UserGateway::class);
@@ -44,22 +44,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     echo '<h2>';
     echo __('Search');
     echo '</h2>';
-    
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/user_manage.php');
+    $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/user_manage.php');
 
     $row = $form->addRow();
-        $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username, role, student ID, email, phone number, vehicle registration'));
-        $row->addTextField('search')->setValue($criteria->getSearchText());
+    $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username, role, student ID, email, phone number, vehicle registration'));
+    $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow()
-    ->addClass('right_align');
-        $row->addSearchSubmit($pupilsight->session, __('Clear Search'));
+        ->addClass('right_align');
+    $row->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
     echo $form->getOutput();
-
+    /*
     echo '<h2>';
     echo __('View');
     echo '</h2>';
@@ -154,12 +154,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         });
 
     echo $table->render($dataSet);
+    */
 }
 
 ?>
 
 <script>
-    $(document).on('click','#alertParentData', function(){
+    $(document).on('click', '#alertParentData', function() {
         alert('Student is still active for his Parent!');
     });
 </script>

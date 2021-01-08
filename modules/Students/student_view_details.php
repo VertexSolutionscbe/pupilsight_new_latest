@@ -372,7 +372,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
 
 
-                    $st = array("Overview", "Personal", "Family", "Emergency", "Medical", "Notes", "Attendance", "Markbook", "Internal Assessment", "External Assessment", "Individual Needs", "Library Borrowing", "Timetable", "Activities", "Homework", "Behaviour", "Academic");
+                    // $st = array("Overview", "Personal", "Family", "Emergency", "Medical", "Notes", "Attendance", "Markbook", "Internal Assessment", "External Assessment", "Individual Needs", "Library Borrowing", "Timetable", "Activities", "Homework", "Behaviour", "Academic");
+                    $st = array("Overview", "Personal", "Family", "Emergency", "Medical", "Attendance", "Library Borrowing", "Activities", "Homework", "Behaviour", "Academic");
 ?>
                     <div class="mb-4">
                         <ul class="nav nav-tabs" data-toggle="tabs">

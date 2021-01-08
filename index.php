@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 */
 
 //echo  "http://localhost/pupilsight/wp/wp-login.php?user=".urlencode('admin')."&pass=".urlencode('Admin@123456');
-error_reporting(E_ERROR | E_PARSE); 
+error_reporting(E_ERROR | E_PARSE);
 //error_reporting(0);
 
 use Pupilsight\Domain\System\ModuleGateway;
@@ -350,10 +350,11 @@ if (!$session->has('address') && !empty($_GET['return'])) {
  * TODO: Move this somewhere more sensible.
  */
 $isAllMenu = FALSE;
+$changeyear = "";
 
 if ($isLoggedIn) {
 
-    $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $roleid = trim($_SESSION[$guid]['pupilsightRoleIDPrimary']);
     if ($roleid == '001') {
         $isAllMenu = TRUE;
     }
@@ -419,16 +420,31 @@ if ($isLoggedIn) {
     $masterMenu = array('name' => "Master", 'list' => $masterList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
     //$structureMenu = array('name' => "Structure",'list'=>$structureList, 'col'=>'dropdown-menu-columns  dropdown-menu-columns-3');
     $paymentMenu = array('name' => "Payment", 'list' => $paymentList, 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
+    //echo "role id " . $roleid;
+    //die();
+
 
     if (isset($menuMainItems["Finance"])) {
-        if ($roleid == '003' || $roleid == '004') {
-            $menuMainItems["Finance"][0] = array('name' => 'Invoices', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_child_view.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
-        } else {
+        if ($roleid == '001') {
             $menuMainItems["Finance"][0] = $masterMenu;
             $menuMainItems["Finance"][1] = array('name' => 'Fee Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
             $menuMainItems["Finance"][2] = $paymentMenu;
+        } else if ($roleid == '003' || $roleid == '004') {
+            unset($menuMainItems["Finance"]);
+            $menuMainItems["Finance"][0] = array('name' => 'Invoices', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/invoice_child_view.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
+        } else {
+            unset($menuMainItems["Finance"]);
+            $menuMainItems["Finance"][0] = array('name' => 'Fee Structure', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Finance/fee_structure_manage.php', 'col' => 'dropdown-menu-columns  dropdown-menu-columns-2');
+            $menuMainItems["Finance"][1] = $paymentMenu;
         }
     }
+    /*
+    if ($roleid == '038') {
+        //for fee collection
+        $menuMainItems["Finance"][0] = $paymentMenu;
+        $menuMainItems["Finance"][1] = array();
+        $menuMainItems["Finance"][2] = array();
+    }*/
 
     $routeList[0] = array('name' => 'Manage Route', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/routes.php');
     $routeList[1] = array('name' => 'Assign to Student', 'url' => $session->get('absoluteURL') . '/index.php?q=/modules/Transport/assign_route.php');
@@ -500,6 +516,17 @@ if ($isLoggedIn) {
         $menuMainItems["Admission"] = $tm2;
     }
 
+    //for student and parents
+    if ($roleid != '001') {
+        unset($menuMainItems["Assess"], $menuMainItems["Learn"], $menuMainItems["Other"]);
+    }
+
+
+    if ($roleid == '003' || $roleid == '004') {
+        $changeyear = "";
+    } else {
+        $changeyear = "allow";
+    }
 
     $session->set('menuMainItems', $menuMainItems);
     $session->set('allmenu', $menuMainItems);
@@ -721,6 +748,7 @@ if ($isLoggedIn) {
         'smsCredits' => $smsCredits_data['value'],
         'academicYear' => $yeardata,
         'pupilsightSchoolYearID' => $currentYear,
+        'changeyear'        => $changeyear
     ]);
 }
 
