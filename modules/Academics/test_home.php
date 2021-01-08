@@ -99,9 +99,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_home.php') 
 //         ->setURL('/modules/Academics/test_home_general_add.php')
 //         ->displayLabel();
       
-  $table->addCheckboxColumn('id',__(''))
-  
-   ->notSortable();
+    $table->addCheckboxColumn('id',__(''))
+        ->notSortable();
     $table->addColumn('name', __('Name'));
     $table->addColumn('code', __('Test Code'))->translatable();
     $table->addColumn('academic_year', __('Academic Year')); 

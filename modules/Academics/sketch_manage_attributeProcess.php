@@ -18,6 +18,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     // echo '<pre>';
     // print_r($_POST);
     // echo '</pre>';
+    //die();
     $attribute_name = $_POST['attribute_name'];
     $attribute_category = $_POST['attribute_category'];
     $attribute_type = $_POST['attribute_type'];

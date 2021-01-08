@@ -14,7 +14,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     echo '</div>';
 } else {
     //Proceed!
-
     $page->breadcrumbs
         ->add(__('Manage Sketch'), 'sketch_manage.php')
         ->add(__('Edit Sketch Attribute'));
@@ -35,7 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     echo '<a id="saveAttrFormula" class="btn btn-primary" style="float: right;margin: -6px 0 0 0px;">Save</a>';
     echo '</h3>';
 
-    
     $sqla = "SELECT a.id as attrid, b.id, b.report_column_word, b.report_column_label FROM examinationReportTemplateAttributes AS a LEFT JOIN  examinationReportTemplateConfiguration AS b ON a.ertc_id = b.id WHERE a.sketch_id = ".$chkdata['sketch_id']." AND a.id = ".$id."  ORDER BY a.pos ASC";
     $resulta = $connection2->query($sqla);
     $attrdata = $resulta->fetchAll();
@@ -198,7 +196,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         // print_r($attrdata);
         // echo '</pre>';
         // die();
-        
         $sqlf = "SELECT * FROM examinationReportTemplateFormula ORDER BY pos ASC";
         $resultf = $connection2->query($sqlf);
         $formuladata = $resultf->fetchAll();

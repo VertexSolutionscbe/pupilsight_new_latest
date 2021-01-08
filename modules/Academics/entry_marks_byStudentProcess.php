@@ -48,13 +48,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
                                         $marks_abex = NULL;
                                     } else {
                                         $gradeId = '';
+                                        $marksdata = '';
                                     }
                                 }
                                 if (!empty($marksdata) || $marksdata == '0' || !empty($marks_abex) || !empty($gradeId) ) {
 
-                                    if(!empty($marks_abex) || !empty($gradeId)){
-                                        $marksdata = '';
-                                    }
+                                    // if(!empty($marks_abex) || !empty($gradeId)){
+                                    //     $marksdata = '';
+                                    // }
                                     
                                     $datadel = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID);
 

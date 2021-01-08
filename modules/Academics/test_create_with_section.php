@@ -87,9 +87,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_create_with
         $grade = $grade1 + $grade2;
     }
     
-    $report_template =  array(__('Select') => array('Template1' => __('Template1'),
-    'Template2' => __('Template2'),
-    'Template3' => __('Template3')));
+    
+
+    $sqlrt = 'SELECT * FROM examinationReportTemplateMaster ';
+    $resultrt = $connection2->query($sqlrt);
+    $reportTempData = $resultrt->fetchAll();
+
+    $rt = array();
+    $rt1 = array(''=>'Please Select');
+    $rt2 = array();
+    foreach($reportTempData as $rtd){
+        $rt2[$rtd['id']] = $rtd['name'];
+    }
+    if(!empty($rt2)){
+        $rt = $rt1 + $rt2;
+    }
  
     
      $form = Form::create('testCreate', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/test_create_with_section_addProcess.php');
@@ -138,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_create_with
  
      $col = $row->addColumn()->setClass('newdes ');
      $col->addLabel('report_template', __('Select Report Template'));
-     $col->addSelect('report_template')->fromArray($report_template);
+     $col->addSelect('report_template')->fromArray($rt);
  
      $col = $row->addColumn()->setClass('newdes ');
      $col->addLabel('pupilsightSchoolYearTermID', __('Test Type'));
