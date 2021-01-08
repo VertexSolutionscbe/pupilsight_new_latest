@@ -105,7 +105,7 @@
       <a id="updateTestBulkWise" class=" btn btn-primary">Save</a>
       
       &nbsp;&nbsp;
-      <i id="sent_message_icon" data-hrf='fullscreen.php?q=/modules/Academics/send_email_sms.php'  title="Send Marks SMS/EMAIL" class="fas fa-paper-plane iconsize"></i>
+      <i id="sent_message_icon" data-hrf='fullscreen.php?q=/modules/Academics/send_email_sms.php'  title="Send Marks SMS/EMAIL" class="mdi mdi-circle-edit-outline mdi-24px iconsize"></i>
       <span style="font-size: 25px;padding: 5px;">|</span>
       <i id="updateTestSettings" data-type="lock_marks_entry" data-val="1" title="Lock Marks Entry" class="mdi mdi-lock mdi-24px iconsize"></i>
       
@@ -115,27 +115,27 @@
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_publish" data-val="1" title="Publish"  class="fas fa-globe-asia iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_publish" data-val="1" title="Publish"  class="mdi mdi-earth mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_publish" data-val="0" title="UnPublish"  class="fas fa-stop-circle iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_publish" data-val="0" title="UnPublish"  class="mdi mdi-stop-circle mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_html" data-val="1" title="Show HTML"  class="fas fa-file-code iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_html" data-val="1" title="Show HTML"  class="mdi mdi-file-code mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_html" data-val="0" title="Hide HTML"  class="fas fa-file-code iconsize" style="color: darkgrey;"></i>
+      <i id="updateTestSettings" data-type="enable_html" data-val="0" title="Hide HTML"  class="mdi mdi-file-code mdi-24px iconsize" style="color: darkgrey;"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_pdf" data-val="1" title="Show PDF"  class="fas fa-file-pdf iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_pdf" data-val="1" title="Show PDF"  class="mdi mdi-file-pdf mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_pdf" data-val="0" title="Hide PDF"  class="fas fa-file-pdf iconsize" style="color: darkgrey;"></i>
+      <i id="updateTestSettings" data-type="enable_pdf" data-val="0" title="Hide PDF"  class="mdi mdi-file-pdf mdi-24px iconsize" style="color: darkgrey;"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
       
@@ -147,7 +147,7 @@
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="downloadReport" data-hrf="thirdparty/phpword/reportcardmultiple.php?tid=" class="fas fa-download iconsize" aria-hidden="true" title="Report Download" style="cursor:pointer;"></i>
+      <i id="downloadReport" data-hrf="thirdparty/phpword/reportcardmultiple.php?tid=" class="mdi mdi-download mdi-24px iconsize" aria-hidden="true" title="Report Download" style="cursor:pointer;"></i>
 
       <a id="reportDownload" href="thirdparty/phpword/reportcardmultiple.php?tid=" style="display:none;">click</a>
      
