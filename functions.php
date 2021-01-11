@@ -1325,6 +1325,47 @@ function getSettingByScope($connection2, $scope, $name, $returnRow = false)
 
     return false;
 }
+function getsmsBalance($connection2, $scope, $name, $returnRow = false )
+{
+    try{
+        $data = array('scope' => $scope, 'name' => $name);
+        $karixsmscount = "SELECT * FROM pupilsightSetting WHERE scope=:scope AND description=:name";
+        $karixsmscountresult = $connection2->prepare($karixsmscount);
+        $karixsmscountresult->execute($data);
+        if ($karixsmscountresult && $karixsmscountresult->rowCount() == 1) {
+
+            if ($returnRow) {
+                return $karixsmscountresult->fetch();
+            } else {
+                $row = $karixsmscountresult->fetch();
+                return $row['value'];
+            }
+        }
+    }catch (PDOException $e) {
+    }
+}
+
+function gettotalsmsBalance($connection2, $returnRow = false )
+{
+    try{
+        $data = array();
+        $smscount = "SELECT * FROM smsCreditsHistory ";
+        $smscountresult = $connection2->prepare($smscount);
+        $smscountresult->execute($data);
+        $creditrowcount=$smscountresult->rowCount();
+        $i = 0;
+        $totalsms=0;
+        while ($i < $creditrowcount) {
+            $row = $smscountresult->fetch();
+            $totalsms=$totalsms + $row['credits'];
+            $i++;
+        }
+        return $totalsms;
+    }catch (PDOException $e) {
+    }
+}
+
+
 
 /**
  * Converts date from language-specific format to YYYY-MM-DD. DEPRECATED.

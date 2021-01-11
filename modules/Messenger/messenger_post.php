@@ -72,6 +72,23 @@ else {
 			print sprintf(__('Each family in Pupilsight must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $_SESSION[$guid]["organisationNameShort"]) ;
 		print "</div>" ;
 
+        //start of sms counter
+        $karixsmscountvalue = getsmsBalance($connection2, 'Messenger', 'Karix');
+        $gupshupsmscountvalue = getsmsBalance($connection2, 'Messenger', 'Gupshup');
+        $totalsms = gettotalsmsBalance($connection2);
+
+        $totalsmsused=$gupshupsmscountvalue+$karixsmscountvalue;
+        if($totalsmsused>$totalsms){
+            $extrasmsused=$totalsmsused-$totalsms;
+            echo "<span class='badge bg-red-lt'>Extra SMS USED TILL DATE $extrasmsused </span>";
+        }else{
+            $totalsmsbalance=$totalsms-$totalsmsused;
+            echo "<span class='badge bg-green-lt'>Balance $totalsmsbalance </span>";
+        }
+        echo "<span class='badge bg-blue-lt' style='margin-left: 10px;'>TOTAL SMS USED TILL DATE $totalsmsused </span>";
+        //end of sms counter
+
+
 		$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postProcess.php');
          $setting = getSettingByScope($connection2, 'System', 'mailerSMTPUsername', true);
 		$form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -101,6 +118,10 @@ else {
 				$row = $form->addRow()->addClass('email');
 					$row->addLabel('emailReplyTo', __('Reply To'));
 					$row->addEmail('emailReplyTo');
+
+                $row = $form->addRow()->addClass('email');
+                $row->addLabel('emailbcc', __('BCC'));
+                $row->addEmail('emailbcc');
 			}
 		}
 
@@ -137,6 +158,10 @@ else {
 					$row->addYesNoRadio('sms')->checked('N')->required();
 
 				$form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
+
+                $row = $form->addRow()->addClass('sms');
+                $row->addLabel('copysms', __('Copy SMS to'));
+                $row->addTextField('copysms')->maxLength(12)->addClass('numfield')->placeholder('include country code');
 
 				$smsAlert = __('SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider\'s documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.');
                 
