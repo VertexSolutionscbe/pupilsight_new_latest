@@ -2123,6 +2123,11 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                         }
                     }
                 }
+                if ($rowCount == 0) {
+                    $return .= "<div class='alert alert-warning'>";
+                    $return .= __('There are no records to display.');
+                    $return .= '</div>';
+                }
                 $return .= '</table>';
             }
             if ($mode == 'print') {
