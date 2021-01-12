@@ -1963,7 +1963,8 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     //exploding to compare date as Between query function is not working
                     $p = explode('-', $output[$i]['date']);
                     $pp = explode('-', $fromdate);
-                    if ($p[0] >= $pp[0] && $p[1] >= $pp[1] &&  $p[2] >= $pp[2]){
+                    $ppp = explode('-', $date);
+                    if ($p[0] >= $pp[0] && $p[1] >= $pp[1] &&  $p[2] >= $pp[2] && $p[0] <= $ppp[0] && $p[1] <= $ppp[1] &&  $p[2] <= $ppp[2]){
                         if ($rowCount % 2 == 0) {
                             $rowNum = 'even';
                         } else {

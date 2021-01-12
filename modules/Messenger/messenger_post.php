@@ -256,7 +256,7 @@ else {
 	        $col->addLabel('body', __('Body'));
 	        $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
 
-        $row = $form->addRow()->addAlert(__('For SMS message 140 Characters per message '))->setClass('right')
+        $row = $form->addRow()->addAlert(__('For SMS message 160 Characters per message '))->setClass('right')
         ->append('<span id="count" title="countchars"></span>');
 
 		//READ RECEIPTS
