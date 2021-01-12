@@ -1962,56 +1962,165 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 for ($i = 0; $i < count($output); ++$i) {
                     //exploding to compare date as Between query function is not working
                     $p = explode('-', $output[$i]['date']);
+                    if ($output[$i]['date1'] != null) {
+                        $p1 = explode('-', $output[$i]['date1']);
+                    }
+                    if ($output[$i]['date2'] != null) {
+                        $p2 = explode('-', $output[$i]['date2']);
+                    }
                     $pp = explode('-', $fromdate);
                     $ppp = explode('-', $date);
-                    if ($p[0] >= $pp[0] && $p[1] >= $pp[1] &&  $p[2] >= $pp[2] && $p[0] <= $ppp[0] && $p[1] <= $ppp[1] &&  $p[2] <= $ppp[2]){
-                        if ($rowCount % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$rowCount;
-                        $return .= "<tr class=$rowNum>";
-                        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
-                        //$return .= "<a name='".$output[$i]['pupilsightMessengerID']."'></a>";
-                        //$return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
+                    if ($output[$i]['date2'] != null) {
+                        if (($p[0] >= $pp[0] && $p[1] >= $pp[1] && $p[2] >= $pp[2] && $p[0] <= $ppp[0] && $p[1] <= $ppp[1] && $p[2] <= $ppp[2]) OR ($p1[0] >= $pp[0] && $p1[1] >= $pp[1] && $p1[2] >= $pp[2] && $p1[0] <= $ppp[0] && $p1[1] <= $ppp[1] && $p1[2] <= $ppp[2]) OR ($p2[0] >= $pp[0] && $p2[1] >= $pp[1] && $p2[2] >= $pp[2] && $p2[0] <= $ppp[0] && $p2[1] <= $ppp[1] && $p2[2] <= $ppp[2])) {
+                            if ($rowCount % 2 == 0) {
+                                $rowNum = 'even';
+                            } else {
+                                $rowNum = 'odd';
+                            }
+                            ++$rowCount;
+                            $return .= "<tr class=$rowNum>";
+                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
+                            //$return .= "<a name='".$output[$i]['pupilsightMessengerID']."'></a>";
+                            //$return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
 
-                        $return .= date('d/m/Y', strtotime($output[$i]['date'])) . '<br/>';
-                        if ($output[$i]['date1'] != null) {
-                            $return .= date('d/m/Y', strtotime($output[$i]['date1'])) . '<br/>';
-                        }
-                        if ($output[$i]['date2'] != null) {
-                            $return .= date('d/m/Y', strtotime($output[$i]['date2'])) . '<br/>';
-                        }
+                            $return .= date('d/m/Y', strtotime($output[$i]['date'])) . '<br/>';
+                            if ($output[$i]['date1'] != null) {
+                                $return .= date('d/m/Y', strtotime($output[$i]['date1'])) . '<br/>';
+                            }
+                            if ($output[$i]['date2'] != null) {
+                                $return .= date('d/m/Y', strtotime($output[$i]['date2'])) . '<br/>';
+                            }
 
-                        //$return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
-                        //$return .= $output[$i]['source'].'<br/><br/>';
-                        $return .= '</td>';
-                        $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
-                        $return .= "<span class='badge bg-blue-lt'>";
-                        if ($output[$i]['sms'] == 'Y') {
-                            $return .= 'SMS';
+                            //$return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
+                            //$return .= $output[$i]['source'].'<br/><br/>';
+                            $return .= '</td>';
+                            $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
+                            $return .= "<span class='badge bg-blue-lt'>";
+                            if ($output[$i]['sms'] == 'Y') {
+                                $return .= 'SMS';
+                            }
+                            if ($output[$i]['email'] == 'Y') {
+                                $return .= 'Email';
+                            }
+                            if ($output[$i]['messageWall'] == 'Y') {
+                                $return .= 'Message Wall';
+                            }
+                            $return .= "</span>";
+                            $return .= "<span class='badge bg-azure-lt' style='margin-left: 10px;'>" . $output[$i]['messengercategory'] . "</span>";
+                            $return .= "<h3 style='margin-top: 3px'>";
+                            $return .= $output[$i]['subject'];
+                            $return .= '</h3>';
+                            $return .= '</p>';
+                            $return .= $output[$i]['details'];
+                            $return .= '</p>';
+                            $return .= '</td>';
+                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
+                            $return .= '<b><u>' . __('Posted By') . '</b></u><br/>';
+                            $return .= $output[$i]['author'] . '<br/><br/>';
+                            $return .= '</td>';
+                            $return .= '</tr>';
                         }
-                        if ($output[$i]['email'] == 'Y') {
-                            $return .= 'Email';
+                    }
+                    elseif ($output[$i]['date1'] != null) {
+                        if (($p[0] >= $pp[0] && $p[1] >= $pp[1] && $p[2] >= $pp[2] && $p[0] <= $ppp[0] && $p[1] <= $ppp[1] && $p[2] <= $ppp[2]) OR ($p1[0] >= $pp[0] && $p1[1] >= $pp[1] && $p1[2] >= $pp[2] && $p1[0] <= $ppp[0] && $p1[1] <= $ppp[1] && $p1[2] <= $ppp[2])) {
+                            if ($rowCount % 2 == 0) {
+                                $rowNum = 'even';
+                            } else {
+                                $rowNum = 'odd';
+                            }
+                            ++$rowCount;
+                            $return .= "<tr class=$rowNum>";
+                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
+                            //$return .= "<a name='".$output[$i]['pupilsightMessengerID']."'></a>";
+                            //$return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
+
+                            $return .= date('d/m/Y', strtotime($output[$i]['date'])) . '<br/>';
+                            if ($output[$i]['date1'] != null) {
+                                $return .= date('d/m/Y', strtotime($output[$i]['date1'])) . '<br/>';
+                            }
+                            if ($output[$i]['date2'] != null) {
+                                $return .= date('d/m/Y', strtotime($output[$i]['date2'])) . '<br/>';
+                            }
+
+                            //$return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
+                            //$return .= $output[$i]['source'].'<br/><br/>';
+                            $return .= '</td>';
+                            $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
+                            $return .= "<span class='badge bg-blue-lt'>";
+                            if ($output[$i]['sms'] == 'Y') {
+                                $return .= 'SMS';
+                            }
+                            if ($output[$i]['email'] == 'Y') {
+                                $return .= 'Email';
+                            }
+                            if ($output[$i]['messageWall'] == 'Y') {
+                                $return .= 'Message Wall';
+                            }
+                            $return .= "</span>";
+                            $return .= "<span class='badge bg-azure-lt' style='margin-left: 10px;'>" . $output[$i]['messengercategory'] . "</span>";
+                            $return .= "<h3 style='margin-top: 3px'>";
+                            $return .= $output[$i]['subject'];
+                            $return .= '</h3>';
+                            $return .= '</p>';
+                            $return .= $output[$i]['details'];
+                            $return .= '</p>';
+                            $return .= '</td>';
+                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
+                            $return .= '<b><u>' . __('Posted By') . '</b></u><br/>';
+                            $return .= $output[$i]['author'] . '<br/><br/>';
+                            $return .= '</td>';
+                            $return .= '</tr>';
                         }
-                        if ($output[$i]['messageWall'] == 'Y') {
-                            $return .= 'Message Wall';
+                    }else{
+                        if ($p[0] >= $pp[0] && $p[1] >= $pp[1] && $p[2] >= $pp[2] && $p[0] <= $ppp[0] && $p[1] <= $ppp[1] && $p[2] <= $ppp[2]) {
+                            if ($rowCount % 2 == 0) {
+                                $rowNum = 'even';
+                            } else {
+                                $rowNum = 'odd';
+                            }
+                            ++$rowCount;
+                            $return .= "<tr class=$rowNum>";
+                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
+                            //$return .= "<a name='".$output[$i]['pupilsightMessengerID']."'></a>";
+                            //$return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
+
+                            $return .= date('d/m/Y', strtotime($output[$i]['date'])) . '<br/>';
+                            if ($output[$i]['date1'] != null) {
+                                $return .= date('d/m/Y', strtotime($output[$i]['date1'])) . '<br/>';
+                            }
+                            if ($output[$i]['date2'] != null) {
+                                $return .= date('d/m/Y', strtotime($output[$i]['date2'])) . '<br/>';
+                            }
+
+                            //$return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
+                            //$return .= $output[$i]['source'].'<br/><br/>';
+                            $return .= '</td>';
+                            $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
+                            $return .= "<span class='badge bg-blue-lt'>";
+                            if ($output[$i]['sms'] == 'Y') {
+                                $return .= 'SMS';
+                            }
+                            if ($output[$i]['email'] == 'Y') {
+                                $return .= 'Email';
+                            }
+                            if ($output[$i]['messageWall'] == 'Y') {
+                                $return .= 'Message Wall';
+                            }
+                            $return .= "</span>";
+                            $return .= "<span class='badge bg-azure-lt' style='margin-left: 10px;'>" . $output[$i]['messengercategory'] . "</span>";
+                            $return .= "<h3 style='margin-top: 3px'>";
+                            $return .= $output[$i]['subject'];
+                            $return .= '</h3>';
+                            $return .= '</p>';
+                            $return .= $output[$i]['details'];
+                            $return .= '</p>';
+                            $return .= '</td>';
+                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
+                            $return .= '<b><u>' . __('Posted By') . '</b></u><br/>';
+                            $return .= $output[$i]['author'] . '<br/><br/>';
+                            $return .= '</td>';
+                            $return .= '</tr>';
                         }
-                        $return .= "</span>";
-                        $return .= "<span class='badge bg-azure-lt' style='margin-left: 10px;'>" . $output[$i]['messengercategory'] . "</span>";
-                        $return .= "<h3 style='margin-top: 3px'>";
-                        $return .= $output[$i]['subject'];
-                        $return .= '</h3>';
-                        $return .= '</p>';
-                        $return .= $output[$i]['details'];
-                        $return .= '</p>';
-                        $return .= '</td>';
-                        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
-                        $return .= '<b><u>' . __('Posted By') . '</b></u><br/>';
-                        $return .= $output[$i]['author'] . '<br/><br/>';
-                        $return .= '</td>';
-                        $return .= '</tr>';
                     }
                 }
                 $return .= '</table>';
