@@ -18,7 +18,7 @@ use Pupilsight\Domain\Traits\TableAware;
 class StaffAbsenceGateway extends QueryableGateway
 {
     use TableAware;
-    
+
     private static $tableName = 'pupilsightStaffAbsence';
     private static $primaryKey = 'pupilsightStaffAbsenceID';
 
@@ -117,14 +117,14 @@ class StaffAbsenceGateway extends QueryableGateway
     public function queryApprovedAbsencesByDateRange(QueryCriteria $criteria, $dateStart, $dateEnd = null, $grouped = true)
     {
         if (empty($dateEnd)) $dateEnd = $dateStart;
-        
+
         $query = $this
             ->newQuery()
             ->from('pupilsightStaffAbsenceDate')
             ->cols([
                 'pupilsightStaffAbsence.pupilsightStaffAbsenceID', 'pupilsightStaffAbsence.pupilsightPersonID', 'pupilsightStaffAbsenceType.name as type', 'pupilsightStaffAbsence.reason', 'comment', 'pupilsightStaffAbsenceDate.date',  'pupilsightStaffAbsenceDate.allDay', 'pupilsightStaffAbsenceDate.timeStart', 'pupilsightStaffAbsenceDate.timeEnd', 'pupilsightStaffAbsenceDate.value', 'timestampCreator',  'MIN(pupilsightStaffCoverage.status) as coverage',
                 'pupilsightStaffAbsence.status',
-                'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname', 
+                'pupilsightPerson.title', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname',
                 'creator.title AS titleCreator', 'creator.preferredName AS preferredNameCreator', 'creator.surname AS surnameCreator', 'pupilsightStaffAbsence.pupilsightPersonIDCreator',
                 'coverage.title as titleCoverage', 'coverage.preferredName as preferredNameCoverage', 'coverage.surname as surnameCoverage', 'pupilsightStaffCoverage.pupilsightPersonIDCoverage',
             ])
@@ -214,25 +214,28 @@ class StaffAbsenceGateway extends QueryableGateway
             },
             'status' => function ($query, $status) {
                 return $query->where('pupilsightStaffAbsence.status = :status')
-                             ->bindValue('status', ucwords($status));
+                    ->bindValue('status', ucwords($status));
             },
             'coverage' => function ($query, $coverage) {
                 return $query->where('pupilsightStaffCoverage.status = :coverage')
-                             ->bindValue('coverage', $coverage);
+                    ->bindValue('coverage', $coverage);
             },
             'dateStart' => function ($query, $dateStart) {
                 return $query->where("pupilsightStaffAbsenceDate.date >= :dateStart")
-                             ->bindValue('dateStart', $dateStart);
+                    ->bindValue('dateStart', $dateStart);
             },
             'dateEnd' => function ($query, $dateEnd) {
                 return $query->where("pupilsightStaffAbsenceDate.date <= :dateEnd")
-                             ->bindValue('dateEnd', $dateEnd);
+                    ->bindValue('dateEnd', $dateEnd);
             },
             'date' => function ($query, $date) {
                 switch (ucfirst($date)) {
-                    case 'Upcoming': return $query->where("pupilsightStaffAbsenceDate.date >= CURRENT_DATE()");
-                    case 'Today'   : return $query->where("pupilsightStaffAbsenceDate.date = CURRENT_DATE()");
-                    case 'Past'    : return $query->where("pupilsightStaffAbsenceDate.date < CURRENT_DATE()");
+                    case 'Upcoming':
+                        return $query->where("pupilsightStaffAbsenceDate.date >= CURRENT_DATE()");
+                    case 'Today':
+                        return $query->where("pupilsightStaffAbsenceDate.date = CURRENT_DATE()");
+                    case 'Past':
+                        return $query->where("pupilsightStaffAbsenceDate.date < CURRENT_DATE()");
                 }
             },
         ];

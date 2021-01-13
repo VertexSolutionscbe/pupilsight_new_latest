@@ -696,7 +696,7 @@ if ($type == 'logoutCounter') {
         $session->forget(['counterid']);
     }
 }
-
+/*
 if ($type == 'getClass') {
     $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
@@ -720,7 +720,33 @@ if ($type == 'getClass') {
         }
     }
     echo $data;
+}*/
+
+if ($type == 'getClass') {
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    $pid = $val;
+    if ($roleId == '2') {
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+    } else {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+    }
+
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+    // echo '<pre>';
+    // print_r($classes);
+    // echo '</pre>';
+    $data = '<option value="">Select Class</option>';
+    if (!empty($classes)) {
+        foreach ($classes as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
 }
+
 if ($type == 'getClass_new') {
     $pid = $val;
     $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
