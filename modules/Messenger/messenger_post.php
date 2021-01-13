@@ -251,10 +251,17 @@ else {
 
         //echo "<span type='text' id='count'>Character Count</span>";
 
-		$row = $form->addRow();
+        $form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
+		$row = $form->addRow()->addClass('sms');
 	        $col = $row->addColumn('body');
 	        $col->addLabel('body', __('Body'));
-	        $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
+	        $col->addEditor('body', $guid)->required()->setRows(20)->setValue($signature);
+
+        $form->toggleVisibilityByClass('sms1')->onRadio('sms')->when('N');
+        $row = $form->addRow()->addClass('sms1');
+            $col = $row->addColumn('body');
+            $col->addLabel('body', __('Body'));
+            $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
 
         $row = $form->addRow()->addAlert(__('For SMS message 160 Characters per message '))->setClass('right')
         ->append('<span id="count" title="countchars"></span>');
