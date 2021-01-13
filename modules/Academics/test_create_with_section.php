@@ -126,12 +126,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_create_with
      $col->addLabel('pupilsightYearGroupID', __('Class'));
      $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupID_check')->required()->placeholder('Select Class');
  
-     //$col = $row->addColumn()->setClass('newdes');
-    // $col->addLabel('pupilsightRollGroupID', __('Section'));
-     //$col->addSelect('pupilsightRollGroupID', $pupilsightSchoolYearID)->required()->placeholder('Select Section');
      $col = $row->addColumn()->setClass('newdes');
-     $col->addLabel('pupilsightRollGroupID', __('Section'));
-     $col->addContent('<div id="pupilsightRollGroupID_check" class="section_div w-full txtfield"></div> ');
+    $col->addLabel('pupilsightRollGroupID', __('Section'));
+     $col->addSelect('pupilsightRollGroupID[]')->setId('pupilsightRollGroupID_check')->required()->placeholder('Select Section');
+    //  $col = $row->addColumn()->setClass('newdes');
+    //  $col->addLabel('pupilsightRollGroupID', __('Section'));
+    //  $col->addContent('<div id="pupilsightRollGroupID_check" class="section_div w-full txtfield"></div> ');
      
      $col = $row->addColumn()->setClass('newdes');
      $col->addLabel('test_master_id', __('Test'));
@@ -213,6 +213,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_create_with
 }
 
 </style>
+
+<script>
+    $(document).on('change', '#pupilsightYearGroupID_check', function () {
+        var id = $(this).val();
+        var pid = $('#pupilsightProgramID_check').val();
+        var type = 'getSection';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, pid: pid },
+            async: true,
+            success: function (response) {
+                $("#pupilsightRollGroupID_check").html('');
+                $("#pupilsightRollGroupID_check").html(response);
+            }
+        });
+    });
+</script>
 
 
 
