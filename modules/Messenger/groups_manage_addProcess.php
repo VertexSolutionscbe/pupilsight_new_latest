@@ -19,7 +19,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     $name = isset($_POST['name'])? $_POST['name'] : '';
     $choices = isset($_POST['members'])? $_POST['members'] : array();
     $choices1 = isset($_POST['staffmembers'])? $_POST['staffmembers'] : array();
-    $choices2 = isset($_POST['parentmembers'])? $_POST['parentmembers'] : array();
+    //$choices2 = isset($_POST['parentmembers'])? $_POST['parentmembers'] : array();
     $choices3 = isset($_POST['allmembers'])? $_POST['allmembers'] : array();
     $choices4 = isset($_POST['pupilsightPersonID'])? $_POST['pupilsightPersonID'] : array();
 //print_r($choices);
@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 //print_r($choices2);
 //print_r($choices3);
 //print_r($choices4);//die();
-    if (empty($name) || (empty($choices) && empty($choices1) && empty($choices2) && empty($choices3) && empty($choices4))) {
+    if (empty($name) || (empty($choices) && empty($choices1) && empty($choices3) && empty($choices4))) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -55,11 +55,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
                 $inserted = $groupGateway->insertGroupPerson($data);
                 $partialFail &= !$inserted;
             }
-            foreach ($choices2 as $pupilsightPersonID) {
+            /*foreach ($choices2 as $pupilsightPersonID) {
                 $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
                 $inserted = $groupGateway->insertGroupPerson($data);
                 $partialFail &= !$inserted;
-            }
+            }*/
             foreach ($choices3 as $pupilsightPersonID) {
                 $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
                 $inserted = $groupGateway->insertGroupPerson($data);

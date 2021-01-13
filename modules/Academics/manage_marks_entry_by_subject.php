@@ -314,18 +314,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
      </thead>       
      <tbody>
         <?php                           
-            $data_sel = '<option value=""> Remark</option>';
-            if($mode=="SUBJECT_GRADE_WISE_AUTO"){
-               foreach ($re_mode_data as  $val) {
-                   $data_sel .= '<option value="' . $val['grade_id']. '">' . $val['remark_description'] . '</option>';
-               }
-            } else {
-               if (!empty($rowdata_rmk)) {
-                foreach ($rowdata_rmk as $k => $rk) {
-                    $data_sel .= '<option value="' . $rk['description'] . '">' . $rk['description'] . '</option>';
-                }
-            }  
-            }
+            
             $count = 0;
             $rowNum = 'odd';
             $f = 1;
@@ -367,6 +356,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     // echo '<pre>';
                     // print_r($prevdata);
                     // echo '</pre>';
+
+
+                    $data_sel = '<option value="">Select Remark</option>';
+                    if($mode=="SUBJECT_GRADE_WISE_AUTO"){
+                    foreach ($re_mode_data as  $val) {
+                        if($prevdata['remark_type'] == 'list' && $prevdata['remarks'] == $val['remark_description']) {
+                            $sel = 'selected';
+                        } else {
+                            $sel = '';
+                        }
+                        $data_sel .= '<option value="' . $val['grade_id']. '" '.$sel.'>' . $val['remark_description'] . '</option>';
+                    }
+                    } else {
+                    if (!empty($rowdata_rmk)) {
+                            foreach ($rowdata_rmk as $k => $rk) {
+                                if($prevdata['remark_type'] == 'list' && $prevdata['remarks'] == $rk['description']) {
+                                    $sel = 'selected';
+                                } else {
+                                    $sel = '';
+                                }
+                                $data_sel .= '<option value="' . $rk['description'] . '" '.$sel.'>' . $rk['description'] . '</option>';
+                            }
+                        }  
+                    }
                     
                     if($prevdata['status']==1 && $prevdata['entrytype'] == 2)
                     {
@@ -452,10 +465,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     ?>
                     <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?>" style="display:none;width:190px"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
                         <p><label>From List </label>
-                        <input type="radio" id="fromlist" class="rm_type" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="fromlist" style="margin-left: 2px;">
+                        <input type="radio" id="fromlist" class="rm_type" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="fromlist" style="margin-left: 2px;"  <?php if($prevdata['remark_type'] == 'list'){ ?> checked <?php } ?>>
                         &nbsp;&nbsp;
                         <label> Your Own </label>
-                        <input type="radio" id="enter_own"  class="rm_type rm_type_<?php echo $s_test['test_id'];?>" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="enter_own" style="margin-left: 2px;">
+                        <input type="radio" id="enter_own"  class="rm_type rm_type_<?php echo $s_test['test_id'];?>" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="enter_own" style="margin-left: 2px;"   <?php if($prevdata['remark_type'] == 'own'){ ?> checked <?php } ?> >
                         </p>
                     </div>
                     <select id="remarklist<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="" class="w-full remarklist rmk_width" style="display:none" data-id="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">

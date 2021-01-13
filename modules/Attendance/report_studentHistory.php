@@ -20,6 +20,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
+?>
+    
+<?php
     //Proceed!
     $page->breadcrumbs->add(__('Student History'));
     $page->scripts->add('chart');
@@ -31,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        
+
         $canTakeAttendanceByPerson = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
         $pupilsightSchoolYearID = $pupilsight->session->get('pupilsightSchoolYearID');
 
@@ -45,20 +48,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $pupilsightPersonID = $_GET['pupilsightPersonID'];
             }
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
             $form->setClass('noIntBorder fullWidth');
 
-            $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentHistory.php");
+            $form->addHiddenValue('q', "/modules/" . $_SESSION[$guid]['module'] . "/report_studentHistory.php");
 
             $row = $form->addRow();
-                $row->addLabel('pupilsightPersonID', __('Student'));
-                $row->addSelectStudent('pupilsightPersonID', $pupilsightSchoolYearID)->selected($pupilsightPersonID)->placeholder()->required();
+            $row->addLabel('pupilsightPersonID', __('Student'));
+            $row->addSelectStudent('pupilsightPersonID', $pupilsightSchoolYearID)->selected($pupilsightPersonID)->placeholder()->required();
 
             $row = $form->addRow();
-                $row->addFooter();
-                $row->addSearchSubmit($pupilsight->session);
+            $row->addFooter();
+            $row->addSearchSubmit($pupilsight->session);
 
             echo $form->getOutput();
 
@@ -74,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                    echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                 }
                 if ($result->rowCount() != 1) {
                     echo "<div class='alert alert-danger'>";
@@ -106,8 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     echo $table->render($attendanceData);
                 }
             }
-        }
-        else if ($highestAction == 'Student History_myChildren') {
+        } else if ($highestAction == 'Student History_myChildren') {
             $pupilsightPersonID = null;
             if (isset($_GET['pupilsightPersonID'])) {
                 $pupilsightPersonID = $_GET['pupilsightPersonID'];
@@ -119,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
             }
             if ($result->rowCount() < 1) {
                 echo "<div class='alert alert-danger'>";
@@ -132,11 +134,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 while ($row = $result->fetch()) {
                     try {
                         $dataChild = array('pupilsightFamilyID' => $row['pupilsightFamilyID'], 'pupilsightSchoolYearID' => $pupilsightSchoolYearID);
-                        $sqlChild = "SELECT * FROM pupilsightFamilyChild JOIN pupilsightPerson ON (pupilsightFamilyChild.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightFamilyID=:pupilsightFamilyID AND pupilsightPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY surname, preferredName ";
+                        $sqlChild = "SELECT * FROM pupilsightFamilyChild JOIN pupilsightPerson ON (pupilsightFamilyChild.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightFamilyID=:pupilsightFamilyID AND pupilsightPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date('Y-m-d') . "') AND (dateEnd IS NULL  OR dateEnd>='" . date('Y-m-d') . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
                     } catch (PDOException $e) {
-                        echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                        echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                     }
                     if ($resultChild->rowCount() > 0) {
                         if ($resultChild->rowCount() == 1) {
@@ -144,8 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                             $pupilsightPersonID = $rowChild['pupilsightPersonID'];
                             $options[$rowChild['pupilsightPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                             ++$countChild;
-                        }
-                        else {
+                        } else {
                             while ($rowChild = $resultChild->fetch()) {
                                 $options[$rowChild['pupilsightPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                                 ++$countChild;
@@ -163,27 +164,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     echo __('Choose');
                     echo '</h2>';
 
-                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+                    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
 
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->setClass('noIntBorder fullWidth');
 
-                    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_studentHistory.php");
+                    $form->addHiddenValue('q', "/modules/" . $_SESSION[$guid]['module'] . "/report_studentHistory.php");
 
                     if ($countChild > 0) {
                         $row = $form->addRow();
-                            $row->addLabel('pupilsightPersonID', __('Child'));
-                            if ($countChild > 1) {
-                                $row->addSelect('pupilsightPersonID')->fromArray($options)->selected($pupilsightPersonID)->placeholder()->required();
-                            }
-                            else {
-                                $row->addSelect('pupilsightPersonID')->fromArray($options)->selected($pupilsightPersonID)->required();
-                            }
+                        $row->addLabel('pupilsightPersonID', __('Child'));
+                        if ($countChild > 1) {
+                            $row->addSelect('pupilsightPersonID')->fromArray($options)->selected($pupilsightPersonID)->placeholder()->required();
+                        } else {
+                            $row->addSelect('pupilsightPersonID')->fromArray($options)->selected($pupilsightPersonID)->required();
+                        }
                     }
 
                     $row = $form->addRow();
-                        $row->addFooter();
-                        $row->addSearchSubmit($pupilsight->session);
+                    $row->addFooter();
+                    $row->addSearchSubmit($pupilsight->session);
 
                     echo $form->getOutput();
                 }
@@ -192,11 +192,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     //Confirm access to this student
                     try {
                         $dataChild = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightPersonID2' => $_SESSION[$guid]['pupilsightPersonID']);
-                        $sqlChild = "SELECT * FROM pupilsightFamilyChild JOIN pupilsightFamily ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) JOIN pupilsightPerson ON (pupilsightFamilyChild.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE pupilsightPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND pupilsightFamilyChild.pupilsightPersonID=:pupilsightPersonID AND pupilsightFamilyAdult.pupilsightPersonID=:pupilsightPersonID2 AND childDataAccess='Y'";
+                        $sqlChild = "SELECT * FROM pupilsightFamilyChild JOIN pupilsightFamily ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) JOIN pupilsightPerson ON (pupilsightFamilyChild.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE pupilsightPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date('Y-m-d') . "') AND (dateEnd IS NULL  OR dateEnd>='" . date('Y-m-d') . "') AND pupilsightFamilyChild.pupilsightPersonID=:pupilsightPersonID AND pupilsightFamilyAdult.pupilsightPersonID=:pupilsightPersonID2 AND childDataAccess='Y'";
                         $resultChild = $connection2->prepare($sqlChild);
                         @$resultChild->execute($dataChild);
                     } catch (PDOException $e) {
-                        echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                        echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                     }
 
                     if ($resultChild->rowCount() < 1) {
@@ -218,7 +218,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                                echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                             }
                             if ($result->rowCount() != 1) {
                                 echo "<div class='alert alert-danger'>";
@@ -241,8 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     }
                 }
             }
-        }
-        else if ($highestAction == 'Student History_my') {
+        } else if ($highestAction == 'Student History_my') {
             $output = '';
             echo '<h2>';
             echo __('Report Data');
@@ -254,7 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
             }
             if ($result->rowCount() != 1) {
                 echo "<div class='alert alert-danger'>";

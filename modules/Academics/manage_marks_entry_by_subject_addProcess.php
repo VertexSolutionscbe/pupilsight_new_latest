@@ -37,12 +37,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     $rmrk_frm_list = isset($_POST['remark_frmlst'][$tid][$sid]) ? $_POST['remark_frmlst'][$tid][$sid] : "";
                     $rmrk_own = isset($_POST['remark_own'][$tid][$sid]) ? $_POST['remark_own'][$tid][$sid] : "";
                     $remark_val = "";
+                    $remark_type = "";
 
 
                     if ($_POST['remark_frmlst'][$tid][$sid] != "") {
                         $remark_val = $_POST['remark_frmlst'][$tid][$sid];
+                        $remark_type = 'list';
                     } else {
                         $remark_val = $_POST['remark_own'][$tid][$sid];
+                        $remark_type = 'own';
                     }
                     $locksts =   $_POST['lock_status'][$tid][$sid];
 
@@ -96,23 +99,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
 
 
                         // `examinationMarksEntrybySubject` ,`test_id`,`pupilsightYearGroupID`,`pupilsightRollGroupID`,`pupilsightDepartmentID`,`pupilsightPersonID`,`skill_id`,`marks_obtained`,`gradeId`,`remarks`,                
-                        $data = array('pupilsightPersonIDTaker' => $_SESSION[$guid]['pupilsightPersonID'], 'test_id' => $tid, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $student_id, 'skill_id' => $skill_id, 'marks_obtained' => $mark_obtn, 'marks_abex' => $marks_abex, 'gradeId' => $grade_obtn, 'remarks' => $remark_val, 'status' => $locksts, 'entrytype' => $entry_type);
+                        $data = array('pupilsightPersonIDTaker' => $_SESSION[$guid]['pupilsightPersonID'], 'test_id' => $tid, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $student_id, 'skill_id' => $skill_id, 'marks_obtained' => $mark_obtn, 'marks_abex' => $marks_abex, 'gradeId' => $grade_obtn, 'remark_type' => $remark_type,'remarks' => $remark_val, 'status' => $locksts, 'entrytype' => $entry_type);
                         //   echo "<pre>";
                         // print_r($data);
                         // die();
                         $sql = 'INSERT INTO examinationMarksEntrybySubject 
                         SET pupilsightPersonIDTaker=:pupilsightPersonIDTaker, test_id=:test_id, pupilsightYearGroupID=:pupilsightYearGroupID, 
                         pupilsightRollGroupID=:pupilsightRollGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, pupilsightPersonID=:pupilsightPersonID, skill_id=:skill_id, 
-                        marks_obtained=:marks_obtained, marks_abex=:marks_abex, gradeId=:gradeId, 
+                        marks_obtained=:marks_obtained, marks_abex=:marks_abex, gradeId=:gradeId, remark_type=:remark_type,
                         remarks=:remarks,status=:status,entrytype=:entrytype';
 
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
 
                         //data store histroy
-                        $data_h = array('pupilsightPersonIDTaker' => $_SESSION[$guid]['pupilsightPersonID'], 'test_id' => $tid, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightPersonID' => $student_id, 'marks_obtained' => $mark_obtn, 'marks_abex' => $marks_abex, 'remark' => $remark_val, 'gradeId' => $grade_obtn, 'skill_id' => $skill_id);
+                        $data_h = array('pupilsightPersonIDTaker' => $_SESSION[$guid]['pupilsightPersonID'], 'test_id' => $tid, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightPersonID' => $student_id, 'marks_obtained' => $mark_obtn, 'marks_abex' => $marks_abex, 'remark_type' => $remark_type, 'remark' => $remark_val, 'gradeId' => $grade_obtn, 'skill_id' => $skill_id);
 
-                        $sql_h = 'INSERT INTO history_of_students_marks SET test_id=:test_id, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, pupilsightPersonID=:pupilsightPersonID, skill_id=:skill_id, marks_obtained=:marks_obtained, marks_abex=:marks_abex, pupilsightPersonIDTaker=:pupilsightPersonIDTaker, gradeId=:gradeId, remark=:remark';
+                        $sql_h = 'INSERT INTO history_of_students_marks SET test_id=:test_id, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, pupilsightPersonID=:pupilsightPersonID, skill_id=:skill_id, marks_obtained=:marks_obtained, marks_abex=:marks_abex, pupilsightPersonIDTaker=:pupilsightPersonIDTaker, gradeId=:gradeId, remark_type=:remark_type, remark=:remark';
                         $result = $connection2->prepare($sql_h);
                         $result->execute($data_h);
                         //ends here 

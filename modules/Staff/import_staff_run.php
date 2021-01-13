@@ -91,7 +91,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 $headers[$key] = '##_nationalIDCardNumber';
             } else {
 
-                $sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
+                //$sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
+                $sqlchk = "SELECT field_name, modules FROM custom_field WHERE field_title = '" . $hd . "' and  find_in_set('staff',modules)";
+
                 $resultchk = $connection2->query($sqlchk);
                 $cd = $resultchk->fetch();
                 $modules = explode(',', $cd['modules']);

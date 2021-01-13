@@ -189,11 +189,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
             $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+            //$col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightYearGroupID', __('Class'));
             $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
+            //$col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
 
 
             $col = $row->addColumn()->setClass('newdes');

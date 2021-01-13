@@ -1,6 +1,6 @@
 <?php
- 
- 
+
+
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -36,13 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    
+
     $page->breadcrumbs->add(__('Login Accounts'));
 
- 
-     if (isset($_GET['return'])) {
-         returnProcess($guid, $_GET['return'], null, null);
-     }
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
 
     $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
     $resultp = $connection2->query($sqlp);
@@ -79,19 +79,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
         $search = '';
     }
 
-  
+
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
- 
+
 
     $staffGateway = $container->get(StaffGateway::class);
 
-        // QUERY
-        $criteria = $staffGateway->newQueryCriteria()
-            ->searchBy($staffGateway->getSearchableColumns(), $search)
-            ->filterBy('all', $allStaff)
-            ->pageSize(5000)
-            ->sortBy(['surname', 'preferredName'])
-            ->fromPOST();
+    // QUERY
+    $criteria = $staffGateway->newQueryCriteria()
+        ->searchBy($staffGateway->getSearchableColumns(), $search)
+        ->filterBy('all', $allStaff)
+        ->pageSize(5000)
+        ->sortBy(['surname', 'preferredName'])
+        ->fromPOST();
 
     $staff = $staffGateway->queryAllStaff($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightDepartmentID);
 
@@ -99,106 +99,116 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
     // print_r($studentData);
     // echo '</pre>';
     //die();
-    
-     echo '<h2>';
-     echo __('Login Accounts');
-     echo '</h2>';
-     
-        $form = Form::create('filter', '');
 
-            $form->setClass('noIntBorder fullWidth');
-            $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
-            $row = $form->addRow();
+    echo '<h2>';
+    echo __('Login Accounts');
+    echo '</h2>';
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->setID('getMultiClassByProgCamp')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
+    $form = Form::create('filter', '');
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightDepartmentID', __('Subjects'));
-            $col->addSelect('pupilsightDepartmentID')->fromArray($subjects)->selected($pupilsightDepartmentID)->placeholder();
+    $form->setClass('noIntBorder fullWidth');
+    $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
+    $row = $form->addRow();
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('search', __('Search By Name, Email, Type, Phone'));
-            $col->addTextField('search')->setValue($search)->maxLength(20);
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightProgramID', __('Program'));
+    $col->addSelect('pupilsightProgramID')->setID('getMultiClassByProgCamp')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
-            $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightDepartmentID', __('Subjects'));
+    $col->addSelect('pupilsightDepartmentID')->fromArray($subjects)->selected($pupilsightDepartmentID)->placeholder();
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('search', __('Search By Name, Email, Type, Phone'));
+    $col->addTextField('search')->setValue($search)->maxLength(20);
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('', __(''));
+    $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
 
 
-            echo $form->getOutput();
-    ?>
+    echo $form->getOutput();
+?>
     <a class="btn btn-primary thickbox" style="float:right;margin-left: 10px;" href="fullscreen.php?q=/modules/Staff/sms_email_content.php&type=Sms">SMS Content</a>
     <a class="btn btn-primary thickbox" style="float:right;margin-left: 10px;" href="fullscreen.php?q=/modules/Staff/sms_email_content.php&type=Email">Email Content</a>
 
-  
+
     <form method="post" id="createAccountForm" action="index.php?q=/modules/Staff/loginAccountProcess.php">
-    
-    <a class="btn btn-primary" style="float:right;" id="createAccount">Create Account</a>
-    <a  style="display:none;" class="thickbox" id="showPasswordPage" href="fullscreen.php?q=/modules/Staff/loginPassword.php">Create Account</a>
-    <a class="btn btn-primary" style="float:right;margin-right:10px;" id="deleteAccount">Delete Account</a>
-    <input type='hidden' name="password" id="addPassword" value="">
-    <textarea id="addContent" name="content" style="display:none;"></textarea>
-    <div style="overflow-x:auto; width:100%;" >
-    <table class="table" id="historyTable">
-        <thead>
-            <tr>
-                <th><input type="checkbox" class="chkAll"></th>
-                <th>Name</th>
-                <th>Login Id</th>
-                <th>Status</th>
 
-            </tr>
-        </thead>
-        <tbody>
-            <?php 
-            if(!empty($staff)) { 
-                $i = 1;
-                foreach($staff as $estd){ 
-                    if(!empty($estd['stfPassword'])){
-                        $chkclsStu = 'greenicon';
-                    } else {
-                        $chkclsStu = 'greyicon';
-                    }
-
-                   
-                ?>
-                
+        <a class="btn btn-primary" style="float:right;" id="createAccount">Create Account</a>
+        <a style="display:none;" class="thickbox" id="showPasswordPage" href="fullscreen.php?q=/modules/Staff/loginPassword.php">Create Account</a>
+        <a class="btn btn-primary" style="float:right;margin-right:10px;" id="deleteAccount">Delete Account</a>
+        <input type='hidden' name="password" id="addPassword" value="">
+        <textarea id="addContent" name="content" style="display:none;"></textarea>
+        <div style="overflow-x:auto; width:100%;">
+            <table class="table" id="historyTable">
+                <thead>
                     <tr>
-                        <td><input type="checkbox" name="personId[]" class="chkclick chkChild" value="<?php echo $estd['pupilsightPersonID']; ?>"></td>
-                        <td><?php echo $estd['officialName']; ?></td>
-                        <td><?php echo $estd['stfUsername']; ?></td>
-                        <td><i class="mdi mdi-checkbox-marked-circle mdi-24px <?php echo $chkclsStu;?> "></i></td>
+                        <th><input type="checkbox" class="chkAll"></th>
+                        <th>Name</th>
+                        <th>Login Id</th>
+                        <th>Status</th>
 
                     </tr>
-            <?php  $i++; } } else { ?> 
-                <tr>
-                    <td colspan="7">No Message History</td>
-                </tr>
-            <?php }  ?>
-        </tbody>
+                </thead>
+                <tbody>
+                    <?php
+                    if (!empty($staff)) {
+                        $i = 1;
+                        foreach ($staff as $estd) {
+                            if (!empty($estd['stfPassword'])) {
+                                $chkclsStu = 'greenicon';
+                            } else {
+                                $chkclsStu = 'greyicon';
+                            }
+
+
+                    ?>
+
+                            <tr>
+                                <td><input type="checkbox" name="personId[]" class="chkclick chkChild" value="<?php echo $estd['pupilsightPersonID']; ?>"></td>
+                                <td><?php echo $estd['officialName']; ?></td>
+                                <td><?php echo $estd['stfUsername']; ?></td>
+                                <td><i class="mdi mdi-checkbox-marked-circle mdi-24px <?php echo $chkclsStu; ?> "></i></td>
+
+                            </tr>
+                        <?php $i++;
+                        }
+                    } else { ?>
+                        <tr>
+                            <td colspan="7">No Message History</td>
+                        </tr>
+                    <?php }  ?>
+                </tbody>
         </div>
 
-    </table>
+        </table>
     </form>
-<?php   
-} 
+<?php
+}
 ?>
 
 <script>
-    $(function(){
-        $("#historyTable").dataTable();
+    $(function() {
+        $('#historyTable').DataTable({
+            "pageLength": 25,
+            "lengthMenu": [
+                [10, 25, 50, 250, -1],
+                [10, 25, 50, 250, "All"]
+            ],
+            "sDom": '<"top"lfpi>rt<"bottom"ifp><"clear">'
+        });
+        //$("#historyTable").dataTable();
     })
     $("#start_date").datepicker({
         //minDate: 0,
-        onClose: function (selectedDate) {
+        onClose: function(selectedDate) {
             $("#end_date").datepicker("option", "minDate", selectedDate);
         }
     });
 
-    $(document).on('change', '.chkAllFather', function () {
+    $(document).on('change', '.chkAllFather', function() {
         if ($(this).is(':checked')) {
             $(".chkFather").prop("checked", true);
         } else {
@@ -206,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
         }
     });
 
-    $(document).on('change', '.chkFather', function () {
+    $(document).on('change', '.chkFather', function() {
         if ($(this).is(':checked')) {
             //$(".chkChild"+id).prop("checked", true);
         } else {
@@ -214,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
         }
     });
 
-    $(document).on('change', '.chkAllMother', function () {
+    $(document).on('change', '.chkAllMother', function() {
         if ($(this).is(':checked')) {
             $(".chkMother").prop("checked", true);
         } else {
@@ -222,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
         }
     });
 
-    $(document).on('change', '.chkMother', function () {
+    $(document).on('change', '.chkMother', function() {
         if ($(this).is(':checked')) {
             //$(".chkChild"+id).prop("checked", true);
         } else {
@@ -230,10 +240,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
         }
     });
 
-    $(document).on('click', '#createAccount', function () {
-         
+    $(document).on('click', '#createAccount', function() {
+
         var stuids = [];
-        $.each($(".chkclick:checked"), function () {
+        $.each($(".chkclick:checked"), function() {
             stuids.push($(this).val());
         });
         var stuid = stuids.join(",");
@@ -244,11 +254,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
         }
     });
 
-    $(document).on('click', '#donePassword', function () {
+    $(document).on('click', '#donePassword', function() {
         var pass = $("#pass").val();
         var content = $("#mailcontent").val();
         var favorite = [];
-        $.each($("input[name='type[]']:checked"), function(){
+        $.each($("input[name='type[]']:checked"), function() {
             favorite.push($(this).val());
         });
         var types = favorite.join(",");
@@ -258,18 +268,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
         $("#createAccountForm").submit();
     });
 
-    $(document).on('click', '#closePassword', function () {
+    $(document).on('click', '#closePassword', function() {
         $("#TB_overlay").remove();
         $("#TB_window").remove();
     });
 
-    $(document).ready(function () {
-      	$('#showMultiClassByProg').selectize({
-      		plugins: ['remove_button'],
-      	});
+    $(document).ready(function() {
+        $('#showMultiClassByProg').selectize({
+            plugins: ['remove_button'],
+        });
     });
 
-    $(document).on('change', '#getMultiClassByProgCamp', function () {
+    $(document).on('change', '#getMultiClassByProgCamp', function() {
         var id = $(this).val();
         var type = 'getClass';
         $('#showMultiClassByProg').selectize()[0].selectize.destroy();
@@ -277,28 +287,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
-            data: { val: id, type: type },
+            data: {
+                val: id,
+                type: type
+            },
             async: true,
-            success: function (response) {
+            success: function(response) {
                 $("#showMultiClassByProg").html('');
                 $("#showMultiClassByProg").html(response);
                 $("#showMultiClassByProg").parent().children('.LV_validation_message').remove();
                 $('#showMultiClassByProg').selectize({
                     plugins: ['remove_button'],
                 });
-                
+
             }
         });
     });
 
-    $(document).on('click', '#deleteAccount', function () {
-         
-         var stuids = [];
-         $.each($(".chkclick:checked"), function () {
-             stuids.push($(this).val());
-         });
-         var stuid = stuids.join(",");
-         if (stuid) {
+    $(document).on('click', '#deleteAccount', function() {
+
+        var stuids = [];
+        $.each($(".chkclick:checked"), function() {
+            stuids.push($(this).val());
+        });
+        var stuid = stuids.join(",");
+        if (stuid) {
             if (confirm("Do you want to Delete Account?")) {
                 var val = stuid;
                 var type = 'deleteUserLoginAccount';
@@ -306,16 +319,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
                     $.ajax({
                         url: 'ajax_data.php',
                         type: 'post',
-                        data: { val: val, type: type },
+                        data: {
+                            val: val,
+                            type: type
+                        },
                         async: true,
-                        success: function (response) {
+                        success: function(response) {
                             location.reload();
                         }
                     });
                 }
             }
-         } else {
-             alert('you Have to Select User to Delete Account');
-         }
-     });
+        } else {
+            alert('you Have to Select User to Delete Account');
+        }
+    });
 </script>

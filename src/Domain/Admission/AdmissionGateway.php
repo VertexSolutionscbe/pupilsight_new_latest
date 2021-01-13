@@ -455,5 +455,4 @@ class AdmissionGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria, TRUE);
     }
-
 }

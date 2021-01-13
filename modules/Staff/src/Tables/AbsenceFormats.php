@@ -23,31 +23,31 @@ class AbsenceFormats
         if (empty($output)) {
             $output = Format::name($absence['titleStatus'], $absence['preferredNameStatus'], $absence['surnameStatus'], 'Staff', false, true);
         }
-        
-        return Format::link('./index.php?q=/modules/Staff/staff_view_details.php&pupilsightPersonID='.$pupilsightPersonID, $output);
+
+        return Format::link('./index.php?q=/modules/Staff/staff_view_details.php&pupilsightPersonID=' . $pupilsightPersonID, $output);
     }
 
     public static function personAndTypeDetails($absence)
     {
-        return static::personDetails($absence).'<br/>'.Format::small($absence['type'].' '.$absence['reason']);
+        return static::personDetails($absence) . '<br/>' . Format::small($absence['type'] . ' ' . $absence['reason']);
     }
 
     public static function substituteDetails($coverage)
     {
         return $coverage['pupilsightPersonIDCoverage']
             ? Format::name($coverage['titleCoverage'], $coverage['preferredNameCoverage'], $coverage['surnameCoverage'], 'Staff', false, true)
-            : '<span class="tag message">'.__('Pending').'</span>';
+            : '<span class="tag message">' . __('Pending') . '</span>';
     }
 
     public static function dateDetails($absence)
     {
         $output = Format::dateRangeReadable($absence['dateStart'], $absence['dateEnd']);
         if ($absence['allDay'] == 'Y' || $absence['days'] > 1) {
-            $output .= '<br/>'.Format::small(__n('{count} Day', '{count} Days', $absence['days']));
+            $output .= '<br/>' . Format::small(__n('{count} Day', '{count} Days', $absence['days']));
         } else {
-            $output .= '<br/>'.Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']));
+            $output .= '<br/>' . Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']));
         }
-        
+
         return Format::tooltip($output, $absence['value'] ?? '');
     }
 
@@ -64,19 +64,20 @@ class AbsenceFormats
     {
         $output = $absence['type'];
         if (!empty($absence['reason'])) {
-            $output .= '<br/>'.Format::small($absence['reason']);
+            $output .= '<br/>' . Format::small($absence['reason']);
         }
         if ($absence['status'] != 'Approved') {
-            $output .= '<br/><span class="small emphasis">'.__($absence['status']).'</span>';
+            $output .= '<br/><span class="small emphasis">' . __($absence['status']) . '</span>';
         }
         return $output;
     }
 
-    public static function coverage($absence) {
+    public static function coverage($absence)
+    {
         if ($absence['coverage'] == 'Accepted') {
             return Format::name($absence['titleCoverage'], $absence['preferredNameCoverage'], $absence['surnameCoverage'], 'Staff', false, true);
         } elseif ($absence['coverage'] == 'Requested') {
-            return '<span class="tag message">'.__('Pending').'</span>';
+            return '<span class="tag message">' . __('Pending') . '</span>';
         }
         return '';
     }
@@ -101,11 +102,11 @@ class AbsenceFormats
         $urgencyThreshold = intval($urgencyThreshold);
         $relativeSeconds = strtotime($coverage['dateStart']) - time();
         if ($relativeSeconds <= 0) {
-            return '<span class="tag dull">'.__('Overdue').'</span>';
+            return '<span class="tag dull">' . __('Overdue') . '</span>';
         } elseif ($relativeSeconds <= (86400 * $urgencyThreshold)) {
-            return '<span class="tag error">'.__('Urgent').'</span>';
+            return '<span class="tag error">' . __('Urgent') . '</span>';
         } elseif ($relativeSeconds <= (86400 * ($urgencyThreshold * 3))) {
-            return '<span class="tag warning">'.__('Upcoming').'</span>';
+            return '<span class="tag warning">' . __('Upcoming') . '</span>';
         } else {
             return __('Upcoming');
         }
@@ -115,7 +116,7 @@ class AbsenceFormats
     {
         $output = Format::relativeTime($absence['timestampCreator'], 'M j, Y H:i');
         if ($absence['pupilsightPersonID'] != $absence['pupilsightPersonIDCreator']) {
-            $output .= '<br/>'.Format::small(__('By').' '.Format::name('', $absence['preferredNameCreator'], $absence['surnameCreator'], 'Staff', false, true));
+            $output .= '<br/>' . Format::small(__('By') . ' ' . Format::name('', $absence['preferredNameCreator'], $absence['surnameCreator'], 'Staff', false, true));
         }
         return $output;
     }

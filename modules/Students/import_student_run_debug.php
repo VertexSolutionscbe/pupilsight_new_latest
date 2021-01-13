@@ -137,7 +137,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $headers[$key] = '$$_phone2';
                 } else {
 
-                    $sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
+                    //$sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
+                    $sqlchk = "SELECT field_name, modules FROM custom_field WHERE field_title = '" . $hd . "' and not  find_in_set('staff',modules)";
                     $resultchk = $connection2->query($sqlchk);
                     $cd = $resultchk->fetch();
                     $modules = explode(',', $cd['modules']);

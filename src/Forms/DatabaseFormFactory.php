@@ -337,18 +337,20 @@ class DatabaseFormFactory extends FormFactory
             }
         }
 
-        $sql = "SELECT pupilsightPerson.pupilsightPersonID, title, surname, preferredName, username, pupilsightRole.category
+        if ($params['includeAll'] == true) {
+            $sql = "SELECT pupilsightPerson.pupilsightPersonID, title, surname, preferredName, username, pupilsightRole.category
                 FROM pupilsightPerson
                 JOIN pupilsightRole ON (pupilsightRole.pupilsightRoleID=pupilsightPerson.pupilsightRoleIDPrimary)
                 WHERE status='Full' OR status='Expected' 
                 ORDER BY surname, preferredName";
-        $result = $this->pdo->executeQuery(array(), $sql);
+            $result = $this->pdo->executeQuery(array(), $sql);
 
-        if ($result->rowCount() > 0) {
-            $users[__('All Users')] = array_reduce($result->fetchAll(), function ($group, $item) {
-                $group[$item['pupilsightPersonID']] = formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.$item['category'].')';
-                return $group;
-            }, array());
+            if ($result->rowCount() > 0) {
+                $users[__('All Users')] = array_reduce($result->fetchAll(), function ($group, $item) {
+                    $group[$item['pupilsightPersonID']] = formatName('', $item['preferredName'], $item['surname'], 'Student', true) . ' (' . $item['username'] . ', ' . $item['category'] . ')';
+                    return $group;
+                }, array());
+            }
         }
 
         return $this->createSelectPerson($name)->fromArray($users);

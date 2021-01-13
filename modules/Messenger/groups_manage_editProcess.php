@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         $name = isset($_POST['name'])? $_POST['name'] : '';
         $choices = isset($_POST['members'])? $_POST['members'] : array();
         $choices1 = isset($_POST['staffmembers'])? $_POST['staffmembers'] : array();
-        $choices2 = isset($_POST['parentmembers'])? $_POST['parentmembers'] : array();
+        //$choices2 = isset($_POST['parentmembers'])? $_POST['parentmembers'] : array();
         $choices3 = isset($_POST['allmembers'])? $_POST['allmembers'] : array();
         $choices4 = isset($_POST['pupilsightPersonID'])? $_POST['pupilsightPersonID'] : array();
 
@@ -63,11 +63,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                     $inserted = $groupGateway->insertGroupPerson($data);
                     $partialFail &= !$inserted;
                 }
-                foreach ($choices2 as $pupilsightPersonID) {
+                /*foreach ($choices2 as $pupilsightPersonID) {
                     $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID);
                     $inserted = $groupGateway->insertGroupPerson($data);
                     $partialFail &= !$inserted;
-                }
+                }*/
                 foreach ($choices3 as $pupilsightPersonID) {
                     $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID);
                     $inserted = $groupGateway->insertGroupPerson($data);
