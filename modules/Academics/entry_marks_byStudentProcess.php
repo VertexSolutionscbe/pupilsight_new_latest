@@ -56,10 +56,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
                                     // if(!empty($marks_abex) || !empty($gradeId)){
                                     //     $marksdata = '';
                                     // }
-                                    
-                                    $datadel = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID);
 
-                                    $sqldel = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id AND pupilsightPersonID=:pupilsightPersonID  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID ';
+                                    
+                                    
+                                    $datadel = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID, 'skill_id' => $skill_id);
+
+                                    $sqldel = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id AND pupilsightPersonID=:pupilsightPersonID  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND skill_id=:skill_id ';
                                     $resultdel = $connection2->prepare($sqldel);
                                     $resultdel->execute($datadel);
                                 
@@ -82,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
                 }
             }
         } catch (PDOException $e) {
-            //print_r($e);
-            //die();
+            // print_r($e);
+            // die();
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit();
