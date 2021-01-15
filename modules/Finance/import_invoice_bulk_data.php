@@ -28,6 +28,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+
+    $mem = array(); // for storing transcation id
+    function validate_new_key($id, $st)
+    {
+        $flag = FALSE;
+        while ($flag == FALSE) {
+            $key = array_search($id, $st); // $key = 2;
+            if (empty($key)) {
+                $flag = TRUE;
+            } else {
+                $two_digit_random_number = mt_rand(10, 99);
+                $id = time() . $two_digit_random_number;
+            }
+        }
+        return $id;
+    }
+
     $page->breadcrumbs
         ->add(__('Manage Invoice'), 'invoice_manage.php')
         ->add(__('Invoice Collection Import'));
@@ -222,8 +239,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                         }
 
                         $rand = mt_rand(10, 99);
-                        $t = time();
-                        $transactionId = $t . $rand;
+                        $tid = time() . $rand;
+
+                        $transactionId = validate_new_key($tid, $mem);
+                        array_push($mem, $transactionId);
 
                         $data = array('transaction_id' => $transactionId, 'fn_fees_invoice_id' => $invoice_id, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID,  'receipt_number' => $receipt_number,  'payment_mode_id' => $payment_mode_id, 'bank_id' => $bank_id, 'dd_cheque_no' => $alrow['instrument_no'], 'dd_cheque_date' => $instrument_date, 'dd_cheque_amount' => $dd_cheque_amount, 'payment_status' => $payment_status, 'payment_date' => $payment_date, 'fn_fees_head_id' => $fn_fees_head_id, 'fn_fees_receipt_series_id' => $fn_fees_receipt_series_id, 'transcation_amount' => $transcation_amount, 'total_amount_without_fine_discount' => $transcation_amount, 'amount_paying' => $amount_paying, 'remarks' => $remarks, 'status' => '1', 'cdt' => $cdt, 'instrument_no' => $alrow['instrument_no'], 'instrument_date' => $instrument_date, 'invoice_status' => $invoice_status);
                         //print_r($data);
