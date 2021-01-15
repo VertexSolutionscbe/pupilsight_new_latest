@@ -234,10 +234,10 @@ else {
 			}
 		}
 
-        $form->toggleVisibilityByClass('sms2')->onRadio('sms')->when('N');
-		$row = $form->addRow()->addClass('sms2');
+        $form->toggleVisibilityByClass('email1')->onRadio('email')->when('Y');
+		$row = $form->addRow()->addClass('email1');
 			$row->addLabel('subject', __('Subject'));
-			$row->addTextField('subject')->maxLength(200);
+			$row->addTextField('subject')->maxLength(200)->required();
 
 
         $display_fields = array();
