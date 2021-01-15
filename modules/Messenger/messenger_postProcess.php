@@ -93,7 +93,8 @@ else {
 		if (isset($_POST["emailReceiptText"]))
 			$emailReceiptText = $_POST["emailReceiptText"] ;
 
-		if ($subject == "" OR $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "")) {
+		//print_r($_POST);die();
+		if ($subject == "" OR $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "") OR($_POST["role"]=='N' AND $_POST["roleCategory"]=='N' AND $_POST["yearGroup"]=='N' AND $_POST["rollGroup"]=='N' AND $_POST["activity"]=='N' AND $_POST["applicants"]=='N' AND $_POST["houses"]=='N' AND $_POST["transport"]=='N' AND $_POST["attendance"]=='N' AND $_POST["group"]=='N' AND $_POST["individuals"]=='N'  AND $_POST["individualList"]=='')) {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -1944,10 +1945,13 @@ else {
 							if ($sms=="Y" AND $countryCode!="") {
 								try {
 									$dataEmail=array("pupilsightPersonID"=>$t);
-									$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
-									$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
-									$sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
-									$sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
+									$sqlEmail ="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone1='' AND phone1Type='Mobile' AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)" ;
+									$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone2='' AND phone2Type='Mobile' AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)" ;
+									$sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone3='' AND phone3Type='Mobile' AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)" ;
+									$sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone4='' AND phone4Type='Mobile' AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)" ;
+									//print_r($dataEmail);
+									//print_r($sqlEmail);
+									//die();
 									$resultEmail=$connection2->prepare($sqlEmail);
 									$resultEmail->execute($dataEmail);
 								}
