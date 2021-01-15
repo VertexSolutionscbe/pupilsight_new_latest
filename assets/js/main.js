@@ -9089,3 +9089,42 @@ $(document).on('click', '#exportExcel', function () {
         }
     });
 });
+
+
+
+
+
+$(document).on('change', '#pupilsightProgramIDSchool', function () {
+    var id = $(this).val();
+    var aid = $("#pupilsightSchoolYearID").val();
+    var type = 'getClassData';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, aid: aid },
+        async: true,
+        success: function (response) {
+
+            $("#pupilsightYearGroupIDSchool").html('');
+            $("#pupilsightRollGroupIDSchool").html('');
+            $("#pupilsightYearGroupIDSchool").html(response);
+        }
+    });
+});
+
+$(document).on('change', '#pupilsightYearGroupIDSchool', function () {
+    var id = $(this).val();
+    var aid = $("#pupilsightSchoolYearID").val();
+    var pid = $('#pupilsightProgramIDSchool').val();
+    var type = 'getSectionData';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, pid: pid, aid: aid },
+        async: true,
+        success: function (response) {
+            $("#pupilsightRollGroupIDSchool").html('');
+            $("#pupilsightRollGroupIDSchool").html(response);
+        }
+    });
+});
