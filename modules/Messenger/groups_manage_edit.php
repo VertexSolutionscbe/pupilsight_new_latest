@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
             $table->addColumn('name', __('Name'))
                 ->sortable(['surname', 'preferredName'])
-                ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+                ->format(Format::using('name', ['preferredName', 'surname', 'Student', true]));
 
             $table->addColumn('email', __('Email'))->sortable();
 

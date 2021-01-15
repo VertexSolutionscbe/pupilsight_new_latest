@@ -234,9 +234,11 @@ else {
 			}
 		}
 
-		$row = $form->addRow();
+        $form->toggleVisibilityByClass('email1')->onRadio('email')->when('Y');
+		$row = $form->addRow()->addClass('email1');
 			$row->addLabel('subject', __('Subject'));
 			$row->addTextField('subject')->maxLength(200)->required();
+
 
         $display_fields = array();
         $display_fields =  array(''=>'Select Category',
@@ -245,23 +247,24 @@ else {
             'Other' =>'Other',
         );
 
-        $row = $form->addRow();
+        $form->toggleVisibilityByClass('sms3')->onRadio('sms')->when('N');
+        $row = $form->addRow()->addClass('sms3');
         $row->addLabel('category', __('Category'));
-        $row->addSelect('category')->fromArray($display_fields)->selected($values['category'])->required();
+        $row->addSelect('category')->fromArray($display_fields)->selected($values['category']);
 
         //echo "<span type='text' id='count'>Character Count</span>";
-
-        $form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
-		$row = $form->addRow()->addClass('sms');
-	        $col = $row->addColumn('body');
-	        $col->addLabel('body', __('Body'));
-	        $col->addEditor('body', $guid)->required()->setRows(20)->setValue($signature);
 
         $form->toggleVisibilityByClass('sms1')->onRadio('sms')->when('N');
         $row = $form->addRow()->addClass('sms1');
             $col = $row->addColumn('body');
             $col->addLabel('body', __('Body'));
             $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
+
+        $form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
+        $row = $form->addRow()->addClass('sms');
+        $col = $row->addColumn('body');
+        $col->addLabel('body', __('Body'));
+        $col->addEditor('body', $guid)->required()->setRows(20)->setValue($signature);
 
         $row = $form->addRow()->addAlert(__('For SMS message 160 Characters per message '))->setClass('right')
         ->append('<span id="count" title="countchars"></span>');

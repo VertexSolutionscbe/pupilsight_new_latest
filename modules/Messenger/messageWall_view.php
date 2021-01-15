@@ -51,10 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
 	$col = $row->addColumn();
         $col->addLabel('fromdate', __('From Date'))->addClass('dte');
-	    $col->addDate('fromdate')->setValue($fromdate);
+	    $col->addDate('fromdate')->setValue($fromdate)->required();
     $col = $row->addColumn();
         $col->addLabel('date', __('To Date'))->addClass('dte');
-		$col->addDate('date')->setValue($date);
+		$col->addDate('date')->setValue($date)->required();
 
     $displaycategory = array();
     $displaycategory =  array('All'=>'Select Category',
