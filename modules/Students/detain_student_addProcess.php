@@ -36,6 +36,17 @@ if ($pupilsightSchoolYearID == '') { echo 'Fatal error loading this page!';
             $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
 
             foreach($studentid as $pupilsightPersonID){
+
+                $sqlchk = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = '.$pupilsightPersonID.' ';
+                $resultchk = $connection2->query($sqlchk);
+                $stuData = $resultchk->fetch();
+
+                $datahis = array('pupilsightProgramID'=>$stuData['pupilsightProgramID'],'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $stuData['pupilsightSchoolYearID'], 'pupilsightYearGroupID' => $stuData['pupilsightYearGroupID'], 'pupilsightRollGroupID' => $stuData['pupilsightRollGroupID']);
+                $sqlhis = 'INSERT INTO pupilsightStudentEnrolmentHistory SET pupilsightPersonID=:pupilsightPersonID, pupilsightProgramID=:pupilsightProgramID, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID';
+                $resulthis = $connection2->prepare($sqlhis);
+                $resulthis->execute($datahis);
+
+                
                 $datadel = array('pupilsightPersonID' => $pupilsightPersonID);
                 $sqldel = 'DELETE FROM pupilsightStudentEnrolment WHERE pupilsightPersonID=:pupilsightPersonID';
                 $resultdel = $connection2->prepare($sqldel);
