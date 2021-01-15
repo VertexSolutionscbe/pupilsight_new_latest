@@ -263,6 +263,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                 echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
 
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
+
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
+
 
                 echo "</div><div class='float-none'></div></div>";
             } else {
@@ -326,6 +330,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
                     if (in_array(33, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+                    }
+
+                    if (in_array(34, $permissionChk)) {
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
+
+                    }
+                    if (in_array(35, $permissionChk)) {
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
                     }
                     echo "</div><div class='float-none'></div></div>";
                 }
@@ -887,6 +899,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             alert('You Have to Select Student.');
         }
     });
+
+
+    $(document).on('click', '#clickPromoteStudent', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            var hrf = $(this).attr('data-hrf');
+            var newhrf = hrf + stuId;
+            $("#promoteStudent").attr('href', newhrf);
+            window.setTimeout(function() {
+            $("#promoteStudent")[0].click();
+            }, 10);
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click', '#clickDetainStudent', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            var hrf = $(this).attr('data-hrf');
+            var newhrf = hrf + stuId;
+            $("#detainStudent").attr('href', newhrf);
+            window.setTimeout(function() {
+            $("#detainStudent")[0].click();
+            }, 10);
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+
 </script>
 <style>
     #expore_tbl {

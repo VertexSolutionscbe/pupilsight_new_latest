@@ -360,14 +360,14 @@ if ($type == 'filterstudentbyclass') {
 
         <td class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
         <div class="input-group stylish-input-group">
-            <div class=" mb-1"><label for="name" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">Student </label></div>';
+            <div class=" mb-1"><input type="checkbox" class="chkAll">&nbsp;&nbsp;<label for="name" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">Student </label></div>';
 
     foreach ($students as $k => $st) {
         if (empty($st['fsid'])) {
-            $data .= '<div class="right mb-1 mbtm" ><div class="inline flex-1 relative"><label class="leading-normal" for="pupilsightPersonID[student][' . $st['pupilsightPersonID'] . ']"> <span style="color:red;">(Not Assign)</span>' . $st['student_name'] . '</label> <input type="checkbox" name="pupilsightPersonID[student][' . $st['pupilsightPersonID'] . ']" id="pupilsightPersonID[class][' . $st['pupilsightPersonID'] . ']" value="on" class="right" disabled="1"><br></div>
+            $data .= '<div class="right mb-1 mbtm" ><div class="inline flex-1 relative"><input type="checkbox" name="pupilsightPersonID[student][' . $st['pupilsightPersonID'] . ']" id="pupilsightPersonID[class][' . $st['pupilsightPersonID'] . ']" value="on" class="right chkChild" disabled="1">&nbsp;&nbsp;<label class="leading-normal" for="pupilsightPersonID[student][' . $st['pupilsightPersonID'] . ']"> <span style="color:red;">(Not Assign)</span>' . $st['student_name'] . '</label> <br></div>
                 </div>';
         } else {
-            $data .= '<div class="right mb-1 mbtm"><div class="inline flex-1 relative"><label class="leading-normal" for="pupilsightPersonID[student][' . $st['pupilsightPersonID'] . ']"> ' . $st['student_name'] . '</label> <input type="checkbox" name="pupilsightPersonID[student][' . $st['pupilsightPersonID'] . ']" id="pupilsightPersonID[class][' . $st['pupilsightPersonID'] . ']" value="on" class="right"><br></div>
+            $data .= '<div class="right mb-1 mbtm"><div class="inline flex-1 relative"><input type="checkbox" name="pupilsightPersonID[student][' . $st['pupilsightPersonID'] . ']" id="pupilsightPersonID[class][' . $st['pupilsightPersonID'] . ']" value="on" class="right chkChild">&nbsp;&nbsp;<label class="leading-normal" for="pupilsightPersonID[student][' . $st['pupilsightPersonID'] . ']"> ' . $st['student_name'] . '</label> <br></div>
                 </div>';
         }
     }
@@ -730,7 +730,7 @@ if ($type == 'getClass') {
     if ($roleId == '2') {
         $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
     } else {
-        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
     }
 
     $result = $connection2->query($sql);
@@ -772,9 +772,9 @@ if ($type == 'getSection') {
     $cid = $val;
     $pid = $_POST['pid'];
     if ($roleId == '2') {
-        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '"  GROUP BY a.pupilsightRollGroupID';
     } else {
-        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
     }
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
@@ -3571,4 +3571,54 @@ if ($type == 'bulkItemDiscount') {
             }
         }
     }
+}
+
+
+if ($type == 'getClassData') {
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $pupilsightSchoolYearID = $_POST['aid'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    $pid = $val;
+    if ($roleId == '2') {
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+    } else {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+    }
+    //echo $sql;
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+    // echo '<pre>';
+    // print_r($classes);
+    // echo '</pre>';
+    $data = '<option value="">Select Class</option>';
+    if (!empty($classes)) {
+        foreach ($classes as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+
+if ($type == 'getSectionData') {
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    $pupilsightSchoolYearID = $_POST['aid'];
+
+    $cid = $val;
+    $pid = $_POST['pid'];
+    if ($roleId == '2') {
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '"  GROUP BY a.pupilsightRollGroupID';
+    } else {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
+    }
+    $result = $connection2->query($sql);
+    $sections = $result->fetchAll();
+    $data = '<option value="">Select Section</option>';
+    if (!empty($sections)) {
+        foreach ($sections as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightRollGroupID'] . '">' . $cl['name'] . '</option>';
+        }
+    }
+    echo $data;
 }

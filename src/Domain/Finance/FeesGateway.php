@@ -649,26 +649,28 @@ print_r($rs);
                     
                         $newdata = $this->runQuery($query2, $criteria);
                         if(!empty($newdata->data[0]['tot_amount'])){
-                            if(!empty($newdata1->data[0]['itemid'])){
+                            //$data[$k]['tot_amount'] = $newdata->data[0]['tot_amount'];
+                            if(!empty($newdata->data[0]['itemid'])){
                                 $query3 = $this
                                 ->newQuery()
                                 ->from('fn_fee_item_level_discount')
                                 ->cols([
                                     'SUM(fn_fee_item_level_discount.discount) as tot_discount'
                                 ])
-                                ->where('fn_fee_item_level_discount.item_id IN ('.$newdata1->data[0]['itemid'].') ')
+                                ->where('fn_fee_item_level_discount.item_id IN ('.$newdata->data[0]['itemid'].') ')
                                 ->where('fn_fee_item_level_discount.pupilsightPersonID = "'.$d['std_id'].'" ');
                             
                                 $newdata2 = $this->runQuery($query3, $criteria);
                                 if(!empty($newdata2->data[0]['tot_discount'])){
-                                    $amt = $newdata1->data[0]['tot_amount'] - $newdata2->data[0]['tot_discount'];
+                                    $amt = $newdata->data[0]['tot_amount'] - $newdata2->data[0]['tot_discount'];
                                     $data[$k]['inv_amount'] = $amt;
                                 } else {
-                                    $data[$k]['inv_amount'] = $newdata1->data[0]['tot_amount'];
+                                    $data[$k]['inv_amount'] = $newdata->data[0]['tot_amount'];
                                 }
                             } else {
                                 $data[$k]['inv_amount'] = '';
                             }
+                            
                         } else {
                             $data[$k]['tot_amount'] = '';
                         }
