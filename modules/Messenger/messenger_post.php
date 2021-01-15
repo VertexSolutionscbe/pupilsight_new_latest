@@ -234,9 +234,11 @@ else {
 			}
 		}
 
-		$row = $form->addRow();
+        $form->toggleVisibilityByClass('sms2')->onRadio('sms')->when('N');
+		$row = $form->addRow()->addClass('sms2');
 			$row->addLabel('subject', __('Subject'));
-			$row->addTextField('subject')->maxLength(200)->required();
+			$row->addTextField('subject')->maxLength(200);
+
 
         $display_fields = array();
         $display_fields =  array(''=>'Select Category',
@@ -245,9 +247,10 @@ else {
             'Other' =>'Other',
         );
 
-        $row = $form->addRow();
+        $form->toggleVisibilityByClass('sms3')->onRadio('sms')->when('N');
+        $row = $form->addRow()->addClass('sms3');
         $row->addLabel('category', __('Category'));
-        $row->addSelect('category')->fromArray($display_fields)->selected($values['category'])->required();
+        $row->addSelect('category')->fromArray($display_fields)->selected($values['category']);
 
         //echo "<span type='text' id='count'>Character Count</span>";
 
