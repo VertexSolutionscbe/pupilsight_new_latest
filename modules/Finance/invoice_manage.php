@@ -167,13 +167,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
         $t_amount = 0;
         foreach ($c_query as $am) {
-            $t_amount += $am['tot_amount'];
+            // $t_amount += $am['tot_amount'];
+            $t_amount += $am['inv_amount'];
         }
         $kountTransaction = count($c_query);
     } else {
         $t_amount = 0;
         $kountTransaction = 0;
     }
+
+    // echo '<pre>';
+    // print_r($c_query);
+    // echo '</pre>';
     // DATA TABLE
 
 
