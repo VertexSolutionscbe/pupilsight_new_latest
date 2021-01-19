@@ -215,18 +215,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightYearGroupID', __('Class'));
-            $col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->fromArray($classes)->selected($pupilsightYearGroupID)->addClass("load_configSession");
-            $col->addTextField('pupilsightPersonID')->setId('staff_id')->addClass('nodisply')->setValue($staff_person_id);
+            $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
+            $col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->fromArray($classes)->selected($pupilsightYearGroupID)->addClass("pupilsightRollGroupIDP1")->selectMultiple();
+            //$col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->fromArray($classes)->selected($pupilsightYearGroupID)->addClass("load_configSession");
+            //$col->addTextField('pupilsightPersonID')->setId('staff_id')->addClass('nodisply')->setValue($staff_person_id);
 
-            $col = $row->addColumn()->setClass('newdes');
+            /*$col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightRollGroupID', __('Section'));
-            $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->setId($section_id)->selected($pupilsightRollGroupID)->placeholder()->addClass('pupilsightRollGroupIDP');
+            $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->setId($section_id)->selected($pupilsightRollGroupID)->placeholder()->addClass('pupilsightRollGroupIDP');*/
 
             // $row->addSelectStudent('pupilsightPersonID', $_SESSION[$guid]['pupilsightSchoolYearID'])->required()->selected($pupilsightPersonID)->placeholder();
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightPersonID', __('Students'));
+            $col->addLabel('pupilsightPersonID', __('Students'))->addClass('dte');
             $col->addSelect('pupilsightPersonID')->fromArray($student)->selected($pupilsightPersonID)->selectMultiple();
 
             /*$row = $form->addRow();
@@ -340,6 +341,24 @@ $massdeleteurl=$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSIO
         });
     });
 
+    $(document).on('change', '.pupilsightRollGroupIDP1', function() {
+        var id = $("#pupilsightRollGroupID").val();
+        var yid = $('#pupilsightSchoolYearID').val();
+        var pid = $('#pupilsightProgramID').val();
+        var cid = $('#pupilsightYearGroupIDA').val();
+        var type = 'getStudent1';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, yid: yid, pid: pid, cid: cid },
+            async: true,
+            success: function(response) {
+                $("#pupilsightPersonID").html();
+                $("#pupilsightPersonID").append(response);
+            }
+        });
+    });
+
     $(document).on('change','.load_configSession',function(){
         var id = $('#pupilsightProgramID').val();
         var pupilsightYearGroupID = $('#pupilsightYearGroupIDA').val();
@@ -379,6 +398,11 @@ $massdeleteurl=$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSIO
 <script type='text/javascript'>
     $(document).ready(function () {
         $('#pupilsightPersonID').select2();
+    });
+</script>
+<script type='text/javascript'>
+    $(document).ready(function () {
+        $('#pupilsightYearGroupIDA').select2();
     });
 </script>
 <script type="text/javascript">
