@@ -123,8 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
                     $col->addTextField('start_point')->addClass('txtfield')->required()->setValue($values['start_point']);
 
                     $col = $row->addColumn()->setClass('newdes');
-                    $col->addLabel('start_time', __('Start Time'));
-                    $col->addTextField('start_time')->addClass('txtfield')->required()->setValue($values['start_time']);
+                    $col->addLabel('start_time', __('Start Time'))->addClass('dte');
+                    $col->addTime('start_time')->addClass('txtfield')->required()->setValue($values['start_time'])->maxLength(8);
         
                     $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('end_point', __('End Point'));
@@ -133,8 +133,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
                    
                  
                     $col = $row->addColumn()->setClass('newdes');
-                    $col->addLabel('end_time', __('End Time'));
-                    $col->addTextField('end_time')->addClass('txtfield')->required()->setValue($values['end_time']);
+                    $col->addLabel('end_time', __('End Time'))->addClass('dte');
+                    $col->addTime('end_time')->addClass('txtfield')->required()->setValue($values['end_time'])->maxLength(8);
 
                     $row = $form->addRow();
                     $col = $row->addColumn()->setClass('newdes nobrdbtm');
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
                  if(!empty($childvalues)){
                     $i = 1;
                        foreach($childvalues as $cv){
-                        $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv fixedfine'.$cv['id']);
+                        $row = $form->addRow()->setID('seatdiv')->addClass('mt-3 seatdiv fixedfine'.$cv['id']);
             
                         $col = $row->addColumn()->setClass('newdes nobrdbtm');
                         if($i == '1'){

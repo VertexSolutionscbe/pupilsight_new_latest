@@ -50,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
             $pickup_time = $_POST['pickup_time'];
             $drop_time = $_POST['drop_time'];
             $stop_no = $_POST['stop_no'];
+            $noofstops= count($stop_no);
             // $tax = $_POST['tax'];
             // $oneway_price = $_POST['oneway_price'];
             // $twoway_price = $_POST['twoway_price'];
@@ -99,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
                         
                         
                         $data = array('route_name' => $route_name, 'start_point' => $start_point,'pupilsightSchoolYearID'=>$pupilsightSchoolYearID ,'start_time' => $start_time, 'end_point' => $end_point,'bus_id'=> $bus_id ,'end_time' => $end_time, 
-                        'num_stops' => $num_stops, 'type' => $type, 'udt' => $udt, 'id' => $id);
+                        'num_stops' => $noofstops, 'type' => $type, 'udt' => $udt, 'id' => $id);
                        
                     // $data = array('name' => $name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'invoice_title' => $invoice_title, 'pupilsightSchoolFinanceYearID' => $pupilsightSchoolFinanceYearID, 'fn_fees_head_id' => $fn_fees_head_id, 'inv_fee_series_id' => $inv_fee_series_id, 'recp_fee_series_id' => $recp_fee_series_id, 'fn_fees_fine_rule_id' => $fn_fees_fine_rule_id, 'fn_fees_discount_id' => $fn_fees_discount_id, 'due_date' => $due_date, 'udt' => $udt, 'id' => $id);
                         $sql = 'UPDATE trans_routes SET route_name=:route_name, pupilsightSchoolYearID=:pupilsightSchoolYearID, start_point=:start_point, start_time=:start_time,bus_id =:bus_id,end_point=:end_point, end_time=:end_time,
