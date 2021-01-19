@@ -36,34 +36,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     if ($highestAction == 'View Absences_any') {
         $pupilsightPersonID = $_GET['pupilsightPersonID'] ?? $_SESSION[$guid]['pupilsightPersonID'];
 
-        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setTitle(__('Filter'));
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('q', '/modules/Staff/absences_view_byPerson.php');
-        
-        $row = $form->addRow();
-            $row->addLabel('pupilsightPersonID', __('Person'));
-            $row->addSelectStaff('pupilsightPersonID')->selected($pupilsightPersonID);
 
         $row = $form->addRow();
-            $row->addFooter();
-            $row->addSearchSubmit($pupilsight->session);
+        $row->addLabel('pupilsightPersonID', __('Person'));
+        $row->addSelectStaff('pupilsightPersonID')->selected($pupilsightPersonID);
+
+        $row = $form->addRow();
+        $row->addFooter();
+        $row->addSearchSubmit($pupilsight->session);
 
         echo $form->getOutput();
     } else {
         $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
     }
 
-    
+
     $absences = $staffAbsenceDateGateway->selectApprovedAbsenceDatesByPerson($pupilsightPersonID)->fetchGrouped();
     $schoolYear = $schoolYearGateway->getSchoolYearByID($pupilsightSchoolYearID);
 
     // CALENDAR VIEW
     $table = AbsenceCalendar::create($absences, $schoolYear['firstDay'], $schoolYear['lastDay']);
-    echo $table->getOutput().'<br/>';
+    echo $table->getOutput() . '<br/>';
 
     // COUNT TYPES
     $absenceTypes = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     $table = DataTable::create('staffAbsenceTypes');
 
     foreach ($types as $name => $count) {
-        $table->addColumn($name, $name)->context('primary')->width((100 / count($types)).'%');
+        $table->addColumn($name, $name)->context('primary')->width((100 / count($types)) . '%');
     }
 
     echo $table->render(new DataSet([$types]));
@@ -113,11 +113,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
     // COLUMNS
     $table->addColumn('date', __('Date'))
         ->format([AbsenceFormats::class, 'dateDetails']);
-    
+
     $table->addColumn('type', __('Type'))
         ->description(__('Reason'))
         ->format([AbsenceFormats::class, 'typeAndReason']);
-    
+
     $table->addColumn('coverage', __('Coverage'))
         ->format([AbsenceFormats::class, 'coverageList']);
 
@@ -133,8 +133,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPers
         ->addParam('pupilsightStaffAbsenceID')
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($absence, $actions) use ($canManage, $canRequest) {
-            if ($canRequest && $absence['status'] == 'Approved' 
-                && empty($absence['coverage']) && $absence['dateEnd'] >= date('Y-m-d')) {
+            if (
+                $canRequest && $absence['status'] == 'Approved'
+                && empty($absence['coverage']) && $absence['dateEnd'] >= date('Y-m-d')
+            ) {
                 $actions->addAction('coverage', __('Request Coverage'))
                     ->setIcon('attendance')
                     ->setURL('/modules/Staff/coverage_request.php');

@@ -1288,6 +1288,7 @@ if ($type == 'getStudent') {
     }
     echo $data;
 }
+
 if ($type == 'getMultiStudent') {
     $cid = $val;
     $pupilsightSchoolYearID = $_POST['yid'];

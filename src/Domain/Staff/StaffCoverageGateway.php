@@ -35,7 +35,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->from($this->getTableName())
             ->cols([
                 'pupilsightStaffCoverage.pupilsightStaffCoverageID', 'pupilsightStaffCoverage.status',  'pupilsightStaffAbsenceType.name as type', 'pupilsightStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'pupilsightStaffCoverage.pupilsightStaffAbsenceID',
-                'pupilsightStaffCoverage.pupilsightPersonID', 'absence.title AS titleAbsence', 'absence.preferredName AS preferredNameAbsence', 'absence.surname AS surnameAbsence', 
+                'pupilsightStaffCoverage.pupilsightPersonID', 'absence.title AS titleAbsence', 'absence.preferredName AS preferredNameAbsence', 'absence.surname AS surnameAbsence',
                 'pupilsightStaffCoverage.pupilsightPersonIDCoverage', 'coverage.title as titleCoverage', 'coverage.preferredName as preferredNameCoverage', 'coverage.surname as surnameCoverage',
                 'pupilsightStaffCoverage.pupilsightPersonIDStatus', 'status.title as titleStatus', 'status.preferredName as preferredNameStatus', 'status.surname as surnameStatus',
                 'pupilsightStaffCoverage.notesStatus', 'absenceStaff.jobTitle as jobTitleAbsence'
@@ -63,7 +63,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightStaffCoverage.pupilsightStaffCoverageID', 'pupilsightStaffCoverage.status',  'pupilsightStaffAbsenceType.name as type', 'pupilsightStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'pupilsightStaffCoverage.pupilsightPersonIDCoverage', 
+                'pupilsightStaffCoverage.pupilsightStaffCoverageID', 'pupilsightStaffCoverage.status',  'pupilsightStaffAbsenceType.name as type', 'pupilsightStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'pupilsightStaffCoverage.pupilsightPersonIDCoverage',
                 'pupilsightStaffCoverage.pupilsightPersonID', 'absence.title AS titleAbsence', 'absence.preferredName AS preferredNameAbsence', 'absence.surname AS surnameAbsence',
                 'pupilsightStaffCoverage.pupilsightPersonIDStatus', 'status.title as titleStatus', 'status.preferredName as preferredNameStatus', 'status.surname as surnameStatus',
                 'pupilsightStaffCoverage.notesStatus', 'absenceStaff.jobTitle as jobTitleAbsence'
@@ -90,7 +90,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightStaffCoverage.pupilsightStaffCoverageID', 'pupilsightStaffCoverage.status',  'pupilsightStaffAbsenceType.name as type', 'pupilsightStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'pupilsightStaffCoverage.pupilsightPersonIDCoverage', 'pupilsightStaffCoverage.pupilsightPersonID', 
+                'pupilsightStaffCoverage.pupilsightStaffCoverageID', 'pupilsightStaffCoverage.status',  'pupilsightStaffAbsenceType.name as type', 'pupilsightStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'pupilsightStaffCoverage.pupilsightPersonIDCoverage', 'pupilsightStaffCoverage.pupilsightPersonID',
                 'coverage.title as titleCoverage', 'coverage.preferredName as preferredNameCoverage', 'coverage.surname as surnameCoverage', 'pupilsightStaffCoverage.notesCoverage'
             ])
             ->leftJoin('pupilsightStaffCoverageDate', 'pupilsightStaffCoverageDate.pupilsightStaffCoverageID=pupilsightStaffCoverage.pupilsightStaffCoverageID')
@@ -113,7 +113,7 @@ class StaffCoverageGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightStaffCoverage.pupilsightStaffCoverageID', 'pupilsightStaffCoverage.status',  'pupilsightStaffAbsenceType.name as type', 'pupilsightStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'pupilsightStaffCoverage.pupilsightPersonIDCoverage', 'pupilsightStaffCoverage.pupilsightPersonID', 
+                'pupilsightStaffCoverage.pupilsightStaffCoverageID', 'pupilsightStaffCoverage.status',  'pupilsightStaffAbsenceType.name as type', 'pupilsightStaffAbsence.reason', 'date', 'COUNT(*) as days', 'MIN(date) as dateStart', 'MAX(date) as dateEnd', 'allDay', 'timeStart', 'timeEnd', 'timestampStatus', 'timestampCoverage', 'pupilsightStaffCoverage.pupilsightPersonIDCoverage', 'pupilsightStaffCoverage.pupilsightPersonID',
                 'absence.title AS titleAbsence', 'absence.preferredName AS preferredNameAbsence', 'absence.surname AS surnameAbsence', 'absenceStaff.jobTitle as jobTitleAbsence'
             ])
             ->innerJoin('pupilsightStaffAbsence', 'pupilsightStaffCoverage.pupilsightStaffAbsenceID=pupilsightStaffAbsence.pupilsightStaffAbsenceID')
@@ -200,21 +200,24 @@ class StaffCoverageGateway extends QueryableGateway
             },
             'status' => function ($query, $status) {
                 return $query->where('pupilsightStaffCoverage.status = :status')
-                             ->bindValue('status', $status);
+                    ->bindValue('status', $status);
             },
             'dateStart' => function ($query, $dateStart) {
                 return $query->where("pupilsightStaffCoverageDate.date >= :dateStart")
-                             ->bindValue('dateStart', $dateStart);
+                    ->bindValue('dateStart', $dateStart);
             },
             'dateEnd' => function ($query, $dateEnd) {
                 return $query->where("pupilsightStaffCoverageDate.date <= :dateEnd")
-                             ->bindValue('dateEnd', $dateEnd);
+                    ->bindValue('dateEnd', $dateEnd);
             },
             'date' => function ($query, $date) {
                 switch (ucfirst($date)) {
-                    case 'Upcoming': return $query->where("date >= CURRENT_DATE()")->where("pupilsightStaffCoverage.status <> 'Declined' AND pupilsightStaffCoverage.status <> 'Cancelled'");
-                    case 'Today'   : return $query->where("pupilsightStaffCoverageDate.date = CURRENT_DATE()");
-                    case 'Past'    : return $query->where("pupilsightStaffCoverageDate.date < CURRENT_DATE()");
+                    case 'Upcoming':
+                        return $query->where("date >= CURRENT_DATE()")->where("pupilsightStaffCoverage.status <> 'Declined' AND pupilsightStaffCoverage.status <> 'Cancelled'");
+                    case 'Today':
+                        return $query->where("pupilsightStaffCoverageDate.date = CURRENT_DATE()");
+                    case 'Past':
+                        return $query->where("pupilsightStaffCoverageDate.date < CURRENT_DATE()");
                 }
             },
         ];
