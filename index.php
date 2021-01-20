@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 */
 
 //echo  "http://localhost/pupilsight/wp/wp-login.php?user=".urlencode('admin')."&pass=".urlencode('Admin@123456');
-//error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ERROR | E_PARSE);
 //error_reporting(0);
 
 use Pupilsight\Domain\System\ModuleGateway;

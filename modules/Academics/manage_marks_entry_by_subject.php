@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             $re_mode_data = $re_mode->fetchAll();
          } 
         //$subjectName = $subject_wise_tests->dataSet['data'][0]['subject_display_name'];
-        echo '<h1>Subject : '.$subjectName.'</h1>';
+        echo '<h2>Subject : '.$subjectName.'</h2>';
         echo '<form method="POST" id="marksbysubject" action="'.$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/manage_marks_entry_by_subject_addProcess.php">
         <input type="hidden" name="address" value="'.$_SESSION[$guid]['address'].'">
         <input type="hidden" name="pupilsightSchoolYearID" value="'.$pupilsightSchoolYearID.'">      
@@ -292,24 +292,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 <th rowspan="2" style="width:80px" class="bdr_right"> Admission No </th>
                 <?php 
                 //echo count($subject_wise_tests);
+                $i1 = 1;
                 foreach($subject_wise_tests as $s_test)
                 { 
+                    if($i1 > 1){ 
+                        $colspan = '7';
+                    } else {
+                        $colspan = '6';
+                    }
                     ?>
-                <th colspan="6" style="text-align:center; border:1px solid #dee2e6"><?php echo $s_test['name']?></th>
-                <?php } ?>               
+                <th colspan="<?php echo $colspan;?>" style="text-align:center; border:1px solid #dee2e6"><?php echo $s_test['name']?></th>
+                <?php $i1++; } ?>               
             </tr>
             <tr>
             <?php 
-            foreach($subject_wise_tests as $s_test)
-                    { 
-                        ?> 
+            $i = 1;
+            foreach($subject_wise_tests as $s_test){ 
+                if($i > 1){
+            ?> 
+                <th rowspan="2" style="width:80px"> Student Name </th>
+            <?php } ?>
                     <th>Marks history</th>            
                     <th colspan='2'> Marks <br/>Obtained(<?php echo str_replace(".00", "", $s_test['max_marks']);?>)</th>
                     <th>Grade</th>
                     <th>Grade Status</th>
                     <th class="bdr_right">Remark all <input type="checkbox" data-id="<?php echo $s_test['test_id'];?>" class="remark_all"></th>
                     
-                    <?php } ?>
+                    <?php $i++; } ?>
             </tr>    
      </thead>       
      <tbody>
@@ -338,9 +347,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 ?>                 
                 <?php           
                 //echo count($subject_wise_tests);
-               
+                $km = 1;
                 foreach($subject_wise_tests as $k => $s_test)
                 {
+                    
                     
                     if($s_test['lock_marks_entry'] == '1'){
                         $disabled = 'disabled';
@@ -390,6 +400,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     {
                         $locked = '';
                     }
+                    //echo $km;
+
+                    if($km > 1){
+                        echo '<td>'; echo $row['student_name']; echo '</td>';
+                    }
 
 
                     // $sqlMarks = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id='..' AND pupilsightYearGroupID='..' AND pupilsightRollGroupID='..' AND pupilsightDepartmentID='..' AND test_id='..' AND test_id='..' AND  '
@@ -417,7 +432,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     }
                     
 
-                    echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab'.$f.'" value="'.$marksobt.'"  '.$disabled.'>';
+                    echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab-'.$s_test['test_id'].'-'.$f.'" value="'.$marksobt.'"  '.$disabled.'>';
                     echo '</td>';  
                     
                     $seab = array("-", "AB", "EX");
@@ -453,7 +468,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 
                     }
                     echo '</fieldset></td>';
-                    echo '<td id="grade_status'.$s_test['test_id'].'row'.$row['stuid'].'"></td>';
+                    //echo $prevdata['marks_obtained'].' -- '.$prevdata['gradeId'];
+                    
+                    if(!empty($marksobt) && !empty($s_test['gradeSystemId'])){
+                        $obtMark = $s_test['max_marks'];
+                        $mrks = ($marksobt / $obtMark) * 100;
+                        $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $s_test['gradeSystemId'] . '" AND  (' . $mrks . ' BETWEEN `lower_limit` AND `upper_limit`)';
+                        $result = $connection2->query($sql);
+                        $grade = $result->fetch();
+
+                        $gstatus = $grade['subject_status'];
+                    } else {
+                        $gstatus = '';
+                    }
+                    echo '<td id="grade_status'.$s_test['test_id'].'row'.$row['stuid'].'">'.$gstatus.'</td>';
                     echo '<td> ';
                     if(!empty($prevdata['remarks'])){
                         $colrCls = 'grnRemark';
@@ -475,13 +503,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                      <?php echo $data_sel;?>
                     </select>
                     <input id="remarklistval<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" type="hidden" name="remark_frmlst[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="">
-                    <textarea style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class=" remark_textarea text_remark_<?php echo $s_test['test_id']; ?>" ><?php echo $prevdata['remarks'] ?></textarea> 
+                    <textarea data-tid="<?php echo $s_test['test_id'];?>"  data-fid="<?php echo $f;?>"  style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class="tabfocusRemark remark_textarea text_remark_<?php echo $s_test['test_id']; ?>  focustabRemark-<?php echo $s_test['test_id'];?>-<?php echo $f; ?>" ><?php echo $prevdata['remarks'] ?></textarea> 
                     <br/> 
                     <span class="rcount_<?php echo $s_test['test_id'];?>"></span>        
                     <?php
                     echo '</td>';
                     echo '</fieldset>';
-                   
+                   $km++;
                 }       
                 echo '</tr>';
                 $f++;
@@ -537,6 +565,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
 
     .grnRemark {
         color:green;
+    }
+
+    .txtColor {
+        background-color: lightblue !important;
     }
 </style>
 <script>
@@ -722,15 +754,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         }
 
         $(document).on('keydown', '.tabfocus', function(e) {
+            $(".numMarksfield").removeClass('txtColor');
             var id = $(this).attr('data-fid');
+            var tid = $(this).attr('data-tid');
             var newid = parseInt(id) + 1;
             var keycode = (window.event) ? event.keyCode : e.keyCode;
             if (keycode == 9){
                 window.setTimeout(function() {
-                    $("#focustab"+newid).focus();
+                    $("#focustab-"+tid+'-'+newid).focus().addClass('txtColor');
                 }, 10);
             }
-        });    
+        }); 
+
+        $(document).on('keydown', '.tabfocusRemark', function(e) {
+            
+            //$(".tabfocusRemark").removeClass('txtColor');
+            var id = $(this).attr('data-fid');
+            var tid = $(this).attr('data-tid');
+            var newid = parseInt(id) + 1;
+            alert(id);
+            var keycode = (window.event) ? event.keyCode : e.keyCode;
+            if (keycode == 9){
+                window.setTimeout(function() {
+                    $(".focustabRemark-"+tid+'-'+newid).focus().addClass('txtColor');
+                }, 10);
+            }
+        });       
 
        
     $(document).on('click','.getMaxHistroy',function(){

@@ -1438,7 +1438,8 @@ if (isset($_POST['type'])) {
                 $pupilsightRollGroupID = implode(',', $_POST['pupilsightRollGroupID']);
                 $pupilsightProgramID = $_POST['pupilsightProgramID'];
                 $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
-                $sql = 'SELECT SQL_CALC_FOUND_ROWS examinationTest.* FROM `examinationTest` LEFT JOIN `examinationTestAssignClass` ON `examinationTest`.`id`=`examinationTestAssignClass`.`test_id` LEFT JOIN `pupilsightSchoolYear` ON `examinationTest`.`pupilsightSchoolYearID`=`pupilsightSchoolYear`.`pupilsightSchoolYearID` WHERE `examinationTest`.`pupilsightSchoolYearID` = "' . $pupilsightSchoolYearID . '" AND `examinationTestAssignClass`.`pupilsightProgramID` = "' . $pupilsightProgramID . '" AND `examinationTestAssignClass`.`pupilsightYearGroupID` = "001" AND `examinationTestAssignClass`.`pupilsightRollGroupID` IN (' . $pupilsightRollGroupID . ')  ORDER BY `examinationTest`.`id` DESC';
+                $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
+                $sql = 'SELECT  examinationTest.* FROM `examinationTest` LEFT JOIN `examinationTestAssignClass` ON `examinationTest`.`id`=`examinationTestAssignClass`.`test_id` LEFT JOIN `pupilsightSchoolYear` ON `examinationTest`.`pupilsightSchoolYearID`=`pupilsightSchoolYear`.`pupilsightSchoolYearID` WHERE `examinationTest`.`pupilsightSchoolYearID` = "' . $pupilsightSchoolYearID . '" AND `examinationTestAssignClass`.`pupilsightProgramID` = "' . $pupilsightProgramID . '" AND `examinationTestAssignClass`.`pupilsightYearGroupID` = "'.$pupilsightYearGroupID.'" AND `examinationTestAssignClass`.`pupilsightRollGroupID` IN (' . $pupilsightRollGroupID . ')  ORDER BY `examinationTest`.`id` DESC';
                 $result = $connection2->query($sql);
                 $test = $result->fetchAll();
                 if (!empty($test)) {
@@ -1456,7 +1457,7 @@ if (isset($_POST['type'])) {
         case "load_tests_subjects":
             $testID = implode(',', $_POST['testID']);
             $sqls = "SELECT a.*,b.*,c.name AS test,c.max_marks as maxMarks,e.name AS section,b.marks_obtained ,f.name as class,i.pupilsightDepartmentID,i.subject_display_name as subname,j.name as skill,j.id as skill_id FROM pupilsightPerson AS a LEFT JOIN examinationMarksEntrybySubject AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN  examinationTest as c ON b.test_id = c.id 
-        LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightRollGroup AS e ON d.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightYearGroup AS f ON d.pupilsightYearGroupID = f.pupilsightYearGroupID  LEFT JOIN pupilsightProgram as h ON d.pupilsightProgramID = h.pupilsightProgramID LEFT JOIN subjectToClassCurriculum as i ON b.pupilsightDepartmentID =i.pupilsightDepartmentID LEFT JOIN ac_manage_skill as j ON b.skill_id = j.id WHERE   c.id IN(209) GROUP BY a.pupilsightPersonID";
+        LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightRollGroup AS e ON d.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightYearGroup AS f ON d.pupilsightYearGroupID = f.pupilsightYearGroupID  LEFT JOIN pupilsightProgram as h ON d.pupilsightProgramID = h.pupilsightProgramID LEFT JOIN subjectToClassCurriculum as i ON b.pupilsightDepartmentID =i.pupilsightDepartmentID LEFT JOIN ac_manage_skill as j ON b.skill_id = j.id WHERE   c.id IN(".$testID.") GROUP BY a.pupilsightPersonID";
             $results = $connection2->query($sqls);
             $rowdatas = $results->fetchAll();
             break;
