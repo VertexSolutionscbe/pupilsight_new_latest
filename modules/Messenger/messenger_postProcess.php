@@ -84,6 +84,9 @@ else {
 			$sms="N" ;
 		}
 		$subject=$_POST["subject"] ;
+		if($subject==''){
+            $subject='NA';
+		}
 		$category=$_POST["category"] ;
 		$body=stripslashes($_POST["body"]) ;
 		$emailReceipt = $_POST["emailReceipt"] ;
@@ -93,7 +96,8 @@ else {
 		if (isset($_POST["emailReceiptText"]))
 			$emailReceiptText = $_POST["emailReceiptText"] ;
 
-		if ($subject == "" OR $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "")) {
+	//	print_r($_POST);die();
+		if ( $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "") OR($_POST["role"]=='N' AND $_POST["roleCategory"]=='N' AND $_POST["yearGroup"]=='N' AND $_POST["rollGroup"]=='N' AND $_POST["activity"]=='N' AND $_POST["applicants"]=='N' AND $_POST["houses"]=='N' AND $_POST["transport"]=='N' AND $_POST["attendance"]=='N' AND $_POST["group"]=='N' AND $_POST["individuals"]=='N'  AND $_POST["individualList"]=='') OR ($email=="N" AND $messageWall=="N" AND $sms=="N")) {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -1944,12 +1948,29 @@ else {
 							if ($sms=="Y" AND $countryCode!="") {
 								try {
 									$dataEmail=array("pupilsightPersonID"=>$t);
-									$sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
-									$sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
-									$sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
-									$sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
-									$resultEmail=$connection2->prepare($sqlEmail);
-									$resultEmail->execute($dataEmail);
+									$getpersontype="SELECT pupilsightPersonID,pupilsightRoleIDPrimary FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID";
+                                    $resultpersontype=$connection2->prepare($getpersontype);
+                                    $resultpersontype->execute($dataEmail);
+                                    while($rowPosts = $resultpersontype->fetch()) {
+                                        $persontype=$rowPosts['pupilsightRoleIDPrimary'];
+                                        if($persontype=='003') {
+
+                                            $sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone1='' AND phone1Type='Mobile' AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)";
+                                            $sqlEmail .= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone2='' AND phone2Type='Mobile' AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)";
+                                            $sqlEmail .= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone3='' AND phone3Type='Mobile' AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)";
+                                            $sqlEmail .= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone4='' AND phone4Type='Mobile' AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)";
+                                            //print_r($dataEmail);
+                                            //print_r($sqlEmail);
+                                            //die();
+                                        }else{
+                                            $sqlEmail="(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone1='' AND phone1Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
+                                            $sqlEmail.=" UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone2='' AND phone2Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
+                                            $sqlEmail.=" UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone3='' AND phone3Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
+                                            $sqlEmail.=" UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone4='' AND phone4Type='Mobile' AND pupilsightPersonID=:pupilsightPersonID AND status='Full')" ;
+										}
+                                        $resultEmail = $connection2->prepare($sqlEmail);
+                                        $resultEmail->execute($dataEmail);
+                                    }
 								}
 								catch(PDOException $e) { }
 								while ($rowEmail=$resultEmail->fetch()) {

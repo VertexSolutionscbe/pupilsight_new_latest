@@ -305,7 +305,7 @@ class DatabaseFormFactory extends FormFactory
 
         if ($params['includeStudents'] == true) {
             $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'date' => date('Y-m-d'));
-            $sql = "SELECT pupilsightPerson.pupilsightPersonID, preferredName, surname, pupilsightRollGroup.name AS rollGroupName 
+            $sql = "SELECT pupilsightPerson.pupilsightPersonID, preferredName, surname, pupilsightRollGroup.name AS rollGroupName,pupilsightYearGroup.name as YearGroupName 
                     FROM pupilsightPerson
                     JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) 
                     JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID)
@@ -318,7 +318,7 @@ class DatabaseFormFactory extends FormFactory
 
             if ($result->rowCount() > 0) {
                 $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
-                    $group[$item['pupilsightPersonID']] = $item['rollGroupName'].' - '.formatName('', $item['preferredName'], $item['surname'], 'Student', true);
+                    $group[$item['pupilsightPersonID']] = formatName( $item['preferredName'], $item['surname'], 'Student', true).' - '.$item['YearGroupName'].' - '.$item['rollGroupName'];
                     return $group;
                 }, array());
             }

@@ -167,13 +167,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
         $t_amount = 0;
         foreach ($c_query as $am) {
-            $t_amount += $am['tot_amount'];
+            // $t_amount += $am['tot_amount'];
+            $t_amount += $am['inv_amount'];
         }
         $kountTransaction = count($c_query);
     } else {
         $t_amount = 0;
         $kountTransaction = 0;
     }
+
+    // echo '<pre>';
+    // print_r($c_query);
+    // echo '</pre>';
     // DATA TABLE
 
 
@@ -187,11 +192,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     $row = $form->addRow();
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
-    $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProg')->selected($pupilsightProgramID)->fromArray($program)->required();
+    //$col->addSelect('pupilsightProgramID')->setId('getMultiClassByProg')->selected($pupilsightProgramID)->fromArray($program)->required();
+    $col->addSelect('pupilsightProgramID')->setId('getMultiClassByProg')->selected($pupilsightProgramID)->fromArray($program);
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
-    $col->addSelect('pupilsightYearGroupID')->setId('showMultiClassByProg')->fromArray($classes)->selected($pupilsightYearGroupID)->selectMultiple()->required();
+    //$col->addSelect('pupilsightYearGroupID')->setId('showMultiClassByProg')->fromArray($classes)->selected($pupilsightYearGroupID)->selectMultiple()->required();
+    $col->addSelect('pupilsightYearGroupID')->setId('showMultiClassByProg')->fromArray($classes)->selected($pupilsightYearGroupID)->selectMultiple();
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('[pupilsightRollGroupID', __('Section'))->addClass('dte');

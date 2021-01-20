@@ -55,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
                 $subject_display_name = $getdata['subject_display_name'];
                 $subject_type = $getdata['subject_type'];
                 $di_mode = $getdata['di_mode'];
+                $pos = $getdata['pos'];
 
                 $getsqlskills = 'SELECT * FROM subjectSkillMapping WHERE pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" AND pupilsightSchoolYearID = "'.$academicID.'" AND pupilsightProgramID = "'.$programID.'" AND pupilsightYearGroupID = "'.$cid.'" ';
                 $getresultskills = $connection2->query($getsqlskills);
@@ -65,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
                 $result1 = $connection2->prepare($sql1);
                 $result1->execute($data1);
 
-                $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'subject_code' => $subject_code, 'subject_display_name' => $subject_display_name, 'subject_type' => $subject_type, 'di_mode' => $di_mode);
-                $sql = 'INSERT INTO subjectToClassCurriculum SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, subject_code=:subject_code, subject_display_name=:subject_display_name, subject_type=:subject_type, di_mode=:di_mode';
+                $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'subject_code' => $subject_code, 'subject_display_name' => $subject_display_name, 'subject_type' => $subject_type, 'di_mode' => $di_mode, 'pos' => $pos);
+                $sql = 'INSERT INTO subjectToClassCurriculum SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, subject_code=:subject_code, subject_display_name=:subject_display_name, subject_type=:subject_type, di_mode=:di_mode, pos=:pos';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
 

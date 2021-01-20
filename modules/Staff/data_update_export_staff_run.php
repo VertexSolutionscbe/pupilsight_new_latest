@@ -3,6 +3,7 @@
 Pupilsight, Flexible & Open School System
 
 */
+
 use Pupilsight\Forms\Form;
 use Pupilsight\Data\ImportType;
 use Pupilsight\Forms\DatabaseFormFactory;
@@ -11,14 +12,14 @@ use Pupilsight\Domain\Staff\StaffGateway;
 
 // Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 7200);
-ini_set('memory_limit','1024M');
+ini_set('memory_limit', '1024M');
 set_time_limit(1200);
 
 $_POST['address'] = '/modules/Staff/import_staff_manage.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_POST['address'];
+$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_POST['address'];
 
-if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php")==false) {
+if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php") == false) {
     // Access denied
     $URL .= '&return=error0';
     header("Location: {$URL}");
@@ -26,28 +27,28 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
     $HelperGateway = $container->get(HelperGateway::class);
     $StaffGateway = $container->get(StaffGateway::class);
     $criteria = $StaffGateway->newQueryCriteria()
-                    ->pageSize('1000');
+        ->pageSize('1000');
     $page->breadcrumbs->add(__('Export Staff Data Update File'));
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $pupilsightSchoolYearName = $_SESSION[$guid]['pupilsightSchoolYearName'];
-    if(!empty($_POST['staff_column']) && !empty($_POST['staff_id'])){
+    if (!empty($_POST['staff_column']) && !empty($_POST['staff_id'])) {
         // echo '<pre>';
         // print_r($_POST);
         // echo '</pre>';
         // $st = array();
-        
+
         // die();
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="StaffDataUpdate.csv"');
-        $columndata = implode(',',$_POST['staff_column']);
+        $columndata = implode(',', $_POST['staff_column']);
         $data = array($columndata);
-        
+
         $fp = fopen('php://output', 'wb');
-        foreach ( $data as $line ) {
+        foreach ($data as $line) {
             $val = explode(",", $line);
             fputcsv($fp, $val);
         }
-         foreach ( $_POST[staff_id] as $linenew ) {
+        foreach ($_POST[staff_id] as $linenew) {
             $valnew = explode(",", $linenew);
             fputcsv($fp, $valnew);
         }
@@ -62,13 +63,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
     // print_r($customFields);
     // echo '</pre>';
 
-    if(!empty($customFields)){
+    if (!empty($customFields)) {
         $stuCusFld = array();
         $fatCusFld = array();
         $motCusFld = array();
-        foreach($customFields as $cf){
-            $modules = explode(',',$cf['modules']);
-            if(in_array('staff', $modules)){
+        foreach ($customFields as $cf) {
+            $modules = explode(',', $cf['modules']);
+            if (in_array('staff', $modules)) {
                 $stuCusFld[] = $cf;
             }
         }
@@ -79,161 +80,162 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
     // echo '</pre>';
 
 ?>
-<form method="post" action="">
-    <button type="submit" class="thickbox btn btn-primary">Generate Template File</button>
-    <h1>Staff's</h1> 
-    <div class="scroll">
-    <table class="table">
-        <thead>
-            <tr>
-                <th><input type="checkbox" id="chkAllFatherField" > Select All</th>
-                <th>Staff Name</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach($staff as $stu){?>
-            <tr>
-                <td>
-                    <input type="checkbox" class="fatherField" name="staff_id[]" value="<?php echo $stu['pupilsightPersonID'].','.$stu['preferredName'];?>">
-                    
-                </td>
-                <td><?php echo $stu['preferredName'];?></td>
-            </tr>
-            <?php }?>
-        </tbody>
-    </table>
-    </div>
-    <h1>Staff Details Field</h1> 
-    <table class="table">
-        <thead>
-            <tr>
-                <th><input type="checkbox" id="chkAllStuField" > Select All</th>
-                <th>Column Name</th>
-                
-            </tr>
-        </thead>
-        <tbody>
-        <input type="checkbox" class="" name="staff_column[]" value="Staff Id" checked style="display:none;">
-        <input type="checkbox" class="" name="staff_column[]" value="Staff Name" checked style="display:none;">
-       
-            <tr>
-                <td>
-                <input type="checkbox" class="stuField" name="staff_column[]" value="Official Name" >
-                </td>
-                <td>Official Name</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Gender">
-                </td>
-                <td>Gender</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Date of Birth">
-                </td>
-                <td>Date of Birth</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Username">
-                </td>
-                <td>Username</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Can Login">
-                </td>
-                <td>Can Login</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Email">
-                </td>
-                <td>Email</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Mobile">
-                </td>
-                <td>Mobile</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Address">
-                </td>
-                <td>Address</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="District">
-                </td>
-                <td>District</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Country">
-                </td>
-                <td>Country</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="First Language">
-                </td>
-                <td>First Language</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Second Language">
-                </td>
-                <td>Second Language</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Third Language">
-                </td>
-                <td>Third Language</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Country of Birth">
-                </td>
-                <td>Country of Birth</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Ethnicity">
-                </td>
-                <td>Ethnicity</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="Religion">
-                </td>
-                <td>Religion</td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="National ID Card Number">
-                </td>
-                <td>National ID Card Number</td>
-            </tr>
-            <?php
-            if(!empty($stuCusFld)){
-                foreach($stuCusFld as $sc){
-            ?>
-            <tr>
-                <td>
-                    <input type="checkbox" class="stuField" name="staff_column[]" value="<?php echo $sc['field_title'];?>">
-                </td>
-                <td><?php echo $sc['field_title'];?>  (Custom Field)</td>
-            </tr>
-            <?php } }?>
+    <form method="post" action="">
+        <button type="submit" class="thickbox btn btn-primary">Generate Template File</button>
+        <h1>Staff's</h1>
+        <div class="scroll">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="chkAllFatherField"> Select All</th>
+                        <th>Staff Name</th>
 
-        </tbody>
-    </table>
-<?php /*?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($staff as $stu) { ?>
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="fatherField" name="staff_id[]" value="<?php echo $stu['pupilsightPersonID'] . ',' . $stu['preferredName']; ?>">
+
+                            </td>
+                            <td><?php echo $stu['preferredName']; ?></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
+        <h1>Staff Details Field</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="chkAllStuField"> Select All</th>
+                    <th>Column Name</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <input type="checkbox" class="" name="staff_column[]" value="Staff Id" checked style="display:none;">
+                <input type="checkbox" class="" name="staff_column[]" value="Staff Name" checked style="display:none;">
+
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Official Name">
+                    </td>
+                    <td>Official Name</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Gender">
+                    </td>
+                    <td>Gender</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Date of Birth">
+                    </td>
+                    <td>Date of Birth</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Username">
+                    </td>
+                    <td>Username</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Can Login">
+                    </td>
+                    <td>Can Login</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Email">
+                    </td>
+                    <td>Email</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Mobile">
+                    </td>
+                    <td>Mobile</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Address">
+                    </td>
+                    <td>Address</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="District">
+                    </td>
+                    <td>District</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Country">
+                    </td>
+                    <td>Country</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="First Language">
+                    </td>
+                    <td>First Language</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Second Language">
+                    </td>
+                    <td>Second Language</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Third Language">
+                    </td>
+                    <td>Third Language</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Country of Birth">
+                    </td>
+                    <td>Country of Birth</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Ethnicity">
+                    </td>
+                    <td>Ethnicity</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="Religion">
+                    </td>
+                    <td>Religion</td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" class="stuField" name="staff_column[]" value="National ID Card Number">
+                    </td>
+                    <td>National ID Card Number</td>
+                </tr>
+                <?php
+                if (!empty($stuCusFld)) {
+                    foreach ($stuCusFld as $sc) {
+                ?>
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="stuField" name="staff_column[]" value="<?php echo $sc['field_title']; ?>">
+                            </td>
+                            <td><?php echo $sc['field_title']; ?> (Custom Field)</td>
+                        </tr>
+                <?php }
+                } ?>
+
+            </tbody>
+        </table>
+        <?php /*?>
     <h1>Father Details Field</h1>
     <table class="table">
         <thead>
@@ -389,9 +391,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
             <?php } }?>
         </tbody>
     </table>
-<?php */?>    
-   </form> 
-   <script>
+<?php */ ?>
+    </form>
+    <script>
         $(document).on('change', '#chkAllStuField', function() {
             if ($(this).is(':checked')) {
                 $(".stuField").prop("checked", true);
@@ -439,7 +441,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
                 $("#chkAllMotherField").prop("checked", false);
             }
         });
-   </script>
+    </script>
 <?php
 
 
@@ -449,25 +451,25 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
 
 
 
-    
 
-//     $filename = 'StudentImportFile.csv';
-//     $dir = "C:/xampp/htdocs/pupilsight/public/staffImportFile/"; // trailing slash is important
-//    echo $file = $dir . $filename;
 
-//     if (file_exists($file))
-//     {
-//         echo '1';
-//     header('Content-Description: File Transfer');
-//     header('Content-Type: application/octet-stream');
-//     header('Content-Disposition: attachment; filename='.basename($file));
-//     header('Expires: 0');
-//     header('Cache-Control: must-revalidate');
-//     header('Pragma: public');
-//     header('Content-Length: ' . filesize($file));
-//     ob_clean();
-//     flush();
-//     readfile($file);
-//     exit;
-//     }
+    //     $filename = 'StudentImportFile.csv';
+    //     $dir = "C:/xampp/htdocs/pupilsight/public/staffImportFile/"; // trailing slash is important
+    //    echo $file = $dir . $filename;
+
+    //     if (file_exists($file))
+    //     {
+    //         echo '1';
+    //     header('Content-Description: File Transfer');
+    //     header('Content-Type: application/octet-stream');
+    //     header('Content-Disposition: attachment; filename='.basename($file));
+    //     header('Expires: 0');
+    //     header('Cache-Control: must-revalidate');
+    //     header('Pragma: public');
+    //     header('Content-Length: ' . filesize($file));
+    //     ob_clean();
+    //     flush();
+    //     readfile($file);
+    //     exit;
+    //     }
 }

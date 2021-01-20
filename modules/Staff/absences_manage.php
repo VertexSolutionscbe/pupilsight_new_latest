@@ -31,38 +31,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
-    
-    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
     $form->setTitle(__('Filter'));
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', '/modules/Staff/absences_manage.php');
 
     $row = $form->addRow();
-        $row->addLabel('search', __('Search'));
-        $row->addTextField('search')->setValue($search);
+    $row->addLabel('search', __('Search'));
+    $row->addTextField('search')->setValue($search);
 
     $row = $form->addRow();
-        $row->addLabel('dateStart', __('Start Date'));
-        $row->addDate('dateStart')->setValue($dateStart);
+    $row->addLabel('dateStart', __('Start Date'));
+    $row->addDate('dateStart')->setValue($dateStart);
 
     $row = $form->addRow();
-        $row->addLabel('dateEnd', __('End Date'));
-        $row->addDate('dateEnd')->setValue($dateEnd);
+    $row->addLabel('dateEnd', __('End Date'));
+    $row->addDate('dateEnd')->setValue($dateEnd);
 
     $types = $staffAbsenceTypeGateway->selectAllTypes()->fetchAll();
     $types = array_combine(array_column($types, 'pupilsightStaffAbsenceTypeID'), array_column($types, 'name'));
-    
-    $row = $form->addRow();
-        $row->addLabel('pupilsightStaffAbsenceTypeID', __('Type'));
-        $row->addSelect('pupilsightStaffAbsenceTypeID')
-            ->fromArray(['' => __('All')])
-            ->fromArray($types)
-            ->selected($pupilsightStaffAbsenceTypeID);
 
     $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($pupilsight->session, __('Clear Filters'));
+    $row->addLabel('pupilsightStaffAbsenceTypeID', __('Type'));
+    $row->addSelect('pupilsightStaffAbsenceTypeID')
+        ->fromArray(['' => __('All')])
+        ->fromArray($types)
+        ->selected($pupilsightStaffAbsenceTypeID);
+
+    $row = $form->addRow();
+    $row->addFooter();
+    $row->addSearchSubmit($pupilsight->session, __('Clear Filters'));
 
     echo $form->getOutput();
 
@@ -108,17 +108,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
         ->addParam('pupilsightPersonID', '')
         ->addParam('date', $dateStart)
         ->displayLabel();
-    
+
     $table->addMetaData('filterOptions', [
         'date:upcoming'    => __('Upcoming'),
         'date:today'       => __('Today'),
         'date:past'        => __('Past'),
-        
-        'status:pending approval' => __('Status').': '.__('Pending Approval'),
-        'status:approved'         => __('Status').': '.__('Approved'),
-        'status:declined'         => __('Status').': '.__('Declined'),
-        'coverage:requested'      => __('Coverage').': '.__('Requested'),
-        'coverage:accepted'       => __('Coverage').': '.__('Accepted'),
+
+        'status:pending approval' => __('Status') . ': ' . __('Pending Approval'),
+        'status:approved'         => __('Status') . ': ' . __('Approved'),
+        'status:declined'         => __('Status') . ': ' . __('Declined'),
+        'coverage:requested'      => __('Coverage') . ': ' . __('Requested'),
+        'coverage:accepted'       => __('Coverage') . ': ' . __('Accepted'),
     ]);
 
     // COLUMNS
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
         ->sortable(['surname', 'preferredName'])
         ->format(function ($absence) {
             $text = Format::name($absence['title'], $absence['preferredName'], $absence['surname'], 'Staff', false, true);
-            $url = './index.php?q=/modules/Staff/absences_view_byPerson.php&pupilsightPersonID='.$absence['pupilsightPersonID'];
+            $url = './index.php?q=/modules/Staff/absences_view_byPerson.php&pupilsightPersonID=' . $absence['pupilsightPersonID'];
 
             return Format::link($url, $text);
         });

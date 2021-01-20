@@ -36,12 +36,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
                     $resultsub->execute($datasub);
                     $subvalues = $resultsub->fetchAll();
 
-                    $copytestid = explode(',',$_POST['tid']);
+                    $testMasterId = $values['test_master_id'];
+
+                    $sqlterm = 'SELECT id FROM examinationTest WHERE test_master_id = '.$testMasterId.' AND id != '.$testid.' ';
+                    $resultterm = $connection2->query($sqlterm);
+                    $copytestid = $resultterm->fetchAll();
+
+                    // $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
+                    // $pupilsightProgramID = $_POST['pupilsightProgramID'];
+                    // $classId = implode(',', $_POST['pupilsightYearGroupID']);
+
+                    // $sqlterm = 'SELECT test_id FROM examinationTestAssignClass WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID IN ('.$classId.') AND id != '.$testid.' ';
+                    // $resultterm = $connection2->query($sqlterm);
+                    // $copytestid = $resultterm->fetchAll();
+
+                    $sqlsub = 'SELECT * FROM examinationSubjectToTest WHERE test_id = '.$testid.' ';
+                    $resultsub = $connection2->query($sqlsub);
+                    $subTestData = $resultsub->fetchAll();
+                    // print_r($testdata);
+                    // die();
+
+
+                   // $copytestid = explode(',',$_POST['tid']);
+
                     // echo '<pre>';
                     // print_r($copytestid);
                     // echo '</pre>';
                     // die();
-                    foreach($copytestid as $ctestId){
+                    foreach($copytestid as $ctestss){
+                        $ctestId = $ctestss['id'];
                         $subject_type = $values['subject_type'];
                         $assesment_method = $values['assesment_method'];
                         $assesment_option = $values['assesment_option'] ;
@@ -57,11 +80,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
                         $end_date  = date('Y-m-d', strtotime(implode('-', array_reverse($ed))));
                         $end_time = $values['end_time'];
 
-                        $dataUpdate = array('subject_type' => $subject_type,'assesment_method' => $assesment_method,'assesment_option' => $assesment_option,'max_marks' => $max_marks, 'min_marks' => $min_marks,'gradeSystemId' => $gradeSystemId,'enable_remarks' => $enable_remarks,'enable_schedule' => $enable_schedule, 'start_date' => $start_date,'start_time' => $start_time,'end_date' => $end_date,'end_time' => $end_time, 'id' => $ctestId);
+                        $report_template_id = $values['report_template_id'];
+                        $pupilsightSchoolYearTermID = $values['pupilsightSchoolYearTermID'];
                         
-                        $sql = 'UPDATE examinationTest SET subject_type=:subject_type, assesment_method=:assesment_method, assesment_option=:assesment_option, max_marks=:max_marks, min_marks=:min_marks, gradeSystemId=:gradeSystemId, enable_remarks=:enable_remarks, enable_schedule=:enable_schedule, start_date=:start_date, start_time=:start_time, end_date=:end_date, end_time=:end_time WHERE id=:id';
+
+                        $dataUpdate = array('subject_type' => $subject_type,'assesment_method' => $assesment_method,'assesment_option' => $assesment_option,'max_marks' => $max_marks, 'min_marks' => $min_marks,'gradeSystemId' => $gradeSystemId,'enable_remarks' => $enable_remarks,'enable_schedule' => $enable_schedule, 'start_date' => $start_date,'start_time' => $start_time,'end_date' => $end_date,'end_time' => $end_time,'report_template_id' => $report_template_id,'pupilsightSchoolYearTermID' => $pupilsightSchoolYearTermID, 'id' => $ctestId);
+                        
+                        $sql = 'UPDATE examinationTest SET subject_type=:subject_type, assesment_method=:assesment_method, assesment_option=:assesment_option, max_marks=:max_marks, min_marks=:min_marks, gradeSystemId=:gradeSystemId, enable_remarks=:enable_remarks, enable_schedule=:enable_schedule, start_date=:start_date, start_time=:start_time, end_date=:end_date, end_time=:end_time , report_template_id=:report_template_id, pupilsightSchoolYearTermID=:pupilsightSchoolYearTermID WHERE id=:id';
                         $result = $connection2->prepare($sql);
                         $result->execute($dataUpdate);
+
+                        if(!empty($subTestData)){
+                            $datadel = array('test_id' => $ctestId);
+                            $sqldel = 'DELETE FROM examinationSubjectToTest WHERE test_id=:test_id';
+                            $resultdel = $connection2->prepare($sqldel);
+                            $resultdel->execute($datadel);
+
+                            foreach($subTestData as $subt){
+                                $test_id = $ctestId;
+                                $pupilsightDepartmentID = $subt['pupilsightDepartmentID'];
+                                $skill_id = $subt['skill_id'];
+                                $skill_configure = $subt['skill_configure'];
+                                $skill_weightage_formula = $subt['skill_weightage_formula'];
+                                $is_tested = $subt['is_tested'];
+                                $assesment_method = $subt['assesment_method'];
+                                $assesment_option = $subt['assesment_option'];
+                                $max_marks = $subt['max_marks'];
+                                $min_marks = $subt['min_marks'];
+                                $enable_remarks = $subt['enable_remarks'];
+                                $gradeSystemId = $subt['gradeSystemId'];
+                                $exam_date = $subt['exam_date'];
+                                $exam_start_time = $subt['exam_start_time'];
+                                $exam_end_time = $subt['exam_end_time'];
+                                $room_id = $subt['room_id'];
+                                $invigilator_id = $subt['invigilator_id'];
+                                $aat = $subt['aat'];
+                                $aat_calcutaion_by = $subt['aat_calcutaion_by'];
+
+                                $dataInsert = array('test_id' => $ctestId,'pupilsightDepartmentID' => $pupilsightDepartmentID,'skill_id' => $skill_id,'skill_configure' => $skill_configure,'skill_weightage_formula' => $skill_weightage_formula,'is_tested' => $is_tested, 'assesment_method' => $assesment_method,'assesment_option' => $assesment_option, 'max_marks' => $max_marks,'min_marks' => $min_marks,'enable_remarks' => $enable_remarks,'gradeSystemId' => $gradeSystemId,'exam_date' => $exam_date,'exam_start_time' => $exam_start_time, 'exam_end_time' => $exam_end_time,'room_id' => $room_id,'invigilator_id' => $invigilator_id, 'aat' => $aat,'aat_calcutaion_by' => $aat_calcutaion_by);
+
+                                $sqlInsert = 'INSERT INTO examinationSubjectToTest SET  test_id=:test_id, pupilsightDepartmentID=:pupilsightDepartmentID, skill_id=:skill_id,skill_configure=:skill_configure, skill_weightage_formula=:skill_weightage_formula, is_tested=:is_tested, assesment_method=:assesment_method, assesment_option=:assesment_option,max_marks=:max_marks, min_marks=:min_marks, enable_remarks=:enable_remarks,gradeSystemId=:gradeSystemId, exam_date=:exam_date, exam_start_time=:exam_start_time, exam_end_time=:exam_end_time, room_id=:room_id, invigilator_id=:invigilator_id, aat=:aat, aat_calcutaion_by=:aat_calcutaion_by';
+                                $resultInsert = $connection2->prepare($sqlInsert);
+                                $resultInsert->execute($dataInsert);
+                            }
+                        }
                         
 
                         if(!empty($subvalues)){
@@ -86,8 +148,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
                                 $resultInsert->execute($dataInsert);
                             }
                         }
+
+
                     }
-                    
+                   // die();
                     $URL .= '&return=success0';
                     header("Location: {$URL}");
                    

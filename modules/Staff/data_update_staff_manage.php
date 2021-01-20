@@ -32,5 +32,5 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/data_update_staff_ma
             </tr>
             </table>';
 
-    echo $data;        
+    echo $data;
 }

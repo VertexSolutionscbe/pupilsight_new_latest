@@ -23,7 +23,7 @@ class SubstituteGateway extends QueryableGateway
     private static $primaryKey = 'pupilsightSubstituteID';
 
     private static $searchableColumns = ['preferredName', 'surname', 'username'];
-    
+
     /**
      * Queries the list of users for the Manage Substitutes page.
      *
@@ -38,7 +38,7 @@ class SubstituteGateway extends QueryableGateway
             ->cols([
                 'pupilsightSubstitute.pupilsightSubstituteID', 'pupilsightSubstitute.type', 'pupilsightSubstitute.details', 'pupilsightSubstitute.priority', 'pupilsightSubstitute.active',
                 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.title', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.status', 'pupilsightPerson.image_240', 'pupilsightStaff.pupilsightStaffID'
-                
+
             ])
             ->innerJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=pupilsightSubstitute.pupilsightPersonID')
             ->leftJoin('pupilsightStaff', 'pupilsightStaff.pupilsightPersonID=pupilsightPerson.pupilsightPersonID');
@@ -84,17 +84,17 @@ class SubstituteGateway extends QueryableGateway
                 'absence.status as absence', 'coverage.status as coverage', 'timetable.status as timetable', 'unavailable.reason as unavailable',
             ])
             ->leftJoin('pupilsightSubstitute', 'pupilsightSubstitute.pupilsightPersonID=pupilsightPerson.pupilsightPersonID');
-                
+
         if ($criteria->hasFilter('allStaff')) {
             $query->innerJoin('pupilsightStaff', 'pupilsightStaff.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
-                  ->innerJoin('pupilsightRole', 'pupilsightRole.pupilsightRoleID=pupilsightPerson.pupilsightRoleIDPrimary');
+                ->innerJoin('pupilsightRole', 'pupilsightRole.pupilsightRoleID=pupilsightPerson.pupilsightRoleIDPrimary');
         } else {
             $query->leftJoin('pupilsightStaff', 'pupilsightStaff.pupilsightPersonID=pupilsightPerson.pupilsightPersonID');
         }
 
         if (!empty($timeStart) && !empty($timeEnd)) {
             $query->bindValue('timeStart', $timeStart)
-                  ->bindValue('timeEnd', $timeEnd);
+                ->bindValue('timeEnd', $timeEnd);
 
             // Not available?
             $query->leftJoin('pupilsightStaffCoverageDate as unavailable', "unavailable.pupilsightPersonIDUnavailable=pupilsightPerson.pupilsightPersonID AND unavailable.date = :date 
@@ -194,9 +194,9 @@ class SubstituteGateway extends QueryableGateway
         }
 
         $query->where("pupilsightPerson.status='Full'")
-              ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart<=:date)')
-              ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd>=:date)')
-              ->bindValue('date', $date);
+            ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart<=:date)')
+            ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd>=:date)')
+            ->bindValue('date', $date);
 
         if ($criteria->hasFilter('allStaff')) {
             $query->where("pupilsightRole.category='Staff' AND (pupilsightStaff.type LIKE '%Teaching%' OR pupilsightStaff.type LIKE '%Teacher%')");
@@ -204,16 +204,16 @@ class SubstituteGateway extends QueryableGateway
                 INNER JOIN pupilsightCourseClass ON (pupilsightCourseClass.pupilsightCourseClassID=pupilsightCourseClassPerson.pupilsightCourseClassID)
                 INNER JOIN pupilsightCourse ON (pupilsightCourse.pupilsightCourseID=pupilsightCourseClass.pupilsightCourseID)
                 INNER JOIN pupilsightSchoolYear ON (pupilsightSchoolYear.pupilsightSchoolYearID=pupilsightCourse.pupilsightSchoolYearID)
-                WHERE pupilsightCourseClassPerson.pupilsightPersonID=pupilsightPerson.pupilsightPersonID AND pupilsightSchoolYear.status='Current') > 0");  
+                WHERE pupilsightCourseClassPerson.pupilsightPersonID=pupilsightPerson.pupilsightPersonID AND pupilsightSchoolYear.status='Current') > 0");
         } else {
             $query->where("pupilsightSubstitute.active='Y'");
         }
 
         if (!$criteria->hasFilter('showUnavailable')) {
             $query->where('absence.ID IS NULL')
-                  ->where('coverage.ID IS NULL')
-                  ->where('timetable.ID IS NULL')
-                  ->where('unavailable.pupilsightStaffCoverageDateID IS NULL');
+                ->where('coverage.ID IS NULL')
+                ->where('timetable.ID IS NULL')
+                ->where('unavailable.pupilsightStaffCoverageDateID IS NULL');
         } else {
             $query->groupBy(['pupilsightPerson.pupilsightPersonID']);
             $query->orderBy(['available DESC']);
@@ -223,13 +223,13 @@ class SubstituteGateway extends QueryableGateway
             'substituteTypes' => function ($query, $substituteTypes) {
                 if (!empty($substituteTypes)) {
                     $query->where('FIND_IN_SET(pupilsightSubstitute.type, :substituteTypes)')
-                          ->bindValue('substituteTypes', $substituteTypes);
+                        ->bindValue('substituteTypes', $substituteTypes);
                 }
 
                 return $query;
             },
         ]);
-        
+
         return $this->runQuery($query, $criteria);
     }
 

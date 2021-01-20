@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightDepartmentID', __('Subjects'));
         $col->addSelect('pupilsightDepartmentID')->fromArray($subjects)->selected($pupilsightDepartmentID)->placeholder();
-        
+
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('search', __('Search By Name, Email, Type, Phone'));
         $col->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/staff_manage_add.php' class='btn btn-primary' id='sendEmail'>ADD</a>";
         echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Staff/field_to_show.php'  >Field to Show</a>";
         echo "&nbsp;&nbsp;<a data-hrf='index.php?q=/modules/Staff/feedback_manage.php' href='' class='btn btn-primary' id='addFeedback'>Feedback</a>";
-        
+
         echo " </div><div class='float-none'></div></div>";
 
         $staff = $staffGateway->queryAllStaff($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightDepartmentID);
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         $result = $connection2->query($sql);
         $customFields = $result->fetchAll();
 
-        
+
 
         // DATA TABLE
         $table = DataTable::createPaginated('staffManage', $criteria);
@@ -200,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                 if ($sf['field_name'] == 'stat') {
                     $table->addColumn('stat', __('Status'));
                 }
-                
+
                 if (!empty($customFields)) {
                     foreach ($customFields as $cf) {
                         if ($sf['field_name'] == $cf['field_name']) {
@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
 
 <script>
-    $(document).on('click', '#addFeedback', function () {
+    $(document).on('click', '#addFeedback', function() {
         if ($("input[name='stuid[]']").is(':checked')) {
             var checked = $("input[name='stuid[]']:checked").length;
             if (checked > 1) {
