@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('start_time', __('Start Time'))->addClass('dte');
-            $col->addTime('start_time')->addClass('txtfield')->setId('timefield')->maxLength(8)->required();
+            $col->addTime('start_time')->addClass('txtfield')->setId('timefield')->maxLength(8)->required()->placeholder('24 hours format');
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('end_point', __('End Point'));
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
          
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('end_time', __('End Time'))->addClass('dte');
-            $col->addTime('end_time')->addClass('txtfield')->maxLength(8)->required();
+            $col->addTime('end_time')->addClass('txtfield')->maxLength(8)->required()->placeholder('24 hours format');
 
 
             $row = $form->addRow();
@@ -135,8 +135,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
 
             $col = $row->addColumn()->setClass('newdes nobrdbtm');
             $col->addLabel('drop_time', __('Drop Time'))->addClass('dte');
-            $col->addTime('drop_time[1]')->addClass('txtfield kountseat szewdt')->maxLength(8)->required();
-            //$col->addLabel('', __(''))->addClass('dte');
+            $col->addTime('drop_time[1]')->addClass('txtfield kountseat')->maxLength(8)->required();
+            $col->addLabel('', __(''))->addClass('dte');
             
             // $col = $row->addColumn()->setClass('newdes nobrdbtm');
             // $col->addLabel('oneway_price', __('One way Price'))->addClass('dte');
