@@ -1455,12 +1455,29 @@ if (isset($_POST['type'])) {
             echo $data;
             break;
         case "load_tests_subjects":
-            $testID = implode(',', $_POST['testID']);
-            $sqls = "SELECT a.*,b.*,c.name AS test,c.max_marks as maxMarks,e.name AS section,b.marks_obtained ,f.name as class,i.pupilsightDepartmentID,i.subject_display_name as subname,j.name as skill,j.id as skill_id FROM pupilsightPerson AS a LEFT JOIN examinationMarksEntrybySubject AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN  examinationTest as c ON b.test_id = c.id 
-        LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightRollGroup AS e ON d.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightYearGroup AS f ON d.pupilsightYearGroupID = f.pupilsightYearGroupID  LEFT JOIN pupilsightProgram as h ON d.pupilsightProgramID = h.pupilsightProgramID LEFT JOIN subjectToClassCurriculum as i ON b.pupilsightDepartmentID =i.pupilsightDepartmentID LEFT JOIN ac_manage_skill as j ON b.skill_id = j.id WHERE   c.id IN(".$testID.") GROUP BY a.pupilsightPersonID";
-            $results = $connection2->query($sqls);
-            $rowdatas = $results->fetchAll();
-            break;
+            $data = ' ';
+            if(!empty($_POST['testID'])){
+               
+                $testID = implode(',', $_POST['testID']);
+                $sqls = 'SELECT a.id,a.test_id,a.pupilsightDepartmentID,a.skill_id,i.subject_display_name as subname,j.name as skill FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum as i ON a.pupilsightDepartmentID =i.pupilsightDepartmentID LEFT JOIN ac_manage_skill as j ON a.skill_id = j.id WHERE a.test_id IN('.$testID.') AND a.is_tested = "1"  GROUP BY a.id  ORDER BY i.pos ASC  ';
+
+                $results = $connection2->query($sqls);
+                $rowdatas = $results->fetchAll();
+                // echo '<pre>';
+                // print_r($rowdatas);
+                // echo '</pre>';
+                if (!empty($rowdatas)) {
+                    foreach ($rowdatas as $cl) {
+                        $data .= '<tr><td>
+                            <input class="slt_test" type ="checkbox" name="subjectSkillId[]" value="' . $cl['test_id'].'-'. $cl['pupilsightDepartmentID'].'-'.$cl['skill_id'] . '">' . " </td>
+                            <td>" . $cl['subname'] . "</td><td>" . $cl['skill'] . "</td></tr>";
+                    }
+                }
+            } else {
+                $data .= "<tr><td colspan='3'>No data</td></tr>";
+            }
+            echo $data;
+        break;
         case 'studentMarks_excel':
             $program = $_POST['program'];
             $cls = $_POST['cls'];
