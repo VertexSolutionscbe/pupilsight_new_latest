@@ -27,6 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     $pickup_time = $_POST['pickup_time'];
     $drop_time = $_POST['drop_time'];
     $stop_no = $_POST['stop_no'];
+    $noofstops= count($stop_no);
     // $tax = $_POST['tax'];
     // $oneway_price = $_POST['oneway_price'];
     // $twoway_price = $_POST['twoway_price'];
@@ -69,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
                 header("Location: {$URL}");
             } else {
                 $data = array('route_name' => $route_name,'bus_id'=>$bus_id,'pupilsightSchoolYearID'=> $pupilsightSchoolYearID, 'start_point' => $start_point, 'start_time' => $start_time, 'end_point' => $end_point, 'end_time' => $end_time, 
-                'num_stops' => $num_stops, 'type' => $type, 'cdt' => $cdt);
+                'num_stops' => $noofstops, 'type' => $type, 'cdt' => $cdt);
 
                 
                 $sql = 'INSERT INTO trans_routes SET route_name=:route_name, bus_id=:bus_id,pupilsightSchoolYearID=:pupilsightSchoolYearID,start_point=:start_point, start_time=:start_time, end_point=:end_point, end_time=:end_time,
