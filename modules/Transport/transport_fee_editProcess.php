@@ -22,6 +22,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee_ed
     $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
     $schedule_name =  $_POST['schedule_name'];
     $route_id = $_POST['route_id'];
+    if($route_id==''){
+        $route_id=0;
+    }
     $type = $_POST['type'];
     $start_year = $_POST['start_year'];
     $start_month = $_POST['start_month'];
