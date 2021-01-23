@@ -188,13 +188,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+            $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
             //$col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightYearGroupID', __('Class'));
-            $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
+            $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
             //$col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
 
 
@@ -347,7 +347,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo '<div class="float-left"><h2>Choose A Student</h2></div>';
             }
 
-            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
+            $sql = "SELECT GROUP_CONCAT(CONCAT('pupilsightPerson.', field_name )) AS fieldName FROM custom_field WHERE FIND_IN_SET('student', modules)";
+            $result = $connection2->query($sql);
+            $customFields = $result->fetch();
+            $customFieldNames = $customFields['fieldName'];
+            
+            
+
+            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search, $customFieldNames);
 
             $sql = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
             $result = $connection2->query($sql);
