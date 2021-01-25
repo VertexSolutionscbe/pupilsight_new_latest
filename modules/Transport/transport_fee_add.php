@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee_ad
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('route_id', __('Route'));
-    $col->addSelect('route_id')->fromArray($routes)->required();
+    $col->addSelect('route_id')->fromArray($routes);
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('fee_head_id', __('Account Head'));
