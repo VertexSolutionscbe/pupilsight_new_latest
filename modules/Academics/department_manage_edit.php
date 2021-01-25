@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
 
             $row = $form->addRow();
                 $row->addLabel('name', 'Name');
-                $row->addTextField('name')->maxLength(40)->required();
+                $row->addTextField('name')->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', 'Subject Code');

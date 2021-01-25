@@ -35,15 +35,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_head_manage_ed
             $result->execute($data);
 
 
-            $chksql = 'SELECT COUNT(id) AS kount FROM fn_fee_structure WHERE fn_fees_head_id = '.$id.' ';
-            $resultchk = $connection2->query($chksql);
-            $chkStr = $resultchk->fetch();
+            // $chksql = 'SELECT COUNT(id) AS kount FROM fn_fee_structure WHERE fn_fees_head_id = '.$id.' ';
+            // $resultchk = $connection2->query($chksql);
+            // $chkStr = $resultchk->fetch();
 
-            if($chkStr['kount'] >= 1){
-                $readonly = 'true';
-            } else {
-                $readonly = '';
-            }
+            // if($chkStr['kount'] >= 1){
+            //     $readonly = 'true';
+            // } else {
+            //     $readonly = '';
+            // }
+
+            $readonly = '';
         } catch (PDOException $e) {
             echo "<div class='error'>".$e->getMessage().'</div>';
         }
