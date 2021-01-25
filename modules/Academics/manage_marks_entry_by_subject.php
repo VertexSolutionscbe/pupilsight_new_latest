@@ -321,7 +321,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     <th colspan='2'> Marks <br/>Obtained(<?php echo str_replace(".00", "", $s_test['max_marks']);?>)</th>
                     <th>Grade</th>
                     <th>Grade Status</th>
-                    <th class="bdr_right">Remark all <input type="checkbox" data-id="<?php echo $s_test['test_id'];?>" class="remark_all"></th>
+                    <?php if($s_test['enable_remarks'] == '1') { ?>
+                        <th class="bdr_right">Remark all <input type="checkbox" data-id="<?php echo $s_test['test_id'];?>" class="remark_all"></th>
+                    <?php } ?>
                     
                     <?php $i++; } ?>
             </tr>    
@@ -487,6 +489,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         $gstatus = '';
                     }
                     echo '<td id="grade_status'.$s_test['test_id'].'row'.$row['stuid'].'">'.$gstatus.'</td>';
+                if($s_test['enable_remarks'] == '1') { 
                     echo '<td> ';
                     if(!empty($prevdata['remarks'])){
                         $colrCls = 'grnRemark';
@@ -496,6 +499,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     echo '<i class="mdi mdi-book-open-outline mdi-24px px-4 remark_enter_type icon_re_'.$s_test['test_id'].' '.$colrCls.' " id="rmk'.$s_test['test_id'].'stu'.$row['stuid'].'" data-id="'.$s_test['test_id'].'stu'.$row['stuid'].'"></i>';
                   
                     ?>
+
+                
                     <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?>" style="display:none;width:190px"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
                         <p><label>From List </label>
                         <input type="radio" id="fromlist" class="rm_type" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="fromlist" style="margin-left: 2px;"  <?php if($prevdata['remark_type'] == 'list'){ ?> checked <?php } ?>>
@@ -507,12 +512,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     <select id="remarklist<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="" class="w-full remarklist rmk_width" style="display:none" data-id="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
                      <?php echo $data_sel;?>
                     </select>
+                
                     <input id="remarklistval<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" type="hidden" name="remark_frmlst[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="">
                     <textarea data-tid="<?php echo $s_test['test_id'];?>"  data-fid="<?php echo $f;?>"  style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class="tabfocusRemark remark_textarea text_remark_<?php echo $s_test['test_id']; ?>  focustabRemark-<?php echo $s_test['test_id'];?>-<?php echo $f; ?>" ><?php echo $prevdata['remarks'] ?></textarea> 
                     <br/> 
                     <span class="rcount_<?php echo $s_test['test_id'];?>"></span>        
                     <?php
                     echo '</td>';
+                }
                     echo '</fieldset>';
                    $km++;
                 }       

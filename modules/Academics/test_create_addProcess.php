@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_create.php'
                                 $resultcls = $connection2->query($sqlcls);
                                 $clsdata = $resultcls->fetchAll();
                                 foreach($clsdata as $cls){
-                                    $sqlsec = 'SELECT a.*,b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = '.$cls['pupilsightProgramID'].' AND  a.pupilsightYearGroupID = '.$cls['pupilsightYearGroupID'].' ';
+                                    $sqlsec = 'SELECT a.*,b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$cls['pupilsightProgramID'].' AND  a.pupilsightYearGroupID = '.$cls['pupilsightYearGroupID'].' ';
                                     $resultsec = $connection2->query($sqlsec);
                                     $secdata = $resultsec->fetchAll();
                                     foreach($secdata as $sec){

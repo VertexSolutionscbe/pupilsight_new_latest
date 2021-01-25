@@ -18,7 +18,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    
+    // echo '<pre>';
+    // print_r($_POST);
+    // echo '</pre>';
+    // die();
     //Proceed!
     //$subjectToClassId = $_POST['subjectToClassId'];
     $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
@@ -34,6 +37,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
 
             $classId = explode(',', $subjectToClassId);
  foreach ($pupilsightYearGroupID1 as $pupilsightYearGroupID) {
+
+            $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID);
+            $sql1 = 'DELETE FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID';
+            $result1 = $connection2->prepare($sql1);
+            $result1->execute($data1);
+
+
                 //check availabulity
             $check_sql = 'SELECT count(id) as total FROM assign_core_subjects_toclass WHERE pupilsightProgramID = "'.$pupilsightProgramID.'" AND pupilsightYearGroupID ="'.$pupilsightYearGroupID.'"';
             $chck_res = $connection2->query($check_sql);
@@ -61,10 +71,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
                 $getresultskills = $connection2->query($getsqlskills);
                 $getskillsdata = $getresultskills->fetchAll();
 
-                $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
-                $sql1 = 'DELETE FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID';
-                $result1 = $connection2->prepare($sql1);
-                $result1->execute($data1);
+                // $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID);
+                // $sql1 = 'DELETE FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID';
+                // $result1 = $connection2->prepare($sql1);
+                // $result1->execute($data1);
+
+                
 
                 $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'subject_code' => $subject_code, 'subject_display_name' => $subject_display_name, 'subject_type' => $subject_type, 'di_mode' => $di_mode, 'pos' => $pos);
                 $sql = 'INSERT INTO subjectToClassCurriculum SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, subject_code=:subject_code, subject_display_name=:subject_display_name, subject_type=:subject_type, di_mode=:di_mode, pos=:pos';

@@ -27,6 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     $did = $_GET['did'];
 
     $kid = $_GET['kid'];
+    $type = $_GET['type'];
 
     $sqlskl = 'SELECT * FROM subjectSkillMapping WHERE pupilsightSchoolYearID = '.$aid.' AND pupilsightProgramID = '.$pid.' AND pupilsightYearGroupID = '.$cid.'  AND pupilsightDepartmentID = '.$did.' ';
     $resultskl = $connection2->query($sqlskl);
@@ -40,13 +41,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     $types = array('None' => 'None', 'Sum' => 'Sum', 'Average' => 'Average', 'Percentage' => 'Percentage');
 
     foreach ($types as $tp) {
-        echo ' <input type="radio" name="configure" value="'.$tp.'" class="configureVal" > <span class="showRadio" >'.$tp.'</span> ';
+        if($tp == $type){
+            $checked = 'checked';
+        } else {
+            $checked = '';
+        }
+        echo ' <input type="radio" name="configure" value="'.$tp.'" class="configureVal" '.$checked.' > <span class="showRadio" >'.$tp.'</span> ';
     }
 
         echo '<a style="cursor:pointer;float: right;" id="configureSet" data-id="'.$kid.'" class="btn btn-primary">OK</a>';
 
     if(!empty($getSkills)){
-        echo '<div id="showPerc" style="display:none;"><form id="skillConfigureForm"><table style="margin: 20px;"> <thead><th>Skills</th><th>Weightage</th></thead><tbody>';
+        echo '<div id="showPerc" style="display:none;"><form id="skillConfigureForm"><table style="margin: 20px;" class="table"> <thead><th>Skills</th><th>Weightage</th></thead><tbody>';
 
         foreach($getSkills as $skl){
             echo '<tr><td>'.$skl['skill_display_name'].'</td><td><input type="textbox" style="border:1px solid grey;" name="weightage['.$skl['skill_id'].']"></td></tr>';

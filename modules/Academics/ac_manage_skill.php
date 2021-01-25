@@ -24,6 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/ac_manage_skill.
 
     // QUERY
     $criteria = $schoolYearGateway->newQueryCriteria()
+        ->pageSize(1000)
         ->sortBy(['id'])
         ->fromPOST();
 

@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightRollGroupID', __('Section'));
     
-    $col->addSelect('pupilsightRollGroupID')->fromArray($sectionData)->selected($search["pupilsightRollGroupID"])->placeholder('Select Section')->required();
+    $col->addSelect('pupilsightRollGroupID')->fromArray($sectionData)->selected($search["pupilsightRollGroupID"])->placeholder('Select Section');
 
     $sub[""] = "";
     $col = $row->addColumn()->setClass('newdes');
