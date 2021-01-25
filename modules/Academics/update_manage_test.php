@@ -222,65 +222,65 @@
                </td>
                <td>
                   <?php if(!empty($tst['enable_marks_entry']) && $tst['enable_marks_entry'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_descriptive_entry']) && $tst['enable_descriptive_entry'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['lock_marks_entry']) && $tst['lock_marks_entry'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_publish']) && $tst['enable_publish'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_html']) && $tst['enable_html'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_pdf']) && $tst['enable_pdf'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_test_report']) && $tst['enable_test_report'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_sms']) && $tst['enable_sms'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_email']) && $tst['enable_email'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
             </tr>
