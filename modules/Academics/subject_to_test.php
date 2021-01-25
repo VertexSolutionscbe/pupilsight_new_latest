@@ -392,13 +392,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                             <div style="display:inline-flex;">
                             <?php if(!empty($fetchSubData['skill_configure'])){ ?>
                                 <span id="configureName-<?php echo $k;?>"><?php echo $fetchSubData['skill_configure'];?></span>
+                                $sconval = <?php echo $fetchSubData['skill_configure'];?>
                             <?php } else { ?>
                                 <span id="configureName-<?php echo $k;?>">None</span>
+                                $sconval = 'None';
                             <?php } ?>
                                 <i class="mdi mdi-cog-outline configure setSkillConfigure" style="cursor:pointer" data-id="<?php echo $k;?>" aria-hidden="true"></i>
                             </div>
                                 <input type="hidden"  name="skill_id[<?php echo $k;?>]" value="m">
-                                <input type="hidden"  name="skill_configure[<?php echo $k;?>]" id="skill_configure<?php echo $k;?>" value="None">
+                                <input type="hidden"  name="skill_configure[<?php echo $k;?>]" id="skill_configure<?php echo $k;?>" value="<?php echo $sconval;?>">
                                 <a href="fullscreen.php?q=/modules/Academics/subject_to_test_configure.php<?php echo $allid;?>&kid=<?php echo $k;?>" data-hrf="fullscreen.php?q=/modules/Academics/subject_to_test_configure.php<?php echo $allid;?>&kid=<?php echo $k;?>" class='thickbox ' id="clickSkillConfigure-<?php echo $k;?>" style="display:none;">Add</a>
                                 
                                 <input type="hidden" id="formData<?php echo $k;?>" name="skill_configure_form[<?php echo $k;?>]" value="">
