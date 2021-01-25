@@ -125,6 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_assign_man
     }
 
     $col = $row->addColumn()->setClass('newdes');
+    
     //$col->addLabel('invoice_title', __('Fee Structure'));
     // foreach($students as $k => $cl){
     //     if(!empty($cl['fsid'])){
