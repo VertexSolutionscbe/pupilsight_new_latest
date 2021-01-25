@@ -188,13 +188,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
+            $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
             //$col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightYearGroupID', __('Class'));
-            $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
+            $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
             //$col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
 
 
@@ -242,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                 echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' id='expore_student_xl' title='Export Excel'  >Export</a>";
 
-                // echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
+                echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
 
                 // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='changeStuStatus'>Change Status</a>";
                 // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='export'>Export</a>";
@@ -336,6 +336,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                     if (in_array(34, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
+
                     }
                     if (in_array(35, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
@@ -348,13 +349,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo '<div class="float-left"><h2>Choose A Student</h2></div>';
             }
 
+            $sql = "SELECT GROUP_CONCAT(CONCAT('pupilsightPerson.', field_name )) AS fieldName FROM custom_field WHERE FIND_IN_SET('student', modules)";
+            $result = $connection2->query($sql);
+            $customFields = $result->fetch();
+            $customFieldNames = $customFields['fieldName'];
+            
             
 
-            // $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search, $customFieldNames);
+            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search, $customFieldNames);
 
-            $students = $studentGateway->getAllStudentData($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
-
-           
+            $sql = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
+            $result = $connection2->query($sql);
+            $customFields = $result->fetchAll();
 
             // DATA TABLE
             $table = DataTable::createPaginated('students', $criteria);
@@ -408,6 +414,98 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 });
 
 
+            if (!empty($showfield)) {
+                foreach ($showfield as $sf) {
+                    if ($sf['field_name'] == 'student') {
+                        $table->addColumn('officialName', __('Student'));
+                    }
+                    if ($sf['field_name'] == 'pupilsightPersonID') {
+                        $table->addColumn('pupilsightPersonID', __('Student Id'));
+                    }
+                    if ($sf['field_name'] == 'admission_no') {
+                        $table->addColumn('admission_no', __('Admission No'));
+                    }
+                    if ($sf['field_name'] == 'academic_year') {
+                        $table->addColumn('academic_year', __('Academic'));
+                    }
+                    if ($sf['field_name'] == 'program') {
+                        $table->addColumn('program', __('Program'));
+                    }
+                    if ($sf['field_name'] == 'yearGroup') {
+                        $table->addColumn('yearGroup', __('Class'))
+                            ->format(function ($person) {
+
+                                return $person['yearGroup'];
+                            });
+                    }
+                    if ($sf['field_name'] == 'rollGroup') {
+                        $table->addColumn('rollGroup', __('Section'));
+                    }
+                    if ($sf['field_name'] == 'dob') {
+                        $table->addColumn('dob', __('Date of Birth'));
+                    }
+                    if ($sf['field_name'] == 'gender') {
+                        $table->addColumn('gender', __('Gender'));
+                    }
+                    if ($sf['field_name'] == 'username') {
+                        $table->addColumn('username', __('Username'));
+                    }
+                    if ($sf['field_name'] == 'phone1') {
+                        $table->addColumn('phone1', __('Phone'));
+                    }
+                    if ($sf['field_name'] == 'email') {
+                        $table->addColumn('email', __('Email'));
+                    }
+                    if ($sf['field_name'] == 'address1') {
+                        $table->addColumn('address1', __('Address'));
+                    }
+                    if ($sf['field_name'] == 'address1District') {
+                        $table->addColumn('address1District', __('District'));
+                    }
+                    if ($sf['field_name'] == 'address1Country') {
+                        $table->addColumn('address1Country', __('Country'));
+                    }
+                    if ($sf['field_name'] == 'languageFirst') {
+                        $table->addColumn('languageFirst', __('First Language'));
+                    }
+                    if ($sf['field_name'] == 'languageSecond') {
+                        $table->addColumn('languageSecond', __('Second Language'));
+                    }
+                    if ($sf['field_name'] == 'languageThird') {
+                        $table->addColumn('languageThird', __('Third Language'));
+                    }
+                    if ($sf['field_name'] == 'religion') {
+                        $table->addColumn('religion', __('Religion'));
+                    }
+
+                    if ($sf['field_name'] == 'fatherName') {
+                        $table->addColumn('fatherName', __('Father Name'));
+                    }
+                    if ($sf['field_name'] == 'fatherEmail') {
+                        $table->addColumn('fatherEmail', __('Father Email'));
+                    }
+                    if ($sf['field_name'] == 'fatherPhone') {
+                        $table->addColumn('fatherPhone', __('Father Phone'));
+                    }
+                    if ($sf['field_name'] == 'motherName') {
+                        $table->addColumn('motherName', __('Mother Name'));
+                    }
+                    if ($sf['field_name'] == 'motherEmail') {
+                        $table->addColumn('motherEmail', __('Mother Email'));
+                    }
+                    if ($sf['field_name'] == 'motherPhone') {
+                        $table->addColumn('motherPhone', __('Mother Phone'));
+                    }
+
+                    if (!empty($customFields)) {
+                        foreach ($customFields as $cf) {
+                            if ($sf['field_name'] == $cf['field_name']) {
+                                $table->addColumn($cf['field_name'], __($cf['field_title']));
+                            }
+                        }
+                    }
+                }
+            } else {
                 $table->addColumn('student', __('Student'))
 
                     ->sortable(['surname', 'preferredName'])
@@ -441,8 +539,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $table->addColumn('username', __('Username'));
                 $table->addColumn('phone1', __('Phone'));
                 $table->addColumn('email', __('Email'));
-                
-            
+                $table->addColumn('address1', __('Address'));
+                $table->addColumn('address1District', __('District'));
+                $table->addColumn('address1Country', __('Country'));
+
+                $table->addColumn('languageFirst', __('First Language'));
+                $table->addColumn('languageSecond', __('Second Language'));
+                $table->addColumn('languageThird', __('Third Language'));
+                $table->addColumn('religion', __('Religion'));
+                $table->addColumn('fatherName', __('Father Name'));
+                $table->addColumn('fatherEmail', __('Father Email'));
+                $table->addColumn('fatherPhone', __('Father Phone'));
+                $table->addColumn('motherName', __('Mother Name'));
+                $table->addColumn('motherEmail', __('Mother Email'));
+                $table->addColumn('motherPhone', __('Mother Phone'));
+            }
 
 
             if ($roleId == '001') {
@@ -811,7 +922,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             var newhrf = hrf + stuId;
             $("#promoteStudent").attr('href', newhrf);
             window.setTimeout(function() {
-                $("#promoteStudent")[0].click();
+            $("#promoteStudent")[0].click();
             }, 10);
         } else {
             alert('You Have to Select Student.');
@@ -830,12 +941,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             var newhrf = hrf + stuId;
             $("#detainStudent").attr('href', newhrf);
             window.setTimeout(function() {
-                $("#detainStudent")[0].click();
+            $("#detainStudent")[0].click();
             }, 10);
         } else {
             alert('You Have to Select Student.');
         }
     });
+
+
 </script>
 <style>
     #expore_tbl {

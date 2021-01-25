@@ -297,7 +297,7 @@
                   //$marksobt = str_replace(".00","",$prevdata['marks_obtained']);
                   //$marksobt = rtrim($marksobt,'0');
 
-                                     echo '<input type="number" data-mode="'.$sl['skill_configure'].'" data-mark="'.$sl['max_marks'].'" data-d="'.$sl['pupilsightDepartmentID'].'" data-gsid="'.$s_test['gradeSystemId'].'" data-cnt="'.$i.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']"  class="numMarksfield chkData enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'  '.$en_dis_clss.' '.$total_class.' " value="'.$marksobt.'"  '.$disabled.'>';?>
+                                     echo '<input type="text" data-mode="'.$sl['skill_configure'].'" data-mark="'.$sl['max_marks'].'" data-d="'.$sl['pupilsightDepartmentID'].'" data-gsid="'.$s_test['gradeSystemId'].'" data-cnt="'.$i.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']"  class="numMarksfield chkData enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'  '.$en_dis_clss.' '.$total_class.' " value="'.$marksobt.'"  '.$disabled.'>';?>
             </div>
          </div>
       </td>

@@ -88,6 +88,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         }
         $skillsdata = $skillsdata1 + $skillsdata2;
        // print_r($skillsdata);
+
+       //$sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'"  AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
+
+        $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id LEFT JOIN examinationSubjectToTest AS c ON a.test_id = c.test_id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND a.pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' AND c.pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' AND c.is_tested = "1" GROUP BY a.test_id ';
+        $result_test = $connection2->query($sql_tst);
+        $tests = $result_test->fetchAll();
+        $testarr=array ('' => __('Select'));  
+        $test2=array();  
+
+        foreach ($tests as $ts) {
+            $test2[$ts['id']] = $ts['name'];
+        }
+        $testarr+=  $test2; 
     } else {
            $pupilsightProgramID =  '';
         //   $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
@@ -103,6 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $stuId = '0';
        
         $skillsdata = array();
+        $testarr = array();
     }
     $sql_rmk = 'SELECT id, description FROM acRemarks ';
     $result_rmk = $connection2->query($sql_rmk);
@@ -142,16 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $test_types = $term1 + $term2;
     }
 
-    $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'"  AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
-    $result_test = $connection2->query($sql_tst);
-    $tests = $result_test->fetchAll();
-    $testarr=array ('' => __('Select'));  
-    $test2=array();  
-
-    foreach ($tests as $ts) {
-        $test2[$ts['id']] = $ts['name'];
-    }
-    $testarr+=  $test2; 
+    
 
     $sqlsk = 'SELECT id, name FROM ac_manage_skill ';
     $resultsk = $connection2->query($sqlsk);
@@ -772,7 +777,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             var id = $(this).attr('data-fid');
             var tid = $(this).attr('data-tid');
             var newid = parseInt(id) + 1;
-            alert(id);
+            //alert(id);
             var keycode = (window.event) ? event.keyCode : e.keyCode;
             if (keycode == 9){
                 window.setTimeout(function() {
@@ -823,7 +828,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             success: function(response) {
                 alert('Marks Saved!');
                 $("#preloader").hide();
-                $("#searchForm").submit();
+                //$("#searchForm").submit();
                 //$('#marksbysubject')[0].reset();
             }
         });
