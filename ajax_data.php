@@ -3650,3 +3650,22 @@ if ($type == 'getSectionData') {
     }
     echo $data;
 }
+
+
+if ($type == 'getTestByClassProgram') {
+    $pupilsightYearGroupID = $val;
+    //$pupilsightRollGroupID = $val;
+    $pupilsightProgramID = $_POST['pid'];
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
+    $sql = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTestMaster AS b ON a.test_master_id = b.id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID IN ('. implode(',',$pupilsightYearGroupID).') GROUP BY b.id ';
+    $result = $connection2->query($sql);
+    $tests = $result->fetchAll();
+    $returndata = '<option value="">Select Test</option>';
+    foreach ($tests as $row) {
+        if(!empty($row['id'])){
+            $returndata .= '<option value=' . $row['id'] . ' >' . $row['name'] . '</option>';
+        }
+    }
+    echo $returndata;
+}

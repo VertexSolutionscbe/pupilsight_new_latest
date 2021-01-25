@@ -168,19 +168,23 @@ class StaffGateway extends QueryableGateway
         $data = $res->data;
 
         foreach ($data as $k => $sd) {
-            $query2 = $this
-                ->newQuery()
-                ->from('pupilsightPerson')
-                ->cols([
-                    "GROUP_CONCAT(DISTINCT pupilsightPerson.officialName SEPARATOR ', ') as pname",
-                ])
-                ->where('pupilsightPerson.pupilsightPersonID IN (' . $sd['pid'] . ') ');
+            if(!empty($sd['pid'])){
+                $query2 = $this
+                    ->newQuery()
+                    ->from('pupilsightPerson')
+                    ->cols([
+                        "GROUP_CONCAT(DISTINCT pupilsightPerson.officialName SEPARATOR ', ') as pname",
+                    ])
+                    ->where('pupilsightPerson.pupilsightPersonID IN (' . $sd['pid'] . ') ');
 
-            $newdata = $this->runQuery($query2, $criteria);
+                $newdata = $this->runQuery($query2, $criteria);
 
-            // die();
-            if (!empty($newdata)) {
-                $data[$k]['name'] = $newdata->data[0]['pname'];
+                // die();
+                if (!empty($newdata)) {
+                    $data[$k]['name'] = $newdata->data[0]['pname'];
+                } else {
+                    $data[$k]['name'] = '';
+                }
             } else {
                 $data[$k]['name'] = '';
             }

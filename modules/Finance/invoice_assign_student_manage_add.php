@@ -112,18 +112,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_assign_man
     $row = $form->addRow()->setId('filterStudentByClass')->setClass('filterStudentBystudent');
     $row->addLabel('pupilsightYearGroupID', __(''));
 
-    //$col = $row->addColumn()->setClass('newdes');
-    //$col->addLabel('name', __('Student'));
-    /*
-    foreach ($students as $k => $cl) {
-        if (empty($cl['fsid'])) {
-            $content = '<span style="color:red;">(Not Assign)</span>';
-            $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->setDisabled('1')->description(__($content . ' ' . $cl['student_name']));
-        } else {
-            $content = '';
-            $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->description(__($content . ' ' . $cl['student_name']));
-        }
-    }*/
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('name', __('Student'));
+
+    // foreach ($students as $k => $cl) {
+    //     if (empty($cl['fsid'])) {
+    //         $content = '<span style="color:red;">(Not Assign)</span>';
+    //         $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->setDisabled('1')->description(__($content . ' ' . $cl['student_name']));
+    //     } else {
+    //         $content = '';
+    //         $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->description(__($content . ' ' . $cl['student_name']));
+    //     }
+    // }
 
     $col = $row->addColumn()->setClass('newdes');
 

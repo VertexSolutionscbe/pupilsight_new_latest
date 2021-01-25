@@ -996,23 +996,24 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
     public function getStaffName($pupilsightYearGroupID=NULL, $pupilsightRollGroupID=NULL, $pupilsightDepartmentID=NULL){
         
         if(!empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)){
+           
+
             $db = new DBQuery();
-            $sq = 'SELECT GROUP_CONCAT(p.officialName) as staff FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff as s on a.pupilsightStaffID=s.pupilsightStaffID LEFT JOIN pupilsightPerson as p on s.pupilsightPersonID=p.pupilsightPersonID WHERE a.pupilsightdepartmentID = '.$pupilsightDepartmentID.' ';
-            //echo $sq;
+            $sq = "select group_concat(p.pupilsightPersonID) as staffID from assignstaff_toclasssection as a ";
+            $sq .="left join pupilsightProgramClassSectionMapping as m on m.pupilsightMappingID = a.pupilsightMappingID ";
+            $sq .="left join pupilsightPerson as p on p.pupilsightPersonID=a.pupilsightPersonID ";
+            $sq .="where m.pupilsightYearGroupID = '".$pupilsightYearGroupID."' and m.pupilsightRollGroupID='".$pupilsightRollGroupID."' ";
             $row = $db->selectRaw($sq);
             if(!empty($row)){
-                return $row[0]["staff"];
+                $staffIds =  $row[0]["staffID"];
+                $db = new DBQuery();
+                $sq = 'SELECT GROUP_CONCAT(p.officialName) as staff FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff as s on a.pupilsightStaffID=s.pupilsightStaffID LEFT JOIN pupilsightPerson as p on s.pupilsightPersonID=p.pupilsightPersonID WHERE a.pupilsightdepartmentID = '.$pupilsightDepartmentID.' AND p.pupilsightPersonID IN ('.$staffIds.') ';
+                //echo $sq;
+                $row = $db->selectRaw($sq);
+                if(!empty($row)){
+                    return $row[0]["staff"];
+                }
             }
-
-            // $db = new DBQuery();
-            // $sq = "select group_concat(p.officialName) as staff from assignstaff_toclasssection as a ";
-            // $sq .="left join pupilsightProgramClassSectionMapping as m on m.pupilsightMappingID = a.pupilsightMappingID ";
-            // $sq .="left join pupilsightPerson as p on p.pupilsightPersonID=a.pupilsightPersonID ";
-            // $sq .="where m.pupilsightYearGroupID = '".$pupilsightYearGroupID."' and m.pupilsightRollGroupID='".$pupilsightRollGroupID."' ";
-            // $row = $db->selectRaw($sq);
-            // if(!empty($row)){
-            //     return $row[0]["staff"];
-            // }
         }
         return "";
         

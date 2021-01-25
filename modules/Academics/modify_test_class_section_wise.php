@@ -18,7 +18,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/modify_test_clas
 } else {
     //Proceed!
 
-    $page->breadcrumbs->add(__('Modify Test'));
+    $page->breadcrumbs->add(('Edit Test'), 'manage_edit_test.php')
+    ->add(__('Modify Test'));
 
     echo '<h3>';
     echo __('Modify Test');
