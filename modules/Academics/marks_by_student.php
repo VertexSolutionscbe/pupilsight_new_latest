@@ -65,6 +65,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
             $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
             $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
             $test_type=$_POST['test_type'];
+
+            $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'" AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
+            $result_test = $connection2->query($sql_tst);
+            $tests = $result_test->fetchAll();
+            $testarr=array ('' => __('Select'));  
+            $test2=array();  
+        
+            foreach ($tests as $ts) {
+                $test2[$ts['id']] = $ts['name'];
+            }
+            $testarr+=  $test2; 
         } else {      
             if(!empty($_GET['pid'])){
                 $pupilsightProgramID = $_GET['pid'];
@@ -76,6 +87,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
                 $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
                 $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
                 //$test_type=$_POST['test_type'];
+
+                $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'" AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
+                $result_test = $connection2->query($sql_tst);
+                $tests = $result_test->fetchAll();
+                $testarr=array ('' => __('Select'));  
+                $test2=array();  
+            
+                foreach ($tests as $ts) {
+                    $test2[$ts['id']] = $ts['name'];
+                }
+                $testarr+=  $test2; 
             } else {
                 $classes = array('' => 'Select Class');
                 $sections = array('' => 'Select Section');
@@ -84,20 +106,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
                 $pupilsightRollGroupID = '';
                 $test_id  = '';
                 $test_type='';
+                $testarr = array();
             }
         }
 
     
-        $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'" AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
-    $result_test = $connection2->query($sql_tst);
-    $tests = $result_test->fetchAll();
-    $testarr=array ('' => __('Select'));  
-    $test2=array();  
-
-    foreach ($tests as $ts) {
-        $test2[$ts['id']] = $ts['name'];
-    }
-    $testarr+=  $test2; 
+      
     $searchform = Form::create('searchForm','');
     $searchform->setFactory(DatabaseFormFactory::create($pdo));
     $searchform->addHiddenValue('studentId', '0');

@@ -48,7 +48,7 @@ class CurriculumGateway extends QueryableGateway
                         ->newQuery()
                         ->from('subjectToClassCurriculum')
                         ->cols([
-                            'subjectToClassCurriculum.subject_display_name','subjectToClassCurriculum.subject_type','subjectToClassCurriculum.di_mode', 'subjectToClassCurriculum.id'
+                            'subjectToClassCurriculum.subject_display_name','subjectToClassCurriculum.subject_type','subjectToClassCurriculum.di_mode', 'subjectToClassCurriculum.id',, 'subjectToClassCurriculum.pos'
                         ])
                         ->where('subjectToClassCurriculum.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
                         ->where('subjectToClassCurriculum.pupilsightProgramID = "'.$pupilsightProgramID.'" ')

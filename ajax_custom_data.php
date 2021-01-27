@@ -27,7 +27,7 @@ if ($type == 'subjectSortTab') {
         $squ = "";
         $row = 1;
         while ($i < $len) {
-            $squ .= "update subjectToClassCurriculum set pos='" . $row . "' where pupilsightDepartmentID='" . intval($sub[$i]) . "' and pupilsightSchoolYearID='" . $pupilsightSchoolYearID1 . "'; ";
+            $squ .= "update subjectToClassCurriculum set pos='" . $row . "' where pupilsightDepartmentID='" . intval($sub[$i]) . "' and pupilsightSchoolYearID='" . $pupilsightSchoolYearID1 . "'  and pupilsightProgramID='" . $pupilsightProgramID . "' and pupilsightYearGroupID='" . $pupilsightYearGroupID . "' ; ";
             $squ .= "update assign_core_subjects_toclass set pos='" . $row . "' where pupilsightDepartmentID='" . $sub[$i] . "' and pupilsightProgramID='" . $pupilsightProgramID . "' and pupilsightYearGroupID='" . $pupilsightYearGroupID . "'; ";
             $row++;
             $i++;

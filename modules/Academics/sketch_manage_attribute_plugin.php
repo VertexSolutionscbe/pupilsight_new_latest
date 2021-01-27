@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                 </select>
                                         <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" readonly>
                             </td>
-                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="fas fa-plus-square"></i></a>  </td>
+                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  </td>
                         </tr>
                         
                     <?php       

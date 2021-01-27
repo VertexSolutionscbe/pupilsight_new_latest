@@ -58,57 +58,95 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
 
     
 
-    $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_assign_student_manage_deleteProcess.php');
-    $form->setFactory(DatabaseFormFactory::create($pdo));
+    // $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_assign_student_manage_deleteProcess.php');
+    // $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('stu_id', $studentids);
-    //$tab = '';
+    // $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    // $form->addHiddenValue('stu_id', $studentids);
+    // //$tab = '';
 
-    $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addCheckbox('select')->setId('checkall')->setClass('fee_id checkall');   
+    // $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
+    //     $col = $row->addColumn()->setClass('newdes');
+    //     $col->addCheckbox('select')->setId('checkall')->setClass('fee_id checkall');   
 
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('Fee Structure', __('Fee Structure'))->addClass('dte');
+    //     $col = $row->addColumn()->setClass('newdes');
+    //     $col->addLabel('Fee Structure', __('Fee Structure'))->addClass('dte');
 
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('Invoice Status', __('Invoice Status'))->addClass('dte');
+    //     $col = $row->addColumn()->setClass('newdes');
+    //     $col->addLabel('Invoice Status', __('Invoice Status'))->addClass('dte');
         
-    if(!empty($feestructureIds['fsid'])){
-        foreach($feestructure as $fee){
+    // if(!empty($feestructureIds['fsid'])){
+    //     foreach($feestructure as $fee){
 
-            $sqlchk = 'SELECT id FROM fn_fee_invoice_student_assign WHERE fn_fee_structure_id = '.$fee['id'].' AND pupilsightPersonID IN ('.$studentids.')';
-            $resultchk = $connection2->query($sqlchk);
-            $chkInvoice = $resultchk->fetch();
-            if(!empty($chkInvoice)){
-                $chkinv = 'Invoice Generated';
-            } else {
-                $chkinv = 'Invoice Not Generated';
-            }
-            //$tab .= '';
-            // $row = $form->addRow();
-            //     $col->addLabel('pupilsightProgramID', __($fee['name']));
-            //     $col->addLabel('pupilsightYearGroupID', __($fee['academic_year']));
-            $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
-                $col = $row->addColumn()->setClass('newdes');
-                $col->addCheckbox('fee_id[]')->setValue($fee['id'])->setClass('fee_id'); 
+    //         $sqlchk = 'SELECT id FROM fn_fee_invoice_student_assign WHERE fn_fee_structure_id = '.$fee['id'].' AND pupilsightPersonID IN ('.$studentids.')';
+    //         $resultchk = $connection2->query($sqlchk);
+    //         $chkInvoice = $resultchk->fetch();
+    //         if(!empty($chkInvoice)){
+    //             $chkinv = 'Invoice Generated';
+    //         } else {
+    //             $chkinv = 'Invoice Not Generated';
+    //         }
+    //         //$tab .= '';
+    //         // $row = $form->addRow();
+    //         //     $col->addLabel('pupilsightProgramID', __($fee['name']));
+    //         //     $col->addLabel('pupilsightYearGroupID', __($fee['academic_year']));
+    //         $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
+    //             $col = $row->addColumn()->setClass('newdes');
+    //             $col->addCheckbox('fee_id[]')->setValue($fee['id'])->setClass('fee_id'); 
 
-                $col = $row->addColumn()->setClass('newdes');
-                $col->addLabel($fee['name'], __($fee['name']))->addClass('dte');
+    //             $col = $row->addColumn()->setClass('newdes');
+    //             $col->addLabel($fee['name'], __($fee['name']))->addClass('dte');
 
-                $col = $row->addColumn()->setClass('newdes');
-                $col->addLabel('invoice', __($chkinv))->addClass('dte');
+    //             $col = $row->addColumn()->setClass('newdes');
+    //             $col->addLabel('invoice', __($chkinv))->addClass('dte');
                 
-        }
-    }
+    //     }
+    // }
     
 
         
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
+    // $row = $form->addRow();
+    //     $row->addFooter();
+    //     $row->addSubmit();
 
-    echo $form->getOutput();
+    // echo $form->getOutput();
+?>
+<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_assign_student_manage_deleteProcess.php'; ?>">
+    <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address']; ?>">
+    <input type="hidden" name="stu_id" value="<?php echo $studentids; ?>">
+    <table class="table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" class="chkAll"></th>
+                <th>Fee Structure</th>
+                <th>Invoice Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php if(!empty($feestructureIds['fsid'])){
+            foreach($feestructure as $fee){
+    
+                $sqlchk = 'SELECT id FROM fn_fee_invoice_student_assign WHERE fn_fee_structure_id = '.$fee['id'].' AND pupilsightPersonID IN ('.$studentids.')';
+                $resultchk = $connection2->query($sqlchk);
+                $chkInvoice = $resultchk->fetch();
+                if(!empty($chkInvoice)){
+                    $chkinv = 'Invoice Generated';
+                } else {
+                    $chkinv = 'Invoice Not Generated';
+                }
+            ?>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="fee_id[]" value="<?php echo $fee['id']; ?>"></td>
+                <td><?php echo $fee['name'];?></td>
+                <td><?php echo $chkinv;?></td>
+            </tr>
+        <?php } } ?>
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<?php 
+    }
+?>
 
-}
+
