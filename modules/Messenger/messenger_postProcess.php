@@ -1980,6 +1980,7 @@ else {
                                     }
 									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp.$rowEmail["phone"]);
 								}
+
                                 $report = reportAdd($report, $emailReceipt, 'smscopy', 'Individuals', 'smscopy', 'SMS', $copysms);
 							}
 						}
@@ -2107,12 +2108,16 @@ else {
 				if ($countryCode=="") {
 					$partialFail = true;
 				} else {
+                    $messageBccListSms = explode(',', getSettingByScope($connection2, 'Messenger', 'smsCopy'));
+					
                     $recipients = array_filter(array_reduce($report, function ($phoneNumbers, $reportEntry) {
                         if ($reportEntry[3] == 'SMS')  $phoneNumbers[] = '+'.$reportEntry[4];
 
                             return $phoneNumbers;
 
                     }, []));
+
+                    $recipients =array_merge($recipients,$messageBccListSms);
 
                     $sms = $container->get(SMS::class);
 
