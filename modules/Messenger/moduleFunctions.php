@@ -1357,6 +1357,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
 function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '', $msgcategory = '', $msgtype = '')
 {
     $return = '';
+    $return1 = '';
     $dataPosts = array();
 
     if ($msgtype == 'sms') {
@@ -1917,6 +1918,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
             } else {
                 $output = array();
                 $last = '';
+                $rowCount = 0;
                 while ($rowPosts = $resultPosts->fetch()) {
                     if ($last == $rowPosts['pupilsightMessengerID']) {
                         $output[($count - 1)]['source'] = $output[($count - 1)]['source'] . '<br/>' . $rowPosts['source'];
@@ -1953,7 +1955,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 $return .= __('Posted By');
                 $return .= '</th>';
                 $return .= '</tr>';
-                $rowCount = 0;
+
                 $rowNum = 'odd';
                 for ($i = 0; $i < count($output); ++$i) {
                     //exploding to compare date as Between query function is not working
@@ -2118,15 +2120,19 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                         }
                     }
                 }
-                if ($rowCount == 0) {
-                    $return .= "<div class='alert alert-warning'>";
-                    $return .= __('There are no records to display.');
-                    $return .= '</div>';
-                }
+
                 $return .= '</table>';
             }
             if ($mode == 'print') {
-                return $return;
+                if ($rowCount == 0) {
+                    $return1 .= "<div class='alert alert-warning'>";
+                    $return1 .= __('There are no records to display.');
+                    $return1 .= '</div>';
+                    return $return1;
+                }else{
+                    return $return;
+                }
+
             } else {
                 return $count;
             }
