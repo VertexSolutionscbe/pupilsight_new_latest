@@ -1097,6 +1097,7 @@ if ($type == 'assigncoresubtoclass') {
     $class_val = $_POST['class_val'];
     $clses = explode(',', $class_val);
     $subs = explode(',', $subjects);
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     if (!empty($clses) && !empty($subs) && !empty($pgrm_val)) {
         foreach ($clses as $cl) {
             foreach ($subs as $sb) {

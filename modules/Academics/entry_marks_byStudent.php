@@ -230,7 +230,7 @@
          <div class="input-group stylish-input-group">
             <div class="flex-1 relative">
             <?php if($s_test['enable_remarks'] == '1'){ ?>
-               <textarea type='text' name='remark_own' class="remark_textarea w-full "><?php echo $remdata['remarks'];?></textarea>
+               <textarea type='text' name='remark_own[<?php echo $s_test['test_id'];?>][<?php echo $s_test['pupilsightDepartmentID'];?>]' class="remark_textarea w-full "><?php echo $remdata['remarks'];?></textarea>
                <br><span></span>
             <?php } ?>
             </div>
@@ -336,7 +336,20 @@
          
          }
          echo '</td>';
-         echo '<td id="grade_status'.$s_test['test_id'].'row'.$i.'"></td>';
+
+         if(!empty($marksobt) && !empty($s_test['gradeSystemId'])){
+            $obtMark = $s_test['max_marks'];
+            $mrks = ($marksobt / $obtMark) * 100;
+            $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $s_test['gradeSystemId'] . '" AND  (' . $mrks . ' BETWEEN `lower_limit` AND `upper_limit`)';
+            $result = $connection2->query($sql);
+            $grade = $result->fetch();
+
+            $gstatus = $grade['subject_status'];
+        } else {
+            $gstatus = '';
+        }
+
+         echo '<td id="grade_status'.$s_test['test_id'].'row'.$i.'">'.$gstatus.'</td>';
          $i++; ?> 
       <td>
          <div class="input-group stylish-input-group">

@@ -51,6 +51,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
                                         $marksdata = '';
                                     }
                                 }
+
+                                $remark_own = $_POST['remark_own'][$key][$k];
+
                                 if (!empty($marksdata) || $marksdata == '0' || !empty($marks_abex) || !empty($gradeId) ) {
 
                                     // if(!empty($marks_abex) || !empty($gradeId)){
