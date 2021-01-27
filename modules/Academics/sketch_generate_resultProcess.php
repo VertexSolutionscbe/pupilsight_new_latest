@@ -8,7 +8,7 @@ include '../../db.php';
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 
-
+ 
 if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_attribute.php') == false) {
     //Acess denied
     echo "<div class='error'>"; 
@@ -29,9 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $resultsk = $connection2->query($sqlsketch);
     $sketchDataAttr = $resultsk->fetchAll();
 
-    $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID  WHERE c.pupilsightSchoolYearID = '.$sketchData['pupilsightSchoolYearID'].' AND c.pupilsightProgramID = '.$sketchData['pupilsightProgramID'].' AND c.pupilsightYearGroupID IN ('.$sketchData['class_ids'].') GROUP BY b.pupilsightPersonID';
+    $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID  WHERE c.pupilsightSchoolYearID = '.$sketchData['pupilsightSchoolYearID'].' AND c.pupilsightProgramID = '.$sketchData['pupilsightProgramID'].' AND c.pupilsightYearGroupID IN ('.$sketchData['class_ids'].') GROUP BY b.pupilsightPersonID';
     $results = $connection2->query($sqls);
     $studentData = $results->fetchAll();
+    //print_r($studentData);
 
     $sqlpr = 'SELECT a.signature_path, b.officialName, b.image_240 FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.is_principle = 1 ';
     $resultpr = $connection2->query($sqlpr);
@@ -177,59 +178,73 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                         $scalevalue = '';
                     }
 
+                    if(!empty($sd['test_master_id'])){
+                        $testMasterId = $sd['test_master_id'];
+                        $sqlt = 'SELECT * FROM examinationTest WHERE test_master_id = '.$testMasterId.' ';
+                        $resultt = $connection2->query($sqlt);
+                        $testdata = $resultt->fetchAll();
+                        //$testId = explode(',',$testdata['testId']);
 
-                    $testMasterId = $sd['test_master_id'];
-                    $sqlt = 'SELECT * FROM examinationTest WHERE test_master_id = '.$testMasterId.' ';
-                    $resultt = $connection2->query($sqlt);
-                    $testdata = $resultt->fetchAll();
-                    //$testId = explode(',',$testdata['testId']);
+                        
+                        foreach($testdata as $testId){
+                            $getMarksNew = '';
+                            $test_id = $testId['id'];
+                            $test_name = $testId['name'];
 
-                    foreach($testdata as $testId){
-                        $getMarksNew = '';
-                        $test_id = $testId['id'];
-                        $test_name = $testId['name'];
+                            $subsql = 'SELECT a.pupilsightDepartmentID, a.max_marks, a.skill_configure, a.gradeSystemId, b.name AS subject FROM examinationSubjectToTest AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN examinationTestAssignClass AS c ON a.test_id = c.test_id WHERE a.test_id = '.$test_id.'  AND a.skill_configure != "" AND c.pupilsightProgramID = '.$td['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$td['pupilsightYearGroupID'].' AND c.pupilsightRollGroupID = '.$td['pupilsightRollGroupID'].'  GROUP BY a.pupilsightDepartmentID ';
+                            $resultsub = $connection2->query($subsql);
+                            $testdatasub = $resultsub->fetchAll();
 
-                        $subsql = 'SELECT a.pupilsightDepartmentID, a.max_marks, a.skill_configure, a.gradeSystemId, b.name AS subject FROM examinationSubjectToTest AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.test_id = '.$test_id.'  AND a.skill_configure != "" GROUP BY a.pupilsightDepartmentID ';
-                        $resultsub = $connection2->query($subsql);
-                        $testdatasub = $resultsub->fetchAll();
+                            if(!empty($testdatasub)){
+                                $cnt = 1;
+                                foreach($testdatasub as $k => $tsub){
+                                    $gsid = $tsub['gradeSystemId'];
+                                    if($tsub['skill_configure'] == 'Average'){
+                                        $sqlmarks = 'SELECT AVG(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
+                                    } else if($tsub['skill_configure'] == 'Sum'){
+                                        $sqlmarks = 'SELECT SUM(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
+                                    } else {
+                                        $sqlmarks = 'SELECT marks_obtained AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
+                                    }
+                                    $resultmarks = $connection2->query($sqlmarks);
+                                    $marksdatasub = $resultmarks->fetch();
+                                    //print_r($marksdatasub);
 
-                        $cnt = 1;
-                        foreach($testdatasub as $k => $tsub){
-                            $gsid = $tsub['gradeSystemId'];
-                            if($tsub['skill_configure'] == 'Average'){
-                                $sqlmarks = 'SELECT AVG(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
-                            } else if($tsub['skill_configure'] == 'Sum'){
-                                $sqlmarks = 'SELECT SUM(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
-                            } else {
-                                $sqlmarks = 'SELECT marks_obtained AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
-                            }
-                            $resultmarks = $connection2->query($sqlmarks);
-                            $marksdatasub = $resultmarks->fetch();
+                                    if(!empty($marksdatasub)){
+                                        if(!empty($scalevalue)){
+                                            $max_marks = $scalevalue;
+                                            if(!empty($tsub["max_marks"])){
+                                                $gm = ($marksdatasub['getmarks'] / $tsub["max_marks"]) * $max_marks;
+                                            } else {
+                                                $gm = $marksdatasub['getmarks'] * $max_marks;
+                                            }
+                                            if(!empty($roundvalue)){
+                                                $getmarks = round($gm, $roundvalue);
+                                            } else {
+                                                $getmarks = $gm;
+                                            }
+                                        } else {
+                                            $max_marks = $tsub["max_marks"];
+                                            if(!empty($roundvalue)){
+                                                $getmarks = round($marksdatasub['getmarks'], $roundvalue);
+                                            } else {
+                                                $getmarks = $marksdatasub['getmarks'];
+                                            }
+                                        }
+                                    } else {
+                                        $getmarks = '0';
+                                    }
 
-                            if(!empty($scalevalue)){
-                                $max_marks = $scalevalue;
-                                $gm = ($marksdatasub['getmarks'] / $tsub["max_marks"]) * $max_marks;
-                                if(!empty($roundvalue)){
-                                    $getmarks = round($gm, $roundvalue);
-                                } else {
-                                    $getmarks = $gm;
+                                    $getMarksNew = $getmarks;
+                                    $gmsarr[$tsub['pupilsightDepartmentID']][] = $getMarksNew;
+
+                                    $getSketchData[$sd['attribute_type']][$sd['erta_id']][$tsub['pupilsightDepartmentID']] = $getMarksNew;
+                                    // echo $sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject'].'--'.$getmarks.'</br>';
+
+                                    $dataarr[$sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject']] = $getmarks;
+                                    $cnt++;
                                 }
-                            } else {
-                                $max_marks = $tsub["max_marks"];
-                                if(!empty($roundvalue)){
-                                    $getmarks = round($marksdatasub['getmarks'], $roundvalue);
-                                } else {
-                                    $getmarks = $marksdatasub['getmarks'];
-                                }
                             }
-
-                            $getMarksNew = $getmarks;
-                            $gmsarr[$tsub['pupilsightDepartmentID']][] = $getMarksNew;
-
-                            $getSketchData[$sd['attribute_type']][$sd['erta_id']][$tsub['pupilsightDepartmentID']] = $getMarksNew;
-
-                            $dataarr[$sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject']] = $getmarks;
-                            $cnt++;
                         }
                     }
                 }
@@ -265,29 +280,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
                     foreach($testId as $test_id){
                         $newMaxMarks = '';
-                        $subsql = 'SELECT a.pupilsightDepartmentID, a.max_marks, a.skill_configure, a.gradeSystemId, b.name AS subject FROM examinationSubjectToTest AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.test_id = '.$test_id.'  AND a.skill_configure != "" GROUP BY a.pupilsightDepartmentID ';
+                        $subsql = 'SELECT a.pupilsightDepartmentID, a.max_marks, a.skill_configure, a.gradeSystemId, b.name AS subject FROM examinationSubjectToTest AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN examinationTestAssignClass AS c ON a.test_id = c.test_id WHERE a.test_id = '.$test_id.'  AND a.skill_configure != "" AND c.pupilsightProgramID = '.$td['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$td['pupilsightYearGroupID'].' AND c.pupilsightRollGroupID = '.$td['pupilsightRollGroupID'].' GROUP BY a.pupilsightDepartmentID ';
                         $resultsub = $connection2->query($subsql);
                         $testdatasub = $resultsub->fetchAll();
 
-                        $cnt = 1;
-                        foreach($testdatasub as $k => $tsub){
+                        if(!empty($testdatasub)){
+                            $cnt = 1;
+                            foreach($testdatasub as $k => $tsub){
+                                
+                                if(!empty($scalevalue)){
+                                    $max_marks = $scalevalue;
+                                    
+                                } else {
+                                    $max_marks = $tsub["max_marks"];
+                                    
+                                }
+                                $newMaxMarks = $max_marks;
+
+                                $maxMarksArr[$tsub['pupilsightDepartmentID']][] = $newMaxMarks;
+
+                                $getSketchData[$sd['attribute_type']][$sd['erta_id']][$tsub['pupilsightDepartmentID']] = $newMaxMarks;
+
+                                $dataarr[$sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject']] = $max_marks;
+                                $cnt++;
                             
-                            if(!empty($scalevalue)){
-                                $max_marks = $scalevalue;
-                                
-                            } else {
-                                $max_marks = $tsub["max_marks"];
-                                
                             }
-                            $newMaxMarks = $max_marks;
-
-                            $maxMarksArr[$tsub['pupilsightDepartmentID']][] = $newMaxMarks;
-
-                            $getSketchData[$sd['attribute_type']][$sd['erta_id']][$tsub['pupilsightDepartmentID']] = $newMaxMarks;
-
-                            $dataarr[$sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject']] = $max_marks;
-                            $cnt++;
-                           
                         }
                     }
                 }
@@ -323,55 +340,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
                     foreach($testId as $test_id){
 
-                        $subsql = 'SELECT a.pupilsightDepartmentID, a.max_marks, a.skill_configure, a.gradeSystemId, b.name AS subject FROM examinationSubjectToTest AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.test_id = '.$test_id.'  AND a.skill_configure != "" GROUP BY a.pupilsightDepartmentID ';
+                        $subsql = 'SELECT a.pupilsightDepartmentID, a.max_marks, a.skill_configure, a.gradeSystemId, b.name AS subject FROM examinationSubjectToTest AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN examinationTestAssignClass AS c ON a.test_id = c.test_id WHERE a.test_id = '.$test_id.'  AND a.skill_configure != "" AND c.pupilsightProgramID = '.$td['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$td['pupilsightYearGroupID'].' AND c.pupilsightRollGroupID = '.$td['pupilsightRollGroupID'].' GROUP BY a.pupilsightDepartmentID ';
                         $resultsub = $connection2->query($subsql);
                         $testdatasub = $resultsub->fetchAll();
 
-                        $cnt = 1;
-                        foreach($testdatasub as $k => $tsub){
-                            $gsid = $tsub['gradeSystemId'];
-                            if($tsub['skill_configure'] == 'Average'){
-                                $sqlmarks = 'SELECT AVG(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
-                            } else if($tsub['skill_configure'] == 'Sum'){
-                                $sqlmarks = 'SELECT SUM(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
-                            } else {
-                                $sqlmarks = 'SELECT marks_obtained AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
-                            }
-                            $resultmarks = $connection2->query($sqlmarks);
-                            $marksdatasub = $resultmarks->fetch();
+                        if(!empty($testdatasub)){
+                            $cnt = 1;
+                            foreach($testdatasub as $k => $tsub){
+                                $gsid = $tsub['gradeSystemId'];
+                                if($tsub['skill_configure'] == 'Average'){
+                                    $sqlmarks = 'SELECT AVG(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
+                                } else if($tsub['skill_configure'] == 'Sum'){
+                                    $sqlmarks = 'SELECT SUM(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
+                                } else {
+                                    $sqlmarks = 'SELECT marks_obtained AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = '.$tsub['pupilsightDepartmentID'].' AND pupilsightPersonID = '.$td['pupilsightPersonID'].' AND test_id = '.$test_id.' ';
+                                }
+                                $resultmarks = $connection2->query($sqlmarks);
+                                $marksdatasub = $resultmarks->fetch();
+                                
+                                if(!empty($scalevalue)){
+                                    $max_marks = $scalevalue;
+                                    $gm = ($marksdatasub['getmarks'] / $tsub["max_marks"]) * $max_marks;
+                                    if(!empty($roundvalue)){
+                                        $getmarks = round($gm, $roundvalue);
+                                    } else {
+                                        $getmarks = $gm;
+                                    }
+                                } else {
+                                    $max_marks = $tsub["max_marks"];
+                                    if(!empty($roundvalue)){
+                                        $getmarks = round($marksdatasub['getmarks'], $roundvalue);
+                                    } else {
+                                        $getmarks = $marksdatasub['getmarks'];
+                                    }
+                                }
+
+                                if(!empty($getmarks)){
+                                    $sqlg = 'SELECT grade_name FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="'.$sd['grade_id'].'" AND  ('.$getmarks.' BETWEEN `lower_limit` AND `upper_limit`)';
+                                    $resultg = $connection2->query($sqlg);
+                                    $grade = $resultg->fetch();
+                                    $gradename = $grade['grade_name'];
+                                } else {
+                                    $gradename = '';
+                                }
+
                             
-                            if(!empty($scalevalue)){
-                                $max_marks = $scalevalue;
-                                $gm = ($marksdatasub['getmarks'] / $tsub["max_marks"]) * $max_marks;
-                                if(!empty($roundvalue)){
-                                    $getmarks = round($gm, $roundvalue);
-                                } else {
-                                    $getmarks = $gm;
-                                }
-                            } else {
-                                $max_marks = $tsub["max_marks"];
-                                if(!empty($roundvalue)){
-                                    $getmarks = round($marksdatasub['getmarks'], $roundvalue);
-                                } else {
-                                    $getmarks = $marksdatasub['getmarks'];
-                                }
+                                $getSketchData[$sd['attribute_type']][$sd['erta_id']][$tsub['pupilsightDepartmentID']] = $gradename;
+
+                                $dataarr[$sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject']] = $gradename;
+                                $cnt++;
+                            
                             }
-
-                            if(!empty($getmarks)){
-                                $sqlg = 'SELECT grade_name FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="'.$sd['grade_id'].'" AND  ('.$getmarks.' BETWEEN `lower_limit` AND `upper_limit`)';
-                                $resultg = $connection2->query($sqlg);
-                                $grade = $resultg->fetch();
-                                $gradename = $grade['grade_name'];
-                            } else {
-                                $gradename = '';
-                            }
-
-                           
-                            $getSketchData[$sd['attribute_type']][$sd['erta_id']][$tsub['pupilsightDepartmentID']] = $gradename;
-
-                            $dataarr[$sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject']] = $gradename;
-                            $cnt++;
-                           
                         }
                     }
                 }
@@ -540,11 +559,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             // print_r($totalMaxMarksArr);
             // echo '</pre>';
 
-             //echo '<pre>';
-             //print_r($dataarr);
-             //echo '</pre>';
+            //  echo '<pre>';
+            //  print_r($dataarr);
+            //  echo '</pre>';
 
-             //die();
+            //  die();
            
             if(!empty($dataarr)){
             

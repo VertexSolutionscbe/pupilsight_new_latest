@@ -27,8 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $URLNEW = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Academics/sketch_manage_attribute.php&id='.$sketch_id.'';
 
     try {
-        $data = array('attribute_name' => $attribute_name);
-        $sql = 'SELECT * FROM examinationReportTemplateAttributes WHERE attribute_name=:attribute_name';
+        $data = array('attribute_name' => $attribute_name, 'sketch_id' => $sketch_id);
+        $sql = 'SELECT * FROM examinationReportTemplateAttributes WHERE attribute_name=:attribute_name AND sketch_id=:sketch_id ';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

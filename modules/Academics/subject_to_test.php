@@ -61,9 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     $staffdata = $results->fetchAll();
 
     
-    if($testdata['subject_type'] == '1'){
-        $sql = 'SELECT * FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID IN ('.$classes.') GROUP BY pupilsightDepartmentID ORDER BY pos ASC';
-    } else {
+    if($testdata['subject_type'] == '2'){
         $testMasterId = $testdata['test_master_id'];
         $subsql =  "SELECT GROUP_CONCAT(DISTINCT CONCAT('''', subject_type, '''' )) AS subcattype FROM examinationTestSubjectCategory WHERE test_master_id = ".$testMasterId." ";
         $resultsub = $connection2->query($subsql);
@@ -71,6 +69,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
 
 
        $sql = 'SELECT a.*, b.type FROM subjectToClassCurriculum AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$pupilsightProgramID.' AND a.pupilsightYearGroupID IN ('.$classes.') AND b.type IN ('.$subCategory['subcattype'].') GROUP BY a.pupilsightDepartmentID  ORDER BY a.pos ASC';
+    } else {
+        
+
+       $sql = 'SELECT * FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID IN ('.$classes.') GROUP BY pupilsightDepartmentID ORDER BY pos ASC';
        
     }
     
@@ -392,10 +394,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                             <div style="display:inline-flex;">
                             <?php if(!empty($fetchSubData['skill_configure'])){ ?>
                                 <span id="configureName-<?php echo $k;?>"><?php echo $fetchSubData['skill_configure'];?></span>
-                                $sconval = <?php echo $fetchSubData['skill_configure'];?>
+                                <?php $sconval =  $fetchSubData['skill_configure']; ?>
                             <?php } else { ?>
                                 <span id="configureName-<?php echo $k;?>">None</span>
-                                $sconval = 'None';
+                                <?php $sconval = 'None';?>
                             <?php } ?>
                                 <i class="mdi mdi-cog-outline configure setSkillConfigure" style="cursor:pointer" data-id="<?php echo $k;?>" aria-hidden="true"></i>
                             </div>

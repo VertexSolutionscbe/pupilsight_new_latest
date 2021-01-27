@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                             </select>
                                     <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="<?php echo $formulamapdata['formula_val'];?>" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" <?php if(empty($formulamapdata['formula_val'])) { ?>readonly <?php } ?>>
                         </td>
-                        <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="fas fa-plus-square"></i></a>  <?php echo $attrdata['pluginname'];?></td>
+                        <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  <?php echo $attrdata['pluginname'];?></td>
                     </tr>
                     
                 <?php       
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                 </select>
                                         <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="<?php echo $formulamapdata['formula_val'];?>" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" <?php if(empty($formulamapdata['formula_val'])) { ?>readonly <?php } ?>>
                             </td>
-                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="fas fa-plus-square"></i></a>  <?php echo $attrdata['pluginname'];?></td>
+                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  <?php echo $attrdata['pluginname'];?></td>
                         </tr>
                         
                     <?php       
@@ -251,7 +251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                 </select>
                                         <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="<?php echo $formulamapdata['formula_val'];?>" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" <?php if(empty($formulamapdata['formula_val'])) { ?>readonly <?php } ?>>
                             </td>
-                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="fas fa-plus-square"></i></a>   <?php echo $attrdata['pluginname'];?></td>
+                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>   <?php echo $attrdata['pluginname'];?></td>
                         </tr>
                         
                     <?php       
@@ -302,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 </select>
 
                 <span style="font-size:14px;">Final Plugin : </span>
-                <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id'];?>"><i style="font-size: 20px;" title="Add Plugin" class="fas fa-plus-square"></i></a>
+                <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id'];?>"><i style="font-size: 20px;" title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>
             </div>
         </div>    
         </form>
