@@ -24,7 +24,7 @@ class CurriculumGateway extends QueryableGateway
 
     public function getSubjectDate(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID)
     {
-       
+
         $query = $this
             ->newQuery()
             ->from('assign_core_subjects_toclass')
@@ -33,44 +33,44 @@ class CurriculumGateway extends QueryableGateway
             ])
             ->leftJoin('pupilsightProgramClassSectionMapping', 'assign_core_subjects_toclass.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
             ->leftJoin('pupilsightDepartment', 'assign_core_subjects_toclass.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
-            ->where('assign_core_subjects_toclass.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'"')
-            ->where('assign_core_subjects_toclass.pupilsightProgramID = "'.$pupilsightProgramID.'" ')
-            ->where('pupilsightProgramClassSectionMapping.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
+            ->where('assign_core_subjects_toclass.pupilsightYearGroupID ="' . $pupilsightYearGroupID . '"')
+            ->where('assign_core_subjects_toclass.pupilsightProgramID = "' . $pupilsightProgramID . '" ')
+            ->where('pupilsightProgramClassSectionMapping.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
             ->groupBy(['assign_core_subjects_toclass.pupilsightDepartmentID'])
             ->orderBy(['assign_core_subjects_toclass.pos ASC']);
-         // echo $query;
-            $res = $this->runQuery($query, $criteria);
-            $data = $res->data;
-            if(!empty($data)){   
-                foreach($data as $k => $d){
-                    $departmentId = $d['pupilsightDepartmentID'];
-                    $query2 = $this
-                        ->newQuery()
-                        ->from('subjectToClassCurriculum')
-                        ->cols([
-                            'subjectToClassCurriculum.subject_display_name','subjectToClassCurriculum.subject_type','subjectToClassCurriculum.di_mode', 'subjectToClassCurriculum.id', 'subjectToClassCurriculum.pos'
-                        ])
-                        ->where('subjectToClassCurriculum.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
-                        ->where('subjectToClassCurriculum.pupilsightProgramID = "'.$pupilsightProgramID.'" ')
-                        ->where('subjectToClassCurriculum.pupilsightDepartmentID = "'.$departmentId.'" ')
-                        ->where('subjectToClassCurriculum.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
-                    $newdata = $this->runQuery($query2, $criteria);
-                    if(!empty($newdata->data[0]['id'])){     
-                        $data[$k]['subject_display_name'] = $newdata->data[0]['subject_display_name'];
-                        $data[$k]['subject_type'] = $newdata->data[0]['subject_type'];
-                        $data[$k]['di_mode'] = $newdata->data[0]['di_mode'];
-                        $data[$k]['id'] = $newdata->data[0]['id'];
-                        $data[$k]['checked'] = '1';
-                    } else {
-                        $data[$k]['subject_display_name'] = '';
-                        $data[$k]['subject_type'] = '';
-                        $data[$k]['di_mode'] = '';
-                        $data[$k]['id'] = '';
-                        $data[$k]['checked'] = '';
-                    }
+        // echo $query;
+        $res = $this->runQuery($query, $criteria);
+        $data = $res->data;
+        if (!empty($data)) {
+            foreach ($data as $k => $d) {
+                $departmentId = $d['pupilsightDepartmentID'];
+                $query2 = $this
+                    ->newQuery()
+                    ->from('subjectToClassCurriculum')
+                    ->cols([
+                        'subjectToClassCurriculum.subject_display_name', 'subjectToClassCurriculum.subject_type', 'subjectToClassCurriculum.di_mode', 'subjectToClassCurriculum.id', 'subjectToClassCurriculum.pos'
+                    ])
+                    ->where('subjectToClassCurriculum.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+                    ->where('subjectToClassCurriculum.pupilsightProgramID = "' . $pupilsightProgramID . '" ')
+                    ->where('subjectToClassCurriculum.pupilsightDepartmentID = "' . $departmentId . '" ')
+                    ->where('subjectToClassCurriculum.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
+                $newdata = $this->runQuery($query2, $criteria);
+                if (!empty($newdata->data[0]['id'])) {
+                    $data[$k]['subject_display_name'] = $newdata->data[0]['subject_display_name'];
+                    $data[$k]['subject_type'] = $newdata->data[0]['subject_type'];
+                    $data[$k]['di_mode'] = $newdata->data[0]['di_mode'];
+                    $data[$k]['id'] = $newdata->data[0]['id'];
+                    $data[$k]['checked'] = '1';
+                } else {
+                    $data[$k]['subject_display_name'] = '';
+                    $data[$k]['subject_type'] = '';
+                    $data[$k]['di_mode'] = '';
+                    $data[$k]['id'] = '';
+                    $data[$k]['checked'] = '';
                 }
-            }    
-            
+            }
+        }
+
         $res->data = $data;
         return $res;
     }
@@ -86,7 +86,6 @@ class CurriculumGateway extends QueryableGateway
             ->groupby(['ac_manage_skill.id'])
             ->orderby(['id DESC']);
 
-        return $this->runQuery($query, $criteria,TRUE );
+        return $this->runQuery($query, $criteria, TRUE);
     }
-
 }

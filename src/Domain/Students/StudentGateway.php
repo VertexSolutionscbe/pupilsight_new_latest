@@ -738,6 +738,9 @@ class StudentGateway extends QueryableGateway
 
         
         $query->where('pupilsightPerson.pupilsightRoleIDPrimary = "003" ');
+        if (!empty($pupilsightSchoolYearID)) {
+            $query->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
+        }
         if (!empty($pupilsightProgramID)) {
             $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
         }

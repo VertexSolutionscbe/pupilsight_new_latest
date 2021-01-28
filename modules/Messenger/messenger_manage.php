@@ -371,43 +371,61 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				if ($row["sms"] == "Y") {
 					print "
 								<i class='mdi mdi-check mdi-24px' title='" . __('Sent by sms.') . "'></i>
-								";
-				} else {
-					print "
-								<i class='mdi mdi-close mdi-24px' title='" . __('Not sent by sms.') . "'></i>";
-				}
-				print "</td>";
-				print "<td>";
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
-				print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><i title='" . __('Delete') . "' class='mdi mdi-trash-can-outline mdi-24px px-2'></i></a> ";
-				print "<script type='text/javascript'>";
-				print "$(document).ready(function(){";
-				print "\$(\".comment-$count\").hide();";
-				print "\$(\".show_hide-$count\").fadeIn(1000);";
-				print "\$(\".show_hide-$count\").click(function(){";
-				print "\$(\".comment-$count\").fadeToggle(1000);";
-				print "});";
-				print "});";
-				print "</script>";
-				if (is_null($row["emailReceipt"]) == false) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messenger_manage_report.php&pupilsightMessengerID=" . $row['pupilsightMessengerID'] . "&sidebar=true&search=$search'><i title='" . __('View Send Report') . "' class='fas fa-dot-circle px-2'></i></a>";
-				}
-				if ($row["smsReport"] != "" or $row["emailReport"] != "") {
-					print "<a title='" . __('Show Comment') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["pupilsightThemeName"] . "/img/page_down.png' alt='" . __('Show Comment') . "' onclick='return false;' /></a>";
-				}
-				print "</td>";
-				print "</tr>";
-				if ($row["smsReport"] != "" or $row["emailReport"] != "") {
-					print "<tr class='comment-$count' id='comment-$count'>";
-					print "<td style='background-color: #fff' colspan=8>";
-					if ($row["emailReport"] != "") {
-						print "<b><u>Email Report</u></b><br/>";
-						$emails = explode("),", $row["emailReport"]);
-						$emails = array_unique($emails);
-						$emails = msort($emails);
-						foreach ($emails as $email) {
-							print $email . ")<br/>";
-						}
+								" ;
+							}
+							else {
+								print "
+								<i class='mdi mdi-close mdi-24px' title='" . __('Not sent by sms.') . "'></i>" ;
+							}
+						print "</td>" ;
+						print "<td>" ;
+                    if ($row["sms"]=="Y" || $row["email"]=="Y") {
+                        //print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
+                    }else{
+                        print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
+					}
+							print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><i title='" . __('Delete') . "' class='mdi mdi-trash-can-outline mdi-24px px-2'></i></a> " ;
+							print "<script type='text/javascript'>" ;
+								print "$(document).ready(function(){" ;
+									print "\$(\".comment-$count\").hide();" ;
+									print "\$(\".show_hide-$count\").fadeIn(1000);" ;
+									print "\$(\".show_hide-$count\").click(function(){" ;
+									print "\$(\".comment-$count\").fadeToggle(1000);" ;
+									print "});" ;
+								print "});" ;
+							print "</script>" ;
+							if (is_null($row["emailReceipt"]) == false) {
+								print "<a href='".$_SESSION[$guid]["absoluteURL"]."/index.php?q=/modules/Messenger/messenger_manage_report.php&pupilsightMessengerID=".$row['pupilsightMessengerID']."&sidebar=true&search=$search'><i title='" . __('View Send Report') . "' class='fas fa-dot-circle px-2'></i></a>" ;
+							}
+							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
+								print "<a title='" . __('Show Comment') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["pupilsightThemeName"] . "/img/page_down.png' alt='" . __('Show Comment') . "' onclick='return false;' /></a>" ;
+							}
+						print "</td>" ;
+					print "</tr>" ;
+					if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
+						print "<tr class='comment-$count' id='comment-$count'>" ;
+							print "<td style='background-color: #fff' colspan=8>" ;
+								if ($row["emailReport"]!="") {
+									print "<b><u>Email Report</u></b><br/>" ;
+									$emails=explode("),",$row["emailReport"]) ;
+									$emails=array_unique($emails) ;
+									$emails=msort($emails) ;
+									foreach ($emails AS $email) {
+										print $email . ")<br/>" ;
+									}
+								}
+								if ($row["smsReport"]!="") {
+									print "<b><u>SMS Report</u></b><br/>" ;
+									$smss=explode("),",$row["smsReport"]) ;
+									$smss=array_unique($smss) ;
+									$smss=msort($smss) ;
+									foreach ($smss AS $sms) {
+										print $sms . ")<br/>" ;
+									}
+								}
+							print "</td>" ;
+						print "</tr>" ;
+
 					}
 					if ($row["smsReport"] != "") {
 						print "<b><u>SMS Report</u></b><br/>";

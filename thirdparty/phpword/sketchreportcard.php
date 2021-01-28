@@ -20,7 +20,7 @@ $filename = $sketchGroupData['template_filename'];
 // echo '</pre>';
 // die();
 if(!empty($sketchGroupData) && !empty($filename)){
-    $file = $_SERVER["DOCUMENT_ROOT"]."/public/sketch_template/".$filename;
+    echo $file = $_SERVER["DOCUMENT_ROOT"]."/public/sketch_template/".$filename;
     //$file = $_SERVER["DOCUMENT_ROOT"]."/pupilsight/public/report_template/1597834900_sketch_Template.docx";
 
     foreach($studentId as $sgd){
