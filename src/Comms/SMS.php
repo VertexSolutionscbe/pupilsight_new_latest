@@ -244,6 +244,16 @@ class SMS implements SMSInterface
                 $activeGateway= $rs[0]['value'];
             }
 
+            $getsenderid = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsSenderID'";
+            $db2 = new DBQuery();
+            $rs2 = $db2->selectRaw($getsenderid, TRUE);
+            if (empty($rs2)) {
+                $dsempty = array();
+                return $db2->convertDataset($dsempty);
+            }else {
+                $senderid= $rs2[0]['value'];
+            }
+
             $sql1 = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND description='$activeGateway'";
             $db1 = new DBQuery();
             $rs1 = $db1->selectRaw($sql1, TRUE);
@@ -261,7 +271,7 @@ class SMS implements SMSInterface
 //die();
             switch ($activeGateway) {
                 case 'Karix':
-                    $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=PUPLPD";
+                    $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=".$senderid;
                     $url1 .="&text=".urlencode($msg);
                     $url1 .="&dest=".$numbers;
                     $res = file_get_contents($url1);
