@@ -337,17 +337,18 @@
          }
          echo '</td>';
 
-         if(!empty($marksobt) && !empty($s_test['gradeSystemId'])){
+         if(!empty($marksobt) && !empty($s_test['gradeSystemId']) && $s_test['max_marks'] != '0.00'){
             $obtMark = $s_test['max_marks'];
-            $mrks = ($marksobt / $obtMark) * 100;
+            $mrks = ($marksobt / $obtMark) * 100; 
             $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $s_test['gradeSystemId'] . '" AND  (' . $mrks . ' BETWEEN `lower_limit` AND `upper_limit`)';
             $result = $connection2->query($sql);
             $grade = $result->fetch();
 
             $gstatus = $grade['subject_status'];
-        } else {
+            
+         } else {
             $gstatus = '';
-        }
+         }
 
          echo '<td id="grade_status'.$s_test['test_id'].'row'.$i.'">'.$gstatus.'</td>';
          $i++; ?> 
