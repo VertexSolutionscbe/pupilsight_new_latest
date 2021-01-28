@@ -585,7 +585,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
             ->newQuery()
             ->from('examinationSubjectToTest')
             ->cols([
-                        'examinationSubjectToTest.*','examinationTest.name','examinationTest.lock_marks_entry','examinationGradeSystemConfiguration.gradeSystemId',"GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name SEPARATOR ', ') as grade_names","GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id SEPARATOR ', ') as grade_ids",'subjectToClassCurriculum.subject_type', 'pupilsightDepartment.name AS subject'
+                        'examinationSubjectToTest.*','examinationTest.name','examinationTest.lock_marks_entry','examinationGradeSystemConfiguration.gradeSystemId',"GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name SEPARATOR ', ') as grade_names","GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id SEPARATOR ', ') as grade_ids",'subjectToClassCurriculum.subject_type', 'pupilsightDepartment.name AS subject','subjectToClassCurriculum.pos'
                     ])
             ->leftJoin('examinationTest', 'examinationSubjectToTest.test_id=examinationTest.id')
             ->leftJoin('pupilsightDepartment', 'examinationSubjectToTest.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')     
@@ -594,11 +594,12 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
 
             ->where('examinationSubjectToTest.is_tested ="1"')
             ->where('examinationSubjectToTest.test_id ="'.$testId.'"')
+            ->where('subjectToClassCurriculum.pupilsightSchoolYearID ="'.$pupilsightSchoolYearID.'"')
             ->where('subjectToClassCurriculum.pupilsightProgramID ="'.$pupilsightProgramID.'"')
             ->where('subjectToClassCurriculum.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'"')
             ->groupBy(['examinationSubjectToTest.pupilsightDepartmentID'])
             ->orderBy(['subjectToClassCurriculum.pos ASC']);
-           // echo $query;
+            //echo $query;
             $res = $this->runQuery($query, $criteria);
             $data = $res->data;
 
