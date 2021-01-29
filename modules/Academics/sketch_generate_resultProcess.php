@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $resultsk = $connection2->query($sqlsketch);
     $sketchDataAttr = $resultsk->fetchAll();
 
-    $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID  WHERE c.pupilsightSchoolYearID = ' . $sketchData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $sketchData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID IN (' . $sketchData['class_ids'] . ') GROUP BY b.pupilsightPersonID';
+    $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID  WHERE b.pupilsightPersonID = "0000000058" AND c.pupilsightSchoolYearID = ' . $sketchData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $sketchData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID IN (' . $sketchData['class_ids'] . ') GROUP BY b.pupilsightPersonID';
     $results = $connection2->query($sqls);
     $studentData = $results->fetchAll();
     //print_r($studentData);
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 'student_id' => $td['pupilsightPersonID'],
                 'student_name' => $td['officialName'],
                 'student_gender' => $td['gender'],
-                'student_dob' => $td['dob'],
+                'student_dob' => date('d/m/Y', strtotime($td['dob'])),
                 'student_address' => $td['address1'],
                 'admission_no' => $td['admission_no'],
                 'roll_no' => $td['roll_no'],
@@ -236,16 +236,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                                 }
                                             }
                                         } else {
-                                            $getmarks = '0';
+                                            $getmarks = '';
                                         }
 
-                                        $getMarksNew = $getmarks;
+                                        $getMarksNew = str_replace(".00","", $getmarks);
                                         $gmsarr[$tsub['pupilsightDepartmentID']][] = $getMarksNew;
 
                                         $getSketchData[$sd['attribute_type']][$sd['erta_id']][$tsub['pupilsightDepartmentID']] = $getMarksNew;
                                         // echo $sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject'].'--'.$getmarks.'</br>';
 
-                                        $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $tsub['subject']] = $getmarks;
+                                        // $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $tsub['subject']] = $getmarks;
+
+                                        $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $tsub['subject']] = $getMarksNew;
                                         $cnt++;
                                     }
                                 }
@@ -299,6 +301,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                         } else {
                                             $max_marks = $tsub["max_marks"];
                                         }
+
+                                        $max_marks = str_replace(".00","", $max_marks); 
                                         $newMaxMarks = $max_marks;
 
                                         $maxMarksArr[$tsub['pupilsightDepartmentID']][] = $newMaxMarks;
@@ -420,6 +424,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                             if ($finalFormuala == 'Average') {
                                 $getComMarks = array_sum($gs) / count($gs);
                             }
+
+                            $getComMarks = str_replace(".00","",$getComMarks);
 
                             $totalMarksArr[$k] = $getComMarks;
 

@@ -209,12 +209,46 @@
       <td><strong> <?php echo $s_test['subject'];?></strong></td>
       <?php echo ' <input type="hidden" name="pupilsightDepartmentID['.$s_test['pupilsightDepartmentID'].']" value="'.$s_test['pupilsightDepartmentID'].'">' ;
          echo ' <input type="hidden" name="test_id['.$s_test['test_id'].']" value="'.$s_test['test_id'].'">' ;
-         
+               
+         $sqlsc = 'SELECT skill_configure FROM examinationSubjectToTest WHERE test_id =' . $s_test['test_id'] . ' AND pupilsightDepartmentID = '.$s_test['pupilsightDepartmentID'].' AND skill_configure != "None" AND is_tested = "0" ';
+         $resultsc = $connection2->query($sqlsc);
+         $scData = $resultsc->fetch();
+         if(!empty($scData)){ 
+            $sConf = $scData['skill_configure'];
+            if($sConf == 'Sum'){
+               $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $s_test['pupilsightDepartmentID'],'pupilsightPersonID' => $std_id);                    
+               $sql1 = 'SELECT SUM(marks_obtained) AS tot_mrks FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID ';
+               $result = $connection2->prepare($sql1);
+               $result->execute($data1);
+               $sConfMarks =  $result->fetch();
+               if(!empty($sConfMarks)){
+                  $totdata = str_replace(".00","",$sConfMarks['tot_mrks']);
+               } else {
+                  $totdata = '';
+               }
+               
+            } else if($sConf == 'Average'){
+               $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $s_test['pupilsightDepartmentID'],'pupilsightPersonID' => $std_id);                    
+               $sql1 = 'SELECT AVG(marks_obtained) AS tot_mrks FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID ';
+               $result = $connection2->prepare($sql1);
+               $result->execute($data1);
+               $sConfMarks =  $result->fetch();
+               if(!empty($sConfMarks)){
+                  $totdata = str_replace(".00","",round($sConfMarks['tot_mrks'], 2));
+               } else {
+                  $totdata = '';
+               }
+            } else {
+               $totdata = '';
+            }
+         } else {
+            $totdata = '';
+         }
        
              ?>
              <td colspan='2'></td>
       <td colspan='2'>
-        <span class="display_total<?php echo $s_test['test_id']."".ltrim($s_test['pupilsightDepartmentID'], "0");?>"></span>
+        <span class="display_total<?php echo $s_test['test_id']."".ltrim($s_test['pupilsightDepartmentID'], "0");?>"><?php echo $totdata;?></span>
         <input type="hidden" name="main_sub['<?php echo $s_test['test_id'];?>']['<?php echo $s_test['pupilsightDepartmentID'];?>']" class="main_sub<?php echo $s_test['test_id']."d".ltrim($s_test['pupilsightDepartmentID'], "0");?>">
       </td>
       <td></td>
@@ -297,7 +331,7 @@
                   //$marksobt = str_replace(".00","",$prevdata['marks_obtained']);
                   //$marksobt = rtrim($marksobt,'0');
 
-                                     echo '<input type="text" data-mode="'.$sl['skill_configure'].'" data-mark="'.$sl['max_marks'].'" data-d="'.$sl['pupilsightDepartmentID'].'" data-gsid="'.$s_test['gradeSystemId'].'" data-cnt="'.$i.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']"  class="numMarksfield chkData enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'  '.$en_dis_clss.' '.$total_class.' " value="'.$marksobt.'"  '.$disabled.'>';?>
+                                     echo '<input type="text" data-mode="'.$sl['skill_configure'].'" data-mark="'.$sl['max_marks'].'" data-d="'.$sl['pupilsightDepartmentID'].'" data-gsid="'.$s_test['gradeSystemId'].'" data-cnt="'.$i.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']" data-fid="'.$i.'" id="focustab-'.$s_test['test_id'].'-'.$i.'" class="tabfocus numMarksfield chkData enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'  '.$en_dis_clss.' '.$total_class.' " value="'.$marksobt.'"  '.$disabled.'>';?>
             </div>
          </div>
       </td>
@@ -393,6 +427,10 @@
    {
    width: 125px;
    }
+
+   .txtColor {
+        background-color: lightblue !important;
+    }
 </style>
 <script>
    $(document).on('keyup','.remark_textarea',function(){
@@ -563,6 +601,20 @@
 
       $(document).on('change', '.chkData', function(e) {
          $("#chkMarksSaveData").val(1);
+      }); 
+
+
+      $(document).on('keydown', '.tabfocus', function(e) {
+            $(".numMarksfield").removeClass('txtColor');
+            var id = $(this).attr('data-fid');
+            var tid = $(this).attr('data-tid');
+            var newid = parseInt(id) + 1;
+            var keycode = (window.event) ? event.keyCode : e.keyCode;
+            if (keycode == 9){
+                  window.setTimeout(function() {
+                     $("#focustab-"+tid+'-'+newid).focus().addClass('txtColor');
+                  }, 10);
+            }
       }); 
 </script>
 <?php
