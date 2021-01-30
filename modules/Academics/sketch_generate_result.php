@@ -205,6 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             var yid = '';
             var skid = '';
             var mapid = [];
+            var stuid = [];
             $.each($(".getStudentInSketch:checked"), function () {
                 clid.push($(this).val());
                 secid.push($(this).attr('data-secid'));
@@ -214,13 +215,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 mapid.push($(this).attr('data-mapid'));
             });
 
+            $.each($(".studentId:checked"), function () {
+                stuid.push($(this).val());
+            });
+
             var cid = clid.join(",");
             var secid = secid.join(",");
             var mid = mapid.join(",");
+            var stid = stuid.join(",");
             $.ajax({
                 url: 'modules/Academics/sketch_generate_resultProcess.php',
                 type: 'post',
-                data: {id: id, pid: pid, cid: cid, yid: yid, secid:secid, mid:mid},
+                data: {id: id, pid: pid, cid: cid, yid: yid, secid:secid, mid:mid, stid:stid},
                 async: true,
                 success: function(response) {
                     console.log(response);
