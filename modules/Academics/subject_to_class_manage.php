@@ -122,6 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
     $CurriculumGateway = $container->get(CurriculumGateway::class);
     $criteria = $CurriculumGateway->newQueryCriteria()
         //->sortBy(['id'])
+        ->pageSize(1000)
         ->fromPOST();
 ?>
     <div class='mt-2 mb-2'>
