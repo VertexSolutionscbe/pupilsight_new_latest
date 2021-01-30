@@ -776,6 +776,7 @@ if ($type == 'getSection') {
     } else {
         $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
     }
+    echo $sql;
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
@@ -3642,4 +3643,34 @@ if ($type == 'getTestByClassProgram') {
         }
     }
     echo $returndata;
+}
+
+if ($type == 'getStudentDataForSketch') {
+    $secid = $val;
+    $pupilsightSchoolYearID = $_POST['yid'];
+    $pupilsightProgramID = $_POST['pid'];
+    $pupilsightYearGroupID = $_POST['cid'];
+    $sketchId = $_POST['skid'];
+    $sql = 'SELECT a.*, b.officialName FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID IN (' . $pupilsightYearGroupID . ') AND a.pupilsightRollGroupID IN (' . $secid . ') AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+    $result = $connection2->query($sql);
+    $studentData = $result->fetchAll();
+
+    $data = '';
+    if (!empty($studentData)) {
+        foreach ($studentData as $k => $st) {
+            $data .= '<tr>
+                        <td style="width:15%"><input type="checkbox" class="studentId" name="pupilsightPersonID" value="'. $st['pupilsightPersonID']. '" data-sid="'.  $sketchId.'" data-pid="'. $st['pupilsightPersonID'].'"></td>
+                        <td style="width:15%">' . $st['officialName'] . '</td>
+                    </tr>';
+        }
+    }
+    echo $data;
+
+    $data = '<option value="">Select Student</option>';
+    if (!empty($sections)) {
+        foreach ($sections as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'] . '</option>';
+        }
+    }
+    echo $data;
 }
