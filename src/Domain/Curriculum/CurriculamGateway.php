@@ -1180,5 +1180,20 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
         return $this->runQuery($query, $criteria, true);
     }
 
+    public function getSketchTemplate(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('examinationReportSketchTemplateMaster')
+            ->cols([
+                'examinationReportSketchTemplateMaster.*','pupilsightProgram.name as progName','pupilsightYearGroup.name as clsName'
+            ])
+            ->leftJoin('pupilsightYearGroup', 'examinationReportSketchTemplateMaster.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightProgram', 'examinationReportSketchTemplateMaster.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->orderby(['examinationReportSketchTemplateMaster.id DESC']);
+
+        return $this->runQuery($query, $criteria, true);
+    }
+
 
 }

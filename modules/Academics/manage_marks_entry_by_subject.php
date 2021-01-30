@@ -514,7 +514,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     </select>
                 
                     <input id="remarklistval<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" type="hidden" name="remark_frmlst[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="">
-                    <textarea data-tid="<?php echo $s_test['test_id'];?>"  data-fid="<?php echo $f;?>"  style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class="tabfocusRemark remark_textarea text_remark_<?php echo $s_test['test_id']; ?>  focustabRemark-<?php echo $s_test['test_id'];?>-<?php echo $f; ?>" ><?php echo $prevdata['remarks'] ?></textarea> 
+                    <?php 
+                        if($prevdata['remark_type'] == 'own'){
+                            $remOwnData = $prevdata['remarks'];
+                        } else {
+                            $remOwnData = '';
+                        }
+                    ?>
+
+                    <textarea data-tid="<?php echo $s_test['test_id'];?>"  data-fid="<?php echo $f;?>"  style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class="tabfocusRemark remark_textarea text_remark_<?php echo $s_test['test_id']; ?>  focustabRemark-<?php echo $s_test['test_id'];?>-<?php echo $f; ?>" ><?php echo $remOwnData; ?></textarea> 
                     <br/> 
                     <span class="rcount_<?php echo $s_test['test_id'];?>"></span>        
                     <?php
@@ -835,7 +843,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             success: function(response) {
                 alert('Marks Saved!');
                 $("#preloader").hide();
-                //$("#searchForm").submit();
+                $("#searchForm").submit();
                 //$('#marksbysubject')[0].reset();
             }
         });

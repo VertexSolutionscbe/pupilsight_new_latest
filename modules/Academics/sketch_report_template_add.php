@@ -24,6 +24,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     }
 
         $sketch_id = $_GET['id'];
+
+        $sql = 'SELECT * FROM examinationReportTemplateSketch WHERE id = "' . $sketch_id . '" ';
+        $result = $connection2->query($sql);
+        $sketchData = $result->fetch();
+
+
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = ' . $sketchData['pupilsightSchoolYearID'] . ' AND a.pupilsightProgramID = ' . $sketchData['pupilsightProgramID'] . ' AND a.pupilsightYearGroupID IN (' . $sketchData['class_ids'] . ') GROUP BY a.pupilsightYearGroupID';
+        $result = $connection2->query($sql);
+        $classeData = $result->fetchAll();
+
+        $class = array();
+        $class2 = array();
+        $class1 = array('' => 'Select Class');
+        foreach ($classeData as $dt) {
+            $class2[$dt['pupilsightYearGroupID']] = $dt['name'];
+        }
+        $class = $class1 + $class2;
    
         echo '<h2>';
         echo __('Add Sketch Template');
@@ -34,6 +51,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('sketch_id', $sketch_id);
+        $form->addHiddenValue('pupilsightSchoolYearID', $sketchData['pupilsightSchoolYearID']);
+        $form->addHiddenValue('pupilsightProgramID', $sketchData['pupilsightProgramID']);
+
+        $row = $form->addRow();
+        $row->addLabel('pupilsightYearGroupID', __('Class'));
+        $row->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($class)->required()->placeholder('Select Class');
 
         $row = $form->addRow();
         $row->addLabel('file', __('Template'));

@@ -29,80 +29,78 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $resultchk = $connection2->query($sqlchk);
     $chkdata = $resultchk->fetch();
 
-    if ($chkdata['attribute_category'] == 'Entity') {
+    if($chkdata['attribute_category'] == 'Entity'){
+    
+    echo '<h3>';
+    echo __('Select Attribute');
+    echo '<a id="saveAttrFormula" class="btn btn-primary" style="float: right;margin: -6px 0 0 0px;">Save</a>';
+    echo '</h3>';
 
-        echo '<h3>';
-        echo __('Select Attribute');
-        echo '<a id="saveAttrFormula" class="btn btn-primary" style="float: right;margin: -6px 0 0 0px;">Save</a>';
-        echo '</h3>';
+    
+    $sqla = "SELECT * FROM examinationReportTemplateConfiguration  WHERE table_label = '".$chkdata['attribute_type']."' ";
+    $resulta = $connection2->query($sqla);
+    $attrdata = $resulta->fetchAll();
 
+    $sql = "SELECT table_label FROM examinationReportTemplateConfiguration GROUP BY table_label";
+    $result = $connection2->query($sql);
+    $labeldata = $result->fetchAll();
 
-        $sqla = "SELECT * FROM examinationReportTemplateConfiguration  WHERE table_label = '" . $chkdata['attribute_type'] . "' ";
-        $resulta = $connection2->query($sqla);
-        $attrdata = $resulta->fetchAll();
+    $sqlf = "SELECT * FROM examinationReportTemplateFormula ORDER BY pos ASC";
+    $resultf = $connection2->query($sqlf);
+    $formuladata = $resultf->fetchAll();
+    //print_r($labeldata);
 
-        $sql = "SELECT table_label FROM examinationReportTemplateConfiguration GROUP BY table_label";
-        $result = $connection2->query($sql);
-        $labeldata = $result->fetchAll();
+?> 
+    <div style="width:30%; margin-bottom:10px;" >
+        <input type="text" class="w-full" id="searchTable" placeholder="Search">
+    </div>
+    <form id="attrFormula" method="post" action="modules/Academics/sketch_manage_attribute_formulaProcess.php">
+    <input type="hidden" name="sketch_id" value="<?php echo $chkdata['sketch_id'];?>">
+    <input type="hidden" name="erta_id" value="<?php echo $id;?>">
+    <div id="cloning" class="row">
+        <table class="table table-hover"  id="myTable">
+            <thead>
+                <tr>
+                    <th style="width:15%">Select</th>
+                    <th style="width:15%">Attribute</th>
+                    <th style="width:40%">Formula</th>
+                    <th style="width:30%">Plugins</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if(!empty($attrdata)) { 
+                    foreach($attrdata as $ad){
+                        
+                ?>
+                    
+                    <tr>
+                        <td><input type="checkbox" name="ertc_id[]" value="<?php echo $ad['id'];?>"></td>
+                        <td><?php echo $ad['report_column_label'];?></td>
+                        <td style="">
+                            <select id="formulaName" data-id="<?php echo $ad['id'];?>" name="formula_id[<?php echo $ad['id'];?>]" class="form-control" style="width:40% !important; float:left; margin: 0 10px 0 0px;">
+                                <option value="">AS IS</option>
+                                <?php if(!empty($formuladata)) { 
+                                    foreach($formuladata as $fd) {   
 
-        $sqlf = "SELECT * FROM examinationReportTemplateFormula ORDER BY pos ASC";
-        $resultf = $connection2->query($sqlf);
-        $formuladata = $resultf->fetchAll();
-        //print_r($labeldata);
-
-?>
-        <div style="width:30%; margin-bottom:10px;">
-            <input type="text" class="w-full" id="searchTable" placeholder="Search">
-        </div>
-        <form id="attrFormula" method="post" action="modules/Academics/sketch_manage_attribute_formulaProcess.php">
-            <input type="hidden" name="sketch_id" value="<?php echo $chkdata['sketch_id']; ?>">
-            <input type="hidden" name="erta_id" value="<?php echo $id; ?>">
-            <div id="cloning" class="row">
-                <table class="table table-hover" id="myTable">
-                    <thead>
-                        <tr>
-                            <th style="width:15%">Select</th>
-                            <th style="width:15%">Attribute</th>
-                            <th style="width:40%">Formula</th>
-                            <th style="width:30%">Plugins</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($attrdata)) {
-                            foreach ($attrdata as $ad) {
-
-                        ?>
-
-                                <tr>
-                                    <td><input type="checkbox" name="ertc_id[]" value="<?php echo $ad['id']; ?>"></td>
-                                    <td><?php echo $ad['report_column_label']; ?></td>
-                                    <td style="">
-                                        <select id="formulaName" data-id="<?php echo $ad['id']; ?>" name="formula_id[<?php echo $ad['id']; ?>]" class="form-control" style="width:40% !important; float:left; margin: 0 10px 0 0px;">
-                                            <option value="">AS IS</option>
-                                            <?php if (!empty($formuladata)) {
-                                                foreach ($formuladata as $fd) {
-
-                                            ?>
-                                                    <option value="<?php echo $fd['id']; ?>"><?php echo $fd['name']; ?></option>
-                                            <?php }
-                                            } ?>
-                                        </select>
-                                        <input id="formulaValue-<?php echo $ad['id']; ?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id']; ?>]" value="" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" readonly>
-                                    </td>
-                                    <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id']; ?>"><i title="Add Plugin" class="fas fa-plus-square"></i></a> </td>
-                                </tr>
-
-                        <?php
-                            }
-                        }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
-        </form>
-
-    <?php
-    } elseif ($chkdata['attribute_category'] == 'Test') {
+                                ?>
+                                    <option value="<?php echo $fd['id'];?>"  ><?php echo $fd['name'];?></option>
+                                <?php } } ?>
+                            </select>
+                                    <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" readonly>
+                        </td>
+                        <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  </td>
+                    </tr>
+                    
+                <?php       
+                    } }   
+                ?>
+            </tbody>
+        </table>
+    </div>    
+    </form>
+			
+<?php  
+    } elseif($chkdata['attribute_category'] == 'Test') {
         echo '<h3>';
         echo __('Select Test');
         echo '<a id="saveAttrFormula" class="btn btn-primary" style="float: right;margin: -6px 0 0 0px;">Save</a>';
@@ -256,10 +254,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 <table class="table table-hover" id="myTable">
                     <thead>
                         <tr>
+<<<<<<< HEAD
                             <th style="width:15%">Select</th>
                             <th style="width:15%">Test Attribute</th>
                             <th style="width:40%">Formula</th>
                             <th style="width:30%">Plugins</th>
+=======
+                            <td><input type="checkbox" name="attr_id[]" value="<?php echo $ad['id'];?>"></td>
+                            <td><?php echo $ad['attribute_name'];?></td>
+                            <td style="">
+                                <select id="formulaName" data-id="<?php echo $ad['id'];?>" name="formula_id[<?php echo $ad['id'];?>]" class="form-control" style="width:40% !important; float:left; margin: 0 10px 0 0px;">
+                                    <option value="">AS IS</option>
+                                    <?php if(!empty($formuladata)) { 
+                                        foreach($formuladata as $fd) {   
+
+                                    ?>
+                                        <option value="<?php echo $fd['id'];?>" <?php if($formulamapdata['formula_id'] == $fd['id']) { ?> selected <?php } ?> ><?php echo $fd['name'];?></option>
+                                    <?php } } ?>
+                                </select>
+                                        <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="<?php echo $formulamapdata['formula_val'];?>" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" <?php if(empty($formulamapdata['formula_val'])) { ?>readonly <?php } ?>>
+                            </td>
+                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>   <?php echo $attrdata['pluginname'];?></td>
+>>>>>>> 2394aae25dbd7627087ebf54872b3da7d55002e0
                         </tr>
                     </thead>
                     <tbody>
@@ -344,9 +360,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     <option value="Sum">Sum</option> -->
                     </select>
 
+<<<<<<< HEAD
                     <span style="font-size:14px;">Final Plugin : </span>
                     <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id']; ?>"><i style="font-size: 20px;" title="Add Plugin" class="fas fa-plus-square"></i></a>
                 </div>
+=======
+                <span style="font-size:14px;">Final Plugin : </span>
+                <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id'];?>"><i style="font-size: 20px;" title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>
+>>>>>>> 2394aae25dbd7627087ebf54872b3da7d55002e0
             </div>
         </form>
 <?php

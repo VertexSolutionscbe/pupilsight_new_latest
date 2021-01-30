@@ -47,10 +47,10 @@ if ($pupilsightSchoolYearID == '') { echo 'Fatal error loading this page!';
                 $resulthis->execute($datahis);
 
 
-                $datadel = array('pupilsightPersonID' => $pupilsightPersonID);
-                $sqldel = 'DELETE FROM pupilsightStudentEnrolment WHERE pupilsightPersonID=:pupilsightPersonID';
-                $resultdel = $connection2->prepare($sqldel);
-                $resultdel->execute($datadel);
+                // $datadel = array('pupilsightPersonID' => $pupilsightPersonID);
+                // $sqldel = 'DELETE FROM pupilsightStudentEnrolment WHERE pupilsightPersonID=:pupilsightPersonID';
+                // $resultdel = $connection2->prepare($sqldel);
+                // $resultdel->execute($datadel);
 
 
                 $data = array('pupilsightProgramID'=>$pupilsightProgramID,'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID);

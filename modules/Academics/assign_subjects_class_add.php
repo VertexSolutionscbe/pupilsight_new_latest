@@ -181,14 +181,12 @@ $(function () {
     
     $(document).ready(function () {
       	$('#showMultiClassByProg').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });
     
     $(document).ready(function () {
       	$('#showMultiSubjectByProgCls').selectize({
-      		maxItems: 15,
       		plugins: ['remove_button'],
       	});
     });
