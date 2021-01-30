@@ -40,31 +40,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
                             foreach ($skills as $ks => $marksdata) {
                                 $skill_id = $ks;
                                 $marks_abex = NULL;
-                                $gradeId = isset($_POST['grade_val'][$key][$k][$ks])?$_POST['grade_val'][$key][$k][$ks]:'';
-                                
+                                $gradeId = isset($_POST['grade_val'][$key][$k][$ks]) ? $_POST['grade_val'][$key][$k][$ks] : '';
+
                                 if (empty($marksdata)) {
                                     $marks_abex = $_POST['mark_abex'][$key][$k][$ks];
                                     if ($marks_abex == "-") {
                                         $marks_abex = NULL;
-                                    } elseif ($marks_abex == "AB" || $marks_abex == "EX")  {
+                                    } elseif ($marks_abex == "AB" || $marks_abex == "EX") {
                                         $gradeId = '';
                                         $marksdata = '';
                                     }
                                 }
 
-                                if(!empty($_POST['remark_own'][$key][$k])){
+                                if (!empty($_POST['remark_own'][$key][$k])) {
                                     $remark_own = $_POST['remark_own'][$key][$k];
                                 } else {
                                     $remark_own = '';
                                 }
 
-                                if (!empty($marksdata) || $marksdata == '0' || !empty($marks_abex) || !empty($gradeId) ) {
+                                if (!empty($marksdata) || $marksdata == '0' || !empty($marks_abex) || !empty($gradeId)) {
 
                                     // if(!empty($marks_abex) || !empty($gradeId)){
                                     //     $marksdata = '';
                                     // }
 
-                                    if(!empty($skill_id)){
+                                    if (!empty($skill_id)) {
                                         $datadel = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID, 'skill_id' => $skill_id);
                                         //print_r($datadel);
 
@@ -79,9 +79,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
                                         $resultdel = $connection2->prepare($sqldel);
                                         $resultdel->execute($datadel);
                                     }
-                                    
-                                    
-                                
+
+
+
                                     $data = array('pupilsightPersonIDTaker' => $_SESSION[$guid]['pupilsightPersonID'], 'test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID, 'pupilsightPersonID' => $pupilsightPersonID, 'skill_id' => $skill_id, 'marks_obtained' => $marksdata, 'marks_abex' => $marks_abex, 'gradeId' => $gradeId, 'remarks' => $remark_own);
 
                                     $sql = 'INSERT INTO examinationMarksEntrybySubject SET test_id=:test_id, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID, pupilsightDepartmentID=:pupilsightDepartmentID, pupilsightPersonID=:pupilsightPersonID, skill_id=:skill_id, marks_obtained=:marks_obtained,marks_abex=:marks_abex,pupilsightPersonIDTaker=:pupilsightPersonIDTaker, gradeId=:gradeId, remarks=:remarks';
