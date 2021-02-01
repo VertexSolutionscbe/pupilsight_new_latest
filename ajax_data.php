@@ -2860,7 +2860,8 @@ if ($type == 'getStudentSketchData') {
             $data .= '<tr>
                         <td style="width:15%">' . $st['attribute_name'] . '</td>
                         <td style="width:15%">${' . $st['attribute_name'] . '}</td>
-                        <td style="width:15%">' . $st['attribute_value'] . '</td>
+                        <td style="width:15%" class="noEditTd">' . $st['attribute_value'] . '</td>
+                        <td style="width:15%;display:none;" class="editTd"><input type="textbox" class="updateSketchData" data-id="' . $st['id'] . '" value="' . $st['attribute_value'] . '"></td>
                     </tr>';
         }
     }
@@ -3700,4 +3701,28 @@ if ($type == 'getStudentDataForSketch') {
         }
     }
     echo $data;
+}
+
+
+if ($type == 'updateStudentSketchData') {
+    $ids = explode(',', $val);
+    
+    foreach ($ids as $st) {
+        // $data = array('pupilsightPersonID' => $st);
+        // $sql = 'DELETE FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+        // $result = $connection2->prepare($sql);
+        // $result->execute($data);
+        if(!empty($st)){
+            $sdata = explode('-',$st);
+            $id = $sdata[0];
+            $valdat = $sdata[1];
+
+            $data = array('attribute_value' => $valdat, 'id' => $id);
+            $sql = 'UPDATE examinationReportTemplateSketchData SET attribute_value=:attribute_value WHERE id=:id';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        }
+
+        
+    }
 }

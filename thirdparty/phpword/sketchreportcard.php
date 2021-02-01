@@ -6,20 +6,30 @@ require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php'
 
 
 $id = $_GET['id'];
+$skgid = $_GET['skgid'];
+$stuid = $_GET['stuid'];
 
-$sql = 'SELECT GROUP_CONCAT(DISTINCT a.pupilsightPersonId) AS stuid, b.sketch_name, b.template_path, b.template_filename  FROM examinationReportTemplateSketchData AS a LEFT JOIN examinationReportTemplateSketch AS b ON a.sketch_id = b.id WHERE sketch_id = '.$id.' ';
+
+if(!empty($stuid)){
+    $sql = 'SELECT GROUP_CONCAT(DISTINCT a.pupilsightPersonId) AS stuid, b.sketch_name, b.template_path, b.template_filename  FROM examinationReportTemplateSketchData AS a LEFT JOIN examinationReportTemplateSketch AS b ON a.sketch_id = b.id WHERE sketch_id = '.$id.' AND sketch_generate_id IN ('.$skgid.') AND pupilsightPersonID IN ('.$stuid.') ';
+} else {
+    $sql = 'SELECT GROUP_CONCAT(DISTINCT a.pupilsightPersonId) AS stuid, b.sketch_name, b.template_path, b.template_filename  FROM examinationReportTemplateSketchData AS a LEFT JOIN examinationReportTemplateSketch AS b ON a.sketch_id = b.id WHERE sketch_id = '.$id.' AND sketch_generate_id IN ('.$skgid.') ';
+}
+
+
+
 $result = $connection2->query($sql);
 $sketchGroupData = $result->fetch();
 
 $sketchName = $sketchGroupData['sketch_name'];
 $studentId = explode(',', $sketchGroupData['stuid']);
-$filename = $sketchGroupData['template_filename'];
+//$filename = $sketchGroupData['template_filename'];
 
 // echo '<pre>';
 // print_r($sketchGroupData);
 // echo '</pre>';
 // die();
-if(!empty($sketchGroupData) && !empty($filename)){
+if(!empty($sketchGroupData)){
     //echo $file = $_SERVER["DOCUMENT_ROOT"]."/public/sketch_template/".$filename;
     //$file = $_SERVER["DOCUMENT_ROOT"]."/pupilsight/public/report_template/1597834900_sketch_Template.docx";
 
