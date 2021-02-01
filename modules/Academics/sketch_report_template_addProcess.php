@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     
     
                         $filename = time() . '_' .$sketch_id.'_'.  $_FILES["file"]["name"];
-                        $fileTarget = $_SERVER['DOCUMENT_ROOT']."/pupilsight/public/sketch_template/" . $filename;	
+                        $fileTarget = $_SERVER['DOCUMENT_ROOT']."/public/sketch_template/" . $filename;	
                         if(move_uploaded_file($_FILES["file"]["tmp_name"], $fileTarget)){
                             echo "Template updated successfully";
                         } else {
