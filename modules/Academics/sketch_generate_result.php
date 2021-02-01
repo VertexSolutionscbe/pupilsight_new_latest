@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     
     echo '<h3>';
     echo __('Sketch Name - '.$sktdata['sketch_name']);
-    echo '<div style="float:right;"><a id="generateSketchResult" data-id="'.$sketchId.'" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Generate Result</a> <a id="clickSketchResult" data-id="'.$sketchId.'" data-hrf="thirdparty/phpword/sketchreportcard.php?id='.$sketchId.'"  class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Download Result</a> <a style="display:none;" id="downloadSketchResult" href="">Download</a></div>';
+    echo '<div style="float:right;"><a id="generateSketchResult" data-id="'.$sketchId.'" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Generate Result</a> <a id="clickSketchResult" data-id="'.$sketchId.'" data-hrf="thirdparty/phpword/sketchreportcard.php?id='.$sketchId.'"  class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Download Result</a> <a style="display:none;" id="downloadSketchResult" href="">Download</a><a  id="editSketchData" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Edit Data</a><a  id="saveSketchData" style="display:none;float: right;margin: -6px 0 0 5px;" class="btn btn-primary">Save Data</a></div>';
     echo '</h3>';
 
     $sql = "SELECT name FROM pupilsightProgram WHERE pupilsightProgramID = ".$sktdata['pupilsightProgramID']." ";
@@ -353,5 +353,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         }
     });
 
+    $(document).on('click', '#editSketchData', function() {
+        $(".noEditTd").hide();
+        $(".editTd").show();
+        $("#saveSketchData").show();
+    });
+
+    $(document).on('click', '#saveSketchData', function() {
+        var sdata = [];
+        $.each($(".updateSketchData"), function () {
+            sdata.push($(this).attr('data-id')+'-'+$(this).val());
+        });
+
+        var skdata = sdata.join(",");
+        var type = 'updateStudentSketchData';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: {val: skdata, type: type },
+            async: true,
+            success: function(response) {
+                alert('Sketch Data Updated Successfully');
+                $(".studentId").trigger('change');
+                $("#saveSketchData").hide();
+                //$("#sketchResultData").html('');
+                //$("#sketchResultData").html(response);
+            }
+        });
+    });
     
 </script>
