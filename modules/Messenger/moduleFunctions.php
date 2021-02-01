@@ -190,7 +190,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
             $dataPosts['date1'] = $date;
             $dataPosts['date2'] = $date;
             $dataPosts['date3'] = $date;
-            $sqlPosts = "(SELECT pupilsightMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role: ', pupilsightRole.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole AS authorRole ON (pupilsightPerson.pupilsightRoleIDPrimary=authorRole.pupilsightRoleID) JOIN pupilsightRole ON (pupilsightMessengerTarget.id=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Role' $msgcategory AND $sqlWhere AND ((messageWall_date1 BETWEEN $fromdate AND :date1) OR (messageWall_date2 BETWEEN $fromdate AND :date2) OR (messageWall_date3 BETWEEN $fromdate AND :date3)) )";
+            $sqlPosts = "(SELECT pupilsightMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role: ', pupilsightRole.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole AS authorRole ON (pupilsightPerson.pupilsightRoleIDPrimary=authorRole.pupilsightRoleID) JOIN pupilsightRole ON (pupilsightMessengerTarget.id=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Role' $msgcategory AND $sqlWhere AND ((messageWall_date1 BETWEEN '$fromdate' AND :date1) OR (messageWall_date2 BETWEEN '$fromdate' AND :date2) OR (messageWall_date3 BETWEEN '$fromdate' AND :date3)) )";
             //      print_r($sqlPosts); die();
         }
 
@@ -217,7 +217,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
             $dataPosts['date1'] = $date;
             $dataPosts['date2'] = $date;
             $dataPosts['date3'] = $date;
-            $sqlPosts = $sqlPosts . " UNION (SELECT DISTINCT pupilsightMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role Category: ', pupilsightRole.category) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole AS authorRole ON (pupilsightPerson.pupilsightRoleIDPrimary=authorRole.pupilsightRoleID) JOIN pupilsightRole ON (pupilsightMessengerTarget.id=pupilsightRole.category) WHERE pupilsightMessengerTarget.type='Role Category' $msgcategory AND $sqlWhere AND ((messageWall_date1 BETWEEN $fromdate AND :date1) OR (messageWall_date2 BETWEEN $fromdate AND :date2) OR (messageWall_date3 BETWEEN $fromdate AND :date3)) )";
+            $sqlPosts = $sqlPosts . " UNION (SELECT DISTINCT pupilsightMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role Category: ', pupilsightRole.category) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole AS authorRole ON (pupilsightPerson.pupilsightRoleIDPrimary=authorRole.pupilsightRoleID) JOIN pupilsightRole ON (pupilsightMessengerTarget.id=pupilsightRole.category) WHERE pupilsightMessengerTarget.type='Role Category' $msgcategory AND $sqlWhere AND ((messageWall_date1 BETWEEN '$fromdate' AND :date1) OR (messageWall_date2 BETWEEN '$fromdate' AND :date2) OR (messageWall_date3 BETWEEN '$fromdate' AND :date3)) )";
         }
 
         //My year groups
@@ -241,7 +241,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                 WHERE pupilsightStaff.pupilsightPersonID=:pupilsightPersonID0 
                 AND pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID0 $msgcategory 
                 AND pupilsightMessengerTarget.type='Year Group' AND pupilsightMessengerTarget.staff='Y' AND
-                ((messageWall_date1 BETWEEN $fromdate AND :date4) OR (messageWall_date2 BETWEEN $fromdate AND :date5) OR (messageWall_date3 BETWEEN $fromdate AND :date6))
+                ((messageWall_date1 BETWEEN '$fromdate' AND :date4) OR (messageWall_date2 BETWEEN '$fromdate' AND :date5) OR (messageWall_date3 BETWEEN '$fromdate' AND :date6))
                 GROUP BY pupilsightMessenger.pupilsightMessengerID )";
 
             // Include staff who are tutors of any student in the same year group.
@@ -257,7 +257,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                 WHERE pupilsightStaff.pupilsightPersonID=:pupilsightPersonID0  
                 AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID0 $msgcategory 
                 AND pupilsightMessengerTarget.type='Year Group' AND pupilsightMessengerTarget.staff='Y' AND
-                ((messageWall_date1 BETWEEN $fromdate AND :date4) OR (messageWall_date2 BETWEEN $fromdate AND :date5) OR (messageWall_date3 BETWEEN $fromdate AND :date6))
+                ((messageWall_date1 BETWEEN '$fromdate' AND :date4) OR (messageWall_date2 BETWEEN '$fromdate' AND :date5) OR (messageWall_date3 BETWEEN '$fromdate' AND :date6))
                 GROUP BY pupilsightMessenger.pupilsightMessengerID)";
             //print_r($sqlPosts);
         }
@@ -268,14 +268,14 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
             $dataPosts['date9'] = $date;
             $dataPosts['pupilsightSchoolYearID1'] = $_SESSION[$guid]['pupilsightSchoolYearID'];
             $dataPosts['pupilsightPersonID1'] = $_SESSION[$guid]['pupilsightPersonID'];
-            $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Year Group ', pupilsightYearGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightYearGroupID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) WHERE pupilsightStudentEnrolment.pupilsightPersonID=:pupilsightPersonID1 AND pupilsightMessengerTarget.type='Year Group' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date7) OR (messageWall_date2 BETWEEN $fromdate AND :date8) OR (messageWall_date3 BETWEEN $fromdate AND :date9)) AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID1 AND students='Y' )";
+            $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Year Group ', pupilsightYearGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightYearGroupID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) WHERE pupilsightStudentEnrolment.pupilsightPersonID=:pupilsightPersonID1 AND pupilsightMessengerTarget.type='Year Group' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date7) OR (messageWall_date2 BETWEEN '$fromdate' AND :date8) OR (messageWall_date3 BETWEEN '$fromdate' AND :date9)) AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID1 AND students='Y' )";
         }
         if ($parent and $children != false) {
             $dataPosts['date10'] = $date;
             $dataPosts['date11'] = $date;
             $dataPosts['date12'] = $date;
             $dataPosts['pupilsightSchoolYearID2'] = $_SESSION[$guid]['pupilsightSchoolYearID'];
-            $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Year Group: ', pupilsightYearGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightYearGroupID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) WHERE " . preg_replace('/pupilsightPersonID/', 'pupilsightStudentEnrolment.pupilsightPersonID', $children) . " AND pupilsightMessengerTarget.type='Year Group' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date10) OR (messageWall_date2 BETWEEN $fromdate AND :date11) OR (messageWall_date3 BETWEEN $fromdate AND :date12)) AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID2 AND parents='Y' )";
+            $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Year Group: ', pupilsightYearGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightYearGroupID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) WHERE " . preg_replace('/pupilsightPersonID/', 'pupilsightStudentEnrolment.pupilsightPersonID', $children) . " AND pupilsightMessengerTarget.type='Year Group' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date10) OR (messageWall_date2 BETWEEN '$fromdate' AND :date11) OR (messageWall_date3 BETWEEN '$fromdate' AND :date12)) AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID2 AND parents='Y' )";
         }
 
         //My roll groups
@@ -298,7 +298,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                     $dataPosts['date13'] = $date;
                     $dataPosts['date14'] = $date;
                     $dataPosts['date15'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightRollGroup ON (pupilsightMessengerTarget.id=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightMessengerTarget.type='Roll Group' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date13) OR (messageWall_date2 BETWEEN $fromdate AND :date14) OR (messageWall_date3 BETWEEN $fromdate AND :date15)) AND $sqlWhere AND staff='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightRollGroup ON (pupilsightMessengerTarget.id=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightMessengerTarget.type='Roll Group' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date13) OR (messageWall_date2 BETWEEN '$fromdate' AND :date14) OR (messageWall_date3 BETWEEN '$fromdate' AND :date15)) AND $sqlWhere AND staff='Y' )";
                 }
             }
         }
@@ -308,14 +308,14 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
             $dataPosts['date18'] = $date;
             $dataPosts['pupilsightSchoolYearID3'] = $_SESSION[$guid]['pupilsightSchoolYearID'];
             $dataPosts['pupilsightPersonID2'] = $_SESSION[$guid]['pupilsightPersonID'];
-            $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightRollGroupID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightStudentEnrolment.pupilsightPersonID=:pupilsightPersonID2 AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID3 AND pupilsightMessengerTarget.type='Roll Group' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date16) OR (messageWall_date2 BETWEEN $fromdate AND :date17) OR (messageWall_date3 BETWEEN $fromdate AND :date18)) AND students='Y' )";
+            $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightRollGroupID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightStudentEnrolment.pupilsightPersonID=:pupilsightPersonID2 AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID3 AND pupilsightMessengerTarget.type='Roll Group' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date16) OR (messageWall_date2 BETWEEN '$fromdate' AND :date17) OR (messageWall_date3 BETWEEN '$fromdate' AND :date18)) AND students='Y' )";
         }
         if ($parent and $children != false) {
             $dataPosts['date19'] = $date;
             $dataPosts['date20'] = $date;
             $dataPosts['date21'] = $date;
             $dataPosts['pupilsightSchoolYearID4'] = $_SESSION[$guid]['pupilsightSchoolYearID'];
-            $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightRollGroupID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE " . preg_replace('/pupilsightPersonID/', 'pupilsightStudentEnrolment.pupilsightPersonID', $children) . " AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID4 $msgcategory AND pupilsightMessengerTarget.type='Roll Group' AND ((messageWall_date1 BETWEEN $fromdate AND :date19) OR (messageWall_date2 BETWEEN $fromdate AND :date20) OR (messageWall_date3 BETWEEN $fromdate AND :date21)) AND parents='Y' )";
+            $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightRollGroupID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE " . preg_replace('/pupilsightPersonID/', 'pupilsightStudentEnrolment.pupilsightPersonID', $children) . " AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID4 $msgcategory AND pupilsightMessengerTarget.type='Roll Group' AND ((messageWall_date1 BETWEEN '$fromdate' AND :date19) OR (messageWall_date2 BETWEEN '$fromdate' AND :date20) OR (messageWall_date3 BETWEEN '$fromdate' AND :date21)) AND parents='Y' )";
         }
 
         //My courses
@@ -339,13 +339,13 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                     $dataPosts['date22'] = $date;
                     $dataPosts['date23'] = $date;
                     $dataPosts['date24'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date22) OR (messageWall_date2 BETWEEN $fromdate AND :date23) OR (messageWall_date3 BETWEEN $fromdate AND :date24)) AND $sqlWhere AND staff='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date22) OR (messageWall_date2 BETWEEN '$fromdate' AND :date23) OR (messageWall_date3 BETWEEN '$fromdate' AND :date24)) AND $sqlWhere AND staff='Y' )";
                 }
                 if ($student) {
                     $dataPosts['date25'] = $date;
                     $dataPosts['date26'] = $date;
                     $dataPosts['date27'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory  AND ((messageWall_date1 BETWEEN $fromdate AND :date25) OR (messageWall_date2 BETWEEN $fromdate AND :date26) OR (messageWall_date3 BETWEEN $fromdate AND :date27)) AND $sqlWhere AND students='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory  AND ((messageWall_date1 BETWEEN '$fromdate' AND :date25) OR (messageWall_date2 BETWEEN '$fromdate' AND :date26) OR (messageWall_date3 BETWEEN '$fromdate' AND :date27)) AND $sqlWhere AND students='Y' )";
                 }
             }
         }
@@ -368,7 +368,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                     $dataPosts['date28'] = $date;
                     $dataPosts['date29'] = $date;
                     $dataPosts['date30'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date28) OR (messageWall_date2 BETWEEN $fromdate AND :date29) OR (messageWall_date3 BETWEEN $fromdate AND :date30)) AND $sqlWhere AND parents='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date28) OR (messageWall_date2 BETWEEN '$fromdate' AND :date29) OR (messageWall_date3 BETWEEN '$fromdate' AND :date30)) AND $sqlWhere AND parents='Y' )";
                 }
             }
         }
@@ -394,13 +394,13 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                     $dataPosts['date31'] = $date;
                     $dataPosts['date32'] = $date;
                     $dataPosts['date33'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date31) OR (messageWall_date2 BETWEEN $fromdate AND :date32) OR (messageWall_date3 BETWEEN $fromdate AND :date33)) AND $sqlWhere AND staff='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date31) OR (messageWall_date2 BETWEEN '$fromdate' AND :date32) OR (messageWall_date3 BETWEEN '$fromdate' AND :date33)) AND $sqlWhere AND staff='Y' )";
                 }
                 if ($student) {
                     $dataPosts['date34'] = $date;
                     $dataPosts['date35'] = $date;
                     $dataPosts['date36'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date34) OR (messageWall_date2 BETWEEN $fromdate AND :date35) OR (messageWall_date3 BETWEEN $fromdate AND :date36)) AND $sqlWhere AND students='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date34) OR (messageWall_date2 BETWEEN '$fromdate' AND :date35) OR (messageWall_date3 BETWEEN '$fromdate' AND :date36)) AND $sqlWhere AND students='Y' )";
                 }
             }
         }
@@ -423,7 +423,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                     $dataPosts['date37'] = $date;
                     $dataPosts['date38'] = $date;
                     $dataPosts['date39'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date37) OR (messageWall_date2 BETWEEN $fromdate AND :date38) OR (messageWall_date3 BETWEEN $fromdate AND :date39)) AND $sqlWhere AND parents='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date37) OR (messageWall_date2 BETWEEN '$fromdate' AND :date38) OR (messageWall_date3 BETWEEN '$fromdate' AND :date39)) AND $sqlWhere AND parents='Y' )";
                 }
             }
         }
@@ -448,7 +448,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                     $dataPosts['date40'] = $date;
                     $dataPosts['date41'] = $date;
                     $dataPosts['date42'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date40) OR (messageWall_date2 BETWEEN $fromdate AND :date41) OR (messageWall_date3 BETWEEN $fromdate AND :date42)) AND $sqlWhere AND staff='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date40) OR (messageWall_date2 BETWEEN '$fromdate' AND :date41) OR (messageWall_date3 BETWEEN '$fromdate' AND :date42)) AND $sqlWhere AND staff='Y' )";
                 }
             }
         }
@@ -471,7 +471,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                     $dataPosts['date43'] = $date;
                     $dataPosts['date44'] = $date;
                     $dataPosts['date45'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date43) OR (messageWall_date2 BETWEEN $fromdate AND :date44) OR (messageWall_date3 BETWEEN $fromdate AND :date45)) AND $sqlWhere AND students='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date43) OR (messageWall_date2 BETWEEN '$fromdate' AND :date44) OR (messageWall_date3 BETWEEN '$fromdate' AND :date45)) AND $sqlWhere AND students='Y' )";
                 }
             }
         }
@@ -494,7 +494,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                     $dataPosts['date46'] = $date;
                     $dataPosts['date47'] = $date;
                     $dataPosts['date48'] = $date;
-                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date46) OR (messageWall_date2 BETWEEN $fromdate AND :date47) OR (messageWall_date3 BETWEEN $fromdate AND :date48)) AND $sqlWhere AND parents='Y' )";
+                    $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, pupilsightRole.category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date46) OR (messageWall_date2 BETWEEN '$fromdate' AND :date47) OR (messageWall_date3 BETWEEN '$fromdate' AND :date48)) AND $sqlWhere AND parents='Y' )";
                 }
             }
         }
@@ -504,14 +504,14 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
         $dataPosts['date50'] = $date;
         $dataPosts['date51'] = $date;
         $dataPosts['pupilsightPersonID3'] = $_SESSION[$guid]['pupilsightPersonID'];
-        $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category, pupilsightPerson.image_240, concat('Houses: ', pupilsightHouse.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightPerson AS inHouse ON (pupilsightMessengerTarget.id=inHouse.pupilsightHouseID) JOIN pupilsightHouse ON (pupilsightPerson.pupilsightHouseID=pupilsightHouse.pupilsightHouseID)WHERE pupilsightMessengerTarget.type='Houses' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date49) OR (messageWall_date2 BETWEEN $fromdate AND :date50) OR (messageWall_date3 BETWEEN $fromdate AND :date51)) AND inHouse.pupilsightPersonID=:pupilsightPersonID3 )";
+        $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category, pupilsightPerson.image_240, concat('Houses: ', pupilsightHouse.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightPerson AS inHouse ON (pupilsightMessengerTarget.id=inHouse.pupilsightHouseID) JOIN pupilsightHouse ON (pupilsightPerson.pupilsightHouseID=pupilsightHouse.pupilsightHouseID)WHERE pupilsightMessengerTarget.type='Houses' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date49) OR (messageWall_date2 BETWEEN '$fromdate' AND :date50) OR (messageWall_date3 BETWEEN '$fromdate' AND :date51)) AND inHouse.pupilsightPersonID=:pupilsightPersonID3 )";
 
         //Individuals
         $dataPosts['date52'] = $date;
         $dataPosts['date53'] = $date;
         $dataPosts['date54'] = $date;
         $dataPosts['pupilsightPersonID4'] = $_SESSION[$guid]['pupilsightPersonID'];
-        $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category, pupilsightPerson.image_240, 'Individual: You' AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightPerson AS individual ON (pupilsightMessengerTarget.id=individual.pupilsightPersonID) WHERE pupilsightMessengerTarget.type='Individuals' $msgcategory AND ((messageWall_date1 BETWEEN $fromdate AND :date52) OR (messageWall_date2 BETWEEN $fromdate AND :date53) OR (messageWall_date3 BETWEEN $fromdate AND :date54)) AND individual.pupilsightPersonID=:pupilsightPersonID4 )";
+        $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category, pupilsightPerson.image_240, 'Individual: You' AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightPerson AS individual ON (pupilsightMessengerTarget.id=individual.pupilsightPersonID) WHERE pupilsightMessengerTarget.type='Individuals' $msgcategory AND ((messageWall_date1 BETWEEN '$fromdate' AND :date52) OR (messageWall_date2 BETWEEN '$fromdate' AND :date53) OR (messageWall_date3 BETWEEN '$fromdate' AND :date54)) AND individual.pupilsightPersonID=:pupilsightPersonID4 )";
 
 
         //Attendance
@@ -530,7 +530,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                 $dataPosts['date56'] = $date;
                 $dataPosts['date57'] = $date;
                 $dataPosts['attendanceType1'] = $studentAttendance['type'] . ' ' . $date;
-                $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category, pupilsightPerson.image_240, concat('Attendance:', pupilsightMessengerTarget.id) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Attendance' $msgcategory AND pupilsightMessengerTarget.id=:attendanceType1 AND ((messageWall_date1 BETWEEN $fromdate AND :date55) OR (messageWall_date2 BETWEEN $fromdate AND :date56) OR (messageWall_date3 BETWEEN $fromdate AND :date57)) )";
+                $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category, pupilsightPerson.image_240, concat('Attendance:', pupilsightMessengerTarget.id) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Attendance' $msgcategory AND pupilsightMessengerTarget.id=:attendanceType1 AND ((messageWall_date1 BETWEEN '$fromdate' AND :date55) OR (messageWall_date2 BETWEEN '$fromdate' AND :date56) OR (messageWall_date3 BETWEEN '$fromdate' AND :date57)) )";
             }
         }
         if ($parent and $children != false) {
@@ -548,7 +548,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
                 $dataPosts['date58'] = $date;
                 $dataPosts['date59'] = $date;
                 $dataPosts['attendanceType2'] = $studentAttendance['type'] . ' ' . $date;
-                $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category, pupilsightPerson.image_240, concat('Attendance:', pupilsightMessengerTarget.id, ' for ', '" . $studentAttendance['firstName'] . "') AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Attendance' $msgcategory AND pupilsightMessengerTarget.id=:attendanceType2 AND ((messageWall_date1 BETWEEN $fromdate AND :date57) OR (messageWall_date2 BETWEEN $fromdate AND :date58) OR (messageWall_date3 BETWEEN $fromdate AND :date59) ))";
+                $sqlPosts = $sqlPosts . " UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category, pupilsightPerson.image_240, concat('Attendance:', pupilsightMessengerTarget.id, ' for ', '" . $studentAttendance['firstName'] . "') AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Attendance' $msgcategory AND pupilsightMessengerTarget.id=:attendanceType2 AND ((messageWall_date1 BETWEEN '$fromdate' AND :date57) OR (messageWall_date2 BETWEEN '$fromdate' AND :date58) OR (messageWall_date3 BETWEEN '$fromdate' AND :date59) ))";
             }
         }
 
@@ -565,7 +565,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
         JOIN pupilsightGroupPerson ON (pupilsightGroup.pupilsightGroupID=pupilsightGroupPerson.pupilsightGroupID)
         WHERE pupilsightGroupPerson.pupilsightPersonID=:pupilsightPersonID5 
         AND pupilsightMessengerTarget.type='Group' AND pupilsightMessengerTarget.staff='Y' $msgcategory 
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date60) OR (messageWall_date2 BETWEEN $fromdate AND :date60) OR (messageWall_date3 BETWEEN $fromdate AND :date60)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date60) OR (messageWall_date2 BETWEEN '$fromdate' AND :date60) OR (messageWall_date3 BETWEEN '$fromdate' AND :date60)) )";
         }
         if ($student) {
             $dataPosts['date61'] = $date;
@@ -579,7 +579,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
         JOIN pupilsightGroupPerson ON (pupilsightGroup.pupilsightGroupID=pupilsightGroupPerson.pupilsightGroupID)
         WHERE pupilsightGroupPerson.pupilsightPersonID=:pupilsightPersonID6 
         AND pupilsightMessengerTarget.type='Group' AND pupilsightMessengerTarget.students='Y' $msgcategory 
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date61) OR (messageWall_date2 BETWEEN $fromdate AND :date61) OR (messageWall_date3 BETWEEN $fromdate AND :date61)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date61) OR (messageWall_date2 BETWEEN '$fromdate' AND :date61) OR (messageWall_date3 BETWEEN '$fromdate' AND :date61)) )";
         }
         if ($parent and $children != false) {
             $childrenQuery = str_replace('pupilsightPersonID', 'pupilsightGroupPerson.pupilsightPersonID', $children);
@@ -594,7 +594,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
         JOIN pupilsightGroupPerson ON (pupilsightGroup.pupilsightGroupID=pupilsightGroupPerson.pupilsightGroupID)
         WHERE (pupilsightGroupPerson.pupilsightPersonID=:pupilsightPersonID7 OR $childrenQuery)
         AND pupilsightMessengerTarget.type='Group' AND pupilsightMessengerTarget.parents='Y' $msgcategory 
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date62) OR (messageWall_date2 BETWEEN $fromdate AND :date62) OR (messageWall_date3 BETWEEN $fromdate AND :date62)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date62) OR (messageWall_date2 BETWEEN '$fromdate' AND :date62) OR (messageWall_date3 BETWEEN '$fromdate' AND :date62)) )";
         }
 
         // Transport
@@ -608,7 +608,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
         JOIN pupilsightPerson as transportee ON (pupilsightMessengerTarget.id=transportee.transport)
         WHERE transportee.pupilsightPersonID=:pupilsightPersonID8 
         AND pupilsightMessengerTarget.type='Transport' AND pupilsightMessengerTarget.staff='Y' $msgcategory
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date63) OR (messageWall_date2 BETWEEN $fromdate AND :date63) OR (messageWall_date3 BETWEEN $fromdate AND :date63)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date63) OR (messageWall_date2 BETWEEN '$fromdate' AND :date63) OR (messageWall_date3 BETWEEN '$fromdate' AND :date63)) )";
         }
         if ($student) {
             $dataPosts['date64'] = $date;
@@ -620,7 +620,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
         JOIN pupilsightPerson as transportee ON (pupilsightMessengerTarget.id=transportee.transport)
         WHERE transportee.pupilsightPersonID=:pupilsightPersonID9 
         AND pupilsightMessengerTarget.type='Transport' AND pupilsightMessengerTarget.students='Y' $msgcategory
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date64) OR (messageWall_date2 BETWEEN $fromdate AND :date64) OR (messageWall_date3 BETWEEN $fromdate AND :date64)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date64) OR (messageWall_date2 BETWEEN '$fromdate' AND :date64) OR (messageWall_date3 BETWEEN '$fromdate' AND :date64)) )";
         }
         if ($parent and $children != false) {
             $childrenQuery = str_replace('pupilsightPersonID', 'transportee.pupilsightPersonID', $children);
@@ -633,7 +633,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
         JOIN pupilsightPerson as transportee ON (pupilsightMessengerTarget.id=transportee.transport)
         WHERE (transportee.pupilsightPersonID=:pupilsightPersonID10 OR $childrenQuery)
         AND pupilsightMessengerTarget.type='Transport' AND pupilsightMessengerTarget.parents='Y' $msgcategory
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date65) OR (messageWall_date2 BETWEEN $fromdate AND :date65) OR (messageWall_date3 BETWEEN $fromdate AND :date65)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date65) OR (messageWall_date2 BETWEEN '$fromdate' AND :date65) OR (messageWall_date3 BETWEEN '$fromdate' AND :date65)) )";
         }
 
         //SPIT OUT RESULTS
@@ -1449,7 +1449,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
             $dataPosts['date1'] = $date;
             $dataPosts['date2'] = $date;
             $dataPosts['date3'] = $date;
-            $sqlPosts = "(SELECT pupilsightMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role: ', pupilsightRole.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole AS authorRole ON (pupilsightPerson.pupilsightRoleIDPrimary=authorRole.pupilsightRoleID) JOIN pupilsightRole ON (pupilsightMessengerTarget.id=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Role' $msgcategory $msgtype AND $sqlWhere AND ((messageWall_date1 BETWEEN $fromdate AND :date1) OR (messageWall_date2 BETWEEN $fromdate AND :date2) OR (messageWall_date3 BETWEEN $fromdate AND :date3)) )";
+            $sqlPosts = "(SELECT pupilsightMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role: ', pupilsightRole.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole AS authorRole ON (pupilsightPerson.pupilsightRoleIDPrimary=authorRole.pupilsightRoleID) JOIN pupilsightRole ON (pupilsightMessengerTarget.id=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Role' $msgcategory $msgtype AND $sqlWhere AND ((messageWall_date1 BETWEEN '$fromdate' AND :date1) OR (messageWall_date2 BETWEEN '$fromdate' AND :date2) OR (messageWall_date3 BETWEEN '$fromdate' AND :date3)) )";
             //      print_r($sqlPosts); die();
         }
 
@@ -1476,7 +1476,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
             $dataPosts['date1'] = $date;
             $dataPosts['date2'] = $date;
             $dataPosts['date3'] = $date;
-            $sqlPosts = $sqlPosts." UNION (SELECT DISTINCT pupilsightMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role Category: ', pupilsightRole.category) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole AS authorRole ON (pupilsightPerson.pupilsightRoleIDPrimary=authorRole.pupilsightRoleID) JOIN pupilsightRole ON (pupilsightMessengerTarget.id=pupilsightRole.category) WHERE pupilsightMessengerTarget.type='Role Category' $msgcategory $msgtype AND $sqlWhere AND ((messageWall_date1 BETWEEN $fromdate AND :date1) OR (messageWall_date2 BETWEEN $fromdate AND :date2) OR (messageWall_date3 BETWEEN $fromdate AND :date3)) )";
+            $sqlPosts = $sqlPosts." UNION (SELECT DISTINCT pupilsightMessenger.*, title, surname, preferredName, authorRole.category AS category, image_240, concat('Role Category: ', pupilsightRole.category) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole AS authorRole ON (pupilsightPerson.pupilsightRoleIDPrimary=authorRole.pupilsightRoleID) JOIN pupilsightRole ON (pupilsightMessengerTarget.id=pupilsightRole.category) WHERE pupilsightMessengerTarget.type='Role Category' $msgcategory $msgtype AND $sqlWhere AND ((messageWall_date1 BETWEEN '$fromdate' AND :date1) OR (messageWall_date2 BETWEEN '$fromdate' AND :date2) OR (messageWall_date3 BETWEEN '$fromdate' AND :date3)) )";
 
         }
 
@@ -1500,7 +1500,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 WHERE pupilsightStaff.pupilsightPersonID=:pupilsightPersonID0 
                 AND pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID0 $msgcategory $msgtype 
                 AND pupilsightMessengerTarget.type='Year Group' AND pupilsightMessengerTarget.staff='Y' AND
-                ((messageWall_date1 BETWEEN $fromdate AND :date4) OR (messageWall_date2 BETWEEN $fromdate AND :date5) OR (messageWall_date3 BETWEEN $fromdate AND :date6))
+                ((messageWall_date1 BETWEEN '$fromdate' AND :date4) OR (messageWall_date2 BETWEEN '$fromdate' AND :date5) OR (messageWall_date3 BETWEEN '$fromdate' AND :date6))
                 GROUP BY pupilsightMessenger.pupilsightMessengerID )";
             // Include staff who are tutors of any student in the same year group.
             $sqlPosts .= "UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, 'Year Groups' AS source
@@ -1515,7 +1515,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 WHERE pupilsightStaff.pupilsightPersonID=:pupilsightPersonID0  
                 AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID0 $msgcategory $msgtype 
                 AND pupilsightMessengerTarget.type='Year Group' AND pupilsightMessengerTarget.staff='Y' AND
-                ((messageWall_date1 BETWEEN $fromdate AND :date4) OR (messageWall_date2 BETWEEN $fromdate AND :date5) OR (messageWall_date3 BETWEEN $fromdate AND :date6))
+                ((messageWall_date1 BETWEEN '$fromdate' AND :date4) OR (messageWall_date2 BETWEEN '$fromdate' AND :date5) OR (messageWall_date3 BETWEEN '$fromdate' AND :date6))
                 GROUP BY pupilsightMessenger.pupilsightMessengerID)";
             //print_r($sqlPosts);
         }
@@ -1525,14 +1525,14 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
             $dataPosts['date9'] = $date;
             $dataPosts['pupilsightSchoolYearID1'] = $_SESSION[$guid]['pupilsightSchoolYearID'];
             $dataPosts['pupilsightPersonID1'] = $_SESSION[$guid]['pupilsightPersonID'];
-            $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group ', pupilsightYearGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightYearGroupID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) WHERE pupilsightStudentEnrolment.pupilsightPersonID=:pupilsightPersonID1 AND pupilsightMessengerTarget.type='Year Group' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date7) OR (messageWall_date2 BETWEEN $fromdate AND :date8) OR (messageWall_date3 BETWEEN $fromdate AND :date9)) AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID1 AND students='Y' )";
+            $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group ', pupilsightYearGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightYearGroupID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) WHERE pupilsightStudentEnrolment.pupilsightPersonID=:pupilsightPersonID1 AND pupilsightMessengerTarget.type='Year Group' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date7) OR (messageWall_date2 BETWEEN '$fromdate' AND :date8) OR (messageWall_date3 BETWEEN '$fromdate' AND :date9)) AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID1 AND students='Y' )";
         }
         if ($parent and $children != false) {
             $dataPosts['date10'] = $date;
             $dataPosts['date11'] = $date;
             $dataPosts['date12'] = $date;
             $dataPosts['pupilsightSchoolYearID2'] = $_SESSION[$guid]['pupilsightSchoolYearID'];
-            $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group: ', pupilsightYearGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightYearGroupID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) WHERE ".preg_replace('/pupilsightPersonID/', 'pupilsightStudentEnrolment.pupilsightPersonID', $children)." AND pupilsightMessengerTarget.type='Year Group' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date10) OR (messageWall_date2 BETWEEN $fromdate AND :date11) OR (messageWall_date3 BETWEEN $fromdate AND :date12)) AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID2 AND parents='Y' )";
+            $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Year Group: ', pupilsightYearGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightYearGroupID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) WHERE ".preg_replace('/pupilsightPersonID/', 'pupilsightStudentEnrolment.pupilsightPersonID', $children)." AND pupilsightMessengerTarget.type='Year Group' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date10) OR (messageWall_date2 BETWEEN '$fromdate' AND :date11) OR (messageWall_date3 BETWEEN '$fromdate' AND :date12)) AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID2 AND parents='Y' )";
         }
 
         //My roll groups
@@ -1555,7 +1555,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     $dataPosts['date13'] = $date;
                     $dataPosts['date14'] = $date;
                     $dataPosts['date15'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightRollGroup ON (pupilsightMessengerTarget.id=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightMessengerTarget.type='Roll Group' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date13) OR (messageWall_date2 BETWEEN $fromdate AND :date14) OR (messageWall_date3 BETWEEN $fromdate AND :date15)) AND $sqlWhere AND staff='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightRollGroup ON (pupilsightMessengerTarget.id=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightMessengerTarget.type='Roll Group' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date13) OR (messageWall_date2 BETWEEN '$fromdate' AND :date14) OR (messageWall_date3 BETWEEN '$fromdate' AND :date15)) AND $sqlWhere AND staff='Y' )";
                 }
             }
         }
@@ -1565,14 +1565,14 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
             $dataPosts['date18'] = $date;
             $dataPosts['pupilsightSchoolYearID3'] = $_SESSION[$guid]['pupilsightSchoolYearID'];
             $dataPosts['pupilsightPersonID2'] = $_SESSION[$guid]['pupilsightPersonID'];
-            $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightRollGroupID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightStudentEnrolment.pupilsightPersonID=:pupilsightPersonID2 AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID3 AND pupilsightMessengerTarget.type='Roll Group' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date16) OR (messageWall_date2 BETWEEN $fromdate AND :date17) OR (messageWall_date3 BETWEEN $fromdate AND :date18)) AND students='Y' )";
+            $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightRollGroupID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightStudentEnrolment.pupilsightPersonID=:pupilsightPersonID2 AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID3 AND pupilsightMessengerTarget.type='Roll Group' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date16) OR (messageWall_date2 BETWEEN '$fromdate' AND :date17) OR (messageWall_date3 BETWEEN '$fromdate' AND :date18)) AND students='Y' )";
         }
         if ($parent and $children != false) {
             $dataPosts['date19'] = $date;
             $dataPosts['date20'] = $date;
             $dataPosts['date21'] = $date;
             $dataPosts['pupilsightSchoolYearID4'] = $_SESSION[$guid]['pupilsightSchoolYearID'];
-            $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightRollGroupID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE ".preg_replace('/pupilsightPersonID/', 'pupilsightStudentEnrolment.pupilsightPersonID', $children)." AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID4 $msgcategory $msgtype AND pupilsightMessengerTarget.type='Roll Group' AND ((messageWall_date1 BETWEEN $fromdate AND :date19) OR (messageWall_date2 BETWEEN $fromdate AND :date20) OR (messageWall_date3 BETWEEN $fromdate AND :date21)) AND parents='Y' )";
+            $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Roll Group: ', pupilsightRollGroup.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightStudentEnrolment ON (pupilsightMessengerTarget.id=pupilsightStudentEnrolment.pupilsightRollGroupID) JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE ".preg_replace('/pupilsightPersonID/', 'pupilsightStudentEnrolment.pupilsightPersonID', $children)." AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID4 $msgcategory $msgtype AND pupilsightMessengerTarget.type='Roll Group' AND ((messageWall_date1 BETWEEN '$fromdate' AND :date19) OR (messageWall_date2 BETWEEN '$fromdate' AND :date20) OR (messageWall_date3 BETWEEN '$fromdate' AND :date21)) AND parents='Y' )";
         }
 
         //My courses
@@ -1596,13 +1596,13 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     $dataPosts['date22'] = $date;
                     $dataPosts['date23'] = $date;
                     $dataPosts['date24'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date22) OR (messageWall_date2 BETWEEN $fromdate AND :date23) OR (messageWall_date3 BETWEEN $fromdate AND :date24)) AND $sqlWhere AND staff='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date22) OR (messageWall_date2 BETWEEN '$fromdate' AND :date23) OR (messageWall_date3 BETWEEN '$fromdate' AND :date24)) AND $sqlWhere AND staff='Y' )";
                 }
                 if ($student) {
                     $dataPosts['date25'] = $date;
                     $dataPosts['date26'] = $date;
                     $dataPosts['date27'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory  $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date25) OR (messageWall_date2 BETWEEN $fromdate AND :date26) OR (messageWall_date3 BETWEEN $fromdate AND :date27)) AND $sqlWhere AND students='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory  $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date25) OR (messageWall_date2 BETWEEN '$fromdate' AND :date26) OR (messageWall_date3 BETWEEN '$fromdate' AND :date27)) AND $sqlWhere AND students='Y' )";
                 }
             }
         }
@@ -1625,7 +1625,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     $dataPosts['date28'] = $date;
                     $dataPosts['date29'] = $date;
                     $dataPosts['date30'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date28) OR (messageWall_date2 BETWEEN $fromdate AND :date29) OR (messageWall_date3 BETWEEN $fromdate AND :date30)) AND $sqlWhere AND parents='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Course: ', pupilsightCourse.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourse ON (pupilsightMessengerTarget.id=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Course' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date28) OR (messageWall_date2 BETWEEN '$fromdate' AND :date29) OR (messageWall_date3 BETWEEN '$fromdate' AND :date30)) AND $sqlWhere AND parents='Y' )";
                 }
             }
         }
@@ -1651,13 +1651,13 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     $dataPosts['date31'] = $date;
                     $dataPosts['date32'] = $date;
                     $dataPosts['date33'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date31) OR (messageWall_date2 BETWEEN $fromdate AND :date32) OR (messageWall_date3 BETWEEN $fromdate AND :date33)) AND $sqlWhere AND staff='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date31) OR (messageWall_date2 BETWEEN '$fromdate' AND :date32) OR (messageWall_date3 BETWEEN '$fromdate' AND :date33)) AND $sqlWhere AND staff='Y' )";
                 }
                 if ($student) {
                     $dataPosts['date34'] = $date;
                     $dataPosts['date35'] = $date;
                     $dataPosts['date36'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date34) OR (messageWall_date2 BETWEEN $fromdate AND :date35) OR (messageWall_date3 BETWEEN $fromdate AND :date36)) AND $sqlWhere AND students='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date34) OR (messageWall_date2 BETWEEN '$fromdate' AND :date35) OR (messageWall_date3 BETWEEN '$fromdate' AND :date36)) AND $sqlWhere AND students='Y' )";
                 }
             }
         }
@@ -1680,7 +1680,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     $dataPosts['date37'] = $date;
                     $dataPosts['date38'] = $date;
                     $dataPosts['date39'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date37) OR (messageWall_date2 BETWEEN $fromdate AND :date38) OR (messageWall_date3 BETWEEN $fromdate AND :date39)) AND $sqlWhere AND parents='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Class: ', pupilsightCourse.nameShort, '.', pupilsightCourseClass.nameShort) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightCourseClass ON (pupilsightMessengerTarget.id=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE pupilsightMessengerTarget.type='Class' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date37) OR (messageWall_date2 BETWEEN '$fromdate' AND :date38) OR (messageWall_date3 BETWEEN '$fromdate' AND :date39)) AND $sqlWhere AND parents='Y' )";
                 }
             }
         }
@@ -1705,7 +1705,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     $dataPosts['date40'] = $date;
                     $dataPosts['date41'] = $date;
                     $dataPosts['date42'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date40) OR (messageWall_date2 BETWEEN $fromdate AND :date41) OR (messageWall_date3 BETWEEN $fromdate AND :date42)) AND $sqlWhere AND staff='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date40) OR (messageWall_date2 BETWEEN '$fromdate' AND :date41) OR (messageWall_date3 BETWEEN '$fromdate' AND :date42)) AND $sqlWhere AND staff='Y' )";
                 }
             }
         }
@@ -1728,7 +1728,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     $dataPosts['date43'] = $date;
                     $dataPosts['date44'] = $date;
                     $dataPosts['date45'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date43) OR (messageWall_date2 BETWEEN $fromdate AND :date44) OR (messageWall_date3 BETWEEN $fromdate AND :date45)) AND $sqlWhere AND students='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date43) OR (messageWall_date2 BETWEEN '$fromdate' AND :date44) OR (messageWall_date3 BETWEEN '$fromdate' AND :date45)) AND $sqlWhere AND students='Y' )";
                 }
             }
         }
@@ -1751,7 +1751,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     $dataPosts['date46'] = $date;
                     $dataPosts['date47'] = $date;
                     $dataPosts['date48'] = $date;
-                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date46) OR (messageWall_date2 BETWEEN $fromdate AND :date47) OR (messageWall_date3 BETWEEN $fromdate AND :date48)) AND $sqlWhere AND parents='Y' )";
+                    $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, title, surname, preferredName, category, image_240, concat('Activity: ', pupilsightActivity.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightActivity ON (pupilsightMessengerTarget.id=pupilsightActivity.pupilsightActivityID) WHERE pupilsightMessengerTarget.type='Activity' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date46) OR (messageWall_date2 BETWEEN '$fromdate' AND :date47) OR (messageWall_date3 BETWEEN '$fromdate' AND :date48)) AND $sqlWhere AND parents='Y' )";
                 }
             }
         }
@@ -1761,14 +1761,14 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         $dataPosts['date50'] = $date;
         $dataPosts['date51'] = $date;
         $dataPosts['pupilsightPersonID3'] = $_SESSION[$guid]['pupilsightPersonID'];
-        $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, category, pupilsightPerson.image_240, concat('Houses: ', pupilsightHouse.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightPerson AS inHouse ON (pupilsightMessengerTarget.id=inHouse.pupilsightHouseID) JOIN pupilsightHouse ON (pupilsightPerson.pupilsightHouseID=pupilsightHouse.pupilsightHouseID)WHERE pupilsightMessengerTarget.type='Houses' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date49) OR (messageWall_date2 BETWEEN $fromdate AND :date50) OR (messageWall_date3 BETWEEN $fromdate AND :date51)) AND inHouse.pupilsightPersonID=:pupilsightPersonID3 )";
+        $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, category, pupilsightPerson.image_240, concat('Houses: ', pupilsightHouse.name) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightPerson AS inHouse ON (pupilsightMessengerTarget.id=inHouse.pupilsightHouseID) JOIN pupilsightHouse ON (pupilsightPerson.pupilsightHouseID=pupilsightHouse.pupilsightHouseID)WHERE pupilsightMessengerTarget.type='Houses' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date49) OR (messageWall_date2 BETWEEN '$fromdate' AND :date50) OR (messageWall_date3 BETWEEN '$fromdate' AND :date51)) AND inHouse.pupilsightPersonID=:pupilsightPersonID3 )";
 
         //Individuals
         $dataPosts['date52'] = $date;
         $dataPosts['date53'] = $date;
         $dataPosts['date54'] = $date;
         $dataPosts['pupilsightPersonID4'] = $_SESSION[$guid]['pupilsightPersonID'];
-        $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, category, pupilsightPerson.image_240, 'Individual: You' AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightPerson AS individual ON (pupilsightMessengerTarget.id=individual.pupilsightPersonID) WHERE pupilsightMessengerTarget.type='Individuals' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN $fromdate AND :date52) OR (messageWall_date2 BETWEEN $fromdate AND :date53) OR (messageWall_date3 BETWEEN $fromdate AND :date54)) AND individual.pupilsightPersonID=:pupilsightPersonID4 )";
+        $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, category, pupilsightPerson.image_240, 'Individual: You' AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) JOIN pupilsightPerson AS individual ON (pupilsightMessengerTarget.id=individual.pupilsightPersonID) WHERE pupilsightMessengerTarget.type='Individuals' $msgcategory $msgtype AND ((messageWall_date1 BETWEEN '$fromdate' AND :date52) OR (messageWall_date2 BETWEEN '$fromdate' AND :date53) OR (messageWall_date3 BETWEEN '$fromdate' AND :date54)) AND individual.pupilsightPersonID=:pupilsightPersonID4 )";
 
 
         //Attendance
@@ -1787,7 +1787,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 $dataPosts['date56'] = $date;
                 $dataPosts['date57'] = $date;
                 $dataPosts['attendanceType1'] = $studentAttendance['type'].' '.$date;
-                $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, category, pupilsightPerson.image_240, concat('Attendance:', pupilsightMessengerTarget.id) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Attendance' $msgcategory $msgtype AND pupilsightMessengerTarget.id=:attendanceType1 AND ((messageWall_date1 BETWEEN $fromdate AND :date55) OR (messageWall_date2 BETWEEN $fromdate AND :date56) OR (messageWall_date3 BETWEEN $fromdate AND :date57)) )";
+                $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, category, pupilsightPerson.image_240, concat('Attendance:', pupilsightMessengerTarget.id) AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Attendance' $msgcategory $msgtype AND pupilsightMessengerTarget.id=:attendanceType1 AND ((messageWall_date1 BETWEEN '$fromdate' AND :date55) OR (messageWall_date2 BETWEEN '$fromdate' AND :date56) OR (messageWall_date3 BETWEEN '$fromdate' AND :date57)) )";
 
             }
         }
@@ -1806,7 +1806,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 $dataPosts['date58'] = $date;
                 $dataPosts['date59'] = $date;
                 $dataPosts['attendanceType2'] = $studentAttendance['type'].' '.$date;
-                $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, category, pupilsightPerson.image_240, concat('Attendance:', pupilsightMessengerTarget.id, ' for ', '".$studentAttendance['firstName']."') AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Attendance' $msgcategory $msgtype AND pupilsightMessengerTarget.id=:attendanceType2 AND ((messageWall_date1 BETWEEN $fromdate AND :date57) OR (messageWall_date2 BETWEEN $fromdate AND :date58) OR (messageWall_date3 BETWEEN $fromdate AND :date59) ))";
+                $sqlPosts = $sqlPosts." UNION (SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, category, pupilsightPerson.image_240, concat('Attendance:', pupilsightMessengerTarget.id, ' for ', '".$studentAttendance['firstName']."') AS source FROM pupilsightMessenger JOIN pupilsightMessengerTarget ON (pupilsightMessengerTarget.pupilsightMessengerID=pupilsightMessenger.pupilsightMessengerID) JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessengerTarget.type='Attendance' $msgcategory $msgtype AND pupilsightMessengerTarget.id=:attendanceType2 AND ((messageWall_date1 BETWEEN '$fromdate' AND :date57) OR (messageWall_date2 BETWEEN '$fromdate' AND :date58) OR (messageWall_date3 BETWEEN '$fromdate' AND :date59) ))";
 
             }
         }
@@ -1824,7 +1824,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         JOIN pupilsightGroupPerson ON (pupilsightGroup.pupilsightGroupID=pupilsightGroupPerson.pupilsightGroupID)
         WHERE pupilsightGroupPerson.pupilsightPersonID=:pupilsightPersonID5 
         AND pupilsightMessengerTarget.type='Group' AND pupilsightMessengerTarget.staff='Y' $msgcategory $msgtype 
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date60) OR (messageWall_date2 BETWEEN $fromdate AND :date60) OR (messageWall_date3 BETWEEN $fromdate AND :date60)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date60) OR (messageWall_date2 BETWEEN '$fromdate' AND :date60) OR (messageWall_date3 BETWEEN '$fromdate' AND :date60)) )";
 
         }
         if ($student) {
@@ -1839,7 +1839,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         JOIN pupilsightGroupPerson ON (pupilsightGroup.pupilsightGroupID=pupilsightGroupPerson.pupilsightGroupID)
         WHERE pupilsightGroupPerson.pupilsightPersonID=:pupilsightPersonID6 
         AND pupilsightMessengerTarget.type='Group' AND pupilsightMessengerTarget.students='Y' $msgcategory $msgtype 
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date61) OR (messageWall_date2 BETWEEN $fromdate AND :date61) OR (messageWall_date3 BETWEEN $fromdate AND :date61)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date61) OR (messageWall_date2 BETWEEN '$fromdate' AND :date61) OR (messageWall_date3 BETWEEN '$fromdate' AND :date61)) )";
 
         }
         if ($parent and $children != false) {
@@ -1855,7 +1855,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         JOIN pupilsightGroupPerson ON (pupilsightGroup.pupilsightGroupID=pupilsightGroupPerson.pupilsightGroupID)
         WHERE (pupilsightGroupPerson.pupilsightPersonID=:pupilsightPersonID7 OR $childrenQuery)
         AND pupilsightMessengerTarget.type='Group' AND pupilsightMessengerTarget.parents='Y' $msgcategory $msgtype 
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date62) OR (messageWall_date2 BETWEEN $fromdate AND :date62) OR (messageWall_date3 BETWEEN $fromdate AND :date62)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date62) OR (messageWall_date2 BETWEEN '$fromdate' AND :date62) OR (messageWall_date3 BETWEEN '$fromdate' AND :date62)) )";
 
         }
 
@@ -1870,7 +1870,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         JOIN pupilsightPerson as transportee ON (pupilsightMessengerTarget.id=transportee.transport)
         WHERE transportee.pupilsightPersonID=:pupilsightPersonID8 
         AND pupilsightMessengerTarget.type='Transport' AND pupilsightMessengerTarget.staff='Y' $msgcategory $msgtype 
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date63) OR (messageWall_date2 BETWEEN $fromdate AND :date63) OR (messageWall_date3 BETWEEN $fromdate AND :date63)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date63) OR (messageWall_date2 BETWEEN '$fromdate' AND :date63) OR (messageWall_date3 BETWEEN '$fromdate' AND :date63)) )";
         }
         if ($student) {
             $dataPosts['date64'] = $date;
@@ -1882,7 +1882,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         JOIN pupilsightPerson as transportee ON (pupilsightMessengerTarget.id=transportee.transport)
         WHERE transportee.pupilsightPersonID=:pupilsightPersonID9 
         AND pupilsightMessengerTarget.type='Transport' AND pupilsightMessengerTarget.students='Y' $msgcategory $msgtype 
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date64) OR (messageWall_date2 BETWEEN $fromdate AND :date64) OR (messageWall_date3 BETWEEN $fromdate AND :date64)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date64) OR (messageWall_date2 BETWEEN '$fromdate' AND :date64) OR (messageWall_date3 BETWEEN '$fromdate' AND :date64)) )";
         }
         if ($parent and $children != false) {
             $childrenQuery = str_replace('pupilsightPersonID', 'transportee.pupilsightPersonID', $children);
@@ -1895,7 +1895,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         JOIN pupilsightPerson as transportee ON (pupilsightMessengerTarget.id=transportee.transport)
         WHERE (transportee.pupilsightPersonID=:pupilsightPersonID10 OR $childrenQuery)
         AND pupilsightMessengerTarget.type='Transport' AND pupilsightMessengerTarget.parents='Y' $msgcategory $msgtype 
-        AND ((messageWall_date1 BETWEEN $fromdate AND :date65) OR (messageWall_date2 BETWEEN $fromdate AND :date65) OR (messageWall_date3 BETWEEN $fromdate AND :date65)) )";
+        AND ((messageWall_date1 BETWEEN '$fromdate' AND :date65) OR (messageWall_date2 BETWEEN '$fromdate' AND :date65) OR (messageWall_date3 BETWEEN '$fromdate' AND :date65)) )";
         }
 
         //SPIT OUT RESULTS
@@ -1962,18 +1962,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
 
                 $rowNum = 'odd';
                 for ($i = 0; $i < count($output); ++$i) {
-                    //exploding to compare date as Between query function is not working
-                    $p = explode('-', $output[$i]['date']);
-                    if ($output[$i]['date1'] != null) {
-                        $p1 = explode('-', $output[$i]['date1']);
-                    }
-                    if ($output[$i]['date2'] != null) {
-                        $p2 = explode('-', $output[$i]['date2']);
-                    }
-                    $pp = explode('-', $fromdate);
-                    $ppp = explode('-', $date);
-                    if ($output[$i]['date2'] != null) {
-                        if (($p[0] >= $pp[0] && $p[1] >= $pp[1] && $p[2] >= $pp[2] && $p[0] <= $ppp[0] && $p[1] <= $ppp[1] && $p[2] <= $ppp[2]) OR ($p1[0] >= $pp[0] && $p1[1] >= $pp[1] && $p1[2] >= $pp[2] && $p1[0] <= $ppp[0] && $p1[1] <= $ppp[1] && $p1[2] <= $ppp[2]) OR ($p2[0] >= $pp[0] && $p2[1] >= $pp[1] && $p2[2] >= $pp[2] && $p2[0] <= $ppp[0] && $p2[1] <= $ppp[1] && $p2[2] <= $ppp[2])) {
+
                             if ($rowCount % 2 == 0) {
                                 $rowNum = 'even';
                             } else {
@@ -2021,110 +2010,9 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                             $return .= $output[$i]['author'] . '<br/><br/>';
                             $return .= '</td>';
                             $return .= '</tr>';
-                        }
+
                     }
-                    elseif ($output[$i]['date1'] != null) {
-                        if (($p[0] >= $pp[0] && $p[1] >= $pp[1] && $p[2] >= $pp[2] && $p[0] <= $ppp[0] && $p[1] <= $ppp[1] && $p[2] <= $ppp[2]) OR ($p1[0] >= $pp[0] && $p1[1] >= $pp[1] && $p1[2] >= $pp[2] && $p1[0] <= $ppp[0] && $p1[1] <= $ppp[1] && $p1[2] <= $ppp[2])) {
-                            if ($rowCount % 2 == 0) {
-                                $rowNum = 'even';
-                            } else {
-                                $rowNum = 'odd';
-                            }
-                            ++$rowCount;
-                            $return .= "<tr class=$rowNum>";
-                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
-                            //$return .= "<a name='".$output[$i]['pupilsightMessengerID']."'></a>";
-                            //$return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
 
-                            $return .= date('d/m/Y', strtotime($output[$i]['date'])) . '<br/>';
-                            if ($output[$i]['date1'] != null) {
-                                $return .= date('d/m/Y', strtotime($output[$i]['date1'])) . '<br/>';
-                            }
-                            if ($output[$i]['date2'] != null) {
-                                $return .= date('d/m/Y', strtotime($output[$i]['date2'])) . '<br/>';
-                            }
-
-                            //$return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
-                            //$return .= $output[$i]['source'].'<br/><br/>';
-                            $return .= '</td>';
-                            $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
-                            $return .= "<span class='badge bg-blue-lt'>";
-                            if ($output[$i]['sms'] == 'Y') {
-                                $return .= 'SMS';
-                            }
-                            if ($output[$i]['email'] == 'Y') {
-                                $return .= 'Email';
-                            }
-                            if ($output[$i]['messageWall'] == 'Y') {
-                                $return .= 'Message Wall';
-                            }
-                            $return .= "</span>";
-                            $return .= "<span class='badge bg-azure-lt' style='margin-left: 10px;'>" . $output[$i]['messengercategory'] . "</span>";
-                            $return .= "<h3 style='margin-top: 3px'>";
-                            $return .= $output[$i]['subject'];
-                            $return .= '</h3>';
-                            $return .= '</p>';
-                            $return .= $output[$i]['details'];
-                            $return .= '</p>';
-                            $return .= '</td>';
-                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
-                            $return .= '<b><u>' . __('Posted By') . '</b></u><br/>';
-                            $return .= $output[$i]['author'] . '<br/><br/>';
-                            $return .= '</td>';
-                            $return .= '</tr>';
-                        }
-                    }else{
-                        if ($p[0] >= $pp[0] && $p[1] >= $pp[1] && $p[2] >= $pp[2] && $p[0] <= $ppp[0] && $p[1] <= $ppp[1] && $p[2] <= $ppp[2]) {
-                            if ($rowCount % 2 == 0) {
-                                $rowNum = 'even';
-                            } else {
-                                $rowNum = 'odd';
-                            }
-                            ++$rowCount;
-                            $return .= "<tr class=$rowNum>";
-                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
-                            //$return .= "<a name='".$output[$i]['pupilsightMessengerID']."'></a>";
-                            //$return .= getUserPhoto($guid, $output[$i]['photo'], 75).'<br/>';
-
-                            $return .= date('d/m/Y', strtotime($output[$i]['date'])) . '<br/>';
-                            if ($output[$i]['date1'] != null) {
-                                $return .= date('d/m/Y', strtotime($output[$i]['date1'])) . '<br/>';
-                            }
-                            if ($output[$i]['date2'] != null) {
-                                $return .= date('d/m/Y', strtotime($output[$i]['date2'])) . '<br/>';
-                            }
-
-                            //$return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
-                            //$return .= $output[$i]['source'].'<br/><br/>';
-                            $return .= '</td>';
-                            $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
-                            $return .= "<span class='badge bg-blue-lt'>";
-                            if ($output[$i]['sms'] == 'Y') {
-                                $return .= 'SMS';
-                            }
-                            if ($output[$i]['email'] == 'Y') {
-                                $return .= 'Email';
-                            }
-                            if ($output[$i]['messageWall'] == 'Y') {
-                                $return .= 'Message Wall';
-                            }
-                            $return .= "</span>";
-                            $return .= "<span class='badge bg-azure-lt' style='margin-left: 10px;'>" . $output[$i]['messengercategory'] . "</span>";
-                            $return .= "<h3 style='margin-top: 3px'>";
-                            $return .= $output[$i]['subject'];
-                            $return .= '</h3>';
-                            $return .= '</p>';
-                            $return .= $output[$i]['details'];
-                            $return .= '</p>';
-                            $return .= '</td>';
-                            $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
-                            $return .= '<b><u>' . __('Posted By') . '</b></u><br/>';
-                            $return .= $output[$i]['author'] . '<br/><br/>';
-                            $return .= '</td>';
-                            $return .= '</tr>';
-                        }
-                    }
-                }
 
                 $return .= '</table>';
             }
@@ -2768,5 +2656,128 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 return $count;
             }
         }
+    }
+}
+
+
+/*
+ * Queries the group members based on group ID.
+ * @param QueryCriteria $criteria
+ * @param string $pupilsightGroupID
+ * @return DataSet
+ */
+function queryMembersreceipt($guid, $connection2, $mode = '', $msgtype = '')
+{
+    $return = '';
+    if($msgtype=='sms'){
+        $msgtype = " pupilsightMessengerReceipt.contactType = 'SMS' ";
+    }elseif($msgtype=='email'){
+        $msgtype = " pupilsightMessengerReceipt.contactType = 'Email' ";
+    }else{
+        $msgtype = " pupilsightMessengerReceipt.contactType = 'Email' OR pupilsightMessengerReceipt.contactType = 'SMS'";
+    }
+    //echo $msgtype;
+
+    /*if ($date == '') {
+        $date = date('Y-m-d');
+    }
+
+    if ($fromdate == '') {
+        $fromdate = date('Y-m-d');
+    }*/
+try {
+    $data = array();
+    $sql = "SELECT pupilsightMessengerReceipt.*,pupilsightPerson.firstname,pupilsightPerson.pupilsightPersonID FROM pupilsightMessengerReceipt,pupilsightPerson WHERE pupilsightPerson.pupilsightPersonID=pupilsightMessengerReceipt.pupilsightPersonID AND ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC ";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+} catch (PDOException $e) {
+}
+    $count=0;
+    $slno=1;
+    $output = array();
+            while ($row = $result->fetch()) {
+    //print_r($row);
+                $output[$count]['pupilsightMessengerReceiptID'] = $row['pupilsightMessengerReceiptID'];
+                $output[$count]['pupilsightMessengerID'] = $row['pupilsightMessengerID'];
+                $output[$count]['pupilsightPersonID'] = $row['pupilsightPersonID'];
+                $output[$count]['targetType'] = $row['targetType'];
+                $output[$count]['targetID'] = $row['targetID'];
+                $output[$count]['contactType'] = $row['contactType'];
+                $output[$count]['contactDetail'] = $row['contactDetail'];
+                $output[$count]['key'] = $row['key'];
+                $output[$count]['confirmed'] = $row['confirmed'];
+                $output[$count]['confirmedTimestamp'] = $row['confirmedTimestamp'];
+                $output[$count]['firstname'] = $row['firstname'];
+                $output[$count]['confirmedTimestamp'] = $row['confirmedTimestamp'];
+                ++$count;
+            }
+    $return .= "<table cellspacing='0' style='margin-top: 10px'; width='100%';>";
+    $return .= '<tr>';
+    /*$return .= "<th style='text-align: center'>";
+    $return .= __('Date');
+    $return .= '</th>';*/
+    $return .= "<th style='text-align: center'>";
+    //$return .= __('pupilsightPersonID');
+    $return .= __('Sl No');
+    $return .= '</th>';
+    $return .= "<th style='text-align: center'>";
+    $return .= __('Person');
+    $return .= '</th>';
+    /*$return .= "<th style='text-align: center'>";
+    $return .= __('targetID');
+    $return .= '</th>';*/
+    $return .= "<th style='text-align: center'>";
+    $return .= __('Contact Type');
+    $return .= '</th>';
+    $return .= "<th style='text-align: center'>";
+    $return .= __('Contact Detail');
+    $return .= '</th>';
+    $return .= "<th style='text-align: center'>";
+    $return .= __('Sent');
+    $return .= '</th>';
+    $return .= "<th style='text-align: center'>";
+    $return .= __('Time');
+    $return .= '</th>';
+    $return .= '</tr>';
+    $rowCount = 0;
+    $rowNum = 'odd';
+    for ($i = 0; $i < count($output); ++$i) {
+        if ($rowCount % 2 == 0) {
+            $rowNum = 'even';
+        } else {
+            $rowNum = 'odd';
+        }
+        ++$rowCount;
+        $return .= "<tr class=$rowNum>";
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 10%'>";
+        //$return .= $output[$i]['pupilsightMessengerID'];
+        $return .= $slno;
+        $return .= '</td>';
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 20%'>";
+        $return .= $output[$i]['firstname'];
+        $return .= '</td>';
+        /*$return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 25%'>";
+        $return .= $output[$i]['targetID'];
+        $return .= '</td>';*/
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 10%'>";
+        $return .= $output[$i]['contactType'];
+        $return .= '</td>';
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 25%'>";
+        $return .= $output[$i]['contactDetail'];
+        $return .= '</td>';
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 15%'>";
+        $return .= "<i class='mdi mdi-check mdi-24px'></i>";
+        $return .= '</td>';
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 20%'>";
+        $return .= $output[$i]['confirmedTimestamp'];
+        $return .= '</td>';
+        $return .= '</tr>';
+        $slno++;
+    }
+    $return .= '</table>';
+    if ($mode == 'print') {
+        return $return;
+    } else {
+        return $count;
     }
 }
