@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     
     echo '<h3>';
     echo __('Sketch Name - '.$sktdata['sketch_name']);
-    echo '<div style="float:right;"><a id="generateSketchResult" data-id="'.$sketchId.'" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Generate Result</a> <a id="downloadSketchResult" data-id="'.$sketchId.'" href="thirdparty/phpword/sketchreportcard.php?id='.$sketchId.'" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Download Result</a> </div>';
+    echo '<div style="float:right;"><a id="generateSketchResult" data-id="'.$sketchId.'" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Generate Result</a> <a id="clickSketchResult" data-id="'.$sketchId.'" data-hrf="thirdparty/phpword/sketchreportcard.php?id='.$sketchId.'"  class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Download Result</a> <a style="display:none;" id="downloadSketchResult" href="">Download</a></div>';
     echo '</h3>';
 
     $sql = "SELECT name FROM pupilsightProgram WHERE pupilsightProgramID = ".$sktdata['pupilsightProgramID']." ";
@@ -85,13 +85,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                             if(!empty($skGdata)){
                                 $createdBy = $skGdata['officialName'];
                                 $createdAt = date('d-m-Y h:i:s', strtotime($skGdata['created_at']));
+                                $sketchGeneratedId = $skGdata['id'];
                             } else {
                                 $createdBy = '';
                                 $createdAt = '';
+                                $sketchGeneratedId = '';
                             }
                     ?>
                         <tr>
-                        <td><input type="checkbox" class="chkChild getStudentInSketch" name="class_sec_id" value="<?php echo $cd['pupilsightYearGroupID'];?>" data-sid="<?php echo $sketchId;?>" data-secid="<?php echo $cd['pupilsightRollGroupID'];?>" data-pid="<?php echo $sktdata['pupilsightProgramID'];?>" data-aid="<?php echo $sktdata['pupilsightSchoolYearID'];?>" data-mapid="<?php echo $cd['pupilsightMappingID'];?>" ></td>
+                        <td><input type="checkbox" class="chkChild getStudentInSketch" name="class_sec_id" value="<?php echo $cd['pupilsightYearGroupID'];?>" data-sid="<?php echo $sketchId;?>" data-secid="<?php echo $cd['pupilsightRollGroupID'];?>" data-pid="<?php echo $sktdata['pupilsightProgramID'];?>" data-aid="<?php echo $sktdata['pupilsightSchoolYearID'];?>" data-mapid="<?php echo $cd['pupilsightMappingID'];?>" data-skgId="<?php echo $sketchGeneratedId;?>"></td>
                         <td><?php echo $progName;?></td>
                         <td><?php echo $cd['name'].' - '.$cd['secName'];?></td>
                         <td><?php echo $createdBy;?></td>
@@ -198,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         var id = $(this).attr('data-id');
         var checked = $(".getStudentInSketch:checked").length;
         if (checked >= 1) {
-            $("#preloader").show();
+            //$("#preloader").show();
             var clid = [];
             var secid = [];
             var pid = '';
@@ -322,6 +324,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 $("#sketchResultData").html(response);
             }
         });
+    });
+
+    $(document).on('click', '#clickSketchResult', function() {
+        var hrf = $(this).attr('data-hrf');
+        var checked = $(".getStudentInSketch:checked").length;
+        if (checked >= 1) {
+            $("#preloader").show();
+            var skgid = [];
+            var stuid = [];
+            $.each($(".getStudentInSketch:checked"), function () {
+                skgid.push($(this).attr('data-skgid'));
+            });
+
+            $.each($(".studentId:checked"), function () {
+                stuid.push($(this).val());
+            });
+
+            var sgid = skgid.join(",");
+            var stid = stuid.join(",");
+
+            var newhrf = hrf+'&skgid='+sgid+'&stuid='+stid;
+            $("#downloadSketchResult").attr('href', newhrf);
+            $("#downloadSketchResult")[0].click();
+            $("#preloader").hide();
+        } else {
+            alert('You Have to Select Class');
+        }
     });
 
     
