@@ -278,6 +278,10 @@ class SMS implements SMSInterface
                     $res1=explode('&',$res);
                     $res2=explode('=',$res1[1]);
                     $res3=$res2[1];
+                    //print_r($res);//die();
+                    $res4=explode('&',$res1[0]);
+                    $res5=explode('=',$res4[0]);
+                    //print_r($res5[1]);die();
                     if($res3==200)
                     {
                         //echo "success";
@@ -285,6 +289,17 @@ class SMS implements SMSInterface
                         $db2 = new DBQuery();
                         //echo "\n".$sq;
                         $db2->query($sq);
+                        $p= explode(',', $numbers);
+
+foreach ($p as $numb){
+    //echo $numb;
+    $savedata="INSERT INTO pupilsightMessengerReceiptData (contactDetail,requestId) VALUES (".$numb.", ".$res5[1].")";
+    $db4 = new DBQuery();
+    //echo "\n".$savedata;
+    $db4->query($savedata);
+}
+//die();
+
                     }else{
                         echo "error";
                     }
