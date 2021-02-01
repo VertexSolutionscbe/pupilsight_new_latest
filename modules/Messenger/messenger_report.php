@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 
-if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report.php') == false) {
     //Acess denied
     echo "<div class='alert alert-danger'>";
     echo __('Your request failed because you do not have access to this action.');
