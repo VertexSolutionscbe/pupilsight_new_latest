@@ -110,7 +110,7 @@ else {
 				}
 			print "</div>" ;
 		}
-
+echo"<br>";
 		if ($result->rowCount()<1) {
 			print "<div class='alert alert-danger'>" ;
 			print __("There are no records to display.") ;
@@ -121,7 +121,7 @@ else {
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "&search=$search") ;
 			}
 
-			print "<table cellspacing='0' class='table display data-table text-nowrap' style='width: 100%'>" ;
+			print "<table cellspacing='0' class='table display data-table text-nowrap mt-3' style='width: 100%'>" ;
 			 print '<thead>';
 				print "<tr class='head'>" ;
 				print "<th>" ;
@@ -149,9 +149,9 @@ else {
 					print "<th>" ;
 						print __("SMS") ;
 					print "</th>" ;
-					print "<th style='width: 120px'>" ;
+					/*print "<th style='width: 120px'>" ;
 						print __("Actions") ;
-					print "</th>" ;
+					print "</th>" ;*/
 				print "</tr>" ;
 				 print '</thead>';
 
@@ -405,7 +405,7 @@ else {
 								<i class='mdi mdi-close mdi-24px' title='" . __('Not sent by sms.') . "'></i>" ;
 							}
 						print "</td>" ;
-						print "<td>" ;
+						/*print "<td>" ;
                     if ($row["sms"]=="Y" || $row["email"]=="Y") {
                         //print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
                     }else{
@@ -427,7 +427,7 @@ else {
 							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
 								print "<a title='" . __('Show Comment') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["pupilsightThemeName"] . "/img/page_down.png' alt='" . __('Show Comment') . "' onclick='return false;' /></a>" ;
 							}
-						print "</td>" ;
+						print "</td>" ;*/
 					print "</tr>" ;
 					if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
 						print "<tr class='comment-$count' id='comment-$count'>" ;
