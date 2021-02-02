@@ -6,6 +6,10 @@ Pupilsight, Flexible & Open School System
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Domain\Helper\HelperGateway;
+use Pupilsight\Domain\Messenger\GroupGateway;
+use Pupilsight\Tables\DataTable;
+use Pupilsight\Services\Format;
+
 
 $page->breadcrumbs
     ->add(__('Manage Groups'), 'groups_manage.php')
@@ -17,6 +21,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
+    $editID = $_GET['editID'];
+    $groupGateway = $container->get(GroupGateway::class);
+
+    $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+    if ($highestAction == 'Manage Groups_all') {
+        $result = $groupGateway->selectGroupByID($editID);
+    } else {
+        $result = $groupGateway->selectGroupByIDAndOwner($editID, $_SESSION[$guid]['pupilsightPersonID']);
+    }
+
     $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Messenger/groups_manage_edit.php&pupilsightGroupID=' . $_GET['editID'];
@@ -151,16 +165,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 
 
 
-
+    $values = $result->fetch();
 
     $form = Form::create('groups', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . "/groups_manage_addProcess.php");
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('rowid', $editID);
 
     $row = $form->addRow();
     $row->addLabel('name', __('Name'));
-    $row->addTextField('name')->required()->setValue();
+    $row->addTextField('name')->required()->setValue($values['name']);
 
     $row = $form->addRow();
     $row->addLabel('members', __('Students Members'));
@@ -218,7 +233,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     $row->addSubmit();
 
     echo $form->getOutput();
+
+
+    echo '<h2>';
+    echo __('Current Members');
+    echo '</h2>';
+
+    echo "<div style='height:50px;'><div class='float-right mb-2'>";
+    echo "<button class='btn btn-primary' type='button' id='massdeleteall' value='get check box values'>Mass Delete</button>";
+    echo  "</div><div class='float-none'></div></div>";
+    $criteria = $groupGateway->newQueryCriteria()
+        ->sortBy(['surname', 'preferredName'])
+        ->fromPOST();
+
+    $members = $groupGateway->queryGroupMembers($criteria, $editID);
+
+    $table = DataTable::createPaginated('groupsManage', $criteria);
+
+    $table->addCheckboxColumn('ppid', __(''))
+        ->setClass('chkbox')
+        ->context('Select');
+
+    $table->addColumn('name', __('Name'))
+        ->sortable(['surname', 'preferredName'])
+        ->format(Format::using('name', ['preferredName', 'surname', 'Student', true]));
+
+    $table->addColumn('email', __('Email'))->sortable();
+
+    $table->addActionColumn()
+        ->addParam('pupilsightGroupID')
+        ->addParam('ppid')
+        ->format(function ($person, $actions) {
+            $actions->addAction('delete', __('Delete'))
+                ->setURL('/modules/Messenger/groups_manage_edit_delete.php');
+        });
+
+    echo $table->render($members);
 }
+$massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_SESSION[$guid]['module'] . "/groups_manage_edit_massdelete.php&pupilsightGroupID=" . $editID;
 ?>
 <script type="text/javascript">
     $(document).on('change', '#pupilsightProgramID', function() {
@@ -358,5 +410,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 <script type='text/javascript'>
     $(document).ready(function() {
         $('#pupilsightYearGroupIDA').select2();
-    });
+    }); <<
+    << << < HEAD
+        ===
+        === =
+</script>
+<script type="text/javascript">
+    $("#massdeleteall").on("click", function() {
+        var favorite = [];
+        $.each($("input[name='ppid[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        //alert("My favourite sports are: " + favorite.join(", "));
+        if (favorite.length > 0) {
+            $.ajax({
+                type: "GET",
+                data: {
+                    tid: favorite
+                },
+                url: '<?php echo $massdeleteurl; ?>',
+                success: function(msg) {
+                    alert(msg);
+                    location.reload();
+                }
+            });
+        } else {
+            alert('Please select users');
+        }
+    }); >>>
+    >>> > 12695 f749ab78be723bc9862761dfce5c32cfddc
 </script>
