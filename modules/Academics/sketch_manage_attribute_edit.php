@@ -14,18 +14,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     echo '</div>';
 } else {
     //Proceed!
+
+    $id = $_GET['id'];
+    $sqlchk = "SELECT a.*, b.pupilsightSchoolYearID, b.pupilsightProgramID, b.class_ids FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportTemplateSketch AS b ON a.sketch_id = b.id  WHERE a.id = ".$id." ";
+    $resultchk = $connection2->query($sqlchk);
+    $chkdata = $resultchk->fetch();
+
     $page->breadcrumbs
         ->add(__('Manage Sketch'), 'sketch_manage.php')
+        ->add(__('Manage Sketch Configurations'), 'sketch_manage_attribute.php&id='.$chkdata['sketch_id'].'')
         ->add(__('Edit Sketch Attribute'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $id = $_GET['id'];
-    $sqlchk = "SELECT a.*, b.pupilsightSchoolYearID, b.pupilsightProgramID, b.class_ids FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportTemplateSketch AS b ON a.sketch_id = b.id  WHERE a.id = ".$id." ";
-    $resultchk = $connection2->query($sqlchk);
-    $chkdata = $resultchk->fetch();
+    
 
     if($chkdata['attribute_category'] == 'Entity'){
     
