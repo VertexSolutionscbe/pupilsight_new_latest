@@ -821,9 +821,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                
                 //header("Location: {$URL}");  
             }
-            echo 'done';
-            die();
+            
         }
+        echo 'done';
+        die();
     }
 
 
