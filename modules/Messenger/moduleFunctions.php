@@ -1356,6 +1356,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
 {
     $return = '';
     $return1 = '';
+	$return3 = '';
     $dataPosts = array();
 
     if($msgtype=='sms'){
@@ -1382,6 +1383,13 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
     if ($fromdate == '') {
         $fromdate = date('Y-m-d');
     }
+	$datecheck='pass';
+	if($fromdate>$date){
+	$datecheck='fail';
+	
+	}
+
+	
     if($fromdate!=$date){
 
 
@@ -2016,6 +2024,12 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
 
                 $return .= '</table>';
             }
+			if($datecheck=='fail'){
+			$return3 .= "<div class='alert alert-warning'>";
+                    $return3 .= __('From date is greater then to date, please select valid date range.');
+                    $return3 .= '</div>';
+                    return $return3;
+			}
             if ($mode == 'print') {
                 if ($rowCount == 0) {
                     $return1 .= "<div class='alert alert-warning'>";
