@@ -2822,7 +2822,7 @@ if ($type == 'getStudentSketchData') {
     $sketch_id = $val;
     $pupilsightPersonID = $_POST['pid'];
 
-    $sql = 'SELECT * FROM examinationReportTemplateSketchData WHERE sketch_id = ' . $sketch_id . ' AND pupilsightPersonID = ' . $pupilsightPersonID . '';
+    $sql = 'SELECT a.*, b.officialName FROM examinationReportTemplateSketchData AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.sketch_id = ' . $sketch_id . ' AND a.pupilsightPersonID IN (' . $pupilsightPersonID . ') ';
 
     $result = $connection2->query($sql);
     $studentData = $result->fetchAll();
@@ -2831,10 +2831,12 @@ if ($type == 'getStudentSketchData') {
     if (!empty($studentData)) {
         foreach ($studentData as $k => $st) {
             $data .= '<tr>
-                        <td style="width:15%">' . $st['attribute_name'] . '</td>
-                        <td style="width:15%">${' . $st['attribute_name'] . '}</td>
-                        <td style="width:15%" class="noEditTd">' . $st['attribute_value'] . '</td>
-                        <td style="width:15%;display:none;" class="editTd"><input type="textbox" class="updateSketchData" data-id="' . $st['id'] . '" value="' . $st['attribute_value'] . '"></td>
+                        <td >' . $st['officialName'] . '</td>
+                        <td >' . $st['attribute_name'] . '</td>
+                        <td >${' . $st['attribute_name'] . '}</td>
+                        <td ><span class="noEditTd">' . $st['attribute_value'] . '</span>
+                        <span style="display:none;" class="editTd"><input type="textbox" class="form-control updateSketchData" data-id="' . $st['id'] . '" value="' . $st['attribute_value'] . '"></span>
+                        </td>
                     </tr>';
         }
     }
@@ -3660,7 +3662,7 @@ if ($type == 'getStudentDataForSketch') {
     if (!empty($studentData)) {
         foreach ($studentData as $k => $st) {
             $data .= '<tr>
-                        <td style="width:15%"><input type="checkbox" class="studentId" name="pupilsightPersonID" value="'. $st['pupilsightPersonID']. '" data-sid="'.  $sketchId.'" data-pid="'. $st['pupilsightPersonID'].'"></td>
+                        <td style="width:15%"><input type="checkbox" class="studentId chkChildStd" name="pupilsightPersonID" value="'. $st['pupilsightPersonID']. '" data-sid="'.  $sketchId.'" data-pid="'. $st['pupilsightPersonID'].'"></td>
                         <td style="width:15%">' . $st['officialName'] . '</td>
                     </tr>';
         }
