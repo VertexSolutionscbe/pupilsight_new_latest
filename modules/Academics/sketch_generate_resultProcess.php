@@ -252,7 +252,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                                 $gsid = $tsub['gradeSystemId'];
                                                 $testMaxMarks = $tsub["max_marks"];
                                                 if ($tsub['skill_configure'] == 'Average') {
-                                                    $sqlmarks = 'SELECT AVG(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = ' . $tsub['pupilsightDepartmentID'] . ' AND pupilsightPersonID = ' . $td['pupilsightPersonID'] . ' AND test_id = ' . $test_id . ' ';
+                                                    $sqlmarks = 'SELECT ROUND(AVG(marks_obtained), 2) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = ' . $tsub['pupilsightDepartmentID'] . ' AND pupilsightPersonID = ' . $td['pupilsightPersonID'] . ' AND test_id = ' . $test_id . ' ';
                                                 } else if ($tsub['skill_configure'] == 'Sum') {
                                                     $sqlmarks = 'SELECT SUM(marks_obtained) AS getmarks FROM examinationMarksEntrybySubject WHERE pupilsightDepartmentID = ' . $tsub['pupilsightDepartmentID'] . ' AND pupilsightPersonID = ' . $td['pupilsightPersonID'] . ' AND test_id = ' . $test_id . ' ';
                                                 } else {

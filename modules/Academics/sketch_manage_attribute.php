@@ -5,8 +5,6 @@ Pupilsight, Flexible & Open School System
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 
-
-
 if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_attribute.php') == false) {
     //Acess denied
     echo "<div class='error'>"; 
@@ -40,7 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $labeldata = $result->fetchAll();
     
 ?>
-    
     <form id="attributeForm" method="post" action="modules/Academics/sketch_manage_attributeProcess.php" style="display:none;">
     <input type="hidden" name="sketch_id" id="sketchId" value="<?php echo $sketchId;?>">
     <div class="col-12" style="display:flex;" >
@@ -107,11 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 
             </tbody>
         </table>    
-			
-      
-    </div>
-
-       
+	</div>
 
 <?php  
 }
