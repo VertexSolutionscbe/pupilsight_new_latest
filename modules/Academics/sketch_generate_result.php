@@ -49,7 +49,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     // echo '</pre>';
 
 
-
     $sqla = "SELECT * FROM examinationReportTemplateAttributes WHERE sketch_id = " . $sketchId . " ORDER BY pos ASC";
     $resulta = $connection2->query($sqla);
     $attrdata = $resulta->fetchAll();
@@ -122,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 <table class="table table-hover" id="myTable">
                     <thead>
                         <tr>
-                            <th style="width:5%">Select</th>
+                            <th style="width:5%"><input type="checkbox" class="chkAllStd chkAllStuSkt"></th>
                             <th style="width:15%">Student Name</th>
                         </tr>
                     </thead>
@@ -138,31 +137,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
 
 
-        <div style="margin-bottom: 10px;">
-            <input type="text" class="w-full" id="searchTable2" placeholder="Search">
-        </div>
-        <div style="height: 500px;overflow:auto;">
-            <table class="table table-hover" id="myTable2">
-                <thead>
-                    <tr>
-                        <th style="width:15%">Master Attribute Name</th>
-                        <th style="width:15%">Attribute Name Word</th>
-                        <th style="width:15%">Attribute Value</th>
-                    </tr>
-                </thead>
-                <tbody id="sketchResultData">
-                    <tr>
-                        <td style="width:15%"></td>
-                        <td style="width:15%"></td>
-                        <td style="width:15%"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <div id="cloning" class="row" style="width:100%">
 
-    </div>
+            <div style="margin-bottom: 10px;">
+                <input type="text" class="w-full" id="searchTable2" placeholder="Search">
+            </div>
+            <div style="height: 500px;overflow:auto;">
+                <table class="table table-hover" id="myTable2">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Master Attribute Name</th>
+                            <th>Attribute Name Word</th>
+                            <th>Attribute Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sketchResultData">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-    </div>
+        </div>
 
     </div>
 
@@ -177,6 +178,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 </style>
 
 <script>
+    $(document).on('change', '.chkAllStd', function() {
+        if ($(this).is(':checked')) {
+            $(".chkChildStd").prop("checked", true);
+        } else {
+            $(".chkChildStd").prop("checked", false);
+        }
+    });
+
+    $(document).on('change', '.chkChildStd', function() {
+        if ($(this).is(':checked')) {
+            //$(".chkChildStd"+id).prop("checked", true);
+        } else {
+            $(".chkAllStd").prop("checked", false);
+        }
+    });
+
     $("#searchTable").on("keyup", function() {
         var value = $(this).val().toLowerCase();
         $("#myTable tbody tr").filter(function() {
@@ -202,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         var id = $(this).attr('data-id');
         var checked = $(".getStudentInSketch:checked").length;
         if (checked >= 1) {
-            //$("#preloader").show();
+            $("#preloader").show();
             var clid = [];
             var secid = [];
             var pid = '';
@@ -335,23 +352,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
 
     $(document).on('change', '.studentId', function() {
-        var id = $(this).attr('data-sid');
-        var pid = $(this).attr('data-pid');
-        var type = 'getStudentSketchData';
-        $.ajax({
-            url: 'ajax_data.php',
-            type: 'post',
-            data: {
-                val: id,
-                type: type,
-                pid: pid
-            },
-            async: true,
-            success: function(response) {
-                $("#sketchResultData").html('');
-                $("#sketchResultData").html(response);
-            }
-        });
+        var checked = $(".studentId:checked").length;
+        if (checked >= 1) {
+            var id = '';
+            var stuid = [];
+            $.each($(".studentId:checked"), function() {
+                id = $(this).attr('data-sid');
+                stuid.push($(this).val());
+            });
+
+            var pid = stuid.join(",");
+
+            var type = 'getStudentSketchData';
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {
+                    val: id,
+                    type: type,
+                    pid: pid
+                },
+                async: true,
+                success: function(response) {
+                    $("#sketchResultData").html('');
+                    $("#sketchResultData").html(response);
+                }
+            });
+        }
+    });
+
+    $(document).on('change', '.chkAllStuSkt', function() {
+        var checked = $(".studentId:checked").length;
+        if (checked >= 1) {
+
+            var id = '';
+            var stuid = [];
+            $.each($(".studentId:checked"), function() {
+                id = $(this).attr('data-sid');
+                stuid.push($(this).val());
+            });
+
+            var pid = stuid.join(",");
+
+            var type = 'getStudentSketchData';
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {
+                    val: id,
+                    type: type,
+                    pid: pid
+                },
+                async: true,
+                success: function(response) {
+                    $("#sketchResultData").html('');
+                    $("#sketchResultData").html(response);
+                }
+            });
+        }
     });
 
     $(document).on('click', '#clickSketchResult', function() {
@@ -387,9 +445,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         $("#saveSketchData").show();
     });
 
+    $(document).on('change', '.updateSketchData', function() {
+        $(this).addClass('changeSketchData');
+    });
+
     $(document).on('click', '#saveSketchData', function() {
+        $("#preloader").show();
         var sdata = [];
-        $.each($(".updateSketchData"), function() {
+        $.each($(".changeSketchData"), function() {
             sdata.push($(this).attr('data-id') + '-' + $(this).val());
         });
 
@@ -405,8 +468,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             async: true,
             success: function(response) {
                 alert('Sketch Data Updated Successfully');
-                $(".studentId").trigger('change');
-                $("#saveSketchData").hide();
+                $("#preloader").hide();
+                //$(".studentId").trigger('change');
+                //$("#saveSketchData").hide();
                 //$("#sketchResultData").html('');
                 //$("#sketchResultData").html(response);
             }
