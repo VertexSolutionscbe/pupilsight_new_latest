@@ -1180,7 +1180,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
         return $this->runQuery($query, $criteria, true);
     }
 
-    public function getSketchTemplate(QueryCriteria $criteria)
+    public function getSketchTemplate(QueryCriteria $criteria, $id)
     {
         $query = $this
             ->newQuery()
@@ -1190,6 +1190,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
             ])
             ->leftJoin('pupilsightYearGroup', 'examinationReportSketchTemplateMaster.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
             ->leftJoin('pupilsightProgram', 'examinationReportSketchTemplateMaster.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->where('examinationReportSketchTemplateMaster.sketch_id = "' . $id . '" ')
             ->orderby(['examinationReportSketchTemplateMaster.id DESC']);
 
         return $this->runQuery($query, $criteria, true);
