@@ -8,7 +8,7 @@ Pupilsight, Flexible & Open School System
  * Sets the database connection information.
  * You can supply an optional $databasePort if your server requires one.
  */
-$databaseServer = '127.0.0.1';
+$databaseServer = 'localhost';
 $databaseUsername = 'root';
 
 //$databasePassword = '';
@@ -17,8 +17,8 @@ $databaseUsername = 'root';
 //$databaseName = 'ups'; //pd_demo
 
 //live
-$databasePassword = 'xyz'; //xyz
-$databaseName = 'pd_demo'; //pd_demo
+$databasePassword = ''; //xyz
+$databaseName = 'christacademy'; //pd_demo
 
 //if (session_status() == PHP_SESSION_NONE) {
 //    session_start();

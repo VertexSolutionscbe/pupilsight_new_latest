@@ -379,7 +379,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				print "</td>";
 				print "<td>";
 				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
-				print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><i title='" . __('Delete') . "' class='mdi mdi-trash-can-outline mdi-24px px-2'></i></a> ";
+				//print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><i title='" . __('Delete') . "' class='mdi mdi-trash-can-outline mdi-24px px-2'></i></a> ";
 				print "<script type='text/javascript'>";
 				print "$(document).ready(function(){";
 				print "\$(\".comment-$count\").hide();";
