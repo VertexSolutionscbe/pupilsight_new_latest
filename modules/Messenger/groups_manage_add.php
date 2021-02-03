@@ -410,10 +410,7 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
 <script type='text/javascript'>
     $(document).ready(function() {
         $('#pupilsightYearGroupIDA').select2();
-    }); <<
-    << << < HEAD
-        ===
-        === =
+    });
 </script>
 <script type="text/javascript">
     $("#massdeleteall").on("click", function() {
@@ -437,6 +434,5 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
         } else {
             alert('Please select users');
         }
-    }); >>>
-    >>> > 12695 f749ab78be723bc9862761dfce5c32cfddc
+    });
 </script>
