@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 
 include '../../pupilsight.php';
 
-echo $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/bus_manage.php';
+echo $URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . '/bus_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.php') == false) {
     $URL .= '&return=error0';
@@ -129,9 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
                 header("Location: {$URL}");
             }
         }
-    }else{
+    } else {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     }
 }
-
