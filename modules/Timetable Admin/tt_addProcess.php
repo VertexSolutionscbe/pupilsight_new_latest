@@ -11,7 +11,7 @@ include '../../pupilsight.php';
 // die();
 
 $name = $_POST['name'];
-$nameShort = $_POST['nameShort'];
+echo $nameShort = $_POST['nameShort'];exit;
 $nameShortDisplay = $_POST['nameShortDisplay'];
 $active = $_POST['active'];
 $count = $_POST['count'];

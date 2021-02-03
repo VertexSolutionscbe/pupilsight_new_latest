@@ -14,6 +14,13 @@ use Pupilsight\Domain\Gateway;
  */
 class TimetableGateway extends Gateway
 {
+    
+    public function testSelect()
+    {
+        $sql="select * from pupilsightTT";
+        return $this->db()->select($sql, $data);
+        
+    }
     public function selectTimetablesBySchoolYear($pupilsightSchoolYearID)
     {
         $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID);

@@ -59,6 +59,7 @@ if ($_POST) {
     $input['comment_image_path'] = $targetPath;
   }
 
+  //echo '<pre>';print_r($input);exit;
   $adminlib->createPupilSightData($input);
   $data = $adminlib->getPupilSightData();
   echo "<script>alert('Updated Successfully');</script>";
@@ -158,19 +159,19 @@ if ($_POST) {
             <!-- /.card-body -->
             <div class="form-group">
               <label for="exampleInputEmail1">Facebook Link</label>
-              <input type="text" name="logo_title" class="form-control" placeholder="Facebook Link" value="<?php echo $data['facebook_link']; ?>">
+              <input type="text" name="facebook_link" class="form-control" placeholder="Facebook Link" value="<?php echo $data['facebook_link']; ?>">
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Twitter Link</label>
-              <input type="text" name="logo_title" class="form-control" placeholder="Twitter Link" value="<?php echo $data['twitter_link']; ?>">
+              <input type="text" name="twitter_link" class="form-control" placeholder="Twitter Link" value="<?php echo $data['twitter_link']; ?>">
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Pinterest Link</label>
-              <input type="text" name="logo_title" class="form-control" placeholder="Pinterest Link" value="<?php echo $data['pinterest_link']; ?>">
+              <input type="text" name="pinterest_link" class="form-control" placeholder="Pinterest Link" value="<?php echo $data['pinterest_link']; ?>">
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Linkdlin Link</label>
-              <input type="text" name="logo_title" class="form-control" placeholder="Linkdlin Link" value="<?php echo $data['linkdlin_link']; ?>">
+              <input type="text" name="linkdlin_link" class="form-control" placeholder="Linkdlin Link" value="<?php echo $data['linkdlin_link']; ?>">
             </div>
 
             <div class="form-group">
