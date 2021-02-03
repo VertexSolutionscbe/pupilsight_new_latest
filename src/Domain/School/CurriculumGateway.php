@@ -42,6 +42,7 @@ class CurriculumGateway extends QueryableGateway
             $res = $this->runQuery($query, $criteria);
             $data = $res->data;
             if(!empty($data)){   
+                $i = 50;
                 foreach($data as $k => $d){
                     $departmentId = $d['pupilsightDepartmentID'];
                     $query2 = $this
@@ -61,17 +62,36 @@ class CurriculumGateway extends QueryableGateway
                         $data[$k]['di_mode'] = $newdata->data[0]['di_mode'];
                         $data[$k]['id'] = $newdata->data[0]['id'];
                         $data[$k]['checked'] = '1';
+                        $data[$k]['pos'] = $newdata->data[0]['pos'];
                     } else {
                         $data[$k]['subject_display_name'] = '';
                         $data[$k]['subject_type'] = '';
                         $data[$k]['di_mode'] = '';
                         $data[$k]['id'] = '';
                         $data[$k]['checked'] = '';
+                        $data[$k]['pos'] = $i;
+                        $i++;
                     }
+                    
                 }
             }    
+
+            $returndata = array();
+            if(!empty($data)){
+                foreach($data as $k => $dk){
+                    $pos = $dk['pos'];
+                    $returndata[$pos] = $dk;
+                }
+                ksort($returndata);
+                $returndata = array_values($returndata);
+            }
             
-        $res->data = $data;
+
+            // echo '<pre>';
+            // print_r($returndata);
+            // echo '</pre>';
+            
+        $res->data = $returndata;
         return $res;
     }
 

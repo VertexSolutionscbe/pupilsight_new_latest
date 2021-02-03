@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
     $row = $form->addRow();
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
-    $col->addSelect('pupilsightSchoolYearID')->fromArray($academicData)->required()->selected($pupilsightSchoolYearID); 
+    $col->addSelect('pupilsightSchoolYearID')->setId('pupilsightSchoolYearIDbyPPCopy')->fromArray($academicData)->required()->selected($pupilsightSchoolYearID); 
     
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
@@ -149,13 +149,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
 
     $(document).on('change', '#pupilsightYearGroupIDbyPPCopy', function () {
         var id = $(this).val();
+        var aid = $('#pupilsightSchoolYearIDbyPPCopy').val();
         var pid = $('#pupilsightProgramIDbyPPCopy').val();
-        var type = 'getTestByClassProgram';
+        var type = 'getCopyTestByClassProgram';
         $('#test_master_id').selectize()[0].selectize.destroy();
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
-            data: { val: id, type: type, pid: pid },
+            data: { val: id, type: type, pid: pid, aid: aid },
             async: true,
             success: function (response) {
                 $("#test_master_id").html();
