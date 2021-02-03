@@ -2,6 +2,8 @@
 include_once 'w2f/adminLib.php';
 $adminlib = new adminlib();
 $data = $adminlib->getPupilSightData();
+
+//echo '<pre>';print_r($data);exit;
 $section = $adminlib->getPupilSightSectionFrontendData();
 $campaign = $adminlib->getcampaign();
 session_start();
@@ -886,7 +888,7 @@ if (isset($_SESSION["loginstatus"])) {
                                                     <!--
 							-->
                                                     <rs-layer id="slider-2-slide-2-layer-1" data-type="text" data-rsp_ch="on" data-xy="x:l,l,c,c;y:m;yo:-175px,-160px,-130px,-130px;" data-text="s:65,50,65,55;l:75,60,75,65;ls:0px,0,0,0;fw:300;a:inherit,inherit,center,center;" data-dim="h:160px,auto,160px,140px;" data-frame_0="y:100%;tp:600;" data-frame_0_mask="u:t;y:100%;" data-frame_1="tp:600;st:900;sp:1500;sR:900;" data-frame_1_mask="u:t;" data-frame_999="st:w;sp:1000;auto:true;" data-frame_999_mask="u:t;">
-                                                        <span style='font-size:40px !important;font-family: Poppins;'><?php echo $data['cms_banner_title']; ?></p>
+                                                        <span style='font-size:20px !important;font-family: Poppins;'><?php echo $data['cms_banner_title']; ?></p>
                                                     </rs-layer>
                                                     <!--
 							-->
@@ -895,7 +897,7 @@ if (isset($_SESSION["loginstatus"])) {
                                                     <!--
 							-->
                                                     <rs-layer id="slider-2-slide-2-layer-6" data-type="text" data-rsp_ch="on" data-xy="x:l,l,c,c;y:m;yo:-45px,-55px,0,0;" data-text="s:18,18,18,14;l:30;fw:200,200,200,400;a:inherit,inherit,center,center;" data-frame_0="y:100%;tp:600;" data-frame_0_mask="u:t;y:100%;" data-frame_1="tp:600;st:900;sp:1500;sR:900;" data-frame_1_mask="u:t;" data-frame_999="st:w;sp:1000;auto:true;" data-frame_999_mask="u:t;" style="z-index:9;font-family:Poppins;">
-                                                        <?php echo $data['cms_banner_short_description']; ?>
+                                                       <?php echo $data['cms_banner_short_description']; ?>
                                                     </rs-layer>
                                                     <!--
 							--><a href="#courses">
@@ -1512,10 +1514,31 @@ if (isset($_SESSION["loginstatus"])) {
                             <div class="vc_column-inner">
                                 <div class="wpb_wrapper">
                                     <div class="vc_row-full-width vc_clearfix" style="padding:20px;"></div>
+                                    
+                                    <div class="Phone"><h6>Contact Number:</h6><?php echo $data['phone'];?></div>
+
+                                    <br><br>
+
+                                    
+                                    <div class="Email"><h6>Email:</h6>
+                                        <diV><?php echo $data['primary_email'];?></div>    
+                                        <div><?php echo $data['secondary_email'];?></div>
+                                    </div>
+                                    
+                                    
+                                    
+                                    <br><br>
+                                    
                                     <!--google map element-->
-                                    <div class="mapouter">
-                                        <div class="gmap_canvas"><iframe width="1100" height="440" id="gmap_canvas" src="https://maps.google.com/maps?q=12th%20A%20Main%20Rd%2C%20HAL%202nd%20Stage%2C%20Indiranagar%2C%20Bengaluru%2C%20Karnataka%20560008&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://www.embedgooglemap.net/blog/divi-discount-code-elegant-themes-coupon/">other
+                                    <!-- <div class="mapouter">
+                                        <div class="gmap_canvas">
+                                            <iframe width="1100" height="440" id="gmap_canvas" src="https://maps.google.com/maps?q=12th%20A%20Main%20Rd%2C%20HAL%202nd%20Stage%2C%20Indiranagar%2C%20Bengaluru%2C%20Karnataka%20560008&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
+                                            <a href="https://www.embedgooglemap.net/blog/divi-discount-code-elegant-themes-coupon/">other
                                                 divi discount code</a></div>
+
+                                    </div>             -->
+
+                                    <?php echo html_entity_decode($data['contact_map']) ?>
                                         <style>
                                             .mapouter {
                                                 position: relative;
@@ -1531,7 +1554,7 @@ if (isset($_SESSION["loginstatus"])) {
                                                 width: 1100px;
                                             }
                                         </style>
-                                    </div>
+                                    
 
 
 
