@@ -414,4 +414,4 @@ $massdeleteurl=$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSIO
             alert('Please select users');
         }
     });
-</script>
+</script> 

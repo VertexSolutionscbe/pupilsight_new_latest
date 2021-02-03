@@ -264,7 +264,7 @@ else {
         $row = $form->addRow()->addClass('sms');
         $col = $row->addColumn('body');
         $col->addLabel('body', __('Body'));
-        $col->addEditor('body', $guid)->required()->setRows(20)->setValue($signature);
+        $col->addEditor('body1', $guid)->required()->setRows(20)->setValue($signature);
 
         $row = $form->addRow()->addAlert(__('For SMS message 160 Characters per message '))->setClass('right')
         ->append('<span id="count" title="countchars"></span>');
@@ -682,7 +682,7 @@ else {
 </script>
 
 <script type="text/javascript">
-    $("#body").keyup(function(){
+    $("#body1").keyup(function(){
         //$("#count").text("Characters left: " + (500 - $(this).val().length));
         $("#count").text("Characters Count : " +$(this).val().length);
     });
