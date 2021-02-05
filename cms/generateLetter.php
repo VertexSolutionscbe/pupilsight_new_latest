@@ -5,7 +5,6 @@ include '../pupilsight.php';
 include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 $adminlib = new adminlib();
 
-
 $aid = $_GET['aid'];
 $tid = $_GET['tid'];
 $sid = $_GET['sid'];
@@ -15,8 +14,6 @@ $studentId = explode(',', $sid);
 
 $sqlchk = 'SELECT pupilsightProgramID, pupilsightYearGroupID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = ' . $sid . ' ';
 $pro = database::doSelectOne($sqlchk);
-
-// $sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoolYearID = " . $aid . " AND pupilsightProgramID = " . $pro['pupilsightProgramID'] . " AND type = 'Fee Letter' AND FIND_IN_SET('" . $pro['pupilsightYearGroupID'] . "', classIds) ";
 
 $sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE id = " . $tid . " ";
 $valuept = database::doSelectOne($sqlpt);
@@ -62,44 +59,15 @@ if (!empty($file)) {
 
             $date = date('d-m-Y', strtotime($applicationData['created_at']));
 
-            // $sql = "SELECT id, formatval FROM fn_fee_series WHERE pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . " AND pupilsightProgramID = ".$applicationData['pupilsightProgramID']." ";
-            // $result = database::doSelectOne($sql);
-
-            // if (!empty($result['formatval'])) {
-            //     $seriesId = $result['id'];
-            //     $invformat = explode('$', $result['formatval']);
-            //     $iformat = '';
-            //     $orderwise = 0;
-            //     foreach ($invformat as $inv) {
-            //         if ($inv == '{AB}') {
-            //             $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=' . $seriesId . ' AND type= "numberwise"';
-            //             $formatvalues = database::doSelectOne($sqlfort);
-
-
-            //             $str_length = $formatvalues['no_of_digit'];
-
-            //             $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
-
-            //             $lastnoadd = $formatvalues['last_no'] + 1;
-
-            //             $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
-
-            //             $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
-            //             $result1 = database::doUpdate($sql1);
-            //         } else {
-            //             $iformat .= $inv;
-            //         }
-            //         $orderwise++;
-            //     }
-            //     $tc_id = $iformat;
-            // } else {
-            //     $tc_id = '';
-            // }
-
-
+           
             try {
 
                 //$phpword->setValue('tc_no', $tc_id);
+                // try {
+                //     $phpword->setValue('application_no', $fname);
+                // } catch (Exception $ex) {
+                // }
+
                 try {
                     $date = date('d-m-Y');
                     $phpword->setValue('date', $date);
@@ -164,46 +132,10 @@ if (!empty($file)) {
                 } catch (Exception $ex) {
                 }
 
-                // $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '". $tc_id."' ";
-                // $connection2->query($sq);
-
-                // $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";
-                // $connection2->query($squ);
             } catch (Exception $ex) {
                 echo $ex;
                 die();
             }
-
-
-
-            // foreach ($arrHeader as $k => $ah) {
-            //     if (array_key_exists($ah, $arr)) {
-            //         if ($ah == 'file-upload' || $ah == 'image_upload') {
-            //             $attrValue = $arr[$ah];
-            //             try {
-            //                 $imgVal = array("path" => $attrValue, "width" => 100, "height" => 100);
-            //                 $phpword->setImageValue($ah, $imgVal);
-            //                 //$phpword->setImageValue($ah, $attrValue);
-            //             } catch (Exception $ex) {
-            //             }
-            //         } else {
-            //             try {
-            //                 $pv = str_replace('&', ' and ', $arr[$ah]);
-            //                 $phpword->setValue($ah, $pv);
-            //             } catch (Exception $ex) {
-            //             }
-            //         }
-            //     } else {
-            //         try {
-            //             $phpword->setValue($ah, '');
-            //         } catch (Exception $ex) {
-            //         }
-            //     }
-            // }
-            // echo '<pre>';
-            // print_r($newarr);
-            // echo '</pre>';
-            // die();
 
 
             $fname = trim(str_replace("/", "_", $fname));

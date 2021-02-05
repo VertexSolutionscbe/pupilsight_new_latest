@@ -255,15 +255,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                 echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Registered Student's</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatetc.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/student_letter.php&sid=' id='clickGenerateLetter' class='btn btn-primary'>Letter</a><a style='display:none;' href='' id='generateLetter'  class='thickbox'>Letter</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
 
                 echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
 
@@ -318,21 +318,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
 
                     if (in_array(29, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatetc.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/student_letter.php&sid=' id='clickGenerateLetter' class='btn btn-primary'>Letter</a><a style='display:none;' href='' id='generateLetter' class='thickbox'>Letter</a>";
                     }
 
-                    if (in_array(31, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
-                    }
-                    if (in_array(30, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
-                    }
-                    if (in_array(32, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
-                    }
-                    if (in_array(33, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
-                    }
+                    // if (in_array(31, $permissionChk)) {
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
+                    // }
+                    // if (in_array(30, $permissionChk)) {
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
+                    // }
+                    // if (in_array(32, $permissionChk)) {
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
+                    // }
+                    // if (in_array(33, $permissionChk)) {
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+                    // }
 
                     if (in_array(34, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
@@ -678,7 +678,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         alert('You Have to De-Register Student First!');
     });
 
-    $(document).on('click', '#clickGenerateTC', function() {
+    $(document).on('click', '#clickGenerateLetter', function() {
         var favorite = [];
         $.each($("input[name='student_id[]']:checked"), function() {
             favorite.push($(this).val());
@@ -686,18 +686,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         var stuId = favorite.join(",");
         //alert(subid);
         if (stuId) {
-            if (confirm("Do you want to Generated TC?")) {
+            //if (confirm("Do you want to Generated TC?")) {
                 if (favorite.length == 1) {
                     var hrf = $(this).attr('data-hrf');
                     var newhrf = hrf + stuId;
-                    $("#generateTC").attr('href', newhrf);
+                    $("#generateLetter").attr('href', newhrf);
                     window.setTimeout(function() {
-                        $("#generateTC")[0].click();
+                        $("#generateLetter")[0].click();
                     }, 10);
                 } else {
                     alert('You Have to Select One Student at a time.');
                 }
-            }
+            //}
         } else {
             alert('You Have to Select Student.');
         }

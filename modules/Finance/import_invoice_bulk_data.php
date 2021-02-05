@@ -85,6 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                 $headers[$key] = 'discount';
             } else if ($hd == 'Amount Paid') {
                 $headers[$key] = 'amount_paying';
+            } else if ($hd == 'Payment Status') {
+                $headers[$key] = 'payment_status';
             } else if ($hd == 'Payment Mode') {
                 $headers[$key] = 'payment_mode';
             } else if ($hd == 'Payment Received Date') {
@@ -138,6 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                     if (!empty($alrow['amount_paying']) && !empty($alrow['invoice_no'])) {
                         $pupilsightPersonID = $alrow['pupilsightPersonID'];
                         $discount = $alrow['discount'];
+                        $payment_status = $alrow['payment_status'];
                         if(!empty($pupilsightPersonID)){
                             if ($alrow['amount_paying'] < $alrow['transcation_amount']) {
                                 $invNo = $alrow['invoice_no'];
@@ -205,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                 $instrument_date = date('Y-m-d', strtotime($alrow['instrument_date']));
                                 $dd_cheque_amount = $alrow['amount_paying'];
                             } else {
-                                $instrument_date = date('Y-m-d');
+                                $instrument_date = '';
                                 $dd_cheque_amount = '';
                             }
 
