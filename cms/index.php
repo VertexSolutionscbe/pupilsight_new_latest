@@ -1523,7 +1523,19 @@ if (isset($_SESSION["loginstatus"])) {
                                     <div class="Email"><h6>Email:</h6>
                                         <diV><?php echo $data['primary_email'];?></div>    
                                         <div><?php echo $data['secondary_email'];?></div>
-                                    </div>
+                                    </div><br>
+
+
+                                    <div class="Fax"><h6>Fax:</h6>
+                                        <diV><?php echo $data['fax'];?></div>    
+                                        
+                                    </div><br>
+
+                                    
+                                    <div class="Address"><h6>Address:</h6>
+                                        <diV><?php echo $data['address'];?></div>    
+                                        
+                                    </div><br>
                                     
                                     
                                     
