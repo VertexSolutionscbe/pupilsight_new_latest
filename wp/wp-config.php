@@ -23,19 +23,21 @@
 /** The name of the database for WordPress */
 include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
 
-define('DB_NAME', 'christacademy');
+//define('DB_NAME', 'christacademy');
 //define( 'DB_NAME', "pd_demo");
+define('DB_NAME', $databaseName);
 
 /** MySQL database username */
-define( 'DB_USER', 'root' );
-//define('DB_USER', $databaseUsername);
+//define('DB_USER', 'root');
+define('DB_USER', $databaseUsername);
 
 /** MySQL database password */
-define( 'DB_PASSWORD', '' );
-//define('DB_PASSWORD', $databasePassword);
+//define('DB_PASSWORD', '');
+define('DB_PASSWORD', $databasePassword);
 
 /** MySQL hostname */
-define('DB_HOST', "localhost");
+//define('DB_HOST', "localhost");
+define('DB_HOST', $databaseServer);
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8mb4');
