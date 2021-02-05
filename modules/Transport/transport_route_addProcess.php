@@ -13,7 +13,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     // echo '<pre>';
     // print_r($_POST);
     // echo '</pre>';
-    // die();
+     //die();
     $route_name = $_POST['route_name'];
     $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
     $bus_id =  $_POST['bus_id'];
@@ -34,7 +34,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     $lat = '';
     $lng = '';
 //    print_r($stop_name); die();
-
+if($start_time =="00:00"){
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit();
+}
+if($end_time =="00:00"){
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit();
+}
+//die();
     $cdt = date('Y-m-d H:i:s');
     
     if ($route_name == ''  or $start_point == '' or $pupilsightSchoolYearID == '' or $bus_id == '' or $type == '' or $start_time == '' or $end_time == ''  or $end_point == '' or $stop_name =='' or $stop_no =='' or $drop_time =='' or $pickup_time == '' ) {

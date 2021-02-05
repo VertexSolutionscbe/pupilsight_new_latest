@@ -27,7 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
     $driver_mobile = $_POST['driver_mobile'];
     $coordinator_name = $_POST['coordinator_name'];
     $coordinator_mobile = $_POST['coordinator_mobile'];
-    if (is_numeric($capacity) || is_numeric($driver_mobile) || is_numeric($coordinator_mobile)) {
+    if (is_numeric($capacity) ){
+        if (is_numeric($driver_mobile) ){
+            if (is_numeric($coordinator_mobile) ){
 
         $regdt = explode('/', $_POST['register_date']);
         $register_date = date('Y-m-d', strtotime(implode('-', array_reverse($regdt))));
@@ -128,6 +130,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
                 $URL .= "&return=success0";
                 header("Location: {$URL}");
             }
+        }
+    }else{
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+            }
+        }else{
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
         }
     }else{
         $URL .= '&return=error1';
