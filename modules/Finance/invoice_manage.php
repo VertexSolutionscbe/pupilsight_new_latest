@@ -301,14 +301,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     $table->addColumn('inv_amount', __('Invoice Fee Amount'));
     $table->addColumn('paid', __('Pending'))
         ->format(function ($invoices) {
-            if (!empty($invoices['paid'])) {
-                $pendingAmt = $invoices['inv_amount'] - $invoices['paid'];
+            if($invoices['invstatus'] == 'Fully Paid'){
+                $pendingAmt = '0';
                 return $pendingAmt;
             } else {
-                $dt = $invoices['inv_amount'];
-                return $dt;
+                if (!empty($invoices['paid'])) {
+                    $pendingAmt = $invoices['inv_amount'] - $invoices['paid'];
+                    return $pendingAmt;
+                } else {
+                    $dt = $invoices['inv_amount'];
+                    return $dt;
+                }
+                return $invoices['paid'];
             }
-            return $invoices['paid'];
         });
     $table->addColumn('account_head', __('Ac Head'));
     $table->addColumn('due_date', __('Due Date'))
