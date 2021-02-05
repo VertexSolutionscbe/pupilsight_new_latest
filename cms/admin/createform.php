@@ -6,8 +6,7 @@ $adminlib = new adminlib();
 $data = $adminlib->getPupilSightData();
 
 if ($_POST) {
-  // echo '<pre>';
-  // print_r($_POST);
+  //echo '<pre>'; print_r($_POST);exit;
   // echo '</pre>';
   // die(0);	
   $input = $_POST;
@@ -69,6 +68,8 @@ if ($_POST) {
 
 ?>
 <section>
+
+
   <div id="content">
     <div id="panel-1" class="panel panel-default">
       <div class="panel-heading">
@@ -89,14 +90,19 @@ if ($_POST) {
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Banner Description</label>
-              <input type="text" name="cms_banner_short_description" class="form-control" id="exampleInputPassword1" placeholder="Banner Description" value="<?php echo $data['cms_banner_short_description']; ?>">
+              <input type="text" name="cms_banner_short_description" class="form-control" id="exampleInputPassword1" placeholder="Banner Description" value="<?php echo $data['cms_banner_short_description']; ?>"> 
+              <!-- <textarea name="cms_banner_short_description" class="form-control" placeholder="Banner Description"><?php echo $data['cms_banner_short_description']; ?></textarea> -->
             </div>
             <div class="form-group">
               <label for="exampleInputFile">Banner Image (Width:790 / Height:555)</label>
               <div class="input-group">
                 <div class="custom-file">
-                  <input type="file" class="custom-file-input" name="cms_banner_image">
-                </div>
+                              
+                <div id="b1">
+                 
+                 <input type="file" id="cms_banner_image" class="custom-file-input" name="cms_banner_image">
+                 To Delete Uploaded Banner: <img src="../images/delete-icon.jpg" height="20" width="20" />
+                </div><br>
                 <!--<div class="input-group-append">
                         <span class="input-group-text" id="">Upload</span>
                       </div>-->
@@ -144,16 +150,19 @@ if ($_POST) {
             <div class="form-group">
               <label for="exampleInputFile">Logo (Width:220 / Height:65)</label>
               <div class="input-group">
-                <div class="custom-file">
-                  <input type="file" class="custom-file-input" name="logo_image">
-                </div>
+                <div class="custom-file" id="b2">
+                  <input type="file" class="custom-file-input" id="logo_image" name="logo_image">
+                  To Delete Uploaded Logo: <img src="../images/delete-icon.jpg" height="20" width="20" />
+                </div><br>
                 <!--<div class="input-group-append">
                         <span class="input-group-text" id="">Upload</span>
                       </div>-->
               </div>
             </div>
             <div class="form-check">
+            
               <img src="<?php echo $data['logo_image_path']; ?>" style="width:15%">
+              
             </div>
 
             <!-- /.card-body -->
@@ -193,9 +202,10 @@ if ($_POST) {
             <div class="form-group">
               <label for="exampleInputFile">Comment Image (Width:540 / Height:445)</label>
               <div class="input-group">
-                <div class="custom-file">
-                  <input type="file" class="custom-file-input" name="comment_image">
-                </div>
+                <div class="custom-file" id="b3">
+                  <input type="file" class="custom-file-input" id="comment_image" name="comment_image">
+                  To Delete Uploaded Comment Image: <img src="../images/delete-icon.jpg" height="20" width="20" />
+                </div><br>
                 <!--<div class="input-group-append">
                         <span class="input-group-text" id="">Upload</span>
                       </div>-->
@@ -230,6 +240,27 @@ if ($_POST) {
 <?php include("template/footer.php"); ?>
 
 <script>
+
+//To Delete uploaded file
+$(document).ready(function(){
+  $("#b1").click(function(){
+    $("#cms_banner_image").wrap('<form>').closest('form').get(0).reset();
+    $("#cms_banner_image").unwrap();
+  });
+
+  $("#b2").click(function(){
+    $("#logo_image").wrap('<form>').closest('form').get(0).reset();
+    $("#logo_image").unwrap();
+  });
+
+  $("#b3").click(function(){
+    $("#comment_image").wrap('<form>').closest('form').get(0).reset();
+    $("#comment_image").unwrap();
+  });
+  
+  
+  
+});
   $(document).on('change', '.chkCategory', function(e) {
     var name = $(this).attr('data-name');
     // alert(name);

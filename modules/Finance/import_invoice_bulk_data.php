@@ -81,6 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                 $headers[$key] = 'transcation_amount';
             } else if ($hd == 'Student Id') {
                 $headers[$key] = 'pupilsightPersonID';
+            } else if ($hd == 'Discount') {
+                $headers[$key] = 'discount';
             } else if ($hd == 'Amount Paid') {
                 $headers[$key] = 'amount_paying';
             } else if ($hd == 'Payment Mode') {
@@ -125,29 +127,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                 }
                 $i++;
             }
-            /*echo '<pre>';
-            print_r($all_rows);
-            echo '</pre>';
-            die();*/
+            // echo '<pre>';
+            // print_r($all_rows);
+            // echo '</pre>';
+            // die();
             try {
                 foreach ($all_rows as $key => $alrow) {
                     unset($dts_receipt);
                     unset($dts_receipt_feeitem);
                     if (!empty($alrow['amount_paying']) && !empty($alrow['invoice_no'])) {
                         $pupilsightPersonID = $alrow['pupilsightPersonID'];
+                        $discount = $alrow['discount'];
                         if(!empty($pupilsightPersonID)){
                             if ($alrow['amount_paying'] < $alrow['transcation_amount']) {
                                 $invNo = $alrow['invoice_no'];
-                                $sqlcla = 'SELECT SUM(total_amount_collection) AS collected_amt FROM fn_fees_student_collection  WHERE invoice_no = "' . $invNo . '" AND pupilsightPersonID = '.$pupilsightPersonID.' ';
+                                $sqlcla = 'SELECT SUM(total_amount_collection) AS collected_amt, SUM(discount) AS discount_amt FROM fn_fees_student_collection  WHERE invoice_no = "' . $invNo . '" AND pupilsightPersonID = '.$pupilsightPersonID.' ';
                                 $resultcla = $connection2->query($sqlcla);
                                 $collAmtData = $resultcla->fetch();
 
                                 if(!empty($collAmtData)){
                                     $collectedAmt = $collAmtData['collected_amt'];
+                                    $discountAmt = $collAmtData['discount_amt'];
                                     $totalCollection = $collectedAmt + $alrow['amount_paying'];
+                                    $transcation_amount = $alrow['transcation_amount'];
 
                                     //echo $invNo.'--'.$collectedAmt.'--'.$totalCollection;
-                                    if($totalCollection < $alrow['transcation_amount']) {
+                                    if(!empty($discountAmt)){
+                                        $newTransactionAmt = $transcation_amount - $discountAmt;
+                                    } else {
+                                        $newTransactionAmt = $alrow['transcation_amount'];
+                                    }
+
+                                    if($totalCollection < $newTransactionAmt) {
                                         $invoice_status = 'Partial Paid';
                                     } else {
                                         $invoice_status = 'Fully Paid';
@@ -275,11 +286,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                             $transactionId = validate_new_key($tid, $mem);
                             array_push($mem, $transactionId);
 
-                            $data = array('transaction_id' => $transactionId, 'fn_fees_invoice_id' => $invoice_id, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID,  'receipt_number' => $receipt_number,  'payment_mode_id' => $payment_mode_id, 'bank_id' => $bank_id, 'dd_cheque_no' => $alrow['instrument_no'], 'dd_cheque_date' => $instrument_date, 'dd_cheque_amount' => $dd_cheque_amount, 'payment_status' => $payment_status, 'payment_date' => $payment_date, 'fn_fees_head_id' => $fn_fees_head_id, 'fn_fees_receipt_series_id' => $fn_fees_receipt_series_id, 'transcation_amount' => $transcation_amount, 'total_amount_without_fine_discount' => $transcation_amount, 'amount_paying' => $amount_paying, 'remarks' => $remarks, 'status' => '1', 'cdt' => $cdt, 'instrument_no' => $alrow['instrument_no'], 'instrument_date' => $instrument_date, 'invoice_status' => $invoice_status);
+                            $data = array('transaction_id' => $transactionId, 'fn_fees_invoice_id' => $invoice_id, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID,  'receipt_number' => $receipt_number,  'payment_mode_id' => $payment_mode_id, 'bank_id' => $bank_id, 'dd_cheque_no' => $alrow['instrument_no'], 'dd_cheque_date' => $instrument_date, 'dd_cheque_amount' => $dd_cheque_amount, 'payment_status' => $payment_status, 'payment_date' => $payment_date, 'fn_fees_head_id' => $fn_fees_head_id, 'fn_fees_receipt_series_id' => $fn_fees_receipt_series_id, 'transcation_amount' => $transcation_amount, 'total_amount_without_fine_discount' => $transcation_amount, 'amount_paying' => $amount_paying, 'discount' => $discount,  'remarks' => $remarks, 'status' => '1', 'cdt' => $cdt, 'instrument_no' => $alrow['instrument_no'], 'instrument_date' => $instrument_date, 'invoice_status' => $invoice_status);
                             //print_r($data);
                             //die();
 
-                            $sql = 'INSERT INTO fn_fees_collection SET transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, pupilsightPersonID=:pupilsightPersonID, pupilsightSchoolYearID =:pupilsightSchoolYearID,  receipt_number=:receipt_number,  payment_mode_id=:payment_mode_id, bank_id=:bank_id, dd_cheque_no=:dd_cheque_no, dd_cheque_date=:dd_cheque_date, dd_cheque_amount=:dd_cheque_amount, payment_status=:payment_status, payment_date=:payment_date, fn_fees_head_id=:fn_fees_head_id, fn_fees_receipt_series_id=:fn_fees_receipt_series_id, transcation_amount=:transcation_amount, total_amount_without_fine_discount=:total_amount_without_fine_discount, amount_paying=:amount_paying, remarks=:remarks, status=:status,cdt=:cdt,instrument_no=:instrument_no,instrument_date=:instrument_date,invoice_status=:invoice_status';
+                            $sql = 'INSERT INTO fn_fees_collection SET transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, pupilsightPersonID=:pupilsightPersonID, pupilsightSchoolYearID =:pupilsightSchoolYearID,  receipt_number=:receipt_number,  payment_mode_id=:payment_mode_id, bank_id=:bank_id, dd_cheque_no=:dd_cheque_no, dd_cheque_date=:dd_cheque_date, dd_cheque_amount=:dd_cheque_amount, payment_status=:payment_status, payment_date=:payment_date, fn_fees_head_id=:fn_fees_head_id, fn_fees_receipt_series_id=:fn_fees_receipt_series_id, transcation_amount=:transcation_amount, total_amount_without_fine_discount=:total_amount_without_fine_discount, amount_paying=:amount_paying, discount=:discount, remarks=:remarks, status=:status,cdt=:cdt,instrument_no=:instrument_no,instrument_date=:instrument_date,invoice_status=:invoice_status';
                             echo "fn_fees_collection: " . $sql;
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -318,8 +329,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                             // $leftAmt = $chkamount - $paidamount; 
                                             // $balanceAmt = $leftAmt;
 
-                                            $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => $status);
-                                            $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
+                                            $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount,'discount' => $discount, 'status' => $status);
+                                            $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection,discount=:discount, status=:status';
                                             $resulti = $connection2->prepare($sqli);
                                             $resulti->execute($datai);
                                         }
@@ -353,8 +364,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                             $resulti = $connection2->prepare($sqli);
                                             $resulti->execute($datai);
                                         } else {
-                                            $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $itemamount, 'status' => '1');
-                                            $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
+                                            $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $itemamount,'discount' => $discount, 'status' => '1');
+                                            $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, discount=:discount, status=:status';
                                             echo "\n<br>";
                                             print_r($datai);
                                             echo "\n<br>sqli: " . $sqli;

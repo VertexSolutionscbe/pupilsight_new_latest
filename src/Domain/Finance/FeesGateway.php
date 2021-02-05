@@ -809,7 +809,6 @@ print_r($rs);
              //echo $query;
         }
         
-        
         //return $this->runQuery($query, $criteria, true);
         $res = $this->runQuery($query, $criteria, true);
             $data = $res->data;
