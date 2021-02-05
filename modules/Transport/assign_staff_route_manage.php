@@ -137,6 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_staff_rou
 
     $criteria = $TransportGateway->newQueryCriteria()
         ->sortBy(['pupilsightPersonID'])
+        ->pageSize(5000)
         ->fromPOST();
 
     $staff = $TransportGateway->getStaffData($criteria, $search, $pupilsightSchoolYearID);

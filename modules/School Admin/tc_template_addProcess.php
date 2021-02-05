@@ -19,13 +19,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_a
     // die();
     //Proceed!
     $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
-    $pupilsightProgramID = $_POST['pupilsightProgramID'];
-    $classIds = $_POST['classIds'];
-    if(!empty($_POST['classIds'])){
-        $pupilsightYearGroupID = implode(',',$_POST['classIds']);
-    } else {
-        $pupilsightYearGroupID = '';
-    }
+    // $pupilsightProgramID = $_POST['pupilsightProgramID'];
+    // $classIds = $_POST['classIds'];
+    // if(!empty($_POST['classIds'])){
+    //     $pupilsightYearGroupID = implode(',',$_POST['classIds']);
+    // } else {
+    //     $pupilsightYearGroupID = '';
+    // }
     $name = $_POST['name'];
     $type = $_POST['type'];
     
@@ -79,8 +79,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_a
                         // echo "Error: " . $_FILES["file"]["error"];
                     }
     
-                    $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'classIds' => $pupilsightYearGroupID, 'name' => $name, 'type' => $type, 'path' => $fileTarget, 'filename' => $filename);
-                    $sql = "INSERT INTO pupilsightDocTemplate SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, classIds=:classIds, name=:name, type=:type, path=:path, filename=:filename";
+                    // $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'classIds' => $pupilsightYearGroupID, 'name' => $name, 'type' => $type, 'path' => $fileTarget, 'filename' => $filename);
+                    // $sql = "INSERT INTO pupilsightDocTemplate SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, classIds=:classIds, name=:name, type=:type, path=:path, filename=:filename";
+
+                    $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'name' => $name, 'type' => $type, 'path' => $fileTarget, 'filename' => $filename);
+                    $sql = "INSERT INTO pupilsightDocTemplate SET pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, type=:type, path=:path, filename=:filename";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

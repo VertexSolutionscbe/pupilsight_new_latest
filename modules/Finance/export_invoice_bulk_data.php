@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     
         header('Content-Type: text/csv');
         header('Content-Disposition: attachment; filename="InvoiceCollection.csv"');
-        $columndata = 'Sl No,'.implode(',',$hdr).',Discount,Amount Paid,Payment Mode,Payment Received Date,Instrument No,Instrument Date,Bank Name,Remarks,Manual Receipt No';
+        $columndata = 'Sl No,'.implode(',',$hdr).',Discount,Amount Paid,Payment Status,Payment Mode,Payment Received Date,Instrument No,Instrument Date,Bank Name,Remarks,Manual Receipt No';
         $data = array($columndata);
 
         $fp = fopen('php://output', 'wb');

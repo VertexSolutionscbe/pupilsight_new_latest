@@ -572,9 +572,9 @@ if (isset($_POST['type'])) {
                 $special_dis = $result_dis->fetch();
 
                 $sp_item_sql = "SELECT SUM(discount.discount) as sp_discount
-            FROM fn_fee_invoice_item as fee_item
-            LEFT JOIN fn_fee_item_level_discount as discount
-            ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id='" . $d['invoiceid'] . "'";
+                FROM fn_fee_invoice_item as fee_item
+                LEFT JOIN fn_fee_item_level_discount as discount
+                ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id='" . $d['invoiceid'] . "'";
                 $result_sp_item = $connection2->query($sp_item_sql);
                 $sp_item_dis = $result_sp_item->fetch();
                 //unset($invdata[$k]['finalamount']);
@@ -815,7 +815,13 @@ if (isset($_POST['type'])) {
 
                 $invdata[$k]['chkpayment'] = '';
                 $invdata[$k]['pendingamount'] = '';
-                if ($inv['invoice_status'] == 'Fully Paid') {
+
+                $sqlchkInv = 'SELECT count(b.id) as kount FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "' . $invno . '" AND b.invoice_status = "Fully Paid" AND b.transaction_status IN (1,3) ';
+                $resultchkInv = $connection2->query($sqlchkInv);
+                $invChk = $resultchkInv->fetch();
+
+                // if ($inv['invoice_status'] == 'Fully Paid') {
+                if (!empty($invChk) && $invChk['kount'] >= 1) {
                     $invdata[$k]['paidamount'] = $totalamount;
                     $pendingamount = 0;
                     $invdata[$k]['pendingamount'] = $pendingamount;

@@ -52,13 +52,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_a
 
         $form->addHiddenValue('type', 'tc');
 
-        $row = $form->addRow();
-        $row->addLabel('pupilsightProgramID', __('Program'));
-        $row->addSelect('pupilsightProgramID')->setID('getMultiClassByProgCamp')->fromArray($program)->placeholder('Select Program')->required();
+        // $row = $form->addRow();
+        // $row->addLabel('pupilsightProgramID', __('Program'));
+        // $row->addSelect('pupilsightProgramID')->setID('getMultiClassByProgCamp')->fromArray($program)->placeholder('Select Program')->required();
 
-        $row = $form->addRow();
-        $row->addLabel('classIds', __('Class'))->addClass('dte');
-        $row->addSelect('classIds')->setID('showMultiClassByProg')->placeholder('Select Class')->selectMultiple()->required();
+        // $row = $form->addRow();
+        // $row->addLabel('classIds', __('Class'))->addClass('dte');
+        // $row->addSelect('classIds')->setID('showMultiClassByProg')->placeholder('Select Class')->selectMultiple()->required();
 
         
         $row = $form->addRow();
