@@ -16,7 +16,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_amount
 } else {
     //Proceed!
     $id = $_GET['id'];
-    $page->breadcrumbs->add(__('Transport Fee Edit'));
+    $page->breadcrumbs
+        ->add(__('Transport Fee'), 'transport_fee.php')
+        ->add(__('Transport Fee Edit'));
+
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
