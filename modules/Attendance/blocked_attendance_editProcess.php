@@ -13,6 +13,10 @@ include './moduleFunctions.php';
 $pupilsightAttendanceBlockID = $_POST['pupilsightAttendanceBlockID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/blocked_attendance.php";
 
+
+$EDITURL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/blocked_attendance_edit.php&pupilsightAttendanceBlockID='.$pupilsightAttendanceBlockID;
+
+
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_attendance.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
@@ -77,8 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_att
             
                         //Check to see if date is in the future and is a school day.
                         if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart)  ) {
-                            $URL .= '&return=error8';
-                            header("Location: {$URL}");
+                            $EDITURL .= '&return=error8';
+                            header("Location: {$EDITURL}");
                         } else {        //this was previously commented and delete query try block was enabled. if this creates any problem comment this and enable below commented code.
 
                                 try {

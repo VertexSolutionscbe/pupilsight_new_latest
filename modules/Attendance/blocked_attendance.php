@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/blocked_attenda
             $guid,
             $_GET['return'],
             null,
-            array('error8' => __('Your request failed because the start date should be less than or equeal to end date'),)
+            array('error8' => __('Your request failed because the start date should be less than or equal to end date'),)
         );
     }
 
