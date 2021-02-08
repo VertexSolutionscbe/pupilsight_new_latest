@@ -3,6 +3,8 @@
 Pupilsight, Flexible & Open School System
 */
 
+set_time_limit(0);
+
 use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Domain\DataSet;
