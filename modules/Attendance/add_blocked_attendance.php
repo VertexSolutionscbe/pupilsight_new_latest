@@ -57,20 +57,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_att
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/edit.php&id='.$_GET['editID'];
     }
-    if (isset($_GET['return'])) {
+
+// Commented to resolve error8 Issue
+
+    // if (isset($_GET['return'])) {
        
-        if($_REQUEST['return']=='error8')
-                {
-                    echo "<div class='alert alert-danger'>";
-                    echo __('Invalid Date Input !');
-                    echo '</div>';
-                }
-                else
-                {
-                    returnProcess($guid, $_GET['return'], $editLink, null);
-                }
+    //     if($_REQUEST['return']=='error8')
+    //             {
+    //                 echo "<div class='alert alert-danger'>";
+    //                 echo __('Invalid Date Input !');
+    //                 echo '</div>';
+    //             }
+    //             else
+    //             {
+    //                 returnProcess($guid, $_GET['return'], $editLink, null);
+    //             }
                
-    }
+    // }
+
+    
     
     $Type = array(
         ''    => __('select Type'),
@@ -98,11 +103,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_att
         }
     $form->addHiddenValue('ayear', $ayear);    
 
- //selectMultiple()
-   
+    
+    
+    if (isset($_GET['return'])) {
+
+        returnProcess(
+            $guid,
+            $_GET['return'],
+            null,
+            array('error8' => __('Your request failed because the start date should be less than or equal to end date'),)
+        );
+    }
+
+
+ //selectMultiple()   
     echo '<h2>';
     echo __('Blocked Attedance');
     echo '</h2>';
+   
+    
+
+
     $row = $form->addRow();
     
         $col = $row->addColumn()->setClass('newdes');

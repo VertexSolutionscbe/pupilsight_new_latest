@@ -148,7 +148,9 @@ if ($_POST) {
               <input type="text" name="logo_title" class="form-control" placeholder="Logo Title" value="<?php echo $data['logo_title']; ?>">
             </div>
             <div class="form-group">
-              <label for="exampleInputFile">Logo (Width:220 / Height:65)</label>
+              <!-- <label for="exampleInputFile">Logo (Width:220 / Height:65)</label> -->
+
+               <label for="exampleInputFile">Logo (Width:160 / Height:50)</label>
               <div class="input-group">
                 <div class="custom-file" id="b2">
                   <input type="file" class="custom-file-input" id="logo_image" name="logo_image">
