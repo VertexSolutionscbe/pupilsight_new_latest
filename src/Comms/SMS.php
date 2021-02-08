@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Pupilsight\Comms;
 
 use function Gears\String\length;
+
+use Exception;
 use Pupilsight\Comms\Drivers\MailDriver;
 use Pupilsight\Comms\Drivers\OneWaySMSDriver;
 use Pupilsight\Comms\Drivers\UnknownDriver;
@@ -125,7 +127,7 @@ class SMS implements SMSInterface
      *
      * @return string
      */
-    public function getDriver() : string
+    public function getDriver(): string
     {
         return $this->client->getDriver();
     }
@@ -135,7 +137,7 @@ class SMS implements SMSInterface
      *
      * @return float
      */
-    public function getCreditBalance() : float
+    public function getCreditBalance(): float
     {
         return method_exists($this->driver, 'getCreditBalance')
             ? $this->driver->getCreditBalance()
@@ -174,7 +176,7 @@ class SMS implements SMSInterface
     public function content(string $content)
     {
         $this->content = stripslashes(strip_tags($content));
-        $this->totalchars=length($this->content);
+        $this->totalchars = length($this->content);
         return $this;
     }
 
@@ -186,9 +188,9 @@ class SMS implements SMSInterface
      * @return array Array of successful recipients.
      */
 
-    public function send(array $recipients = []) : array
+    public function send(array $recipients = []): array
     {
-        $this->noofrecipents=sizeof($recipients);
+        $this->noofrecipents = sizeof($recipients);
         $sent = [];
         $recipients += array_merge($this->to, $recipients);
 
@@ -199,8 +201,8 @@ class SMS implements SMSInterface
             }, array_chunk($recipients, $this->batchSize));
         }
 
-        $i=0;
-        $strto="";
+        $i = 0;
+        $strto = "";
         foreach ($recipients as $recipient) {
             $message = [
                 'to'      => $recipient,
@@ -209,16 +211,16 @@ class SMS implements SMSInterface
             ];
             //print_r($message);
             //die();
-            if(!empty($strto)){
-                $strto .=",";
+            if (!empty($strto)) {
+                $strto .= ",";
             }
             $strto .= $recipient;
-            if($i>50){
+            if ($i > 50) {
                 $this->sendSMS($strto, $this->content);
-                $i=0;
+                $i = 0;
                 $strto = "";
             }
-            
+
             /*
             if ($this->client->send($message)) {
                 $sent[] = $recipient;
@@ -226,22 +228,24 @@ class SMS implements SMSInterface
             $i++;
         }
 
-        if(!empty($strto)){
+        if (!empty($strto)) {
             $this->sendSMS($strto, $this->content);
         }
         return $sent;
     }
 
-    public function sendSMS($numbers, $msg){
-        try{
+    public function _sendSMS($numbers, $msg)
+    {
+        //echo "calling smms";
+        try {
             $sql = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsGateway'";
             $db = new DBQuery();
             $rs = $db->selectRaw($sql, TRUE);
             if (empty($rs)) {
                 $dsempty = array();
                 return $db->convertDataset($dsempty);
-            }else {
-                $activeGateway= $rs[0]['value'];
+            } else {
+                $activeGateway = $rs[0]['value'];
             }
 
             $getsenderid = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsSenderID'";
@@ -250,8 +254,8 @@ class SMS implements SMSInterface
             if (empty($rs2)) {
                 $dsempty = array();
                 return $db2->convertDataset($dsempty);
-            }else {
-                $senderid= $rs2[0]['value'];
+            } else {
+                $senderid = $rs2[0]['value'];
             }
 
             $sql1 = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND description='$activeGateway'";
@@ -260,47 +264,48 @@ class SMS implements SMSInterface
             if (empty($rs1)) {
                 $dsempty1 = array();
                 //return $db1->convertDataset($dsempty1);
-            }else {
-                $val= $rs1[0]['value'];
+            } else {
+                $val = $rs1[0]['value'];
             }
 
-            $charcount=$this->totalchars;
-            $cal=ceil($charcount/160);
-            $totalmsges=$cal*$this->noofrecipents;
-            $val=$val+$totalmsges;
-//die();
+            $charcount = $this->totalchars;
+            $cal = ceil($charcount / 160);
+            $totalmsges = $cal * $this->noofrecipents;
+            $val = $val + $totalmsges;
+            //die();
+            //echo "activeGateway" . $activeGateway;
             switch ($activeGateway) {
                 case 'Karix':
-                    $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=".$senderid;
-                    $url1 .="&text=".urlencode($msg);
-                    $url1 .="&dest=".$numbers;
+                    $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=" . $senderid;
+                    $url1 .= "&text=" . urlencode($msg);
+                    $url1 .= "&dest=" . $numbers;
                     $res = file_get_contents($url1);
-                    $res1=explode('&',$res);
-                    $res2=explode('=',$res1[1]);
-                    $res3=$res2[1];
+                    $res1 = explode('&', $res);
+                    $res2 = explode('=', $res1[1]);
+                    $res3 = $res2[1];
                     //print_r($res);//die();
-                    $res4=explode('&',$res1[0]);
-                    $res5=explode('=',$res4[0]);
-                    //print_r($res5[1]);die();
-                    if($res3==200)
-                    {
+                    $res4 = explode('&', $res1[0]);
+                    $res5 = explode('=', $res4[0]);
+                    //print_r($res5[1]);
+                    //die();
+                    if ($res3 == 200) {
                         //echo "success";
-                        $sq = "UPDATE pupilsightSetting SET value=". $val ." WHERE scope='Messenger' AND description='Karix' ";
+                        $sq = "UPDATE pupilsightSetting SET value=" . $val . " WHERE scope='Messenger' AND description='Karix' ";
                         $db2 = new DBQuery();
                         //echo "\n".$sq;
                         $db2->query($sq);
-                        $p= explode(',', $numbers);
+                        $p = explode(',', $numbers);
 
-foreach ($p as $numb){
-    //echo $numb;
-    $savedata="INSERT INTO pupilsightMessengerReceiptData (contactDetail,requestId) VALUES (".$numb.", ".$res5[1].")";
-    $db4 = new DBQuery();
-    //echo "\n".$savedata;
-    $db4->query($savedata);
-}
-//die();
+                        foreach ($p as $numb) {
+                            //echo $numb;
+                            $savedata = "INSERT INTO pupilsightMessengerReceiptData (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
+                            $db4 = new DBQuery();
+                            //echo "\n".$savedata;
+                            $db4->query($savedata);
+                        }
+                        //die();
 
-                    }else{
+                    } else {
                         echo "error";
                     }
 
@@ -308,37 +313,216 @@ foreach ($p as $numb){
 
                 case 'Gupshup':
                     $url = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
-                    $url .="&send_to=".$numbers;
+                    $url .= "&send_to=" . $numbers;
                     //$url .="&msg=".rawurlencode($msg);
-                    $url .="&msg=".urlencode($msg);
-                    $url .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
+                    $url .= "&msg=" . urlencode($msg);
+                    $url .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                     //echo $url;
                     //$this->getAsyncCurl($url);
                     $res = file_get_contents($url);
-                    $res1=explode('|',$res);
-                    $res2=trim($res1[0]);
-                    $res3='success';
+                    $res1 = explode('|', $res);
+                    $res2 = trim($res1[0]);
+                    $res3 = 'success';
                     //print_r(strcmp($res2,$res3));die();
-                    if(strcmp($res2, $res3) === 0)
-                    {
+                    if (strcmp($res2, $res3) === 0) {
                         //echo "success"; die();
-                        $sq = "UPDATE pupilsightSetting SET value=". $val ." WHERE scope='Messenger' AND description='Gupshup' ";
+                        $sq = "UPDATE pupilsightSetting SET value=" . $val . " WHERE scope='Messenger' AND description='Gupshup' ";
                         $db2 = new DBQuery();
                         //echo "\n".$sq;
                         $db2->query($sq);
                         //die();
-                    }else{
+                    } else {
                         echo "error";
                     }
                     break;
 
-                default :
+                default:
                     echo "sms not configured";
             }
-
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             print_r($ex);
+        }
+    }
 
+    public function sendSMS($numbers, $msg)
+    {
+        try {
+            $sql = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsGateway'";
+            $db = new DBQuery();
+            $rs = $db->selectRaw($sql, TRUE);
+            if (empty($rs)) {
+                $dsempty = array();
+                return $db->convertDataset($dsempty);
+            } else {
+                $activeGateway = $rs[0]['value'];
+            }
+
+            $getsenderid = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsSenderID'";
+            $db2 = new DBQuery();
+            $rs2 = $db2->selectRaw($getsenderid, TRUE);
+            if (empty($rs2)) {
+                $dsempty = array();
+                return $db2->convertDataset($dsempty);
+            } else {
+                $senderid = $rs2[0]['value'];
+            }
+
+            $sql1 = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND description='$activeGateway'";
+            $db1 = new DBQuery();
+            $rs1 = $db1->selectRaw($sql1, TRUE);
+            if (empty($rs1)) {
+                $dsempty1 = array();
+            } else {
+                $val = $rs1[0]['value'];
+            }
+
+            $charcount = $this->totalchars;
+            $cal = ceil($charcount / 160);
+            $totalmsges = $cal * $this->noofrecipents;
+            $smsCount = $val + $totalmsges;
+
+            switch ($activeGateway) {
+                case 'Karix':
+                    $flag = $this->karix($senderid, $smsCount, $numbers, $msg);
+                    if ($flag == FALSE) {
+                        echo "error";
+                    }
+                    break;
+
+                case 'Gupshup':
+                    $flag = $this->gupshup($senderid, $smsCount, $numbers, $msg);
+                    if ($flag == FALSE) {
+                        echo "error";
+                    }
+                    break;
+                default:
+                    echo "sms not configured";
+            }
+        } catch (Exception $ex) {
+            print_r($ex);
+        }
+    }
+
+    public function sendSMSPro($numbers, $msg)
+    {
+        $flag = TRUE;
+        try {
+            $sql = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsGateway'";
+            $db = new DBQuery();
+            $rs = $db->selectRaw($sql, TRUE);
+            if (empty($rs)) {
+                $dsempty = array();
+                return $db->convertDataset($dsempty);
+            } else {
+                $activeGateway = $rs[0]['value'];
+            }
+
+            $getsenderid = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsSenderID'";
+            $db2 = new DBQuery();
+            $rs2 = $db2->selectRaw($getsenderid, TRUE);
+            if (empty($rs2)) {
+                $dsempty = array();
+                return $db2->convertDataset($dsempty);
+            } else {
+                $senderid = $rs2[0]['value'];
+            }
+
+            $sql1 = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND description='$activeGateway'";
+            $db1 = new DBQuery();
+            $rs1 = $db1->selectRaw($sql1, TRUE);
+            if (empty($rs1)) {
+                $dsempty1 = array();
+                //return $db1->convertDataset($dsempty1);
+            } else {
+                $val = $rs1[0]['value'];
+            }
+
+            $charcount = $this->totalchars;
+            $cal = ceil($charcount / 160);
+            $totalmsges = $cal * $this->noofrecipents;
+
+            $smsCount = $val + $totalmsges;
+
+            switch ($activeGateway) {
+                case 'Karix':
+                    $flag = $this->karix($senderid, $smsCount, $numbers, $msg);
+                    break;
+                case 'Gupshup':
+                    $flag = $this->gupshup($senderid, $smsCount, $numbers, $msg);
+                    break;
+                default:
+                    echo "sms not configured";
+            }
+        } catch (Exception $ex) {
+            print_r($ex);
+            $flag = FALSE;
+        }
+        return $flag;
+    }
+
+    public function karix($senderid, $smsCount, $numbers, $msg)
+    {
+        $flag = TRUE;
+        try {
+            $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=" . $senderid;
+            $url1 .= "&text=" . urlencode($msg);
+            $url1 .= "&dest=" . $numbers;
+            $res = file_get_contents($url1);
+            $res1 = explode('&', $res);
+            $res2 = explode('=', $res1[1]);
+            $res3 = $res2[1];
+            //print_r($res);//die();
+            $res4 = explode('&', $res1[0]);
+            $res5 = explode('=', $res4[0]);
+            if ($res3 == 200) {
+                $this->updateSmsCount($smsCount, "Karix");
+                $p = explode(',', $numbers);
+                foreach ($p as $numb) {
+                    //echo $numb;
+                    $savedata = "INSERT INTO pupilsightMessengerReceiptData (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
+                    $db4 = new DBQuery();
+                    $db4->query($savedata);
+                }
+            }
+        } catch (Exception $ex) {
+            print_r($ex);
+            $flag = FALSE;
+        }
+        return $flag;
+    }
+
+
+    public function gupshup($senderid, $smsCount, $numbers, $msg)
+    {
+        $flag = TRUE;
+        try {
+            $url = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
+            $url .= "&send_to=" . $numbers;
+            //$url .="&msg=".rawurlencode($msg);
+            $url .= "&msg=" . urlencode($msg);
+            $url .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
+            $res = file_get_contents($url);
+            $res1 = explode('|', $res);
+            $res2 = trim($res1[0]);
+            $res3 = 'success';
+            if (strcmp($res2, $res3) === 0) {
+                $this->updateSmsCount($smsCount, "Gupshup");
+            }
+        } catch (Exception $ex) {
+            print_r($ex);
+            $flag = FALSE;
+        }
+        return $flag;
+    }
+
+    public function updateSmsCount($count, $description)
+    {
+        try {
+            $sq = "UPDATE pupilsightSetting SET value=" . $count . " WHERE scope='Messenger' AND description='" . $description . "' ";
+            $db2 = new DBQuery();
+            $db2->query($sq);
+        } catch (Exception $ex) {
+            print_r($ex);
         }
     }
 }
