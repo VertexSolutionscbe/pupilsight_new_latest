@@ -54,11 +54,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
             // $tax = $_POST['tax'];
             // $oneway_price = $_POST['oneway_price'];
             // $twoway_price = $_POST['twoway_price'];
+//print_r($noofstops);
+//print_r($pickup_time);
+$p=array();
+            $p = array_keys($pickup_time);
+
+            foreach ($p as $pp) {
+
+                    if ($pickup_time[$pp] < '24:00' AND $pickup_time[$pp] > '00:00' AND $drop_time[$pp] > '00:00' AND $drop_time[$pp] < '24:00') {
+
+                    } else {
+                        $URL .= '&return=error1';
+                        header("Location: {$URL}");
+                        exit(0);
+                    }
+
+            }
+            //print_r($_POST);die();
             $lat = '';
             $lng = '';
-        
+
             $udt = date('Y-m-d H:i:s');
-            
+
 
             if ($route_name == ''  or $start_point == '' or $type == '' or $bus_id == '' or $start_time == '' or $end_time == ''  or $end_point == '' or $stop_name =='' or $stop_no =='' or $drop_time =='' or $pickup_time == '' ) {
                 $URL .= '&return=error3';

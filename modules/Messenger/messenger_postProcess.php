@@ -89,6 +89,7 @@ else {
 		}
 		$category=$_POST["category"] ;
 		$body=stripslashes($_POST["body"]) ;
+		$body1=stripslashes($_POST["body1"]) ;
 		$emailReceipt = $_POST["emailReceipt"] ;
 		$emailbcc = $_POST["emailbcc"] ;
 		$copysms = $_POST["copysms"] ;
@@ -96,8 +97,8 @@ else {
 		if (isset($_POST["emailReceiptText"]))
 			$emailReceiptText = $_POST["emailReceiptText"] ;
 
-	//	print_r($_POST);die();
-		if ( $body == "" OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "") OR($_POST["role"]=='N' AND $_POST["roleCategory"]=='N' AND $_POST["yearGroup"]=='N' AND $_POST["rollGroup"]=='N' AND $_POST["activity"]=='N' AND $_POST["applicants"]=='N' AND $_POST["houses"]=='N' AND $_POST["transport"]=='N' AND $_POST["attendance"]=='N' AND $_POST["group"]=='N' AND $_POST["individuals"]=='N'  AND $_POST["individualList"]=='') OR ($email=="N" AND $messageWall=="N" AND $sms=="N")) {
+		//print_r($_POST);die();
+		if ( ($body == "" AND $body1 == "") OR ($email == "Y" AND $from == "") OR $emailReceipt == '' OR ($emailReceipt == "Y" AND $emailReceiptText == "") OR($_POST["role"]=='N' AND $_POST["roleCategory"]=='N' AND $_POST["yearGroup"]=='N' AND $_POST["rollGroup"]=='N' AND $_POST["activity"]=='N' AND $_POST["applicants"]=='N' AND $_POST["houses"]=='N' AND $_POST["transport"]=='N' AND $_POST["attendance"]=='N' AND $_POST["group"]=='N' AND $_POST["individuals"]=='N'  AND $_POST["individualList"]=='') OR ($email=="N" AND $messageWall=="N" AND $sms=="N")) {
 			//Fail 3
 			$URL.="&addReturn=fail3" ;
 			header("Location: {$URL}");
@@ -2122,7 +2123,7 @@ else {
                     $sms = $container->get(SMS::class);
 
                     $result = $sms
-                        ->content($body)
+                        ->content($body1)
                         ->send($recipients);
 
                     $smsCount = count($recipients);
