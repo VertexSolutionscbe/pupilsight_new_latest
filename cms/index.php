@@ -484,8 +484,11 @@ if (isset($_SESSION["loginstatus"])) {
             <div class="container">
                 <div class="header-wrapper">
                     <div class="width-logo sm-logo">
+                    <?php if($data['logo_image']!=''){ ?>
+                       
                         <img class="mobile-logo" src="<?php echo 'images/logo/' . $data['logo_image']; ?>" alt="" />
                         <img src="<?php echo 'images/logo/' . $data['logo_image']; ?>" alt="" width="160" height="50" />
+                        <?php } ?>
                         <!-- <img src="<?php echo 'images/logo/' . $data['logo_image']; ?>" alt="" width="221" height="64" /> -->
                     </div>
                     <nav class="width-navigation main-navigation">
@@ -893,17 +896,28 @@ if (isset($_SESSION["loginstatus"])) {
                                                     </rs-layer>
                                                     <!--
 							-->
-                                                    <rs-layer id="slider-2-slide-2-layer-2" data-type="image" data-rsp_ch="on" data-xy="x:r;xo:-75px;y:m;yo:-50px,-30px,0,0;" data-text="l:22;a:inherit;" data-dim="w:791px,598px,791px,791px;h:555px,420px,555px,555px;" data-vbility="t,t,f,f" data-frame_0="y:100%;tp:600;" data-frame_0_mask="u:t;y:100%;" data-frame_1="tp:600;e:Power2.easeInOut;st:500;sp:1500;sR:500;" data-frame_1_mask="u:t;" data-frame_999="st:w;sp:1000;auto:true;" data-frame_999_mask="u:t;" style="z-index:8;"><img src="<?php echo 'images/banner/' . $data['cms_banner_image']; ?>" width="791" height="555" data-no-retina>
+                                                    <rs-layer id="slider-2-slide-2-layer-2" data-type="image" data-rsp_ch="on" data-xy="x:r;xo:-75px;y:m;yo:-50px,-30px,0,0;" data-text="l:22;a:inherit;" data-dim="w:791px,598px,791px,791px;h:555px,420px,555px,555px;" data-vbility="t,t,f,f" data-frame_0="y:100%;tp:600;" data-frame_0_mask="u:t;y:100%;" data-frame_1="tp:600;e:Power2.easeInOut;st:500;sp:1500;sR:500;" data-frame_1_mask="u:t;" data-frame_999="st:w;sp:1000;auto:true;" data-frame_999_mask="u:t;" style="z-index:8;">
+                                                    
+                                                        <?php if($data['cms_banner_image']!='') {?>
+                                                        <img src="<?php echo 'images/banner/' . $data['cms_banner_image']; ?>" width="791" height="555" data-no-retina>
+                                                        <?php } ?>
                                                     </rs-layer>
                                                     <!--
 							-->
+                                                    
                                                     <rs-layer id="slider-2-slide-2-layer-6" data-type="text" data-rsp_ch="on" data-xy="x:l,l,c,c;y:m;yo:-45px,-55px,0,0;" data-text="s:18,18,18,14;l:30;fw:200,200,200,400;a:inherit,inherit,center,center;" data-frame_0="y:100%;tp:600;" data-frame_0_mask="u:t;y:100%;" data-frame_1="tp:600;st:900;sp:1500;sR:900;" data-frame_1_mask="u:t;" data-frame_999="st:w;sp:1000;auto:true;" data-frame_999_mask="u:t;" style="z-index:9;font-family:Poppins;">
-                                                       <?php echo $data['cms_banner_short_description']; ?>
+                                                            
+                                                    
+                                                        <?php echo $data['cms_banner_short_description']; ?>
+                                                    
+                                                            
+            
                                                     </rs-layer>
                                                     <!--
 							--><a href="#courses">
                                                         <rs-layer id="slider-2-slide-2-layer-7" class="rev-btn" data-type="button" data-color="rgba(255,255,255,1)" data-xy="x:l,l,c,c;y:m;yo:60px,40px,100px,100px;" data-text="s:16,16,16,14;l:48,48,48,40;ls:0px,0,0,0;a:inherit;" data-rsp_bd="off" data-padding="r:42,42,42,35;l:42,42,42,35;" data-border="bos:solid;boc:#ffffff;bow:1px,1px,1px,1px;bor:30px,30px,30px,30px;" data-frame_0="x:100%;o:1;tp:600;" data-frame_0_mask="u:t;" data-frame_1="tp:600;st:900;sp:1500;sR:900;" data-frame_1_mask="u:t;" data-frame_999="st:w;sp:1000;auto:true;" data-frame_999_mask="u:t;" data-frame_hover="bgc:#f8c76c;boc:#f8c76c;bor:30px,30px,30px,30px;bos:solid;bow:1px,1px,1px,1px;oX:50;oY:50;sp:0;" style="z-index:10;background-color:rgba(0,0,0,0);font-family:Poppins;cursor:pointer;outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;">
-                                                            VIEW OUR COURSES
+                                                            VIEW OUR COURSES <br>
+                                                            
                                                         </rs-layer>
                                                     </a>
                                                     <!--
@@ -1798,7 +1812,10 @@ if (isset($_SESSION["loginstatus"])) {
                                         <div class="wpb_wrapper">
                                             <div class="wpb_single_image wpb_content_element vc_align_left   max-width-163">
                                                 <figure class="wpb_wrapper vc_figure">
-                                                    <div class="vc_single_image-wrapper   vc_box_border_grey"><img width="160" height="50" src="<?php echo 'images/logo/' . $data['logo_image']; ?>" class="vc_single_image-img attachment-full" alt="" srcset="" sizes="(max-width: 336px) 100vw, 336px" />
+                                                    <div class="vc_single_image-wrapper   vc_box_border_grey">
+                                                    <?php if($data['logo_image']!=''){ ?>
+                                                        <img width="160" height="50" src="<?php echo 'images/logo/' . $data['logo_image']; ?>" class="vc_single_image-img attachment-full" alt="" srcset="" sizes="(max-width: 336px) 100vw, 336px" />
+                                                    <?php } ?>
                                                     </div>
                                                 </figure>
                                             </div>
