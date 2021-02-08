@@ -33,7 +33,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     // $twoway_price = $_POST['twoway_price'];
     $lat = '';
     $lng = '';
-//    print_r($stop_name); die();
+    //print_r($_POST);
+
+    for($i=1;$i<=$noofstops;$i++){
+if($pickup_time[$i]<'24:00' AND $pickup_time[$i]>'00:00' AND $drop_time[$i]>'00:00' AND $drop_time[$i]<'24:00'){
+
+}else{
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+}
+
+    }
+    //print_r($stop_name); die();
 if($start_time =="00:00"){
     $URL .= '&return=error1';
     header("Location: {$URL}");
