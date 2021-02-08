@@ -121,6 +121,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_att
                 echo '<h2>';
                 echo __('Blocked Attedance');
                 echo '</h2>';
+
+
+                    
+                if (isset($_GET['return'])) {
+
+                    returnProcess(
+                        $guid,
+                        $_GET['return'],
+                        null,
+                        array('error8' => __('Your request failed because the start date should be less than or equal to end date'),)
+                    );
+                }
+
+
                 $row = $form->addRow();
                 
                     $col = $row->addColumn()->setClass('newdes');

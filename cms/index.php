@@ -485,7 +485,8 @@ if (isset($_SESSION["loginstatus"])) {
                 <div class="header-wrapper">
                     <div class="width-logo sm-logo">
                         <img class="mobile-logo" src="<?php echo 'images/logo/' . $data['logo_image']; ?>" alt="" />
-                        <img src="<?php echo 'images/logo/' . $data['logo_image']; ?>" alt="" width="221" height="64" />
+                        <img src="<?php echo 'images/logo/' . $data['logo_image']; ?>" alt="" width="160" height="50" />
+                        <!-- <img src="<?php echo 'images/logo/' . $data['logo_image']; ?>" alt="" width="221" height="64" /> -->
                     </div>
                     <nav class="width-navigation main-navigation">
                         <ul id="primaryMenu">
@@ -724,7 +725,7 @@ if (isset($_SESSION["loginstatus"])) {
                                                                 </h3>
                                                                 <div class="form-row">
                                                                     <div class="wrap-form">
-                                                                        <div class="form-desc">We will need...</div>
+                                                                        <div class="form-desc">We will need...ssss</div>
                                                                         <form action="../login.php?" method="post" autocomplete="off" enctype="multipart/form-data" id="loginForm" onsubmit="pupilsightFormSubmitted(this)">
                                                                             <p class="login-username">
                                                                                 <label for="bp_login_name">Username or
@@ -770,7 +771,7 @@ if (isset($_SESSION["loginstatus"])) {
                                                                     <span class="current-title">Reset Password</span>
                                                                 </h3>
                                                                 <div class="form-row">
-                                                                    <form name="lostpasswordform" id="lostpasswordform" action="index.html" method="post">
+                                                                    <form name="lostpasswordform" id="lostpasswordform" action="#" method="post">
                                                                         <p class="description">Please enter your
                                                                             username or email address. You will receive
                                                                             a link to create a new password via email.
@@ -1514,33 +1515,32 @@ if (isset($_SESSION["loginstatus"])) {
                             <div class="vc_column-inner">
                                 <div class="wpb_wrapper">
                                     <div class="vc_row-full-width vc_clearfix" style="padding:20px;"></div>
+                                  
                                     
-                                    <div class="Phone"><h6>Contact Number:</h6><?php echo $data['phone'];?></div>
+                                    <div style="width: 100%; overflow: hidden;">
+                                        <div style="width: 600px; float: left;">
+                                            <div><h6>Contact Number:</h6><?php echo $data['phone'];?></div>
+                                   
+                                            <br>
+                                            <h6>Email:</h6>
+                                            <diV><?php echo $data['primary_email'];?></div>    
+                                            <div><?php echo $data['secondary_email'];?></div>
 
-                                    <br><br>
+                                        </div>
+                                        <div style="margin-left: 620px;"> 
 
-                                    
-                                    <div class="Email"><h6>Email:</h6>
-                                        <diV><?php echo $data['primary_email'];?></div>    
-                                        <div><?php echo $data['secondary_email'];?></div>
-                                    </div><br>
+                                            
+                                            <div><h6>Fax:</h6><?php echo $data['fax'];?></div>
 
-
-                                    <div class="Fax"><h6>Fax:</h6>
-                                        <diV><?php echo $data['fax'];?></div>    
+                                            <br>
+                                            <div class="Address"><h6>Address:</h6></div>
+                                            <diV><?php echo $data['address'];?></div>    
                                         
-                                    </div><br>
-
+                                 
                                     
-                                    <div class="Address"><h6>Address:</h6>
-                                        <diV><?php echo $data['address'];?></div>    
-                                        
-                                    </div><br>
-                                    
-                                    
-                                    
-                                    <br><br>
-                                    
+                                        </div>
+                                    </div>
+                                    <br>
                                     <!--google map element-->
                                     <!-- <div class="mapouter">
                                         <div class="gmap_canvas">
@@ -1798,7 +1798,7 @@ if (isset($_SESSION["loginstatus"])) {
                                         <div class="wpb_wrapper">
                                             <div class="wpb_single_image wpb_content_element vc_align_left   max-width-163">
                                                 <figure class="wpb_wrapper vc_figure">
-                                                    <div class="vc_single_image-wrapper   vc_box_border_grey"><img width="336" height="276" src="<?php echo 'images/logo/' . $data['logo_image']; ?>" class="vc_single_image-img attachment-full" alt="" srcset="" sizes="(max-width: 336px) 100vw, 336px" />
+                                                    <div class="vc_single_image-wrapper   vc_box_border_grey"><img width="160" height="50" src="<?php echo 'images/logo/' . $data['logo_image']; ?>" class="vc_single_image-img attachment-full" alt="" srcset="" sizes="(max-width: 336px) 100vw, 336px" />
                                                     </div>
                                                 </figure>
                                             </div>
