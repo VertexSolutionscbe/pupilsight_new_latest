@@ -1212,12 +1212,12 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fees_collection')
             ->cols([
-                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id','pupilsightPerson.admission_no', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason','a.officialName as stfName','fn_fees_cancel_collection.cdt'
+                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id','pupilsightPerson.admission_no', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_cancel_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason','a.officialName as stfName','fn_fees_cancel_collection.cdt'
             ])
             ->leftJoin('pupilsightPerson', 'fn_fees_collection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
             ->leftJoin('pupilsightStudentEnrolment', 'fn_fees_collection.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
-            ->leftJoin('fn_fees_student_collection', 'fn_fees_collection.transaction_id=fn_fees_student_collection.transaction_id')
-            ->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
+            ->leftJoin('fn_fees_student_cancel_collection', 'fn_fees_collection.transaction_id=fn_fees_student_cancel_collection.transaction_id')
+            ->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_cancel_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
             ->leftJoin('fn_masters', 'fn_fees_collection.payment_mode_id=fn_masters.id')
             ->leftJoin('fn_masters as bnk', 'fn_fees_collection.bank_id=bnk.id')
             ->leftJoin('fn_fees_cancel_collection', 'fn_fees_collection.id=fn_fees_cancel_collection.fn_fees_collection_id')
@@ -1266,11 +1266,11 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fees_collection')
             ->cols([
-                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id','pupilsightPerson.admission_no', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason','a.officialName as stfName','fn_fees_cancel_collection.cdt'
+                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id','pupilsightPerson.admission_no', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_cancel_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason','a.officialName as stfName','fn_fees_cancel_collection.cdt'
             ])
             ->leftJoin('pupilsightPerson', 'fn_fees_collection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
-            ->leftJoin('fn_fees_student_collection', 'fn_fees_collection.transaction_id=fn_fees_student_collection.transaction_id')
-            ->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
+            ->leftJoin('fn_fees_student_cancel_collection', 'fn_fees_collection.transaction_id=fn_fees_student_cancel_collection.transaction_id')
+            ->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_cancel_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
             ->leftJoin('fn_masters', 'fn_fees_collection.payment_mode_id=fn_masters.id')
             ->leftJoin('fn_masters as bnk', 'fn_fees_collection.bank_id=bnk.id')
             ->leftJoin('fn_fees_cancel_collection', 'fn_fees_collection.id=fn_fees_cancel_collection.fn_fees_collection_id')
@@ -1294,12 +1294,12 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fees_collection')
             ->cols([
-                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason'
+                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_cancel_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason'
             ])
             ->leftJoin('pupilsightPerson', 'fn_fees_collection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
             ->leftJoin('pupilsightStudentEnrolment', 'fn_fees_collection.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
-            ->leftJoin('fn_fees_student_collection', 'fn_fees_collection.transaction_id=fn_fees_student_collection.transaction_id')
-            ->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
+            ->leftJoin('fn_fees_student_cancel_collection', 'fn_fees_collection.transaction_id=fn_fees_student_cancel_collection.transaction_id')
+            ->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_cancel_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
             ->leftJoin('fn_masters', 'fn_fees_collection.payment_mode_id=fn_masters.id')
             ->leftJoin('fn_masters as bnk', 'fn_fees_collection.bank_id=bnk.id')
             ->leftJoin('fn_fees_cancel_collection', 'fn_fees_collection.id=fn_fees_cancel_collection.fn_fees_collection_id');
@@ -1347,11 +1347,11 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fees_collection')
             ->cols([
-                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason'
+                'fn_fees_collection.*','pupilsightPerson.officialName as student_name','pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id','GROUP_CONCAT(DISTINCT fn_fees_student_cancel_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname','fn_fees_cancel_collection.remarks AS cancelreason'
             ])
             ->leftJoin('pupilsightPerson', 'fn_fees_collection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
-            ->leftJoin('fn_fees_student_collection', 'fn_fees_collection.transaction_id=fn_fees_student_collection.transaction_id')
-            ->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
+            ->leftJoin('fn_fees_student_cancel_collection', 'fn_fees_collection.transaction_id=fn_fees_student_cancel_collection.transaction_id')
+            ->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_cancel_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
             ->leftJoin('fn_masters', 'fn_fees_collection.payment_mode_id=fn_masters.id')
             ->leftJoin('fn_masters as bnk', 'fn_fees_collection.bank_id=bnk.id')
             ->leftJoin('fn_fees_cancel_collection', 'fn_fees_collection.id=fn_fees_cancel_collection.fn_fees_collection_id')
