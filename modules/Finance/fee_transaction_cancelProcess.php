@@ -30,15 +30,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
                     unset($dts_receipt_feeitem);
                     unset($dts_receipt);
 
+                    
                     $data = array('remarks' => $remarks, 'fn_fees_collection_id' => $ts, 'canceled_by' => $cuid, 'cdt' => $cdt);
                     $sql = 'INSERT INTO fn_fees_cancel_collection SET remarks=:remarks, fn_fees_collection_id=:fn_fees_collection_id, canceled_by=:canceled_by, cdt=:cdt';
                     $result = $connection2->prepare($sql);
-                    $result->execute($data);
+                    //$result->execute($data);
 
                     $datau = array('transaction_status' => '2', 'id' => $ts);
                     $sqlu = 'UPDATE fn_fees_collection SET transaction_status=:transaction_status WHERE id=:id';
                     $resultu = $connection2->prepare($sqlu);
-                    $resultu->execute($datau);
+                    //$resultu->execute($datau);
 
                     $collectionId = $ts;
                     
@@ -49,6 +50,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
                     // print_r($valuestu);
                     // echo '</pre>';
                     // die();
+                    
+                    $sqlinv = "SELECT * FROM fn_fees_student_collection WHERE transaction_id = ".$valuestu['transaction_id']." ";
+                    $resultinv = $connection2->query($sqlinv);
+                    $valueinvData = $resultinv->fetchAll();
+
+                    // echo '<pre>';
+                    // print_r($valueinvData);
+                    // echo '</pre>';
+                    // die();
+
                     
                     $sqlpt = "SELECT name FROM fn_masters WHERE id = ".$valuestu['payment_mode_id']." ";
                     $resultpt = $connection2->query($sqlpt);
@@ -117,6 +128,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
                     // print_r($dts_receipt_feeitem);
                     // echo '</pre>';
                     // die();
+
+                    if(!empty($valueinvData)){
+                        foreach($valueinvData as $valueinv){
+                            $dataui = array('invoice_status' => 'Not Paid', 'invoice_no' => $valueinv['invoice_no']);
+                            $sqlui = 'UPDATE fn_fee_invoice_student_assign SET invoice_status=:invoice_status WHERE invoice_no=:invoice_no';
+                            $resultui = $connection2->prepare($sqlui);
+                            $resultui->execute($dataui);
+
+                            $datai = array('pupilsightPersonID' => $valueinv['pupilsightPersonID'], 'transaction_id' => $valueinv['transaction_id'],  'fn_fees_invoice_id' => $valueinv['fn_fees_invoice_id'], 'fn_fee_invoice_item_id' => $valueinv['fn_fee_invoice_item_id'], 'invoice_no' => $valueinv['invoice_no'], 'total_amount' => $valueinv['total_amount'], 'discount' => $valueinv['discount'], 'total_amount_collection' => $valueinv['total_amount_collection'], 'status' => $valueinv['status']);
+                            $sqli = 'INSERT INTO fn_fees_student_cancel_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, discount=:discount,  total_amount_collection=:total_amount_collection, status=:status';
+                            $resulti = $connection2->prepare($sqli);
+                            $resulti->execute($datai);
+
+                            $data = array('id' => $valueinv['id']);
+                            $sql = 'DELETE FROM fn_fees_student_collection WHERE id=:id';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        }
+                    }
                    
             
                     if(!empty($dts_receipt) && !empty($dts_receipt_feeitem)){ 
