@@ -16,8 +16,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_amount
 } else {
     //Proceed!
     $id = $_GET['id'];
+    $backid = $_GET['backid'];
     $page->breadcrumbs
-        ->add(__('Transport Fee'), 'transport_fee.php')
+        ->add(__('Transport Fee'), 'transport_amount_manage.php&id='.$backid)
         ->add(__('Transport Fee Edit'));
 
 

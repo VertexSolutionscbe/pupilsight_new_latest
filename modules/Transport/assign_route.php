@@ -17,7 +17,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_route.php
 } else {
     //Proceed!
     $HelperGateway = $container->get(HelperGateway::class);
-    $page->breadcrumbs->add(__('Assign route'));
+    $page->breadcrumbs->add(__('Assign route to Students'));
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -142,6 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_route.php
     $TransportGateway = $container->get(TransportGateway::class);
     $criteria = $TransportGateway->newQueryCriteria()
         //->sortBy(['id'])
+        ->pageSize(5000)
         ->fromPOST();
        
    $students = $TransportGateway->getStudentData($criteria, $pupilsightProgramID, $pupilsightSchoolYearIDpost, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
