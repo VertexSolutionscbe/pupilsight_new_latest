@@ -42,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
     });
 
     $table->addMetaData('filterOptions', [
-        'active:Y' => __('Active').': '.__('Yes'),
-        'active:N' => __('Active').': '.__('No'),
+        'active:Y' => __('Active') . ': ' . __('Yes'),
+        'active:N' => __('Active') . ': ' . __('No'),
     ]);
 
     // COLUMNS
@@ -60,10 +60,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
         ->addParam('search', $criteria->getSearchText(true))
         ->format(function ($person, $actions) use ($guid) {
             $actions->addAction('edit', __('Edit'))
-                    ->setURL('/modules/Staff/jobOpenings_manage_edit.php');
+                ->setURL('/modules/Staff/jobOpenings_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/Staff/jobOpenings_manage_delete.php');
+                ->setURL('/modules/Staff/jobOpenings_manage_delete.php');
         });
 
     echo $table->render($jobs);

@@ -5,9 +5,10 @@ echo '<style>.right.mb-1 {
 }
 
 .mbtm3, select {
-    margin-bottom: 13px !important;
+    margin-bottom: 6px !important;
     height: 26px !important;
     width: 100%;
+    font-size: 10px;
 }</style>';
 /*
 Pupilsight, Flexible & Open School System

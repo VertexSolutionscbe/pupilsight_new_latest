@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $pupilsightGroupID = (isset($_GET['pupilsightGroupID']))? $_GET['pupilsightGroupID'] : null;
+    $pupilsightGroupID = (isset($_GET['pupilsightGroupID'])) ? $_GET['pupilsightGroupID'] : null;
 
     //Check if school year specified
     if ($pupilsightGroupID == '') {
@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         echo '</div>';
     } else {
         $groupGateway = $container->get(GroupGateway::class);
-        
+
         $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
         if ($highestAction == 'Manage Groups_all') {
             $result = $groupGateway->selectGroupByID($pupilsightGroupID);
@@ -52,33 +52,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             $HelperGateway = $container->get(HelperGateway::class);
 
             $pupilsightPersonID_logged =   $_SESSION[$guid]['pupilsightPersonID'];
-            $pupilsightRoleIDPrimary =$_SESSION[$guid]['pupilsightRoleIDPrimary'];
+            $pupilsightRoleIDPrimary = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
             $program = array();
             $program2 = array();
             $program1 = array('' => 'Select Program');
-            if( $pupilsightRoleIDPrimary !='001')//for staff login
+            if ($pupilsightRoleIDPrimary != '001') //for staff login
             {
-                $staff_person_id=$pupilsightPersonID_logged;
+                $staff_person_id = $pupilsightPersonID_logged;
                 $sql1 = "SELECT p.pupilsightProgramID,p.name AS program,a.pupilsightYearGroupID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN assignstaff_toclasssection b ON(a.pupilsightMappingID =b.pupilsightMappingID) LEFT JOIN pupilsightProgram AS p
-    ON(p.pupilsightProgramID =a.pupilsightProgramID) WHERE b.pupilsightPersonID=".$staff_person_id."  GROUP By a.pupilsightYearGroupID ";//except Admin //0000002962
+    ON(p.pupilsightProgramID =a.pupilsightProgramID) WHERE b.pupilsightPersonID=" . $staff_person_id . "  GROUP By a.pupilsightYearGroupID "; //except Admin //0000002962
                 $result1 = $connection2->query($sql1);
                 $row1 = $result1->fetchAll();
-                $progrm_id="Staff_program";
-                $class_id="Staff_class";
-                $section_id= "Staff_section";
+                $progrm_id = "Staff_program";
+                $class_id = "Staff_class";
+                $section_id = "Staff_section";
                 foreach ($row1 as $dt) {
                     $program2[$dt['pupilsightProgramID']] = $dt['program'];
                 }
                 $program = $program1 + $program2;
-                $disable_cls= 'dsble_attr';
-            }
-            else
-            {
-                $staff_person_id= Null;
-                $disable_cls= '';
-                $progrm_id="pupilsightProgramID";
-                $class_id="pupilsightYearGroupID";
-                $section_id= "pupilsightRollGroupID";
+                $disable_cls = 'dsble_attr';
+            } else {
+                $staff_person_id = Null;
+                $disable_cls = '';
+                $progrm_id = "pupilsightProgramID";
+                $class_id = "pupilsightYearGroupID";
+                $section_id = "pupilsightRollGroupID";
                 //  $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
                 $sqlp = 'SELECT p.pupilsightProgramID, p.name FROM pupilsightProgram AS p RIGHT JOIN attn_settings AS a ON(p.pupilsightProgramID =a.pupilsightProgramID) ';
                 $resultp = $connection2->query($sqlp);
@@ -90,16 +88,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 $program = $program1 + $program2;
             }
 
-            $check_role='SELECT role.name FROM pupilsightPerson as p LEFT JOIN pupilsightRole as role ON p.pupilsightRoleIDAll = role.pupilsightRoleID 
-    WHERE p.pupilsightPersonID ="'.$_SESSION[$guid]['pupilsightPersonID'].'" AND role.name="Administrator"';
-            $check_role= $connection2->query($check_role);
+            $check_role = 'SELECT role.name FROM pupilsightPerson as p LEFT JOIN pupilsightRole as role ON p.pupilsightRoleIDAll = role.pupilsightRoleID 
+    WHERE p.pupilsightPersonID ="' . $_SESSION[$guid]['pupilsightPersonID'] . '" AND role.name="Administrator"';
+            $check_role = $connection2->query($check_role);
             $role = $check_role->fetch();
             $sqlq = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
             $resultval = $connection2->query($sqlq);
             $rowdata = $resultval->fetchAll();
-            $academic=array();
+            $academic = array();
             $ayear = '';
-            if(!empty($rowdata)){
+            if (!empty($rowdata)) {
                 $ayear = $rowdata[0]['name'];
                 foreach ($rowdata as $dt) {
                     $academic[$dt['pupilsightSchoolYearID']] = $dt['name'];
@@ -107,12 +105,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             }
 
 
-            $searchby = array(''=>'Search By', 'stu_name'=>'Student Name', 'stu_id'=>'Student Id', 'adm_id'=>'Admission Id', 'father_name'=>'Father Name', 'father_email'=>'Father Email', 'mother_name'=>'Mother Name', 'mother_email'=>'Mother Email');
+            $searchby = array('' => 'Search By', 'stu_name' => 'Student Name', 'stu_id' => 'Student Id', 'adm_id' => 'Admission Id', 'father_name' => 'Father Name', 'father_email' => 'Father Email', 'mother_name' => 'Mother Name', 'mother_email' => 'Mother Email');
             // echo '<pre>';
             // print_r($_POST);
             // echo '</pre>';
             //die();
-            if($_GET){
+            if ($_GET) {
 
                 $pupilsightProgramID =  $_GET['pupilsightProgramID'];
                 $pupilsightSchoolYearIDpost = $_GET['pupilsightSchoolYearID'];
@@ -140,10 +138,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             $results = $connection2->query($sqls);
             $rowdatastd = $results->fetchAll();
             $student = array();
-            $student1 = array(''=>'Select Student');
+            $student1 = array('' => 'Select Student');
             $student2 = array();
 
-            if(!empty($rowdatastd)){
+            if (!empty($rowdatastd)) {
 
                 foreach ($rowdatastd as $st) {
                     $student2[$st['pupilsightPersonID']] = $st['officialName'];
@@ -169,14 +167,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('groups', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/groups_manage_editProcess.php?pupilsightGroupID=$pupilsightGroupID");
+            $form = Form::create('groups', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . "/groups_manage_editProcess.php?pupilsightGroupID=$pupilsightGroupID");
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-			
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
             $row = $form->addRow();
-                $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->required();
+            $row->addLabel('name', __('Name'));
+            $row->addTextField('name')->required();
 
             $row = $form->addRow();
             $row->addLabel('members', __('Students Members'));
@@ -202,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 ->setId('allmembers')
                 ->selectMultiple();
 
-//extra filter
+            //extra filter
             $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes noEdit');
             $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
@@ -215,18 +213,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightYearGroupID', __('Class'));
-            $col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->fromArray($classes)->selected($pupilsightYearGroupID)->addClass("load_configSession");
-            $col->addTextField('pupilsightPersonID')->setId('staff_id')->addClass('nodisply')->setValue($staff_person_id);
+            $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
+            $col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->fromArray($classes)->selected($pupilsightYearGroupID)->addClass("pupilsightRollGroupIDP1")->selectMultiple();
+            //$col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->fromArray($classes)->selected($pupilsightYearGroupID)->addClass("load_configSession");
+            //$col->addTextField('pupilsightPersonID')->setId('staff_id')->addClass('nodisply')->setValue($staff_person_id);
 
-            $col = $row->addColumn()->setClass('newdes');
+            /*$col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightRollGroupID', __('Section'));
-            $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->setId($section_id)->selected($pupilsightRollGroupID)->placeholder()->addClass('pupilsightRollGroupIDP');
+            $col->addSelect('pupilsightRollGroupID')->fromArray($sections)->setId($section_id)->selected($pupilsightRollGroupID)->placeholder()->addClass('pupilsightRollGroupIDP');*/
 
             // $row->addSelectStudent('pupilsightPersonID', $_SESSION[$guid]['pupilsightSchoolYearID'])->required()->selected($pupilsightPersonID)->placeholder();
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('pupilsightPersonID', __('Students'));
+            $col->addLabel('pupilsightPersonID', __('Students'))->addClass('dte');
             $col->addSelect('pupilsightPersonID')->fromArray($student)->selected($pupilsightPersonID)->selectMultiple();
 
             /*$row = $form->addRow();
@@ -236,12 +235,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
 
 
-			$row = $form->addRow();
-                $row->addFooter();
-                $row->addSubmit();
-                
+            $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
             $form->loadAllValuesFrom($values);
-				
+
             echo $form->getOutput();
 
             echo '<h2>';
@@ -259,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
             $table = DataTable::createPaginated('groupsManage', $criteria);
 
-            $table->addCheckboxColumn('ppid',__(''))
+            $table->addCheckboxColumn('ppid', __(''))
                 ->setClass('chkbox')
                 ->context('Select');
 
@@ -274,30 +273,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 ->addParam('ppid')
                 ->format(function ($person, $actions) {
                     $actions->addAction('delete', __('Delete'))
-                            ->setURL('/modules/Messenger/groups_manage_edit_delete.php');
+                        ->setURL('/modules/Messenger/groups_manage_edit_delete.php');
                 });
 
             echo $table->render($members);
         }
     }
 }
-$massdeleteurl=$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/groups_manage_edit_massdelete.php&pupilsightGroupID=".$pupilsightGroupID;
+$massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_SESSION[$guid]['module'] . "/groups_manage_edit_massdelete.php&pupilsightGroupID=" . $pupilsightGroupID;
 
 ?>
 
 <script type="text/javascript">
-
-    $(document).on('change','#pupilsightProgramID',function(){
+    $(document).on('change', '#pupilsightProgramID', function() {
         var val = $(this).val();
         var type = "attendanceConfigCls";
-        if(val != ""){
+        if (val != "") {
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
-                data: { val: val,type:type },
+                data: {
+                    val: val,
+                    type: type
+                },
                 async: true,
-                success: function(response)
-                {
+                success: function(response) {
                     $("#pupilsightYearGroupIDA").html();
                     $("#pupilsightYearGroupIDA").html(response);
 
@@ -313,7 +313,11 @@ $massdeleteurl=$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSIO
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
-            data: { val: id, type: type, pid: pid },
+            data: {
+                val: id,
+                type: type,
+                pid: pid
+            },
             async: true,
             success: function(response) {
                 $("#pupilsightRollGroupID").html();
@@ -331,7 +335,13 @@ $massdeleteurl=$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSIO
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
-            data: { val: id, type: type, yid: yid, pid: pid, cid: cid },
+            data: {
+                val: id,
+                type: type,
+                yid: yid,
+                pid: pid,
+                cid: cid
+            },
             async: true,
             success: function(response) {
                 $("#pupilsightPersonID").html();
@@ -340,14 +350,42 @@ $massdeleteurl=$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSIO
         });
     });
 
-    $(document).on('change','.load_configSession',function(){
+    $(document).on('change', '.pupilsightRollGroupIDP1', function() {
+        var id = $("#pupilsightRollGroupID").val();
+        var yid = $('#pupilsightSchoolYearID').val();
+        var pid = $('#pupilsightProgramID').val();
+        var cid = $('#pupilsightYearGroupIDA').val();
+        var type = 'getStudentClassAndSection';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: {
+                val: id,
+                type: type,
+                yid: yid,
+                pid: pid,
+                cid: cid
+            },
+            async: true,
+            success: function(response) {
+                $("#pupilsightPersonID").html();
+                $("#pupilsightPersonID").append(response);
+            }
+        });
+    });
+
+    $(document).on('change', '.load_configSession', function() {
         var id = $('#pupilsightProgramID').val();
         var pupilsightYearGroupID = $('#pupilsightYearGroupIDA').val();
         var type = 'getsessionConfigured';
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
-            data: { val: id,pupilsightYearGroupID:pupilsightYearGroupID, type: type },
+            data: {
+                val: id,
+                pupilsightYearGroupID: pupilsightYearGroupID,
+                type: type
+            },
             async: true,
             success: function(response) {
                 $("#session").html();
@@ -357,48 +395,55 @@ $massdeleteurl=$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSIO
     });
 </script>
 <script type='text/javascript'>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#members').select2();
     });
 </script>
 <script type='text/javascript'>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#staffmembers').select2();
     });
 </script>
 <script type='text/javascript'>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#parentmembers').select2();
     });
 </script>
 <script type='text/javascript'>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#allmembers').select2();
     });
 </script>
 <script type='text/javascript'>
-    $(document).ready(function () {
+    $(document).ready(function() {
         $('#pupilsightPersonID').select2();
     });
 </script>
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('#pupilsightYearGroupIDA').select2();
+    });
+</script>
 <script type="text/javascript">
-    $("#massdeleteall").on("click", function () {
+    $("#massdeleteall").on("click", function() {
         var favorite = [];
-        $.each($("input[name='ppid[]']:checked"), function(){
+        $.each($("input[name='ppid[]']:checked"), function() {
             favorite.push($(this).val());
         });
         //alert("My favourite sports are: " + favorite.join(", "));
-        if(favorite.length>0) {
+        if (favorite.length > 0) {
             $.ajax({
                 type: "GET",
-                data: {tid: favorite},
+                data: {
+                    tid: favorite
+                },
                 url: '<?php echo $massdeleteurl; ?>',
-                success: function (msg) {
+                success: function(msg) {
                     alert(msg);
                     location.reload();
                 }
             });
-        }else{
+        } else {
             alert('Please select users');
         }
     });

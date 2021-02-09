@@ -276,7 +276,7 @@ class TransportGateway extends QueryableGateway
                 $query->where('pupilsightPerson.officialName LIKE "%'.$search.'%" ');
             } 
             $query->where('pupilsightPerson.pupilsightRoleIDAll IN ('.$pupilsightRoleIDAll.') ')
-                ->where('trans_route_assign.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
+                //->where('trans_route_assign.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
                 ->groupBy(['pupilsightPerson.pupilsightPersonID'])
                 ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
           // echo $query;
@@ -659,7 +659,7 @@ class TransportGateway extends QueryableGateway
         ->where('trans_route_price.schedule_id = :schedule_id')            
         ->bindValue('schedule_id', $schedule_id);
         return $this->runQuery($query, $criteria, TRUE);
-    }    
+    }
     
     
     public function getchildData(QueryCriteria $criteria , $inputdata)

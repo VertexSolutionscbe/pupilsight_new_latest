@@ -14,7 +14,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Transport'), 'transport_route.php')
+        ->add(__('Transport'), 'routes.php')
         ->add(__('Add Route'));
 
     $editLink = '';
@@ -89,10 +89,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('start_point', __('Start Point'));
             $col->addTextField('start_point')->addClass('txtfield')->required();
-            
+
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('start_time', __('Start Time'));
-            $col->addTextField('start_time')->addClass('txtfield')->setId('timefield')->maxLength(5)->required();
+            $col->addLabel('start_time', __('Start Time'))->addClass('dte');
+            $col->addTime('start_time')->addClass('txtfield')->setId('timefield')->maxLength(8)->required()->placeholder('24 hours format');
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('end_point', __('End Point'));
@@ -101,25 +101,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
            
          
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('end_time', __('End Time'));
-            $col->addTextField('end_time')->addClass('txtfield')->required();
+            $col->addLabel('end_time', __('End Time'))->addClass('dte');
+            $col->addTime('end_time')->addClass('txtfield')->maxLength(8)->required()->placeholder('24 hours format');
 
 
             $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes nobrdbtm');
                 $col->addLabel('fixed_fine_type', __('Stops'));
                 $col->addTextField('')->setClass('hiddencol');
-            
+
             $col = $row->addColumn()->setClass('hiddencol nobrdbtm');
                 $col->addLabel('', __(''));
-                $col->addTextField('');     
+                $col->addTextField('');
             
             $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
-                 $col->addButton(__('Add'))->setID('addTransportStops')->addData('cid', '1')->addData('disid', 'nodata')->addClass('');
+                 $col->addButton(__('Add'))->setID('addTransportStops')->addData('cid', '1')->addData('disid', 'nodata')->addClass('btn btn-primary');
     
            
     
-        $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv fixedfine');
+        $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv fixedfine mt-3');
             
             $col = $row->addColumn()->setClass('newdes nobrdbtm');
             $col->addLabel('stop_no', __('Stop Number'))->addClass('dte');
@@ -131,12 +131,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     
             $col = $row->addColumn()->setClass('newdes nobrdbtm');
             $col->addLabel('pickup_time', __('Pick Up Time'))->addClass('dte');
-            $col->addTextField('pickup_time[1]')->addClass('txtfield')->required();   
+            $col->addTime('pickup_time[1]')->addClass('txtfield')->maxLength(8)->required();
 
             $col = $row->addColumn()->setClass('newdes nobrdbtm');
             $col->addLabel('drop_time', __('Drop Time'))->addClass('dte');
-            $col->addTextField('drop_time[1]')->addClass('txtfield kountseat szewdt')->required();
-            $col->addLabel('', __(''))->addClass('dte');   
+            $col->addTime('drop_time[1]')->addClass('txtfield kountseat')->maxLength(8)->required();
+            $col->addLabel('', __(''))->addClass('dte');
             
             // $col = $row->addColumn()->setClass('newdes nobrdbtm');
             // $col->addLabel('oneway_price', __('One way Price'))->addClass('dte');
@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
             // $col->addLabel('', __(''))->addClass('dte'); 
            
             
-        $row = $form->addRow()->setID('route_stops');
+        $row = $form->addRow()->setID('route_stops')->addClass('mt-3');
             $row->addFooter();
             $row->addSubmit();
     

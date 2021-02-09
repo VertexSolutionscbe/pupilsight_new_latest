@@ -22,7 +22,7 @@ class StaffApplicationFormGateway extends QueryableGateway
     private static $tableName = 'pupilsightStaffApplicationForm';
 
     private static $searchableColumns = ['pupilsightStaffApplicationFormID', 'pupilsightStaffApplicationForm.preferredName', 'pupilsightStaffApplicationForm.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightStaffJobOpening.jobTitle'];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet

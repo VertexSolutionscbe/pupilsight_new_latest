@@ -79,16 +79,14 @@ abstract class QueryableGateway extends Gateway
     protected function runQuery(SelectInterface $query, QueryCriteria $criteria, $serial = FALSE)
     {
 
-
         $query = $this->applyCriteria($query, $criteria);
         $result = $this->db()->select($query->getStatement(), $query->getBindValues());
-        
+
         $foundRows = $this->db()->selectOne("SELECT FOUND_ROWS()");
         $totalRows = $this->countAll();
         $dt = $result->toDataSet();
 
-
-        if ($totalRows > 0 && $serial) {
+        if ($serial) {
             $len = count($dt->data);
             $i = 0;
             $cnt = 1;

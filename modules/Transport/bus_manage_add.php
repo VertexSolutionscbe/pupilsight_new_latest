@@ -28,7 +28,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
     echo '<h2>';
     echo __('Add Bus Details');
     echo '</h2>';
-
+    //echo "<div style='height:50px;'><div class='float-right mb-2'>";
+    //echo "&nbsp;<a href='index.php?q=/modules/Transport/bus_manage_add_upload.php' class='btn btn-primary'><i class='mdi mdi-cloud-upload-outline mdi-24px mdi-24px'> Import </i></a></div><div class='float-none'></div></div>";
     
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
@@ -68,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
             $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes');
                 $col->addLabel('capacity', __('Capacity'));
-                $col->addTextField('capacity')->addClass('txtfield numfield')->required();
+                $col->addTextField('capacity')->addClass('numfield')->required();
     
             $col = $row->addColumn()->setClass('newdes');
                
@@ -93,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
         
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('driver_mobile', __('Driver Mobile'));
-                    $col->addTextField('driver_mobile')->addClass('txtfield   numfield')->required();   
+                    $col->addTextField('driver_mobile')->addClass('numfield')->maxLength(12)->required();
         
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('coordinator_name', __('Transport Coordinator Name'));
@@ -101,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
         
                $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('coordinator_mobile', __('Transport Coordinator Mobile'));
-                    $col->addTextField('coordinator_mobile')->addClass('txtfield   numfield')->required();         
+                    $col->addTextField('coordinator_mobile')->addClass('numfield')->maxLength(12)->required();
             
                  
                   
@@ -129,4 +130,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
 
     echo $form->getOutput();
 
+    $form = Form::create('importbusdetails', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/bus_manage_addimportProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    //`trans_bus_details`(`id`, `vehicle_number`, `name`, `model`, `vtype`, `capacity`, `register_date`, `insurance_exp`, `fc_expiry`, `driver_name`, `driver_mobile`, `coordinator_name`, `coordinator_mobile`, `photo`, `cdt`, `udt`)
+
+
+    $row = $form->addRow();
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('file', __('Select CSV File'));
+    $col->addFileUpload('file')->accepts('.csv')->setMaxUpload(false);
+
+    $row = $form->addRow();
+    $row->addFooter();
+    $row->addSubmit();
+    echo $form->getOutput();
 }

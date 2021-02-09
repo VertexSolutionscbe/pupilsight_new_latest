@@ -15,7 +15,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage.php')
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Fee Structure'));
+    $page->breadcrumbs->add(__('Manage Bus Details'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -138,10 +138,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage.php')
 
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Transport/bus_manage_edit.php');
-        if(empty($yearGroups['chkkount'])){
+        //if(empty($yearGroups['chkkount'])){
             $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Transport/bus_manage_delete.php');
-        }    
+        //}
                   /*  $actions->addAction('view', __('View Details'))
                     ->setURL('/modules/Transport/bus_view_details.php');       
                     */

@@ -1273,6 +1273,9 @@ if ($type == 'getSectionTimeTableWise') {
     }
 }
 
+/*
+Get Student list
+*/
 
 if ($type == 'getStudent') {
     $cid = $val;
@@ -1286,6 +1289,30 @@ if ($type == 'getStudent') {
     if (!empty($sections)) {
         foreach ($sections as $k => $cl) {
             $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'] . '</option>';
+        }
+    }
+    echo $data;
+}
+
+/*
+Get Student list along with class & section
+*/
+
+if ($type == 'getStudentClassAndSection') {
+    $cid = $val;
+    $pupilsightSchoolYearID = $_POST['yid'];
+    $pupilsightProgramID = $_POST['pid'];
+    $pupilsightYearGroupIDs = $_POST['cid'];
+    $data = '<option value="">Select Student</option>';
+    foreach ($pupilsightYearGroupIDs as $pupilsightYearGroupID) {
+        $sql = 'SELECT a.*, b.officialName,c.pupilsightRollGroupID as rollid, c.name as rollname, d.name as classname, d.pupilsightYearGroupID as yeargroup FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID JOIN pupilsightRollGroup as c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID JOIN pupilsightYearGroup as d ON a.pupilsightYearGroupID = d.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '"  AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+        $result = $connection2->query($sql);
+        $sections = $result->fetchAll();
+
+        if (!empty($sections)) {
+            foreach ($sections as $k => $cl) {
+                $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'] . ' - ' . $cl['classname'] . ' - ' . $cl['rollname'] . '</option>';
+            }
         }
     }
     echo $data;
@@ -2832,7 +2859,7 @@ if ($type == 'getStudentSketchData') {
         foreach ($studentData as $k => $st) {
             $data .= '<tr>
                         <td >' . $st['officialName'] . '</td>
-                        <td >' . $st['attribute_name'] . '</td>
+                        <td  style="width:100px !important;">' . $st['attribute_name'] . '</td>
                         <td >${' . $st['attribute_name'] . '}</td>
                         <td ><span class="noEditTd">' . $st['attribute_value'] . '</span>
                         <span style="display:none;" class="editTd"><input type="textbox" class="form-control updateSketchData" data-id="' . $st['id'] . '" value="' . $st['attribute_value'] . '"></span>

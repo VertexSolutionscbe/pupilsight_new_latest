@@ -1,9 +1,8 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight/config.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/config.php';
 
 $conn = new mysqli($databaseServer, $databaseUsername, $databasePassword, $databaseName);
-
 // Check connection
 if ($conn->connect_errno) {
   echo "Failed to connect to MySQL: " . $mysqli->connect_error;

@@ -22,41 +22,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
     $page->scripts->add('chart');
 
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
-    $date = isset($_REQUEST['dateStart'])? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['dateStart']) :new DateTimeImmutable();
+    $date = isset($_REQUEST['dateStart']) ? DateTimeImmutable::createFromFormat($dateFormat, $_REQUEST['dateStart']) : new DateTimeImmutable();
 
     $staffAbsenceGateway = $container->get(StaffAbsenceGateway::class);
     $staffAbsenceDateGateway = $container->get(StaffAbsenceDateGateway::class);
     $staffAbsenceTypeGateway = $container->get(StaffAbsenceTypeGateway::class);
 
     // DATE SELECTOR
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/report_absences_weekly.php');
-	$form->setClass('blank fullWidth');
-	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Staff/report_absences_weekly.php');
+    $form->setClass('blank fullWidth');
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-	$row = $form->addRow()->addClass('flex flex-wrap');
+    $row = $form->addRow()->addClass('flex flex-wrap');
 
-	$link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/report_absences_weekly.php';
-	$lastWeek = $date->modify('-1 week')->format($dateFormat);
-	$thisWeek = (new DateTime('Today'))->format($dateFormat);
-	$nextWeek = $date->modify('+1 week')->format($dateFormat);
+    $link = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Staff/report_absences_weekly.php';
+    $lastWeek = $date->modify('-1 week')->format($dateFormat);
+    $thisWeek = (new DateTime('Today'))->format($dateFormat);
+    $nextWeek = $date->modify('+1 week')->format($dateFormat);
 
-	$col = $row->addColumn()->addClass('flex items-center ');
-		$col->addButton(__('Last Week'))->addClass('')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
-		$col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&dateStart={$thisWeek}'");
-		$col->addButton(__('Next Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
+    $col = $row->addColumn()->addClass('flex items-center ');
+    $col->addButton(__('Last Week'))->addClass('')->onClick("window.location.href='{$link}&dateStart={$lastWeek}'");
+    $col->addButton(__('This Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&dateStart={$thisWeek}'");
+    $col->addButton(__('Next Week'))->addClass('ml-px')->onClick("window.location.href='{$link}&dateStart={$nextWeek}'");
 
-	$col = $row->addColumn()->addClass('flex items-center justify-end');
-		$col->addDate('dateStart')->setValue($date->format($dateFormat))->setClass('shortWidth');
-		$col->addSubmit(__('Go'));
+    $col = $row->addColumn()->addClass('flex items-center justify-end');
+    $col->addDate('dateStart')->setValue($date->format($dateFormat))->setClass('shortWidth');
+    $col->addSubmit(__('Go'));
 
     echo $form->getOutput();
 
     // SETUP DAYS OF WEEK
     $sql = "SELECT name, nameShort FROM pupilsightDaysOfWeek WHERE schoolDay='Y' ORDER BY sequenceNumber";
     $result = $pdo->select($sql)->fetchAll();
-    
-    $weekdays = array_map(function ($weekday) use ($date){
-        $weekday['date'] = $date->modify($weekday['name'].' this week');
+
+    $weekdays = array_map(function ($weekday) use ($date) {
+        $weekday['date'] = $date->modify($weekday['name'] . ' this week');
         return $weekday;
     }, $result);
 
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
             ]],
         ],
     ];
-    
+
     // QUERY
     $criteria = $staffAbsenceGateway->newQueryCriteria()
         ->sortBy('date')
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
 
     $barGraph->addDataset('absent', __('Absent'))->setData($chartData);
 
-    echo '<div style="overflow: visible;">'.$barGraph->render().'</div>';
+    echo '<div style="overflow: visible;">' . $barGraph->render() . '</div>';
 
     if (empty($listData)) {
         echo Format::alert(__('There are no absences for this time period.'), 'message');
@@ -130,17 +130,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
         }
 
         if (!isSchoolOpen($guid, $date->format('Y-m-d'), $connection2)) {
-            echo '<h2>'.__(Format::dateReadable($date->format('Y-m-d'), '%A')).'</h2>';
+            echo '<h2>' . __(Format::dateReadable($date->format('Y-m-d'), '%A')) . '</h2>';
             echo Format::alert(__('School is closed on the specified day.'));
             continue;
         }
 
-        $table = DataTable::create('staffAbsences'.$date->format('D'));
+        $table = DataTable::create('staffAbsences' . $date->format('D'));
         $table->setTitle(__(Format::dateReadable($date->format('Y-m-d'), '%A')));
         $table->setDescription(Format::dateReadable($date->format('Y-m-d')));
 
         $canView = isActionAccessible($guid, $connection2, '/modules/Staff/absences_view_byPerson.php', 'View Absences_any');
-        
+
         // COLUMNS
         $table->addColumn('fullName', __('Name'))
             ->width('30%')
@@ -149,11 +149,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_absences_week
                 $output = Format::name($absence['title'], $absence['preferredName'], $absence['surname'], 'Staff', false, true);
 
                 if ($canView) {
-                    $output = Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_view_byPerson.php&pupilsightPersonID='.$absence['pupilsightPersonID'], $output);
+                    $output = Format::link($_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Staff/absences_view_byPerson.php&pupilsightPersonID=' . $absence['pupilsightPersonID'], $output);
                 }
-                
+
                 if ($absence['allDay'] != 'Y') {
-                    $output .= '<br/>'.Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']));
+                    $output .= '<br/>' . Format::small(Format::timeRange($absence['timeStart'], $absence['timeEnd']));
                 }
                 return $output;
             });

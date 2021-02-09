@@ -13,7 +13,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     // echo '<pre>';
     // print_r($_POST);
     // echo '</pre>';
-    // die();
+     //die();
     $route_name = $_POST['route_name'];
     $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
     $bus_id =  $_POST['bus_id'];
@@ -27,13 +27,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     $pickup_time = $_POST['pickup_time'];
     $drop_time = $_POST['drop_time'];
     $stop_no = $_POST['stop_no'];
+    $noofstops= count($stop_no);
     // $tax = $_POST['tax'];
     // $oneway_price = $_POST['oneway_price'];
     // $twoway_price = $_POST['twoway_price'];
     $lat = '';
     $lng = '';
-//    print_r($stop_name); die();
+    //print_r($_POST);
 
+    for($i=1;$i<=$noofstops;$i++){
+if($pickup_time[$i]<'24:00' AND $pickup_time[$i]>'00:00' AND $drop_time[$i]>'00:00' AND $drop_time[$i]<'24:00'){
+
+}else{
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+}
+
+    }
+    //print_r($stop_name); die();
+if($start_time =="00:00"){
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit();
+}
+if($end_time =="00:00"){
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit();
+}
+//die();
     $cdt = date('Y-m-d H:i:s');
     
     if ($route_name == ''  or $start_point == '' or $pupilsightSchoolYearID == '' or $bus_id == '' or $type == '' or $start_time == '' or $end_time == ''  or $end_point == '' or $stop_name =='' or $stop_no =='' or $drop_time =='' or $pickup_time == '' ) {
@@ -69,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
                 header("Location: {$URL}");
             } else {
                 $data = array('route_name' => $route_name,'bus_id'=>$bus_id,'pupilsightSchoolYearID'=> $pupilsightSchoolYearID, 'start_point' => $start_point, 'start_time' => $start_time, 'end_point' => $end_point, 'end_time' => $end_time, 
-                'num_stops' => $num_stops, 'type' => $type, 'cdt' => $cdt);
+                'num_stops' => $noofstops, 'type' => $type, 'cdt' => $cdt);
 
                 
                 $sql = 'INSERT INTO trans_routes SET route_name=:route_name, bus_id=:bus_id,pupilsightSchoolYearID=:pupilsightSchoolYearID,start_point=:start_point, start_time=:start_time, end_point=:end_point, end_time=:end_time,

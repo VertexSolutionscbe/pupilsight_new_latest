@@ -336,7 +336,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                     if (in_array(34, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
-
                     }
                     if (in_array(35, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
@@ -812,7 +811,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             var newhrf = hrf + stuId;
             $("#promoteStudent").attr('href', newhrf);
             window.setTimeout(function() {
-            $("#promoteStudent")[0].click();
+                $("#promoteStudent")[0].click();
             }, 10);
         } else {
             alert('You Have to Select Student.');
@@ -831,14 +830,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             var newhrf = hrf + stuId;
             $("#detainStudent").attr('href', newhrf);
             window.setTimeout(function() {
-            $("#detainStudent")[0].click();
+                $("#detainStudent")[0].click();
             }, 10);
         } else {
             alert('You Have to Select Student.');
         }
     });
-
-
 </script>
 <style>
     #expore_tbl {

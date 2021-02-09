@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
            
             $invid =  $d['invoiceid'];
             $invno =  $d['stu_invoice_no'];
-            $sqla = 'SELECT GROUP_CONCAT(a.fn_fee_invoice_item_id) AS invitemid FROM fn_fees_applicant_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "'.$invno.'" AND b.transaction_status = "1" ';
+            $sqla = 'SELECT GROUP_CONCAT(a.fn_fee_invoice_item_id) AS invitemid, a.transaction_id, b.filename FROM fn_fees_applicant_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "'.$invno.'" AND b.transaction_status = "1" ';
             $resulta = $connection2->query($sqla);
             $inv = $resulta->fetch();
             
@@ -213,11 +213,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                         
                     } 
                 }
+                $invdata[$k]['transaction_id'] = $inv['transaction_id'];
+                $invdata[$k]['filename'] = $inv['filename'];
             } else {
                 $invdata[$k]['paidamount'] = '0';
                 $pendingamount = $totalamount;
                 $invdata[$k]['pendingamount'] = $pendingamount;
                 $invdata[$k]['chkpayment'] = 'UnPaid';
+                $invdata[$k]['transaction_id'] = '';
+                $invdata[$k]['filename'] = '';
             }
         }
 
@@ -245,18 +249,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
         echo "<th>";
         echo __('Pending Amount');
         echo '</th>';
+        echo "<th>";
+        echo __('Receipt');
+        echo '</th>';
         echo "</thead>";
         
         echo "<tbody id=''>";
         if(!empty($invdata)){
             foreach($invdata as $ind){
                 $totAmt = number_format($ind['finalamount'], 2, '.', '');
+                if (!empty($ind['filename'])) {
+                    $receipt = '<a href="public/receipts/'.$ind['filename'].'.pdf"  download><i class="mdi mdi-receipt mdi-24px"></i></a>';
+                } else if (!empty($ind['transaction_id'])) {
+                    $receipt =  '<a href="public/receipts/'.$ind['transaction_id'].'.pdf"  download><i class="mdi mdi-receipt mdi-24px"></i></a>';
+                }
                 if($ind['chkpayment'] == 'Paid'){
                     //$cls = 'value="0" checked disabled';
-                    echo '<tr><td><input type="checkbox" class=" invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'" value="0" checked disabled ></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$totAmt.'</td><td>'.$ind['pendingamount'].'</td></tr>';
+                    echo '<tr><td><input type="checkbox" class=" invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'" value="0" checked disabled ></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$totAmt.'</td><td>'.$ind['pendingamount'].'</td><td>'.$receipt.'</td></tr>';
                 } else {
                     $cls = 'value="'.$ind['invoiceid'].'"'; 
-                     echo '<tr><td><input type="checkbox" class="chkinvoiceApplicant invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'"  '.$cls.'  data-amtedt="'.$ind['amount_editable'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'"></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['finalamount'].'</td><td>'.$ind['pendingamount'].'</td></tr>';
+                     echo '<tr><td><input type="checkbox" class="chkinvoiceApplicant invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'"  '.$cls.'  data-amtedt="'.$ind['amount_editable'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'"></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['finalamount'].'</td><td>'.$ind['pendingamount'].'</td><td></td></tr>';
                     
                 }
             }

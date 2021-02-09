@@ -17,7 +17,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/routes.php') == 
     //Proceed!
     $page->breadcrumbs->add(__('Manage Route Structure'));
 
-
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
 
     $TransportGateway = $container->get(TransportGateway::class);
     $criteria = $TransportGateway->newQueryCriteria()

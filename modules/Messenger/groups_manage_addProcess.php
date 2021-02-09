@@ -35,52 +35,99 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
         $groupGateway = $container->get(GroupGateway::class);
 
         //Create the group
-        $data = array('pupilsightPersonIDOwner' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'name' => $name);
-        $AI = $groupGateway->insertGroup($data);
-
-        if (!$AI) {
-            $URL .= '&return=error1';
-            header("Location: {$URL}");
-        } else {
+        $pupilsightGroupID = $_POST['rowid'];
+        if ($pupilsightGroupID != '') {
+            $data = array('pupilsightGroupID' => $pupilsightGroupID, 'name' => $name);
+            $updated = $groupGateway->updateGroup($data);
             $partialFail = false;
 
-            //Run through each of the selected participants.
-            foreach ($choices as $pupilsightPersonID) {
-                $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
-                $inserted = $groupGateway->insertGroupPerson($data);
-                $partialFail &= !$inserted;
+            if (count($choices) > 0) {
+                foreach ($choices as $pupilsightPersonID) {
+                    $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID);
+                    $inserted = $groupGateway->insertGroupPerson($data);
+                    $partialFail &= !$inserted;
+                }
             }
             foreach ($choices1 as $pupilsightPersonID) {
-                $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
+                $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID);
                 $inserted = $groupGateway->insertGroupPerson($data);
                 $partialFail &= !$inserted;
             }
             /*foreach ($choices2 as $pupilsightPersonID) {
-                $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
+                $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID);
                 $inserted = $groupGateway->insertGroupPerson($data);
                 $partialFail &= !$inserted;
             }*/
             foreach ($choices3 as $pupilsightPersonID) {
-                $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
+                $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID);
                 $inserted = $groupGateway->insertGroupPerson($data);
                 $partialFail &= !$inserted;
             }
             foreach ($choices4 as $pupilsightPersonID) {
-                $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
+                $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID);
                 $inserted = $groupGateway->insertGroupPerson($data);
                 $partialFail &= !$inserted;
             }
 
-            //Write to database
             if ($partialFail) {
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
                 exit;
             } else {
-                $URL .= "&return=success0&editID=$AI";
+                $URL .= "&return=success0&editID=$pupilsightGroupID";
                 header("Location: {$URL}");
                 exit;
             }
+        } else {
+
+            $data = array('pupilsightPersonIDOwner' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'name' => $name);
+            $AI = $groupGateway->insertGroup($data);
+
+            if (!$AI) {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+            } else {
+                $partialFail = false;
+
+                //Run through each of the selected participants.
+                foreach ($choices as $pupilsightPersonID) {
+                    $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
+                    $inserted = $groupGateway->insertGroupPerson($data);
+                    $partialFail &= !$inserted;
+                }
+                foreach ($choices1 as $pupilsightPersonID) {
+                    $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
+                    $inserted = $groupGateway->insertGroupPerson($data);
+                    $partialFail &= !$inserted;
+                }
+                /*foreach ($choices2 as $pupilsightPersonID) {
+                    $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
+                    $inserted = $groupGateway->insertGroupPerson($data);
+                    $partialFail &= !$inserted;
+                }*/
+                foreach ($choices3 as $pupilsightPersonID) {
+                    $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
+                    $inserted = $groupGateway->insertGroupPerson($data);
+                    $partialFail &= !$inserted;
+                }
+                foreach ($choices4 as $pupilsightPersonID) {
+                    $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
+                    $inserted = $groupGateway->insertGroupPerson($data);
+                    $partialFail &= !$inserted;
+                }
+
+                //Write to database
+                if ($partialFail) {
+                    $URL .= '&return=warning1';
+                    header("Location: {$URL}");
+                    exit;
+                } else {
+                    $URL .= "&return=success0&editID=$AI";
+                    header("Location: {$URL}");
+                    exit;
+                }
+            }
         }
+
     }
 }

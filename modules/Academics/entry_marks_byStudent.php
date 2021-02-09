@@ -354,13 +354,18 @@
         echo '</select></td>';
       
         echo '<td class="'.$en_dis_grd_clss.'">'; 
-         $grade_arr=array();
-         $test_grades = explode(',', $s_test['grade_names']);
-         $grade_ids = explode(',', $s_test['grade_ids']);
-         $grade_arr = array_combine($grade_ids, $test_grades);
-         //     echo "<pre>";print_r($grade_arr);
-         foreach ($grade_arr as $grdid => $tgrade) {
+         // $grade_arr=array();
+         // $test_grades = explode(',', $s_test['grade_names']);
+         // $grade_ids = explode(',', $s_test['grade_ids']);
+         // $grade_arr = array_combine($grade_ids, $test_grades);
+         //      echo "<pre>";print_r($grade_ids);
+         $sqlGr = 'SELECT * FROM examinationGradeSystemConfiguration WHERE gradeSystemId = '.$s_test['gradeSystemId'].' ORDER BY rank ASC';
+         $resultGr = $connection2->query($sqlGr);
+         $gradeData = $resultGr->fetchAll();
+         foreach ($gradeData as $gdata) {
 
+            $grdid = $gdata['id'];
+            $tgrade = $gdata['grade_name'];
             if($prevdata['gradeId'] == $grdid){
                $selected = 'checked';
             } else {
