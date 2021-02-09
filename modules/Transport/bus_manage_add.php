@@ -74,15 +74,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
             $col = $row->addColumn()->setClass('newdes');
                
             $col->addLabel('register_date', __('Reg. Date'))->addClass('dte');
-            $col->addDate('register_date')->required();
+            $col->addDate('register_date');
     
             $col = $row->addColumn()->setClass('newdes');
                 $col->addLabel('insurance_exp', __('Insurance Expiry'))->addClass('dte');
-                $col->addDate('insurance_exp')->required(); 
+                $col->addDate('insurance_exp');
     
            $col = $row->addColumn()->setClass('newdes');
            $col->addLabel('fc_expiry', __('FC Expiry Date'))->addClass('dte');
-           $col->addDate('fc_expiry')->required(); 
+           $col->addDate('fc_expiry');
                
                 
                 
