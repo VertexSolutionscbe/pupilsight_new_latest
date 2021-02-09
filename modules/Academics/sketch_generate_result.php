@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     <tbody id="sketchResultData">
                         <tr>
                             <td></td>
-                            <td  style="width:100px !important;"></td>
+                            <td style="width:100px !important;"></td>
                             <td></td>
                             <td></td>
                         </tr>

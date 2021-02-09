@@ -15,7 +15,6 @@ $databaseUsername = 'root';
 //$databaseName = 'pupilsight'; //pd_demo
 //$databaseName = 'bips_erp'; //pd_demo
 //$databaseName = 'ups'; //pd_demo
-
 //live
 $databasePassword = 'xyz'; //xyz
 $databaseName = 'pd_demo'; //pd_demo

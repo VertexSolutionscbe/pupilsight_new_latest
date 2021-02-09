@@ -2859,7 +2859,7 @@ if ($type == 'getStudentSketchData') {
         foreach ($studentData as $k => $st) {
             $data .= '<tr>
                         <td >' . $st['officialName'] . '</td>
-                        <td >' . $st['attribute_name'] . '</td>
+                        <td  style="width:100px !important;">' . $st['attribute_name'] . '</td>
                         <td >${' . $st['attribute_name'] . '}</td>
                         <td ><span class="noEditTd">' . $st['attribute_value'] . '</span>
                         <span style="display:none;" class="editTd"><input type="textbox" class="form-control updateSketchData" data-id="' . $st['id'] . '" value="' . $st['attribute_value'] . '"></span>
