@@ -728,7 +728,7 @@ if (isset($_SESSION["loginstatus"])) {
                                                                 </h3>
                                                                 <div class="form-row">
                                                                     <div class="wrap-form">
-                                                                        <div class="form-desc">We will need...ssss</div>
+                                                                        <div class="form-desc">We will need...</div>
                                                                         <form action="../login.php?" method="post" autocomplete="off" enctype="multipart/form-data" id="loginForm" onsubmit="pupilsightFormSubmitted(this)">
                                                                             <p class="login-username">
                                                                                 <label for="bp_login_name">Username or
