@@ -7,7 +7,7 @@ use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Services\Format;
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/bus_manage_add.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/bus_manage.php';
 if(isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_addimportProcess.php') == false) {
 //Acess denied
     echo "<div class='error'>";

@@ -104,8 +104,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
                     $col->addLabel('coordinator_mobile', __('Transport Coordinator Mobile'));
                     $col->addTextField('coordinator_mobile')->addClass('numfield')->maxLength(12)->required();
             
-                 
-                  
+
+
                         $row = $form->addRow();
                         $col = $row->addColumn()->setClass('newdes');
                             $col->addLabel('file', __('Image File'));
@@ -130,20 +130,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
 
     echo $form->getOutput();
 
-    $form = Form::create('importbusdetails', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/bus_manage_addimportProcess.php');
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    //`trans_bus_details`(`id`, `vehicle_number`, `name`, `model`, `vtype`, `capacity`, `register_date`, `insurance_exp`, `fc_expiry`, `driver_name`, `driver_mobile`, `coordinator_name`, `coordinator_mobile`, `photo`, `cdt`, `udt`)
-
-
-    $row = $form->addRow();
-    $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('file', __('Select CSV File'));
-    $col->addFileUpload('file')->accepts('.csv')->setMaxUpload(false);
-
-    $row = $form->addRow();
-    $row->addFooter();
-    $row->addSubmit();
-    echo $form->getOutput();
 }

@@ -21,6 +21,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage.php')
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+
     $pupilsightSchoolYearID = '';
     if (isset($_GET['pupilsightSchoolYearID'])) {
         $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
@@ -154,4 +155,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage.php')
     echo $table->render($yearGroups);
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+
+    $form = Form::create('importbusdetails', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/bus_manage_addimportProcess.php');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+
+    $row = $form->addRow();
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('file', __('Select CSV File'));
+    $col->addFileUpload('file')->accepts('.csv')->setMaxUpload(false);
+
+    $row = $form->addRow();
+    $row->addFooter();
+    $row->addSubmit();
+    echo $form->getOutput();
 }
