@@ -79,6 +79,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/routes.php') == 
             $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Transport/transport_route_delete.php');
             
+            $actions->addAction('copy', __('Copy'))
+                    ->setURL('/modules/Transport/transport_route_copies.php');
+
             
         });
 
