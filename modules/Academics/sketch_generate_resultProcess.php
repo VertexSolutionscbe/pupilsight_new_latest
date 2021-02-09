@@ -64,6 +64,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
             $results = $connection2->query($sqls);
             $studentData = $results->fetchAll();
+            // echo '<pre>';
+            // print_r($studentData);
+            // echo '</pre>';
+            // die();
 
             if (!empty($studentData)) {
 
@@ -722,27 +726,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                     $grade_id = $sd['grade_id'];
             
                                     try{
-                                        $gradeMaxMarks = $getSketchData['Max Marks'][$supported_attribute];
-                                        $gradeMarks = $getSketchData['Marks'][$sd['attr_ids']];
-                
-                                        $i = 1;
-                                        foreach ($gradeMarks as $d => $grm) {
-                                            //echo $grm.'</br>';
-                                            $sqlsub = 'SELECT name AS subject FROM  pupilsightDepartment WHERE pupilsightDepartmentID = ' . $d . '  ';
-                                            $resultsubname = $connection2->query($sqlsub);
-                                            $subnamdata = $resultsubname->fetch();
-                
-                                            $gmn = ($grm / 100) * $gradeMaxMarks[$d];
-                                            if (!empty($getmarks)) {
-                                                $sqlg = 'SELECT grade_name FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $grade_id . '" AND  (' . $gmn . ' BETWEEN `lower_limit` AND `upper_limit`)';
-                                                $resultg = $connection2->query($sqlg);
-                                                $grade = $resultg->fetch();
-                                                $gradename = $grade['grade_name'];
-                                            } else {
-                                                $gradename = '';
+                                        if(!empty($getSketchData)){
+                                            if(isset($getSketchData['Max Marks'][$supported_attribute])){
+                                                $gradeMaxMarks = $getSketchData['Max Marks'][$supported_attribute];
+                                                $gradeMarks = $getSketchData['Marks'][$sd['attr_ids']];
+                        
+                                                $i = 1;
+                                                foreach ($gradeMarks as $d => $grm) {
+                                                    //echo $grm.'</br>';
+                                                    $sqlsub = 'SELECT name AS subject FROM  pupilsightDepartment WHERE pupilsightDepartmentID = ' . $d . '  ';
+                                                    $resultsubname = $connection2->query($sqlsub);
+                                                    $subnamdata = $resultsubname->fetch();
+                        
+                                                    $gmn = ($grm / 100) * $gradeMaxMarks[$d];
+                                                    if (!empty($getmarks)) {
+                                                        $sqlg = 'SELECT grade_name FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $grade_id . '" AND  (' . $gmn . ' BETWEEN `lower_limit` AND `upper_limit`)';
+                                                        $resultg = $connection2->query($sqlg);
+                                                        $grade = $resultg->fetch();
+                                                        $gradename = $grade['grade_name'];
+                                                    } else {
+                                                        $gradename = '';
+                                                    }
+                                                    $dataarr[$sd['attribute_name'] . '_' . $i . '_' . $subnamdata['subject']] = $gradename;
+                                                    $i++;
+                                                }
                                             }
-                                            $dataarr[$sd['attribute_name'] . '_' . $i . '_' . $subnamdata['subject']] = $gradename;
-                                            $i++;
                                         }
                                     }   catch (Exception $ex) {
                                         //print_r($ex);
