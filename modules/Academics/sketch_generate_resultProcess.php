@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $result = $connection2->query($sql);
     $sketchData = $result->fetch();
 
-    $sqlsketch = 'SELECT a.id as erta_id, a.attribute_name, a.attribute_category, a.attribute_type, a.test_master_id, a.attr_ids, a.final_formula, a.grade_id, a.supported_attribute, b.* FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportTemplateConfiguration AS b ON a.ertc_id = b.id WHERE a.sketch_id = ' . $sketch_id . ' ';
+    $sqlsketch = 'SELECT a.id as erta_id, a.attribute_name, a.attribute_category, a.attribute_type, a.test_master_id, a.attr_ids, a.final_formula, a.grade_id, a.supported_attribute, a.subject_type, a.subject_val_id, b.* FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportTemplateConfiguration AS b ON a.ertc_id = b.id WHERE a.sketch_id = ' . $sketch_id . ' ';
     $resultsk = $connection2->query($sqlsketch);
     $sketchDataAttr = $resultsk->fetchAll();
 
@@ -55,9 +55,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             $mappingData = $resultmap->fetch();
 
             if(!empty($studentIds)){
-                $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID  WHERE b.pupilsightPersonID IN ('.$studentIds.') AND c.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID = '.$mappingData['pupilsightYearGroupID'].' AND c.pupilsightRollGroupID = '.$mappingData['pupilsightRollGroupID'].' GROUP BY b.pupilsightPersonID';
+                $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID, ct.pupilsightPersonID as class_teacher FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID LEFT JOIN assign_class_teacher_section AS ct ON c.pupilsightSchoolYearID = ct.pupilsightSchoolYearID  WHERE b.pupilsightPersonID IN ('.$studentIds.') AND c.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID = '.$mappingData['pupilsightYearGroupID'].' AND c.pupilsightRollGroupID = '.$mappingData['pupilsightRollGroupID'].' AND ct.pupilsightMappingID = '.$pupilsightMappingID.' GROUP BY b.pupilsightPersonID';
             } else {
-                $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID  WHERE c.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID = '.$mappingData['pupilsightYearGroupID'].' AND c.pupilsightRollGroupID = '.$mappingData['pupilsightRollGroupID'].' GROUP BY b.pupilsightPersonID';
+                $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID, ct.pupilsightPersonID as class_teacher FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID LEFT JOIN assign_class_teacher_section AS ct ON c.pupilsightSchoolYearID = ct.pupilsightSchoolYearID  WHERE c.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID = '.$mappingData['pupilsightYearGroupID'].' AND c.pupilsightRollGroupID = '.$mappingData['pupilsightRollGroupID'].' AND ct.pupilsightMappingID = '.$pupilsightMappingID.' GROUP BY b.pupilsightPersonID';
             }
            
 
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     try {
                         foreach ($sketchDataAttr as $sd) {
                             if ($sd['attribute_type'] == 'Class Teacher') {
-                                $teacherId = $td['pupilsightPersonIDTutor'];
+                                $teacherId = $td['class_teacher'];
                                 if (!empty($teacherId)) {
                                     $sqlpr = 'SELECT b.signature_path, a.officialName, a.image_240 FROM pupilsightPerson AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightPersonID = ' . $teacherId . ' ';
                                     $resultpr = $connection2->query($sqlpr);
@@ -522,9 +522,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                         if(!empty($testdatasub)){
                                             $cnt = 1;
                                             foreach($testdatasub as $testSubject){
-                                                if(!empty($testSubject['pupilsightDepartmentID'])){
-                                                    $subTeacherBySubject[$cnt] = $testSubject['pupilsightDepartmentID'];
-                                                }
+                                                // if(!empty($testSubject['pupilsightDepartmentID'])){
+                                                //     $subTeacherBySubject[$cnt] = $testSubject['pupilsightDepartmentID'];
+                                                // }
                                                 $dataarr[$sd['attribute_name'] . '_' . $cnt ] = $testSubject['subject_display_name'];
                                                 $cnt++;
                                             }
@@ -536,24 +536,83 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
                             
 
-                            // if ($sd['attribute_type'] == 'Subject Teacher' && $sd['attribute_category'] == 'Entity') {
+                            if ($sd['attribute_type'] == 'Subject Teacher' && $sd['attribute_category'] == 'Entity') {
                                 
-                                
-                            //             if(!empty($subTeacherBySubject)){
-                            //                 $cnt = 1;
-                                            
-                            //                 foreach($subTeacherBySubject as $testSubject){
-                            //                     echo $testSubject;
-                            //                     echo $sql = 'SELECT GROUP_CONCAT(c.officialName) as sub_teacher, d.name FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightDepartment AS d ON a.pupilsightDepartmentID = c.pupilsightDepartmentID WHERE a.pupilsightDepartmentID = '.$testSubject.' ';
-                            //                     $resultsub = $connection2->query($sql);
-                            //                     $subData = $resultsub->fetch();
+                                        if(!empty($sd['subject_type'])){
+                                            if($sd['subject_type'] == 'Select Subject'){
+                                                $subIds = $sd['subject_val_id'];
+                                                if(!empty($subIds)){
+                                                    $sql = 'SELECT c.officialName as sub_teacher, d.name, s.signature_path, c.image_240 FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightDepartment AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID LEFT JOIN pupilsightStaff AS s ON c.pupilsightPersonID = s.pupilsightPersonID WHERE d.pupilsightDepartmentID IN ('.$subIds.') GROUP BY d.pupilsightDepartmentID ';
+                                                    $resultsub = $connection2->query($sql);
+                                                    $subData = $resultsub->fetchAll();
+                                                    $cnt = 1;
+                                                    if(!empty($subData)){
+                                                        foreach($subData as $sdata){
+                                                            if ($sd['report_column_word'] == 'subject_teacher_name') {
+                                                                $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['name']] = $sdata['sub_teacher'];
+                                                            }
+                                                            if ($sd['report_column_word'] == 'subject_teacher_signature') {
+                                                                $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['name']. '#signature'] = $sdata['signature_path'];
+                                                            }
+                                                            if ($sd['report_column_word'] == 'subject_teacher_photo') {
+                                                                $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['name']. '#photo'] = $sdata['image_240'];
+                                                            }
+                                                            
+                                                            $cnt++;
+                                                        }
+                                                    }
+                                                }
+                                            } else if($sd['subject_type'] == 'All Subject') {
 
-                            //                     $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $testSubject['name']] = $subData['sub_teacher'];
-                            //                     $cnt++;
-                            //                 }
-                            //             }
+                                                $sql = 'SELECT c.officialName as sub_teacher, d.subject_display_name, s.signature_path, c.image_240 FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN subjectToClassCurriculum AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID LEFT JOIN pupilsightStaff AS s ON c.pupilsightPersonID = s.pupilsightPersonID WHERE d.pupilsightSchoolYearID = '.$td['pupilsightSchoolYearID'].' AND d.pupilsightProgramID = '.$td['pupilsightProgramID'].' AND d.pupilsightYearGroupID = '.$td['pupilsightYearGroupID'].' GROUP BY d.pupilsightDepartmentID ';
+                                                $resultsub = $connection2->query($sql);
+                                                $subData = $resultsub->fetchAll();
+                                                $cnt = 1;
+                                                if(!empty($subData)){
+                                                    foreach($subData as $sdata){
+                                                        // $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']] = $sdata['sub_teacher'];
+                                                        if ($sd['report_column_word'] == 'subject_teacher_name') {
+                                                            $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']] = $sdata['sub_teacher'];
+                                                        }
+                                                        if ($sd['report_column_word'] == 'subject_teacher_signature') {
+                                                            $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']. '#signature'] = $sdata['signature_path'];
+                                                        }
+                                                        if ($sd['report_column_word'] == 'subject_teacher_photo') {
+                                                            $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']. '#photo'] = $sdata['image_240'];
+                                                        }
+                                                        $cnt++;
+                                                    }
+                                                }
+                                            } else {
+                                                
+                                                $sql = 'SELECT c.officialName as sub_teacher, d.subject_display_name, s.signature_path, c.image_240 FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN subjectToClassCurriculum AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID LEFT JOIN pupilsightDepartment AS e ON d.pupilsightDepartmentID = e.pupilsightDepartmentID LEFT JOIN pupilsightStaff AS s ON c.pupilsightPersonID = s.pupilsightPersonID WHERE d.pupilsightSchoolYearID = '.$td['pupilsightSchoolYearID'].' AND d.pupilsightProgramID = '.$td['pupilsightProgramID'].' AND d.pupilsightYearGroupID = '.$td['pupilsightYearGroupID'].' AND e.type = "'.$sd['subject_type'].'" GROUP BY d.pupilsightDepartmentID  ';
+                                                $resultsub = $connection2->query($sql);
+                                                $subData = $resultsub->fetchAll();
+                                                $cnt = 1;
+                                                if(!empty($subData)){
+                                                    foreach($subData as $sdata){
+                                                        // $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']] = $sdata['sub_teacher'];
+                                                        if ($sd['report_column_word'] == 'subject_teacher_name') {
+                                                            $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']] = $sdata['sub_teacher'];
+                                                        }
+                                                        if ($sd['report_column_word'] == 'subject_teacher_signature') {
+                                                            $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']. '#signature'] = $sdata['signature_path'];
+                                                        }
+                                                        if ($sd['report_column_word'] == 'subject_teacher_photo') {
+                                                            $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']. '#photo'] = $sdata['image_240'];
+                                                        }
+                                                        $cnt++;
+                                                    }
+                                                }
+                                            }
+                                        }
                               
-                            // }
+                            }
+                            // echo '<pre>';
+                            // print_r($dataarr);
+                            // echo '</pre>';
+               
+                            // die();
 
                             if ($sd['attribute_type'] == 'Remarks' && $sd['attribute_category'] == 'Test') {
         
@@ -776,11 +835,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     // print_r($totalMaxMarksArr);
                     // echo '</pre>';
         
-                    //  echo '<pre>';
-                    //  print_r($dataarr);
-                    //  echo '</pre>';
+                     echo '<pre>';
+                     print_r($dataarr);
+                     echo '</pre>';
         
-                    //  die();
+                     die();
         
                     if (!empty($dataarr)) {
                         $count = 0;

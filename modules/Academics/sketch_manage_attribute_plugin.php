@@ -28,6 +28,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $resultchk = $connection2->query($sqlchk);
     $chkdata = $resultchk->fetch();
 
+    $sqlst = "SELECT * FROM pupilsightDepartmentType ORDER BY id ASC";
+    $resultst = $connection2->query($sqlst);
+    $subTypeData = $resultst->fetchAll();
+
     if($chkdata['attribute_category'] == 'Entity'){
     
     echo '<h3>';
@@ -47,6 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $sqlf = "SELECT * FROM examinationReportTemplateFormula ORDER BY pos ASC";
     $resultf = $connection2->query($sqlf);
     $formuladata = $resultf->fetchAll();
+
+    
     //print_r($labeldata);
 
 ?> 
@@ -95,6 +101,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 ?>
             </tbody>
         </table>
+        <?php if($chkdata['attribute_type'] == 'Subject Teacher') { ?>
+        <div>
+                    <h3>Subject  </h3></br>
+                    <a style="display:none" href='fullscreen.php?q=/modules/Academics/select_subject_for_sketch.php&skid=<?php echo $chkdata['sketch_id'];?>&width=400'  class='thickbox ' id="clickSelSubject">SelectSubject</a>
+                    <input type="hidden" id="selectedSubject" name="subject_val_id" value="">
+                    <input type="radio" class="selSubject" name="subject_type" value="All Subject"> All Subject
+                    <input type="radio" class="selSubject" name="subject_type" value="Select Subject"> Select Subject
+                    <?php if(!empty($subTypeData)) { 
+                        foreach($subTypeData as $std) { ?>
+                    <input type="radio" class="selSubject" name="subject_type" value="<?php echo $std['name'];?>"> <?php echo $std['name'];?>
+                    <?php } } ?>
+        </div>
+        <?php } else { ?>
+            <input type="hidden" name="subject_val_id" value="">
+            <input type="hidden" name="subject_type" value="">
+        <?php } ?>
     </div>    
     </form>
 			
@@ -177,6 +199,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     ?>
                 </tbody>
             </table>
+            <div>
+                    <h3>Subject  </h3></br>
+                    <a style="display:none" href='fullscreen.php?q=/modules/Academics/select_subject_for_sketch.php&skid=<?php echo $chkdata['sketch_id'];?>&width=400'  class='thickbox ' id="clickSelSubject">SelectSubject</a>
+                    <input type="hidden" id="selectedSubject" name="subject_val_id" value="">
+                    <input type="radio" class="selSubject" name="subject_type" value="All Subject"> All Subject
+                    <input type="radio" class="selSubject" name="subject_type" value="Select Subject"> Select Subject
+                    <?php if(!empty($subTypeData)) { 
+                        foreach($subTypeData as $std) { ?>
+                    <input type="radio" class="selSubject" name="subject_type" value="<?php echo $std['name'];?>"> <?php echo $std['name'];?>
+                    <?php } } ?>
+            </div>
+
             <?php if($chkdata['attribute_type'] == 'Grade') { ?>
             <div style="display:flex;width:100%; margin-bottom:10px;">
 
@@ -366,5 +400,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         $("#myTable tbody tr").filter(function() {
         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
+    });
+
+    $(document).on('change', '.selSubject', function() {
+        var val = $(this).val();
+        if(val == 'Select Subject'){
+            $("#clickSelSubject")[0].click();
+        } else {
+            $("#selectedSubject").val('');
+        }
+       
     });
 </script>
