@@ -21,8 +21,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
         returnProcess($guid, $_GET['return'], null, null);
     }
     
-
-    
     $type = array();
     $type =  array(''=>'Select  Type',
         'pickup' =>'Pick Up',
@@ -91,8 +89,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
             echo __('Copy Bus Route');
             echo '</h2>';
 
-            echo '<h5>(Note: This Route is copied. Here you can edit only Acadamic Year)</h5><br>';
+            echo '<h3>(Note: This Route is copied. Here you can edit only Route Name and Acadamic Year for use the same route for next year)</h3><br>';
 
+
+      
+            
            
             $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/transport_route_copiesProcess.php');
             $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -102,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
             $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('route_name', __('Route Name'));
-            $col->addTextField('route_name')->addClass('txtfield')->required()->readonly()->setValue($values['route_name']);
+            $col->addTextField('route_name')->addClass('txtfield')->required()->setValue($values['route_name']);
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
@@ -149,8 +150,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
                         $col->addLabel('', __(''));
                         $col->addTextField('');     
                     
-                 //   $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
-                 //        $col->addButton(__('Add'))->setID('addTransportStops')->addData('cid', '1')->addData('disid', 'nodata')->addClass('btn btn-primary');
+                  //$col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
+                         //$col->addButton(__('Add'))->setID('addTransportStops')->addData('cid', '1')->addData('disid', 'nodata')->addClass('btn btn-primary');
             
                  if(!empty($childvalues)){
                     $i = 1;

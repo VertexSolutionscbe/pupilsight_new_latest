@@ -36,10 +36,11 @@ class TransportGateway extends QueryableGateway
             ->newQuery()
             ->from('trans_routes')
             ->cols([
-                'trans_routes.*','trans_bus_details.name as busname','COUNT(trans_route_stops.id) as totalstops'
+                'trans_routes.*','pupilsightSchoolYear.name as year','trans_bus_details.name as busname','COUNT(trans_route_stops.id) as totalstops'
             ])
             ->leftJoin('trans_bus_details', 'trans_routes.bus_id=trans_bus_details.id')
             ->leftJoin('trans_route_stops', 'trans_routes.id=trans_route_stops.route_id')
+            ->leftJoin('pupilsightSchoolYear', 'trans_routes.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
             ->groupby(['trans_routes.id'])
             ->orderby(['id DESC']);
         return $this->runQuery($query, $criteria, TRUE);
