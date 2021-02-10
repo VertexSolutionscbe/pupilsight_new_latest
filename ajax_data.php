@@ -819,7 +819,7 @@ if ($type == 'filterstudentbyclassTransport') {
     // print_r($students);
     // echo '</pre>';
 
-    $data = ' <td class="flex flex-col flex-grow justify-center -mb-1 sm:mb-0  px-2 border-b-0 sm:border-b border-t-0 ">
+    $data = '<tr> <td class="flex flex-col flex-grow justify-center -mb-1 sm:mb-0  px-2 border-b-0 sm:border-b border-t-0 ">
         <div class="input-group stylish-input-group">
             <label for="pupilsightYearGroupID" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs"> </label>
         </div></td>
@@ -865,7 +865,7 @@ if ($type == 'filterstudentbyclassTransport') {
                     $feesStructure2[$dt['id']] = $dt['schedule_name'];
                 }
                 $feesStructure = $feesStructure1 + $feesStructure2;
-                $data .= '<div class="  mb-1 "><div class="flex-1 relative"><select id="pupilsightPersonID[structure][' . $cl['pupilsightPersonID'] . ']" name="pupilsightPersonID[structure][' . $cl['pupilsightPersonID'] . ']" class="w-full mbtm1">';
+                $data .= '<div class="  mb-1 "><div class="flex-1 relative"><select id="pupilsightPersonID[structure][' . $cl['pupilsightPersonID'] . ']" name="pupilsightPersonID[structure][' . $cl['pupilsightPersonID'] . ']" class="w-full">';
                 foreach ($feesStructure as $k => $st) {
                     $data .= '<option value="' . $k . '">' . $st . '</option>';
                 }
@@ -881,7 +881,7 @@ if ($type == 'filterstudentbyclassTransport') {
     }
     $data .= '    
          </div> 
-        </td>';
+        </td></tr>';
     echo $data;
 }
 
