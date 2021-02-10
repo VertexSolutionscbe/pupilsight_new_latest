@@ -25,6 +25,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $formula_val = $_POST['formula_val'];
     $grade_id = $_POST['grade_id'];
     $supported_attribute = $_POST['supported_attribute'];
+    $subject_type = $_POST['subject_type'];
+    $subject_val_id = $_POST['subject_val_id'];
+    $subject_display_type = $_POST['subject_display_type'];
+    $final_formula = $_POST['final_formula'];
 
     if(!empty($formula_id) && !empty($erta_id)){
         $data = array('erta_id' => $erta_id);
@@ -32,9 +36,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         $resultdel = $connection2->prepare($sqldel);
         $resultdel->execute($data);
 
-        foreach($test_master_id as $testmasterid){
-            $datau = array('test_master_id' => $testmasterid, 'grade_id' => $grade_id, 'supported_attribute' => $supported_attribute, 'id' => $erta_id);
-            $sqlupd = 'UPDATE examinationReportTemplateAttributes SET test_master_id=:test_master_id, grade_id=:grade_id, supported_attribute=:supported_attribute  WHERE id=:id';
+        //foreach($test_master_id as $testmasterid){
+            $testmasterid = implode(',',$test_master_id);
+
+            $datau = array('test_master_id' => $testmasterid, 'final_formula' => $final_formula, 'grade_id' => $grade_id, 'supported_attribute' => $supported_attribute, 'subject_type' => $subject_type, 'subject_val_id' => $subject_val_id, 'subject_display_type' => $subject_display_type,  'id' => $erta_id);
+            $sqlupd = 'UPDATE examinationReportTemplateAttributes SET test_master_id=:test_master_id, final_formula=:final_formula, grade_id=:grade_id, supported_attribute=:supported_attribute, subject_type=:subject_type, subject_val_id=:subject_val_id, subject_display_type=:subject_display_type  WHERE id=:id';
             $resultupd = $connection2->prepare($sqlupd);
             $resultupd->execute($datau);
 
@@ -47,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 $result = $connection2->prepare($sql1);
                 $result->execute($data1);
             }
-        }
+        //}
         header("Location: {$URL}");  
     }
 

@@ -23,6 +23,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $ertc_id = $_POST['ertc_id'];
     $formula_id = $_POST['formula_id'];
     $formula_val = $_POST['formula_val'];
+    $subject_type = $_POST['subject_type'];
+    $subject_val_id = $_POST['subject_val_id'];
 
     if(!empty($formula_id) && !empty($erta_id)){
         $data = array('erta_id' => $erta_id);
@@ -31,8 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         $resultdel->execute($data);
 
         foreach($ertc_id as $ertcid){
-            $datau = array('ertc_id' => $ertcid, 'id' => $erta_id);
-            $sqlupd = 'UPDATE examinationReportTemplateAttributes SET ertc_id=:ertc_id  WHERE id=:id';
+            $datau = array('ertc_id' => $ertcid, 'subject_type' => $subject_type, 'subject_val_id' => $subject_val_id, 'id' => $erta_id);
+            $sqlupd = 'UPDATE examinationReportTemplateAttributes SET ertc_id=:ertc_id, subject_type=:subject_type, subject_val_id=:subject_val_id  WHERE id=:id';
             $resultupd = $connection2->prepare($sqlupd);
             $resultupd->execute($datau);
 
