@@ -102,8 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             </tbody>
         </table>
         <?php if($chkdata['attribute_type'] == 'Subject Teacher') { ?>
-        <div>
-                    <h3>Subject  </h3></br>
+        <div style="padding: 20px 20px !important; background: lightgray;">
                     <a style="display:none" href='fullscreen.php?q=/modules/Academics/select_subject_for_sketch.php&skid=<?php echo $chkdata['sketch_id'];?>&width=400'  class='thickbox ' id="clickSelSubject">SelectSubject</a>
                     <input type="hidden" id="selectedSubject" name="subject_val_id" value="">
                     <input type="radio" class="selSubject" name="subject_type" value="All Subject"> All Subject
@@ -199,8 +198,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     ?>
                 </tbody>
             </table>
-            <div>
-                    <h3>Subject  </h3></br>
+            <div style="padding: 20px 20px !important; background: lightgray;">
+                    
                     <a style="display:none" href='fullscreen.php?q=/modules/Academics/select_subject_for_sketch.php&skid=<?php echo $chkdata['sketch_id'];?>&width=400'  class='thickbox ' id="clickSelSubject">SelectSubject</a>
                     <input type="hidden" id="selectedSubject" name="subject_val_id" value="">
                     <input type="radio" class="selSubject" name="subject_type" value="All Subject"> All Subject
@@ -209,10 +208,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                         foreach($subTypeData as $std) { ?>
                     <input type="radio" class="selSubject" name="subject_type" value="<?php echo $std['name'];?>"> <?php echo $std['name'];?>
                     <?php } } ?>
+
+                    <select class="form-control" name="subject_display_type" style="width:20%">
+                            <option value="1">SUBJECTS ONLY</option>
+                            <option value="2">SKILLS ONLY</option>
+                            <option value="3">SUBJECTS AND SKILLS</option>
+                    </select>
+            </div>
+
+            <div style="display:flex;width:100%; padding: 20px 20px !important; background: lightgray;margin-top: 10px;">
+
+                <span style="font-size:14px;">Final Formula : </span>
+                <select name="final_formula" class="form-control" style=" width:25%;margin: 0px 10px 0 25px;">
+                    <option value="">AS IS</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Average">Average</option>
+                    <option value="Best_of_Sum">Best of Sum</option>
+                    <option value="Best_of_Average">Best of Average</option>
+                    <option value="Best_of_All">Best of All</option>
+                    <!-- <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option> -->
+                </select>
+
+                <span style="font-size:14px;">Final Plugin : </span>
+                <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id'];?>"><i style="font-size: 20px;" title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>
             </div>
 
             <?php if($chkdata['attribute_type'] == 'Grade') { ?>
-            <div style="display:flex;width:100%; margin-bottom:10px;">
+            <div style="display:flex;width:100%; margin-bottom:10px;padding: 20px 20px !important; background: lightgray;">
 
                 <span style="font-size:14px;">Grading System : </span>
                 <select name="grade_id" class="form-control" style=" width:25%;margin: 0px 10px 0 10px;">
@@ -325,7 +355,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     ?>
                 </tbody>
             </table>
-            <div style="display:flex;width:100%; margin-bottom:10px;">
+            <div style="display:flex;width:100%; margin-bottom:10px;padding: 20px 20px !important; background: lightgray;">
 
                 <span style="font-size:14px;">Grading System : </span>
                 <select name="grade_id" class="form-control" style=" width:25%;margin: 0px 10px 0 10px;">
@@ -346,7 +376,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 </select>
             </div>
 
-            <div style="display:flex;width:100%;">
+            <div style="display:flex;width:100%;padding: 20px 20px !important; background: lightgray;margin-top: 10px;">
 
                 <span style="font-size:14px;">Final Formula : </span>
                 <select name="final_formula" class="form-control" style=" width:25%;margin: 0px 10px 0 25px;">
