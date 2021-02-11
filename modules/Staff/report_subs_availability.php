@@ -38,50 +38,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->filterBy('allStaff', $allStaff)
         ->fromPOST();
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
     $form->setTitle(__('Filter'));
 
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_subs_availability.php');
+    $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/report_subs_availability.php');
 
     $row = $form->addRow();
-        $row->addLabel('date', __('Date'));
-        $row->addDate('date')->setValue(Format::date($date));
+    $row->addLabel('date', __('Date'));
+    $row->addDate('date')->setValue(Format::date($date));
 
     $allDayOptions = [
         'Y' => __('All Day'),
         'N' => __('Time Span'),
     ];
     $row = $form->addRow();
-        $row->addLabel('allDay', __('When'));
-        $row->addSelect('allDay')->fromArray($allDayOptions)->selected($allDay);
-    
+    $row->addLabel('allDay', __('When'));
+    $row->addSelect('allDay')->fromArray($allDayOptions)->selected($allDay);
+
     $form->toggleVisibilityByClass('timeOptions')->onSelect('allDay')->when('N');
 
     $row = $form->addRow()->addClass('timeOptions');
-        $row->addLabel('timeStart', __('Time'));
-        $col = $row->addColumn('timeStart')->addClass('right inline');
-        $col->addTime('timeStart')
-            ->setClass('shortWidth')
-            ->isRequired()
-            ->setValue($timeStart);
-        $col->addTime('timeEnd')
-            ->chainedTo('timeStart')
-            ->setClass('shortWidth')
-            ->isRequired()
-            ->setValue($timeEnd);
+    $row->addLabel('timeStart', __('Time'));
+    $col = $row->addColumn('timeStart')->addClass('right inline');
+    $col->addTime('timeStart')
+        ->setClass('shortWidth')
+        ->isRequired()
+        ->setValue($timeStart);
+    $col->addTime('timeEnd')
+        ->chainedTo('timeStart')
+        ->setClass('shortWidth')
+        ->isRequired()
+        ->setValue($timeEnd);
 
     if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage.php')) {
         $row = $form->addRow();
-            $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
-            $row->addCheckbox('allStaff')->checked($allStaff);
+        $row->addLabel('allStaff', __('All Staff'))->description(__('Include all teaching staff.'));
+        $row->addCheckbox('allStaff')->checked($allStaff);
     }
 
     $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($pupilsight->session);
+    $row->addFooter();
+    $row->addSearchSubmit($pupilsight->session);
 
     echo $form->getOutput();
 
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
     $subs = $subGateway->queryAvailableSubsByDate($criteria, $date, $timeStart, $timeEnd);
 
-    
+
     // DATA TABLE
     $table = DataTable::createPaginated('subsManage', $criteria);
     $table->setTitle(__('Substitute Availability'));
@@ -114,10 +114,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
         ->format(function ($person) use ($guid) {
             $name = Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
             $url = !empty($person['pupilsightStaffID'])
-                ? $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&pupilsightPersonID='.$person['pupilsightPersonID']
+                ? $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Staff/staff_view_details.php&pupilsightPersonID=' . $person['pupilsightPersonID']
                 : '';
 
-            return Format::link($url, $name).'<br/>'.Format::small($person['type']);
+            return Format::link($url, $name) . '<br/>' . Format::small($person['type']);
         });
 
     $table->addColumn('details', __('Details'));
@@ -129,19 +129,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/report_subs_availabi
 
             if ($person['available']) {
                 if (!empty($person['email'])) {
-                    $output .= $person['email'].'<br/>';
+                    $output .= $person['email'] . '<br/>';
                 }
                 if (!empty($person['phone1'])) {
-                    $output .= Format::phone($person['phone1'], $person['phone1CountryCode'], $person['phone1Type']).'<br/>';
+                    $output .= Format::phone($person['phone1'], $person['phone1CountryCode'], $person['phone1Type']) . '<br/>';
                 }
             } else {
                 $reason = '';
-                if (!empty($person['absence'])) $reason .= __('Absent').' - '.$person['absence'].'<br/>';
-                if (!empty($person['coverage'])) $reason .= __('Covering').' - '.$person['coverage'].'<br/>';
-                if (!empty($person['timetable'])) $reason .= __('Teaching').' - '.$person['timetable'].'<br/>';
-                if (!empty($person['unavailable'])) $reason .= __($person['unavailable']).'<br/>';
+                if (!empty($person['absence'])) $reason .= __('Absent') . ' - ' . $person['absence'] . '<br/>';
+                if (!empty($person['coverage'])) $reason .= __('Covering') . ' - ' . $person['coverage'] . '<br/>';
+                if (!empty($person['timetable'])) $reason .= __('Teaching') . ' - ' . $person['timetable'] . '<br/>';
+                if (!empty($person['unavailable'])) $reason .= __($person['unavailable']) . '<br/>';
 
-                $output .= !empty($reason)? $reason : __('Not Available');
+                $output .= !empty($reason) ? $reason : __('Not Available');
             }
             return $output;
         });

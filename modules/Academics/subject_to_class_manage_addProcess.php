@@ -37,6 +37,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
             // $result1 = $connection2->prepare($sql1);
             // $result1->execute($data1);
 
+            $sqlsub = 'SELECT * FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID= '.$pupilsightSchoolYearID.' AND pupilsightProgramID= '.$pupilsightProgramID.' AND pupilsightYearGroupID= '.$pupilsightYearGroupID.' ';
+            $resultsub = $connection2->query($sqlsub);
+            $subData = $resultsub->fetchAll();
+
+            if(!empty($subData)){
+                foreach($subData as $sd){
+                    if (!in_array($sd['pupilsightDepartmentID'], $subId)) {
+                        //echo $sd['pupilsightDepartmentID'];
+                        $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID , 'pupilsightDepartmentID' => $sd['pupilsightDepartmentID']);
+                        $sql1 = 'DELETE FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID';
+                        $result1 = $connection2->prepare($sql1);
+                        $result1->execute($data1);
+                    }
+                }
+            }
+
+//die();
             foreach($subId as $sid){
                 $pupilsightDepartmentID = $sid;
                 $subject_code = $sub_code[$sid];

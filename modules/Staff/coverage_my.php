@@ -24,9 +24,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-    
+
     $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
-    
+
     $schoolYearGateway = $container->get(SchoolYearGateway::class);
     $staffCoverageGateway = $container->get(StaffCoverageGateway::class);
     $substituteGateway = $container->get(SubstituteGateway::class);
@@ -37,17 +37,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
     $criteria = $staffCoverageGateway->newQueryCriteria()
         ->sortBy('timeStart')
         ->filterBy('status:Accepted')
-        ->filterBy('dateStart:'.date('Y-m-d'))
-        ->filterBy('dateEnd:'.date('Y-m-d'))
+        ->filterBy('dateStart:' . date('Y-m-d'))
+        ->filterBy('dateEnd:' . date('Y-m-d'))
         ->fromPOST('staffCoverageToday');
 
     $todaysCoverage = $staffCoverageGateway->queryCoverageByPersonCovering($criteria, $pupilsightPersonID);
 
     if (count($todaysCoverage) > 0) {
-        $page->write('<h2>'.__("Today's Coverage").'</h2>');
+        $page->write('<h2>' . __("Today's Coverage") . '</h2>');
 
         foreach ($todaysCoverage as $coverage) {
-            $status = Format::dateRangeReadable($coverage['dateStart'], $coverage['dateEnd']).' - ';
+            $status = Format::dateRangeReadable($coverage['dateStart'], $coverage['dateEnd']) . ' - ';
             $status .= $coverage['allDay'] == 'Y'
                 ? __('All Day')
                 : Format::timeRange($coverage['timeStart'], $coverage['timeEnd']);
@@ -87,10 +87,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         $table->addMetaData('filterOptions', [
             'date:upcoming'    => __('Upcoming'),
             'date:past'        => __('Past'),
-            'status:requested' => __('Status').': '.__('Requested'),
-            'status:accepted'  => __('Status').': '.__('Accepted'),
-            'status:declined'  => __('Status').': '.__('Declined'),
-            'status:cancelled' => __('Status').': '.__('Cancelled'),
+            'status:requested' => __('Status') . ': ' . __('Requested'),
+            'status:accepted'  => __('Status') . ': ' . __('Accepted'),
+            'status:declined'  => __('Status') . ': ' . __('Declined'),
+            'status:cancelled' => __('Status') . ': ' . __('Cancelled'),
         ]);
 
         $table->addColumn('status', __('Status'))
@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
                     $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Staff/coverage_view_edit.php');
                 }
-                    
+
                 if ($coverage['status'] == 'Requested' || ($coverage['status'] == 'Accepted' && $coverage['dateEnd'] < date('Y-m-d'))) {
                     $actions->addAction('cancel', __('Cancel'))
                         ->setIcon('iconCross')
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
             ->setIcon('planner')
             ->displayLabel();
 
-        echo $table->getOutput().'<br/>';
+        echo $table->getOutput() . '<br/>';
 
         // QUERY
         $criteria = $staffCoverageGateway->newQueryCriteria()
@@ -179,10 +179,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
         $table->addMetaData('filterOptions', [
             'date:upcoming'    => __('Upcoming'),
             'date:past'        => __('Past'),
-            'status:requested' => __('Status').': '.__('Requested'),
-            'status:accepted'  => __('Status').': '.__('Accepted'),
-            'status:declined'  => __('Status').': '.__('Declined'),
-            'status:cancelled' => __('Status').': '.__('Cancelled'),
+            'status:requested' => __('Status') . ': ' . __('Requested'),
+            'status:accepted'  => __('Status') . ': ' . __('Accepted'),
+            'status:declined'  => __('Status') . ': ' . __('Declined'),
+            'status:cancelled' => __('Status') . ': ' . __('Cancelled'),
         ]);
 
         $table->addColumn('status', __('Status'))
@@ -200,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_my.php') ==
             ->width('30%')
             ->sortable(['surname', 'preferredName'])
             ->format([AbsenceFormats::class, 'personDetails']);
-            
+
         $table->addColumn('notesStatus', __('Comment'))
             ->format(function ($coverage) {
                 return Format::truncate($coverage['notesStatus'], 60);

@@ -15,19 +15,18 @@ include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
 
 require __DIR__ . '/moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Staff/import_staff_run.php';
+$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Staff/import_staff_run_debug.php';
 
 if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php") == false) {
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    //Edited by : Mandeep, Reason : added recomended way for displaying notification
-    if (isset($_GET['return'])) {
+    /*if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
-    }
+    }*/
 
     $page->breadcrumbs->add(__('Staff Import'));
-    $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run.php');
+    $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run_debug.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -41,15 +40,19 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
     $row->addSubmit();
 
     echo $form->getOutput();
+    //print_r($_POST);
+    //print_r($_FILES['file']);
 
 
     if ($_POST) {
+
         $handle = fopen($_FILES['file']['tmp_name'], "r");
         $headers = fgetcsv($handle, 10000, ",");
         $hders = array();
-        // echo '<pre>';
-        // print_r($headers);
-        // echo '</pre>';
+        //echo '<pre>';
+        //print_r($headers);
+        //echo '</pre>';
+        //die();
         $chkHeaderKey = array();
         foreach ($headers as $key => $hd) {
 
@@ -91,7 +94,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 $headers[$key] = '##_nationalIDCardNumber';
             } else {
 
-                $sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
+                $sqlchk = "SELECT field_name, modules FROM custom_field WHERE field_title = '" . $hd . "' and  find_in_set('staff',modules)";
                 $resultchk = $connection2->query($sqlchk);
                 $cd = $resultchk->fetch();
                 $modules = explode(',', $cd['modules']);
@@ -102,7 +105,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 }
 
                 $page->breadcrumbs->add(__('Staff Import'));
-                $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run.php');
+                $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run_debug.php');
             }
         }
 
@@ -129,10 +132,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
             $salt = getSaltNew();
             $pass = 'Admin@123456';
             $password = hash('sha256', $salt . $pass);
-            // echo '<pre>';
-            // print_r($all_rows);
-            // echo '</pre>';
-            // die();
+            //echo '<pre>';
+            //print_r($all_rows);
+            //echo '</pre>';
+            //die();
             try {
                 $cnt = 0;
                 $dcnt = 0;
@@ -216,7 +219,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 $exception_count++;
             }
         }
-        die();
+
         fclose($handle);
         echo "\n<a href='" . $URL . "'>Back</a>\n<br>";
         if ($exception_result) {
@@ -235,8 +238,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
 
 
         //fclose($handle);
-
+        die();
         $URL .= '&return=success1';
         header("Location: {$URL}");
     }
+
+    //die();
 }

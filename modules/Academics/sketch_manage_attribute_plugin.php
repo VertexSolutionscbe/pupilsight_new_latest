@@ -28,6 +28,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $resultchk = $connection2->query($sqlchk);
     $chkdata = $resultchk->fetch();
 
+    $sqlst = "SELECT * FROM pupilsightDepartmentType ORDER BY id ASC";
+    $resultst = $connection2->query($sqlst);
+    $subTypeData = $resultst->fetchAll();
+
     if($chkdata['attribute_category'] == 'Entity'){
     
     echo '<h3>';
@@ -47,6 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $sqlf = "SELECT * FROM examinationReportTemplateFormula ORDER BY pos ASC";
     $resultf = $connection2->query($sqlf);
     $formuladata = $resultf->fetchAll();
+
+    
     //print_r($labeldata);
 
 ?> 
@@ -87,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                             </select>
                                     <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" readonly>
                         </td>
-                        <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="fas fa-plus-square"></i></a>  </td>
+                        <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  </td>
                     </tr>
                     
                 <?php       
@@ -95,6 +101,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 ?>
             </tbody>
         </table>
+        <?php if($chkdata['attribute_type'] == 'Subject Teacher') { ?>
+        <div style="padding: 20px 20px !important; background: lightgray;">
+                    <a style="display:none" href='fullscreen.php?q=/modules/Academics/select_subject_for_sketch.php&skid=<?php echo $chkdata['sketch_id'];?>&width=400'  class='thickbox ' id="clickSelSubject">SelectSubject</a>
+                    <input type="hidden" id="selectedSubject" name="subject_val_id" value="">
+                    <input type="radio" class="selSubject" name="subject_type" value="All Subject"> All Subject
+                    <input type="radio" class="selSubject" name="subject_type" value="Select Subject"> Select Subject
+                    <?php if(!empty($subTypeData)) { 
+                        foreach($subTypeData as $std) { ?>
+                    <input type="radio" class="selSubject" name="subject_type" value="<?php echo $std['name'];?>"> <?php echo $std['name'];?>
+                    <?php } } ?>
+        </div>
+        <?php } else { ?>
+            <input type="hidden" name="subject_val_id" value="">
+            <input type="hidden" name="subject_type" value="">
+        <?php } ?>
     </div>    
     </form>
 			
@@ -169,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                 </select>
                                         <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" readonly>
                             </td>
-                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="fas fa-plus-square"></i></a>  </td>
+                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  </td>
                         </tr>
                         
                     <?php       
@@ -177,8 +198,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     ?>
                 </tbody>
             </table>
+            <div style="padding: 20px 20px !important; background: lightgray;">
+                    
+                    <a style="display:none" href='fullscreen.php?q=/modules/Academics/select_subject_for_sketch.php&skid=<?php echo $chkdata['sketch_id'];?>&width=400'  class='thickbox ' id="clickSelSubject">SelectSubject</a>
+                    <input type="hidden" id="selectedSubject" name="subject_val_id" value="">
+                    <input type="radio" class="selSubject" name="subject_type" value="All Subject"> All Subject
+                    <input type="radio" class="selSubject" name="subject_type" value="Select Subject"> Select Subject
+                    <?php if(!empty($subTypeData)) { 
+                        foreach($subTypeData as $std) { ?>
+                    <input type="radio" class="selSubject" name="subject_type" value="<?php echo $std['name'];?>"> <?php echo $std['name'];?>
+                    <?php } } ?>
+
+                    <select class="form-control" name="subject_display_type" style="width:20%">
+                            <option value="1">SUBJECTS ONLY</option>
+                            <option value="2">SKILLS ONLY</option>
+                            <option value="3">SUBJECTS AND SKILLS</option>
+                    </select>
+            </div>
+
+            <div style="display:flex;width:100%; padding: 20px 20px !important; background: lightgray;margin-top: 10px;">
+
+                <span style="font-size:14px;">Final Formula : </span>
+                <select name="final_formula" class="form-control" style=" width:25%;margin: 0px 10px 0 25px;">
+                    <option value="">AS IS</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Average">Average</option>
+                    <option value="Best_of_Sum">Best of Sum</option>
+                    <option value="Best_of_Average">Best of Average</option>
+                    <option value="Best_of_All">Best of All</option>
+                    <!-- <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option>
+                    <option value="Sum">Sum</option> -->
+                </select>
+
+                <span style="font-size:14px;">Final Plugin : </span>
+                <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id'];?>"><i style="font-size: 20px;" title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>
+            </div>
+
             <?php if($chkdata['attribute_type'] == 'Grade') { ?>
-            <div style="display:flex;width:100%; margin-bottom:10px;">
+            <div style="display:flex;width:100%; margin-bottom:10px;padding: 20px 20px !important; background: lightgray;">
 
                 <span style="font-size:14px;">Grading System : </span>
                 <select name="grade_id" class="form-control" style=" width:25%;margin: 0px 10px 0 10px;">
@@ -283,7 +347,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                 </select>
                                         <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="<?php echo $formulamapdata['formula_val'];?>" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" <?php if(empty($formulamapdata['formula_val'])) { ?>readonly <?php } ?>>
                             </td>
-                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="fas fa-plus-square"></i></a>   <?php echo $attrdata['pluginname'];?></td>
+                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>   <?php echo $attrdata['pluginname'];?></td>
                         </tr>
                         
                     <?php       
@@ -291,7 +355,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     ?>
                 </tbody>
             </table>
-            <div style="display:flex;width:100%; margin-bottom:10px;">
+            <div style="display:flex;width:100%; margin-bottom:10px;padding: 20px 20px !important; background: lightgray;">
 
                 <span style="font-size:14px;">Grading System : </span>
                 <select name="grade_id" class="form-control" style=" width:25%;margin: 0px 10px 0 10px;">
@@ -312,7 +376,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 </select>
             </div>
 
-            <div style="display:flex;width:100%;">
+            <div style="display:flex;width:100%;padding: 20px 20px !important; background: lightgray;margin-top: 10px;">
 
                 <span style="font-size:14px;">Final Formula : </span>
                 <select name="final_formula" class="form-control" style=" width:25%;margin: 0px 10px 0 25px;">
@@ -334,7 +398,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 </select>
 
                 <span style="font-size:14px;">Final Plugin : </span>
-                <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id'];?>"><i style="font-size: 20px;" title="Add Plugin" class="fas fa-plus-square"></i></a>
+                <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id'];?>"><i style="font-size: 20px;" title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>
             </div>
         </div>    
         </form>
@@ -366,5 +430,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         $("#myTable tbody tr").filter(function() {
         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
+    });
+
+    $(document).on('change', '.selSubject', function() {
+        var val = $(this).val();
+        if(val == 'Select Subject'){
+            $("#clickSelSubject")[0].click();
+        } else {
+            $("#selectedSubject").val('');
+        }
+       
     });
 </script>

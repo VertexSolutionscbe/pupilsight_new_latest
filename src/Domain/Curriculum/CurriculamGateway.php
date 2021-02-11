@@ -585,7 +585,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
             ->newQuery()
             ->from('examinationSubjectToTest')
             ->cols([
-                        'examinationSubjectToTest.*','examinationTest.name','examinationTest.lock_marks_entry','examinationGradeSystemConfiguration.gradeSystemId',"GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name SEPARATOR ', ') as grade_names","GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id SEPARATOR ', ') as grade_ids",'subjectToClassCurriculum.subject_type', 'pupilsightDepartment.name AS subject'
+                        'examinationSubjectToTest.*','examinationTest.name','examinationTest.lock_marks_entry','examinationGradeSystemConfiguration.gradeSystemId',"GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name SEPARATOR ', ') as grade_names","GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id SEPARATOR ', ') as grade_ids",'subjectToClassCurriculum.subject_type', 'pupilsightDepartment.name AS subject','subjectToClassCurriculum.pos'
                     ])
             ->leftJoin('examinationTest', 'examinationSubjectToTest.test_id=examinationTest.id')
             ->leftJoin('pupilsightDepartment', 'examinationSubjectToTest.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')     
@@ -594,11 +594,12 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
 
             ->where('examinationSubjectToTest.is_tested ="1"')
             ->where('examinationSubjectToTest.test_id ="'.$testId.'"')
+            ->where('subjectToClassCurriculum.pupilsightSchoolYearID ="'.$pupilsightSchoolYearID.'"')
             ->where('subjectToClassCurriculum.pupilsightProgramID ="'.$pupilsightProgramID.'"')
             ->where('subjectToClassCurriculum.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'"')
             ->groupBy(['examinationSubjectToTest.pupilsightDepartmentID'])
             ->orderBy(['subjectToClassCurriculum.pos ASC']);
-           // echo $query;
+            //echo $query;
             $res = $this->runQuery($query, $criteria);
             $data = $res->data;
 
@@ -996,23 +997,24 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
     public function getStaffName($pupilsightYearGroupID=NULL, $pupilsightRollGroupID=NULL, $pupilsightDepartmentID=NULL){
         
         if(!empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)){
+           
+
             $db = new DBQuery();
-            $sq = 'SELECT GROUP_CONCAT(p.officialName) as staff FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff as s on a.pupilsightStaffID=s.pupilsightStaffID LEFT JOIN pupilsightPerson as p on s.pupilsightPersonID=p.pupilsightPersonID WHERE a.pupilsightdepartmentID = '.$pupilsightDepartmentID.' ';
-            //echo $sq;
+            $sq = "select group_concat(p.pupilsightPersonID) as staffID from assignstaff_toclasssection as a ";
+            $sq .="left join pupilsightProgramClassSectionMapping as m on m.pupilsightMappingID = a.pupilsightMappingID ";
+            $sq .="left join pupilsightPerson as p on p.pupilsightPersonID=a.pupilsightPersonID ";
+            $sq .="where m.pupilsightYearGroupID = '".$pupilsightYearGroupID."' and m.pupilsightRollGroupID='".$pupilsightRollGroupID."' ";
             $row = $db->selectRaw($sq);
             if(!empty($row)){
-                return $row[0]["staff"];
+                $staffIds =  $row[0]["staffID"];
+                $db = new DBQuery();
+                $sq = 'SELECT GROUP_CONCAT(p.officialName) as staff FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff as s on a.pupilsightStaffID=s.pupilsightStaffID LEFT JOIN pupilsightPerson as p on s.pupilsightPersonID=p.pupilsightPersonID WHERE a.pupilsightdepartmentID = '.$pupilsightDepartmentID.' AND p.pupilsightPersonID IN ('.$staffIds.') ';
+                //echo $sq;
+                $row = $db->selectRaw($sq);
+                if(!empty($row)){
+                    return $row[0]["staff"];
+                }
             }
-
-            // $db = new DBQuery();
-            // $sq = "select group_concat(p.officialName) as staff from assignstaff_toclasssection as a ";
-            // $sq .="left join pupilsightProgramClassSectionMapping as m on m.pupilsightMappingID = a.pupilsightMappingID ";
-            // $sq .="left join pupilsightPerson as p on p.pupilsightPersonID=a.pupilsightPersonID ";
-            // $sq .="where m.pupilsightYearGroupID = '".$pupilsightYearGroupID."' and m.pupilsightRollGroupID='".$pupilsightRollGroupID."' ";
-            // $row = $db->selectRaw($sq);
-            // if(!empty($row)){
-            //     return $row[0]["staff"];
-            // }
         }
         return "";
         
@@ -1174,6 +1176,22 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
                 'examinationReportTemplateMaster.*'
             ])
             ->orderby(['examinationReportTemplateMaster.id DESC']);
+
+        return $this->runQuery($query, $criteria, true);
+    }
+
+    public function getSketchTemplate(QueryCriteria $criteria, $id)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('examinationReportSketchTemplateMaster')
+            ->cols([
+                'examinationReportSketchTemplateMaster.*','pupilsightProgram.name as progName','pupilsightYearGroup.name as clsName'
+            ])
+            ->leftJoin('pupilsightYearGroup', 'examinationReportSketchTemplateMaster.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightProgram', 'examinationReportSketchTemplateMaster.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->where('examinationReportSketchTemplateMaster.sketch_id = "' . $id . '" ')
+            ->orderby(['examinationReportSketchTemplateMaster.id DESC']);
 
         return $this->runQuery($query, $criteria, true);
     }

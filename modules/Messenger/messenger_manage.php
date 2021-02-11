@@ -76,18 +76,18 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 			if ($highestAction == "Manage Messages_all") {
 				if ($search == "") {
 					$data = array();
-					$sql = "SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) ORDER BY timestamp DESC";
+					$sql = "SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) ORDER BY timestamp DESC";
 				} else {
 					$data = array("search1" => "%$search%", "search2" => "%$search%");
-					$sql = "SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC";
+					$sql = "SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC";
 				}
 			} else {
 				if ($search == "") {
 					$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"]);
-					$sql = "SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID ORDER BY timestamp DESC";
+					$sql = "SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID ORDER BY timestamp DESC";
 				} else {
 					$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "search1" => "%$search%", "search2" => "%$search%");
-					$sql = "SELECT pupilsightMessenger.*, pupilsightPerson.title, pupilsightPerson.surname, pupilsightPerson.preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC";
+					$sql = "SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC";
 				}
 			}
 			$result = $connection2->prepare($sql);
@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 			}
 			print "</div>";
 		}
-
+		echo "<br>";
 		if ($result->rowCount() < 1) {
 			print "<div class='alert alert-danger'>";
 			print __("There are no records to display.");
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]["pagination"], "top", "&search=$search");
 			}
 
-			print "<table cellspacing='0' class='table display data-table text-nowrap' style='width: 100%'>";
+			print "<table cellspacing='0' class='table display data-table text-nowrap mt-3' style='width: 100%'>";
 			print '<thead>';
 			print "<tr class='head'>";
 			print "<th>";
@@ -149,9 +149,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 			print "<th>";
 			print __("SMS");
 			print "</th>";
-			print "<th style='width: 120px'>";
-			print __("Actions");
-			print "</th>";
+			/*print "<th style='width: 120px'>" ;
+						print __("Actions") ;
+					print "</th>" ;*/
 			print "</tr>";
 			print '</thead>';
 
@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				}
 				print "</td>";
 				print "<td>";
-				print formatName($row["title"], $row["preferredName"], $row["surname"], $row["pupilsightRole.category"]);
+				print formatName($row["title"], $row["preferredName"], $row["surname"], $row["category"]);
 				print "</td>";
 				print "<td>";
 				try {
@@ -263,7 +263,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 							$rowTarget = $resultTarget->fetch();
 							$targets .= "<b>" . __($rowTargets["type"]) . "</b> - " . __($rowTarget["name"]) . "<br/>";
 						}
-					} else if ($rowTargets["type"] == "Role pupilsightRole.category") {
+					} else if ($rowTargets["type"] == "Role Category") {
 						$targets .= "<b>" . __($rowTargets["type"]) . "</b> - " . __($rowTargets["id"]) . "<br/>";
 					} else if ($rowTargets["type"] == "Roll Group") {
 						try {
@@ -377,25 +377,29 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 								<i class='mdi mdi-close mdi-24px' title='" . __('Not sent by sms.') . "'></i>";
 				}
 				print "</td>";
-				print "<td>";
-				print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
-				print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><i title='" . __('Delete') . "' class='mdi mdi-trash-can-outline mdi-24px px-2'></i></a> ";
-				print "<script type='text/javascript'>";
-				print "$(document).ready(function(){";
-				print "\$(\".comment-$count\").hide();";
-				print "\$(\".show_hide-$count\").fadeIn(1000);";
-				print "\$(\".show_hide-$count\").click(function(){";
-				print "\$(\".comment-$count\").fadeToggle(1000);";
-				print "});";
-				print "});";
-				print "</script>";
-				if (is_null($row["emailReceipt"]) == false) {
-					print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Messenger/messenger_manage_report.php&pupilsightMessengerID=" . $row['pupilsightMessengerID'] . "&sidebar=true&search=$search'><i title='" . __('View Send Report') . "' class='fas fa-dot-circle px-2'></i></a>";
-				}
-				if ($row["smsReport"] != "" or $row["emailReport"] != "") {
-					print "<a title='" . __('Show Comment') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["pupilsightThemeName"] . "/img/page_down.png' alt='" . __('Show Comment') . "' onclick='return false;' /></a>";
-				}
-				print "</td>";
+				/*print "<td>" ;
+                    if ($row["sms"]=="Y" || $row["email"]=="Y") {
+                        //print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
+                    }else{
+                        print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
+					}
+							print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><i title='" . __('Delete') . "' class='mdi mdi-trash-can-outline mdi-24px px-2'></i></a> " ;
+							print "<script type='text/javascript'>" ;
+								print "$(document).ready(function(){" ;
+									print "\$(\".comment-$count\").hide();" ;
+									print "\$(\".show_hide-$count\").fadeIn(1000);" ;
+									print "\$(\".show_hide-$count\").click(function(){" ;
+									print "\$(\".comment-$count\").fadeToggle(1000);" ;
+									print "});" ;
+								print "});" ;
+							print "</script>" ;
+							if (is_null($row["emailReceipt"]) == false) {
+								print "<a href='".$_SESSION[$guid]["absoluteURL"]."/index.php?q=/modules/Messenger/messenger_manage_report.php&pupilsightMessengerID=".$row['pupilsightMessengerID']."&sidebar=true&search=$search'><i title='" . __('View Send Report') . "' class='fas fa-dot-circle px-2'></i></a>" ;
+							}
+							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
+								print "<a title='" . __('Show Comment') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["pupilsightThemeName"] . "/img/page_down.png' alt='" . __('Show Comment') . "' onclick='return false;' /></a>" ;
+							}
+						print "</td>" ;*/
 				print "</tr>";
 				if ($row["smsReport"] != "" or $row["emailReport"] != "") {
 					print "<tr class='comment-$count' id='comment-$count'>";

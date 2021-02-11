@@ -70,11 +70,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
     $row = $form->addRow();
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
-    $col->addSelect('pupilsightSchoolYearID')->fromArray($academicData)->required()->selected($pupilsightSchoolYearID); 
+    $col->addSelect('pupilsightSchoolYearID')->setId('pupilsightSchoolYearIDbyPPCopy')->fromArray($academicData)->required()->selected($pupilsightSchoolYearID); 
     
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
-    $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->required()->placeholder('Select Program');
+    $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPPCopy')->fromArray($program)->required()->placeholder('Select Program');
 
 
     // $col = $row->addColumn()->setClass('newdes');
@@ -83,11 +83,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
     
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
-    $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->placeholder('Select Class')->selectMultiple()->required();
+    $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPPCopy')->placeholder('Select Class')->selectMultiple()->required();
 
-    // $col = $row->addColumn()->setClass('newdes ');
-    // $col->addLabel('pupilsightRollGroupID', __('Section'));
-    // $col->addSelect('pupilsightRollGroupID', $pupilsightSchoolYearID)->setId('pupilsightRollGroupIDbyPP')->required()->placeholder('Select Section');
+    $col = $row->addColumn()->setClass('newdes ');
+    $col->addLabel('test_master_id', __('Test Master'))->addClass('dte');
+    $col->addSelect('test_master_id')->required()->placeholder('Select Test Master')->selectMultiple();
     
 
     // $col = $row->addColumn()->setClass('newdes');
@@ -117,6 +117,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
 
 </style>
 <script>
+    $(document).ready(function () {
+      	$('#pupilsightYearGroupIDbyPPCopy').selectize({
+      		plugins: ['remove_button'],
+        });
+        
+        $('#test_master_id').selectize({
+      		plugins: ['remove_button'],
+      	});
 
+    });
+
+    $(document).on('change', '#pupilsightProgramIDbyPPCopy', function () {
+        var id = $(this).val();
+        var type = 'getClass';
+        $('#pupilsightYearGroupIDbyPPCopy').selectize()[0].selectize.destroy();
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type },
+            async: true,
+            success: function (response) {
+                $("#pupilsightYearGroupIDbyPPCopy").html();
+                $("#pupilsightYearGroupIDbyPPCopy").html(response);
+                $('#pupilsightYearGroupIDbyPPCopy').selectize({
+                    plugins: ['remove_button'],
+                });
+            }
+        });
+    });
+
+    $(document).on('change', '#pupilsightYearGroupIDbyPPCopy', function () {
+        var id = $(this).val();
+        var aid = $('#pupilsightSchoolYearIDbyPPCopy').val();
+        var pid = $('#pupilsightProgramIDbyPPCopy').val();
+        var type = 'getCopyTestByClassProgram';
+        $('#test_master_id').selectize()[0].selectize.destroy();
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type, pid: pid, aid: aid },
+            async: true,
+            success: function (response) {
+                $("#test_master_id").html();
+                $("#test_master_id").html(response);
+                $('#test_master_id').selectize({
+                    plugins: ['remove_button'],
+                });
+            }
+        });
+    });
 
 </script>

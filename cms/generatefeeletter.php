@@ -7,7 +7,7 @@ $adminlib = new adminlib();
 
 
 $aid = $_GET['aid'];
-//$pid = $_GET['pid'];
+$tid = $_GET['tid'];
 $sid = $_GET['sid'];
 
 //error_reporting(E_ALL);
@@ -16,8 +16,9 @@ $studentId = explode(',', $sid);
 $sqlchk = 'SELECT pupilsightProgramID, pupilsightYearGroupID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = ' . $sid . ' ';
 $pro = database::doSelectOne($sqlchk);
 
-$sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoolYearID = " . $aid . " AND pupilsightProgramID = " . $pro['pupilsightProgramID'] . " AND type = 'Fee Letter' AND FIND_IN_SET('" . $pro['pupilsightYearGroupID'] . "', classIds) ";
+// $sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE pupilsightSchoolYearID = " . $aid . " AND pupilsightProgramID = " . $pro['pupilsightProgramID'] . " AND type = 'Fee Letter' AND FIND_IN_SET('" . $pro['pupilsightYearGroupID'] . "', classIds) ";
 
+$sqlpt = "SELECT path, filename FROM pupilsightDocTemplate WHERE id = " . $tid . " ";
 $valuept = database::doSelectOne($sqlpt);
 
 $file = $valuept['path'];

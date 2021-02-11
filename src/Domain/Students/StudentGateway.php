@@ -27,7 +27,7 @@ class StudentGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryStudentsBySchoolYear(QueryCriteria $criteria, $pupilsightSchoolYearID = NULL, $searchFamilyDetails = false, $pupilsightProgramID = NULL, $pupilsightYearGroupID = NULL, $pupilsightRollGroupID = NULL, $search = NULL)
+    public function queryStudentsBySchoolYear(QueryCriteria $criteria, $pupilsightSchoolYearID = NULL, $searchFamilyDetails = false, $pupilsightProgramID = NULL, $pupilsightYearGroupID = NULL, $pupilsightRollGroupID = NULL, $search = NULL, $customFieldNames = NULL)
     {
         //print_r($_SESSION['student_search']);
         if (!empty($_SESSION['student_search'])) {
@@ -53,12 +53,16 @@ class StudentGateway extends QueryableGateway
         pupilsightPerson.languageFirst, pupilsightPerson.languageSecond, pupilsightPerson.languageThird, pupilsightPerson.religion`;
 */
 
+        
+
         $query = $this
             ->newQuery()
             ->distinct()
             ->from('pupilsightPerson')
             ->cols([
-                "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightStudentEnrolmentID', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program', 'parent1.officialName as fatherName', 'parent1.email as fatherEmail', 'parent1.phone1 as fatherPhone', 'parent2.officialName as motherName', 'parent2.email as motherEmail', 'parent2.phone1 as motherPhone', 'pupilsightPerson.*'
+                "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightStudentEnrolmentID', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program', 'parent1.officialName as fatherName', 'parent1.email as fatherEmail', 'parent1.phone1 as fatherPhone', 'parent2.officialName as motherName', 'parent2.email as motherEmail', 'parent2.phone1 as motherPhone', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.admission_no',
+                'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.officialName', 'pupilsightPerson.dob', 'pupilsightPerson.gender', 'pupilsightPerson.username', 'pupilsightPerson.phone1', 'pupilsightPerson.email', 'pupilsightPerson.address1', 'pupilsightPerson.address1District', 'pupilsightPerson.address1Country',
+                'pupilsightPerson.languageFirst', 'pupilsightPerson.languageSecond', 'pupilsightPerson.languageThird', 'pupilsightPerson.religion', 'pupilsightPerson.active',$customFieldNames
             ])
             ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID AND pupilsightStudentEnrolment.pupilsightSchoolYearID = :pupilsightSchoolYearID')
             ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
@@ -120,8 +124,8 @@ class StudentGateway extends QueryableGateway
         $query->where('pupilsightPerson.is_delete = "0" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
-        //echo $query;
-        //die();
+        // echo $query;
+        // die();
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
         return $this->runQuery($query, $criteria, TRUE);
@@ -704,6 +708,63 @@ class StudentGateway extends QueryableGateway
         $query->orderBy(['pupilsightStudentTcTaken.id DESC']);
         // echo $query;
         // die();
+        return $this->runQuery($query, $criteria, TRUE);
+    }
+
+
+    public function getAllStudentData(QueryCriteria $criteria, $pupilsightSchoolYearID = NULL, $searchFamilyDetails = false, $pupilsightProgramID = NULL, $pupilsightYearGroupID = NULL, $pupilsightRollGroupID = NULL, $search = NULL)
+    {
+        //print_r($_SESSION['student_search']);
+        if (!empty($_SESSION['student_search'])) {
+            $pupilsightProgramID = $_SESSION['student_search']['pupilsightProgramID'];
+            $pupilsightYearGroupID = $_SESSION['student_search']['pupilsightYearGroupID'];
+            $pupilsightRollGroupID = $_SESSION['student_search']['pupilsightRollGroupID'];
+        }
+
+        
+        $query = $this
+            ->newQuery()
+            ->distinct()
+            ->from('pupilsightPerson')
+            ->cols([
+                "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightStudentEnrolmentID', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder',  'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.admission_no',
+                'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.officialName', 'pupilsightPerson.dob', 'pupilsightPerson.gender', 'pupilsightPerson.username', 'pupilsightPerson.phone1', 'pupilsightPerson.email', 'pupilsightPerson.active'
+            ])
+            ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+            ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+            ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+            ->leftJoin('pupilsightProgram', 'pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID');
+
+        
+        $query->where('pupilsightPerson.pupilsightRoleIDPrimary = "003" ');
+        if (!empty($pupilsightSchoolYearID)) {
+            $query->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
+        }
+        if (!empty($pupilsightProgramID)) {
+            $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
+        }
+
+        if (!empty($pupilsightYearGroupID)) {
+            $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
+        }
+        if (!empty($pupilsightRollGroupID)) {
+            $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
+        }
+
+        if (!empty($search)) {
+            $query->where('pupilsightPerson.officialName LIKE "%' . $search . '%" ');
+        }
+
+
+
+        $query->where('pupilsightPerson.is_delete = "0" ')
+            ->groupBy(['pupilsightPerson.pupilsightPersonID'])
+            ->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
+        //echo $query;
+        //die();
+        $criteria->addFilterRules($this->getSharedUserFilterRules());
+
         return $this->runQuery($query, $criteria, TRUE);
     }
 }

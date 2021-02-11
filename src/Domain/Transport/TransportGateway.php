@@ -36,10 +36,11 @@ class TransportGateway extends QueryableGateway
             ->newQuery()
             ->from('trans_routes')
             ->cols([
-                'trans_routes.*','trans_bus_details.name as busname','COUNT(trans_route_stops.id) as totalstops'
+                'trans_routes.*','pupilsightSchoolYear.name as year','trans_bus_details.name as busname','COUNT(trans_route_stops.id) as totalstops'
             ])
             ->leftJoin('trans_bus_details', 'trans_routes.bus_id=trans_bus_details.id')
             ->leftJoin('trans_route_stops', 'trans_routes.id=trans_route_stops.route_id')
+            ->leftJoin('pupilsightSchoolYear', 'trans_routes.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
             ->groupby(['trans_routes.id'])
             ->orderby(['id DESC']);
         return $this->runQuery($query, $criteria, TRUE);
@@ -276,7 +277,7 @@ class TransportGateway extends QueryableGateway
                 $query->where('pupilsightPerson.officialName LIKE "%'.$search.'%" ');
             } 
             $query->where('pupilsightPerson.pupilsightRoleIDAll IN ('.$pupilsightRoleIDAll.') ')
-                ->where('trans_route_assign.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
+                //->where('trans_route_assign.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
                 ->groupBy(['pupilsightPerson.pupilsightPersonID'])
                 ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
           // echo $query;
@@ -659,7 +660,7 @@ class TransportGateway extends QueryableGateway
         ->where('trans_route_price.schedule_id = :schedule_id')            
         ->bindValue('schedule_id', $schedule_id);
         return $this->runQuery($query, $criteria, TRUE);
-    }    
+    }
     
     
     public function getchildData(QueryCriteria $criteria , $inputdata)

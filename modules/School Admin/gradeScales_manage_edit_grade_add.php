@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+            echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
         }
 
         if ($result->rowCount() != 1) {
@@ -42,40 +42,40 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 
             $editLink = '';
             if (isset($_GET['editID'])) {
-                $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/School Admin/gradeScales_manage_edit_grade_edit.php&pupilsightScaleGradeID='.$_GET['editID']."&pupilsightScaleID=$pupilsightScaleID";
+                $editLink = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/School Admin/gradeScales_manage_edit_grade_edit.php&pupilsightScaleGradeID=' . $_GET['editID'] . "&pupilsightScaleID=$pupilsightScaleID";
             }
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], $editLink, null);
             }
 
-            $form = Form::create('gradeScaleGradeAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_edit_grade_addProcess.php');
+            $form = Form::create('gradeScaleGradeAdd', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/gradeScales_manage_edit_grade_addProcess.php');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('pupilsightScaleID', $pupilsightScaleID);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('Grade Scale'));
-                $row->addTextField('name')->readonly()->setValue($values['name']);
+            $row->addLabel('name', __('Grade Scale'));
+            $row->addTextField('name')->readonly()->setValue($values['name']);
 
             $row = $form->addRow();
-                $row->addLabel('value', __('Value'))->description(__('Must be unique for this grade scale.'));
-                $row->addTextField('value')->required()->maxLength(10);
+            $row->addLabel('value', __('Value'))->description(__('Must be unique for this grade scale.'));
+            $row->addTextField('value')->required()->maxLength(10);
 
             $row = $form->addRow();
-                $row->addLabel('descriptor', __('Descriptor'));
-                $row->addTextField('descriptor')->required()->maxLength(50);
+            $row->addLabel('descriptor', __('Descriptor'));
+            $row->addTextField('descriptor')->required()->maxLength(50);
 
             $row = $form->addRow();
-                $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique for this grade scale.'));
-                $row->addNumber('sequenceNumber')->required()->maxLength(5);
+            $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique for this grade scale.'));
+            $row->addNumber('sequenceNumber')->required()->maxLength(5);
 
             $row = $form->addRow();
-                $row->addLabel('isDefault', __('Is Default?'))->description(__('Preselects this option when using this grade scale in appropriate contexts.'));
-                $row->addYesNo('isDefault')->required()->selected('N');
+            $row->addLabel('isDefault', __('Is Default?'))->description(__('Preselects this option when using this grade scale in appropriate contexts.'));
+            $row->addYesNo('isDefault')->required()->selected('N');
 
             $row = $form->addRow();
-                $row->addFooter();
-                $row->addSubmit();
+            $row->addFooter();
+            $row->addSubmit();
 
             echo $form->getOutput();
         }

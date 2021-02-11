@@ -4,6 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 
 include '../../pupilsight.php';
+
 use Pupilsight\Contracts\Comms\Mailer;
 
 $input = json_decode($data, true);
@@ -23,4 +24,3 @@ $mail->IsHTML(true);
 $mail->Subject = $subject;
 $mail->Body = $body;
 $mail->Send();
-

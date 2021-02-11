@@ -188,12 +188,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+            $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
+            //$col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightYearGroupID', __('Class'));
-            $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class')->required();
+            $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
+            //$col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
 
 
             $col = $row->addColumn()->setClass('newdes');
@@ -236,9 +238,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                 echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-primary'>Student Enrollment</a>&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-primary'>Remove Enrollment</a>&nbsp;&nbsp;<a   class='btn btn-primary' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>";
 
-                echo "&nbsp;&nbsp;<i style='cursor:pointer' id='expore_student_xl' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
+                // echo "&nbsp;&nbsp;<i style='cursor:pointer' id='expore_student_xl' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
 
-                echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
+                echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' id='expore_student_xl' title='Export Excel'  >Export</a>";
+
+                // echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
 
                 // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='changeStuStatus'>Change Status</a>";
                 // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='export'>Export</a>";
@@ -251,15 +255,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                 echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Registered Student's</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatetc.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/student_letter.php&sid=' id='clickGenerateLetter' class='btn btn-primary'>Letter</a><a style='display:none;' href='' id='generateLetter'  class='thickbox'>Letter</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
+
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
 
 
                 echo "</div><div class='float-none'></div></div>";
@@ -310,20 +318,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
 
                     if (in_array(29, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatetc.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateTC' class='btn btn-primary'>Generate TC</a><a style='display:none;' href='' id='generateTC'>Generate TC</a>";
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/student_letter.php&sid=' id='clickGenerateLetter' class='btn btn-primary'>Letter</a><a style='display:none;' href='' id='generateLetter' class='thickbox'>Letter</a>";
                     }
 
-                    if (in_array(31, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
+                    // if (in_array(31, $permissionChk)) {
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
+                    // }
+                    // if (in_array(30, $permissionChk)) {
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
+                    // }
+                    // if (in_array(32, $permissionChk)) {
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
+                    // }
+                    // if (in_array(33, $permissionChk)) {
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+                    // }
+
+                    if (in_array(34, $permissionChk)) {
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
                     }
-                    if (in_array(30, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
-                    }
-                    if (in_array(32, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
-                    }
-                    if (in_array(33, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+                    if (in_array(35, $permissionChk)) {
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
                     }
                     echo "</div><div class='float-none'></div></div>";
                 }
@@ -333,11 +348,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo '<div class="float-left"><h2>Choose A Student</h2></div>';
             }
 
-            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
+            
 
-            $sql = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
-            $result = $connection2->query($sql);
-            $customFields = $result->fetchAll();
+            // $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search, $customFieldNames);
+
+            $students = $studentGateway->getAllStudentData($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
+
+           
 
             // DATA TABLE
             $table = DataTable::createPaginated('students', $criteria);
@@ -391,98 +408,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 });
 
 
-            if (!empty($showfield)) {
-                foreach ($showfield as $sf) {
-                    if ($sf['field_name'] == 'student') {
-                        $table->addColumn('officialName', __('Student'));
-                    }
-                    if ($sf['field_name'] == 'pupilsightPersonID') {
-                        $table->addColumn('pupilsightPersonID', __('Student Id'));
-                    }
-                    if ($sf['field_name'] == 'admission_no') {
-                        $table->addColumn('admission_no', __('Admission No'));
-                    }
-                    if ($sf['field_name'] == 'academic_year') {
-                        $table->addColumn('academic_year', __('Academic'));
-                    }
-                    if ($sf['field_name'] == 'program') {
-                        $table->addColumn('program', __('Program'));
-                    }
-                    if ($sf['field_name'] == 'yearGroup') {
-                        $table->addColumn('yearGroup', __('Class'))
-                            ->format(function ($person) {
-
-                                return $person['yearGroup'];
-                            });
-                    }
-                    if ($sf['field_name'] == 'rollGroup') {
-                        $table->addColumn('rollGroup', __('Section'));
-                    }
-                    if ($sf['field_name'] == 'dob') {
-                        $table->addColumn('dob', __('Date of Birth'));
-                    }
-                    if ($sf['field_name'] == 'gender') {
-                        $table->addColumn('gender', __('Gender'));
-                    }
-                    if ($sf['field_name'] == 'username') {
-                        $table->addColumn('username', __('Username'));
-                    }
-                    if ($sf['field_name'] == 'phone1') {
-                        $table->addColumn('phone1', __('Phone'));
-                    }
-                    if ($sf['field_name'] == 'email') {
-                        $table->addColumn('email', __('Email'));
-                    }
-                    if ($sf['field_name'] == 'address1') {
-                        $table->addColumn('address1', __('Address'));
-                    }
-                    if ($sf['field_name'] == 'address1District') {
-                        $table->addColumn('address1District', __('District'));
-                    }
-                    if ($sf['field_name'] == 'address1Country') {
-                        $table->addColumn('address1Country', __('Country'));
-                    }
-                    if ($sf['field_name'] == 'languageFirst') {
-                        $table->addColumn('languageFirst', __('First Language'));
-                    }
-                    if ($sf['field_name'] == 'languageSecond') {
-                        $table->addColumn('languageSecond', __('Second Language'));
-                    }
-                    if ($sf['field_name'] == 'languageThird') {
-                        $table->addColumn('languageThird', __('Third Language'));
-                    }
-                    if ($sf['field_name'] == 'religion') {
-                        $table->addColumn('religion', __('Religion'));
-                    }
-
-                    if ($sf['field_name'] == 'fatherName') {
-                        $table->addColumn('fatherName', __('Father Name'));
-                    }
-                    if ($sf['field_name'] == 'fatherEmail') {
-                        $table->addColumn('fatherEmail', __('Father Email'));
-                    }
-                    if ($sf['field_name'] == 'fatherPhone') {
-                        $table->addColumn('fatherPhone', __('Father Phone'));
-                    }
-                    if ($sf['field_name'] == 'motherName') {
-                        $table->addColumn('motherName', __('Mother Name'));
-                    }
-                    if ($sf['field_name'] == 'motherEmail') {
-                        $table->addColumn('motherEmail', __('Mother Email'));
-                    }
-                    if ($sf['field_name'] == 'motherPhone') {
-                        $table->addColumn('motherPhone', __('Mother Phone'));
-                    }
-
-                    if (!empty($customFields)) {
-                        foreach ($customFields as $cf) {
-                            if ($sf['field_name'] == $cf['field_name']) {
-                                $table->addColumn($cf['field_name'], __($cf['field_title']));
-                            }
-                        }
-                    }
-                }
-            } else {
                 $table->addColumn('student', __('Student'))
 
                     ->sortable(['surname', 'preferredName'])
@@ -516,21 +441,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $table->addColumn('username', __('Username'));
                 $table->addColumn('phone1', __('Phone'));
                 $table->addColumn('email', __('Email'));
-                $table->addColumn('address1', __('Address'));
-                $table->addColumn('address1District', __('District'));
-                $table->addColumn('address1Country', __('Country'));
-
-                $table->addColumn('languageFirst', __('First Language'));
-                $table->addColumn('languageSecond', __('Second Language'));
-                $table->addColumn('languageThird', __('Third Language'));
-                $table->addColumn('religion', __('Religion'));
-                $table->addColumn('fatherName', __('Father Name'));
-                $table->addColumn('fatherEmail', __('Father Email'));
-                $table->addColumn('fatherPhone', __('Father Phone'));
-                $table->addColumn('motherName', __('Mother Name'));
-                $table->addColumn('motherEmail', __('Mother Email'));
-                $table->addColumn('motherPhone', __('Mother Phone'));
-            }
+                
+            
 
 
             if ($roleId == '001') {
@@ -765,7 +677,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         alert('You Have to De-Register Student First!');
     });
 
-    $(document).on('click', '#clickGenerateTC', function() {
+    $(document).on('click', '#clickGenerateLetter', function() {
         var favorite = [];
         $.each($("input[name='student_id[]']:checked"), function() {
             favorite.push($(this).val());
@@ -773,18 +685,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         var stuId = favorite.join(",");
         //alert(subid);
         if (stuId) {
-            if (confirm("Do you want to Generated TC?")) {
+            //if (confirm("Do you want to Generated TC?")) {
                 if (favorite.length == 1) {
                     var hrf = $(this).attr('data-hrf');
                     var newhrf = hrf + stuId;
-                    $("#generateTC").attr('href', newhrf);
+                    $("#generateLetter").attr('href', newhrf);
                     window.setTimeout(function() {
-                        $("#generateTC")[0].click();
+                        $("#generateLetter")[0].click();
                     }, 10);
                 } else {
                     alert('You Have to Select One Student at a time.');
                 }
-            }
+            //}
         } else {
             alert('You Have to Select Student.');
         }
@@ -881,6 +793,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 alert('You Have to Select One Student at a time.');
             }
 
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+
+    $(document).on('click', '#clickPromoteStudent', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            var hrf = $(this).attr('data-hrf');
+            var newhrf = hrf + stuId;
+            $("#promoteStudent").attr('href', newhrf);
+            window.setTimeout(function() {
+                $("#promoteStudent")[0].click();
+            }, 10);
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click', '#clickDetainStudent', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        //alert(subid);
+        if (stuId) {
+            var hrf = $(this).attr('data-hrf');
+            var newhrf = hrf + stuId;
+            $("#detainStudent").attr('href', newhrf);
+            window.setTimeout(function() {
+                $("#detainStudent")[0].click();
+            }, 10);
         } else {
             alert('You Have to Select Student.');
         }

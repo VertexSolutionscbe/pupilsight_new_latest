@@ -5,8 +5,6 @@ Pupilsight, Flexible & Open School System
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 
-
-
 if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_attribute.php') == false) {
     //Acess denied
     echo "<div class='error'>"; 
@@ -24,10 +22,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    
     echo '<h3>';
     echo __('Sketch Attribute');
-    echo '<div style="float:right;"><a id="addAttribute" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Add Attribute</a> &nbsp;&nbsp; <a id="modifyAttribute" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Modify Attribute</a> &nbsp;&nbsp; <a id="deleteAttribute" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Delete Attribute</a> <a id="clickModifyAttribute" data-hrf="index.php?q=/modules/Academics/sketch_manage_attribute_edit.php&id=" href="" style="display:none;">modifyattr</a></div>';
+    echo '<div style="float:right;"><a id="deleteAttribute" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Delete Attribute</a> &nbsp;&nbsp; <a id="modifyAttribute" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Modify Attribute</a>&nbsp;&nbsp;<a id="addAttribute" class="btn btn-primary" style="float: right;margin: -6px 0 0 5px;">Add Attribute</a>   <a id="clickModifyAttribute" data-hrf="index.php?q=/modules/Academics/sketch_manage_attribute_edit.php&id=" href="" style="display:none;">modifyattr</a></div>';
     echo '</h3>';
 
     $sketchId = $_GET['id'];
@@ -39,10 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $sql = "SELECT table_label FROM examinationReportTemplateConfiguration GROUP BY table_label";
     $result = $connection2->query($sql);
     $labeldata = $result->fetchAll();
-    //print_r($labeldata);
-
-?>
     
+?>
     <form id="attributeForm" method="post" action="modules/Academics/sketch_manage_attributeProcess.php" style="display:none;">
     <input type="hidden" name="sketch_id" id="sketchId" value="<?php echo $sketchId;?>">
     <div class="col-12" style="display:flex;" >
@@ -109,11 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 
             </tbody>
         </table>    
-			
-      
-    </div>
-
-       
+	</div>
 
 <?php  
 }

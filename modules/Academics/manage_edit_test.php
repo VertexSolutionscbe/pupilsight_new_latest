@@ -91,6 +91,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
         $searchbyPost = '';
         $search = '';
         $stuId = '0';
+
+        if($_GET){
+            $pupilsightProgramID =  $_GET['pid'];
+            $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
+            $pupilsightYearGroupID = $_GET['cid'];
+            $pupilsightRollGroupID = $_GET['sid'];
+            if ($roleId == '2') {
+                $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
+                $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
+            } else {
+                $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            }
+        }
        
     }
    
@@ -136,6 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
 
     // QUERY
     $criteria = $CurriculamGateway->newQueryCriteria()
+        ->pageSize(5000)
         ->sortBy('id')
         ->fromPOST();
 

@@ -51,14 +51,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_ad
         $col->addTextField('sketch_name')->addClass('txtfield')->required();
     
         $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('sketch_code', __('Skill Code'));
+        $col->addLabel('sketch_code', __('Sketch Code'));
         $col->addTextField('sketch_code')->addClass('txtfield')->required();
 
     $row = $form->addRow();         
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightProgramID', __('Program'));
-        $col->addSelect('pupilsightProgramID')->fromArray($program)->required()->placeholder('Select Program');
+        $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDSketch')->fromArray($program)->required()->placeholder('Select Program');
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('class_ids', __('Class'));
@@ -84,3 +84,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_ad
     }
     
 </style>
+
+<script>
+    $(document).ready(function () {
+      	$('#pupilsightYearGroupID').selectize({
+      		plugins: ['remove_button'],
+      	});
+    });
+
+    $(document).on('change', '#pupilsightProgramIDSketch', function () {
+        var id = $(this).val();
+        var type = 'getClass';
+        $('#pupilsightYearGroupID').selectize()[0].selectize.destroy();
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type },
+            async: true,
+            success: function (response) {
+                $("#pupilsightYearGroupID").html();
+                $("#pupilsightYearGroupID").html(response);
+                $("#pupilsightYearGroupID").parent().children('.LV_validation_message').remove();
+                $('#pupilsightYearGroupID').selectize({
+                    plugins: ['remove_button'],
+                });
+            }
+        });
+    });
+</script>

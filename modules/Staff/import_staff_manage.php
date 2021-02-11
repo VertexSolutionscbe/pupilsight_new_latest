@@ -32,5 +32,5 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_manage.
             </tr>
             </table>';
 
-    echo $data;        
+    echo $data;
 }

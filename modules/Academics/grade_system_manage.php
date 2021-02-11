@@ -68,8 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/grade_system_man
 
     // DATA TABLE
     $table = DataTable::createPaginated('gradesystemmanage', $criteria);
-    $table->addColumn('serial_number',__('Sl No'))
-   ->notSortable();
+    $table->addColumn('serial_number',__('Sl No'));
     $table->addColumn('name', __('Grade System Name'));
     $table->addColumn('code', __('Grade System  Code'))->translatable();
    

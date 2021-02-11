@@ -31,6 +31,7 @@ $remark=$_POST['remark'] ;
 
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/blocked_attendance.php";
+$URL_ADD = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/add_blocked_attendance.php";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_attendance.php') == false) {
     $URL .= '&return=error0';
@@ -82,8 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/add_blocked_att
 
             //Check to see if date is in the future and is a school day.
             if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart)  ) {
-                $URL .= '&return=error8';
-                header("Location: {$URL}");
+                $URL_ADD .= '&return=error8';
+                header("Location: {$URL_ADD}");
             } else {
                
                 foreach($pupilsightRollGroupIDs as $pupilsightRollGroupID)

@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+            echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
         }
 
         if ($result->rowCount() != 1) {
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/gradeScales_manage_edit_grade_deleteProcess.php?pupilsightScaleGradeID=$pupilsightScaleGradeID&pupilsightScaleID=$pupilsightScaleID");
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . "/gradeScales_manage_edit_grade_deleteProcess.php?pupilsightScaleGradeID=$pupilsightScaleGradeID&pupilsightScaleID=$pupilsightScaleID");
             echo $form->getOutput();
         }
     }

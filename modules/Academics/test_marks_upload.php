@@ -70,9 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
         $search = '';
         $stuId = '0';     
     }    
-     echo "<a  id='download_template_subject' data-type='test'  class='btn btn-primary'>Download template(Subject)</a>&nbsp;&nbsp;";  
+    //  echo "<a  id='download_template_subject' data-type='test'  class='btn btn-primary'>Download template(Subject)</a>&nbsp;&nbsp;";  
      echo "<a  id='download_template_test' data-type='test'  class='btn btn-primary'>Download template(Test)</a>&nbsp;&nbsp;";   
-     echo "<a  id='download_template_test' data-type='test'  class='btn btn-primary'>Upload/Import Marks</a>&nbsp;&nbsp;";   
+     echo "<a  id='upload_template_test' data-type='test'  class='btn btn-primary'>Upload/Import Marks</a>&nbsp;&nbsp;";   
    //  echo "<a style='display:none' id='clickmodify_test' href='fullscreen.php?q=/modules/Academics/modify_test_class_section_wise.php&width=800&class_name=$pupilsightYearGroupID&section_name=$pupilsightRollGroupID'  class='thickbox '></a>";   
   //   echo "<a  id='modify_test_btn' data-type='test' class='btn btn-primary'>Modify Test</a>&nbsp;&nbsp;";       
      echo  "<div style='height:10px'></div>";
@@ -109,12 +109,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
     // DATA TABLE
 }
 ?>
-<form name="test_mark_upload_form">
-<table class="smallIntBorder fullWidth standardForm relative" cellspacing="0" >
+<form id="downloadTemplate" name="test_mark_upload_form" method="post" action="index.php?q=/modules/Academics/marks_upload_template.php">
+<input type="hidden" name="pupilsightProgramID" id="programId" value="">
+<input type="hidden" name="pupilsightYearGroupID" id="classId" value="">
+<table class="table" cellspacing="0" >
 <tbody>
     <tr class="flex flex-col sm:flex-row justify-between content-center p-0">
         <td colspan="3" class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
-                <table class="tablewidth" border="0" style="width: 78%;">
+                <table class="table tablewidth" border="0" >
                     <thead>
                         <tr>
                             <th><input type="checkbox" name="checkall" id="checkall_sections" value="on" class="floatNone checkall"></th>
@@ -126,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                 </table>
         </td>
         <td colspan='2' class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
-                <table class="" border="0" style="width: 78%;">
+                <table class="table" border="0" >
                     <thead>
                         <tr>
                             <th><input type="checkbox" name="checkall" id="checkall_tests" value="on" class="floatNone checkall"></th>
@@ -138,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                     </table>
         </td>
         <td colspan="3" class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
-                    <table class="" border="0" style="width: 85%;">
+                    <table class="table" border="0" >
                         <thead>
                             <tr>
                             <th><input type="checkbox" name="checkall" id="checkall_subject" value="on" class="floatNone checkall"></th>
@@ -157,6 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
 <script type="text/javascript">
 $(document).on('change', '#pupilsightProgramIDInUpload', function() {
 var id = $(this).val();
+$("#programId").val(id);
 var type = 'getClass';
 $.ajax({
     url: 'ajax_data.php',
@@ -178,8 +181,10 @@ $.ajax({
 $(document).on('change', '.pupilsightYearGroupID_check_td', function() {
 var id = $(this).val();
 var pupilsightProgramID = $("#pupilsightProgramIDInUpload").val();
+
 var type = 'getSection_checkbox_td';
 if(id!=""){
+    $("#classId").val(id);
 $.ajax({
 url: 'ajax_data.php',
 type: 'post',
@@ -249,4 +254,9 @@ function load_subject(){
             }
     });
 }
+
+
+$(document).on('click','#download_template_test', function(){
+    $("#downloadTemplate").submit();
+})
 </script>

@@ -30,6 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/blocked_attenda
         echo '</div>';
     } else {
         $pupilsightSchoolYearID = '';
+        $pupilsightProgramID  = $pupilsightYearGroupID =$pupilsightRollGroupID =$sdate=$edate='';
+
         if (isset($_GET['pupilsightSchoolYearID'])) {
             $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
         }
@@ -47,8 +49,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/blocked_attenda
             $sdate = isset($_POST['sdate']) ? dateConvert($guid, $_POST['sdate']) : $today;
             $edate = isset($_POST['edate']) ? dateConvert($guid, $_POST['edate']) : $today;
 
+
+            
+            
+            // Extra code to check date  
+            
+            $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance'.getModuleName($_POST['address'])."/blocked_attendance.php";
+            $dateStart = dateConvert($guid, $sdate);
+            
+            $dateEnd = $dateStart;
+            $dateEnd = dateConvert($guid, $edate);
+            
+            $today = date('Y-m-d');
+
+            //Check to see if date is in the future and is a school day.
+            if ($dateStart == '' or ($dateEnd != '' and $dateEnd < $dateStart)  ) {
+                $URL .= '&return=error8';
+                header("Location: {$URL}");
+            }
+            
+            //End Extra code to check date
             $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            
+            if($pupilsightYearGroupID!='' && $pupilsightProgramID!='')
             $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+
         } else {
             $classes = array('' => 'Select Class');
             $sections = array('' => 'Select Section');
@@ -105,7 +130,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/blocked_attenda
             $guid,
             $_GET['return'],
             null,
-            array('error8' => __('Your request failed because the start date should be less than or equeal to end date'),)
+            //array('error8' => __('Your request failed because the start date should be less than or equal to end date'),)
+            array('error8' => __('From date is greater then To date,Please select valid date range'),)
         );
     }
 

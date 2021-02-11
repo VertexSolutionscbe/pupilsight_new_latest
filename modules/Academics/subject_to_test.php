@@ -14,6 +14,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
 } else {
     //Proceed!  
     $test_id = $_GET['tid'];
+    $page->breadcrumbs->add('Modify Test', 'modify_test_class_section_wise.php&id='.$test_id.'')
+                    ->add(__('Subject Wise Details'));
+    
     $sqltest = 'SELECT * FROM examinationTest WHERE id = '.$test_id.' ';
     $resulttest = $connection2->query($sqltest);
     $testdata = $resulttest->fetch();
@@ -23,11 +26,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     if($testdata['enable_remarks']==1){
         $remarkChecked="checked";
     }
-    // if(!empty($testdata['subject_type'] == '1')){
-    //     $testedChecked="checked";
-    // }
+    if(!empty($testdata['subject_type'] == '1')){
+        $testedChecked="checked";
+    }
     
-    $testedChecked="checked";
+    //$testedChecked="checked";
 
     
     
@@ -58,9 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     $staffdata = $results->fetchAll();
 
     
-    if($testdata['subject_type'] == '1'){
-        $sql = 'SELECT * FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID IN ('.$classes.') GROUP BY pupilsightDepartmentID ORDER BY pos ASC';
-    } else {
+    if($testdata['subject_type'] == '2'){
         $testMasterId = $testdata['test_master_id'];
         $subsql =  "SELECT GROUP_CONCAT(DISTINCT CONCAT('''', subject_type, '''' )) AS subcattype FROM examinationTestSubjectCategory WHERE test_master_id = ".$testMasterId." ";
         $resultsub = $connection2->query($subsql);
@@ -68,6 +69,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
 
 
        $sql = 'SELECT a.*, b.type FROM subjectToClassCurriculum AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$pupilsightProgramID.' AND a.pupilsightYearGroupID IN ('.$classes.') AND b.type IN ('.$subCategory['subcattype'].') GROUP BY a.pupilsightDepartmentID  ORDER BY a.pos ASC';
+    } else {
+        
+
+       $sql = 'SELECT * FROM subjectToClassCurriculum WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID IN ('.$classes.') GROUP BY pupilsightDepartmentID ORDER BY pos ASC';
        
     }
     
@@ -85,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     
         <div class='table-responsive dataTables_wrapper '>
             <a id="copyAllData" class='btn btn-primary'>Copy Selected Row To all Selected Subjects</a>
-            <a href="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/manage_edit_test.php' ?>" class='btn btn-primary'>Back</a>
+            <!-- <a href="<?php /* echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/manage_edit_test.php' */ ?>" class='btn btn-primary'>Back</a> -->
         <table class="table" cellspacing="0" style='overflow-x: scroll !important;margin-top: 10px;
     width: 162%;'>
             <thead  style="font-size:14px;">
@@ -227,8 +232,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                 }
 
                 $isTested = '';
-                if($fetchSubData['is_tested'] == 1){
-                    $isTested="checked";
+                if(!empty($fetchSubData)){
+                    if($fetchSubData['is_tested'] == 1){
+                        $isTested="checked";
+                    } else {
+                        $isTested = '';
+                    }
+                } else {
+                    $isTested= $testedChecked;
                 }
 
                 $enableRem = '';
@@ -245,12 +256,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     $scmaxMarks = $fetchSubCatData['max_marks'];
                     $scminMarks = $fetchSubCatData['min_marks'];
                     $scgradeSystemId = $fetchSubCatData['gradeSystemId'];
+                    $isTested="checked";
                 }  else {
                     $scAssesment_method = '';
                     $scAssesment_option = '';
                     $scmaxMarks = '';
                     $scminMarks = '';
                     $scgradeSystemId = '';
+                    $isTested=$isTested;
                 }  
 
                 if(!empty($fetchSubData['assesment_method'])){
@@ -338,8 +351,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     $readonly = '';
                 }
 
-                
-
                 $sqlskl = 'SELECT * FROM subjectSkillMapping WHERE
                 pupilsightSchoolYearID = '.$sub['pupilsightSchoolYearID'].' AND pupilsightProgramID = '.$sub['pupilsightProgramID'].' AND pupilsightYearGroupID = '.$sub['pupilsightYearGroupID'].'  AND pupilsightDepartmentID = '.$sub['pupilsightDepartmentID'].' ';
                 $resultskl = $connection2->query($sqlskl);
@@ -350,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                 // echo '<pre>';
                 // print_r($getSkills);
                 // echo '</pre>';
-
+                // die();
             ?>
             <input type="hidden" name="test_id" value="<?php echo $test_id;?>">
             <input type="hidden" name="pupilsightDepartmentID[<?php echo $k;?>]" value="<?php echo $sub['pupilsightDepartmentID']?>">
@@ -381,12 +392,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                         <div class="input-group stylish-input-group">
                             <div class="flex-1 relative">
                             <div style="display:inline-flex;">
+                            <?php if(!empty($fetchSubData['skill_configure'])){ ?>
+                                <span id="configureName-<?php echo $k;?>"><?php echo $fetchSubData['skill_configure'];?></span>
+                                <?php $sconval =  $fetchSubData['skill_configure']; ?>
+                            <?php } else { ?>
                                 <span id="configureName-<?php echo $k;?>">None</span>
+                                <?php $sconval = 'None';?>
+                            <?php } ?>
                                 <i class="mdi mdi-cog-outline configure setSkillConfigure" style="cursor:pointer" data-id="<?php echo $k;?>" aria-hidden="true"></i>
                             </div>
                                 <input type="hidden"  name="skill_id[<?php echo $k;?>]" value="m">
-                                <input type="hidden"  name="skill_configure[<?php echo $k;?>]" id="skill_configure<?php echo $k;?>" value="None">
-                                <a href="fullscreen.php?q=/modules/Academics/subject_to_test_configure.php<?php echo $allid;?>&kid=<?php echo $k;?>" class='thickbox ' id="clickSkillConfigure-<?php echo $k;?>" style="display:none;">Add</a>
+                                <input type="hidden"  name="skill_configure[<?php echo $k;?>]" id="skill_configure<?php echo $k;?>" value="<?php echo $sconval;?>">
+                                <a href="fullscreen.php?q=/modules/Academics/subject_to_test_configure.php<?php echo $allid;?>&kid=<?php echo $k;?>" data-hrf="fullscreen.php?q=/modules/Academics/subject_to_test_configure.php<?php echo $allid;?>&kid=<?php echo $k;?>" class='thickbox ' id="clickSkillConfigure-<?php echo $k;?>" style="display:none;">Add</a>
                                 
                                 <input type="hidden" id="formData<?php echo $k;?>" name="skill_configure_form[<?php echo $k;?>]" value="">
                             </div>
@@ -540,8 +557,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                     }
 
                     $isSkillTested = '';
-                    if($fetchSubSklData['is_tested'] == 1){
-                        $isSkillTested="checked";
+                    if(!empty($fetchSubSklData)){
+                        if($fetchSubSklData['is_tested'] == 1){
+                            $isSkillTested="checked";
+                        } else {
+                            $isSkillTested = '';
+                        }
+                    } else {
+                        $isSkillTested= $testedChecked;
                     }
 
                     $enableRemSkl = '';
@@ -851,7 +874,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     
     $(document).on('click', '.setSkillConfigure', function() {
         var id = $(this).attr('data-id');
-       
+        var type = $("#skill_configure"+id).val();
+        var hrf = $("#clickSkillConfigure-"+id).attr('data-hrf');
+        var newhrf = hrf+'&type='+type;
+        $("#clickSkillConfigure-"+id).attr('href', newhrf);
         window.setTimeout(function() {
             $("#clickSkillConfigure-"+id)[0].click();
         }, 10);

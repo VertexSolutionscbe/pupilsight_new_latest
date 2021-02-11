@@ -23,7 +23,15 @@ try {
     // $_SESSION['doc_receipt_id']=$dts["transactionId"];
     $_SESSION['doc_receipt_id']=$receiptfilename;
     foreach ($dts as $key => $value) {
-        $phpword->setValue($key, $value);
+        try {
+            if(!empty($value)){
+                $phpword->setValue($key, $value);
+            } else {
+                $phpword->setValue($key, '');
+            }
+            
+        } catch (Exception $ex) {
+        }
     }
 
     if(!empty($dts["transcation_amount"])){
@@ -171,7 +179,6 @@ function convert_number_to_words($number) {
         }
         $string .= implode(' ', $words);
     }
-   
     return $string;
 }
 ?>

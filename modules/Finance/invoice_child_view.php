@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                 $sqlf = 'SELECT * FROM fn_fees_rule_type WHERE fn_fees_fine_rule_id	= "' . $fineId . '" AND fine_type = "' . $finetype . '" AND rule_type = "' . $ruletype . '" AND from_day <= "' . $days . '" AND to_day >= "' . $days . '" ';
                 $resultf = $connection2->query($sqlf);
                 $finedata = $resultf->fetch();
-                if($finedata['amount_type'] == 'Fixed'){
+                if ($finedata['amount_type'] == 'Fixed') {
                     $amtper = $finedata['amount_in_number'];
                     $type = 'num';
                 } else {
@@ -248,17 +248,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     // echo __('Download');
     // echo '</th>';
     echo "</thead>";
-  //  echo "<tbody id='getInvoiceFeeItem'>";
+    //  echo "<tbody id='getInvoiceFeeItem'>";
     if (!empty($invdata)) {
         //print_r($invdata);
         //die();
-      
+
         foreach ($invdata as $ind) {
-            $pupilsightSchoolYearID= $ind['pupilsightSchoolYearID'];          
+            $pupilsightSchoolYearID = $ind['pupilsightSchoolYearID'];
             $totalamountnew = $ind['finalamount'];
             $fineamount = 0;
             if (!empty($ind['amtper'])) {
-                if($ind['type'] == 'percent'){
+                if ($ind['type'] == 'percent') {
                     $fineamount = ($ind['finalamount'] * $ind['amtper']) / 100;
                 } else {
                     $fineamount = $ind['amtper'];
@@ -285,10 +285,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                     $dt = date('d/m/Y', strtotime($ind['due_date']));
                     $ddate = $dt;
                 }
-                
+
                 $style = $curdate >= $duedate ? '#FAFD94' : '#fff';
-                echo '<tr style="background:'.$style.'"><td><input type="checkbox" class="multiplePayFees" value="'.$ind['id'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
-                
+                // echo '<tr style="background:'.$style.'"><td><input type="checkbox" class="multiplePayFees" value="'.$ind['id'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
+                echo '<tr><td><input type="checkbox" class="multiplePayFees" value="' . $ind['id'] . '"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
+
 ?>
                 <td>
                     <form action="thirdparty/payment/razorpay/pay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
@@ -314,9 +315,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                         <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
                         <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
                         <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
-                       
-                        <a class="terms_condition" ><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
-                        <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>'style="display:none" class="btn btn-primary ">Pay</button>
+
+                        <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
+                        <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
                     </form>
                 </td>
     <?php
@@ -338,7 +339,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     echo "<table class='table' cellspacing='0' style='width: 100%;' id='FeeInvoiceListManage'>";
     echo "<thead>";
     echo "<tr class='head'>";
-     echo '<th>';
+    echo '<th>';
     echo __('S.No');
     echo '</th>';
     echo '<th>';
@@ -349,7 +350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     echo '</th>';
     echo '<th>';
     echo __('Transaction Amount');
-    echo '</th>'; 
+    echo '</th>';
     echo '<th>';
     echo __('Payment date');
     echo '</th>';
@@ -359,7 +360,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     echo '<th>';
     echo __('Bank Name');
     echo '</th>';
-     echo '<th>';
+    echo '<th>';
     echo __('Instrument No');
     echo '</th>';
     echo '<th>';
@@ -375,93 +376,98 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     LEFT JOIN fn_masters as m
     ON f.payment_mode_id = m.id
     LEFT JOIN fn_masters as b ON f.bank_id = b.id
-    WHERE f.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND f.pupilsightPersonID = "'.$stuId.'" AND f.transaction_status = "1" ORDER BY f.id DESC';
+    WHERE f.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND f.pupilsightPersonID = "' . $stuId . '" AND f.transaction_status = "1" ORDER BY f.id DESC';
     $resultPhis = $connection2->query($paymenthistory);
     $payhistory = $resultPhis->fetchAll();
 
-//     print_r($paymenthistory
+    //     print_r($paymenthistory
 
 
-// );
-    if(!empty($payhistory)){
-        $i=1;
-        foreach($payhistory as $ph){
-            $m_txt='';
-            $mode=strtoupper($ph['payMode']);
-            if($mode=="MULTIPLE"){
-              
-                $sql="SELECT f.name FROM fn_multi_payment_mode AS m                 LEFT JOIN fn_masters as f ON m.payment_mode_id = f.id
-                where m.transaction_id = '".$ph['transaction_id']."'";
+    // );
+    if (!empty($payhistory)) {
+        $i = 1;
+        foreach ($payhistory as $ph) {
+            $m_txt = '';
+            $mode = strtoupper($ph['payMode']);
+            if ($mode == "MULTIPLE") {
+
+                $sql = "SELECT f.name FROM fn_multi_payment_mode AS m                 LEFT JOIN fn_masters as f ON m.payment_mode_id = f.id
+                where m.transaction_id = '" . $ph['transaction_id'] . "'";
                 $re_m = $connection2->query($sql);
-                $pm= $re_m->fetchAll();
-                if(!empty($pm)){
-                    $i=1;
-                     foreach($pm as $m ){
-                        $m_txt.=$m['name'].",";
-                     }
-                } 
-            }else {
-               $m_txt=$ph['payMode'];
+                $pm = $re_m->fetchAll();
+                if (!empty($pm)) {
+                    $i = 1;
+                    foreach ($pm as $m) {
+                        $m_txt .= $m['name'] . ",";
+                    }
+                }
+            } else {
+                $m_txt = $ph['payMode'];
             }
             echo '<tr>
-                  <td>'.$i++.'</td>
-                  <td>'.$ph['transaction_id'].'</td>
-                  <td>'.$ph['receipt_number'].'</td>
-                  <td>'.$ph['transcation_amount'].'</td>
-                  <td>'.date("d/m/Y", strtotime($ph['payment_date'])).'</td>';
-                    // if(!empty($ph['pay_gateway_id'])){
-                    // echo'<td>Online Paid('.$ph['pay_gateway_id'].')</td><td></td>';
-                    // }  else {
-                    // echo'<td>'.$ph['payMode'].'</td><td>'.$ph['bankname'].'</td>';
-                    // }
-                    if(!empty($ph['pay_gateway_id'])){
-                        echo'<td>Online Paid</td><td></td>';
-                        }  else {
-                        echo'<td>'.$ph['payMode'].'</td><td>'.$ph['bankname'].'</td>';
-                        }
-                  echo '<td>';
-                  if(!empty($ph['dd_cheque_no'])){
-                      echo $ph['dd_cheque_no']; 
-                  } else if(!empty($ph['reference_no'])){
-                    echo $ph['reference_no'];
-                  }
-                  echo '</td>';
-                  echo '<td>'.$ph['payment_status'].'</td>';
-                  echo'<td><a href="public/receipts/'.$ph['transaction_id'].'.docx"  download><i class="fas fa-receipt"></i></a></td></tr>';
+                  <td>' . $i++ . '</td>
+                  <td>' . $ph['transaction_id'] . '</td>
+                  <td>' . $ph['receipt_number'] . '</td>
+                  <td>' . $ph['transcation_amount'] . '</td>
+                  <td>' . date("d/m/Y", strtotime($ph['payment_date'])) . '</td>';
+            // if(!empty($ph['pay_gateway_id'])){
+            // echo'<td>Online Paid('.$ph['pay_gateway_id'].')</td><td></td>';
+            // }  else {
+            // echo'<td>'.$ph['payMode'].'</td><td>'.$ph['bankname'].'</td>';
+            // }
+            if (!empty($ph['pay_gateway_id'])) {
+                echo '<td>Online Paid</td><td></td>';
+            } else {
+                echo '<td>' . $ph['payMode'] . '</td><td>' . $ph['bankname'] . '</td>';
+            }
+            echo '<td>';
+            if (!empty($ph['dd_cheque_no'])) {
+                echo $ph['dd_cheque_no'];
+            } else if (!empty($ph['reference_no'])) {
+                echo $ph['reference_no'];
+            }
+            echo '</td>';
+            echo '<td>' . $ph['payment_status'] . '</td>';
+            echo '<td align=\'center\'><a href="public/receipts/' . $ph['transaction_id'] . '.docx"  download><i class="mdi mdi-download mdi-18px"></i></a></td></tr>';
         }
     }
     echo "</tbody>";
     echo '</table>';
-   
+
     ?>
 
-<form action='thirdparty/multiplepayment/razorpay/multiplepay.php' method='post' > 
-    <input type='hidden' id='multiplepayData' name='formdata' value='' >
-    <button type='submit' id='clickMultiplePay' style='display:none'>Submit</button>
+    <form action='thirdparty/multiplepayment/razorpay/multiplepay.php' method='post'>
+        <input type='hidden' id='multiplepayData' name='formdata' value=''>
+        <button type='submit' id='clickMultiplePay' style='display:none'>Submit</button>
     </form>
     <style>
-        .customBtn{
-        font-size:12px;
+        .customBtn {
+            font-size: 12px;
         }
-        .proceed_decline{          
-    color: white;
-    height: 40px;
-    width: 82px;
-    font-weight: 600;
-    font-size: 12px;
-    border-radius: 6px;
+
+        .proceed_decline {
+            color: white;
+            height: 40px;
+            width: 82px;
+            font-weight: 600;
+            font-size: 12px;
+            border-radius: 6px;
         }
-        .decline{
-    color: red;
-    border: 2px solid;
+
+        .decline {
+            color: red;
+            border: 2px solid;
         }
-        .modal-header_pay{
-        text-align:center;
-        padding: 1rem;
-        border-bottom: 1px solid #e9ecef;
-        border-top-left-radius: .3rem;
-        border-top-right-radius: .3rem;}
-        .modal-title{
+
+        .modal-header_pay {
+            text-align: center;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            border-top-left-radius: .3rem;
+            border-top-right-radius: .3rem;
+        }
+
+        .modal-title {
             font-size: 20px;
         }
     </style>
@@ -472,48 +478,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
 
 
-    $(document).on('click', '.clickPay', function() {
-        var id = $(this).attr('data-id');
-        $("#clickPayButton").attr('data-id', id);
-    });
-
-    $(document).on('click', '#clickPayButton', function() {
-        var id = $(this).attr('data-id');
-        $("#click_submit-"+id).click();
-    });
-
-    $(document).on('click', '#payMultiple', function() {
-        var val = '';
-        var multipleData = [];
-        var cheked = [];
-        $.each($(".multiplePayFees:checked"), function() {
-            val = $(this).val();
-            var formData = $('#payform-'+val).serializeArray();
-            multipleData.push(formData);
-            cheked.push($(this).val());
+        $(document).on('click', '.clickPay', function() {
+            var id = $(this).attr('data-id');
+            $("#clickPayButton").attr('data-id', id);
         });
-        var chkid = cheked.join(", ");
-        if(chkid){
-            if(multipleData){
-                $.ajax({
-                    url: 'modules/Finance/invoice_multiple_pay_data.php',
-                    type: 'post',
-                    data: { multipleData: multipleData },
-                    async: true,
-                    success: function(response) {
-                        $("#multiplepayData").val(response);
-                        setTimeout(function(){
-                            $("#clickMultiplePay").click();
-                        },100);
-                    }
-                });
-            }
-        } else {
-            alert('You Have to Select Invoice!');
-        }
-        
-    });
 
+        $(document).on('click', '#clickPayButton', function() {
+            var id = $(this).attr('data-id');
+            $("#click_submit-" + id).click();
+        });
+
+        $(document).on('click', '#payMultiple', function() {
+            var val = '';
+            var multipleData = [];
+            var cheked = [];
+            $.each($(".multiplePayFees:checked"), function() {
+                val = $(this).val();
+                var formData = $('#payform-' + val).serializeArray();
+                multipleData.push(formData);
+                cheked.push($(this).val());
+            });
+            var chkid = cheked.join(", ");
+            if (chkid) {
+                if (multipleData) {
+                    $.ajax({
+                        url: 'modules/Finance/invoice_multiple_pay_data.php',
+                        type: 'post',
+                        data: {
+                            multipleData: multipleData
+                        },
+                        async: true,
+                        success: function(response) {
+                            $("#multiplepayData").val(response);
+                            setTimeout(function() {
+                                $("#clickMultiplePay").click();
+                            }, 100);
+                        }
+                    });
+                }
+            } else {
+                alert('You Have to Select Invoice!');
+            }
+
+        });
     </script>
 <?php
 
@@ -524,34 +531,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
 <body>
 
-<div class="container">
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header_pay">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <span class="modal-title">Terms and Conditions </span>
-        </div>
-        <div class="modal-body">
-          <p>Help protect your website and its users with clear and fair website terms and conditions. These terms and conditions for a website set out key issues such as acceptable use, privacy, cookies, registration and passwords, intellectual property, links to other sites, termination and disclaimers of responsibility. Terms and conditions are used and necessary to protect a website owner from liability of a user relying on the information or the goods provided from the site then suffering a loss.</p>
+    <div class="container">
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
 
-        <p>Making your own terms and conditions for your website is hard, not impossible, to do. It can take a few hours to few days for a person with no legal background to make. But worry no more; we are here to help you out.</p>
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header_pay">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <span class="modal-title">Terms and Conditions </span>
+                    </div>
+                    <div class="modal-body">
+                        <p>Help protect your website and its users with clear and fair website terms and conditions. These terms and conditions for a website set out key issues such as acceptable use, privacy, cookies, registration and passwords, intellectual property, links to other sites, termination and disclaimers of responsibility. Terms and conditions are used and necessary to protect a website owner from liability of a user relying on the information or the goods provided from the site then suffering a loss.</p>
 
-        <p>All you need to do is fill up the blank spaces and then you will receive an email with your personalized terms and conditions.</p>
+                        <p>Making your own terms and conditions for your website is hard, not impossible, to do. It can take a few hours to few days for a person with no legal background to make. But worry no more; we are here to help you out.</p>
+
+                        <p>All you need to do is fill up the blank spaces and then you will receive an email with your personalized terms and conditions.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary proceed_decline" data-id="" id="clickPayButton" data-dismiss="modal">PROCEED</button>
+                        <button type="button" class="btn btn-default proceed_decline decline" data-dismiss="modal">DECLINE</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary proceed_decline" data-id="" id="clickPayButton" data-dismiss="modal">PROCEED</button>
-          <button type="button" class="btn btn-default proceed_decline decline" data-dismiss="modal">DECLINE</button>
-        </div>
-      </div>
-      
+
     </div>
-  </div>
-  
-</div>
 
 </body>
+
 </html>

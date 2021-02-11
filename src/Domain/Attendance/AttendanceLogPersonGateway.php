@@ -77,6 +77,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
         $query->groupBy(['attn_session_settings.session_no']);
         return $this->runQuery($query, $criteria);
     }
+
+
     public function attendanceNotTaken()
     {
         $sq = "select count(direction) as direction from pupilsightAttendanceLogPerson where pupilsightPersonID = '" . $pupilsightPersonID . "' and direction='" . $direction . "'";
@@ -306,7 +308,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
             $query->where('pupilsightAttendanceBlocked.pupilsightRollGroupID IN ( ' . implode(',', $pupilsightRollGroupID) . ' ) ');
         }
         if (!empty($sdate) && !empty($edate)) {
-            $query->where('pupilsightAttendanceBlocked.start_date BETWEEN "' . $sdate . '" AND "' . $edate . '" ');
+            //$query->where('pupilsightAttendanceBlocked.start_date BETWEEN "' . $sdate . '" AND "' . $edate . '" ');
+            $query->where('pupilsightAttendanceBlocked.start_date >= "' . $sdate . '" AND pupilsightAttendanceBlocked.end_date <="' . $edate . '" ');
         }
         // AND pupilsightAttendanceBlocked.pupilsightRollGroupID="' . $pupilsightRollGroupID . '"
         /*  ->where('pupilsightAttendanceBlocked.pupilsightYearGroupID=:pupilsightYearGroupID')
@@ -317,8 +320,8 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->bindValue('date', $date)
          */
         $query->orderBy(['pupilsightAttendanceBlocked.timestampTaken ASC']);
-        // echo $query;
-        // die();
+        //echo $query;
+        //die();
         return $this->runQuery($query, $criteria, TRUE);
     }
     public function selectBlockedAttendanceLogsAll($criteria)
@@ -336,7 +339,7 @@ class AttendanceLogPersonGateway extends QueryableGateway
             ->groupBy(['pupilsightAttendanceBlocked.pupilsightYearGroupID', 'pupilsightAttendanceBlocked.start_date', 'pupilsightAttendanceBlocked.start_date'])
             ->orderBy(['pupilsightAttendanceBlocked.timestampTaken ASC']);
 
-
+        //echo $query;exit;
         return $this->runQuery($query, $criteria, TRUE);
     }
 

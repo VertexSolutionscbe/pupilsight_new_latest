@@ -572,9 +572,9 @@ if (isset($_POST['type'])) {
                 $special_dis = $result_dis->fetch();
 
                 $sp_item_sql = "SELECT SUM(discount.discount) as sp_discount
-            FROM fn_fee_invoice_item as fee_item
-            LEFT JOIN fn_fee_item_level_discount as discount
-            ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id='" . $d['invoiceid'] . "'";
+                FROM fn_fee_invoice_item as fee_item
+                LEFT JOIN fn_fee_item_level_discount as discount
+                ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id='" . $d['invoiceid'] . "'";
                 $result_sp_item = $connection2->query($sp_item_sql);
                 $sp_item_dis = $result_sp_item->fetch();
                 //unset($invdata[$k]['finalamount']);
@@ -815,7 +815,13 @@ if (isset($_POST['type'])) {
 
                 $invdata[$k]['chkpayment'] = '';
                 $invdata[$k]['pendingamount'] = '';
-                if ($inv['invoice_status'] == 'Fully Paid') {
+
+                $sqlchkInv = 'SELECT count(b.id) as kount FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "' . $invno . '" AND b.invoice_status = "Fully Paid" AND b.transaction_status IN (1,3) ';
+                $resultchkInv = $connection2->query($sqlchkInv);
+                $invChk = $resultchkInv->fetch();
+
+                // if ($inv['invoice_status'] == 'Fully Paid') {
+                if (!empty($invChk) && $invChk['kount'] >= 1) {
                     $invdata[$k]['paidamount'] = $totalamount;
                     $pendingamount = 0;
                     $invdata[$k]['pendingamount'] = $pendingamount;
@@ -1438,7 +1444,8 @@ if (isset($_POST['type'])) {
                 $pupilsightRollGroupID = implode(',', $_POST['pupilsightRollGroupID']);
                 $pupilsightProgramID = $_POST['pupilsightProgramID'];
                 $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
-                $sql = 'SELECT SQL_CALC_FOUND_ROWS examinationTest.* FROM `examinationTest` LEFT JOIN `examinationTestAssignClass` ON `examinationTest`.`id`=`examinationTestAssignClass`.`test_id` LEFT JOIN `pupilsightSchoolYear` ON `examinationTest`.`pupilsightSchoolYearID`=`pupilsightSchoolYear`.`pupilsightSchoolYearID` WHERE `examinationTest`.`pupilsightSchoolYearID` = "' . $pupilsightSchoolYearID . '" AND `examinationTestAssignClass`.`pupilsightProgramID` = "' . $pupilsightProgramID . '" AND `examinationTestAssignClass`.`pupilsightYearGroupID` = "001" AND `examinationTestAssignClass`.`pupilsightRollGroupID` IN (' . $pupilsightRollGroupID . ')  ORDER BY `examinationTest`.`id` DESC';
+                $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
+                $sql = 'SELECT  examinationTest.* FROM `examinationTest` LEFT JOIN `examinationTestAssignClass` ON `examinationTest`.`id`=`examinationTestAssignClass`.`test_id` LEFT JOIN `pupilsightSchoolYear` ON `examinationTest`.`pupilsightSchoolYearID`=`pupilsightSchoolYear`.`pupilsightSchoolYearID` WHERE `examinationTest`.`pupilsightSchoolYearID` = "' . $pupilsightSchoolYearID . '" AND `examinationTestAssignClass`.`pupilsightProgramID` = "' . $pupilsightProgramID . '" AND `examinationTestAssignClass`.`pupilsightYearGroupID` = "'.$pupilsightYearGroupID.'" AND `examinationTestAssignClass`.`pupilsightRollGroupID` IN (' . $pupilsightRollGroupID . ')  ORDER BY `examinationTest`.`id` DESC';
                 $result = $connection2->query($sql);
                 $test = $result->fetchAll();
                 if (!empty($test)) {
@@ -1454,12 +1461,29 @@ if (isset($_POST['type'])) {
             echo $data;
             break;
         case "load_tests_subjects":
-            $testID = implode(',', $_POST['testID']);
-            $sqls = "SELECT a.*,b.*,c.name AS test,c.max_marks as maxMarks,e.name AS section,b.marks_obtained ,f.name as class,i.pupilsightDepartmentID,i.subject_display_name as subname,j.name as skill,j.id as skill_id FROM pupilsightPerson AS a LEFT JOIN examinationMarksEntrybySubject AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN  examinationTest as c ON b.test_id = c.id 
-        LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightRollGroup AS e ON d.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightYearGroup AS f ON d.pupilsightYearGroupID = f.pupilsightYearGroupID  LEFT JOIN pupilsightProgram as h ON d.pupilsightProgramID = h.pupilsightProgramID LEFT JOIN subjectToClassCurriculum as i ON b.pupilsightDepartmentID =i.pupilsightDepartmentID LEFT JOIN ac_manage_skill as j ON b.skill_id = j.id WHERE   c.id IN(209) GROUP BY a.pupilsightPersonID";
-            $results = $connection2->query($sqls);
-            $rowdatas = $results->fetchAll();
-            break;
+            $data = ' ';
+            if(!empty($_POST['testID'])){
+               
+                $testID = implode(',', $_POST['testID']);
+                $sqls = 'SELECT a.id,a.test_id,a.pupilsightDepartmentID,a.skill_id,i.subject_display_name as subname,j.name as skill FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum as i ON a.pupilsightDepartmentID =i.pupilsightDepartmentID LEFT JOIN ac_manage_skill as j ON a.skill_id = j.id WHERE a.test_id IN('.$testID.') AND a.is_tested = "1"  GROUP BY a.id  ORDER BY i.pos ASC  ';
+
+                $results = $connection2->query($sqls);
+                $rowdatas = $results->fetchAll();
+                // echo '<pre>';
+                // print_r($rowdatas);
+                // echo '</pre>';
+                if (!empty($rowdatas)) {
+                    foreach ($rowdatas as $cl) {
+                        $data .= '<tr><td>
+                            <input class="slt_test" type ="checkbox" name="subjectSkillId[]" value="' . $cl['test_id'].'-'. $cl['pupilsightDepartmentID'].'-'.$cl['skill_id'] . '">' . " </td>
+                            <td>" . $cl['subname'] . "</td><td>" . $cl['skill'] . "</td></tr>";
+                    }
+                }
+            } else {
+                $data .= "<tr><td colspan='3'>No data</td></tr>";
+            }
+            echo $data;
+        break;
         case 'studentMarks_excel':
             $program = $_POST['program'];
             $cls = $_POST['cls'];
@@ -1781,4 +1805,4 @@ if (isset($_POST['type'])) {
         return $no;
     }
 
-        ?>
+?>

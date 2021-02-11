@@ -29,10 +29,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee_ad
     
     $fee_head_id = $_POST['fee_head_id'];
     $route_id = $_POST['route_id'];
+    if($route_id==''){
+        $route_id=0;
+    }
     if(!empty($start_month) && !empty($start_year)){
         $month = $_POST['start_month'];
         $m = date('m',strtotime($month));
-        $due_date = $start_year.'-'.$m.'-05';
+        //$due_date = $start_year.'-'.$m.'-05';
+        $due_date = $_POST['due_date'];
     } else {
         $due_date = '';
     }

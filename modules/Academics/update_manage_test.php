@@ -13,6 +13,10 @@
        echo '</div>';
    } else {
        //Proceed!  
+
+       $page->breadcrumbs
+       ->add(__('Manage Test'), 'manage_test.php')
+       ->add(__('Update Test'));
    
        if (isset($_GET['return'])) {
            returnProcess($guid, $_GET['return'], null, null);
@@ -101,49 +105,49 @@
       <a id="updateTestBulkWise" class=" btn btn-primary">Save</a>
       
       &nbsp;&nbsp;
-      <i id="sent_message_icon" data-hrf='fullscreen.php?q=/modules/Academics/send_email_sms.php'  title="Send Marks SMS/EMAIL" class="fas fa-paper-plane iconsize"></i>
+      <i id="sent_message_icon" data-hrf='fullscreen.php?q=/modules/Academics/send_email_sms.php'  title="Send Marks SMS/EMAIL" class="mdi mdi-circle-edit-outline mdi-24px iconsize"></i>
       <span style="font-size: 25px;padding: 5px;">|</span>
-      <i id="updateTestSettings" data-type="lock_marks_entry" data-val="1" title="Lock Marks Entry" class="fas fa-lock iconsize"></i>
+      <i id="updateTestSettings" data-type="lock_marks_entry" data-val="1" title="Lock Marks Entry" class="mdi mdi-lock mdi-24px iconsize"></i>
       
       <span style="font-size: 25px;padding: 5px;">|</span>
       
-      <i id="updateTestSettings" data-type="lock_marks_entry" data-val="0" title="UnLock Marks Entry" class="fas fa-lock-open iconsize"></i>
+      <i id="updateTestSettings" data-type="lock_marks_entry" data-val="0" title="UnLock Marks Entry" class="mdi mdi-lock-open mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_publish" data-val="1" title="Publish"  class="fas fa-globe-asia iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_publish" data-val="1" title="Publish"  class="mdi mdi-earth mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_publish" data-val="0" title="UnPublish"  class="fas fa-stop-circle iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_publish" data-val="0" title="UnPublish"  class="mdi mdi-stop-circle mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_html" data-val="1" title="Show HTML"  class="fas fa-file-code iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_html" data-val="1" title="Show HTML"  class="mdi mdi-file-code mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_html" data-val="0" title="Hide HTML"  class="fas fa-file-code iconsize" style="color: darkgrey;"></i>
+      <i id="updateTestSettings" data-type="enable_html" data-val="0" title="Hide HTML"  class="mdi mdi-file-code mdi-24px iconsize" style="color: darkgrey;"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_pdf" data-val="1" title="Show PDF"  class="fas fa-file-pdf iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_pdf" data-val="1" title="Show PDF"  class="mdi mdi-file-pdf mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="updateTestSettings" data-type="enable_pdf" data-val="0" title="Hide PDF"  class="fas fa-file-pdf iconsize" style="color: darkgrey;"></i>
+      <i id="updateTestSettings" data-type="enable_pdf" data-val="0" title="Hide PDF"  class="mdi mdi-file-pdf mdi-24px iconsize" style="color: darkgrey;"></i>
 
-      <span style="font-size: 25px;padding: 5px;">|</span>
-      
-      <i id="updateTestSettings" data-type="enable_test_report" data-val="1" title="Lock Test Report" class="fas fa-lock iconsize"></i>
-      
       <span style="font-size: 25px;padding: 5px;">|</span>
       
-      <i id="updateTestSettings" data-type="enable_test_report" data-val="0" title="UnLock Test Report" class="fas fa-lock-open iconsize"></i>
+      <i id="updateTestSettings" data-type="enable_test_report" data-val="1" title="Lock Test Report" class="mdi mdi-lock mdi-24px iconsize"></i>
+      
+      <span style="font-size: 25px;padding: 5px;">|</span>
+      
+      <i id="updateTestSettings" data-type="enable_test_report" data-val="0" title="UnLock Test Report" class="mdi mdi-lock-open mdi-24px iconsize"></i>
 
       <span style="font-size: 25px;padding: 5px;">|</span>
 
-      <i id="downloadReport" data-hrf="thirdparty/phpword/reportcardmultiple.php?tid=" class="fas fa-download iconsize" aria-hidden="true" title="Report Download" style="cursor:pointer;"></i>
+      <i id="downloadReport" data-hrf="thirdparty/phpword/reportcardmultiple.php?tid=" class="mdi mdi-download mdi-24px iconsize" aria-hidden="true" title="Report Download" style="cursor:pointer;"></i>
 
       <a id="reportDownload" href="thirdparty/phpword/reportcardmultiple.php?tid=" style="display:none;">click</a>
      
@@ -151,7 +155,7 @@
 </div>
 <form name="">
    <div class='table-responsive dataTables_wrapper '>
-      <table class="" style="width:150%; margin-top:10px;">
+      <table class="table" >
          <thead>
             <tr>
                <th >
@@ -218,65 +222,65 @@
                </td>
                <td>
                   <?php if(!empty($tst['enable_marks_entry']) && $tst['enable_marks_entry'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_descriptive_entry']) && $tst['enable_descriptive_entry'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['lock_marks_entry']) && $tst['lock_marks_entry'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_publish']) && $tst['enable_publish'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_html']) && $tst['enable_html'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_pdf']) && $tst['enable_pdf'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_test_report']) && $tst['enable_test_report'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_sms']) && $tst['enable_sms'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
                <td>
                   <?php if(!empty($tst['enable_email']) && $tst['enable_email'] == '1'){ ?>
-                     <i class="fas fa-1x fa-check px-4  greenicon tick_icon"></i>
+                     <i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon tick_icon"></i>
                   <?php } else { ?>   
-                     <i class="fas fa-times iconsize px-4 text-red w-full"></i>
+                     <i class="mdi mdi-close-circle mdi-24px text-red w-full"></i>
                   <?php } ?>
                </td>
             </tr>

@@ -44,14 +44,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
         if ($absence['status'] == 'Declined') $row->addClass('error');
         return $row;
     });
-    
+
     $table->addMetaData('filterOptions', [
         'date:upcoming'           => __('Upcoming'),
         'date:today'              => __('Today'),
         'date:past'               => __('Past'),
-        'status:pending approval' => __('Status').': '.__('Pending Approval'),
-        'status:approved'         => __('Status').': '.__('Approved'),
-        'status:declined'         => __('Status').': '.__('Declined'),
+        'status:pending approval' => __('Status') . ': ' . __('Pending Approval'),
+        'status:approved'         => __('Status') . ': ' . __('Approved'),
+        'status:declined'         => __('Status') . ': ' . __('Declined'),
     ]);
 
     // COLUMNS
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_approval.ph
         ->sortable(['surname', 'preferredName'])
         ->format(function ($absence) use ($guid) {
             $text = Format::name($absence['title'], $absence['preferredName'], $absence['surname'], 'Staff', false, true);
-            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/absences_view_byPerson.php&pupilsightPersonID='.$absence['pupilsightPersonID'];
+            $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Staff/absences_view_byPerson.php&pupilsightPersonID=' . $absence['pupilsightPersonID'];
 
             return Format::link($url, $text);
         });

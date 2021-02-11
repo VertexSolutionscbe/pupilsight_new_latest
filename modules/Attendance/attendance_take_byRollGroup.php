@@ -112,8 +112,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         if (!empty($subj_mandatory['select_sub_mandatory'])) {
             $subject_mandatory = "1";
         }
+
         // ends subject check
         //close 
+        $progrm_id = "pupilsightProgramID";
+        $class_id = "pupilsightYearGroupID";
+        $section_id = "pupilsightRollGroupID";
+
         if ($pupilsightRoleIDPrimary != '001') //for staff login
         {
             $staff_person_id = $pupilsightPersonID;
@@ -123,9 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             $row1 = $result1->fetchAll();
             /* echo "<pre>";
             print_r($row1);*/
+            /*
             $progrm_id = "Staff_program";
             $class_id = "Staff_class";
             $section_id = "Staff_section";
+            */
             foreach ($row1 as $dt) {
                 $program2[$dt['pupilsightProgramID']] = $dt['program'];
             }
@@ -134,18 +141,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         } else {
             $staff_person_id = Null;
             $disable_cls = '';
+            /*
             $progrm_id = "pupilsightProgramID";
             $class_id = "pupilsightYearGroupID";
             $section_id = "pupilsightRollGroupID";
+            */
             $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
             $resultp = $connection2->query($sqlp);
             $rowdataprog = $resultp->fetchAll();
 
             $staff_person_id = Null;
             $disable_cls = '';
+            /*
             $progrm_id = "pupilsightProgramID";
             $class_id = "pupilsightYearGroupIDA";
             $section_id = "pupilsightRollGroupID";
+            */
             $sqlp = 'SELECT p.pupilsightProgramID, p.name FROM pupilsightProgram AS p RIGHT JOIN attn_settings AS a ON(p.pupilsightProgramID =a.pupilsightProgramID) ';
             $resultp = $connection2->query($sqlp);
             $rowdataprog = $resultp->fetchAll();
@@ -809,14 +820,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 },
                 async: true,
                 success: function(response) {
-                    $("#pupilsightYearGroupIDA").html();
-                    $("#pupilsightYearGroupIDA").html(response);
+                    $("#pupilsightYearGroupID").html();
+                    $("#pupilsightYearGroupID").html(response);
 
                 }
             })
         }
     });
-    $(document).on('change', '#pupilsightYearGroupIDA', function() {
+    $(document).on('change', '#pupilsightYearGroupID', function() {
         var id = $(this).val();
         var pid = $('#pupilsightProgramID').val();
         var type = 'getSection';
@@ -979,9 +990,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         showCount();
     }, 2000);
 
+
     $(document).on('change', '.load_configSession', function() {
-        var id = $('#Staff_program').val();
-        var pupilsightYearGroupID = $('#Staff_class').val();
+        var id = $('#pupilsightProgramID').val();
+        var pupilsightYearGroupID = $('#pupilsightYearGroupID').val();
         var type = 'getsessionConfigured';
         $.ajax({
             url: 'ajax_data.php',

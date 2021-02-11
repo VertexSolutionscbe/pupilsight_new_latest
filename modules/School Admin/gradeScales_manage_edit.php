@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     }
 
     //Check if school year specified
-    $pupilsightScaleID = (isset($_GET['pupilsightScaleID']))? $_GET['pupilsightScaleID'] : null;
+    $pupilsightScaleID = (isset($_GET['pupilsightScaleID'])) ? $_GET['pupilsightScaleID'] : null;
     if (empty($pupilsightScaleID)) {
         echo "<div class='alert alert-danger'>";
         echo __('You have not specified one or more required parameters.');
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+            echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
         }
 
         if ($result->rowCount() != 1) {
@@ -50,41 +50,41 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('gradeScaleEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_editProcess.php?pupilsightScaleID='.$pupilsightScaleID);
+            $form = Form::create('gradeScaleEdit', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/gradeScales_manage_editProcess.php?pupilsightScaleID=' . $pupilsightScaleID);
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('pupilsightScaleID', $pupilsightScaleID);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-                $row->addTextField('name')->required()->maxLength(40);
+            $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+            $row->addTextField('name')->required()->maxLength(40);
 
             $row = $form->addRow();
-                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-                $row->addTextField('nameShort')->required()->maxLength(5);
+            $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
+            $row->addTextField('nameShort')->required()->maxLength(5);
 
             $row = $form->addRow();
-                $row->addLabel('usage', __('Usage'))->description(__('Brief description of how scale is used.'));
-                $row->addTextField('usage')->required()->maxLength(50);
+            $row->addLabel('usage', __('Usage'))->description(__('Brief description of how scale is used.'));
+            $row->addTextField('usage')->required()->maxLength(50);
 
             $row = $form->addRow();
-                $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->required();
+            $row->addLabel('active', __('Active'));
+            $row->addYesNo('active')->required();
 
             $row = $form->addRow();
-                $row->addLabel('numeric', __('Numeric'))->description(__('Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.'));
-                $row->addYesNo('numeric')->required();
+            $row->addLabel('numeric', __('Numeric'))->description(__('Does this scale use only numeric grades? Note, grade "Incomplete" is exempt.'));
+            $row->addYesNo('numeric')->required();
 
             $data = array('pupilsightScaleID' => $pupilsightScaleID);
             $sql = "SELECT sequenceNumber as value, pupilsightScaleGrade.value as name FROM pupilsightScaleGrade WHERE pupilsightScaleID=:pupilsightScaleID ORDER BY sequenceNumber";
 
             $row = $form->addRow();
-                $row->addLabel('lowestAcceptable', __('Lowest Acceptable'))->description(__('This is the lowest grade a student can get without being unsatisfactory.'));
-                $row->addSelect('lowestAcceptable')->fromQuery($pdo, $sql, $data)->placeholder();
+            $row->addLabel('lowestAcceptable', __('Lowest Acceptable'))->description(__('This is the lowest grade a student can get without being unsatisfactory.'));
+            $row->addSelect('lowestAcceptable')->fromQuery($pdo, $sql, $data)->placeholder();
 
             $row = $form->addRow();
-                $row->addFooter();
-                $row->addSubmit();
+            $row->addFooter();
+            $row->addSubmit();
 
             $form->loadAllValuesFrom($values);
 
@@ -115,17 +115,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             $table->addColumn('descriptor', __('Descriptor'));
             $table->addColumn('sequenceNumber', __('Sequence Number'));
             $table->addColumn('isDefault', __('Is Default?'))->format(Format::using('yesNo', ['isDefault']));
-                
+
             // ACTIONS
             $table->addActionColumn()
                 ->addParam('pupilsightScaleID')
                 ->addParam('pupilsightScaleGradeID')
                 ->format(function ($grade, $actions) {
                     $actions->addAction('edit', __('Edit'))
-                            ->setURL('/modules/School Admin/gradeScales_manage_edit_grade_edit.php');
+                        ->setURL('/modules/School Admin/gradeScales_manage_edit_grade_edit.php');
 
                     $actions->addAction('delete', __('Delete'))
-                            ->setURL('/modules/School Admin/gradeScales_manage_edit_grade_delete.php');
+                        ->setURL('/modules/School Admin/gradeScales_manage_edit_grade_delete.php');
                 });
 
             echo $table->render($grades);

@@ -88,6 +88,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         }
         $skillsdata = $skillsdata1 + $skillsdata2;
        // print_r($skillsdata);
+
+       //$sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'"  AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
+
+        $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id LEFT JOIN examinationSubjectToTest AS c ON a.test_id = c.test_id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND a.pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' AND c.pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' AND c.is_tested = "1" GROUP BY a.test_id ';
+        $result_test = $connection2->query($sql_tst);
+        $tests = $result_test->fetchAll();
+        $testarr=array ('' => __('Select'));  
+        $test2=array();  
+
+        foreach ($tests as $ts) {
+            $test2[$ts['id']] = $ts['name'];
+        }
+        $testarr+=  $test2; 
     } else {
            $pupilsightProgramID =  '';
         //   $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
@@ -103,6 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $stuId = '0';
        
         $skillsdata = array();
+        $testarr = array();
     }
     $sql_rmk = 'SELECT id, description FROM acRemarks ';
     $result_rmk = $connection2->query($sql_rmk);
@@ -142,16 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $test_types = $term1 + $term2;
     }
 
-    $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'"  AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
-    $result_test = $connection2->query($sql_tst);
-    $tests = $result_test->fetchAll();
-    $testarr=array ('' => __('Select'));  
-    $test2=array();  
-
-    foreach ($tests as $ts) {
-        $test2[$ts['id']] = $ts['name'];
-    }
-    $testarr+=  $test2; 
+    
 
     $sqlsk = 'SELECT id, name FROM ac_manage_skill ';
     $resultsk = $connection2->query($sqlsk);
@@ -265,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             $re_mode_data = $re_mode->fetchAll();
          } 
         //$subjectName = $subject_wise_tests->dataSet['data'][0]['subject_display_name'];
-        echo '<h1>Subject : '.$subjectName.'</h1>';
+        echo '<h2>Subject : '.$subjectName.'</h2>';
         echo '<form method="POST" id="marksbysubject" action="'.$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/manage_marks_entry_by_subject_addProcess.php">
         <input type="hidden" name="address" value="'.$_SESSION[$guid]['address'].'">
         <input type="hidden" name="pupilsightSchoolYearID" value="'.$pupilsightSchoolYearID.'">      
@@ -292,40 +297,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 <th rowspan="2" style="width:80px" class="bdr_right"> Admission No </th>
                 <?php 
                 //echo count($subject_wise_tests);
+                $i1 = 1;
                 foreach($subject_wise_tests as $s_test)
                 { 
+                    if($i1 > 1){ 
+                        $colspan = '7';
+                    } else {
+                        $colspan = '6';
+                    }
                     ?>
-                <th colspan="6" style="text-align:center; border:1px solid #dee2e6"><?php echo $s_test['name']?></th>
-                <?php } ?>               
+                <th colspan="<?php echo $colspan;?>" style="text-align:center; border:1px solid #dee2e6"><?php echo $s_test['name']?></th>
+                <?php $i1++; } ?>               
             </tr>
             <tr>
             <?php 
-            foreach($subject_wise_tests as $s_test)
-                    { 
-                        ?> 
+            $i = 1;
+            foreach($subject_wise_tests as $s_test){ 
+                if($i > 1){
+            ?> 
+                <th rowspan="2" style="width:80px"> Student Name </th>
+            <?php } ?>
                     <th>Marks history</th>            
                     <th colspan='2'> Marks <br/>Obtained(<?php echo str_replace(".00", "", $s_test['max_marks']);?>)</th>
                     <th>Grade</th>
                     <th>Grade Status</th>
-                    <th class="bdr_right">Remark all <input type="checkbox" data-id="<?php echo $s_test['test_id'];?>" class="remark_all"></th>
-                    
+                    <?php if($s_test['enable_remarks'] == '1') { ?>
+                        <th class="bdr_right">Remark all <input type="checkbox" data-id="<?php echo $s_test['test_id'];?>" class="remark_all"></th>
                     <?php } ?>
+                    
+                    <?php $i++; } ?>
             </tr>    
      </thead>       
      <tbody>
         <?php                           
-            $data_sel = '<option value=""> Remark</option>';
-            if($mode=="SUBJECT_GRADE_WISE_AUTO"){
-               foreach ($re_mode_data as  $val) {
-                   $data_sel .= '<option value="' . $val['grade_id']. '">' . $val['remark_description'] . '</option>';
-               }
-            } else {
-               if (!empty($rowdata_rmk)) {
-                foreach ($rowdata_rmk as $k => $rk) {
-                    $data_sel .= '<option value="' . $rk['description'] . '">' . $rk['description'] . '</option>';
-                }
-            }  
-            }
+            
             $count = 0;
             $rowNum = 'odd';
             $f = 1;
@@ -349,9 +354,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 ?>                 
                 <?php           
                 //echo count($subject_wise_tests);
-               
+                $km = 1;
                 foreach($subject_wise_tests as $k => $s_test)
                 {
+                    
                     
                     if($s_test['lock_marks_entry'] == '1'){
                         $disabled = 'disabled';
@@ -367,6 +373,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     // echo '<pre>';
                     // print_r($prevdata);
                     // echo '</pre>';
+
+
+                    $data_sel = '<option value="">Select Remark</option>';
+                    if($mode=="SUBJECT_GRADE_WISE_AUTO"){
+                    foreach ($re_mode_data as  $val) {
+                        if($prevdata['remark_type'] == 'list' && $prevdata['remarks'] == $val['remark_description']) {
+                            $sel = 'selected';
+                        } else {
+                            $sel = '';
+                        }
+                        $data_sel .= '<option value="' . $val['grade_id']. '" '.$sel.'>' . $val['remark_description'] . '</option>';
+                    }
+                    } else {
+                    if (!empty($rowdata_rmk)) {
+                            foreach ($rowdata_rmk as $k => $rk) {
+                                if($prevdata['remark_type'] == 'list' && $prevdata['remarks'] == $rk['description']) {
+                                    $sel = 'selected';
+                                } else {
+                                    $sel = '';
+                                }
+                                $data_sel .= '<option value="' . $rk['description'] . '" '.$sel.'>' . $rk['description'] . '</option>';
+                            }
+                        }  
+                    }
                     
                     if($prevdata['status']==1 && $prevdata['entrytype'] == 2)
                     {
@@ -376,6 +406,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     else
                     {
                         $locked = '';
+                    }
+                    //echo $km;
+
+                    if($km > 1){
+                        echo '<td>'; echo $row['student_name']; echo '</td>';
                     }
 
 
@@ -404,7 +439,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     }
                     
 
-                    echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab'.$f.'" value="'.$marksobt.'"  '.$disabled.'>';
+                    echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab-'.$s_test['test_id'].'-'.$f.'" value="'.$marksobt.'"  '.$disabled.'>';
                     echo '</td>';  
                     
                     $seab = array("-", "AB", "EX");
@@ -440,7 +475,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 
                     }
                     echo '</fieldset></td>';
-                    echo '<td id="grade_status'.$s_test['test_id'].'row'.$row['stuid'].'"></td>';
+                    //echo $prevdata['marks_obtained'].' -- '.$prevdata['gradeId'];
+                    
+                    if(!empty($marksobt) && !empty($s_test['gradeSystemId'])){
+                        $obtMark = $s_test['max_marks'];
+                        $mrks = ($marksobt / $obtMark) * 100;
+                        $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $s_test['gradeSystemId'] . '" AND  (' . $mrks . ' BETWEEN `lower_limit` AND `upper_limit`)';
+                        $result = $connection2->query($sql);
+                        $grade = $result->fetch();
+
+                        $gstatus = $grade['subject_status'];
+                    } else {
+                        $gstatus = '';
+                    }
+                    echo '<td id="grade_status'.$s_test['test_id'].'row'.$row['stuid'].'">'.$gstatus.'</td>';
+                if($s_test['enable_remarks'] == '1') { 
                     echo '<td> ';
                     if(!empty($prevdata['remarks'])){
                         $colrCls = 'grnRemark';
@@ -450,25 +499,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     echo '<i class="mdi mdi-book-open-outline mdi-24px px-4 remark_enter_type icon_re_'.$s_test['test_id'].' '.$colrCls.' " id="rmk'.$s_test['test_id'].'stu'.$row['stuid'].'" data-id="'.$s_test['test_id'].'stu'.$row['stuid'].'"></i>';
                   
                     ?>
+
+                
                     <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?>" style="display:none;width:190px"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
                         <p><label>From List </label>
-                        <input type="radio" id="fromlist" class="rm_type" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="fromlist" style="margin-left: 2px;">
+                        <input type="radio" id="fromlist" class="rm_type" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="fromlist" style="margin-left: 2px;"  <?php if($prevdata['remark_type'] == 'list'){ ?> checked <?php } ?>>
                         &nbsp;&nbsp;
                         <label> Your Own </label>
-                        <input type="radio" id="enter_own"  class="rm_type rm_type_<?php echo $s_test['test_id'];?>" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="enter_own" style="margin-left: 2px;">
+                        <input type="radio" id="enter_own"  class="rm_type rm_type_<?php echo $s_test['test_id'];?>" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="enter_own" style="margin-left: 2px;"   <?php if($prevdata['remark_type'] == 'own'){ ?> checked <?php } ?> >
                         </p>
                     </div>
                     <select id="remarklist<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="" class="w-full remarklist rmk_width" style="display:none" data-id="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
                      <?php echo $data_sel;?>
                     </select>
+                
                     <input id="remarklistval<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" type="hidden" name="remark_frmlst[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="">
-                    <textarea style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class=" remark_textarea text_remark_<?php echo $s_test['test_id']; ?>" ><?php echo $prevdata['remarks'] ?></textarea> 
+                    <?php 
+                        if($prevdata['remark_type'] == 'own'){
+                            $remOwnData = $prevdata['remarks'];
+                        } else {
+                            $remOwnData = '';
+                        }
+                    ?>
+
+                    <textarea data-tid="<?php echo $s_test['test_id'];?>"  data-fid="<?php echo $f;?>"  style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class="tabfocusRemark remark_textarea text_remark_<?php echo $s_test['test_id']; ?>  focustabRemark-<?php echo $s_test['test_id'];?>-<?php echo $f; ?>" ><?php echo $remOwnData; ?></textarea> 
                     <br/> 
                     <span class="rcount_<?php echo $s_test['test_id'];?>"></span>        
                     <?php
                     echo '</td>';
+                }
                     echo '</fieldset>';
-                   
+                   $km++;
                 }       
                 echo '</tr>';
                 $f++;
@@ -524,6 +585,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
 
     .grnRemark {
         color:green;
+    }
+
+    .txtColor {
+        background-color: lightblue !important;
     }
 </style>
 <script>
@@ -709,15 +774,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         }
 
         $(document).on('keydown', '.tabfocus', function(e) {
+            $(".numMarksfield").removeClass('txtColor');
             var id = $(this).attr('data-fid');
+            var tid = $(this).attr('data-tid');
             var newid = parseInt(id) + 1;
             var keycode = (window.event) ? event.keyCode : e.keyCode;
             if (keycode == 9){
                 window.setTimeout(function() {
-                    $("#focustab"+newid).focus();
+                    $("#focustab-"+tid+'-'+newid).focus().addClass('txtColor');
                 }, 10);
             }
-        });    
+        }); 
+
+        $(document).on('keydown', '.tabfocusRemark', function(e) {
+            
+            //$(".tabfocusRemark").removeClass('txtColor');
+            var id = $(this).attr('data-fid');
+            var tid = $(this).attr('data-tid');
+            var newid = parseInt(id) + 1;
+            //alert(id);
+            var keycode = (window.event) ? event.keyCode : e.keyCode;
+            if (keycode == 9){
+                window.setTimeout(function() {
+                    $(".focustabRemark-"+tid+'-'+newid).focus().addClass('txtColor');
+                }, 10);
+            }
+        });       
 
        
     $(document).on('click','.getMaxHistroy',function(){

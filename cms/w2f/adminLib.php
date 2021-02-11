@@ -51,11 +51,16 @@ class adminlib
 	{
 		$sql = "UPDATE pupilsight_cms SET ";
 		foreach ($input as $key => $value) {
-			$val = htmlspecialchars($value);
-			$sql .= $key . '= "' . $val . '", ';
+			if($key !='hidden_banner_image' && $key !='hidden_logo_image' && $key !='hidden_comment_image')
+			{
+				$val = htmlspecialchars($value);
+				$sql .= $key . '= "' . $val . '", ';
+			}
 		}
 		$sql = rtrim($sql, ", ");
 		$sql .= " WHERE id = 1";
+
+		//echo $sql;exit;
 
 		$result = database::doUpdate($sql);
 		//return $result;

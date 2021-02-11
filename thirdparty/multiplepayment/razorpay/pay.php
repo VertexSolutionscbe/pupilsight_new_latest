@@ -4,7 +4,9 @@ require('razorpay/Razorpay.php');
 
 use Razorpay\Api\Api;
 
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Create the Razorpay Order
 $api = new Api($keyId, $keySecret);
@@ -78,4 +80,3 @@ $data = [
 $json = json_encode($data);
 
 require("checkout/{$checkout}.php");
-?>

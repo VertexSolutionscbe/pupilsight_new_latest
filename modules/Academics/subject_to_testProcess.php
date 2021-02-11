@@ -26,6 +26,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
         header("Location: {$URL}");
     } else {
         try {
+            $sqld = 'SELECT * FROM examinationTestAssignClass WHERE test_id = '.$test_id.' ';
+            $resultd = $connection2->query($sqld);
+            $reData = $resultd->fetch();
+
+            $pid = $reData['pupilsightProgramID'];
+            $cid = $reData['pupilsightYearGroupID'];
+            $sid = $reData['pupilsightRollGroupID'];
+            $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Academics/manage_edit_test.php&pid=".$pid."&cid=".$cid."&sid=".$sid."";
+            
+
             $data2 = array('test_id' => $test_id);
             $sql2 = 'DELETE FROM examinationSubjectToTest WHERE test_id=:test_id';
             $result2 = $connection2->prepare($sql2);

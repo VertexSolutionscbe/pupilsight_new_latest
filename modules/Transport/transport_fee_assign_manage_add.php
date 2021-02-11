@@ -87,14 +87,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee_as
             $row->addSelect('pupilsightProgramID')->setId('programId')->fromArray($program)->required()->placeholder();
 
     $row = $form->addRow();
+        $row->addLabel('select-all', __('Select All / None'));
+        $row->addCheckbox('select-all');
+
+    $row = $form->addRow();
         $row->addLabel('pupilsightYearGroupID', __('Class'));
-        $row->addCheckbox('pupilsightYearGroupID')->fromArray($classes)->addCheckAllNone()->required();
+        $row->addCheckbox('pupilsightYearGroupID')->fromArray($classes)->setId('addallclasses')->required();
 
     // $row = $form->addRow();
     //     $row->addLabel('pupilsightRollGroupID', __('Section'));
     //     $row->addSelectRollGroup('pupilsightRollGroupID', $pupilsightSchoolYearID)->required();
 
-        
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
@@ -102,3 +106,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee_as
     echo $form->getOutput();
 
 }
+?>
+<script language="JavaScript">
+    $('#select-all').click(function(event) {
+        if(this.checked) {
+            // Iterate each checkbox
+            $(':checkbox').each(function() {
+                this.checked = true;
+            });
+        } else {
+            $(':checkbox').each(function() {
+                this.checked = false;
+            });
+        }
+    });
+</script>

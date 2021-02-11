@@ -6,8 +6,8 @@ Pupilsight, Flexible & Open School System
 include '../../pupilsight.php';
 
 $pupilsightScaleID = $_GET['pupilsightScaleID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/gradeScales_manage_delete.php&pupilsightScaleID='.$pupilsightScaleID;
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/gradeScales_manage.php';
+$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . '/gradeScales_manage_delete.php&pupilsightScaleID=' . $pupilsightScaleID;
+$URLDelete = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . '/gradeScales_manage.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_manage_delete.php') == false) {
     $URL .= '&return=error0';
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
                 exit();
             }
 
-            $URLDelete = $URLDelete.'&return=success0';
+            $URLDelete = $URLDelete . '&return=success0';
             header("Location: {$URLDelete}");
         }
     }

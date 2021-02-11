@@ -6,6 +6,7 @@ Pupilsight, Flexible & Open School System
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 
+
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_assign_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -44,10 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_assign_man
     $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
     $resultp = $connection2->query($sqlp);
     $rowdataprog = $resultp->fetchAll();
-    if($_POST){
+    if ($_POST) {
         $pupilsightProgramID = $_POST['pupilsightProgramID'];
         $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
-    }else{
+    } else {
         $pupilsightProgramID = "";
         $pupilsightSchoolYearID = "";
     }
@@ -91,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_assign_man
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     //$form->addHiddenValue('fn_fee_invoice_id', $id);
-   
+
     //selected($firstClassId)->
     $row = $form->addRow();
     $row->addLabel('pupilsightProgramID', __('Program'));
@@ -105,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_assign_man
     // $row->addSelectYearGroup('studentByClass')->fromArray($classes)->placeholder();
 
     $row = $form->addRow();
-    
+
     $row->addTextField('studentByStudent')->placeholder('Search By Student Name');
 
     $row = $form->addRow()->setId('filterStudentByClass')->setClass('filterStudentBystudent');
@@ -113,18 +114,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_assign_man
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('name', __('Student'));
-    
-    foreach ($students as $k => $cl) {
-        if (empty($cl['fsid'])) {
-            $content = '<span style="color:red;">(Not Assign)</span>';
-            $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->setDisabled('1')->description(__($content . ' ' . $cl['student_name']));
-        } else {
-            $content = '';
-            $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->description(__($content . ' ' . $cl['student_name']));
-        }
-    }
+
+    // foreach ($students as $k => $cl) {
+    //     if (empty($cl['fsid'])) {
+    //         $content = '<span style="color:red;">(Not Assign)</span>';
+    //         $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->setDisabled('1')->description(__($content . ' ' . $cl['student_name']));
+    //     } else {
+    //         $content = '';
+    //         $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->description(__($content . ' ' . $cl['student_name']));
+    //     }
+    // }
 
     $col = $row->addColumn()->setClass('newdes');
+
     //$col->addLabel('invoice_title', __('Fee Structure'));
     // foreach($students as $k => $cl){
     //     if(!empty($cl['fsid'])){
@@ -158,29 +160,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_assign_man
     $row->addSubmit();
 
     echo $form->getOutput();
-}?>
+} ?>
 <script>
-$(document).on('keyup','#studentByStudent',function(){
-    var value = $(this).val().toLowerCase();
-    $(".inline label.leading-normal").filter(function() {
-     $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-});
-$(document).on('change',".program_cls",function(){
-     var id = $(this).val();
-        var type = 'getClass';
-        if(id!=""){
-        $.ajax({
-            url: 'ajax_data.php',
-            type: 'post',
-            data: { val: id, type: type },
-            async: true,
-            success: function(response) {
-                $("#pupilsightYearGroupID1").html();
-                $("#pupilsightYearGroupID1").html(response);
-                $("#pupilsightYearGroupID1").trigger('change');
-            }
+    $(document).on('keyup', '#studentByStudent', function() {
+        var value = $(this).val().toLowerCase();
+        $(".inline label.leading-normal").filter(function() {
+            $(this).parent().toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
-    }
-});
+    });
+    $(document).on('change', ".program_cls", function() {
+        var id = $(this).val();
+        var type = 'getClass';
+        if (id != "") {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {
+                    val: id,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightYearGroupID1").html();
+                    $("#pupilsightYearGroupID1").html(response);
+                    $("#pupilsightYearGroupID1").trigger('change');
+                }
+            });
+        }
+    });
 </script>

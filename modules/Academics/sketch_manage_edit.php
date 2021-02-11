@@ -80,14 +80,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_ed
             $col->addTextField('sketch_name')->addClass('txtfield')->required()->setValue($values['sketch_name']);
 
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('sketch_code', __('Skill Code'));
+            $col->addLabel('sketch_code', __('Sketch Code'));
             $col->addTextField('sketch_code')->addClass('txtfield')->required()->setValue($values['sketch_code']);
 
         $row = $form->addRow();         
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('pupilsightProgramID', __('Program'));
-            $col->addSelect('pupilsightProgramID')->fromArray($program)->required()->placeholder('Select Program')->selected($values['pupilsightProgramID']);
+            $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDSketch')->fromArray($program)->required()->placeholder('Select Program')->selected($values['pupilsightProgramID']);
 
             $classid = explode(',', $values['class_ids']);
 
@@ -118,3 +118,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_ed
     }
     
 </style>
+
+<script>
+    $(document).ready(function () {
+      	$('#pupilsightYearGroupID').selectize({
+      		plugins: ['remove_button'],
+      	});
+    });
+
+    $(document).on('change', '#pupilsightProgramIDSketch', function () {
+        var id = $(this).val();
+        var type = 'getClass';
+        $('#pupilsightYearGroupID').selectize()[0].selectize.destroy();
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type },
+            async: true,
+            success: function (response) {
+                $("#pupilsightYearGroupID").html();
+                $("#pupilsightYearGroupID").html(response);
+                $("#pupilsightYearGroupID").parent().children('.LV_validation_message').remove();
+                $('#pupilsightYearGroupID').selectize({
+                    plugins: ['remove_button'],
+                });
+            }
+        });
+    });
+</script>
