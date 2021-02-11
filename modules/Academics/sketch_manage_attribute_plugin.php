@@ -200,13 +200,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             </table>
             <div style="padding: 20px 20px !important; background: lightgray;">
                     
-                    <a style="display:none" href='fullscreen.php?q=/modules/Academics/select_subject_for_sketch.php&skid=<?php echo $chkdata['sketch_id'];?>&width=400'  class='thickbox ' id="clickSelSubject">SelectSubject</a>
-                    <input type="hidden" id="selectedSubject" name="subject_val_id" value="">
-                    <input type="radio" class="selSubject" name="subject_type" value="All Subject"> All Subject
-                    <input type="radio" class="selSubject" name="subject_type" value="Select Subject"> Select Subject
+                    <a style="display:none" href=''  class='thickbox ' id="clickSelTestSubject">SelectSubject</a>
+                    <input type="hidden" id="selectedTestSubject" name="subject_val_id" value="">
+                    <input type="radio" class="selTestSubject" name="subject_type" value="All Subject"> All Subject
+                    <input type="radio" class="selTestSubject" name="subject_type" value="Select Subject" data-hrf="fullscreen.php?q=/modules/Academics/select_test_subject_for_sketch.php&skid=<?php echo $chkdata['sketch_id'];?>&tid="> Select Subject
                     <?php if(!empty($subTypeData)) { 
                         foreach($subTypeData as $std) { ?>
-                    <input type="radio" class="selSubject" name="subject_type" value="<?php echo $std['name'];?>"> <?php echo $std['name'];?>
+                    <input type="radio" class="selTestSubject" name="subject_type" value="<?php echo $std['name'];?>"> <?php echo $std['name'];?>
                     <?php } } ?>
 
                     <select class="form-control" name="subject_display_type" style="width:20%">
@@ -439,6 +439,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         } else {
             $("#selectedSubject").val('');
         }
-       
+    });
+
+    $(document).on('change', '.selTestSubject', function() {
+        var val = $(this).val();
+        if(val == 'Select Subject'){
+            var hrf = $(this).attr('data-hrf');
+            var favorite = [];
+            $.each($("input[name='test_master_id[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var testmasterid = favorite.join(",");
+            if (testmasterid) {
+                var newhrf = hrf + testmasterid + '&width=400';
+                $("#clickSelTestSubject").attr('href', newhrf);
+                $("#clickSelTestSubject")[0].click();
+            } else {
+                alert('You Have to Select Test!');
+            }
+        } else {
+            $("#selectedTestSubject").val('');
+        }
     });
 </script>

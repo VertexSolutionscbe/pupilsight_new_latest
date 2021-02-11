@@ -163,20 +163,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 }
 
                 if(!empty($state_id)){
-                    $sqlchk1 = "SELECT b.state_id FROM workflow_transition AS a LEFT JOIN fn_fee_admission_settings AS b ON a.fn_fee_admission_setting_ids = b.id WHERE a.id = ".$state_id." ";
-                    $resultchk1 = $connection2->query($sqlchk1);
-                    $valuechk1 = $resultchk1->fetch();
+                    // $sqlchk1 = "SELECT b.state_id FROM workflow_transition AS a LEFT JOIN fn_fee_admission_settings AS b ON a.fn_fee_admission_setting_ids = b.id WHERE a.id = ".$state_id." ";
+                    // $resultchk1 = $connection2->query($sqlchk1);
+                    // $valuechk1 = $resultchk1->fetch();
 
-                    $sqlchk = "SELECT a.campaign_id, a.transition_display_name, a.id, c.form_id FROM workflow_transition AS a LEFT JOIN campaign AS c ON a.campaign_id = c.id WHERE a.to_state = ".$valuechk1['state_id']." ";
-                    $resultchk = $connection2->query($sqlchk);
-                    $valuechk = $resultchk->fetch();
-                    if(!empty($valuechk)){
-                        $chgState_id = $valuechk['id'];
-                        $data = array('campaign_id' => $valuechk['campaign_id'],'form_id' => $valuechk['form_id'], 'submission_id' => $submission_id, 'state' => $valuechk['transition_display_name'],  'state_id' => $chgState_id, 'status' => '1', 'pupilsightPersonID' => $cuid, 'cdt' => $cdt);
-                
-                        $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, cdt=:cdt";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                    $sqlchk1 = "SELECT fn_fee_admission_setting_ids FROM workflow_transition  WHERE id = ".$state_id." ";
+                    $resultchk1 = $connection2->query($sqlchk1);
+                    $getSettIds = $resultchk1->fetch();
+
+                    if(!empty($getSettIds)){
+                        $sqlchk1 = "SELECT state_id FROM fn_fee_admission_settings WHERE id IN (".$getSettIds['fn_fee_admission_setting_ids'].") ";
+                        $resultchk1 = $connection2->query($sqlchk1);
+                        $valuechk1 = $resultchk1->fetch();
+                        
+
+                        $sqlchk = "SELECT a.campaign_id, a.transition_display_name, a.id, c.form_id FROM workflow_transition AS a LEFT JOIN campaign AS c ON a.campaign_id = c.id WHERE a.to_state = ".$valuechk1['state_id']." ";
+                        $resultchk = $connection2->query($sqlchk);
+                        $valuechk = $resultchk->fetch();
+                        if(!empty($valuechk)){
+                            $chgState_id = $valuechk['id'];
+                            $data = array('campaign_id' => $valuechk['campaign_id'],'form_id' => $valuechk['form_id'], 'submission_id' => $submission_id, 'state' => $valuechk['transition_display_name'],  'state_id' => $chgState_id, 'status' => '1', 'pupilsightPersonID' => $cuid, 'cdt' => $cdt);
+                    
+                            $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, cdt=:cdt";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        }
                     }
                 }
 

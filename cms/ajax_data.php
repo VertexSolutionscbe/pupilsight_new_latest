@@ -2,6 +2,9 @@
 error_reporting(E_ERROR | E_PARSE);
 include_once 'w2f/adminLib.php';
 include '../pupilsight.php';
+
+use Pupilsight\Contracts\Comms\SMS;
+
 $adminlib = new adminlib();
 session_start();
 //$input = $_SESSION['campaignuserdata'];
@@ -196,22 +199,36 @@ if ($type == 'insertcampaigndetails') {
 			$crtd =  date('Y-m-d H:i:s');
 			$cuid = '001';
 
-			$sqle = "SELECT response FROM wp_fluentform_submissions WHERE id = " . $subid . " ";
+			$sqle = "SELECT response, application_id FROM wp_fluentform_submissions WHERE id = " . $subid . " ";
 			$resulte = $connection2->query($sqle);
 			$rowdata = $resulte->fetch();
 			$sd = json_decode($rowdata['response'], TRUE);
 			$email = "";
 			$names = "";
+			$st_name = '';
+			$ft_name = '';
+			$mt_name = '';
 			$ft_number = '';
 			$mt_number = '';
 			$gt_number = '';
 			$ft_email = '';
 			$mt_email = '';
 			$gt_email = '';
+			$application_no = $rowdata['application_id'];
 
 			if ($sd) {
 				// $names = implode(' ', $sd['student_name']);
 				// $email = $sd['father_email'];
+				if (!empty($sd['father_name'])) {
+					$ft_name = $sd['father_name'];
+				}
+				if (!empty($sd['mother_name'])) {
+					$mt_name = $sd['mother_name'];
+				}
+				if (!empty($sd['student_name'])) {
+					$st_name = $sd['student_name'];
+				}
+
 				if (!empty($sd['father_mobile'])) {
 					$ft_number = $sd['father_mobile'];
 				}
@@ -231,6 +248,19 @@ if ($type == 'insertcampaigndetails') {
 				if (!empty($sd['guardian_email'])) {
 					$gt_email = $sd['guardian_email'];
 				}
+			}
+
+			$emailquote = str_replace("@student_name", $st_name, $emailquote);
+			$emailquote = str_replace("@father_name", $ft_name, $emailquote);
+			$emailquote = str_replace("@mother_name", $mt_name, $emailquote);
+			
+			$smsquote = str_replace("@student_name", $st_name, $smsquote);
+			$smsquote = str_replace("@father_name", $ft_name, $smsquote);
+			$smsquote = str_replace("@mother_name", $mt_name, $smsquote);
+			
+			if(!empty($application_no)){
+				$emailquote = str_replace("@application_no", $application_no, $emailquote);
+				$smsquote = str_replace("@application_no", $application_no, $smsquote);
 			}
 
 			//$email = "it.rakesh@gmail.com";
@@ -271,13 +301,13 @@ if ($type == 'insertcampaigndetails') {
 
 			if (!empty($smsquote) && !empty($msg)) {
 				if (!empty($ft_number)) {
-					sendSMS($ft_number, $msg, $subid, $cuid, $connection2);
+					sendSMS($ft_number, $msg, $subid, $cuid, $connection2, $container);
 				}
 				if (!empty($mt_number)) {
-					sendSMS($mt_number, $msg, $subid, $cuid, $connection2);
+					sendSMS($mt_number, $msg, $subid, $cuid, $connection2, $container);
 				}
 				if (!empty($gt_number)) {
-					sendSMS($gt_number, $msg, $subid, $cuid, $connection2);
+					sendSMS($gt_number, $msg, $subid, $cuid, $connection2, $container);
 				}
 			}
 
@@ -319,13 +349,16 @@ if ($type == 'getCampClass') {
 	echo $data;
 }
 
-function sendSMS($number, $msg, $subid, $cuid, $connection2)
+function sendSMS($number, $msg, $subid, $cuid, $connection2, $container)
 {
-	$urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
-	$urls .= "&send_to=" . $number;
-	$urls .= "&msg=" . rawurlencode($msg);
-	$urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
-	$resms = file_get_contents($urls);
+	// $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
+	// $urls .= "&send_to=" . $number;
+	// $urls .= "&msg=" . rawurlencode($msg);
+	// $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
+	// $resms = file_get_contents($urls);
+
+	$sms = $container->get(SMS::class);
+    $res = $sms->sendSMSPro($number, $msg);
 
 	$sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
 	$connection2->query($sq);

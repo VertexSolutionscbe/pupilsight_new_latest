@@ -315,7 +315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                         $dataSet->data[$i]["workflowstate"] = 'Created';
                     }
                 } else {
-                    $dataSet->data[$i]["workflowstate"] = 'Created';
+                    $dataSet->data[$i]["workflowstate"] = 'Submitted';
                 }
             }
 
