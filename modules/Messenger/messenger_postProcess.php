@@ -102,6 +102,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			$URL .= "&addReturn=fail3";
 			header("Location: {$URL}");
 		} else {
+            if($body == ""){
+                $body=$body1;
+            }
 			//Lock table
 			try {
 				$sql = "LOCK TABLES pupilsightMessenger WRITE";
