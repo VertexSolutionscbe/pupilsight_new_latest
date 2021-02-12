@@ -136,9 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         </div>
 
 
-
         <div id="cloning" class="row" style="width:100%">
-
             <div style="margin-bottom: 10px;">
                 <input type="text" class="w-full" id="searchTable2" placeholder="Search">
             </div>

@@ -821,6 +821,4 @@ if (empty($campaignStatus)) {
             }
         });
     </script>
-
-
 </body>
