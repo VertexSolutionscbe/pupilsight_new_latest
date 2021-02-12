@@ -264,9 +264,9 @@ if ($_POST) {
               <label for="exampleInputEmail1">Contact Us Google Map (Width:1100 / Height:440) <a target="_blank" href="https://www.embedgooglemap.net/">Get Link</a></label>
               <textarea name="contact_map" class="form-control" placeholder="Contact Us Google Map"><?php echo $data['contact_map']; ?></textarea>
             </div>
-
+            <br><br>
             <div class="card-footer">
-              <button type="submit" class="btn btn-primary">Submit</button>
+             <br> <button type="submit" class="btn btn-success">Submit</button>
             </div>
           </div>
         </form>
