@@ -25,7 +25,12 @@ require_once './modules/Messenger/moduleFunctions.php';
 
 ?>
 <html>
-    <body style='margin:0;'>
+
+<body style='margin:0;padding:0;'>
+    <!--
         <iframe src="http://ivy-school.thimpress.com/demo-3" style="width:100%;height:100vh;border:0;">
-    </body>
+        -->
+    <iframe src="cms/index.php" style="width:100%;height:100vh;border:0;">
+</body>
+
 </html>
