@@ -102,6 +102,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			$URL .= "&addReturn=fail3";
 			header("Location: {$URL}");
 		} else {
+            if($body == ""){
+                $body=$body1;
+            }
 			//Lock table
 			try {
 				$sql = "LOCK TABLES pupilsightMessenger WRITE";
@@ -2095,6 +2098,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 					}, []));
 
 					$recipients = array_merge($recipients, $messageBccListSms);
+
+                    $recipients=array_filter($recipients);
 
 					$sms = $container->get(SMS::class);
 
