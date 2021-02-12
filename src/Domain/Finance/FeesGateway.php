@@ -1110,7 +1110,7 @@ print_r($rs);
             $input = $_SESSION['trnsaction_search'];
         } 
 
-        if(!empty($input)){
+        if(!empty($input)){  
             $query = $this
             ->newQuery()
             ->from('fn_fees_collection')

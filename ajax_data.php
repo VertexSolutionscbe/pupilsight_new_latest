@@ -2299,8 +2299,17 @@ if ($type == "getPaymentHistory") {
             } else {
                 $paystatus = '<td>' . $ph['payment_status'] . '</td>';
             }
+
+            if (!empty($ph['filename'])) {
+                $receipt = 'public/receipts/'.$ph['filename'].'.pdf';
+            } else if (!empty($ph['transaction_id'])) {
+                $receipt = 'public/receipts/'.$ph['transaction_id'].'.pdf';
+            } else {
+                $receipt = '';
+            }
+
             echo '<tr><td><input type="checkbox" name="paymentHistory[]" id="paymentHistory" value="' . $ph['id'] . '" class="selPayHistory payhistory' . $ph['transaction_id'] . '"></td>
-                <td><a title="View receipt" href="' . $_SESSION[$guid]['absoluteURL'] . '/cms/convertPdf.php?id=' . $ph['transaction_id'] . '" ><i class="mdi mdi-receipt mdi-24px"></i></a></td>
+                <td><a title="View receipt" href="' . $receipt . '" download><i class="mdi mdi-receipt mdi-24px"></i></a></td>
                 <td>                
                 <a href="index.php?q=/modules/Finance/fee_payment_history.php&tid=' . $ph['transaction_id'] . '" target="_blank">' . $ph['transaction_id'] . '</a></td><td>' . $ph['receipt_number'] . '</td><td>' . $invnno . '</td><td>' . $ph['total_amount_without_fine_discount'] . '</td><td>' . $ph['fine'] . '</td><td>' . $ph['discount'] . '</td><td>' . $ph['amount_paying'] . '</td><td>' . date("d/m/Y", strtotime($ph['payment_date'])) . '</td><td>' . $ph['payMode'] . '</td>' . $paystatus . '</tr>';
         }

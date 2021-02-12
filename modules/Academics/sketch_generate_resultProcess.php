@@ -249,7 +249,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                         $connPro1 = new mysqli($databaseServer, $databaseUsername, $databasePassword, $databaseName);
                                         $testdatasub = mysqli_query($connPro1, $subsql);
                                         
-                                        
                                         if($testdatasub){
                                             $cnt = 1;
                                             while ($tsub = mysqli_fetch_array($testdatasub)) {

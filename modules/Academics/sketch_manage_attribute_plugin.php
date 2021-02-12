@@ -226,15 +226,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     <option value="Best_of_Sum">Best of Sum</option>
                     <option value="Best_of_Average">Best of Average</option>
                     <option value="Best_of_All">Best of All</option>
-                    <!-- <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option> -->
                 </select>
 
                 <span style="font-size:14px;">Final Plugin : </span>
@@ -410,8 +401,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 ?>
 
 <script>
-    
-    
     $(document).on('change', '#formulaName', function() {
         $(".forVal").prop('readonly', true);
         var id = $(this).attr('data-id');

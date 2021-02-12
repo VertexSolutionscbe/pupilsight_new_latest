@@ -439,13 +439,19 @@ if (isset($_POST['type'])) {
 
 
                     $class_section = $valuestu["class"] . " " . $valuestu["section"];
+                    $payment_receipt_date = date('d-m-Y', strtotime($payment_date));
+                    if(!empty($instrument_date)){
+                        $instrument_receipt_date = date('d-m-Y', strtotime($instrument_date));
+                    } else {
+                        $instrument_receipt_date = '';
+                    }
                     $dts_receipt = array(
                         "receipt_no" => $receipt_number,
-                        "date" => date("d-M-Y"),
+                        "date" => $payment_receipt_date,
                         "student_name" => $valuestu["officialName"],
                         "student_id" => $valuestu["admission_no"],
                         "class_section" => $class_section,
-                        "instrument_date" => $instrument_date,
+                        "instrument_date" => $instrument_receipt_date,
                         "instrument_no" => $instrument_no,
                         "transcation_amount" => $amount_paying,
                         "fine_amount" => $fine,

@@ -166,8 +166,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
                         $classes = array();
                     }
 
-                    
-
                     if(!empty($fg['no_of_invoices'])){
                         $no_of_invoices = $fg['no_of_invoices'];
                     }

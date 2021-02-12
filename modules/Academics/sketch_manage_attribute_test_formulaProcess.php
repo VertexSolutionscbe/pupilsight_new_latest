@@ -38,7 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
         //foreach($test_master_id as $testmasterid){
             $testmasterid = implode(',',$test_master_id);
-
             $datau = array('test_master_id' => $testmasterid, 'final_formula' => $final_formula, 'grade_id' => $grade_id, 'supported_attribute' => $supported_attribute, 'subject_type' => $subject_type, 'subject_val_id' => $subject_val_id, 'subject_display_type' => $subject_display_type,  'id' => $erta_id);
             $sqlupd = 'UPDATE examinationReportTemplateAttributes SET test_master_id=:test_master_id, final_formula=:final_formula, grade_id=:grade_id, supported_attribute=:supported_attribute, subject_type=:subject_type, subject_val_id=:subject_val_id, subject_display_type=:subject_display_type  WHERE id=:id';
             $resultupd = $connection2->prepare($sqlupd);
