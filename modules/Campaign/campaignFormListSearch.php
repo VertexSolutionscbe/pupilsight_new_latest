@@ -19,6 +19,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     // print_r($dataSet);
     // echo '</pre>';
     //Proceed!
+
+    
+
     $fieldname = $_POST['field'];
     $searchby = $_POST['searchby'];
     $search = $_POST['search'];
@@ -31,6 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     $applicantName = $_POST['aname'];
     $applicantClass = $_POST['clid'];
     $applicantProg = $_POST['pid'];
+
+    $sql1 = 'Select form_id, name, classes, pupilsightProgramID, is_fee_generate FROM campaign WHERE id = ' . $cid . ' ';
+    $resultval1 = $connection2->query($sql1);
+    $formid = $resultval1->fetch();
+    //  echo $formid['form_id'];
+    //  die();
+    $formId = $formid['form_id'];
+    $isFeeGenerate = $formid['is_fee_generate'];
 
     $admissionGateway = $container->get(AdmissionGateway::class);
     $criteria = $admissionGateway->newQueryCriteria()
@@ -157,12 +168,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
             $fieldval = explode("|$$|",$dataSet->data[$i]["field_value"]);
             $jlen = count($field);
             $j = 0;
-            if($dataSet->data[$i]["workflowstate"] == ''){
+            // if($dataSet->data[$i]["workflowstate"] == ''){
+            //     // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
+            //     // $resultvals = $connection2->query($sqls);
+            //     // $states = $resultvals->fetch();
+            //     // $statename = $states['name'];
+            //     $dataSet->data[$i]["workflowstate"] = 'Submitted';
+            // }
+
+            if ($dataSet->data[$i]["status"] == '1') {
+                $dataSet->data[$i]["workflowstate"] = 'Admitted';
+            } else if ($dataSet->data[$i]["workflowstate"] == '') {
                 // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
                 // $resultvals = $connection2->query($sqls);
                 // $states = $resultvals->fetch();
                 // $statename = $states['name'];
-                $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                if ($isFeeGenerate == '2') {
+                    $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $sid . "  ";
+                    $resulttr = $connection2->query($sql2);
+                    $stateChk = $resulttr->fetch();
+                    if (!empty($stateChk['transaction_id'])) {
+                        $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                    } else {
+                        $dataSet->data[$i]["workflowstate"] = 'Created';
+                    }
+                } else {
+                    $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                }
             }
 
             //if($dataSet->data[$i]["created_at"] == ''){

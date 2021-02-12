@@ -835,11 +835,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     // print_r($totalMaxMarksArr);
                     // echo '</pre>';
         
-                     echo '<pre>';
-                     print_r($dataarr);
-                     echo '</pre>';
+                    //  echo '<pre>';
+                    //  print_r($dataarr);
+                    //  echo '</pre>';
         
-                     die();
+                    //  die();
         
                     if (!empty($dataarr)) {
                         $count = 0;

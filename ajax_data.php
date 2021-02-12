@@ -2141,55 +2141,64 @@ if ($type == 'updateApplicantData') {
     $pupilsightPersonID = $_POST['pupilsightPersonID'];
     $application_id = '';
 
-    // if (!empty($campaignid)) {
-    //     $sqlrec = 'SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = "' . $campaignid . '" ';
-    //     $resultrec = $connection2->query($sqlrec);
-    //     $recptser = $resultrec->fetch();
+    $sqlchfee = "SELECT is_fee_generate FROM campaign WHERE id = " . $campaignid . " ";
+    $resultchkfee = database::doSelectOne($sqlchfee);
+    $chkfeeSettNew = $resultchkfee['is_fee_generate'];
 
-    //     $seriesId = $recptser['id'];
+    if ($chkfeeSettNew == '1') {
 
-    //     if (!empty($seriesId)) {
-    //         $invformat = explode('$', $recptser['formatval']);
-    //         $iformat = '';
-    //         $orderwise = 0;
-    //         foreach ($invformat as $inv) {
-    //             if ($inv == '{AB}') {
-    //                 $datafort = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise');
-    //                 $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type';
-    //                 $resultfort = $connection2->prepare($sqlfort);
-    //                 $resultfort->execute($datafort);
-    //                 $formatvalues = $resultfort->fetch();
+        if (!empty($campaignid)) {
+            $sqlrec = 'SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = "' . $campaignid . '" ';
+            $resultrec = $connection2->query($sqlrec);
+            $recptser = $resultrec->fetch();
 
-    //                 $str_length = $formatvalues['no_of_digit'];
+            $seriesId = $recptser['id'];
 
-    //                 $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
+            if (!empty($seriesId)) {
+                $invformat = explode('$', $recptser['formatval']);
+                $iformat = '';
+                $orderwise = 0;
+                foreach ($invformat as $inv) {
+                    if ($inv == '{AB}') {
+                        $datafort = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise');
+                        $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type';
+                        $resultfort = $connection2->prepare($sqlfort);
+                        $resultfort->execute($datafort);
+                        $formatvalues = $resultfort->fetch();
 
-    //                 $lastnoadd = $formatvalues['last_no'] + 1;
+                        $str_length = $formatvalues['no_of_digit'];
 
-    //                 $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
+                        $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
 
-    //                 $datafort1 = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise', 'last_no' => $lastno);
-    //                 $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type ';
-    //                 $resultfort1 = $connection2->prepare($sqlfort1);
-    //                 $resultfort1->execute($datafort1);
-    //             } else {
-    //                 $iformat .= $inv;
-    //             }
-    //             $orderwise++;
-    //         }
-    //         $application_id = $iformat;
-    //     } else {
-    //         $application_id = '';
-    //     }
-    // }
+                        $lastnoadd = $formatvalues['last_no'] + 1;
 
-    // $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
-    // $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
+                        $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
 
-    $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'id' => $submissionId);
-    $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID WHERE id=:id';
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
+                        $datafort1 = array('fn_fee_series_id' => $seriesId, 'type' => 'numberwise', 'last_no' => $lastno);
+                        $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type ';
+                        $resultfort1 = $connection2->prepare($sqlfort1);
+                        $resultfort1->execute($datafort1);
+                    } else {
+                        $iformat .= $inv;
+                    }
+                    $orderwise++;
+                }
+                $application_id = $iformat;
+            } else {
+                $application_id = '';
+            }
+        }
+
+        $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
+        $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
+
+    } else {
+
+        $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'id' => $submissionId);
+        $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
 }
 
 
