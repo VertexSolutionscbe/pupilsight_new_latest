@@ -202,8 +202,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
         ->selectMultiple();
 
     //extra filter
-
     $row = $form->addRow();
+    $col = $row->addLabel('Class wise students', __('Class wise students'));
+
     $col = $row->addColumn()->setClass('newdes noEdit');
     $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
     $col->addSelect('pupilsightSchoolYearID')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);
@@ -226,7 +227,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightPersonID', __('Students'))->addClass('dte');
-    $col->addSelect('pupilsightPersonID')->fromArray($student)->selected($pupilsightPersonID)->selectMultiple();
+    $col->addSelect('pupilsightPersonID')->selected($pupilsightPersonID)->selectMultiple();
+
+    $row = $form->addRow();
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('', __('Complete Class'))->addClass('dte');
+
+    $col = $row->addColumn()->setClass('newdes noEdit');
+    $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
+    $col->addSelect('pupilsightSchoolYearID1')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightProgramID', __('Program'));
+    $col->addSelect('pupilsightProgramID1')->fromArray($program)->selected($pupilsightProgramID)->placeholder()->selectMultiple();
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
+    $col->addSelect('pupilsightYearGroupID1')->setId("pupilsightYearGroupIDB")->selected($pupilsightYearGroupID)->addClass("pupilsightRollGroupIDP2")->selectMultiple();
 
     $row = $form->addRow();
     $row->addFooter();
@@ -244,6 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     echo  "</div><div class='float-none'></div></div>";
     $criteria = $groupGateway->newQueryCriteria()
         ->sortBy(['surname', 'preferredName'])
+        ->pageSize(5000)
         ->fromPOST();
 
     $members = $groupGateway->queryGroupMembers($criteria, $editID);
@@ -275,7 +293,7 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
 <script type="text/javascript">
     $(document).on('change', '#pupilsightProgramID', function() {
         var val = $(this).val();
-        var type = "attendanceConfigCls";
+        var type = "getClass";
         if (val != "") {
             $.ajax({
                 url: 'ajax_data.php',
@@ -381,6 +399,28 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
             }
         });
     });
+
+//class with section
+    $(document).on('change', '#pupilsightProgramID1', function() {
+        var val = $(this).val();
+        var type = "getclasswithSection";
+        if (val != "") {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {
+                    val: val,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightYearGroupIDB").html();
+                    $("#pupilsightYearGroupIDB").append(response);
+
+                }
+            })
+        }
+    });
 </script>
 <script type='text/javascript'>
     $(document).ready(function() {
@@ -410,6 +450,16 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
 <script type='text/javascript'>
     $(document).ready(function() {
         $('#pupilsightYearGroupIDA').select2();
+    });
+</script>
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('#pupilsightYearGroupIDB').select2();
+    });
+</script>
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('#pupilsightProgramID1').select2();
     });
 </script>
 <script type="text/javascript">
