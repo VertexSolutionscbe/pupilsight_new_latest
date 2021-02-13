@@ -72,7 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 });';
             echo '</script>';
             echo '<div style="text-align: right">';
-            echo '<a class="gbooks" onclick="return false" href="#">'.__('Get Book Data From Google').'</a>';
+            //echo '<a class="gbooks" onclick="return false" href="#">'.__('Get Book Data From Google').'</a>';
+            echo '<a class="gbooks" target="_blank" href="https://isbnsearch.org/">'.__('Get Book Data From Google').'</a>';
             echo '</div>';
         }
     }
