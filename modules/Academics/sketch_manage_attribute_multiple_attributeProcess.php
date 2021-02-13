@@ -15,7 +15,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    
     // echo '<pre>';
     // print_r($_POST);
     // echo '</pre>';

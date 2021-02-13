@@ -279,7 +279,7 @@ if ($type == 'insertcampaigndetails') {
 					$url .= "?to=" . $ft_email;
 					$url .= "&subject=" . rawurlencode($subject);
 					$url .= "&body=" . rawurlencode($body);
-					echo $url;
+					//echo $url;
 					sendEmail($ft_email, $subject, $body, $subid, $cuid, $connection2, $url);
 				}
 				if (!empty($mt_email)) {
@@ -287,7 +287,7 @@ if ($type == 'insertcampaigndetails') {
 					$url .= "?to=" . $mt_email;
 					$url .= "&subject=" . rawurlencode($subject);
 					$url .= "&body=" . rawurlencode($body);
-					echo $url;
+					//echo $url;
 					sendEmail($mt_email, $subject, $body, $subid, $cuid, $connection2, $url);
 				}
 				if (!empty($gt_email)) {
