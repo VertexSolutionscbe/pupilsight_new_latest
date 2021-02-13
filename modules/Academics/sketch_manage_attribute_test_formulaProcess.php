@@ -19,6 +19,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     // print_r($_POST);
     // echo '</pre>';
     // die();
+    
     $erta_id = $_POST['erta_id'];
     $test_master_id = $_POST['test_master_id'];
     $formula_id = $_POST['formula_id'];

@@ -59,7 +59,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     //print_r($labeldata);
 
 ?>
-
     <div style="display:inline-flex;overflow-x: scroll;width: 100%;">
 
         <div id="cloning" class="row" style="width:50%;margin: 0 50px 0 0px;">
