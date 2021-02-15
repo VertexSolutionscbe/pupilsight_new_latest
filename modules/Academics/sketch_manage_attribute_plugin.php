@@ -219,15 +219,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             <div style="display:flex;width:100%; padding: 20px 20px !important; background: lightgray;margin-top: 10px;">
 
                 <span style="font-size:14px;">Final Formula : </span>
-                <select name="final_formula" class="form-control" style=" width:25%;margin: 0px 10px 0 25px;">
+                <select name="final_formula" class="form-control finalFormula" style=" width:25%;margin: 0px 10px 0 25px;">
                     <option value="">AS IS</option>
                     <option value="Sum">Sum</option>
+                    <option value="Sum_Excluding_Ex">Sum Excluding EX</option>
+                    <option value="Sum_Excluding_Ab">Sum Excluding AB</option>
+                    <option value="Sum_Excluding_Ab_Ex">Sum Excluding AB & EX</option>
                     <option value="Average">Average</option>
-                    <option value="Best_of_Sum">Best of Sum</option>
-                    <option value="Best_of_Average">Best of Average</option>
+                    <option value="Average_Excluding_Ex">Average Excluding EX</option>
+                    <option value="Average_Excluding_Ab">Average Excluding AB</option>
+                    <option value="Average_Excluding_Ab_Ex">Average Excluding AB & EX</option>
                     <option value="Best_of_All">Best of All</option>
-                </select>
-
+                    <option value="Best_of_All_Excluding_Ex">Best of All Excluding EX</option>
+                    <option value="Best_of_All_Excluding_Ab">Best of All Excluding AB</option>
+                    <option value="Best_of_All_Excluding_Ab_Ex">Best of All Excluding AB & EX</option>
+                    <option value="Second_Best_of_All">Second Best of All</option>
+                    <option value="Second_Best_of_All_Excluding_Ex">Second Best of All Excluding EX</option>
+                    <option value="Second_Best_of_All_Excluding_Ab">Second Best of All Excluding AB</option>
+                    <option value="Second_Best_of_All_Excluding_Ab_Ex">Second Best of All Excluding AB & EX</option>
+                    <option value="Third_Best_of_All">Third Best of All</option>
+                    <option value="Third_Best_of_All_Excluding_Ex">Third Best of All Excluding EX</option>
+                    <option value="Third_Best_of_All_Excluding_Ab">Third Best of All Excluding AB</option>
+                    <option value="Third_Best_of_All_Excluding_Ab_Ex">Third Best of All Excluding AB & EX</option>
+                    <option value="Best_of_Sum">Best of Sum</option>
+                    <option value="Best_of_Sum_Excluding_Ab_Ex">Best of Sum Excluding AB & EX</option>
+                    
+                    <option value="Best_of_Average">Best of Average</option>
+                    <option value="Best_of_Average_Excluding_Ab_Ex">Best of Average Excluding AB & EX</option>
+                   </select>
+                <input type="text" name="final_formula_best_cal" class="showBestFF" style="display:none;width:2%;margin: 0px 10px;padding:0px 6px;">
                 <span style="font-size:14px;">Final Plugin : </span>
                 <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id'];?>"><i style="font-size: 20px;" title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>
             </div>
@@ -370,24 +390,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             <div style="display:flex;width:100%;padding: 20px 20px !important; background: lightgray;margin-top: 10px;">
 
                 <span style="font-size:14px;">Final Formula : </span>
-                <select name="final_formula" class="form-control" style=" width:25%;margin: 0px 10px 0 25px;">
+                <select name="final_formula" class="form-control finalFormula" style=" width:25%;margin: 0px 10px 0 25px;">
                     <option value="">AS IS</option>
                     <option value="Sum">Sum</option>
+                    <option value="Sum_Excluding_Ex">Sum Excluding EX</option>
+                    <option value="Sum_Excluding_Ab">Sum Excluding AB</option>
+                    <option value="Sum_Excluding_Ab_Ex">Sum Excluding AB & EX</option>
                     <option value="Average">Average</option>
-                    <option value="Best_of_Sum">Best of Sum</option>
-                    <option value="Best_of_Average">Best of Average</option>
+                    <option value="Average_Excluding_Ex">Average Excluding EX</option>
+                    <option value="Average_Excluding_Ab">Average Excluding AB</option>
+                    <option value="Average_Excluding_Ab_Ex">Average Excluding AB & EX</option>
                     <option value="Best_of_All">Best of All</option>
-                    <!-- <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option>
-                    <option value="Sum">Sum</option> -->
-                </select>
-
+                    <option value="Best_of_All_Excluding_Ex">Best of All Excluding EX</option>
+                    <option value="Best_of_All_Excluding_Ab">Best of All Excluding AB</option>
+                    <option value="Best_of_All_Excluding_Ab_Ex">Best of All Excluding AB & EX</option>
+                    <option value="Second_Best_of_All">Second Best of All</option>
+                    <option value="Second_Best_of_All_Excluding_Ex">Second Best of All Excluding EX</option>
+                    <option value="Second_Best_of_All_Excluding_Ab">Second Best of All Excluding AB</option>
+                    <option value="Second_Best_of_All_Excluding_Ab_Ex">Second Best of All Excluding AB & EX</option>
+                    <option value="Third_Best_of_All">Third Best of All</option>
+                    <option value="Third_Best_of_All_Excluding_Ex">Third Best of All Excluding EX</option>
+                    <option value="Third_Best_of_All_Excluding_Ab">Third Best of All Excluding AB</option>
+                    <option value="Third_Best_of_All_Excluding_Ab_Ex">Third Best of All Excluding AB & EX</option>
+                    <option value="Best_of_Sum">Best of Sum</option>
+                    <option value="Best_of_Sum_Excluding_Ab_Ex">Best of Sum Excluding AB & EX</option>
+                    
+                    <option value="Best_of_Average">Best of Average</option>
+                    <option value="Best_of_Average_Excluding_Ab_Ex">Best of Average Excluding AB & EX</option>
+                   </select>
+                <input type="text" name="final_formula_best_cal" class="showBestFF" style="display:none;width:2%;margin: 0px 10px;padding:0px 6px;">
                 <span style="font-size:14px;">Final Plugin : </span>
                 <a style="margin: 0px 10px 0 10px;" class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $chkdata['id'];?>"><i style="font-size: 20px;" title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>
             </div>
@@ -401,6 +432,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 ?>
 
 <script>
+    $(document).on('change', '.finalFormula', function() {
+        var val = $(this).val();
+        if(val == 'Best_of_Sum' || val == 'Best_of_Sum_Excluding_Ab_Ex' || val == 'Best_of_Average' || val == 'Best_of_Average_Excluding_Ab_Ex'){
+            $(".showBestFF").show();
+        } else {
+            $(".showBestFF").hide();
+        }
+    });
+
+
     $(document).on('change', '#formulaName', function() {
         $(".forVal").prop('readonly', true);
         var id = $(this).attr('data-id');
