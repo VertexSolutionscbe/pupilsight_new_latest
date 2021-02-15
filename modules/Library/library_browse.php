@@ -326,9 +326,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
         echo '<th>';
         echo __('Location');
         echo '</th>';
-        echo '<th>';
-        echo __('Actions');
-        echo '</th>';
+        // echo '<th>';
+        // echo __('Actions');
+        // echo '</th>';
         echo '</tr>';
 
         $count = 0;
@@ -378,20 +378,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
                 echo "<span style='font-size: 85%; font-style: italic'>".$row['locationDetail'].'</span>';
             }
             echo '</td>';
-            echo '<td>';
-            echo "<script type='text/javascript'>";
-            echo '$(document).ready(function(){';
-            echo "\$(\".description-$count\").hide();";
-            echo "\$(\".show_hide-$count\").fadeIn(1000);";
-            echo "\$(\".show_hide-$count\").click(function(){";
-            echo "\$(\".description-$count\").fadeToggle(1000);";
-            echo '});';
-            echo '});';
-            echo '</script>';
-            if ($row['fields'] != '') {
-                echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'> <i class='mdi mdi-arrow-down-circle mdi-24px' alt='Show Details' onclick='return false;></i><i style='padding-right: 5px'   class='mdi mdi-arrow-down-circle'></i></a>";
-            }
-            echo '</td>';
+            // echo '<td>';
+            // echo "<script type='text/javascript'>";
+            // echo '$(document).ready(function(){';
+            // echo "\$(\".description-$count\").hide();";
+            // echo "\$(\".show_hide-$count\").fadeIn(1000);";
+            // echo "\$(\".show_hide-$count\").click(function(){";
+            // echo "\$(\".description-$count\").fadeToggle(1000);";
+            // echo '});';
+            // echo '});';
+            // echo '</script>';
+            // if ($row['fields'] != '') {
+            //     echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'> <i class='mdi mdi-arrow-down-circle mdi-24px' alt='Show Details' onclick='return false;></i><i style='padding-right: 5px'   class='mdi mdi-arrow-down-circle'></i></a>";
+            // }
+            // echo '</td>';
             echo '</tr>';
             if ($row['fields'] != '') {
                 echo "<tr class='description-$count' id='fields-$count' style='background-color: #fff; display: none'>";
