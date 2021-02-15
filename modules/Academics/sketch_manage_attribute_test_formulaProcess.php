@@ -30,6 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $subject_val_id = $_POST['subject_val_id'];
     $subject_display_type = $_POST['subject_display_type'];
     $final_formula = $_POST['final_formula'];
+    $final_formula_best_cal = $_POST['final_formula_best_cal'];
 
     if(!empty($formula_id) && !empty($erta_id)){
         $data = array('erta_id' => $erta_id);
@@ -39,8 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
         //foreach($test_master_id as $testmasterid){
             $testmasterid = implode(',',$test_master_id);
-            $datau = array('test_master_id' => $testmasterid, 'final_formula' => $final_formula, 'grade_id' => $grade_id, 'supported_attribute' => $supported_attribute, 'subject_type' => $subject_type, 'subject_val_id' => $subject_val_id, 'subject_display_type' => $subject_display_type,  'id' => $erta_id);
-            $sqlupd = 'UPDATE examinationReportTemplateAttributes SET test_master_id=:test_master_id, final_formula=:final_formula, grade_id=:grade_id, supported_attribute=:supported_attribute, subject_type=:subject_type, subject_val_id=:subject_val_id, subject_display_type=:subject_display_type  WHERE id=:id';
+            $datau = array('test_master_id' => $testmasterid, 'final_formula' => $final_formula, 'final_formula_best_cal' => $final_formula_best_cal, 'grade_id' => $grade_id, 'supported_attribute' => $supported_attribute, 'subject_type' => $subject_type, 'subject_val_id' => $subject_val_id, 'subject_display_type' => $subject_display_type,  'id' => $erta_id);
+            $sqlupd = 'UPDATE examinationReportTemplateAttributes SET test_master_id=:test_master_id, final_formula=:final_formula, final_formula_best_cal=:final_formula_best_cal, grade_id=:grade_id, supported_attribute=:supported_attribute, subject_type=:subject_type, subject_val_id=:subject_val_id, subject_display_type=:subject_display_type  WHERE id=:id';
             $resultupd = $connection2->prepare($sqlupd);
             $resultupd->execute($datau);
 
