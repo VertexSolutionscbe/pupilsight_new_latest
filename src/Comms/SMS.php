@@ -460,6 +460,8 @@ class SMS implements SMSInterface
         return $flag;
     }
 
+
+
     public function karix($senderid, $smsCount, $numbers, $msg)
     {
         $flag = TRUE;

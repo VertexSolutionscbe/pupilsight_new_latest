@@ -32,5 +32,5 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/data_update_stude
             </tr>
             </table>';
 
-    echo $data;        
+    echo $data;
 }
