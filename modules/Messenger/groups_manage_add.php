@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
     //$col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->fromArray($classes)->selected($pupilsightYearGroupID)->addClass("load_configSession");
-    $col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->fromArray($classes)->selected($pupilsightYearGroupID)->addClass("pupilsightRollGroupIDP1")->selectMultiple();
+    $col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->fromArray($classes)->addClass("pupilsightRollGroupIDP1")->selectMultiple();
     //$col->addTextField('pupilsightPersonID')->setId('staff_id')->addClass('nodisply')->setValue($staff_person_id);
 
     /*$col = $row->addColumn()->setClass('newdes');
@@ -243,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
-    $col->addSelect('pupilsightYearGroupID1')->setId("pupilsightYearGroupIDB")->selected($pupilsightYearGroupID)->addClass("pupilsightRollGroupIDP2")->selectMultiple();
+    $col->addSelect('pupilsightYearGroupID1')->setId("pupilsightYearGroupIDB")->addClass("pupilsightRollGroupIDP2")->selectMultiple();
 
     $row = $form->addRow();
     $row->addFooter();

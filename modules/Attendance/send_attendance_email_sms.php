@@ -25,21 +25,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/send_attendance
         if (!empty($msg)) {
             $studentId = explode(',', $stuId);
             foreach ($studentId as $st) {
-                $m = "SELECT  p.email, p.phone1, p.officialName FROM pupilsightFamilyRelationship as r LEFT JOIN pupilsightPerson as p
+                $m = "SELECT p.pupilsightPersonID,  p.email, p.phone1, p.officialName FROM pupilsightFamilyRelationship as r LEFT JOIN pupilsightPerson as p
             ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2=" . $st . " AND r.relationship='Mother'";
                 $m = $connection2->query($m);
                 $mother_data = $m->fetch();
-                $f = "SELECT  p.email, p.phone1, p.officialName FROM pupilsightFamilyRelationship as r LEFT JOIN pupilsightPerson as p
+                $f = "SELECT p.pupilsightPersonID, p.email, p.phone1, p.officialName FROM pupilsightFamilyRelationship as r LEFT JOIN pupilsightPerson as p
             ON r.pupilsightPersonID1 = p.pupilsightPersonID WHERE r.pupilsightPersonID2=" . $st . " AND r.relationship='Father'";
                 $f = $connection2->query($f);
                 $father_data = $f->fetch();
                 if (!empty($mother_data['phone1'])) {
-                    $res = $sms->sendSMSPro($mother_data['phone1'], $msg);
+                    $msgto=$mother_data['pupilsightPersonID'];
+                    $msgby=$_SESSION[$guid]["pupilsightPersonID"];
+                    $res = $sms->sendSMSPro($mother_data['phone1'], $msg, $msgto, $msgby);
                     //send_sms($mother_data['phone1'], $msg);
                 }
                 if (!empty($father_data['phone1'])) {
+                    $msgto=$father_data['pupilsightPersonID'];
+                    $msgby=$_SESSION[$guid]["pupilsightPersonID"];
                     //send_sms($father_data['phone1'], $msg);
-                    $res = $sms->sendSMSPro($father_data['phone1'], $msg);
+                    $res = $sms->sendSMSPro($father_data['phone1'], $msg, $msgto, $msgby);
                 }
             }
             echo "success";
