@@ -481,7 +481,7 @@ class SMS implements SMSInterface
                 $p = explode(',', $numbers);
                 foreach ($p as $numb) {
                     //echo $numb;
-                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=$msgby, pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N'";
+                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=$msgby, pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N', requestid=$res5[1]";
                     //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
                     $db4 = new DBQuery();
                     $db4->query($savedata);
