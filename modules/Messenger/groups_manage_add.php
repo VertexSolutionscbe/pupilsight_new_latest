@@ -276,6 +276,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('name', ['preferredName', 'surname', 'Student', true]));
 
+    $table->addColumn('classname', __('Class'))
+        ->sortable(['classname', 'Class']);
+
+    $table->addColumn('section', __('Section'))
+        ->sortable(['section', 'Section']);
+
     $table->addColumn('email', __('Email'))->sortable();
 
     $table->addActionColumn()

@@ -481,7 +481,8 @@ class SMS implements SMSInterface
                 $p = explode(',', $numbers);
                 foreach ($p as $numb) {
                     //echo $numb;
-                    $savedata = "INSERT INTO pupilsightMessengerReceiptData (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
+                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=$msgby, pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N'";
+                    //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
                     $db4 = new DBQuery();
                     $db4->query($savedata);
                 }
@@ -510,6 +511,14 @@ class SMS implements SMSInterface
             if (strcmp($res2, $res3) === 0) {
                 $this->updateSmsCount($smsCount, "Gupshup");
                 $this->updateMessengerTable($msg, $msgto, $msgby);
+            }
+            $p = explode(',', $numbers);
+            foreach ($p as $numb) {
+                //echo $numb;
+                $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=$msgby, pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N'";
+                //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
+                $db4 = new DBQuery();
+                $db4->query($savedata);
             }
         } catch (Exception $ex) {
             print_r($ex);
