@@ -383,14 +383,14 @@ class SMS implements SMSInterface
 
             switch ($activeGateway) {
                 case 'Karix':
-                    $flag = $this->karix($senderid, $smsCount, $numbers, $msg);
+                    $flag = $this->karix($senderid, $smsCount, $numbers, $msg, $msgto = null, $msgby = null);
                     if ($flag == FALSE) {
                         echo "error";
                     }
                     break;
 
                 case 'Gupshup':
-                    $flag = $this->gupshup($senderid, $smsCount, $numbers, $msg);
+                    $flag = $this->gupshup($senderid, $smsCount, $numbers, $msg, $msgto = null, $msgby = null);
                     if ($flag == FALSE) {
                         echo "error";
                     }
@@ -403,7 +403,7 @@ class SMS implements SMSInterface
         }
     }
 
-    public function sendSMSPro($numbers, $msg)
+    public function sendSMSPro($numbers, $msg, $msgto = null, $msgby = null)
     {
         $flag = TRUE;
         try {
@@ -445,10 +445,10 @@ class SMS implements SMSInterface
 
             switch ($activeGateway) {
                 case 'Karix':
-                    $flag = $this->karix($senderid, $smsCount, $numbers, $msg);
+                    $flag = $this->karix($senderid, $smsCount, $numbers, $msg, $msgto, $msgby);
                     break;
                 case 'Gupshup':
-                    $flag = $this->gupshup($senderid, $smsCount, $numbers, $msg);
+                    $flag = $this->gupshup($senderid, $smsCount, $numbers, $msg, $msgto, $msgby);
                     break;
                 default:
                     echo "sms not configured";
@@ -460,12 +460,11 @@ class SMS implements SMSInterface
         return $flag;
     }
 
-
-
-    public function karix($senderid, $smsCount, $numbers, $msg)
+    public function karix($senderid, $smsCount, $numbers, $msg, $msgto, $msgby)
     {
         $flag = TRUE;
         try {
+
             $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=" . $senderid;
             $url1 .= "&text=" . urlencode($msg);
             $url1 .= "&dest=" . $numbers;
@@ -478,6 +477,7 @@ class SMS implements SMSInterface
             $res5 = explode('=', $res4[0]);
             if ($res3 == 200) {
                 $this->updateSmsCount($smsCount, "Karix");
+                $this->updateMessengerTable($msg, $msgto, $msgby);
                 $p = explode(',', $numbers);
                 foreach ($p as $numb) {
                     //echo $numb;
@@ -494,7 +494,7 @@ class SMS implements SMSInterface
     }
 
 
-    public function gupshup($senderid, $smsCount, $numbers, $msg)
+    public function gupshup($senderid, $smsCount, $numbers, $msg, $msgto, $msgby)
     {
         $flag = TRUE;
         try {
@@ -509,6 +509,7 @@ class SMS implements SMSInterface
             $res3 = 'success';
             if (strcmp($res2, $res3) === 0) {
                 $this->updateSmsCount($smsCount, "Gupshup");
+                $this->updateMessengerTable($msg, $msgto, $msgby);
             }
         } catch (Exception $ex) {
             print_r($ex);
@@ -526,5 +527,28 @@ class SMS implements SMSInterface
         } catch (Exception $ex) {
             print_r($ex);
         }
+    }
+
+    public function updateMessengerTable($msg, $msgto, $msgby)
+    {
+        $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+        $db = new DBQuery();
+        $rs = $db->selectRaw($sqlAI, TRUE);
+        //print_r($rs);
+        $AI = $rs[0]['Auto_increment'];
+
+        $sms = "Y";
+        $date1 = date('Y-m-d');
+        /*$date2 = date('Y-m-d');
+        $date3 = date('Y-m-d');*/
+        $todaydatetime = date("Y-m-d H:i:s");
+
+        $sql = "INSERT INTO pupilsightMessenger SET  messageWall_date1='$date1', sms='$sms', subject='NA', body='$msg',  pupilsightPersonID=$msgby,messengercategory='Other', timestamp='$todaydatetime'";
+        $result = new DBQuery();
+        $result->query($sql);
+
+        $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=$AI, type='Individuals', id=$msgto";
+        $result = new DBQuery();
+        $result->query($sql);
     }
 }

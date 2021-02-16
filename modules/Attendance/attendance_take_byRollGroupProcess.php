@@ -270,8 +270,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                                                 $resulte = $connection2->query($sqle);
                                                                 $rowdata = $resulte->fetch();
                                                                 $number = $rowdata['phone1'];
+                                                                $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
+                                                                $senderpersonid = $_SESSION[$guid]['pupilsightPersonID'];
                                                                 //$number = "8777281040";
-                                                                $sms_s = send_sms($container, $number, $msg);
+                                                                $sms_s = send_sms($container, $number, $msg, $smspupilsightPersonID, $senderpersonid);
                                                             }
                                                         }
                                                     }
@@ -325,14 +327,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                                     if (!empty($sms_recipients) && !empty($msg)) {
                                                         foreach ($sms_recipients as $susr) {
                                                             if ("Student_mobile" == $susr) {
-                                                                $sms_s = send_sms($container, $phone1_std, $msg);
+                                                                $sms_s = send_sms($container, $phone1_std, $msg, $smspupilsightPersonID, $senderpersonid);
                                                             } else if ("Father" == $susr || "Mother" == $susr || "Other" == $susr) {
                                                                 $sqle = "SELECT a.*, b.officialName, b.email, b.phone1  FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE pupilsightPersonID2 = '" . $pupilsightPersonID . "' AND relationship='" . $susr . "'";
                                                                 $resulte = $connection2->query($sqle);
                                                                 $rowdata = $resulte->fetch();
                                                                 $number = $rowdata['phone1'];
+                                                                $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
+                                                                $senderpersonid = $_SESSION[$guid]['pupilsightPersonID'];
                                                                 //$number = "8777281040";
-                                                                $sms_s = send_sms($container, $number, $msg);
+                                                                $sms_s = send_sms($container, $number, $msg, $smspupilsightPersonID, $senderpersonid);
                                                             }
                                                         }
                                                     }
@@ -373,11 +377,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 }
 
 
-function send_sms($container, $number, $msg)
+function send_sms($container, $number, $msg, $smspupilsightPersonID=null ,$senderpersonid=null)
 {
     if (!empty($msg) && !empty($number)) {
+        $msgto=$smspupilsightPersonID;
+        $msgby=$senderpersonid;
+
         $sms = $container->get(SMS::class);
-        $res = $sms->sendSMSPro($number, $msg);
+        $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
         /*
         $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
         $urls .= "&send_to=" . $number;

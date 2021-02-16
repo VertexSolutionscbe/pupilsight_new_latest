@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                         $rtype = 'Other';
                     }
 
-                    $sqle = "SELECT b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $st . " AND a.relationship = '" . $rtype . "' ";
+                    $sqle = "SELECT b.pupilsightPersonID, b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $st . " AND a.relationship = '" . $rtype . "' ";
                     $resulte = $connection2->query($sqle);
                     $rowdata = $resulte->fetch();
 
@@ -80,6 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                     $body = nl2br($emailquote);
                     $msg = $smsquote;
                     $number = $rowdata['phone1'];
+                    $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
 
 
                     if (!empty($body) && !empty($to)) {
@@ -109,6 +110,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                                 $mail->Send();
                                 $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', uid=" . $cuid . " ";
                                 $connection2->query($sq);
+
+
+                                $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+                                $resultAI = $connection2->query($sqlAI);
+                                $rowAI = $resultAI->fetch();
+                                $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+                                $email = "Y";
+                                $messageWall = "N";
+                                $sms = "N";
+                                $date1 = date('Y-m-d');
+                                /*$date2 = date('Y-m-d');
+                                $date3 = date('Y-m-d');*/
+                                $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "messageWall_date2" => $date2, "messageWall_date3" => $date3, "sms" => $sms, "subject" => $subject, "body" => $body,  "pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+                                $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+
+                                $data = array("AI" => $AI, "t" => $smspupilsightPersonID);
+                                $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
                             } catch (Exception $ex) {
                                 print_r($x);
                             }
@@ -126,10 +149,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                         $urls .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                         //echo $urls;
                         $resms = file_get_contents($urls);*/
-                        $res = $sms->sendSMSPro($number, $msg);
+                        $msgto=$smspupilsightPersonID;
+                        $msgby=$_SESSION[$guid]["pupilsightPersonID"];
+                        $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                         if ($res) {
                             $sq = "INSERT INTO user_email_sms_sent_details SET type='1', sent_to = '1', pupilsightPersonID = " . $st . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
                             $connection2->query($sq);
+
+
                         }
                     }
                 }

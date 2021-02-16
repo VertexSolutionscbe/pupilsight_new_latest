@@ -77,6 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
             $subject = nl2br($subjectquote);
             $body = nl2br($emailquote);
             $msg = $smsquote;
+            $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
             //$number = '9986448340';
 
             //sendingmail($to);
@@ -144,7 +145,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
                         $urls .= "&msg=" . rawurlencode($msg);
                         $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                         $resms = file_get_contents($urls);*/
-                        $res = $sms->sendSMSPro($number, $msg);
+                        $msgto=$smspupilsightPersonID;
+                        $msgby=$_SESSION[$guid]["pupilsightPersonID"];
+                        $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                         if ($res) {
                             $sq = "INSERT INTO user_email_sms_sent_details SET type='1', sent_to = '2', pupilsightPersonID = " . $st . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
                             $connection2->query($sq);

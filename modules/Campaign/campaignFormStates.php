@@ -55,6 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                 $application_no = $sd['application_id'];
                 $pupilsightProgramID = $rowdata['pupilsightProgramID'];
                 $pupilsightYearGroupID = $rowdata['pupilsightYearGroupID'];
+                $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
 
                 
             }
@@ -225,8 +226,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                     // $urls .="&msg=".rawurlencode($body);
                                     // $urls .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                                     // $resms = file_get_contents($urls);
-
-                                    $res = $sms->sendSMSPro($number, $body);
+                                    $msgto=$smspupilsightPersonID;
+                                    $msgby=$_SESSION[$guid]["pupilsightPersonID"];
+                                    $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                                     if ($res) {
                                         $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', phone=".$number.", description='".stripslashes($body)."', pupilsightPersonID=".$cuid." ";
                                         $connection2->query($sq);
@@ -261,7 +263,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                 // $urls .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                                 // $resms = file_get_contents($urls);
 
-                                $res = $sms->sendSMSPro($number, $body);
+                                $msgto=$smspupilsightPersonID;
+                                $msgby=$_SESSION[$guid]["pupilsightPersonID"];
+                                $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                                 if ($res) {
                                     $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', phone=".$number.", description='".stripslashes($body)."', pupilsightPersonID=".$cuid." ";
                                     $connection2->query($sq);
