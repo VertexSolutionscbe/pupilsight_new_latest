@@ -714,6 +714,39 @@ if ($proceed == false) {
                     $mail->Body = $body;
                     $mail->AltBody = $bodyPlain;
                     $mail->Send();
+
+                    $data=array('email'=>$referenceEmail);
+                    $sql="SELECT pupilsightPersonID FROM pupilsightPerson WHERE email=:email";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                    if ($result->rowCount() > 0) {
+                        while ($rowppid = $result->fetch()) {
+                            $ppid = $rowppid['pupilsightPersonID'];
+
+
+                            $msgby = $_SESSION[$guid]["pupilsightPersonID"];
+                            $msgto = $ppid;
+
+                            $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+                            $resultAI = $connection2->query($sqlAI);
+                            $rowAI = $resultAI->fetch();
+                            $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+                            $email = "Y";
+                            $messageWall = "N";
+                            $sms = "N";
+                            $date1 = date('Y-m-d');
+                            $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body, "pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+                            $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+
+                            $data = array("AI" => $AI, "t" => $msgto);
+                            $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        }
+                    }
                 }
 
                 $skipEmailNotification = (isset($_POST['skipEmailNotification']))? $_POST['skipEmailNotification'] : false;
@@ -737,6 +770,39 @@ if ($proceed == false) {
                     $mail->Body = $body;
                     $mail->AltBody = $bodyPlain;
                     $mail->Send();
+
+                    $data=array('email'=>$parent1email);
+                    $sql="SELECT pupilsightPersonID FROM pupilsightPerson WHERE email=:email";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                    if ($result->rowCount() > 0) {
+                        while ($rowppid = $result->fetch()) {
+                            $ppid = $rowppid['pupilsightPersonID'];
+
+
+                            $msgby = $_SESSION[$guid]["pupilsightPersonID"];
+                            $msgto = $ppid;
+
+                            $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+                            $resultAI = $connection2->query($sqlAI);
+                            $rowAI = $resultAI->fetch();
+                            $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+                            $email = "Y";
+                            $messageWall = "N";
+                            $sms = "N";
+                            $date1 = date('Y-m-d');
+                            $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body, "pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+                            $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+
+                            $data = array("AI" => $AI, "t" => $msgto);
+                            $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        }
+                    }
                 }
 
                 // Handle Sibling Applications
@@ -829,6 +895,38 @@ if ($proceed == false) {
             $mail->AltBody = $bodyPlain;
             $mail->Send();
 
+            $data=array('email'=>$to);
+            $sql="SELECT pupilsightPersonID FROM pupilsightPerson WHERE email=:email";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+            if ($result->rowCount() > 0) {
+                while ($rowppid = $result->fetch()) {
+                    $ppid = $rowppid['pupilsightPersonID'];
+
+
+                    $msgby = $_SESSION[$guid]["pupilsightPersonID"];
+                    $msgto = $ppid;
+
+                    $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+                    $resultAI = $connection2->query($sqlAI);
+                    $rowAI = $resultAI->fetch();
+                    $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+                    $email = "Y";
+                    $messageWall = "N";
+                    $sms = "N";
+                    $date1 = date('Y-m-d');
+                    $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body, "pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+                    $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+
+                    $data = array("AI" => $AI, "t" => $msgto);
+                    $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                }
+            }
             //Success 2
             $URL .= '&return=success2&id='.$_GET['id'];
             header("Location: {$URL}");
@@ -881,6 +979,39 @@ if ($proceed == false) {
                     $mail->AltBody = $bodyPlain;
                     $mail->Send();
 
+                    $data=array('email'=>$to);
+                    $sql="SELECT pupilsightPersonID FROM pupilsightPerson WHERE email=:email";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                    if ($result->rowCount() > 0) {
+                        while ($rowppid = $result->fetch()) {
+                            $ppid = $rowppid['pupilsightPersonID'];
+
+
+                            $msgby = $_SESSION[$guid]["pupilsightPersonID"];
+                            $msgto = $ppid;
+
+                            $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+                            $resultAI = $connection2->query($sqlAI);
+                            $rowAI = $resultAI->fetch();
+                            $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+                            $email = "Y";
+                            $messageWall = "N";
+                            $sms = "N";
+                            $date1 = date('Y-m-d');
+                            $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body, "pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+                            $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+
+                            $data = array("AI" => $AI, "t" => $msgto);
+                            $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        }
+                    }
+
                     $URL .= '&return=success3&id='.$_GET['id'];
                     header("Location: {$URL}");
                     exit;
@@ -924,6 +1055,38 @@ if ($proceed == false) {
                     $mail->AltBody = $bodyPlain;
                     $mail->Send();
 
+                    $data=array('email'=>$to);
+                    $sql="SELECT pupilsightPersonID FROM pupilsightPerson WHERE email=:email";
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                    if ($result->rowCount() > 0) {
+                        while ($rowppid = $result->fetch()) {
+                            $ppid = $rowppid['pupilsightPersonID'];
+
+
+                            $msgby = $_SESSION[$guid]["pupilsightPersonID"];
+                            $msgto = $ppid;
+
+                            $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+                            $resultAI = $connection2->query($sqlAI);
+                            $rowAI = $resultAI->fetch();
+                            $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+                            $email = "Y";
+                            $messageWall = "N";
+                            $sms = "N";
+                            $date1 = date('Y-m-d');
+                            $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body, "pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+                            $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+
+                            $data = array("AI" => $AI, "t" => $msgto);
+                            $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        }
+                    }
                     //Success 2
                     $URL .= '&return=success2&id='.$_GET['id'];
                     header("Location: {$URL}");

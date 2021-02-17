@@ -190,6 +190,7 @@ class SMS implements SMSInterface
 
     public function send(array $recipients = []): array
     {
+        $flag = [];
         $this->noofrecipents = sizeof($recipients);
         $sent = [];
         $recipients += array_merge($this->to, $recipients);
@@ -229,9 +230,10 @@ class SMS implements SMSInterface
         }
 
         if (!empty($strto)) {
-            $this->sendSMS($strto, $this->content);
+            $flagreturn =   $this->sendSMS($strto, $this->content);
         }
-        return $sent;
+        $flag[0]=$flagreturn;
+        return $flag;
     }
 
     public function _sendSMS($numbers, $msg)
@@ -401,6 +403,7 @@ class SMS implements SMSInterface
         } catch (Exception $ex) {
             print_r($ex);
         }
+        return $flag;
     }
 
     public function sendSMSPro($numbers, $msg, $msgto=null, $msgby=null)
@@ -464,7 +467,6 @@ class SMS implements SMSInterface
     {
         $flag = TRUE;
         try {
-
             $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=" . $senderid;
             $url1 .= "&text=" . urlencode($msg);
             $url1 .= "&dest=" . $numbers;
@@ -477,21 +479,28 @@ class SMS implements SMSInterface
             $res5 = explode('=', $res4[0]);
             if ($res3 == 200) {
                 $this->updateSmsCount($smsCount, "Karix");
-                $this->updateMessengerTable($msg, $msgto, $msgby);
+                if($msgby!='') {
+                    $this->updateMessengerTable($msg, $msgto, $msgby);
+                }
+                //die();
                 $p = explode(',', $numbers);
-                foreach ($p as $numb) {
-                    //echo $numb;
-                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=$msgby, pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N', requestid=$res5[1]";
-                    //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
-                    $db4 = new DBQuery();
-                    $db4->query($savedata);
+                if($msgby!='') {
+                    foreach ($p as $numb) {
+                        //echo $numb;
+                        $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID='$msgby', targetType='Individuals', targetID='$msgto', contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N', requestid=$res5[1]";
+                        //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
+                        $db4 = new DBQuery();
+                        $db4->query($savedata);
+                        //die();
+                    }
                 }
             }
         } catch (Exception $ex) {
             print_r($ex);
             $flag = FALSE;
         }
-        return $flag;
+        $dkey=$res5[1];
+        return $dkey;
     }
 
 
@@ -510,15 +519,19 @@ class SMS implements SMSInterface
             $res3 = 'success';
             if (strcmp($res2, $res3) === 0) {
                 $this->updateSmsCount($smsCount, "Gupshup");
-                $this->updateMessengerTable($msg, $msgto, $msgby);
+                if($msgby!='') {
+                    $this->updateMessengerTable($msg, $msgto, $msgby);
+                }
             }
             $p = explode(',', $numbers);
-            foreach ($p as $numb) {
-                //echo $numb;
-                $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=$msgby, pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N'";
-                //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
-                $db4 = new DBQuery();
-                $db4->query($savedata);
+            if($msgby!='') {
+                foreach ($p as $numb) {
+                    //echo $numb;
+                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N'";
+                    //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
+                    $db4 = new DBQuery();
+                    $db4->query($savedata);
+                }
             }
         } catch (Exception $ex) {
             print_r($ex);
@@ -543,7 +556,8 @@ class SMS implements SMSInterface
         $db = new DBQuery();
         $rs = $db->selectRaw($sqlAI, TRUE);
         //print_r($rs);
-        $AI = $rs[0]['Auto_increment'];
+        //$AI = $rs[0]['Auto_increment'];
+        $AI = str_pad($rs[0]['Auto_increment'], 12, "0", STR_PAD_LEFT);
 
         $sms = "Y";
         $date1 = date('Y-m-d');
@@ -551,7 +565,30 @@ class SMS implements SMSInterface
         $date3 = date('Y-m-d');*/
         $todaydatetime=date("Y-m-d H:i:s");
 
-        $sql = "INSERT INTO pupilsightMessenger SET  messageWall_date1='$date1', sms='$sms', subject='NA', body='$msg',  pupilsightPersonID=$msgby,messengercategory='Other', timestamp='$todaydatetime'";
+        $sql = "INSERT INTO pupilsightMessenger SET  messageWall_date1='$date1', sms='$sms', subject='NA', body='$msg',  pupilsightPersonID='$msgby', messengercategory='Other'";
+        $result = new DBQuery();
+        $result->query($sql);
+
+        $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=$AI, type='Individuals', id='$msgto'";
+        $result = new DBQuery();
+        $result->query($sql);
+    }
+
+    public function updateMessengerTableforEmail($msgto,$subject,$body,$msgby){
+        $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+        $db = new DBQuery();
+        $rs = $db->selectRaw($sqlAI, TRUE);
+        //print_r($rs);
+        //$AI = $rs[0]['Auto_increment'];
+        $AI = str_pad($rs[0]['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+        $email = "Y";
+        $messageWall = "N";
+        $sms = "N";
+        $date1 = date('Y-m-d');
+
+
+        $sql = "INSERT INTO pupilsightMessenger SET email='$email', messageWall='$messageWall', messageWall_date1='$date1', sms='$sms', subject='$subject', body='$body', pupilsightPersonID='$msgby',messengercategory='Other'";
         $result = new DBQuery();
         $result->query($sql);
 

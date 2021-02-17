@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight.php';
 
 use Pupilsight\Contracts\Comms\Mailer;
-
+$container = new League\Container\Container();
 $URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/campaignFormList.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_msg') != false) {
@@ -109,21 +109,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
                     $url .= "&to=" . $ft_email;
                     $url .= "&subject=" . rawurlencode($subject);
                     $url .= "&body=" . rawurlencode($body);
-                    sendEmail($ft_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
+                    sendEmail($container, $ft_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
                 }
                 if (!empty($mt_email)) {
                     $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
                     $url .= "&to=" . $mt_email;
                     $url .= "&subject=" . rawurlencode($subject);
                     $url .= "&body=" . rawurlencode($body);
-                    sendEmail($mt_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
+                    sendEmail($container, $mt_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
                 }
                 if (!empty($gt_email)) {
                     $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
                     $url .= "&to=" . $gt_email;
                     $url .= "&subject=" . rawurlencode($subject);
                     $url .= "&body=" . rawurlencode($body);
-                    sendEmail($gt_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
+                    sendEmail($container, $gt_email, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus);
                 }
             }
 
@@ -154,7 +154,7 @@ function sendSMS($number, $msg, $subid, $cuid, $connection2)
     $connection2->query($sq);
 }
 
-function sendEMail($to, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus)
+function sendEMail($container, $to, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus)
 {
 
     //sending attachment
@@ -179,8 +179,32 @@ function sendEMail($to, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFil
             $mail->Send();
             $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', pupilsightPersonID=" . $cuid . " ";
             $connection2->query($sq);
+
+            $msgby=$_SESSION[$guid]["pupilsightPersonID"];
+            $msgto=$to;
+            //$emailreportp=$sms->updateMessengerTableforEmail($msgto,$subject,$body,$msgby);
+
+            $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+            $resultAI = $connection2->query($sqlAI);
+            $rowAI = $resultAI->fetch();
+            $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+            $email = "Y";
+            $messageWall = "N";
+            $sms = "N";
+            $date1 = date('Y-m-d');
+            $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body,  "pupilsightPersonID" => $msgby, "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+            $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+
+            $data = array("AI" => $AI, "t" => $msgto);
+            $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+
         } catch (Exception $ex) {
-            print_r($x);
+            print_r($ex);
         }
     } else {
         $res = file_get_contents($url);

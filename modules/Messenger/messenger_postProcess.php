@@ -87,6 +87,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			$subject = 'NA';
 		}
 		$category = $_POST["category"];
+		if($category==''){
+            $category='Other';
+        }
 		$body = stripslashes($_POST["body"]);
 		$body1 = stripslashes($_POST["body1"]);
 		$emailReceipt = $_POST["emailReceipt"];
@@ -1953,15 +1956,23 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 										}
 										$resultEmail = $connection2->prepare($sqlEmail);
 										$resultEmail->execute($dataEmail);
+
+
 									}
 								} catch (PDOException $e) {
 								}
 								while ($rowEmail = $resultEmail->fetch()) {
 									$countryCodeTemp = $countryCode;
+                                    $targetperson=$rowEmail['pupilsightPersonID'];
+                                    $data = array("pupilsightMessengerID" => $AI, "id" => $targetperson, "staff" => 'N', "students" => 'N', "parents" => 'N');
+                                    $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id, staff=:staff, students=:students, parents=:parents";
+                                    $result = $connection2->prepare($sql);
+                                    $result->execute($data);
 									if ($rowEmail["countryCode"] == "") {
 										$countryCodeTemp = $rowEmail["countryCode"];
 									}
-									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+									//$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $targetperson, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
 								}
 
 								$report = reportAdd($report, $emailReceipt, 'smscopy', 'Individuals', 'smscopy', 'SMS', $copysms);
@@ -2106,7 +2117,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 					$result = $sms
 						->content($body1)
 						->send($recipients);
-
+                    $dileveryid=$result[0];
+                    //die();
 					$smsCount = count($recipients);
 					$smsBatchCount = count($result);
 
@@ -2124,8 +2136,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 					$confirmed = null;
 					if ($reportEntry[5] != '')
 						$confirmed = 'N';
-					$data = array("pupilsightMessengerID" => $AI, "pupilsightPersonID" => $reportEntry[0], "targetType" => $reportEntry[1], "targetID" => $reportEntry[2], "contactType" => $reportEntry[3], "contactDetail" => $reportEntry[4], "key" => $reportEntry[5], "confirmed" => $confirmed);
-					$sql = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=:pupilsightMessengerID, pupilsightPersonID=:pupilsightPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed";
+                    if($dileveryid=='') {
+                        $data = array("pupilsightMessengerID" => $AI, "pupilsightPersonID" => $_SESSION[$guid]['pupilsightPersonID'], "targetType" => $reportEntry[1], "targetID" => $reportEntry[2], "contactType" => $reportEntry[3], "contactDetail" => $reportEntry[4], "key" => $reportEntry[5], "confirmed" => $confirmed);
+                        $sql = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=:pupilsightMessengerID, pupilsightPersonID=:pupilsightPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed";
+                    }else{
+                        $data = array("pupilsightMessengerID" => $AI, "pupilsightPersonID" => $_SESSION[$guid]['pupilsightPersonID'], "targetType" => $reportEntry[1], "targetID" => $reportEntry[2], "contactType" => $reportEntry[3], "contactDetail" => $reportEntry[4], "key" => $reportEntry[5], "confirmed" => $confirmed);
+                        $sql = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=:pupilsightMessengerID, pupilsightPersonID=:pupilsightPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed, requestid=$dileveryid";
+                    }
 					$result = $connection2->prepare($sql);
 					$result->execute($data);
 				} catch (PDOException $e) {
