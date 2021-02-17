@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                 
                 // $URL .= "&return=success0&editID=$AI";
                 $session->set('campaignid', $lid);
-                $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/wplogin.php';
+                $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/fluent.php';
                 header("Location: {$URL}");
            
         }
