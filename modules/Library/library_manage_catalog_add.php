@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('imageType', __('Image Type'));
-        $row->addSelect('imageType')->fromArray(array('File' => __('File'), 'Link' => __('Link')))->placeholder();
+        $row->addSelect('imageType')->fromArray(array(''=>__('Please Select'),'File' => __('File'), 'Link' => __('Link')))->placeholder();
 
     $form->toggleVisibilityByClass('imageFile')->onSelect('imageType')->when('File');
 
@@ -117,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('ownershipType', __('Ownership Type'));
-        $row->addSelect('ownershipType')->fromArray(array('School' => __('School'), 'Individual' => __('Individual')))->placeholder();
+        $row->addSelect('ownershipType')->fromArray(array(''=>__('Please Select'),'School' => __('School'), 'Individual' => __('Individual')))->placeholder();
 
 
     $sql = 'SELECT a.type, b.pupilsightPersonID, b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" ';
@@ -184,6 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addCurrency('replacementCost')->maxLength(9);
 
     $conditions = array(
+        ''=>__('Please Select'),
         'As New' => __('As New'),
         'Lightly Worn' => __('Lightly Worn'),
         'Moderately Worn' => __('Moderately Worn'),

@@ -144,10 +144,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 }, array());
             }
 
+            
+			$sql = 'SELECT a.type, b.pupilsightPersonID, b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" ';
+			$result = $connection2->query($sql);
+			$staffs = $result->fetchAll();
+			$owner1 = array('' => 'Please Select ');
+			
+			foreach ($staffs as $dt) {
+				$owner2[$dt['pupilsightPersonID']] = $dt['officialName'];
+			}
+			$owner = $owner1 + $owner2;
+			
+
             $row = $form->addRow();
                 $row->addLabel('pupilsightPersonIDReturnAction', __('Responsible User'))->description(__('Who will be responsible for the future status?'));
-                $row->addSelect('pupilsightPersonIDReturnAction')->fromArray($people)->placeholder();
-
+                //$row->addSelect('pupilsightPersonIDReturnAction')->fromArray($people)->placeholder();
+                $row->addSelect('pupilsightPersonIDReturnAction')->fromArray($owner)->placeholder()->selected($values['pupilsightPersonIDReturnAction']);
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();

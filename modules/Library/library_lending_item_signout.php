@@ -142,17 +142,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow()->addClass('studentType hiddencol');
                 $row->addLabel('pupilsightProgramID', __('Program'));
-                $row->addSelect('pupilsightProgramID')->fromArray($program)->placeholder('Select Program');
+                $row->addSelect('pupilsightProgramID')->setId('pupilsightProgram')->fromArray($program)->placeholder('Select Program');
         
         
-            $row = $form->addRow()->addClass('studentType hiddencol');
-                $row->addLabel('pupilsightYearGroupID', __('Class'));
-                $row->addSelect('pupilsightYearGroupID')->placeholder('Select Class');
+            // $row = $form->addRow()->addClass('studentType hiddencol');
+            //     $row->addLabel('pupilsightYearGroupID', __('Class'));
+            //     $row->addSelect('pupilsightYearGroupID')->placeholder('Select Class');
         
                 
-            $row = $form->addRow()->addClass('studentType hiddencol');
-                $row->addLabel('pupilsightRollGroupID', __('Section'));
-                $row->addSelect('pupilsightRollGroupID')->placeholder('Select Section'); 
+            // $row = $form->addRow()->addClass('studentType hiddencol');
+            //     $row->addLabel('pupilsightRollGroupID', __('Section'));
+            //     $row->addSelect('pupilsightRollGroupID')->placeholder('Select Section'); 
             
             $row = $form->addRow();
                 $row->addLabel('pupilsightPersonIDStatusResponsible', __('Responsible User'))->description(__('Who is responsible for this new status?'));
@@ -271,4 +271,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             }
         }
     });
+
+
+    $(document).on('change','#pupilsightProgram',function(){
+
+        var pupilsightProgramID=$('#pupilsightProgram').val();
+        //alert(pupilsightProgramID);
+
+        var type = 'getAllStudentsByProgram';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { type: type, pupilsightProgramID: pupilsightProgramID  },
+            async: true,
+            success: function(response) {
+
+                
+                $("#pupilsightPersonID").html();
+                $("#pupilsightPersonID").html(response);
+                
+            },
+            error: function(response) {
+                alert(response);
+            }
+        });
+
+});
 </script>    

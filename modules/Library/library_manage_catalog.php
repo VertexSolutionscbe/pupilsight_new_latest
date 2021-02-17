@@ -111,9 +111,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addLabel('status', __('Status'));
         $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
 
+    
+    $sql = 'SELECT  P.pupilsightPersonID, P.officialName FROM pupilsightLibraryItem AS L
+    LEFT JOIN pupilsightPerson AS P  ON L.pupilsightPersonIDOwnership = P.pupilsightPersonID
+    WHERE P.officialName != "" ';
+    $result = $connection2->query($sql);
+    $staffs = $result->fetchAll();
+    $owner1 = array('' => 'Please Select ');
+    
+    foreach ($staffs as $dt) {
+        $owner2[$dt['pupilsightPersonID']] = $dt['officialName'];
+    }
+    $owner = $owner1 + $owner2;
+    
+
     $row = $form->addRow();
         $row->addLabel('pupilsightPersonIDOwnership', __('Owner/User'));
-        $row->addSelectUsers('pupilsightPersonIDOwnership')->selected($pupilsightPersonIDOwnership)->placeholder();
+        //$row->addSelectUsers('pupilsightPersonIDOwnership')->selected($pupilsightPersonIDOwnership)->placeholder();
+        $row->addSelectUsers('pupilsightPersonIDOwnership')->fromArray($owner)->selected($pupilsightPersonIDOwnership)->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));

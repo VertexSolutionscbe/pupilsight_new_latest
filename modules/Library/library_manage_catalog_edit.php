@@ -135,19 +135,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 			$row = $form->addRow();
 				$row->addLabel('ownershipType', __('Ownership Type'));
-				$row->addSelect('ownershipType')->fromArray(array('School' => __('School'), 'Individual' => __('Individual')))->placeholder();
+				$row->addSelect('ownershipType')->addId('ownershipType')->fromArray(array('School' => __('School'), 'Individual' => __('Individual')))->placeholder();
+			
+			$sql = 'SELECT a.type, b.pupilsightPersonID, b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" ';
+			$result = $connection2->query($sql);
+			$staffs = $result->fetchAll();
+			$owner1 = array('' => 'Please Select ');
+			
+			foreach ($staffs as $dt) {
+				$owner2[$dt['pupilsightPersonID']] = $dt['officialName'];
+			}
+			$owner = $owner1 + $owner2;
+			
+				
 
 			$form->toggleVisibilityByClass('ownershipSchool')->onSelect('ownershipType')->when('School');
 
 			$row = $form->addRow()->addClass('ownershipSchool');
 				$row->addLabel('pupilsightPersonIDOwnershipSchool', __('Main User'))->description(__('Person the device is assigned to.'));
-				$row->addSelectUsers('pupilsightPersonIDOwnershipSchool')->placeholder()->selected($values['pupilsightPersonIDOwnership']);
+				$row->addSelectUsers('pupilsightPersonIDOwnershipSchool')->addId('pupilsightPersonIDOwnershipSchool')->placeholder()->fromArray($owner)->selected($values['pupilsightPersonIDOwnership']);
 
 			$form->toggleVisibilityByClass('ownershipIndividual')->onSelect('ownershipType')->when('Individual');
 
 			$row = $form->addRow()->addClass('ownershipIndividual');
 				$row->addLabel('pupilsightPersonIDOwnershipIndividual', __('Owner'));
-				$row->addSelectUsers('pupilsightPersonIDOwnershipIndividual')->placeholder()->selected($values['pupilsightPersonIDOwnership']);
+				$row->addSelectUsers('pupilsightPersonIDOwnershipIndividual')->addId('pupilsightPersonIDOwnershipIndividual')->placeholder()->fromArray($owner)->selected($values['pupilsightPersonIDOwnership']);
 
 			$sql = "SELECT pupilsightDepartmentID AS value, name FROM pupilsightDepartment ORDER BY name";
 			$row = $form->addRow();
@@ -235,5 +247,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 		$('#detailsRow').load(path, { 'pupilsightLibraryTypeID': '<?php echo $values['pupilsightLibraryTypeID']; ?>', 'pupilsightLibraryItemID': '<?php echo $pupilsightLibraryItemID; ?>' });
 
+	});
+
+	$('#ownershipType').change(function(){
+		//alert('Changed');
+		$('#pupilsightPersonIDOwnershipSchool').val('');
+		$('#pupilsightPersonIDOwnershipIndividual').val('');
 	});
 </script>
