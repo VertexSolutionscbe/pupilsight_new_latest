@@ -178,7 +178,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				print "<b>" . $i++ . "</b><br/>";
 				print "</td>";
 				print "<td>";
-				print "<b>" . $row["subject"] . "</b><br/>";
+                if ($row["sms"] == "Y") {
+                    print "<b>" . substr($row["body"],0,20) . "</b><br/>";
+                }else{
+                    print "<b>" . $row["subject"] . "</b><br/>";
+                }
 				print "</td>";
 				print "<td>";
 				echo date('d/m/Y H:s', strtotime($row["timestamp"])) . "<br/>";

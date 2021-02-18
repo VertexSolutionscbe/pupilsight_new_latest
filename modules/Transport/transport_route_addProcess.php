@@ -84,7 +84,7 @@ if($end_time =="00:00"){
         }
 
         if ($result->rowCount() > 0) {
-            $URL .= '&return=error3';
+            $URL .= '&return=errorroute';
             header("Location: {$URL}");
         } else {
             //Write to database

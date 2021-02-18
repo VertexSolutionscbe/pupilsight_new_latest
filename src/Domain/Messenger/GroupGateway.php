@@ -62,8 +62,11 @@ class GroupGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from('pupilsightGroupPerson')
-            ->cols(['pupilsightGroupPerson.pupilsightGroupID', 'pupilsightGroupPerson.pupilsightPersonID as ppid', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.email'])
+            ->cols(['pupilsightGroupPerson.pupilsightGroupID','pupilsightRollGroup.name  as section','pupilsightYearGroup.name as classname', 'pupilsightGroupPerson.pupilsightPersonID as ppid', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.email'])
             ->innerJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=pupilsightGroupPerson.pupilsightPersonID')
+            ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+            ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
             ->where('pupilsightGroupPerson.pupilsightGroupID = :pupilsightGroupID')
             ->bindValue('pupilsightGroupID', $pupilsightGroupID);
 

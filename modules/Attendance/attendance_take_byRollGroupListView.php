@@ -313,7 +313,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         
                         if ($resultLog->rowCount() < 1) {
                             echo "<div class='alert alert-danger'>";
-                            echo __('Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.');
+                            //commented the below line on saying of anand and added alternat echo below it. commented by preetam
+                            /*echo __('Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.');*/
+                            echo __('Attendance has not been taken for this group yet for the specified date.');
                             echo '</div>';
                         } else {
                             $check_role='SELECT role.name FROM pupilsightPerson as p LEFT JOIN pupilsightRole as role ON p.pupilsightRoleIDAll = role.pupilsightRoleID 

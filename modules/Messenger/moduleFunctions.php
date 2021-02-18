@@ -77,7 +77,7 @@ function getEmailSignature($guid, $connection2, $pupilsightPersonID)
         /*$return = '<br/><br/>----<br/>';*/
         $return .= $row['emailSignature'];
        /* $return .= '----<br/>';*/
-        }        
+        }
     }
 
     return $return;
@@ -98,7 +98,7 @@ function getSmsSignature($guid, $connection2, $pupilsightPersonID)
         if ($row['smsSignature'] != '') {
       /*  $return = '----\n';*/
         $return .= $row['smsSignature'];
-        }        
+        }
     }
     return $return;
 }
@@ -1386,10 +1386,10 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
 	$datecheck='pass';
 	if($fromdate>$date){
 	$datecheck='fail';
-	
+
 	}
 
-	
+
     if($fromdate!=$date){
 
 
@@ -2688,11 +2688,11 @@ function queryMembersreceipt($guid, $connection2, $mode = '', $msgtype = '')
 {
     $return = '';
     if($msgtype=='sms'){
-        $msgtype = " pupilsightMessengerReceipt.contactType = 'SMS' ";
+        $msgtype = " pmr.contactType = 'SMS' ";
     }elseif($msgtype=='email'){
-        $msgtype = " pupilsightMessengerReceipt.contactType = 'Email' ";
+        $msgtype = " pmr.contactType = 'Email' ";
     }else{
-        $msgtype = " pupilsightMessengerReceipt.contactType = 'Email' OR pupilsightMessengerReceipt.contactType = 'SMS'";
+        $msgtype = " pmr.contactType = 'Email' OR pmr.contactType = 'SMS'";
     }
     //echo $msgtype;
 
@@ -2705,7 +2705,11 @@ function queryMembersreceipt($guid, $connection2, $mode = '', $msgtype = '')
     }*/
 try {
     $data = array();
-    $sql = "SELECT pupilsightMessengerReceipt.*,pupilsightPerson.firstname,pupilsightPerson.pupilsightPersonID FROM pupilsightMessengerReceipt,pupilsightPerson WHERE pupilsightPerson.pupilsightPersonID=pupilsightMessengerReceipt.pupilsightPersonID AND ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC ";
+    //$sql = "SELECT pupilsightMessengerReceipt.*,pupilsightPerson.officialName as sendername,pupilsightPerson.pupilsightPersonID FROM pupilsightMessengerReceipt,pupilsightPerson WHERE pupilsightPerson.pupilsightPersonID=pupilsightMessengerReceipt.pupilsightPersonID AND ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC ";
+    //$sql ="SELECT pp.officialName as sender, pp2.officialName as reciever ,pmr.* FROM pupilsightMessengerReceipt as pmr join pupilsightPerson as pp ON pp.pupilsightPersonID=pmr.pupilsightPersonID join pupilsightPerson as pp2 ON pp2.pupilsightPersonID=pmr.targetID WHERE ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC";
+    $sql ="SELECT pyg.name as classname, prg.name as sectionname, pp.officialName as sender, pp2.officialName as reciever ,pmr.* FROM pupilsightMessengerReceipt as pmr join pupilsightPerson as pp ON pp.pupilsightPersonID=pmr.pupilsightPersonID join pupilsightPerson as pp2 ON pp2.pupilsightPersonID=pmr.targetID left join pupilsightStudentEnrolment as pse ON pp2.pupilsightPersonID=pse.pupilsightPersonID left join pupilsightYearGroup as pyg ON pse.pupilsightYearGroupID=pyg.pupilsightYearGroupID left join pupilsightRollGroup as prg ON pse.pupilsightRollGroupID=prg.pupilsightRollGroupID
+WHERE ($msgtype)
+ORDER BY pupilsightMessengerReceiptID DESC";
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {
@@ -2725,8 +2729,12 @@ try {
                 $output[$count]['key'] = $row['key'];
                 $output[$count]['confirmed'] = $row['confirmed'];
                 $output[$count]['confirmedTimestamp'] = $row['confirmedTimestamp'];
-                $output[$count]['firstname'] = $row['firstname'];
+                $output[$count]['sender'] = $row['sender'];
+                $output[$count]['reciever'] = $row['reciever'];
                 $output[$count]['confirmedTimestamp'] = $row['confirmedTimestamp'];
+                $output[$count]['requestid'] = $row['requestid'];
+                $output[$count]['classname'] = $row['classname'];
+                $output[$count]['sectionname'] = $row['sectionname'];
                 ++$count;
             }
     $return .= "<table cellspacing='0' style='margin-top: 10px'; width='100%';>";
@@ -2735,23 +2743,28 @@ try {
     $return .= __('Date');
     $return .= '</th>';*/
     $return .= "<th style='text-align: center'>";
-    //$return .= __('pupilsightPersonID');
     $return .= __('Sl No');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
-    $return .= __('Person');
+    $return .= __('Sender');
     $return .= '</th>';
-    /*$return .= "<th style='text-align: center'>";
-    $return .= __('targetID');
-    $return .= '</th>';*/
     $return .= "<th style='text-align: center'>";
     $return .= __('Contact Type');
+    $return .= '</th>';
+    $return .= "<th style='text-align: center'>";
+    $return .= __('Contact Person');
+    $return .= '</th>';
+    $return .= "<th style='text-align: center'>";
+    $return .= __('Class');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
     $return .= __('Contact Detail');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
     $return .= __('Sent');
+    $return .= '</th>';
+    $return .= "<th style='text-align: center'>";
+    $return .= __('requestid');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
     $return .= __('Time');
@@ -2767,24 +2780,34 @@ try {
         }
         ++$rowCount;
         $return .= "<tr class=$rowNum>";
-        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 10%'>";
-        //$return .= $output[$i]['pupilsightMessengerID'];
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 5%'>";
         $return .= $slno;
         $return .= '</td>';
-        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 20%'>";
-        $return .= $output[$i]['firstname'];
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 15%'>";
+        $return .= $output[$i]['sender'];
         $return .= '</td>';
-        /*$return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 25%'>";
-        $return .= $output[$i]['targetID'];
-        $return .= '</td>';*/
-        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 10%'>";
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 5%'>";
         $return .= $output[$i]['contactType'];
         $return .= '</td>';
-        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 25%'>";
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 20%'>";
+        $return .= $output[$i]['reciever'];
+        $return .= '</td>';
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 10%'>";
+        if($output[$i]['classname']!='') {
+            $return .= $output[$i]['classname'];
+            $return .= $output[$i]['sectionname'];
+        }else{
+            $return .= 'NA';
+        }
+        $return .= '</td>';
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 10%'>";
         $return .= $output[$i]['contactDetail'];
         $return .= '</td>';
-        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 15%'>";
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 5%'>";
         $return .= "<i class='mdi mdi-check mdi-24px'></i>";
+        $return .= '</td>';
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 15%'>";
+        $return .= $output[$i]['requestid'];
         $return .= '</td>';
         $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 20%'>";
         $return .= $output[$i]['confirmedTimestamp'];

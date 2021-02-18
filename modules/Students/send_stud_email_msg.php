@@ -111,6 +111,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                                 $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', uid=" . $cuid . " ";
                                 $connection2->query($sq);
 
+                                $msgby=$_SESSION[$guid]["pupilsightPersonID"];
+                                $msgto=$smspupilsightPersonID;
+                                //$emailreportp=$sms->updateMessengerTableforEmail($msgto,$subject,$body,$msgby);
 
                                 $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
                                 $resultAI = $connection2->query($sqlAI);
@@ -121,14 +124,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                                 $messageWall = "N";
                                 $sms = "N";
                                 $date1 = date('Y-m-d');
-                                /*$date2 = date('Y-m-d');
-                                $date3 = date('Y-m-d');*/
-                                $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "messageWall_date2" => $date2, "messageWall_date3" => $date3, "sms" => $sms, "subject" => $subject, "body" => $body,  "pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
-                                $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, messageWall_date2=:messageWall_date2, messageWall_date3=:messageWall_date3, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+                                $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body,  "pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+                                $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
 
-                                $data = array("AI" => $AI, "t" => $smspupilsightPersonID);
+                                $data = array("AI" => $AI, "t" => $msgto);
                                 $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
