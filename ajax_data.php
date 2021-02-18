@@ -77,6 +77,22 @@ if ($type == 'getstopname') {
     echo $returndata;
 }
 
+
+// if ($type == 'individuals') {
+//     $sql = "SELECT pupilsightRole.category, pupilsightPersonID, preferredName, surname, username FROM pupilsightPerson JOIN pupilsightRole ON (pupilsightRole.pupilsightRoleID=pupilsightPerson.pupilsightRoleIDPrimary) WHERE status='Full' ORDER BY surname, preferredName";
+//     $result = $connection2->query($sql);
+//     $rowdata = $result->fetchAll();
+
+
+//     $i=0;
+//     foreach($rowdata as $val)
+//     {
+//         $data[$i]['id']=$val['pupilsightPersonID'];
+//         $data[$i]['text']=$val['preferredName'];
+//         $i++;
+//     }
+//     echo json_encode($data);
+// }
 if ($type == 'gettermdaterange') {
     $sql = 'SELECT firstDay, lastDay FROM pupilsightSchoolYearTerm WHERE pupilsightSchoolYearTermID = ' . $val . ' ';
     $result = $connection2->query($sql);
@@ -2941,6 +2957,23 @@ if ($type == 'getAllSchoolStaff') {
         }
     }
     echo $data;
+}
+
+if ($type == 'getAllStudentsByProgram') {
+
+    $pupilsightProgramID = $_POST['pupilsightProgramID'];
+   
+    $sql = 'SELECT a.*, b.officialName FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE  a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+    $result = $connection2->query($sql);
+    $sections = $result->fetchAll();
+    $data = '<option value="">Select Student</option>';
+    if (!empty($sections)) {
+        foreach ($sections as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'] . '</option>';
+        }
+    }
+    echo $data;
+
 }
 
 if ($type == 'getFeeStructure') {
