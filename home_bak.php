@@ -41,11 +41,10 @@ $cms_banner_short_description = isset($data["cms_banner_short_description"]) ? $
 if (isset($data["cms_banner_image_path"]) && file_exists($data["cms_banner_image_path"])) {
     $hero_image = $data["cms_banner_image_path"];
 }
-
-$logo = $baseurl . "/cms/images/pupilpod_logo.png";
-if (isset($data['logo_image'])) {
-    $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
+if (isset($data["logo_image_path"]) && file_exists($data["logo_image_path"])) {
+    $logo = $data["logo_image_path"];
 }
+
 
 ?>
 <!doctype html>
@@ -75,7 +74,14 @@ if (isset($data['logo_image'])) {
     <!-- CSS files -->
     <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
 
-
+    <!--
+    <link rel="stylesheet" href="<?= $baseurl; ?>/assets/css/fullcalendar.min.css?v=1.0" type="text/css" media="all" />
+    <link rel="stylesheet" href="<?= $baseurl; ?>/assets/css/jquery.dataTables.min.css?v=1.0" />
+    <link rel="stylesheet" href="<?= $baseurl; ?>/assets/css/bootstrap-multiselect.css?v=1.0" type="text/css" media="all" />
+    
+    <link rel="stylesheet" href="<?= $baseurl; ?>/assets/libs/jquery-timepicker/jquery.timepicker.css?v=1.0" type="text/css" media="all" />
+    <link rel="stylesheet" href="<?= $baseurl; ?>/assets/libs/thickbox/thickbox.css?v=1.0" type="text/css" media="all" />
+    -->
     <link rel="stylesheet" href="<?= $baseurl; ?>/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
 
     <link href="<?= $baseurl; ?>/assets/css/selectize.css" rel="stylesheet" />
@@ -87,14 +93,27 @@ if (isset($data['logo_image'])) {
     <script src="<?= $baseurl; ?>/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="<?= $baseurl; ?>/assets/libs/jquery/dist/jquery-3.5.1.min.js"></script>
     <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/jquery/jquery-migrate.min.js?v=1.0"></script>
+    <!--
+    <script src="<?= $baseurl; ?>/assets/libs/jquery-ui/js/jquery-ui.min.js?v=1.0"></script>
+    <script src="<?= $baseurl; ?>/assets/js/jquery.dataTables.min.js?v=1.0v=1.0"></script>
+    <script src="<?= $baseurl; ?>/assets/libs/jquery-timepicker/jquery.timepicker.min.js?v=1.0"></script>
+    <script src="<?= $baseurl; ?>/assets/libs/livevalidation/livevalidation_standalone.compressed.js"></script>
+    -->
 
 
     <script src="<?= $baseurl; ?>/assets/js/core.js"></script>
-
+    <!--
+    <script src="<?= $baseurl; ?>/assets/js/jquery.table2excel.js"></script>
+    -->
     <script type="text/javascript">
         var tb_pathToImage = "<?= $baseurl; ?>/assets/libs/thickbox/loadingAnimation.gif";
     </script>
-
+    <!--
+    <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/tinymce/tinymce.min.js?v=1.0"></script>
+    <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/jquery-tokeninput/src/jquery.tokeninput.js?v=1.0"></script>
+    <script type="text/javascript" src="<?= $baseurl; ?>/assets/js/moment.min.js?v=1.0"></script>
+    <script type="text/javascript" src="<?= $baseurl; ?>/assets/js/fullcalendar.min.js?v=1.0"></script>
+    -->
     <script type="text/javascript" src="<?= $baseurl; ?>/assets/js/bootstrap-multiselect.js?v=1.0"></script>
     <script src="<?= $baseurl; ?>/assets/js/selectize.min.js"></script>
     <script src="<?= $baseurl; ?>/assets/js/tabler.min.js"></script>
@@ -112,6 +131,7 @@ if (isset($data['logo_image'])) {
             display: none;
         }
 
+
         .carouselTitle {
             line-height: 42px;
             font-size: 42px;
@@ -123,6 +143,36 @@ if (isset($data['logo_image'])) {
             font-size: 36px;
             font-weight: 600;
         }
+
+        /*
+        .carouselBox {
+            margin: auto;
+            width: 100%;
+            min-height: 400px;
+        }
+
+        
+        .owl-nav .owl-next,
+        .owl-nav .owl-prev {
+            position: absolute;
+            top: 48%;
+            transform: translateY(-50%);
+            -webkit-transform: translateY(-50%);
+        }
+
+        .owl-nav .owl-next {
+            right: 0;
+            display: flex;
+            margin-right: 2%;
+            font-size: 25px !important;
+        }
+
+        .owl-nav .owl-prev {
+            left: 0;
+            display: flex;
+            margin-left: 2%;
+            font-size: 25px !important;
+        }*/
 
         .multiple_device {
             left: 45%;
@@ -318,11 +368,11 @@ if (isset($data['logo_image'])) {
                                 <?= trim(html_entity_decode($data['cms_banner_short_description'])); ?>
                             </div>
                         </div>
-
+                        <!--
                         <div class="mt-3">
-                            <button type="button" class="btn btn-primary btn-lg btn-square" onclick="loginPanel();">Login</button>
+                            <a href="#" class="btn btn-primary btn-lg btn-square">View Our Courses</a>
                         </div>
-
+                        -->
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12 m-auto">
@@ -827,7 +877,7 @@ if (isset($data['logo_image'])) {
                     --->
                     <div class="float-right">
 
-                        <button class="btn btn-link" type="button">Lost your password?</button>
+                        <button class="btn btn-link">Lost your password?</button>
 
                     </div>
                     <div class="float-none">&nbsp;</div>
@@ -861,7 +911,7 @@ if (isset($data['logo_image'])) {
         $('.lazy').slick({
             arrows: false,
             centerMode: false,
-            mobileFirst: false,
+            mobileFirst: true,
             dots: true,
             pauseOnHover: false,
             swipe: true,
@@ -871,10 +921,6 @@ if (isset($data['logo_image'])) {
             slidesToScroll: 1,
             autoplay: true,
             autoplaySpeed: 2000,
-            responsive: [{
-                breakpoint: 500,
-                settings: "unslick"
-            }]
         });
     </script>
 

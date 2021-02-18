@@ -1,21 +1,9 @@
 <?php
-function getDomain()
-{
-    if (isset($_SERVER['HTTPS'])) {
-        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
-    } else {
-        $protocol = 'http';
-    }
-    //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    return $protocol . "://" . $_SERVER['HTTP_HOST'];
-}
-$baseurl = getDomain();
-
 include_once 'w2f/adminLib.php';
 $adminlib = new adminlib();
 session_start();
 $url_id = $_REQUEST['url_id'];
-if (empty($url_id)) {
+if(empty($url_id)){
     header("Location: index.php");
     exit;
 }
@@ -87,240 +75,83 @@ if (empty($campaignStatus)) {
     exit;
 }
 
-$logo = $baseurl . "/cms/images/pupilpod_logo.png";
-if (isset($data['logo_image'])) {
-    $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
-}
 ?>
-<!doctype html>
-<html class="no-js" lang="">
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title><?= $title; ?></title>
-    <meta name="description" content="Pupilpod is India’s first cloud based School ERP Software. It is 100% customizable and evolves to meet each School or University’s needs.
-    Discover how with Pupilpod you can automate your entire Academic, Operational, and Management information systems" />
-    <meta name="keywords" content="Pupilpod,School ERP,erp,School ERP Software, School Management Solution">
+<?php include("index_header.php"); ?>
+<style>
+    .btnPay {
+        display: inline-block;
+        font-weight: bold;
+        font-size: 20px;
+        width: 200px;
+        line-height: 1.4285714;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: 0.4375rem 1rem;
+        border-radius: 3px;
+        color: #ffffff !important;
+        background-color: #206bc4;
+        border-color: #206bc4;
+    }
+</style>
 
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <meta name="msapplication-TileColor" content="#206bc4" />
-    <meta name="theme-color" content="#206bc4" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="HandheldFriendly" content="True" />
-    <meta name="MobileOptimized" content="320" />
-    <meta name="robots" content="noindex,nofollow,noarchive" />
-    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+<body class="home page-template page-template-templates page-template-home-page page-template-templateshome-page-php page page-id-17 wp-embed-responsive theme-ivy-school pmpro-body-has-access woocommerce-no-js bg-type-color responsive auto-login left_courses wpb-js-composer js-comp-ver-6.0.5 vc_responsive">
 
-    <!-- CSS files -->
-    <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
+    <div id="wrapper-container" class="content-pusher creative-right bg-type-color">
 
 
-    <link rel="stylesheet" href="<?= $baseurl; ?>/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
-
-    <link href="<?= $baseurl; ?>/assets/css/tabler.css" rel="stylesheet" />
-    <link href="<?= $baseurl; ?>/assets/css/dev.css" rel="stylesheet" />
-
-    <!-- Libs JS -->
-    <script src="<?= $baseurl; ?>/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="<?= $baseurl; ?>/assets/libs/jquery/dist/jquery-3.5.1.min.js"></script>
-    <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/jquery/jquery-migrate.min.js?v=1.0"></script>
+        <div id="main-content">
+            <div id="home-main-content" class="home-content home-page container" role="main">
 
 
-    <script src="<?= $baseurl; ?>/assets/js/core.js"></script>
+                <div class="mobile-margin-0 wpb_column vc_column_container vc_col-sm-12 bp-background-size-auto">
+                    <div class="vc_column-inner vc_custom_1540537006055">
+                        <div class="container" style="margin-top: -100px;text-align:center;">
+                            <div class="bp-element bp-element-heading vc_custom_1542033515902  layout-1  mobile-center mobile-line-heading">
+                                <?php /*?>
+                                    <span  id="showdiv" class="sub-title"
+                                        style=" color:#292929; line-height:1.25; font-size:35px; font-weight:400; text-align:center"><?php echo ucwords($campaign_byid['name']).'  '.ucwords($campaign_byid['academic_year']);?></span>
+                                    <?php */ ?>
+                                <!-- <div class="line"
+                                        style="height:2px; width:300px; background-color:#e1e1e1;  ">
+										
+                                    </div>-->
+                                <input type="hidden" id="chkemph" value="0">
 
-    <script type="text/javascript">
-        var tb_pathToImage = "<?= $baseurl; ?>/assets/libs/thickbox/loadingAnimation.gif";
-    </script>
+                                <input type="hidden" id="fid" value="<?php echo $campaign_byid['form_id']; ?>">
+                                <input type="hidden" id="allowms" value="<?php echo $campaign_byid['allow_multiple_submission']; ?>">
+                                <input type="hidden" id="chkfeesett" value="<?php echo $campaign_byid['is_fee_generate']; ?>">
+                                <input type="hidden" id="cid" value="<?php echo $url_id; ?>">
 
-    <script src="<?= $baseurl; ?>/assets/js/tabler.min.js"></script>
-    <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
-    <script type="text/javascript" src="<?= $baseurl; ?>/assets/js/jquery.form.js?v=1.0"></script>
+                                <?php if (!empty($programData)) { ?>
+                                    <div id="progClassDiv">
+                                        <span>Program<span style="color:red">* </span>: </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <select id="pid">
+                                            <option value="">Select Program</option>
+                                            <?php if (!empty($programData)) {
+                                                foreach ($programData as $prg) {
+                                            ?>
+                                                    <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
+                                            <?php }
+                                            } ?>
+                                        </select>
+                                        <span>Class <span style="color:red">* </span>: </span>
+                                        <select id="class">
+                                            <option value="">Select Class</option>
 
-
-    <style>
-        body {
-            display: none;
-        }
-
-        .carouselTitle {
-            line-height: 42px;
-            font-size: 42px;
-            font-weight: 600;
-        }
-
-        .carouselSubTitle {
-            line-height: 36px;
-            font-size: 36px;
-            font-weight: 600;
-        }
-
-        .multiple_device {
-            left: 45%;
-            margin: 0 auto;
-            max-width: 115vw;
-            position: relative;
-            -ms-transform: translateX(-50%);
-            transform: translateX(-50%);
-            width: 115vw;
-        }
-
-        .mh375 {
-            min-height: 375px;
-        }
-
-        .gray {
-            background-color: #f8f9fa;
-        }
-
-        .main-img {
-            width: 70%;
-            height: 70%;
-            border-radius: 50%;
-            overflow: hidden;
-            position: relative;
-        }
-
-        @media only screen and (min-width: 768px) {
-            .navDesktop {
-                /*position: fixed;
-                z-index: 1000;*/
-                width: 100%;
-                min-height: 70px;
-                font-size: 16px;
-            }
-        }
-
-        .closeX {
-            position: absolute;
-            right: 10px;
-            top: 0px;
-            font-size: 30px;
-            cursor: pointer;
-            color: #6e7582;
-        }
-
-        .gmap_canvas,
-        .mapouter {
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-        .hero {
-            border: 1px solid rgba(110, 117, 130, .2);
-            border-radius: 3px;
-            max-height: 400px;
-        }
-
-        .slick-slide {
-            margin: 0 10px;
-        }
-
-        /* the parent */
-        .slick-list {
-            margin: 0 -10px;
-        }
-
-        .chkemptycolor {
-            border: 1px red solid;
-        }
-
-        .btnPay {
-            display: inline-block;
-            font-weight: bold;
-            font-size: 20px;
-            width: 200px;
-            line-height: 1.4285714;
-            text-align: center;
-            vertical-align: middle;
-            cursor: pointer;
-            padding: 0.4375rem 1rem;
-            border-radius: 3px;
-            color: #ffffff !important;
-            background-color: #206bc4;
-            border-color: #206bc4;
-        }
-
-        .i-am-centered {
-            margin: 0 auto;
-            width: 50%;
-        }
-    </style>
-</head>
-
-<body id='chkCounterSession' class='antialiased'>
-    <!-- Preloader Start Here -->
-    <div id="preloader" style="display:none;"></div>
-    <!-- Preloader End Here -->
-
-    <div id="homePanel" class="page">
-        <header class="navbar navbar-expand-md navbar-light navDesktop">
-            <div class="container-fluid">
-                <a href="<?= $baseurl; ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
-                    <img src="<?= $logo; ?>" alt="Pupilpod" class="navbar-brand-image">
-                </a>
-            </div>
-        </header>
-
-
-        <div id="wrapper-container" class="content-pusher creative-right bg-type-color">
-
-
-            <div id="main-content">
-                <div id="home-main-content" class="container-fluid" role="main">
-
-
-                    <div class="">
-                        <div class="">
-                            <div class="container" style="">
-                                <div class="i-am-centered">
-
-                                    <input type="hidden" id="chkemph" value="0">
-
-                                    <input type="hidden" id="fid" value="<?php echo $campaign_byid['form_id']; ?>">
-                                    <input type="hidden" id="allowms" value="<?php echo $campaign_byid['allow_multiple_submission']; ?>">
-                                    <input type="hidden" id="chkfeesett" value="<?php echo $campaign_byid['is_fee_generate']; ?>">
-                                    <input type="hidden" id="cid" value="<?php echo $url_id; ?>">
-
-                                    <?php if (!empty($programData)) { ?>
-                                        <div id="progClassDiv" class="row mt-4">
-                                            <div class="col-md-3 col-sm-12">
-                                                <span>Program<span style="color:red">* </span> </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <select id="pid">
-                                                    <option value="">Select</option>
-                                                    <?php if (!empty($programData)) {
-                                                        foreach ($programData as $prg) {
-                                                    ?>
-                                                            <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
-                                                    <?php }
-                                                    } ?>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-3 col-sm-12">
-                                                <span>Class <span style="color:red">* </span> </span>
-                                                <select id="class" class="form-control">
-                                                    <option value="">Select</option>
-
-                                                </select>
-                                            </div>
-                                            <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
-                                        </div>
-                                        <input type="hidden" id="chkProg" value="1">
-                                    <?php } else { ?>
-                                        <input type="hidden" id="chkProg" value="2">
-                                        <input type="hidden" id="pid" value="<?php echo $campaign_byid['pupilsightProgramID']; ?>">
-                                        <div id="progClassDiv" class="row mt-4">
-                                            <div class="col-md-4 col-sm-12"></div>
-                                            <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        </div>
-                                        <div class="col-md-4 col-sm-12"></div>
-                                        <span>Class <span style="color:red">* </span> </span>
-                                        <select id="class" class="form-control">
-                                            <option value="">Select</option>
+                                        </select>
+                                        <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
+                                    </div>
+                                    <input type="hidden" id="chkProg" value="1">
+                                <?php } else { ?>
+                                    <input type="hidden" id="chkProg" value="2">
+                                    <input type="hidden" id="pid" value="<?php echo $campaign_byid['pupilsightProgramID']; ?>">
+                                    <div id="progClassDiv">
+                                        <span>Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span>Class <span style="color:red">* </span>: </span>
+                                        <select id="class">
+                                            <option value="">Select Class</option>
                                             <?php if (!empty($getClass)) {
                                                 foreach ($getClass as $cls) {
                                             ?>
@@ -328,121 +159,116 @@ if (isset($data['logo_image'])) {
                                             <?php }
                                             } ?>
                                         </select>
-                                </div>
-                                <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
+                                        <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
+                                    </div>
+                                <?php } ?>
                             </div>
-                        <?php } ?>
+                            <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
+                                <div class="wpb_wrapper">
+
+                                    <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="2000px" width="100%" border='0' src="<?php echo $campaign_byid['page_link']; ?>">
+                                    </iframe>
 
 
-                        </div>
-                        <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
-                            <div class="wpb_wrapper">
+                                    <?php if (!empty($campaign_byid['fn_fee_structure_id']) && $campaign_byid['is_fee_generate'] == '2') {
+                                        $sql = "SELECT SUM(total_amount) AS amt FROM fn_fee_structure_item WHERE fn_fee_structure_id = " . $campaign_byid['fn_fee_structure_id'] . " ";
+                                        $result = database::doSelectOne($sql);
+                                        $applicationAmount = $result['amt'] * 100;
 
-                                <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="100vh" width="100%" border='0' style='border:0' src="<?php echo $campaign_byid['page_link']; ?>">
-                                </iframe>
+                                        $random_number = mt_rand(1000, 9999);
+                                        $today = time();
+                                        $orderId = $today . $random_number;
 
+                                        $sqlchk = "SELECT name FROM fn_fee_payment_gateway";
+                                        $resultchk = database::doSelectOne($sqlchk);
+                                        $gateway = $resultchk['name'];
 
-                                <?php if (!empty($campaign_byid['fn_fee_structure_id']) && $campaign_byid['is_fee_generate'] == '2') {
-                                    $sql = "SELECT SUM(total_amount) AS amt FROM fn_fee_structure_item WHERE fn_fee_structure_id = " . $campaign_byid['fn_fee_structure_id'] . " ";
-                                    $result = database::doSelectOne($sql);
-                                    $applicationAmount = $result['amt'] * 100;
+                                        if(!empty($gateway)){
+                                            if($gateway == 'WORLDLINE'){
 
-                                    $random_number = mt_rand(1000, 9999);
-                                    $today = time();
-                                    $orderId = $today . $random_number;
+                                                $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                                $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
+                                    ?>
+                                        <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
 
-                                    $sqlchk = "SELECT name FROM fn_fee_payment_gateway";
-                                    $resultchk = database::doSelectOne($sqlchk);
-                                    $gateway = $resultchk['name'];
+                                            <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
+                                            <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+                                            <input type="hidden" value="INR" id="currencyName" name="currencyName">
+                                            <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
+                                            <input type="hidden" name="mid" id="mid" value="WL0000000009424">
+                                            <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+                                            <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                            <input type="hidden" name="sid" value="0">
+                                            <input type="hidden" class="applicantName" name="name" value="">
+                                            <input type="hidden" class="applicantEmail" name="email" value="">
+                                            <input type="hidden" class="applicantPhone" name="phone" value="">
 
-                                    if (!empty($gateway)) {
-                                        if ($gateway == 'WORLDLINE') {
+                                            <input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
 
-                                            $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                            $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
-                                ?>
-                                            <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
-
-                                                <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
-                                                <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
-                                                <input type="hidden" value="INR" id="currencyName" name="currencyName">
-                                                <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
-                                                <input type="hidden" name="mid" id="mid" value="WL0000000009424">
-                                                <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
-                                                <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
-                                                <input type="hidden" name="sid" value="0">
-                                                <input type="hidden" class="applicantName" name="name" value="">
-                                                <input type="hidden" class="applicantEmail" name="email" value="">
-                                                <input type="hidden" class="applicantPhone" name="phone" value="">
-
-                                                <input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
-
-                                                <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
-                                            </form>
-                                        <?php } elseif ($gateway == 'RAZORPAY') {
-                                            $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                            $responseLink = $base_url . "/cms/index.php?return=1";
-
-                                        ?>
+                                            <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
+                                        </form>
+                                        <?php } elseif($gateway == 'RAZORPAY') { 
+                                                $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                                $responseLink = $base_url . "/cms/index.php?return=1";
+                                            
+                                            ?>
                                             <form id="admissionPay" action="../thirdparty/paymentadm/razorpay/pay.php" method="post">
 
-                                                <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
-                                                <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+                                            <input type="hidden" value="<?php echo $orderId;?>" id="OrderId" name="OrderId">
+                                            <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+                                            
+                                            <input type="hidden" name="mid" id="mid" value="WL0000000009424">
+                                            <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+                                            <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                            <input type="hidden" name="sid" value="0">
+                                            <input type="hidden" class="applicantName" name="name" value="">
+                                            <input type="hidden" class="applicantEmail" name="email" value="">
+                                            <input type="hidden" class="applicantPhone" name="phone" value="">
 
-                                                <input type="hidden" name="mid" id="mid" value="WL0000000009424">
-                                                <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
-                                                <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
-                                                <input type="hidden" name="sid" value="0">
-                                                <input type="hidden" class="applicantName" name="name" value="">
-                                                <input type="hidden" class="applicantEmail" name="email" value="">
-                                                <input type="hidden" class="applicantPhone" name="phone" value="">
+                                            <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+                                            <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                                            <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
 
-                                                <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
-                                                <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
-                                                <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+                                            <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
+                                        </form>
+                                    
+                                    <?php } elseif($gateway == 'PAYU') { 
+                                        $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                        $responseLink = $base_url . "/cms/index.php?return=1";    
+                                    
+                                    ?>
+                                        <form id="admissionPay" action="../thirdparty/payment/payu/checkout.php" method="post">
 
-                                                <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
+                                            <input type="hidden" value="<?php echo $orderId;?>" id="OrderId" name="OrderId">
+                                            <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+
+                                            <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                            <input type="hidden" name="sid" value="0">
+                                            <input type="hidden" class="applicantName" name="name" value="">
+                                            <input type="hidden" class="applicantEmail" name="email" value="">
+                                            <input type="hidden" class="applicantPhone" name="phone" value="">
+
+                                            <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+                                            <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                                            <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+
+                                            <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
                                             </form>
-
-                                        <?php } elseif ($gateway == 'PAYU') {
-                                            $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                            $responseLink = $base_url . "/cms/index.php?return=1";
-
-                                        ?>
-                                            <form id="admissionPay" action="../thirdparty/payment/payu/checkout.php" method="post">
-
-                                                <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
-                                                <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
-
-                                                <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
-                                                <input type="hidden" name="sid" value="0">
-                                                <input type="hidden" class="applicantName" name="name" value="">
-                                                <input type="hidden" class="applicantEmail" name="email" value="">
-                                                <input type="hidden" class="applicantPhone" name="phone" value="">
-
-                                                <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
-                                                <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
-                                                <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
-
-                                                <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
-                                            </form>
-                                <?php }
-                                    }
-                                } ?>
+                                    <?php } } } ?>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="wpb_column vc_column_container  bp-background-size-auto">
-                <div class="vc_column-inner vc_custom_1539746106290">
-                    <div class="wpb_wrapper">
+                <div class="wpb_column vc_column_container  bp-background-size-auto">
+                    <div class="vc_column-inner vc_custom_1539746106290">
+                        <div class="wpb_wrapper">
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div><!-- #home-main-content -->
+        </div><!-- #home-main-content -->
     </div><!-- #main-content -->
     <div id="myModal" class="modal fade">
         <div class="modal-dialog">
@@ -503,8 +329,7 @@ if (isset($data['logo_image'])) {
     <!-- #colophon -->
     </div><!-- wrapper-container -->
     <div id="back-to-top" class="default">
-        <i data-fip-value="ion-ios-arrow-thin-up" class="ion-ios-arrow-thin-up"></i>
-    </div>
+        <i data-fip-value="ion-ios-arrow-thin-up" class="ion-ios-arrow-thin-up"></i> </div>
     <!-- Memberships powered by Paid Memberships Pro v2.0.7.
  -->
 
@@ -512,7 +337,13 @@ if (isset($data['logo_image'])) {
     <div id="tp_chameleon_list_google_fonts"></div>
     <a id="downloadLink" href="ajaxfile.php?cid=<?php echo $url_id; ?>" class="" style="display:none;">Download Receipts</a>
 
-
+    <script type='text/javascript'>
+        WebFont.load({
+            google: {
+                families: ['Poppins:300,500', 'Roboto:400']
+            }
+        });
+    </script>
 
     <script type='text/javascript'>
         /* <![CDATA[ */
@@ -595,7 +426,6 @@ if (isset($data['logo_image'])) {
         //<![CDATA[
         $(window).load(function() {
 
-            document.body.style.display = "block";
 
             function randomFromTo(from, to) {
                 return Math.floor(Math.random() * (to - from + 1) + from);
@@ -632,12 +462,6 @@ if (isset($data['logo_image'])) {
             iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
         }
 
-        $(document).ready(function() {
-            setTimeout(function() {
-                iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
-            }, 1000);
-        });
-
         $('#application_view').load(function() {
             var iframe = $('#application_view').contents();
             iframe.find(".ff-btn-submit").prop('disabled', true);
@@ -663,8 +487,8 @@ if (isset($data['logo_image'])) {
                 var duration = moment.duration(diff_date, 'milliseconds');
                 var totDays = duration.asDays();
                 //console.log(totDays);
-
-
+                
+                
                 // if (totDays > 1491 || totDays < 1035) {
                 //     $(this).val("");
                 //     alert("Kindly Note: 3 Years to be completed as on 31st May 2021");
@@ -754,14 +578,14 @@ if (isset($data['logo_image'])) {
             iframe.find("input[name=father_email]").change(function() {
                 var val = $(this).val();
                 if (val != '') {
-                    $(".applicantEmail").val(val);
+                   $(".applicantEmail").val(val);
                 }
             });
 
             iframe.find("input[name=student_name]").change(function() {
                 var val = $(this).val();
                 if (val != '') {
-                    $(".applicantName").val(val);
+                   $(".applicantName").val(val);
                 }
             });
 
@@ -769,15 +593,15 @@ if (isset($data['logo_image'])) {
                 var val = $(this).val();
                 //alert(val);
                 if (val != '') {
-                    $(".applicantName").val(val);
+                   $(".applicantName").val(val);
                 }
             });
 
             iframe.find("input[name=father_mobile]").change(function() {
-                var val = '+91' + $(this).val();
+                var val = '+91'+$(this).val();
                 //alert(val);
                 if (val != '') {
-                    $(".applicantPhone").val(val);
+                   $(".applicantPhone").val(val);
                 }
             });
 
