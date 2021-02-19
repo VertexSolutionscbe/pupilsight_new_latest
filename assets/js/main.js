@@ -1724,7 +1724,7 @@
         $.each($("input[name='stuid[]']:checked"), function () {
             var routeid = $(this).attr("routeid");
             if (routeid != "") {
-                alert("User is allready assigned for the route.");
+                alert("User is already assigned for the route.");
                 flag = false;
                 return;
             } else {
