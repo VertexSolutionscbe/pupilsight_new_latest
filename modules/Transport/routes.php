@@ -17,7 +17,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/routes.php') == 
     //Proceed!
     $page->breadcrumbs->add(__('Manage Route Structure'));
 
-
+    /*if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }*/
+    if (isset($_GET['return'])) {
+        if($_GET['return']=='errorroute'){
+            echo "<div class='alert alert-danger'>This Route already exists. Route name must be unique.</div>";
+        }else{
+            returnProcess($guid, $_GET['return'], null, null);
+        }
+    }
 
     $TransportGateway = $container->get(TransportGateway::class);
     $criteria = $TransportGateway->newQueryCriteria()
@@ -26,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/routes.php') == 
 
     $yearGroups = $TransportGateway->getRouteStructure($criteria);
 
-    if (isset($_GET['return'])) {
+    /*if (isset($_GET['return'])) {
 
         returnProcess(
             $guid,
@@ -34,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/routes.php') == 
             null,
             array('success0' => __('Request completed Sucessfully'),)
         );
-    }
+    }*/
 
     // if (isset($_GET['return'])) {
 

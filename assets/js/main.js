@@ -1761,6 +1761,58 @@
         }
     });
 
+
+    
+    $(document).on('click', '#copyStudentroute', function () {
+        var atype = $(this).attr('data-type');
+        var favorite = [];
+        var flag = true;
+        var count=0
+        $.each($("input[name='stuid[]']:checked"), function () {
+            var routeid = $(this).attr("routeid");
+            if (routeid == "") {
+                //alert("Sorry..For copying process you must select student who have Route Details.");
+                count++;
+                flag = false;
+                return;
+            } else {
+                favorite.push($(this).val());
+            }
+
+        });
+        if(count>0)
+        {
+            alert("Sorry..For copying process you must select students who have Route Details.");
+        }
+        if (!flag) {
+            return;
+        }
+
+        var stuid = favorite.join(",");
+        if (stuid) {
+            var val = stuid;
+            var type = 'addstudentidInSession';
+            if (val != '') {
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: val, type: type },
+                    async: true,
+                    success: function (response) {
+                        $("#copyroute").click();
+                    }
+                });
+            }
+        } else {
+            if (atype == 'student') {
+                alert('You Have to Select Students.');
+            } else {
+                alert('You Have to Select Staff.');
+            }
+
+        }
+    });
+
     $(document).on('click', '#btn_transport_assign_route', function () {
         var transFor = $("#transport_for").val();
         if (transFor == "") {

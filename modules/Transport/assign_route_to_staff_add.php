@@ -222,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_route_to_
     $row = $form->addRow()->setID('route_stops');
     $row->addFooter();
     //$row->addSubmit();
-    $row->addContent('<button type="button" id="btn_transport_assign_route" class=" btn btn-primary" style="position:absolute; right:0; margin-top: -12px;">Submit</button>');
+    $row->addContent('<button type="button" id="btn_transport_assign_route" class=" btn btn-primary" style="position:center; ">Submit</button>');
 
     echo $form->getOutput();
     echo '<script>$("#oneway_bl,#oneway_bl1,#oneway_bl2,#twoway_bl1,#twoway_bl2,#twoway_bl3").hide();</script>';

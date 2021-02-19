@@ -13,7 +13,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     // echo '<pre>';
     // print_r($_POST);
     // echo '</pre>';
-    // die();
+     //die();
     $route_name = $_POST['route_name'];
     $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
     $bus_id =  $_POST['bus_id'];
@@ -33,8 +33,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     // $twoway_price = $_POST['twoway_price'];
     $lat = '';
     $lng = '';
-//    print_r($stop_name); die();
+    //print_r($_POST);
 
+    foreach ($pickup_time as $pt){
+        if($pt<'24:00' AND $pt>'00:00'){
+
+        }else{
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit();
+        }
+    }
+    foreach ($drop_time as $dt){
+        if($dt<'24:00' AND $dt>'00:00'){
+
+        }else{
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit();
+        }
+    }
+    //print_r($stop_name); die();
+if($start_time =="00:00"){
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit();
+}
+if($end_time =="00:00"){
+    $URL .= '&return=error1';
+    header("Location: {$URL}");
+    exit();
+}
+//die();
     $cdt = date('Y-m-d H:i:s');
     
     if ($route_name == ''  or $start_point == '' or $pupilsightSchoolYearID == '' or $bus_id == '' or $type == '' or $start_time == '' or $end_time == ''  or $end_point == '' or $stop_name =='' or $stop_no =='' or $drop_time =='' or $pickup_time == '' ) {
@@ -54,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
         }
 
         if ($result->rowCount() > 0) {
-            $URL .= '&return=error3';
+            $URL .= '&return=errorroute';
             header("Location: {$URL}");
         } else {
             //Write to database

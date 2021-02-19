@@ -62,6 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_amount
         $table->addColumn('tax', __('Tax'));
         $table->addActionColumn()
         ->addParam('id')
+        ->addParam('backid',$id)
         ->format(function ($facilities, $actions) use ($guid) {
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Transport/transport_amount_edit.php');

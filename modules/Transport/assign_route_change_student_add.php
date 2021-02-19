@@ -187,11 +187,11 @@ foreach ($onwardroute_l as $dt) {
             $col->addLabel('', __(''));
             $col->addTextField('');  
 
-            // $row = $form->addRow()->setID('twoway_bl3');
+             $row = $form->addRow()->setID('twoway_bl3');
     
-            // $col = $row->addColumn();
-            // $col->addLabel('', __(''));
-            // $col->addCheckbox('same_as_onward')->description(__('Return route and stop same as onward.'));
+             $col = $row->addColumn();
+             $col->addLabel('', __(''));
+             $col->addCheckbox('same_as_onward')->setId('addReturnRoute')->description(__('Return route and stop same as onward.'));
            
             $row = $form->addRow()->setID('twoway_bl2'); 
            

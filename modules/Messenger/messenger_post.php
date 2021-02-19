@@ -663,27 +663,31 @@ else {
             }, array());
 
 			$row = $form->addRow()->addClass('individuals hiddenReveal');
-				$row->addLabel('individualList[]', __('Select Individuals'));
-				$row->addSelect('individualList[]')->setId('individualList')->fromArray($individuals)->selectMultiple()->setSize(6)->required();
-        }
+			$row->addLabel('individualList[]', __('Select Individuals'));
+			$row->addSelect('individualList[]')->setId('individualList')->fromArray($individuals)->selectMultiple()->setSize(6)->required();
+
+			echo "<script>\nvar js_array = " . json_encode($individuals) . ";</script>";
+		}
 
 		$row = $form->addRow();
-			$row->addFooter();
-			$row->addSubmit();
+		$row->addFooter();
+		$row->addSubmit();
 
 		echo $form->getOutput();
 	}
 }
 ?>
 <script type='text/javascript'>
-    $(document).ready(function () {
-        $('#individualList').select2();
-    });
+	$(document).ready(function() {
+		$('#individualList').select2({
+			minimumInputLength: 3
+		});
+	});
 </script>
 
 <script type="text/javascript">
-    $("#body").keyup(function(){
-        //$("#count").text("Characters left: " + (500 - $(this).val().length));
-        $("#count").text("Characters Count : " +$(this).val().length);
-    });
+	$("#body1").keyup(function() {
+		//$("#count").text("Characters left: " + (500 - $(this).val().length));
+		$("#count").text("Characters Count : " + $(this).val().length);
+	});
 </script>

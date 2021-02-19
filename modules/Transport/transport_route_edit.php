@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
                         if($i == '1'){
                         $col->addLabel('drop_time', __('Drop Time'))->addClass('dte');
                         }
-                        $col->addTextField('drop_time['.$cv['id'].']')->addClass('txtfield kountseat szewdt')->required()->setValue($cv['drop_time']); 
+                        $col->addTextField('drop_time['.$cv['id'].']')->addClass('txtfield kountseat')->required()->setValue($cv['drop_time']);
                         $col->addLabel('', __(''))->addClass('dte');   
                         
                         //$col = $row->addColumn()->setClass('newdes nobrdbtm');

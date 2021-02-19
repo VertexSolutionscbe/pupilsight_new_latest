@@ -3,6 +3,13 @@
 Pupilsight, Flexible & Open School System
 */
 
+echo '<style>.cus, select {
+    margin-bottom: 5px !important;
+    height: 27px !important;
+    width: 100%;
+    font-size: 10px;
+}</style>';
+
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 
@@ -100,10 +107,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_invoic
     foreach ($students as $k => $cl) {
         if (empty($cl['fsid'])) {
             $content = '<span style="color:red;">(Not Assign)</span>';
-            $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->setDisabled('1')->description(__($content . ' ' . $cl['student_name']));
+            $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->setDisabled('1')->description(__($content . ' ' . $cl['student_name']))->setClass('cus');
         } else {
             $content = '';
-            $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->description(__($content . ' ' . $cl['student_name']));
+            $col->addCheckbox('pupilsightPersonID[student][' . $cl['pupilsightPersonID'] . ']')->description(__($content . ' ' . $cl['student_name']))->setClass('cus');
         }
     }
 

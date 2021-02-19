@@ -28,7 +28,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
     echo '<h2>';
     echo __('Add Bus Details');
     echo '</h2>';
-
+    //echo "<div style='height:50px;'><div class='float-right mb-2'>";
+    //echo "&nbsp;<a href='index.php?q=/modules/Transport/bus_manage_add_upload.php' class='btn btn-primary'><i class='mdi mdi-cloud-upload-outline mdi-24px mdi-24px'> Import </i></a></div><div class='float-none'></div></div>";
     
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
@@ -73,15 +74,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
             $col = $row->addColumn()->setClass('newdes');
                
             $col->addLabel('register_date', __('Reg. Date'))->addClass('dte');
-            $col->addDate('register_date')->required();
+            $col->addDate('register_date');
     
             $col = $row->addColumn()->setClass('newdes');
                 $col->addLabel('insurance_exp', __('Insurance Expiry'))->addClass('dte');
-                $col->addDate('insurance_exp')->required(); 
+                $col->addDate('insurance_exp');
     
            $col = $row->addColumn()->setClass('newdes');
            $col->addLabel('fc_expiry', __('FC Expiry Date'))->addClass('dte');
-           $col->addDate('fc_expiry')->required(); 
+           $col->addDate('fc_expiry');
                
                 
                 
@@ -103,11 +104,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
                     $col->addLabel('coordinator_mobile', __('Transport Coordinator Mobile'));
                     $col->addTextField('coordinator_mobile')->addClass('numfield')->maxLength(12)->required();
             
-                 
-                  
+
+
                         $row = $form->addRow();
                         $col = $row->addColumn()->setClass('newdes');
-                            $col->addLabel('file', __('Image File'));
+                            $col->addLabel('file', __('Upload Bus Image'));
                             $col->addFileUpload('file')->addClass(' szewdt_file')
                             ->accepts('.jpg,.jpeg,.gif,.png')
                             ->setMaxUpload(false);              
