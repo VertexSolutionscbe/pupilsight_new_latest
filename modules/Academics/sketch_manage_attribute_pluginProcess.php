@@ -20,20 +20,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     // echo '</pre>';
     // die();
     $erta_id = $_POST['erta_id'];
+    $test_master_id = $_POST['test_master_id'];
     $plugin_id = $_POST['plugin_id'];
     $plugin_val = $_POST['plugin_val'];
 
     if(!empty($plugin_id) && !empty($erta_id)){
-        $data = array('erta_id' => $erta_id);
-        $sqldel = 'DELETE FROM examinationReportTemplatePluginAttributeMapping WHERE erta_id=:erta_id';
-        $resultdel = $connection2->prepare($sqldel);
-        $resultdel->execute($data);
-
+        if(!empty($test_master_id)){
+            $data = array('erta_id' => $erta_id,'test_master_id' => $test_master_id);
+            $sqldel = 'DELETE FROM examinationReportTemplatePluginAttributeMapping WHERE erta_id=:erta_id AND test_master_id=:test_master_id';
+            $resultdel = $connection2->prepare($sqldel);
+            $resultdel->execute($data);
+        } else {
+            $data = array('erta_id' => $erta_id);
+            $sqldel = 'DELETE FROM examinationReportTemplatePluginAttributeMapping WHERE erta_id=:erta_id';
+            $resultdel = $connection2->prepare($sqldel);
+            $resultdel->execute($data);   
+        }
+        
         foreach($plugin_id as $k => $pid){
             $pval = $plugin_val[$pid];
             
-            $data1 = array('plugin_id' => $pid, 'erta_id' => $erta_id, 'plugin_val' => $pval);
-            $sql1 = "INSERT INTO examinationReportTemplatePluginAttributeMapping SET plugin_id=:plugin_id, erta_id=:erta_id, plugin_val=:plugin_val";
+            $data1 = array('plugin_id' => $pid, 'erta_id' => $erta_id ,'test_master_id' => $test_master_id,  'plugin_val' => $pval);
+            $sql1 = "INSERT INTO examinationReportTemplatePluginAttributeMapping SET plugin_id=:plugin_id, erta_id=:erta_id, test_master_id=:test_master_id, plugin_val=:plugin_val";
             $result = $connection2->prepare($sql1);
             $result->execute($data1);
         }

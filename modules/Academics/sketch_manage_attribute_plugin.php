@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                             </select>
                                     <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" readonly>
                         </td>
-                        <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  </td>
+                        <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $id;?>&tid=0"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  </td>
                     </tr>
                     
                 <?php       
@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                 </select>
                                         <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" readonly>
                             </td>
-                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  </td>
+                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $id;?>&tid=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>  </td>
                         </tr>
                         
                     <?php       
@@ -306,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         $resultg = $connection2->query($sqlg);
         $gradeData = $resultg->fetchAll();
 
-        $sqlsup = "SELECT * FROM examinationReportTemplateAttributes WHERE sketch_id = ".$chkdata['sketch_id']." AND attr_ids != '' ";
+        $sqlsup = "SELECT * FROM examinationReportTemplateAttributes WHERE sketch_id = ".$chkdata['sketch_id']." AND attribute_category != 'Entity' ORDER BY id ASC ";
        //die();
         $resultsup = $connection2->query($sqlsup);
         $suppattrdata = $resultsup->fetchAll();
@@ -334,7 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     <?php if(!empty($attrdata)) { 
                         foreach($attrdata as $ad){
 
-                            $sqla = "SELECT GROUP_CONCAT(b.name) AS pluginname FROM examinationReportTemplatePluginAttributeMapping AS a LEFT JOIN  examinationReportTemplatePlugin AS b ON a.plugin_id = b.id WHERE a.erta_id = ".$ad['id']." ";
+                            $sqla = "SELECT GROUP_CONCAT(b.name) AS pluginname FROM examinationReportTemplatePluginAttributeMapping AS a LEFT JOIN  examinationReportTemplatePlugin AS b ON a.plugin_id = b.id WHERE a.erta_id = ".$id." AND  a.test_master_id = ".$ad['id']." ";
                             $resulta = $connection2->query($sqla);
                             $attrdata = $resulta->fetch();
                         
@@ -358,7 +358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                 </select>
                                         <input id="formulaValue-<?php echo $ad['id'];?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id'];?>]" value="<?php echo $formulamapdata['formula_val'];?>" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" <?php if(empty($formulamapdata['formula_val'])) { ?>readonly <?php } ?>>
                             </td>
-                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>   <?php echo $attrdata['pluginname'];?></td>
+                            <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $id;?>&tid=<?php echo $ad['id'];?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a>   <?php echo $attrdata['pluginname'];?></td>
                         </tr>
                         
                     <?php       
