@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
 
                         $row = $form->addRow();
                         $col = $row->addColumn()->setClass('newdes');
-                            $col->addLabel('file', __('Image File'));
+                            $col->addLabel('file', __('Upload Bus Image'));
                             $col->addFileUpload('file')->addClass(' szewdt_file')
                             ->accepts('.jpg,.jpeg,.gif,.png')
                             ->setMaxUpload(false);              

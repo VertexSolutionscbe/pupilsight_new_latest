@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
     }    
     //  echo "<a  id='download_template_subject' data-type='test'  class='btn btn-primary'>Download template(Subject)</a>&nbsp;&nbsp;";  
      echo "<a  id='download_template_test' data-type='test'  class='btn btn-primary'>Download template(Test)</a>&nbsp;&nbsp;";   
-     echo "<a  id='upload_template_test' data-type='test'  class='btn btn-primary'>Upload/Import Marks</a>&nbsp;&nbsp;";   
+     echo "<a  id='upload_template_test' data-type='test'  class='btn btn-primary thickbox'  href='fullscreen.php?q=/modules/Transport/assign_route_student_add.php&width=800'>Upload/Import Marks</a>&nbsp;&nbsp;";   
    //  echo "<a style='display:none' id='clickmodify_test' href='fullscreen.php?q=/modules/Academics/modify_test_class_section_wise.php&width=800&class_name=$pupilsightYearGroupID&section_name=$pupilsightRollGroupID'  class='thickbox '></a>";   
   //   echo "<a  id='modify_test_btn' data-type='test' class='btn btn-primary'>Modify Test</a>&nbsp;&nbsp;";       
      echo  "<div style='height:10px'></div>";
