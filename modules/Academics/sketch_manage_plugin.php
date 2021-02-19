@@ -29,6 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_pl
 
     
     $attrId = $_GET['id'];
+    $tid = '';
+    if(!empty($_GET['tid'])){
+        $tid = $_GET['tid'];
+    }
 
     $sql = "SELECT * FROM examinationReportTemplatePlugin ORDER BY pos ASC";
     $result = $connection2->query($sql);
@@ -46,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_pl
     <div id="cloning" class="row">
         <form id="sketchPLuginForm">
             <input type="hidden" name="erta_id" value="<?php echo $attrId;?>">
+            <input type="hidden" name="test_master_id" value="<?php echo $tid;?>">
             <table class="table table-hover" style="margin: 0 70px 0px 15px;">
                 <thead>
                     <tr>
@@ -57,16 +62,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_pl
                 <tbody>
                     <?php if(!empty($plugindata)) { 
                         foreach($plugindata as $pd){
-                            $sqls = "SELECT * FROM examinationReportTemplatePluginAttributeMapping WHERE plugin_id = ".$pd['id']." AND erta_id = ".$attrId." ";
-                            $results = $connection2->query($sqls);
-                            $plumappdata = $results->fetch();
-                            if(!empty($plumappdata)){
-                                $pval = $plumappdata['plugin_val'];
-                                $checked = 'checked';
+                            if(!empty($tid)){
+                                $sqls = "SELECT * FROM examinationReportTemplatePluginAttributeMapping WHERE plugin_id = ".$pd['id']." AND erta_id = ".$attrId." AND test_master_id = ".$tid." ";
                             } else {
-                                $pval = '';
-                                $checked = '';
+                                $sqls = "SELECT * FROM examinationReportTemplatePluginAttributeMapping WHERE plugin_id = ".$pd['id']." AND erta_id = ".$attrId." ";
                             }
+                                $results = $connection2->query($sqls);
+                                $plumappdata = $results->fetch();
+                                if(!empty($plumappdata)){
+                                    $pval = $plumappdata['plugin_val'];
+                                    $checked = 'checked';
+                                } else {
+                                    $pval = '';
+                                    $checked = '';
+                                }
                     ?>
                         <tr>
                             <td><input type="checkbox" class="pluginId" name="plugin_id[]" value="<?php echo $pd['id'];?>"  <?php echo $checked; ?>></td>
