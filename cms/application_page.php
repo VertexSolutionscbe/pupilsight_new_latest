@@ -260,9 +260,17 @@ if (isset($data['logo_image'])) {
     <div id="homePanel" class="page">
         <header class="navbar navbar-expand-md navbar-light navDesktop">
             <div class="container-fluid">
-                <a href="<?= $baseurl; ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
-                    <img src="<?= $logo; ?>" alt="Pupilpod" class="navbar-brand-image">
-                </a>
+                <div style="width:100%;">
+                    <div class="float-left">
+                        <a href="<?= $baseurl; ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
+                            <img src="<?= $logo; ?>" alt="Pupilpod" class="navbar-brand-image">
+                        </a>
+                    </div>
+                    <div class="float-right">
+                        <a href="<?= $baseurl; ?>" class='btn btn-secondary'>Back</a>
+                    </div>
+                    <div class="float-none"></div>
+                </div>
             </div>
         </header>
 
@@ -338,7 +346,7 @@ if (isset($data['logo_image'])) {
                         <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
                             <div class="wpb_wrapper">
 
-                                <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="100vh" width="100%" border='0' style='border:0' src="<?php echo $campaign_byid['page_link']; ?>">
+                                <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="1000px" width="100%" border='0' style='border:0' src="<?php echo $campaign_byid['page_link']; ?>">
                                 </iframe>
 
 

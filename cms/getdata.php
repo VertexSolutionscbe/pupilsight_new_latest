@@ -8,23 +8,6 @@ $camdata = $adminlib->getApplist($data);
 
 if (!empty($camdata)) {
 ?>
-	<style>
-		.btnPayNew {
-			display: inline-block;
-			font-weight: bold;
-			font-size: 15px !important;
-			width: 50px !important;
-			line-height: 1.4285714;
-			text-align: center;
-			vertical-align: middle;
-			cursor: pointer;
-			/* padding: 0.4375rem 1rem; */
-			border-radius: 3px;
-			color: #ffffff !important;
-			background-color: #206bc4;
-			border-color: #206bc4;
-		}
-	</style>
 	<?php
 	$cnt = 1;
 	foreach ($camdata as $row) {
@@ -117,7 +100,7 @@ if (!empty($camdata)) {
 									<input type="hidden" name="campaignid" value="<?php echo $cid; ?>">
 									<input type="hidden" name="sid" value="<?php echo $sid; ?>">
 									<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
-									<button type="submit" class="btnPayNew" id="payAdmissionFee">Pay</button>
+									<button type="submit" class="btn btn-primary" id="payAdmissionFee">Pay</button>
 								</form>
 							<?php } elseif ($gateway == 'RAZORPAY') {
 								$sqlo = "SELECT * FROM pupilsight_cms  WHERE title != '' ";
@@ -140,7 +123,7 @@ if (!empty($camdata)) {
 
 									<input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
 									<input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
-									<button type="submit" class="btnPayNew" id="payAdmissionFee">Pay</button>
+									<button type="submit" class="btn btn-primary" id="payAdmissionFee">Pay</button>
 								</form>
 
 							<?php } elseif ($gateway == 'PAYU') { ?>
@@ -156,7 +139,7 @@ if (!empty($camdata)) {
 									<input type="hidden" name="campaignid" value="<?php echo $cid; ?>">
 									<input type="hidden" name="sid" value="<?php echo $sid; ?>">
 									<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
-									<button type="submit" class="btnPayNew" id="payAdmissionFee">Pay</button>
+									<button type="submit" class="btn btn-primary" id="payAdmissionFee">Pay</button>
 								</form>
 						<?php }
 						} ?>

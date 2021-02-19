@@ -172,7 +172,7 @@ if (isset($data['logo_image'])) {
         .gmap_canvas,
         .mapouter {
             width: 100% !important;
-            height: 100% !important;
+            height: 482px !important;
         }
 
         .hero {
@@ -193,6 +193,17 @@ if (isset($data['logo_image'])) {
         .chkemptycolor {
             border: 1px red solid;
         }
+
+        .font20 {
+            font-size: 20px !important;
+        }
+
+        .wordwrap {
+            width: 90%;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 
@@ -208,7 +219,7 @@ if (isset($data['logo_image'])) {
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a href="<?= $baseurl; ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
-                    <img src="<?= $logo; ?>" alt="Pupilpod" class="navbar-brand-image">
+                    <img src="<?= $logo; ?>" class="navbar-brand-image" title="<?= $data["logo_title"]; ?>">
                 </a>
 
                 <div class="navbar-collapse collapse" id="navbar-menu" style='flex: inherit !important;'>
@@ -216,50 +227,57 @@ if (isset($data['logo_image'])) {
                         <ul class="navbar-nav">
                             <?php
                             $menu = array();
+
+                            $menu[0]["title"] = "Home";
+                            $menu[0]["link"] = "<?=$baseurl;?>";
+                            $menu[0]["icon"] = "mdi-home-outline";
+                            $menu[0]["iconActive"] = "mdi-home";
+
+
                             if ($data["aboutus_status"] == 1) {
-                                $menu[0]["title"] = "About Us";
-                                $menu[0]["link"] = "#about";
-                                $menu[0]["icon"] = "mdi-information-outline";
-                                $menu[0]["iconActive"] = "mdi-information";
+                                $menu[1]["title"] = "About Us";
+                                $menu[1]["link"] = "#about";
+                                $menu[1]["icon"] = "mdi-information-outline";
+                                $menu[1]["iconActive"] = "mdi-information";
                             }
 
                             if ($data["course_status"] == 1) {
-                                $menu[1]["title"] = "Courses";
-                                $menu[1]["link"] = "#courses";
-                                $menu[1]["icon"] = "mdi-certificate-outline";
-                                $menu[1]["iconActive"] = "mdi-certificate";
+                                $menu[2]["title"] = "Courses";
+                                $menu[2]["link"] = "#courses";
+                                $menu[2]["icon"] = "mdi-certificate-outline";
+                                $menu[2]["iconActive"] = "mdi-certificate";
                             }
 
                             if ($data["announcement_status"] == 1) {
-                                $menu[2]["title"] = "Announcements";
-                                $menu[2]["link"] = "#announcements";
-                                $menu[2]["icon"] = "mdi-bullhorn-outline";
-                                $menu[2]["iconActive"] = "mdi-bullhorn";
+                                $menu[3]["title"] = "Announcements";
+                                $menu[3]["link"] = "#announcements";
+                                $menu[3]["icon"] = "mdi-bullhorn-outline";
+                                $menu[3]["iconActive"] = "mdi-bullhorn";
                             }
 
                             if ($data["events_status"] == 1) {
-                                $menu[3]["title"] = "Events";
-                                $menu[3]["link"] = "#events";
-                                $menu[3]["icon"] = "mdi-calendar-check-outline";
-                                $menu[3]["iconActive"] = "mdi-calendar-check";
+                                $menu[4]["title"] = "Events";
+                                $menu[4]["link"] = "#events";
+                                $menu[4]["icon"] = "mdi-calendar-check-outline";
+                                $menu[4]["iconActive"] = "mdi-calendar-check";
                             }
 
                             if ($data["contact_status"] == 1) {
-                                $menu[4]["title"] = "Contact us";
-                                $menu[4]["link"] = "#contact";
-                                $menu[4]["icon"] = "mdi-phone-in-talk-outline";
-                                $menu[4]["iconActive"] = "mdi-phone-in-talk";
+                                $menu[5]["title"] = "Contact us";
+                                $menu[5]["link"] = "#contact";
+                                $menu[5]["icon"] = "mdi-phone-in-talk-outline";
+                                $menu[5]["iconActive"] = "mdi-phone-in-talk";
                             }
 
-                            $menu[5]["title"] = "Admission";
-                            $menu[5]["link"] = "#";
-                            $menu[5]["icon"] = "mdi-clipboard-text-outline";
-                            $menu[5]["iconActive"] = "mdi-clipboard-text";
+                            $menu[6]["title"] = "Admission";
+                            $menu[6]["link"] = "#";
+                            $menu[6]["icon"] = "mdi-clipboard-text-outline";
+                            $menu[6]["iconActive"] = "mdi-clipboard-text";
 
-                            $menu[6]["title"] = "Login";
-                            $menu[6]["link"] = "javascript:loginPanel();";
-                            $menu[6]["icon"] = "mdi-login-variant";
-                            $menu[6]["iconActive"] = "mdi-login-variant";
+                            $menu[7]["title"] = "Login";
+                            $menu[7]["link"] = "javascript:loginPanel();";
+                            $menu[7]["icon"] = "mdi-login-variant";
+                            $menu[7]["iconActive"] = "mdi-login-variant";
 
                             //$len = count($menu);
                             //$i = 0;
@@ -269,7 +287,7 @@ if (isset($data['logo_image'])) {
                                 if ($m["title"] != "Admission") {
                             ?>
                                     <li class="nav-item">
-                                        <a class="nav-link chkCounter" href="<?= $m["link"]; ?>">
+                                        <a class="nav-link chkCounter" href="<?= $m["link"]; ?>" onclick="homePanel();">
                                             <span class="nav-link-icon d-md-none d-lg-inline-block mdi <?= $m["icon"] ?>"></span>
                                             <span class="nav-link-title"><?= $m["title"]; ?></span>
                                         </a>
@@ -381,9 +399,9 @@ if (isset($data['logo_image'])) {
                                     }
 
                                     if (!empty($section['6']['0']['description'])) {
-                                        echo "<p>" . $section['6']['0']['description'] . "</p>";
+                                        echo "<p class='wordwrap'>" . $section['6']['0']['description'] . "</p>";
                                     } else {
-                                        echo '<p>High is a nationally recognized K-12 independent school situatedin the hills of Oakland, California. Our mission is to inspire a maplifelonglove of learning with a focus on scholarship. For 23 years of existence,Ed has more.</p>';
+                                        echo '<p class="wordwrap">High is a nationally recognized K-12 independent school situatedin the hills of Oakland, California. Our mission is to inspire a maplifelonglove of learning with a focus on scholarship. For 23 years of existence,Ed has more.</p>';
                                     }
 
                                     ?>
@@ -414,8 +432,8 @@ if (isset($data['logo_image'])) {
                                     <div class="card">
                                         <img src="<?= $cimg; ?>" class="card-img-top" style='height: 200px;background-size: contain;'>
                                         <div class="card-body">
-                                            <h3 class="card-title"><?= ucwords($sec['title']); ?></h3>
-                                            <p><?= $sec['short_description']; ?></p>
+                                            <h3 class="card-title wordwrap"><?= ucwords($sec['title']); ?></h3>
+                                            <p class="wordwrap"><?= $sec['short_description']; ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -449,8 +467,8 @@ if (isset($data['logo_image'])) {
                                     <div class="col-sm">
                                         <div class="card">
                                             <img src="<?= $aimg; ?>" class="card-img-top" style='height: 200px;background-size: cover;'>
-                                            <div class="card-body">
-                                                <p><?= $crs['title']; ?></p>
+                                            <div class="card-body wordwrap" title='<?= $crs['title']; ?>'>
+                                                <?= $crs['title']; ?>
                                             </div>
                                         </div>
                                     </div>
@@ -581,10 +599,10 @@ if (isset($data['logo_image'])) {
                     </div>
 
                     <div class="col-md-4 col-sm-12">
-                        <div style='font-size:20px;'>
+                        <div class='font20'>
                             <?php if ($data['phone'] != '') { ?>
                                 <div>
-                                    <label class="form-label">Contact Number</label>
+                                    <label class="form-label font20">Contact Number</label>
                                     <?php echo $data['phone']; ?>
                                 </div>
                                 <br>
@@ -593,7 +611,7 @@ if (isset($data['logo_image'])) {
 
                             <?php if ($data['primary_email'] != '' || $data['secondary_email'] != '') { ?>
 
-                                <label class="form-label">Email</label>
+                                <label class="form-label font20">Email</label>
                                 <diV><?php echo $data['primary_email']; ?></div>
                                 <div><?php echo $data['secondary_email']; ?></div>
 
@@ -602,7 +620,7 @@ if (isset($data['logo_image'])) {
 
                             <?php if ($data['fax'] != '') { ?>
                                 <div>
-                                    <label class="form-label">Fax</label>
+                                    <label class="form-label font20">Fax</label>
                                     <?php echo $data['fax']; ?>
                                 </div>
 
@@ -612,7 +630,7 @@ if (isset($data['logo_image'])) {
                             <?php if ($data['address'] != '') { ?>
 
                                 <div class="Address">
-                                    <label class="form-label">Address</label>
+                                    <label class="form-label font20">Address</label>
                                 </div>
                                 <div><?php echo $data['address']; ?></div>
                                 <br>
@@ -628,6 +646,10 @@ if (isset($data['logo_image'])) {
                                     <div class="mb-2">
                                         <label class="form-label">Name *</label>
                                         <input class="form-control chkempty" id="con_name" name="name" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Subject *</label>
+                                        <input class="form-control chkempty" id="con_subject" name="subject" required>
                                     </div>
                                     <div class="mb-2">
                                         <label class="form-label">Email *</label>
@@ -766,7 +788,7 @@ if (isset($data['logo_image'])) {
 
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="app_lst_tbl_body">
                         </tbody>
                     </table>
                 </div>
@@ -841,6 +863,7 @@ if (isset($data['logo_image'])) {
     <footer id="footPanel" class="footer footer-transparent mt-4">
         <div class="container-fluid">
             <div class="row">
+                <!--
                 <div class='col-sm'>
                     <a href="#" class="link-secondary mr-2">Home</a>
                     <a href="#" class="link-secondary mr-2">About Us</a>
@@ -850,6 +873,7 @@ if (isset($data['logo_image'])) {
                     <a href="#" class="link-secondary mr-2">Contact Us</a>
                     <a href="#" class="link-secondary mr-2">Admission</a>
                 </div>
+                -->
                 <div class="col-auto align-self-end">
                     <a href="#" class="link-secondary">Powered by ParentOf</a>
                 </div>
@@ -882,9 +906,16 @@ if (isset($data['logo_image'])) {
         document.body.style.display = "block";
         $(document).ready(function() {
             $("#loginPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+            try {
+                $('.gmap_canvas a').remove();
+            } catch (ex) {
+                console.log(ex);
+            }
         });
 
         function loginPanel() {
+            $("#username").val("");
+            $("#password").val("");
             $("#homePanel, #footPanel, #applicationList, #applicationStatus").hide(400);
             $("#loginPanel").show(400);
         }
@@ -895,6 +926,8 @@ if (isset($data['logo_image'])) {
         }
 
         function applicationStatus() {
+            $("#txtPhone").val("");
+            $('#app_lst_tbl_body').html("");
             $("#contentPanel, #applicationList").hide(400);
             $("#applicationStatus").show(400);
         }
@@ -930,11 +963,12 @@ if (isset($data['logo_image'])) {
                     },
                     success: function(response) {
                         //$("#app_lst_tbl").removeClass("hide");
+                        console.log(response);
                         if (response != '') {
                             //$(".chkdata").hide();
-                            $('#app_lst_tbl tbody').html(response);
+                            $('#app_lst_tbl_body').html(response);
                         } else {
-                            $('#app_lst_tbl tbody').html("<tr><td colspan='4' style='color:red;font-size:20px;'>No Records Found !</td></tr>");
+                            $('#app_lst_tapp_lst_tbl_body').html("<tr><td colspan='4' style='color:red;font-size:20px;'>No Records Found !</td></tr>");
                         }
                     }
                 });
