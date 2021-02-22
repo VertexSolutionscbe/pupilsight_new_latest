@@ -214,7 +214,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                         if ($rowCompany['companyCCFamily'] == 'Y') {
                             try {
                                 $dataParents = array('pupilsightFinanceInvoiceeID' => $pupilsightFinanceInvoiceeID);
-                                $sqlParents = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM pupilsightFinanceInvoicee JOIN pupilsightPerson AS student ON (pupilsightFinanceInvoicee.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightFamily ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) JOIN pupilsightFamilyAdult ON (pupilsightFamily.pupilsightFamilyID=pupilsightFamilyAdult.pupilsightFamilyID) JOIN pupilsightPerson AS parent ON (pupilsightFamilyAdult.pupilsightPersonID=parent.pupilsightPersonID) WHERE pupilsightFinanceInvoiceeID=:pupilsightFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
+                                $sqlParents = "SELECT parent.pupilsightPersonID, parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM pupilsightFinanceInvoicee JOIN pupilsightPerson AS student ON (pupilsightFinanceInvoicee.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightFamily ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) JOIN pupilsightFamilyAdult ON (pupilsightFamily.pupilsightFamilyID=pupilsightFamilyAdult.pupilsightFamilyID) JOIN pupilsightPerson AS parent ON (pupilsightFamilyAdult.pupilsightPersonID=parent.pupilsightPersonID) WHERE pupilsightFinanceInvoiceeID=:pupilsightFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
                                 $resultParents = $connection2->prepare($sqlParents);
                                 $resultParents->execute($dataParents);
                             } catch (PDOException $e) {
@@ -226,6 +226,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                                 while ($rowParents = $resultParents->fetch()) {
                                     if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
                                         $emails[$emailsCount] = $rowParents['email'];
+                                        $smspupilsightPersonID = $rowParents['pupilsightPersonID'];
                                         ++$emailsCount;
                                     }
                                 }
@@ -238,7 +239,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
             } else {
                 try {
                     $dataParents = array('pupilsightFinanceInvoiceeID' => $pupilsightFinanceInvoiceeID);
-                    $sqlParents = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM pupilsightFinanceInvoicee JOIN pupilsightPerson AS student ON (pupilsightFinanceInvoicee.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightFamily ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) JOIN pupilsightFamilyAdult ON (pupilsightFamily.pupilsightFamilyID=pupilsightFamilyAdult.pupilsightFamilyID) JOIN pupilsightPerson AS parent ON (pupilsightFamilyAdult.pupilsightPersonID=parent.pupilsightPersonID) WHERE pupilsightFinanceInvoiceeID=:pupilsightFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
+                    $sqlParents = "SELECT parent.pupilsightPersonID, parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM pupilsightFinanceInvoicee JOIN pupilsightPerson AS student ON (pupilsightFinanceInvoicee.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightFamily ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) JOIN pupilsightFamilyAdult ON (pupilsightFamily.pupilsightFamilyID=pupilsightFamilyAdult.pupilsightFamilyID) JOIN pupilsightPerson AS parent ON (pupilsightFamilyAdult.pupilsightPersonID=parent.pupilsightPersonID) WHERE pupilsightFinanceInvoiceeID=:pupilsightFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
                     $resultParents = $connection2->prepare($sqlParents);
                     $resultParents->execute($dataParents);
                 } catch (PDOException $e) {
@@ -250,6 +251,7 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                     while ($rowParents = $resultParents->fetch()) {
                         if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
                             $emails[$emailsCount] = $rowParents['email'];
+                            $smspupilsightPersonID = $rowParents['pupilsightPersonID'];
                             ++$emailsCount;
                         }
                     }
@@ -285,11 +287,16 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                 $mail->AltBody = $bodyPlain;
 
                 $mail->Send();
-                foreach ($emails as $individualemail) {
+                $subject = $mail->Subject;
+
+                Updatemessesnger($connection2,$_SESSION[$guid]["pupilsightPersonID"],$smspupilsightPersonID,$body,$subject);
+
+                /*foreach ($emails as $individualemail) {
                     $data=array('email'=>$individualemail);
                     $sql="SELECT pupilsightPersonID FROM pupilsightPerson WHERE email=:email";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
+                    if ($result->rowCount() > 0) {
                     while ($rowppid = $result->fetch()) {
                         $ppid=$rowppid['pupilsightPersonID'];
 
@@ -317,7 +324,8 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     }
-                }
+                    }
+                }*/
             }
 
             $URL .= "&return=success1&pupilsightFinanceInvoiceID=$pupilsightFinanceInvoiceID&key=$key";
@@ -354,4 +362,35 @@ if ($paid != 'Y') { //IF PAID IS NOT Y, LET'S REDIRECT TO MAKE PAYMENT
             header("Location: {$URL}");
         }
     }
+}
+function Updatemessesnger($connection2,$sender,$smspupilsightPersonID, $body="", $subject=""){
+    //   echo "hi"; die();
+    $ppid = $smspupilsightPersonID;
+
+
+    $msgby = $sender;
+    $msgto = $ppid;
+    //$emailreportp=$sms->updateMessengerTableforEmail($msgto,$subject,$body,$msgby);
+
+    $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+    $resultAI = $connection2->query($sqlAI);
+    $rowAI = $resultAI->fetch();
+    $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+    $email = "Y";
+    $messageWall = "N";
+    $sms = "N";
+    $date1 = date('Y-m-d');
+
+    $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body, "pupilsightPersonID" => $msgby, "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+    $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+//print_r($data);
+//print_r($sql);
+    $data = array("AI" => $AI, "t" => $msgto);
+    $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+
 }
