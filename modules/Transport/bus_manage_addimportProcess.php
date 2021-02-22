@@ -7,17 +7,16 @@ use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Services\Format;
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/bus_manage.php';
-if(isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_addimportProcess.php') == false) {
-//Acess denied
+$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . '/bus_manage.php';
+if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_addimportProcess.php') == false) {
+    //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
     echo '</div>';
-}else {
+} else {
     if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel') and ($_FILES['file']['type'] != 'application/csv')) {
         $URL .= "&return=error2";
         header("Location: {$URL}");
-
     } else {
         $proceed = true;
 
@@ -34,7 +33,7 @@ if(isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_addimp
                 }
             } catch (PDOException $e) {
                 echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
-                $importFail = true;
+                //$importFail = true;
                 $proceed = false;
             }
         }
