@@ -26,8 +26,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
 
     
     echo "<div style='height:50px;'><div class='float-left mb-2'>";
-    //echo "<a href='index.php?q=/modules/Transport/bus_bulk_template.php' class='btn btn-primary'>Download Template</a>&nbsp;&nbsp;";  
-    echo "<a href='#' class='btn btn-primary'>Download Template</a>&nbsp;&nbsp;";  
+    echo "<a href='index.php?q=/modules/Transport/bus_bulk_template.php' class='btn btn-primary'>Download Template</a>&nbsp;&nbsp;";  
+    //echo "<a href='bus_bulk_template.php' class='btn btn-primary'>Download Template</a>&nbsp;&nbsp;";  
     echo "</div></div>";
     
     //echo "<div style='height:50px;'><div class='float-right mb-2'>";
