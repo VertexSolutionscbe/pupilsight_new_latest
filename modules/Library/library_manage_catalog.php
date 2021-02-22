@@ -79,24 +79,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         }
     }
 
-    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/library_manage_catalog.php");
+    $form->addHiddenValue('q', "/modules/" . $_SESSION[$guid]['module'] . "/library_manage_catalog.php");
 
     $row = $form->addRow();
-        $row->addLabel('name', __('ID/Name/Producer'));
-        $row->addTextField('name')->setValue($name);
+    $row->addLabel('name', __('ID/Name/Producer'));
+    $row->addTextField('name')->setValue($name);
 
     $sql = "SELECT pupilsightLibraryTypeID AS value, name FROM pupilsightLibraryType WHERE active='Y' ORDER BY name";
     $row = $form->addRow();
-        $row->addLabel('pupilsightLibraryTypeID', __('Type'));
-        $row->addSelect('pupilsightLibraryTypeID')->fromQuery($pdo, $sql, array())->selected($pupilsightLibraryTypeID)->placeholder();
+    $row->addLabel('pupilsightLibraryTypeID', __('Type'));
+    $row->addSelect('pupilsightLibraryTypeID')->fromQuery($pdo, $sql, array())->selected($pupilsightLibraryTypeID)->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('pupilsightSpaceID', __('Location'));
-        $row->addSelectSpace('pupilsightSpaceID')->selected($pupilsightSpaceID)->placeholder();
+    $row->addLabel('pupilsightSpaceID', __('Location'));
+    $row->addSelectSpace('pupilsightSpaceID')->selected($pupilsightSpaceID)->placeholder();
 
     $statuses = array(
         'Available' => __('Available'),
@@ -108,35 +108,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         'Reserved' => __('Reserved')
     );
     $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
-        $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
+    $row->addLabel('status', __('Status'));
+    $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
 
-    
+
     $sql = 'SELECT  P.pupilsightPersonID, P.officialName FROM pupilsightLibraryItem AS L
     LEFT JOIN pupilsightPerson AS P  ON L.pupilsightPersonIDOwnership = P.pupilsightPersonID
     WHERE P.officialName != "" ';
+
     $result = $connection2->query($sql);
     $staffs = $result->fetchAll();
     $owner1 = array('' => 'Please Select ');
-    
+    $owner2 = array();
     foreach ($staffs as $dt) {
         $owner2[$dt['pupilsightPersonID']] = $dt['officialName'];
     }
-    $owner = $owner1 + $owner2;
-    
+    if ($owner2) {
+        $owner = $owner1 + $owner2;
+    }
+
+
 
     $row = $form->addRow();
-        $row->addLabel('pupilsightPersonIDOwnership', __('Owner/User'));
-        //$row->addSelectUsers('pupilsightPersonIDOwnership')->selected($pupilsightPersonIDOwnership)->placeholder();
-        $row->addSelectUsers('pupilsightPersonIDOwnership')->fromArray($owner)->selected($pupilsightPersonIDOwnership)->placeholder();
+    $row->addLabel('pupilsightPersonIDOwnership', __('Owner/User'));
+    //$row->addSelectUsers('pupilsightPersonIDOwnership')->selected($pupilsightPersonIDOwnership)->placeholder();
+    $row->addSelectUsers('pupilsightPersonIDOwnership')->fromArray($owner)->selected($pupilsightPersonIDOwnership)->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
-        $row->addTextField('typeSpecificFields')->setValue($typeSpecificFields);
+    $row->addLabel('typeSpecificFields', __('Type-Specific Fields'))->description(__('For example, a computer\'s MAC address or a book\'s ISBN.'));
+    $row->addTextField('typeSpecificFields')->setValue($typeSpecificFields);
 
     $row = $form->addRow()
-    ->addClass('right_align');
-        $row->addSearchSubmit($pupilsight->session, __('Clear Search'));
+        ->addClass('right_align');
+    $row->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
     echo $form->getOutput();
 
@@ -154,9 +158,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $data = array();
         $sqlWhere = 'WHERE ';
         if ($name != '') {
-            $data['name'] = '%'.$name.'%';
-            $data['producer'] = '%'.$name.'%';
-            $data['id'] = '%'.$name.'%';
+            $data['name'] = '%' . $name . '%';
+            $data['producer'] = '%' . $name . '%';
+            $data['id'] = '%' . $name . '%';
             $sqlWhere .= '(name LIKE :name  OR producer LIKE :producer OR id LIKE :id) AND ';
         }
         if ($pupilsightLibraryTypeID != '') {
@@ -176,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $sqlWhere .= 'pupilsightPersonIDOwnership=:pupilsightPersonIDOwnership AND ';
         }
         if ($typeSpecificFields != '') {
-            $data['fields'] = '%'.$typeSpecificFields.'%';
+            $data['fields'] = '%' . $typeSpecificFields . '%';
             $sqlWhere .= 'fields LIKE :fields AND ';
         }
         if ($sqlWhere == 'WHERE ') {
@@ -186,17 +190,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         }
 
         $sql = "SELECT * FROM pupilsightLibraryItem $sqlWhere ORDER BY id";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+        $sqlPage = $sql . ' LIMIT ' . $_SESSION[$guid]['pagination'] . ' OFFSET ' . (($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
-        echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+        echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
     }
 
     echo "<div class='linkTop'>";
-    echo "<a  style='width:111px !important' class = 'btn btn-primary addbtncss' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_manage_catalog_add.php&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'>".__('Add')."<i style='margin-left: 5px' class='mdi mdi-plus-circle-outline mdi-24px' title='".__('Add')."' ></i></a>";
+    echo "<a  style='width:111px !important' class = 'btn btn-primary addbtncss' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . "/library_manage_catalog_add.php&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'>" . __('Add') . "<i style='margin-left: 5px' class='mdi mdi-plus-circle-outline mdi-24px' title='" . __('Add') . "' ></i></a>";
 
-    
+
     echo '</div>';
 
     if ($result->rowCount() < 1) {
@@ -210,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     } else {
         echo '<h3>';
         echo __('View');
-        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__('%1$s record(s) in current view'), $result->rowCount()).'</span>';
+        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> " . sprintf(__('%1$s record(s) in current view'), $result->rowCount()) . '</span>';
         echo '</h3>';
 
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -221,23 +225,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         echo "<thead>";
         echo "<tr class='head'>";
         echo "<th style='width: 80px'>";
-        echo __('School ID').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Type').'</span>';
+        echo __('School ID') . '<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>" . __('Type') . '</span>';
         echo '</th>';
         echo '<th>';
-        echo __('Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Producer').'</span>';
+        echo __('Name') . '<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>" . __('Producer') . '</span>';
         echo '</th>';
         echo '<th>';
         echo __('Location');
         echo '</th>';
         echo '<th>';
-        echo __('Ownership').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('User/Owner').'</span>';
+        echo __('Ownership') . '<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>" . __('User/Owner') . '</span>';
         echo '</th>';
         echo '<th>';
-        echo __('Status').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__('Borrowable').'</span>';
+        echo __('Status') . '<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>" . __('Borrowable') . '</span>';
         echo '</th>';
         echo "<th style='width: 125px'>";
         echo __('Actions');
@@ -251,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             $resultPage = $connection2->prepare($sqlPage);
             $resultPage->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+            echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
         }
         while ($row = $resultPage->fetch()) {
             if ($count % 2 == 0) {
@@ -263,23 +267,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             //COLOR ROW BY STATUS!
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo '<b>'.$row['id'].'</b><br/>';
+            echo '<b>' . $row['id'] . '</b><br/>';
             try {
                 $dataType = array('pupilsightLibraryTypeID' => $row['pupilsightLibraryTypeID']);
                 $sqlType = 'SELECT name FROM pupilsightLibraryType WHERE pupilsightLibraryTypeID=:pupilsightLibraryTypeID';
                 $resultType = $connection2->prepare($sqlType);
                 $resultType->execute($dataType);
             } catch (PDOException $e) {
-                echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
             }
             if ($resultType->rowCount() == 1) {
                 $rowType = $resultType->fetch();
-                echo "<span style='font-size: 85%; font-style: italic'>".__($rowType['name']).'</span>';
+                echo "<span style='font-size: 85%; font-style: italic'>" . __($rowType['name']) . '</span>';
             }
             echo '</td>';
             echo '<td>';
-            echo '<b>'.$row['name'].'</b><br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".$row['producer'].'</span>';
+            echo '<b>' . $row['name'] . '</b><br/>';
+            echo "<span style='font-size: 85%; font-style: italic'>" . $row['producer'] . '</span>';
             echo '</td>';
             echo '<td>';
             if ($row['pupilsightSpaceID'] != '') {
@@ -289,20 +293,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                     $resultSpace = $connection2->prepare($sqlSpace);
                     $resultSpace->execute($dataSpace);
                 } catch (PDOException $e) {
-                    echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                    echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                 }
                 if ($resultSpace->rowCount() == 1) {
                     $rowSpace = $resultSpace->fetch();
-                    echo $rowSpace['name'].'<br/>';
+                    echo $rowSpace['name'] . '<br/>';
                 }
             }
             if ($row['locationDetail'] != '') {
-                echo "<span style='font-size: 85%; font-style: italic'>".$row['locationDetail'].'</span>';
+                echo "<span style='font-size: 85%; font-style: italic'>" . $row['locationDetail'] . '</span>';
             }
             echo '</td>';
             echo '<td>';
             if ($row['ownershipType'] == 'School') {
-                echo $_SESSION[$guid]['organisationNameShort'].'<br/>';
+                echo $_SESSION[$guid]['organisationNameShort'] . '<br/>';
             } elseif ($row['ownershipType'] == 'Individual') {
                 echo 'Individual<br/>';
             }
@@ -313,25 +317,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                     $resultPerson = $connection2->prepare($sqlPerson);
                     $resultPerson->execute($dataPerson);
                 } catch (PDOException $e) {
-                    echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                    echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                 }
                 if ($resultPerson->rowCount() == 1) {
                     $rowPerson = $resultPerson->fetch();
-                    echo "<span style='font-size: 85%; font-style: italic'>".formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true).'</span>';
+                    echo "<span style='font-size: 85%; font-style: italic'>" . formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true) . '</span>';
                 }
             }
             echo '</td>';
             echo '<td>';
-            echo __($row['status']).'<br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".ynExpander($guid, $row['borrowable']).'</span>';
+            echo __($row['status']) . '<br/>';
+            echo "<span style='font-size: 85%; font-style: italic'>" . ynExpander($guid, $row['borrowable']) . '</span>';
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_edit.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><i title='".__('Edit')."' class='mdi mdi-pencil-box-outline mdi-24px'></i></a> ";
+            echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/library_manage_catalog_edit.php&pupilsightLibraryItemID=' . $row['pupilsightLibraryItemID'] . "&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px'></i></a> ";
             if ($row['borrowable'] == "Y") {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><i title='".__('Lending')."' class='mdi mdi-account-circle-outline mdi-24px'></i></a> ";
+                echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/library_lending_item.php&pupilsightLibraryItemID=' . $row['pupilsightLibraryItemID'] . "&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><i title='" . __('Lending') . "' class='mdi mdi-account-circle-outline mdi-24px'></i></a> ";
             }
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_delete.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."&width=650&height=135'><i title='".__('Delete')."' class='mdi mdi-trash-can-outline mdi-24px'></i></a>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_duplicate.php&pupilsightLibraryItemID='.$row['pupilsightLibraryItemID']."&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><i title='".__('Duplicate')."' class='mdi mdi-content-copy mdi-24px'></i></a>";
+            echo "<a class='thickbox' href='" . $_SESSION[$guid]['absoluteURL'] . '/fullscreen.php?q=/modules/' . $_SESSION[$guid]['module'] . '/library_manage_catalog_delete.php&pupilsightLibraryItemID=' . $row['pupilsightLibraryItemID'] . "&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "&width=650&height=135'><i title='" . __('Delete') . "' class='mdi mdi-trash-can-outline mdi-24px'></i></a>";
+            echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/library_manage_catalog_duplicate.php&pupilsightLibraryItemID=' . $row['pupilsightLibraryItemID'] . "&name=$name&pupilsightLibraryTypeID=$pupilsightLibraryTypeID&pupilsightSpaceID=$pupilsightSpaceID&status=$status&pupilsightPersonIDOwnership=$pupilsightPersonIDOwnership&typeSpecificFields=" . urlencode($typeSpecificFields) . "'><i title='" . __('Duplicate') . "' class='mdi mdi-content-copy mdi-24px'></i></a>";
             echo '</td>';
             echo '</tr>';
 
@@ -348,6 +352,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 <style>
     .paginationTop {
-        margin-bottom : 15px;
+        margin-bottom: 15px;
     }
 </style>
