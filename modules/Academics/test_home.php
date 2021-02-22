@@ -70,6 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_home.php') 
     // QUERY
     $criteria = $CurriculamGateway->newQueryCriteria()
         ->sortBy('id')
+        ->pageSize(5000)
         ->fromPOST();
 
     $general_tests = $CurriculamGateway->getAllgeneralTestMaster($criteria, $pupilsightSchoolYearID);
