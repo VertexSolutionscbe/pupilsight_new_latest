@@ -143,10 +143,6 @@ if (isset($data['logo_image'])) {
 
 
     <style>
-        body {
-            display: none;
-        }
-
         .carouselTitle {
             line-height: 42px;
             font-size: 42px;
@@ -343,12 +339,11 @@ if (isset($data['logo_image'])) {
 
 
                         </div>
-                        <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
-                            <div class="wpb_wrapper">
+                        <div class="">
+                            <div class="">
 
-                                <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" height="1000px" width="100%" border='0' style='border:0' src="<?php echo $campaign_byid['page_link']; ?>">
+                                <iframe data-campid="<?php echo $campaign_byid['id']; ?>" id="application_view" width="100%" border='0' style='border:0;' src="<?php echo $campaign_byid['page_link']; ?>">
                                 </iframe>
-
 
                                 <?php if (!empty($campaign_byid['fn_fee_structure_id']) && $campaign_byid['is_fee_generate'] == '2') {
                                     $sql = "SELECT SUM(total_amount) AS amt FROM fn_fee_structure_item WHERE fn_fee_structure_id = " . $campaign_byid['fn_fee_structure_id'] . " ";
@@ -442,6 +437,7 @@ if (isset($data['logo_image'])) {
                     </div>
                 </div>
             </div>
+            <!--
             <div class="wpb_column vc_column_container  bp-background-size-auto">
                 <div class="vc_column-inner vc_custom_1539746106290">
                     <div class="wpb_wrapper">
@@ -449,6 +445,7 @@ if (isset($data['logo_image'])) {
                     </div>
                 </div>
             </div>
+            -->
         </div>
     </div><!-- #home-main-content -->
     </div><!-- #main-content -->
@@ -641,10 +638,20 @@ if (isset($data['logo_image'])) {
         }
 
         $(document).ready(function() {
-            setTimeout(function() {
-                iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
-            }, 1000);
+            resetIframe();
         });
+
+
+        function resetIframe() {
+            try {
+                setTimeout(function() {
+                    iframe = document.getElementById("application_view");
+                    iframe.style.height = (Number(iframe.contentWindow.document.body.scrollHeight) + 100) + 'px';
+                }, 1000);
+            } catch (ex) {
+                resetIframe();
+            }
+        }
 
         $('#application_view').load(function() {
             var iframe = $('#application_view').contents();
