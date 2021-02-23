@@ -31,22 +31,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
         if (is_numeric($driver_mobile)) {
             if (is_numeric($coordinator_mobile)) {
 
+            if($_POST['register_date']!='')
+            {    
+
                 $regdt = explode('/', $_POST['register_date']);
                 $register_date = date('Y-m-d', strtotime(implode('-', array_reverse($regdt))));
+            }
+            else{
+                $register_date='';
+            }
 
+
+            if($_POST['insurance_exp']!='')
+            {
                 $ins_exp = explode('/', $_POST['insurance_exp']);
                 $insurance_exp = date('Y-m-d', strtotime(implode('-', array_reverse($ins_exp))));
+            }
+            else{
+                $insurance_exp='';
+            }
+
+            
+            if($_POST['fc_expiry']!='')
+            {
 
                 $fc_exp = explode('/', $_POST['fc_expiry']);
                 $fc_expiry = date('Y-m-d', strtotime(implode('-', array_reverse($fc_exp))));
+            }
+            else{
 
+                $fc_expiry='';
+
+            }    
 
                 // $photo = $_POST['photo'];
 
 
                 //  $cdt = date('Y-m-d H:i:s');
 
-                if ($vehicle_number == '' or $name == '' or $model == '' or $vtype == '' or $capacity == '' or $regdt == '' or $ins_exp == '' or $fc_exp == '' or $driver_mobile == '') {
+                if ($vehicle_number == '' or $name == '' or $model == '' or $vtype == '' or $capacity == '' or $driver_mobile == '') {
                     $URL .= '&return=error1';
                     header("Location: {$URL}");
                 } else {

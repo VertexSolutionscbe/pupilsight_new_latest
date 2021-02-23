@@ -128,7 +128,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     }
 
 
-
     $row = $form->addRow();
     $row->addLabel('pupilsightPersonIDOwnership', __('Owner/User'));
     //$row->addSelectUsers('pupilsightPersonIDOwnership')->selected($pupilsightPersonIDOwnership)->placeholder();

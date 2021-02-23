@@ -44,14 +44,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_edit.
     $model = $_POST['model'];
     $vtype = $_POST['vtype'];
     $capacity = $_POST['capacity'];
-    $regdt = explode('/', $_POST['register_date']);
-    $register_date= date('Y-m-d', strtotime(implode('-', array_reverse($regdt))));
 
-    $ins_exp = explode('/', $_POST['insurance_exp']);
-    $insurance_exp  = date('Y-m-d', strtotime(implode('-', array_reverse($ins_exp))));
+    if($_POST['register_date']!='')
+    {
+        $regdt = explode('/', $_POST['register_date']);
+        $register_date= date('Y-m-d', strtotime(implode('-', array_reverse($regdt))));
+    }
+    else{
+        $register_date='';
+    }
 
-    $fc_exp = explode('/', $_POST['fc_expiry']);
-    $fc_expiry  = date('Y-m-d', strtotime(implode('-', array_reverse($fc_exp))));
+    
+    if($_POST['insurance_exp']!='')
+    {
+        $ins_exp = explode('/', $_POST['insurance_exp']);
+        $insurance_exp  = date('Y-m-d', strtotime(implode('-', array_reverse($ins_exp))));
+    }
+    else{
+        $insurance_exp='';
+    }
+
+
+
+    if($_POST['fc_expiry']!='')
+    {
+        $fc_exp = explode('/', $_POST['fc_expiry']);
+        $fc_expiry  = date('Y-m-d', strtotime(implode('-', array_reverse($fc_exp))));
+    }
+    else{
+        $fc_expiry='';
+    }
+
     
     $driver_name = $_POST['driver_name'];
     $driver_mobile = $_POST['driver_mobile'];
