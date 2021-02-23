@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
                     async: true,
                     success: function (response) {
                         alert('Message sent successfully.');
-                        //location.reload();
+                        location.reload();
                     }
                 });
             }

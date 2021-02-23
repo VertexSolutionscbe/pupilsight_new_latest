@@ -3,6 +3,8 @@
 Pupilsight, Flexible & Open School System
 */
 use Pupilsight\Contracts\Comms\SMS;
+use Pupilsight\Contracts\Comms\Mailer;
+
 include 'pupilsight.php';
 $session = $container->get('session');
 
