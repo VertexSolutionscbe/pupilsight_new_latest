@@ -131,11 +131,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
             $col->addTextField('stop_name[1]')->addClass('txtfield kountseat')->required();
     
             $col = $row->addColumn()->setClass('newdes nobrdbtm');
-            $col->addLabel('pickup_time', __('Pick Up Time(HH:SS)'))->addClass('dte');
+            $col->addLabel('pickup_time', __('Pick Up Time(HH:MM)'))->addClass('dte');
             $col->addTime('pickup_time[1]')->addClass('txtfield')->maxLength(5)->required()->placeholder('24 hours format');
 
             $col = $row->addColumn()->setClass('newdes nobrdbtm');
-            $col->addLabel('drop_time', __('Drop Time(HH:SS)'))->addClass('dte');
+            $col->addLabel('drop_time', __('Drop Time(HH:MM)'))->addClass('dte');
             $col->addTime('drop_time[1]')->addClass('txtfield kountseat')->maxLength(5)->required()->placeholder('24 hours format');
             $col->addLabel('', __(''))->addClass('dte');
             

@@ -265,7 +265,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                     success: function(response) {
                         $("#pupilsightPersonID").html();
                         $("#pupilsightPersonID").html(response);
-                        
+                        $("#pupilsightProgram").val('');
                     }
                 });
             }
@@ -292,7 +292,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 
             },
             error: function(response) {
-                alert(response);
+                console.log(response);
             }
         });
 

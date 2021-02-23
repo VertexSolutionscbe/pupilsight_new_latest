@@ -111,18 +111,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addLabel('status', __('Status'));
         $row->addSelect('status')->fromArray($statuses)->selected($status)->placeholder();
 
-    
     $sql = 'SELECT  P.pupilsightPersonID, P.officialName FROM pupilsightLibraryItem AS L
     LEFT JOIN pupilsightPerson AS P  ON L.pupilsightPersonIDOwnership = P.pupilsightPersonID
     WHERE P.officialName != "" ';
+
     $result = $connection2->query($sql);
     $staffs = $result->fetchAll();
     $owner1 = array('' => 'Please Select ');
-    
+    $owner2 = array();
     foreach ($staffs as $dt) {
         $owner2[$dt['pupilsightPersonID']] = $dt['officialName'];
     }
-    $owner = $owner1 + $owner2;
+    if ($owner2) {
+        $owner = $owner1 + $owner2;
+    }
     
 
     $row = $form->addRow();
