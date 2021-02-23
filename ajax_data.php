@@ -4,6 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 
 use Pupilsight\Contracts\Comms\SMS;
+use Pupilsight\Contracts\Comms\Mailer;
 
 include 'pupilsight.php';
 $session = $container->get('session');
@@ -3708,6 +3709,17 @@ if ($type == 'getSectionData') {
         foreach ($sections as $k => $cl) {
             $data .= '<option value="' . $cl['pupilsightRollGroupID'] . '">' . $cl['name'] . '</option>';
         }
+    }
+    echo $data;
+}
+if ($type == 'getPrograms1') {
+    $yr = $val;
+    $sqlp = "SELECT pupilsightProgramID,name FROM pupilsightProgram";
+    $resultp = $connection2->query($sqlp);
+    $rowdataprog = $resultp->fetchAll();
+    $data = '<option value="">Select Program</option>';
+    foreach ($rowdataprog as $dt) {
+        $data .= '<option value="' . $dt['pupilsightProgramID'] . '">' . $dt['name'] . '</option>';
     }
     echo $data;
 }

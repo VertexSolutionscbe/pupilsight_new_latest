@@ -2,6 +2,12 @@
 /*
 Pupilsight, Flexible & Open School System
 */
+echo "<style>
+.marginp {
+margin-bottom: 2px;
+}
+</style>";
+
 
 use Pupilsight\Services\Format;
 use Pupilsight\Tables\DataTable;
@@ -33,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         $groups = $groupGateway->queryGroups($criteria, $_SESSION[$guid]['pupilsightSchoolYearID'], $_SESSION[$guid]['pupilsightPersonID']);
     }
 
-    echo "<div style='height:50px; margin-top:10px; '><div class='float-right mb-2'><button class='btn btn-primary mr-2' type='button' onclick='showemailDiv()'>Send Email</button><button class='btn btn-primary' type='button' onclick='showsmsDiv()'>Send SMS</button></div></div>";
+    echo "<div style='height:50px; margin-top:10px; '><a href='index.php?q=/modules/Messenger/groups_manage_add.php' class='btn btn-primary mb-2'>Add</a><div class='float-right mb-2'><button class='btn btn-primary mr-2' type='button' onclick='showemailDiv()'>Send Email</button><button class='btn btn-primary' type='button' onclick='showsmsDiv()'>Send SMS</button></div></div>";
     echo "<div id='smsDiv'  style='display:none;' class='answer_list' >
     <div class='modal-dialog modal-lg' role='document'>
         <div class='modal-content'>
@@ -108,12 +114,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         </div>
     </div>
    </div>";
+
     // DATA TABLE
     $table = DataTable::createPaginated('groupsManage', $criteria);
 
-    $table->addHeaderAction('add', __('Add'))
+    /*$table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Messenger/groups_manage_add.php')
-        ->displayLabel();
+        ->displayLabel()->addClass('marginp');*/
 
     // COLUMNS
     $table->addCheckboxColumn('group_id', __(''))
@@ -259,7 +266,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
                     async: true,
                     success: function (response) {
                         alert('Message sent successfully.');
-                        //location.reload();
+                        location.reload();
                     }
                 });
             }
