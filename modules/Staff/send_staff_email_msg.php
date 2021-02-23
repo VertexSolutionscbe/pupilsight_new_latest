@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
             $subject = nl2br($subjectquote);
             $body = nl2br($emailquote);
             $msg = $smsquote;
-            $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
+            //$smspupilsightPersonID = $rowdata['pupilsightPersonID'];
             //$number = '9986448340';
 
             //sendingmail($to);
@@ -119,8 +119,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
                                 $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '2', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', uid=" . $cuid . " ";
                                 $connection2->query($sq);
                                 $msgby =$_SESSION[$guid]["pupilsightPersonID"];
-                                Updatemessesnger($connection2,$_SESSION[$guid]["pupilsightPersonID"],$smspupilsightPersonID,$body,$subject);
-                                $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$smspupilsightPersonID, contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N'";
+                                Updatemessesnger($connection2,$msgby,$st,$body,$subject);
+                                $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$msgby."', pupilsightPersonID='".$msgby."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N'";
                                 $connection2->query($savedata);
 
 
@@ -129,11 +129,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
                             }
                         } else {
                             $senderid=$_SESSION[$guid]["pupilsightPersonID"];
-                            Updatemessesnger($connection2,$senderid,$smspupilsightPersonID,$body,$subject);
+                            Updatemessesnger($connection2,$senderid,$st,$body,'na');
                             $res = file_get_contents($url);
                             $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '2', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
                             $connection2->query($sq);
-                            $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$smspupilsightPersonID, contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N'";
+                            $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$senderid."', pupilsightPersonID='".$senderid."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N'";
                             $connection2->query($savedata);
 
                         }
@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
                         $urls .= "&msg=" . rawurlencode($msg);
                         $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                         $resms = file_get_contents($urls);*/
-                        $msgto = $smspupilsightPersonID;
+                        $msgto = $st;
                         $msgby = $_SESSION[$guid]["pupilsightPersonID"];
                         $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                         if ($res) {
@@ -176,9 +176,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/send_staff_email_msg
 
     }
 }
-function Updatemessesnger($connection2,$sender,$smspupilsightPersonID, $body="", $subject=""){
- //   echo "hi"; die();
-    $ppid = $smspupilsightPersonID;
+function Updatemessesnger($connection2,$sender,$st, $body="", $subject=""){
+    //echo "hi"; //die();
+    $ppid = $st;
 
 
     $msgby = $sender;

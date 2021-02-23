@@ -93,7 +93,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
             $academic[$dt['pupilsightSchoolYearID']] = $dt['name'];
         }
     }
-
+    $academic1 = array('' => 'Select Year');
+    $academic = $academic1 + $academic;
 
     $searchby = array('' => 'Search By', 'stu_name' => 'Student Name', 'stu_id' => 'Student Id', 'adm_id' => 'Admission Id', 'father_name' => 'Father Name', 'father_email' => 'Father Email', 'mother_name' => 'Mother Name', 'mother_email' => 'Mother Email');
     // echo '<pre>';
@@ -211,7 +212,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
-    $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder();
+    //$col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder();
+    $col->addSelect('pupilsightProgramID')->placeholder();
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
@@ -239,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
-    $col->addSelect('pupilsightProgramID1')->fromArray($program)->selected($pupilsightProgramID)->placeholder()->selectMultiple();
+    $col->addSelect('pupilsightProgramID1')->selected($pupilsightProgramID)->placeholder()->selectMultiple();
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
@@ -489,6 +491,50 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
             });
         } else {
             alert('Please select users');
+        }
+    });
+</script>
+<script>
+    $(document).on('change', '#pupilsightSchoolYearID', function() {
+        var val = $(this).val();
+        var type = "getPrograms1";
+        if (val != "") {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {
+                    val: val,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightProgramID").html();
+                    $("#pupilsightProgramID").html(response);
+
+                }
+            })
+        }
+    });
+</script>
+<script>
+    $(document).on('change', '#pupilsightSchoolYearID1', function() {
+        var val = $(this).val();
+        var type = "getPrograms1";
+        if (val != "") {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {
+                    val: val,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightProgramID1").html();
+                    $("#pupilsightProgramID1").html(response);
+
+                }
+            })
         }
     });
 </script>

@@ -65,7 +65,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
     $col->addSubmit(__('Go'));
 
     echo $form->getOutput();
-
+    echo "<div class='row'><div class='col-md-8'><a class='btn btn-primary' id='downloadLink' onclick='exportF(this)'>Export</a></div><div class='col-md-4'><input id='myInput' type='text' onkeyup='myFunction()' placeholder='Search' /></div></div>";
     echo queryMembersreceipt($guid, $connection2, 'print', $msgtype);
 }
 ?>
+<script>
+    function exportF(elem) {
+        var table = document.getElementById("example");
+        var html = table.outerHTML;
+        var url = 'data:application/vnd.ms-excel,' + escape(html); // Set your html table into url
+        elem.setAttribute("href", url);
+        elem.setAttribute("download", "export.xls"); // Choose the file name
+        return false;
+    }
+</script>
+<script>
+    function myFunction() {
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("example");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0]; // for column one
+            td1 = tr[i].getElementsByTagName("td")[1]; // for column two
+            td2 = tr[i].getElementsByTagName("td")[2]; // for column three
+            td3 = tr[i].getElementsByTagName("td")[3]; // for column four
+            td4 = tr[i].getElementsByTagName("td")[4]; // for column five
+            td5 = tr[i].getElementsByTagName("td")[5]; // for column six
+            td6 = tr[i].getElementsByTagName("td")[6]; // for column seven
+            /* ADD columns here that you want you to filter to be used on */
+            if (td) {
+                if ( (td.innerHTML.toUpperCase().indexOf(filter) > -1) || (td1.innerHTML.toUpperCase().indexOf(filter) > -1) || (td2.innerHTML.toUpperCase().indexOf(filter) > -1) || (td3.innerHTML.toUpperCase().indexOf(filter) > -1) || (td4.innerHTML.toUpperCase().indexOf(filter) > -1) || (td5.innerHTML.toUpperCase().indexOf(filter) > -1) || (td6.innerHTML.toUpperCase().indexOf(filter) > -1) )  {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

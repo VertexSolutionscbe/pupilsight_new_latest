@@ -3658,6 +3658,17 @@ if ($type == 'getSectionData') {
     }
     echo $data;
 }
+if ($type == 'getPrograms1') {
+    $yr = $val;
+    $sqlp = "SELECT pupilsightProgramID,name FROM pupilsightProgram";
+    $resultp = $connection2->query($sqlp);
+    $rowdataprog = $resultp->fetchAll();
+    $data = '<option value="">Select Program</option>';
+    foreach ($rowdataprog as $dt) {
+        $data .= '<option value="' . $dt['pupilsightProgramID'] . '">' . $dt['name'] . '</option>';
+    }
+    echo $data;
+}
 
 
 if ($type == 'getTestByClassProgram') {
