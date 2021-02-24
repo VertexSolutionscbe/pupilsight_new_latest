@@ -8,11 +8,17 @@ use Pupilsight\Contracts\Comms\SMS;
 use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Domain\Helper\HelperGateway;
 use Pupilsight\Services\Format;
+
+use Pupilsight\Domain\Messenger\GroupGateway;
+use Pupilsight\Tables\DataTable;
 ?>
 <style>
 	#individualList {
 		width: 500px;
 	}
+    .staticwidth{
+        width: 220px;
+    }
 </style>
 <?php
 require_once __DIR__ . '/moduleFunctions.php';
@@ -96,7 +102,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byEmail")) {
 			$row = $form->addRow();
 			$row->addLabel('email', __('Email'))->description(__('Deliver this message to user\'s primary email account?'));
-			$row->addYesNoRadio('email')->checked('N')->required();
+			$row->addYesNoRadio('email')->checked('N')->required()->setID('emailradio');
 
 			$form->toggleVisibilityByClass('email')->onRadio('email')->when('Y');
 
@@ -112,11 +118,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 				$row->addSelect('from')->fromArray($from)->required();*/
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_fromSchool")) {
-				$row = $form->addRow()->addClass('email');
+				$row = $form->addRow()->addClass('email')->setID('replyemail');
 				$row->addLabel('emailReplyTo', __('Reply To'));
 				$row->addEmail('emailReplyTo');
 
-				$row = $form->addRow()->addClass('email');
+				$row = $form->addRow()->addClass('email')->setID('bccemail');
 				$row->addLabel('emailbcc', __('BCC'));
 				$row->addEmail('emailbcc');
 			}
@@ -126,16 +132,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_byMessageWall")) {
 			$row = $form->addRow();
 			$row->addLabel('messageWall', __('Message Wall'))->description(__('Place this message on user\'s message wall?'));
-			$row->addYesNoRadio('messageWall')->checked('N')->required();
+			$row->addYesNoRadio('messageWall')->checked('N')->required()->setID('messageWallradio');
 
 			$form->toggleVisibilityByClass('messageWall')->onRadio('messageWall')->when('Y');
 
-			$row = $form->addRow()->addClass('messageWall');
+			$row = $form->addRow()->addClass('messageWall')->setID('publicationdate');
 			$row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
 			$col = $row->addColumn('date1')->addClass('stacked');
 			$col->addDate('date1')->setValue(dateConvertBack($guid, date('Y-m-d')))->required();
-			$col->addDate('date2');
-			$col->addDate('date3');
+			/*$col->addDate('date2');
+			$col->addDate('date3');*/
 		}
 
 		//Delivery by SMS
@@ -151,11 +157,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			} else {
 				$row = $form->addRow();
 				$row->addLabel('sms', __('SMS'))->description(__('Deliver this message to user\'s mobile phone?'));
-				$row->addYesNoRadio('sms')->checked('N')->required();
+				$row->addYesNoRadio('sms')->checked('N')->required()->setID('smsradio');
 
 				$form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
 
-				$row = $form->addRow()->addClass('sms');
+				$row = $form->addRow()->addClass('sms')->setID('copysmshide');
 				$row->addLabel('copysms', __('Copy SMS to'));
 				$row->addTextField('copysms')->maxLength(12)->addClass('numfield')->placeholder('include country code');
 
@@ -197,6 +203,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 				print "$('#subject').val('');";
 				print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;";
 				print "$('#body').val('" . addSlashes($signature) . "');";
+				print "$('#body1').val('" . addSlashes($signature) . "');";
 				print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;";
 				print "}";
 				foreach ($cannedResponses as $rowSelect) {
@@ -207,6 +214,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 											$.get('./modules/Messenger/messenger_post_ajax.php?pupilsightMessengerCannedResponseID=" . $rowSelect["pupilsightMessengerCannedResponseID"] . "', function(response) {
 												 var result = response;
 												$('#body').val(result + '" . addSlashes($signature) . "');
+												$('#body1').val(result + '" . addSlashes($signature) . "');
 												tinyMCE.execCommand('mceAddEditor', false, 'body') ;
 											});
 										";
@@ -231,7 +239,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		}
 
 		$form->toggleVisibilityByClass('email1')->onRadio('email')->when('Y');
-		$row = $form->addRow()->addClass('email1');
+		$row = $form->addRow()->addClass('email1')->setID('subjecthide');
 		$row->addLabel('subject', __('Subject'));
 		$row->addTextField('subject')->maxLength(200)->required();
 
@@ -252,13 +260,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		//echo "<span type='text' id='count'>Character Count</span>";
 
 		$form->toggleVisibilityByClass('sms1')->onRadio('sms')->when('N');
-		$row = $form->addRow()->addClass('sms1');
+		$row = $form->addRow()->addClass('sms1')->setID('bodyhide');
 		$col = $row->addColumn('body');
 		$col->addLabel('body', __('Body'));
 		$col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
 
 		$form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
-		$row = $form->addRow()->addClass('sms');
+		$row = $form->addRow()->addClass('sms')->setID('body1hide');
 		$col = $row->addColumn('body');
 		$col->addLabel('body', __('Body'));
 		$col->addEditor('body1', $guid)->required()->setRows(20)->setValue($signature);
@@ -637,6 +645,53 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			}
 		}
 
+		//Advance Search for students
+
+            $row = $form->addRow();
+            $row->addLabel('AdvanceSearch', __('Advance Search'))->description(__('Advance Students Search.'));
+            $row->addYesNoRadio('advancestudents')->checked('N')->required();
+
+            $form->toggleVisibilityByClass('messageAdvStudents')->onRadio('advancestudents')->when('Y');
+        $check_role = 'SELECT role.name FROM pupilsightPerson as p LEFT JOIN pupilsightRole as role ON p.pupilsightRoleIDAll = role.pupilsightRoleID 
+    WHERE p.pupilsightPersonID ="' . $_SESSION[$guid]['pupilsightPersonID'] . '" AND role.name="Administrator"';
+        $check_role = $connection2->query($check_role);
+        $role = $check_role->fetch();
+        $sqlq = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
+        $resultval = $connection2->query($sqlq);
+        $rowdata = $resultval->fetchAll();
+        $academic = array();
+        $ayear = '';
+        if (!empty($rowdata)) {
+            $ayear = $rowdata[0]['name'];
+            foreach ($rowdata as $dt) {
+                $academic[$dt['pupilsightSchoolYearID']] = $dt['name'];
+            }
+        }
+        $academic1 = array('' => 'Select Year');
+        $academic = $academic1 + $academic;
+
+        $row = $form->addRow()->addClass('messageAdvStudents');;
+        $col = $row->addLabel('Class wise students', __('Class wise students'));
+
+        $col = $row->addColumn()->setClass('newdes noEdit');
+        $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
+        $col->addSelect('pupilsightSchoolYearID')->fromArray($academic);
+
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('pupilsightProgramID', __('Program'));
+        $col->addSelect('pupilsightProgramID')->placeholder();
+
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
+        $col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->addClass("pupilsightRollGroupIDP1 staticwidth")->selectMultiple();
+
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('pupilsightPersonID', __('Students'))->addClass('dte');
+        $col->addSelect('pupilsightPersonID')->selected($pupilsightPersonID)->selectMultiple()->addClass("staticwidth");
+
+
+
+
 		// Individuals
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
 			$row = $form->addRow();
@@ -683,4 +738,135 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		//$("#count").text("Characters left: " + (500 - $(this).val().length));
 		$("#count").text("Characters Count : " + $(this).val().length);
 	});
+</script>
+<script>
+    $('input[type=radio][name=email]').change(function() {
+        if (this.value == 'Y') {
+            //alert("yes");
+            $("input[name=sms][value='N']").prop("checked",true);
+            $("input[name=messageWall][value='N']").prop("checked",true);
+            $("[id=publicationdate").hide();
+            $("[id=body1hide").hide();
+            $("[id=bodyhide").show();
+            $("[id=copysmshide").hide();
+        }
+        else if (this.value == 'N') {
+            //alert("no");
+        }
+    });
+</script>
+<script>
+    $('input[type=radio][name=sms]').change(function() {
+        if (this.value == 'Y') {
+            //alert("yes");
+            $("input[name=email][value='N']").prop("checked",true);
+            $("input[name=messageWall][value='N']").prop("checked",true);
+
+            $("[id=replyemail").hide();
+            $("[id=bccemail").hide();
+            $("[id=publicationdate").hide();
+            $("[id=subjecthide").hide();
+            $("[id=bodyhide").hide();
+        }
+        else if (this.value == 'N') {
+            //alert("no");
+        }
+    });
+</script>
+<script>
+    $('input[type=radio][name=messageWall]').change(function() {
+        if (this.value == 'Y') {
+            //alert("yes");
+            $("input[name=sms][value='N']").prop("checked",true);
+            $("input[name=email][value='N']").prop("checked",true);
+            $("[id=replyemail").hide();
+            $("[id=bccemail").hide();
+            $("[id=body1hide").hide();
+            $("[id=copysmshide").hide();
+            $("[id=bodyhide").show();
+        }
+        else if (this.value == 'N') {
+            //alert("no");
+        }
+    });
+</script>
+<script>
+    $(document).on('change', '#pupilsightSchoolYearID', function() {
+        var val = $(this).val();
+        var type = "getPrograms1";
+        if (val != "") {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {
+                    val: val,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightProgramID").html();
+                    $("#pupilsightProgramID").html(response);
+
+                }
+            });
+        }
+    });
+</script>
+<script type="text/javascript">
+    $(document).on('change', '#pupilsightProgramID', function() {
+        var val = $(this).val();
+        var type = "getClass";
+        if (val != "") {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {
+                    val: val,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightYearGroupIDA").html();
+                    $("#pupilsightYearGroupIDA").html(response);
+
+                }
+            });
+        }
+    });
+</script>
+<script type="text/javascript">
+    $(document).on('change', '.pupilsightRollGroupIDP1', function() {
+        var id = $("#pupilsightRollGroupID").val();
+        var yid = $('#pupilsightSchoolYearID').val();
+        var pid = $('#pupilsightProgramID').val();
+        var cid = $('#pupilsightYearGroupIDA').val();
+        var type = 'getStudentClassAndSection';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: {
+                val: id,
+                type: type,
+                yid: yid,
+                pid: pid,
+                cid: cid
+            },
+            async: true,
+            success: function(response) {
+                $("#pupilsightPersonID").html();
+                $("#pupilsightPersonID").append(response);
+            }
+        });
+    });
+</script>
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('#pupilsightYearGroupIDA').select2();
+    });
+</script>
+
+<script type='text/javascript'>
+    $(document).ready(function() {
+        $('#pupilsightPersonID').select2();
+    });
 </script>

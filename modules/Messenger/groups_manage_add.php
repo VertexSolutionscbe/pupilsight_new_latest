@@ -236,6 +236,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     $col->addLabel('', __('Complete Class'))->addClass('dte');
 
     $col = $row->addColumn()->setClass('newdes noEdit');
+    $col->addLabel('', __(''));
+    //$col->addSelect('');
+
+    $col = $row->addColumn()->setClass('newdes noEdit');
     $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
     $col->addSelect('pupilsightSchoolYearID1')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);
 

@@ -3899,7 +3899,7 @@ if ($type == 'groupmanagesms') {
 }
 if ($type == 'groupmanageemail') {
 
-    print_r($_POST);
+    //print_r($_POST);
     $grpvals = array();
     $grpvals = $_POST['grpval'];
     $grpvals = explode(',', $grpvals);
