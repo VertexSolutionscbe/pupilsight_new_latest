@@ -3019,7 +3019,7 @@
             success: function (response) {
 
                 $("#pupilsightYearGroupID").html('');
-                $("#pupilsightRollGroupID").html('');
+                //$("#pupilsightRollGroupID").html('');
                 $("#pupilsightYearGroupID").html(response);
             }
         });

@@ -142,17 +142,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow()->addClass('studentType hiddencol');
                 $row->addLabel('pupilsightProgramID', __('Program'));
-                $row->addSelect('pupilsightProgramID')->setId('pupilsightProgram')->fromArray($program)->placeholder('Select Program');
+                $row->addSelect('pupilsightProgramID')->setId('pupilsightProgramID')->fromArray($program)->placeholder('Select Program');
         
         
-            // $row = $form->addRow()->addClass('studentType hiddencol');
-            //     $row->addLabel('pupilsightYearGroupID', __('Class'));
-            //     $row->addSelect('pupilsightYearGroupID')->placeholder('Select Class');
+            $row = $form->addRow()->addClass('studentType hiddencol');
+                $row->addLabel('pupilsightYearGroupID', __('Class'));
+                $row->addSelect('pupilsightYearGroupID')->placeholder('Select Class');
         
                 
-            // $row = $form->addRow()->addClass('studentType hiddencol');
-            //     $row->addLabel('pupilsightRollGroupID', __('Section'));
-            //     $row->addSelect('pupilsightRollGroupID')->placeholder('Select Section'); 
+            $row = $form->addRow()->addClass('studentType hiddencol');
+                $row->addLabel('pupilsightRollGroupID', __('Section'));
+                $row->addSelect('pupilsightRollGroupID')->placeholder('Select Section'); 
             
             $row = $form->addRow();
                 $row->addLabel('pupilsightPersonIDStatusResponsible', __('Responsible User'))->description(__('Who is responsible for this new status?'));
@@ -265,7 +265,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                     success: function(response) {
                         $("#pupilsightPersonID").html();
                         $("#pupilsightPersonID").html(response);
-                        $("#pupilsightProgram").val('');
+                        $("#pupilsightProgramID").val('');
+                        $("#pupilsightYearGroupID").val('');
+                        $("#pupilsightRollGroupID").val('');
                     }
                 });
             }
@@ -273,9 +275,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
     });
 
 
-    $(document).on('change','#pupilsightProgram',function(){
+    $(document).on('change','#pupilsightProgramID',function(){
 
-        var pupilsightProgramID=$('#pupilsightProgram').val();
+        var pupilsightProgramID=$('#pupilsightProgramID').val();
         //alert(pupilsightProgramID);
 
         var type = 'getAllStudentsByProgram';
@@ -297,4 +299,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
         });
 
 });
+
+
+
 </script>    
