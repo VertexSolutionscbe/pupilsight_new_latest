@@ -256,7 +256,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
             $col->addSelect('pupilsightYearGroupID1')->setId("pupilsightYearGroupIDB")->addClass("pupilsightRollGroupIDP2")->selectMultiple();
 
-
+            $col = $row->addColumn()->setClass('newdes noEdit');
+            $col->addLabel('', __(''));
 
 
 

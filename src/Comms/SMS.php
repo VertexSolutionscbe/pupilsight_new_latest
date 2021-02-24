@@ -228,7 +228,7 @@ class SMS implements SMSInterface
             }*/
             $i++;
         }
-
+        $flagreturn= [];
         if (!empty($strto)) {
             $flagreturn =   $this->sendSMS($strto, $this->content);
         }
