@@ -257,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
                ->modalWindow(1100, 550);
 
                $actions->addAction('form', __('Form'))
-                ->setURL('/modules/Campaign/offline_wplogin_form.php')
+                ->setURL('/modules/Campaign/offline_form_open.php')
                 ->modalWindow(1100, 550);
           
         });

@@ -45,14 +45,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             $resultupd = $connection2->prepare($sqlupd);
             $resultupd->execute($datau);
 
-            $fid = $formula_id[$testmasterid];
-            $fval = $formula_val[$testmasterid];
-            
-            if(!empty($fid)){
-                $data1 = array('formula_id' => $fid, 'erta_id' => $erta_id, 'formula_val' => $fval);
-                $sql1 = "INSERT INTO examinationReportTemplateFormulaAttributeMapping SET formula_id=:formula_id, erta_id=:erta_id, formula_val=:formula_val";
-                $result = $connection2->prepare($sql1);
-                $result->execute($data1);
+
+            foreach($test_master_id as $tmasterid){
+                $fid = $formula_id[$tmasterid];
+                $fval = $formula_val[$tmasterid];
+                
+                if(!empty($fid)){
+                    $data1 = array('formula_id' => $fid, 'erta_id' => $erta_id, 'test_master_id' => $tmasterid, 'formula_val' => $fval);
+                    $sql1 = "INSERT INTO examinationReportTemplateFormulaAttributeMapping SET formula_id=:formula_id, erta_id=:erta_id, test_master_id=:test_master_id, formula_val=:formula_val";
+                    $result = $connection2->prepare($sql1);
+                    $result->execute($data1);
+                }
             }
         //}
         header("Location: {$URL}");  

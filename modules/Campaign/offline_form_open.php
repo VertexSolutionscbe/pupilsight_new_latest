@@ -1,7 +1,11 @@
  <?php
     include '../../pupilsight.php';
     $session = $container->get('session');
-    $subId = $_GET['subid'];
+    if(!empty($_GET['submission_id'])){
+        $subId = $_GET['submission_id'];
+    } else {
+        $subId = $_GET['subid'];
+    }
     $sql = 'Select a.form_id,b.id AS campId FROM wp_fluentform_submissions AS a LEFT JOIN campaign AS b ON a.form_id = b.offline_form_id WHERE a.id = ' . $subId . ' ';
     $result = $connection2->query($sql);
     $forms = $result->fetch();
