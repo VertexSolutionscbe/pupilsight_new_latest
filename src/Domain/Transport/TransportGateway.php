@@ -356,14 +356,14 @@ class TransportGateway extends QueryableGateway
         return $res;
     }
 
-    public function getViewMember(QueryCriteria $criteria, $pupilsightSchoolYearID){
+    public function getViewMember(QueryCriteria $criteria, $pupilsightSchoolYearID,$Bus,$Route){
         $pupilsightRoleIDAll = '003';
         $query = $this
             ->newQuery()
             ->from('trans_route_assign')
             ->cols([
                 'trans_route_assign.*','pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','pupilsightRollGroup.name AS section','pupilsightYearGroup.name AS class',
-                'trans_route_stops.stop_name','trans_routes.id as routeid','trans_routes.route_name','pupilsightSchoolYear.name as academic_year','trans_bus_details.name as bus_name','pupilsightRole.category'
+                'trans_route_stops.stop_name','trans_routes.bus_id as busid','trans_routes.id as routeid','trans_routes.route_name','pupilsightSchoolYear.name as academic_year','trans_bus_details.name as bus_name','pupilsightRole.category'
             ])
             
             ->leftJoin('pupilsightPerson', 'trans_route_assign.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
@@ -375,8 +375,16 @@ class TransportGateway extends QueryableGateway
             ->leftJoin('trans_routes', 'trans_route_assign.route_id=trans_routes.id')
             ->leftJoin('trans_bus_details', 'trans_routes.bus_id=trans_bus_details.id')
             ->leftJoin('pupilsightRole', 'pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID')
-            ->where('pupilsightPerson.canLogin = "Y" ')
-            ->where('trans_route_assign.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
+            ->where('pupilsightPerson.canLogin = "Y" ');
+
+            if(!empty($Route)){
+                $query->where('trans_route_assign.route_id = "'.$Route.'" ');
+            } 
+            if(!empty($Bus)){
+                $query->where('trans_routes.bus_id = "'.$Bus.'" ');
+            } 
+
+            $query->where('trans_route_assign.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->groupBy(['trans_route_assign.route_id']);
             $criteria->addFilterRules([

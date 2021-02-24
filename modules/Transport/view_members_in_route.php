@@ -15,6 +15,77 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/view_members_in_
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
+
+
+    if($_POST){
+        
+        $Route =  $_POST['Route'];
+        $Bus = $_POST['Bus'];
+
+        //echo $Route.'-'.$Bus;exit;
+            
+        
+    } else {
+        $Route =  '';
+        $Bus = '';
+        
+    }
+
+
+    //populate Bus   
+    $sqlr = 'SELECT id, name FROM trans_bus_details ';
+    $resultr = $connection2->query($sqlr);
+    $bus_name = $resultr->fetchAll();
+    $bus_id = array();
+    $bus_name1 = array('' => 'Select bus name');
+    $bus_name2 = array();
+
+    foreach ($bus_name as $dt) {
+        $bus_name2[$dt['id']] = $dt['name'];
+    }
+
+
+    $bus_id = $bus_name1 + $bus_name2;
+
+    //Populate Route
+
+    
+
+    $sqlr = 'SELECT route_name, id FROM  trans_routes ';
+    $resultr = $connection2->query($sqlr);
+    $onwardroute_l = $resultr->fetchAll();
+    $onwardroute_list = array();
+    $onwardroute_list1 = array('' => 'Select Route');
+    $onwardroute_list2 = array();
+    foreach ($onwardroute_l as $dt) {
+        $onwardroute_list2[$dt['id']] = $dt['route_name'];
+    }
+    $onwardroute_list = $onwardroute_list1 + $onwardroute_list2;
+
+
+
+
+    $searchform = Form::create('searchForm','');
+    $searchform->setFactory(DatabaseFormFactory::create($pdo));
+    $searchform->addHiddenValue('studentId', '0');
+    $row = $searchform->addRow();
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('Route', __('Route'));
+    $col->addSelect('Route')->fromArray($onwardroute_list)->selected($Route); 
+    
+    
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('Bus', __('Bus'));
+    $col->addSelect('Bus')->fromArray($bus_id)->selected($Bus); 
+
+    $col = $row->addColumn()->setClass('newdes');   
+    $col->addLabel('', __(''));
+    
+    $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');  
+    echo $searchform->getOutput();
+
+
     //Proceed!
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $page->breadcrumbs->add(__('Assign route'));
@@ -37,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/view_members_in_
     $criteria = $TransportGateway->newQueryCriteria()
         //->sortBy(['id'])
         ->fromPOST();
-    $viewMember = $TransportGateway->getViewMember($criteria, $pupilsightSchoolYearID);
+    $viewMember = $TransportGateway->getViewMember($criteria, $pupilsightSchoolYearID,$Bus,$Route);
     
 
     $table = DataTable::createPaginated('FeeStructureManage', $criteria);
