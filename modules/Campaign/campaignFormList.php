@@ -396,7 +396,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
                 $actions->addAction('form', __('Form'))
                     ->setId('showform-' . $dataSet["submission_id"])
-                    ->setURL('/modules/Campaign/wplogin_form.php')
+                    ->setURL('/modules/Campaign/form_open.php')
                     ->modalWindow(1100, 550);
             });
     }
