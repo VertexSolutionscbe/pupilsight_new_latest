@@ -236,10 +236,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     $col->addLabel('', __('Complete Class'))->addClass('dte');
 
     $col = $row->addColumn()->setClass('newdes noEdit');
-    $col->addLabel('', __(''));
-    //$col->addSelect('');
-
-    $col = $row->addColumn()->setClass('newdes noEdit');
     $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
     $col->addSelect('pupilsightSchoolYearID1')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);
 
@@ -250,6 +246,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
     $col->addSelect('pupilsightYearGroupID1')->setId("pupilsightYearGroupIDB")->addClass("pupilsightRollGroupIDP2")->selectMultiple();
+
+    $col = $row->addColumn()->setClass('newdes noEdit');
+    $col->addLabel('', __(''));
 
     $row = $form->addRow();
     $row->addFooter();

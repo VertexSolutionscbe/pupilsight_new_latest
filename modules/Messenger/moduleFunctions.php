@@ -2684,9 +2684,12 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
  * @param string $pupilsightGroupID
  * @return DataSet
  */
-function queryMembersreceipt($guid, $connection2, $mode = '', $msgtype = '')
+function queryMembersreceipt($guid, $connection2, $mode = '', $msgtype = '', $fromdate = '', $todate = '')
 {
     $return = '';
+    $return1 = '';
+    $return3 = '';
+
     if($msgtype=='sms'){
         $msgtype = " pmr.contactType = 'SMS' ";
     }elseif($msgtype=='email'){
@@ -2696,19 +2699,39 @@ function queryMembersreceipt($guid, $connection2, $mode = '', $msgtype = '')
     }
     //echo $msgtype;
 
-    /*if ($date == '') {
-        $date = date('Y-m-d');
+    if ($todate == '') {
+        $todate = date('Y-m-d H:i:s');
+    }else{
+        $todates=explode('/',$todate);
+        $dd1=$todates[0];
+        $mm1=$todates[1];
+        $yy1=$todates[2];
     }
+    $todate=$yy1.'-'.$mm1.'-'.$dd1;
+
 
     if ($fromdate == '') {
-        $fromdate = date('Y-m-d');
-    }*/
+        $fromdate = date('Y-m-d H:i:s');
+    }else{
+        $fromdates=explode('/',$fromdate);
+        $dd=$fromdates[0];
+        $mm=$fromdates[1];
+        $yy=$fromdates[2];
+    }
+    $fromdate=$yy.'-'.$mm.'-'.$dd;
+    if($fromdate>$todate){
+        $datecheck='fail';
+
+    }
+
 try {
     $data = array();
     //$sql = "SELECT pupilsightMessengerReceipt.*,pupilsightPerson.officialName as sendername,pupilsightPerson.pupilsightPersonID FROM pupilsightMessengerReceipt,pupilsightPerson WHERE pupilsightPerson.pupilsightPersonID=pupilsightMessengerReceipt.pupilsightPersonID AND ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC ";
     //$sql ="SELECT pp.officialName as sender, pp2.officialName as reciever ,pmr.* FROM pupilsightMessengerReceipt as pmr join pupilsightPerson as pp ON pp.pupilsightPersonID=pmr.pupilsightPersonID join pupilsightPerson as pp2 ON pp2.pupilsightPersonID=pmr.targetID WHERE ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC";
     //$sql ="SELECT pyg.name as classname, prg.name as sectionname, pp.officialName as sender, pp2.officialName as reciever ,pmr.* FROM pupilsightMessengerReceipt as pmr join pupilsightPerson as pp ON pp.pupilsightPersonID=pmr.pupilsightPersonID join pupilsightPerson as pp2 ON pp2.pupilsightPersonID=pmr.targetID left join pupilsightStudentEnrolment as pse ON pp2.pupilsightPersonID=pse.pupilsightPersonID left join pupilsightYearGroup as pyg ON pse.pupilsightYearGroupID=pyg.pupilsightYearGroupID left join pupilsightRollGroup as prg ON pse.pupilsightRollGroupID=prg.pupilsightRollGroupID WHERE ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC";
-    $sql ="SELECT psp.name as programname,pyg.name as classname, prg.name as sectionname, pp.officialName as sender, pp2.officialName as reciever ,pmr.* FROM pupilsightMessengerReceipt as pmr join pupilsightPerson as pp ON pp.pupilsightPersonID=pmr.pupilsightPersonID join pupilsightPerson as pp2 ON pp2.pupilsightPersonID=pmr.targetID left join pupilsightStudentEnrolment as pse ON pp2.pupilsightPersonID=pse.pupilsightPersonID left join pupilsightProgram as psp ON pse.pupilsightProgramID=psp.pupilsightProgramID left join pupilsightYearGroup as pyg ON pse.pupilsightYearGroupID=pyg.pupilsightYearGroupID left join pupilsightRollGroup as prg ON pse.pupilsightRollGroupID=prg.pupilsightRollGroupID WHERE ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC";
+    $sql ="SELECT psp.name as programname,pyg.name as classname, prg.name as sectionname, pp.officialName as sender, pp2.officialName as reciever ,pmr.* FROM pupilsightMessengerReceipt as pmr join pupilsightPerson as pp ON pp.pupilsightPersonID=pmr.pupilsightPersonID join pupilsightPerson as pp2 ON pp2.pupilsightPersonID=pmr.targetID left join pupilsightStudentEnrolment as pse ON pp2.pupilsightPersonID=pse.pupilsightPersonID left join pupilsightProgram as psp ON pse.pupilsightProgramID=psp.pupilsightProgramID left join pupilsightYearGroup as pyg ON pse.pupilsightYearGroupID=pyg.pupilsightYearGroupID left join pupilsightRollGroup as prg ON pse.pupilsightRollGroupID=prg.pupilsightRollGroupID WHERE ($msgtype) AND pmr.confirmedTimestamp BETWEEN '$fromdate' AND '$todate' ORDER BY pupilsightMessengerReceiptID DESC";
+    //$sql ="SELECT psp.name as programname,pyg.name as classname, prg.name as sectionname, pp.officialName as sender, pp2.officialName as reciever ,pmr.* FROM pupilsightMessengerReceipt as pmr join pupilsightPerson as pp ON pp.pupilsightPersonID=pmr.pupilsightPersonID join pupilsightPerson as pp2 ON pp2.pupilsightPersonID=pmr.targetID left join pupilsightStudentEnrolment as pse ON pp2.pupilsightPersonID=pse.pupilsightPersonID left join pupilsightProgram as psp ON pse.pupilsightProgramID=psp.pupilsightProgramID left join pupilsightYearGroup as pyg ON pse.pupilsightYearGroupID=pyg.pupilsightYearGroupID left join pupilsightRollGroup as prg ON pse.pupilsightRollGroupID=prg.pupilsightRollGroupID WHERE ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC";
+    //print_r($sql);
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {
@@ -2752,13 +2775,13 @@ try {
     $return .= __('Contact Type');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
-    $return .= __('Contact Person');
+    $return .= __('Recipient Name');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
     $return .= __('Program');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
-    $return .= __('Class');
+    $return .= __('Class/Section');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
     $return .= __('Contact Detail');
@@ -2770,7 +2793,7 @@ try {
     $return .= __('requestid');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
-    $return .= __('Time');
+    $return .= __('Date/Time');
     $return .= '</th>';
     $return .= '</tr>';
     $rowCount = 0;
@@ -2802,7 +2825,7 @@ try {
             $return .= 'NA';
         }
         $return .= '</td>';
-        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 5%'>";
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 10%'>";
         if($output[$i]['classname']!='') {
             $return .= $output[$i]['classname'].' ';
             $return .= $output[$i]['sectionname'];
@@ -2816,7 +2839,7 @@ try {
         $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 5%'>";
         $return .= "<i class='mdi mdi-check mdi-24px'></i>";
         $return .= '</td>';
-        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 15%'>";
+        $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 10%'>";
         $return .= $output[$i]['requestid'];
         $return .= '</td>';
         $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 20%'>";
@@ -2826,7 +2849,21 @@ try {
         $slno++;
     }
     $return .= '</table>';
+    if($datecheck=='fail'){
+        $return3 .= "<div class='alert alert-warning mt-2'>";
+        $return3 .= __('From date is greater then to date, please select valid date range.');
+        $return3 .= '</div>';
+        return $return3;
+    }
     if ($mode == 'print') {
+        if ($rowCount == 0) {
+            $return1 .= "<div class='alert alert-warning mt-2'>";
+            $return1 .= __('There are no records to display.');
+            $return1 .= '</div>';
+            return $return1;
+        }else{
+            return $return;
+        }
         return $return;
     } else {
         return $count;

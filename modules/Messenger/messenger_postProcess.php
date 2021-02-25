@@ -2172,7 +2172,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
 				$mail->smtpClose();
 			}
-
+            $dileveryid='';
 			if ($sms == "Y") {
 				//print_r($report);die();
 				if ($countryCode == "") {
@@ -2230,7 +2230,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 					$partialFail = true;
 				}
 			}
-//            die();
+            //die();
 			if ($partialFail == TRUE) {
 				//Fail 4
 				$URL .= "&addReturn=fail4";

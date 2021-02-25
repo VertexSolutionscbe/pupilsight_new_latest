@@ -202,20 +202,24 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 				print "if ($('#cannedResponse').val()==\"\" ) {";
 				print "$('#subject').val('');";
 				print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;";
+				print "tinyMCE.execCommand('mceRemoveEditor', false, 'body1') ;";
 				print "$('#body').val('" . addSlashes($signature) . "');";
 				print "$('#body1').val('" . addSlashes($signature) . "');";
 				print "tinyMCE.execCommand('mceAddEditor', false, 'body') ;";
+				print "tinyMCE.execCommand('mceAddEditor', false, 'body1') ;";
 				print "}";
 				foreach ($cannedResponses as $rowSelect) {
 					print "if ($('#cannedResponse').val()==\"" . $rowSelect["pupilsightMessengerCannedResponseID"] . "\" ) {";
 					print "$('#subject').val('" . htmlPrep($rowSelect["subject"]) . "');";
 					print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;";
+					print "tinyMCE.execCommand('mceRemoveEditor', false, 'body1') ;";
 					print "
 											$.get('./modules/Messenger/messenger_post_ajax.php?pupilsightMessengerCannedResponseID=" . $rowSelect["pupilsightMessengerCannedResponseID"] . "', function(response) {
 												 var result = response;
 												$('#body').val(result + '" . addSlashes($signature) . "');
 												$('#body1').val(result + '" . addSlashes($signature) . "');
 												tinyMCE.execCommand('mceAddEditor', false, 'body') ;
+												tinyMCE.execCommand('mceAddEditor', false, 'body1') ;
 											});
 										";
 					print "}";
@@ -259,13 +263,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
 		//echo "<span type='text' id='count'>Character Count</span>";
 
-		$form->toggleVisibilityByClass('sms1')->onRadio('sms')->when('N');
+		//$form->toggleVisibilityByClass('sms1')->onRadio('sms')->when('N');
 		$row = $form->addRow()->addClass('sms1')->setID('bodyhide');
 		$col = $row->addColumn('body');
 		$col->addLabel('body', __('Body'));
 		$col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
 
-		$form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
+		//$form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
 		$row = $form->addRow()->addClass('sms')->setID('body1hide');
 		$col = $row->addColumn('body');
 		$col->addLabel('body', __('Body'));
