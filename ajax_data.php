@@ -2808,9 +2808,9 @@ if ($type == 'getSketchLabel') {
     } else if ($entity == 'Test') {
         $label = "'Marks','Max Marks','Min Marks','Grade','Grade Point','Remarks','Subject','Subject Code'";
     } else {
-        $label = "'Marks','Grade','Grade Point','Fail Count','Change of Color','Percentage'";
+        $label = "'Marks','Max Marks','Grade','Grade Point','Fail Count','Change of Color','Percentage'";
     }
-    echo $sql = "SELECT table_label FROM examinationReportTemplateConfiguration WHERE table_label IN (" . $label . ") GROUP BY table_label";
+    $sql = "SELECT table_label FROM examinationReportTemplateConfiguration WHERE table_label IN (" . $label . ") GROUP BY table_label";
     $result = $connection2->query($sql);
     $labeldata = $result->fetchAll();
     $data = '<option value="">Select Type</option>';
