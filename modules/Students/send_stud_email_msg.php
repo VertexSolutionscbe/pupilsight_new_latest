@@ -116,7 +116,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
 
                                 $msgby =$_SESSION[$guid]["pupilsightPersonID"];
                                 Updatemessesnger($connection2,$msgby,$st,$body,$subject);
-                                $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$msgby."', pupilsightPersonID='".$msgby."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N'";
+                                $nowtime =date("Y-m-d H:i:s");
+                                $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$msgby."', pupilsightPersonID='".$msgby."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
                                 $connection2->query($savedata);
                             } catch (Exception $ex) {
                                 print_r($x);
@@ -129,7 +130,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                             $res = file_get_contents($url);
                             $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
                             $connection2->query($sq);
-                            $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$senderid."', pupilsightPersonID='".$senderid."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N'";
+                            $nowtime =date("Y-m-d H:i:s");
+                            $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$senderid."', pupilsightPersonID='".$senderid."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
                             $connection2->query($savedata);
                         }
                     }

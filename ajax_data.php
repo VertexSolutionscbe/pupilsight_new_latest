@@ -3968,7 +3968,8 @@ if ($type == 'groupmanageemail') {
 
                                         $mail->Send();
                                         Updatemessesnger($connection2, $_SESSION[$guid]["pupilsightPersonID"], $smspupilsightPersonID, $body, $subject);
-                                        $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='Email', contactDetail=" . $individualpersonphone['email'] . ", `key`='NA', confirmed='N'";
+                                        $nowtime = date("Y-m-d H:i:s");
+                                        $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='Email', contactDetail=" . $individualpersonphone['email'] . ", `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
                                         $connection2->query($savedata);
                                     } catch (Exception $ex) {
                                         print_r($x);
@@ -3979,7 +3980,8 @@ if ($type == 'groupmanageemail') {
                                     Updatemessesnger($connection2, $senderid, $smspupilsightPersonID, $body, $subject);
                                     $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $individualpersonphone['pupilsightPersonID'] . ", email='" . $individualpersonphone['email'] . "', subject='" . $subject . "', description='" . $body . "', uid='1' ";
                                     $connection2->query($sq);
-                                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$smspupilsightPersonID, contactType='Email', contactDetail='" . $individualpersonphone['email'] . "', `key`='NA', confirmed='N'";
+                                    $nowtime = date("Y-m-d H:i:s");
+                                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$smspupilsightPersonID, contactType='Email', contactDetail='" . $individualpersonphone['email'] . "', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
                                     $connection2->query($savedata);
                                 }
                             }

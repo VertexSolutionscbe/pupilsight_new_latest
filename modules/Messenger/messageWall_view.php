@@ -56,13 +56,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
         $col->addLabel('date', __('To Date'))->addClass('dte');
 		$col->addDate('date')->setValue($date)->required();
 
-    $displaycategory = array();
-    $displaycategory =  array('All'=>'Select Category',
-        'All' =>'All',
-        'Circular' =>'Circular',
-        'Timetable' =>'Timetable',
-        'Other' =>'Other',
-    );
+    $display_fields = array();
+    $data = array("categorystatus" => 1);
+    $sql = "SELECT categoryname FROM messagewall_category_master WHERE status=:categorystatus";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+    if ($result->rowCount() > 0){
+        while ($rowEmail = $result->fetch()) {
+            $display_fields[$rowEmail['categoryname']] = $rowEmail['categoryname'];
+        }
+    }
+    $display_fields1 = array('' => 'Select Category');
+    $display_fields = $display_fields1 + $display_fields;
+
 
     $displaymsgwalltype = array();
     $displaymsgwalltype =  array('All'=>'All',
@@ -73,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
     $col = $row->addColumn();
     $col->addLabel('category', __('Category'));
-    $col->addSelect('category')->fromArray($displaycategory)->selected($category);
+    $col->addSelect('category')->fromArray($display_fields)->selected($category);
 
     $col = $row->addColumn();
     $col->addLabel('msgtype', __('Message Type'));

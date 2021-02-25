@@ -12,7 +12,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
     echo '</div>';
 } else {
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
-    $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
+    $todate = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
     $fromdate = isset($_REQUEST['fromdate'])? $_REQUEST['fromdate'] : date($dateFormat);
     $msgtype = isset($_REQUEST['msgtype'])? $_REQUEST['msgtype'] : 'All';
 
@@ -41,12 +41,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
     $row = $form->addRow()->addClass('flex flex-wrap');
 
     $link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messenger_report.php';
-    $prevDay = DateTime::createFromFormat($dateFormat, $date)->modify('-1 day')->format($dateFormat);
-    $nextDay = DateTime::createFromFormat($dateFormat, $date)->modify('+1 day')->format($dateFormat);
+    $fromdate = DateTime::createFromFormat($dateFormat, $fromdate)->modify('-5 day')->format($dateFormat);
 
-    //$col = $row->addColumn()->addClass('flex items-center');
-    //	$col->addButton(__('Previous Day'))->addClass('btn btn-link mr-px')->onClick("window.location.href='{$link}&date={$prevDay}'");
-    //	$col->addButton(__('Next Day'))->addClass('btn btn-link')->onClick("window.location.href='{$link}&date={$nextDay}'");
 
 
     $displaymsgwalltype = array();
@@ -60,13 +56,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
     $col->addLabel('msgtype', __('Message Type'));
     $col->addSelect('msgtype')->fromArray($displaymsgwalltype)->selected($msgtype);
 
+    $col = $row->addColumn();
+    $col->addLabel('fromdate', __('From Date'))->addClass('dte');
+    $col->addDate('fromdate')->setValue($fromdate)->required();
+    $col = $row->addColumn();
+    $col->addLabel('date', __('To Date'))->addClass('dte');
+    $col->addDate('date')->setValue($todate)->required();
+
     $col = $row->addColumn()->addClass('col-md-4 mb-2');
     $col->addLabel('', __(''));
     $col->addSubmit(__('Go'));
 
     echo $form->getOutput();
-    echo "<div class='row'><div class='col-md-8'><a class='btn btn-primary' id='downloadLink' onclick='exportF(this)'>Export</a></div><div class='col-md-4'><input id='myInput' type='text' onkeyup='myFunction()' placeholder='Search' /></div></div>";
-    echo queryMembersreceipt($guid, $connection2, 'print', $msgtype);
+    echo "<div class='row'><div class='col-md-8'><!--<a class='btn btn-primary' id='downloadLink' onclick='exportF(this)'>Export</a>--></div><div class='col-md-4'><input id='myInput' type='text' onkeyup='myFunction()' placeholder='Search' /></div></div>";
+    echo queryMembersreceipt($guid, $connection2, 'print', $msgtype, $fromdate, $todate);
 }
 ?>
 <script>
