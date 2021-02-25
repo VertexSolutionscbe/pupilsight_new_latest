@@ -17,8 +17,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_amount
     //Proceed!
     $id = $_GET['id'];
     $page->breadcrumbs
-        ->add(__('Transport'), 'transport_fee.php')
-        ->add(__('Transport Fee'));
+        ->add(__('Transport Fee'), 'transport_fee.php')
+        ->add(__('Amount Config'));
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
