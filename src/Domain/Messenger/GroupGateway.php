@@ -159,4 +159,17 @@ class GroupGateway extends QueryableGateway
 
         return $this->db()->delete($sql, $data);
     }
+
+    public function queryMessengercategory(QueryCriteria $criteria)
+    {
+
+        $query = $this
+            ->newQuery()
+            ->from('messagewall_category_master')
+            ->cols(['messagewall_category_masterID','categoryname','status as categorystatus']);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+
 }

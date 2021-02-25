@@ -207,7 +207,8 @@ function Updatemessesnger($connection2,$sender,$smspupilsightPersonID, $body="",
             $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
             $result = $connection2->prepare($sql);
             $result->execute($data);
-            $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='Email', contactDetail='".$smspupilsightPersonID."', `key`='NA', confirmed='N'";
+            $nowtime =date("Y-m-d H:i:s");
+            $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='Email', contactDetail='".$smspupilsightPersonID."', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
             $connection2->query($savedata);
         }
     }

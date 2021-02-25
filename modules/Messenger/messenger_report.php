@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
 
     $link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messenger_report.php';
     $fromdate = DateTime::createFromFormat($dateFormat, $fromdate)->modify('-5 day')->format($dateFormat);
-    
+
 
 
     $displaymsgwalltype = array();

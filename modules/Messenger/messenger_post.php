@@ -247,17 +247,21 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		$row->addLabel('subject', __('Subject'));
 		$row->addTextField('subject')->maxLength(200)->required();
 
+        $display_fields = array();
+        $data = array("categorystatus" => 1);
+            $sql = "SELECT categoryname FROM messagewall_category_master WHERE status=:categorystatus";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+        if ($result->rowCount() > 0){
+            while ($rowEmail = $result->fetch()) {
+                $display_fields[$rowEmail['categoryname']] = $rowEmail['categoryname'];
+            }
+        }
+        $display_fields1 = array('' => 'Select Category');
+        $display_fields = $display_fields1 + $display_fields;
 
-		$display_fields = array();
-		$display_fields =  array(
-			'' => 'Select Category',
-			'Circular' => 'Circular',
-			'Timetable' => 'Timetable',
-			'Other' => 'Other',
-		);
-
-		$form->toggleVisibilityByClass('sms3')->onRadio('sms')->when('N');
-		$row = $form->addRow()->addClass('sms3');
+		//$form->toggleVisibilityByClass('sms3')->onRadio('sms')->when('N');
+		$row = $form->addRow()->addClass('sms3')->setID('categoryhide');
 		$row->addLabel('category', __('Category'));
 		$row->addSelect('category')->fromArray($display_fields)->selected($values['category']);
 
@@ -752,6 +756,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
             $("[id=publicationdate").hide();
             $("[id=body1hide").hide();
             $("[id=bodyhide").show();
+            $("[id=categoryhide").show();
             $("[id=copysmshide").hide();
         }
         else if (this.value == 'N') {
@@ -771,6 +776,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
             $("[id=publicationdate").hide();
             $("[id=subjecthide").hide();
             $("[id=bodyhide").hide();
+            $("[id=categoryhide").hide();
         }
         else if (this.value == 'N') {
             //alert("no");
@@ -788,6 +794,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
             $("[id=body1hide").hide();
             $("[id=copysmshide").hide();
             $("[id=bodyhide").show();
+            $("[id=categoryhide").show();
         }
         else if (this.value == 'N') {
             //alert("no");
