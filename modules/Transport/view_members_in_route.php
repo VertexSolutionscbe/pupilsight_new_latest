@@ -71,18 +71,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/view_members_in_
     $row = $searchform->addRow();
 
     $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('Route', __('Route'));
+    $col->addLabel('Route', __('Route Name'));
     $col->addSelect('Route')->fromArray($onwardroute_list)->selected($Route); 
     
     
     $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('Bus', __('Bus'));
+    $col->addLabel('Bus', __('Bus Name'));
     $col->addSelect('Bus')->fromArray($bus_id)->selected($Bus); 
 
     $col = $row->addColumn()->setClass('newdes');   
     $col->addLabel('', __(''));
     
-    $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>');  
+    $col->addContent('<button id="submitInvoice"  class=" btn btn-primary">Search</button>&nbsp;<a href="index.php?q=/modules/Transport/view_members_in_route.php" class="sendbtn btn btn-primary">Clear</a>');  
     echo $searchform->getOutput();
 
 
