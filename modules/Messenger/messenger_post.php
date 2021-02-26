@@ -341,7 +341,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
 
 			$data = array(pupilsightSchoolYearID => $_SESSION[$guid]["pupilsightSchoolYearID"]);
-			$sql = 'SELECT pupilsightYearGroupID AS value, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY sequenceNumber';
+			//$sql = 'SELECT pupilsightYearGroupID AS value, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY sequenceNumber';
+			//$sql = 'SELECT a.pupilsightProgramID ,b.pupilsightYearGroupID as value, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYearGroupID';
+			$sql = "SELECT  a.pupilsightProgramID, b.pupilsightYearGroupID as value, b.name as name1, CONCAT(c.name,' ',b.name) as name FROM pupilsightProgramClassSectionMapping AS a 
+LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID 
+LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID 
+WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYearGroupID";
 			$row = $form->addRow()->addClass('yearGroup hiddenReveal');
 			$row->addLabel('yearGroups[]', __('Select Year Groups'));
 			$row->addSelect('yearGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
@@ -371,7 +376,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
 				$data = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"]);
-				$sql = "SELECT pupilsightRollGroup.pupilsightRollGroupID AS value, pupilsightRollGroup.name FROM pupilsightRollGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name";
+				//$sql = "SELECT pupilsightRollGroup.pupilsightRollGroupID AS value, pupilsightRollGroup.name FROM pupilsightRollGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name";
+				$sql = "SELECT a.pupilsightMappingID as value, d.name as sectionname, a.pupilsightProgramID, b.pupilsightYearGroupID , b.name as name1, CONCAT(b.name,' ',d.name) as name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS d ON a.pupilsightRollGroupID = d.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID ORDER BY a.pupilsightMappingID";
 			} else {
 				if ($roleCategory == "Staff") {
 					$data = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightPersonID1" => $_SESSION[$guid]["pupilsightPersonID"], "pupilsightPersonID2" => $_SESSION[$guid]["pupilsightPersonID"], "pupilsightPersonID3" => $_SESSION[$guid]["pupilsightPersonID"], "pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"]);
@@ -707,8 +713,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			$row->addYesNoRadio('individuals')->checked('N')->required();
 
 			$form->toggleVisibilityByClass('individuals')->onRadio('individuals')->when('Y');
-
+            //$data= array();
 			$sql = "SELECT pupilsightRole.category, pupilsightPersonID, preferredName, surname, username FROM pupilsightPerson JOIN pupilsightRole ON (pupilsightRole.pupilsightRoleID=pupilsightPerson.pupilsightRoleIDPrimary) WHERE status='Full' ORDER BY surname, preferredName";
+			//$sql = "SELECT ppr.category, pp2.pupilsightPersonID as value, pp2.preferredName,pp2.surname,pp2.username, psp.name as programname,pyg.name as classname, prg.name as sectionname, pp2.officialName,CONCAT(pp2.preferredName,' ',pyg.name,' ',prg.name) as name FROM pupilsightPerson as pp2 left join pupilsightStudentEnrolment as pse ON pp2.pupilsightPersonID=pse.pupilsightPersonID left join pupilsightProgram as psp ON pse.pupilsightProgramID=psp.pupilsightProgramID left join pupilsightYearGroup as pyg ON pse.pupilsightYearGroupID=pyg.pupilsightYearGroupID left join pupilsightRollGroup as prg ON pse.pupilsightRollGroupID=prg.pupilsightRollGroupID left join pupilsightRole as ppr ON ppr.pupilsightRoleID=pp2.pupilsightRoleIDPrimary WHERE status='Full'";
 			$result = $pdo->executeQuery(array(), $sql);
 
 			// Build a set of individuals by ID => formatted name
@@ -717,6 +724,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 				$group[$item['pupilsightPersonID']] = formatName("" . $item['preferredName'], $item['surname'], 'Student', true) . ' (' . $item['username'] . ', ' . __($item['category']) . ')';
 				return $group;
 			}, array());
+            /*$row = $form->addRow()->addClass('individuals hiddenReveal');
+            $row->addLabel('individualList[]', __('Select Individuals'));
+            $row->addSelect('individualList[]')->fromQuery($pdo, $sql, $data)->setId('individualList')->selectMultiple()->required()->placeholder();*/
 
 			$row = $form->addRow()->addClass('individuals hiddenReveal');
 			$row->addLabel('individualList[]', __('Select Individuals'));
