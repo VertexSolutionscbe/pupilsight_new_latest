@@ -2162,7 +2162,8 @@ if ($type == 'updateApplicantData') {
     $application_id = '';
 
     $sqlchfee = "SELECT is_fee_generate FROM campaign WHERE id = " . $campaignid . " ";
-    $resultchkfee = database::doSelectOne($sqlchfee);
+    $resultrec1 = $connection2->query($sqlchfee);
+    $resultchkfee = $resultrec1->fetch();
     $chkfeeSettNew = $resultchkfee['is_fee_generate'];
 
     if ($chkfeeSettNew == '1') {
@@ -2210,10 +2211,11 @@ if ($type == 'updateApplicantData') {
         }
 
         $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
+
         $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
     } else {
-
         $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'id' => $submissionId);
+        //print_r($data);
         $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID WHERE id=:id';
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -3814,213 +3816,17 @@ if ($type == 'getCopyTestByClassProgram') {
     echo $returndata;
 }
 
-if ($type == 'getclasswithSection') {
-    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
-    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
-    $uid = $_SESSION[$guid]['pupilsightPersonID'];
-    $pids = $val;
-    foreach ($pids as $pid) {
-        if ($roleId == '2') {
-            $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
-        } else {
-            $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
-        }
-
-        $result = $connection2->query($sql);
-        $classes = $result->fetchAll();
-
-        // echo '<pre>';
-        // print_r($classes);
-        // echo '</pre>';
-        $data = '<option value="">Select Class</option>';
-        if (!empty($classes)) {
-            foreach ($classes as $k => $cll) {
-                //$data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
-
-
-                $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
-                $uid = $_SESSION[$guid]['pupilsightPersonID'];
-                $pupilsightSchoolYearID = $cll['pupilsightSchoolYearID'];
-
-                $cid = $cll['pupilsightYearGroupID'];
-                $pids = $val;
-                foreach ($pids as $pid) {
-                    if ($roleId == '2') {
-                        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '"  GROUP BY a.pupilsightRollGroupID';
-                    } else {
-                        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
-                    }
-                    //echo $sql;
-                    $result = $connection2->query($sql);
-                    $sections = $result->fetchAll();
-                    //$data = '<option value="">Select Section</option>';
-                    if (!empty($sections)) {
-                        foreach ($sections as $k => $cl) {
-                            $data .= '<option value="' . $pid . '-' . $cl['pupilsightYearGroupID'] . '-' . $cl['pupilsightRollGroupID'] . '">' . $cll['name'] . $cl['name'] . '</option>';
-                        }
-                    }
-                }
-            }
-        }
+if ($type == 'delSubjectSkills') {
+    //$skid = $val;
+    $subid = explode(',', $val);
+    //$skillname = explode(',', $_POST['skillname']);
+    $pupilsightSchoolYearID = $_POST['academicId'];
+    $pupilsightProgramID = $_POST['programId'];
+    $classId = $_POST['classId'];
+    foreach ($subid as $sub) {
+        $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $classId, 'pupilsightDepartmentID' => $sub);
+        $sql1 = 'DELETE FROM subjectSkillMapping WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID';
+        $result1 = $connection2->prepare($sql1);
+        $result1->execute($data1);
     }
-    echo $data;
-}
-if ($type == 'groupmanagesms') {
-    $sms = $container->get(SMS::class);
-    //print_r($_POST);
-    $grpvals = array();
-    $grpvals = $_POST['grpval'];
-    $grpvals = explode(',', $grpvals);
-    $msg = $_POST['msgval'];
-    $msgby = $_SESSION[$guid]['pupilsightPersonID'];
-
-    foreach ($grpvals as $grpval) {
-        $getlist = "SELECT pupilsightPersonID FROM pupilsightGroupPerson WHERE pupilsightGroupID=$grpval";
-        $result = $connection2->query($getlist);
-        $userlist = $result->fetchAll();
-        //print_r($userlist);
-        //die();
-        if (!empty($userlist)) {
-            foreach ($userlist as $individualperson) {
-                $getindividuallist = "SELECT pupilsightPersonID,phone1 FROM pupilsightPerson WHERE pupilsightPersonID=" . $individualperson['pupilsightPersonID'];
-                $result1 = $connection2->query($getindividuallist);
-                $userindividuallist = $result1->fetchAll();
-                if (!empty($userindividuallist)) {
-                    foreach ($userindividuallist as $ulphone => $individualpersonphone) {
-                        if ($individualpersonphone['phone1'] != '') {
-                            $res = $sms->sendSMSPro($individualpersonphone['phone1'], $msg, $individualpersonphone['pupilsightPersonID'], $msgby);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    echo "sent";
-}
-if ($type == 'groupmanageemail') {
-
-    //print_r($_POST);
-    $grpvals = array();
-    $grpvals = $_POST['grpval'];
-    $grpvals = explode(',', $grpvals);
-    $subject = $_POST['subject'];
-    $body = $_POST['body'];
-    $msgby = $_SESSION[$guid]['pupilsightPersonID'];
-    //die();
-    $attachmentStatus = "No";
-    $NewNameFile = '';
-    $errStatus = "No";
-    if (!empty($_FILES["email_attach_inv"]["name"])) {
-        $fileData = pathinfo(basename($_FILES["email_attach_inv"]["name"]));
-        $ex = explode(".", $_FILES["email_attach_inv"]["name"]);
-        $extension = end($ex);
-        $NewNameFile = time() . '.' . $extension;
-        $sourcePath = $_FILES['email_attach_inv']['tmp_name'];
-
-        //$uploaddir = '../../public/attactments_campaign/';
-        $uploaddir = $_SERVER['DOCUMENT_ROOT'] . "/public/attachments/";
-        $uploadfile = $uploaddir . $NewNameFile;
-
-        //echo "\nupload file path : ".$uploadfile."\n";
-        if (move_uploaded_file($sourcePath, $uploadfile)) {
-            $attachmentStatus = "Yes";
-        }
-        //echo $uploadfile;
-        //echo $attachmentStatus;
-    }
-    foreach ($grpvals as $grpval) {
-        $getlist = "SELECT pupilsightPersonID FROM pupilsightGroupPerson WHERE pupilsightGroupID=$grpval";
-        $result = $connection2->query($getlist);
-        $userlist = $result->fetchAll();
-        //print_r($userlist);
-        //die();
-        if (!empty($userlist)) {
-            foreach ($userlist as $individualperson) {
-                $getindividuallist = "SELECT pupilsightPersonID,email FROM pupilsightPerson WHERE pupilsightPersonID=" . $individualperson['pupilsightPersonID'];
-                $result1 = $connection2->query($getindividuallist);
-                $userindividuallist = $result1->fetchAll();
-                if (!empty($userindividuallist)) {
-                    foreach ($userindividuallist as $ulphone => $individualpersonphone) {
-                        $smspupilsightPersonID = $individualpersonphone['pupilsightPersonID'];
-                        if ($individualpersonphone['email'] != '') {
-                            if (!empty($body) && !empty($individualpersonphone['email'])) {
-                                $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Messenger/mailsend.php';
-                                $url .= "&to=" . $individualpersonphone['email'];
-                                $url .= "&sub=" . rawurlencode($subject);
-                                $url .= "&body=" . rawurlencode($body);
-
-                                if ($attachmentStatus == "Yes") {
-                                    $from = $_SESSION[$guid]['organisationAdministratorEmail'];
-                                    $fromName = $_SESSION[$guid]['organisationAdministratorName'];
-                                    // sendEmailAttactment($to,$subject,$body,$NewNameFile,$from, $fromName);
-
-                                    try {
-                                        $mail = $container->get(Mailer::class);
-                                        $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
-
-                                        $mail->AddAddress($individualpersonphone['email']);
-                                        $mail->CharSet = 'UTF-8';
-                                        $mail->Encoding = 'base64';
-                                        $mail->AddAttachment($uploadfile);                        // Optional name
-                                        $mail->isHTML(true);
-                                        $mail->Subject = $subject;
-                                        $mail->Body = $body . $uploadfile;
-
-                                        $mail->Send();
-                                        Updatemessesnger($connection2, $_SESSION[$guid]["pupilsightPersonID"], $smspupilsightPersonID, $body, $subject);
-                                        $nowtime = date("Y-m-d H:i:s");
-                                        $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='Email', contactDetail=" . $individualpersonphone['email'] . ", `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
-                                        $connection2->query($savedata);
-                                    } catch (Exception $ex) {
-                                        print_r($x);
-                                    }
-                                } else {
-                                    $res = file_get_contents($url);
-                                    $senderid = $_SESSION[$guid]["pupilsightPersonID"];
-                                    Updatemessesnger($connection2, $senderid, $smspupilsightPersonID, $body, $subject);
-                                    $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $individualpersonphone['pupilsightPersonID'] . ", email='" . $individualpersonphone['email'] . "', subject='" . $subject . "', description='" . $body . "', uid='1' ";
-                                    $connection2->query($sq);
-                                    $nowtime = date("Y-m-d H:i:s");
-                                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$smspupilsightPersonID, contactType='Email', contactDetail='" . $individualpersonphone['email'] . "', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
-                                    $connection2->query($savedata);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    echo "sent";
-}
-function Updatemessesnger($connection2, $sender, $smspupilsightPersonID, $body = "", $subject = "")
-{
-    //   echo "hi"; die();
-    $ppid = $smspupilsightPersonID;
-
-
-    $msgby = $sender;
-    $msgto = $ppid;
-    //$emailreportp=$sms->updateMessengerTableforEmail($msgto,$subject,$body,$msgby);
-
-    $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
-    $resultAI = $connection2->query($sqlAI);
-    $rowAI = $resultAI->fetch();
-    $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
-
-    $email = "Y";
-    $messageWall = "N";
-    $sms = "N";
-    $date1 = date('Y-m-d');
-
-    $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body, "pupilsightPersonID" => $msgby, "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
-    $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
-    //print_r($data);
-    //print_r($sql);
-    $data = array("AI" => $AI, "t" => $msgto);
-    $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
-    $result = $connection2->prepare($sql);
-    $result->execute($data);
 }

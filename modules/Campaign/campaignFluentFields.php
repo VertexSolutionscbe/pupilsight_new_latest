@@ -33,8 +33,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFluentFie
             if(!empty($f->attributes)){
                 $data .= '<option value="'.$f->attributes->name.'" >'.ucwords($f->attributes->name).'</option>';
             }
+            if(!empty($f->columns)){
+                foreach($f->columns as $cf){
+                    foreach($cf as $cff){
+                        foreach($cff as $ctf){
+                            if(!empty($ctf->attributes)){
+                                $data .= '<option value="'.$ctf->attributes->name.'" >'.ucwords($ctf->attributes->name).'</option>';
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
+    //die();
     // foreach ($rowdata as $dt) {
     //     $data .= '<option value="'.$dt['id'].'" >'.$dt['field_name'].' '.$dt['sub_field_name'].'</option>';
     // }

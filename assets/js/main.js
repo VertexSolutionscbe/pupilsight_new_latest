@@ -4990,7 +4990,71 @@
             $(".skillId").prop('checked', true);
             var skills = [];
             var sknames = [];
+            var checked = $(".skillId:checked").length;
+            if (checked >= 1) {
+                $.each($(".skillId:checked"), function () {
+                    skills.push($(this).attr('data-id'));
+                    var sid = $(this).attr('data-id');
+                    var skname = $("#sname" + sid).val();
+                    sknames.push(sid + '-' + skname);
+                });
+                var skid = skills.join(",");
+                var skillname = sknames.join(",");
+
+                // var sub = [];
+                // $.each($(".subId:checked"), function () {
+                //     sub.push($(this).attr('data-id'));
+                // });
+                // var subid = sub.join(",");
+                var subid = $("#deptId").val();
+                var academicId = $("#pupilsightSchoolYearID").val();
+                var programId = $("#pupilsightProgramID_MC").val();
+                var classId = $("#pupilsightClassID").val();
+
+                if (skid != '' && subid != '') {
+                    var type = 'addSubjectSkills';
+                    $.ajax({
+                        url: 'ajax_data.php',
+                        type: 'post',
+                        data: { val: skid, type: type, subid: subid, skillname: skillname, academicId: academicId, programId: programId, classId: classId },
+                        async: true,
+                        success: function (response) {
+                            //$("#clickstaffunassign").click();
+                        }
+                    });
+                }
+            } else {
+                var subid = $("#deptId").val();
+                var academicId = $("#pupilsightSchoolYearID").val();
+                var programId = $("#pupilsightProgramID_MC").val();
+                var classId = $("#pupilsightClassID").val();
+                console.log(skid);
+                if (skid != '' && subid != '') {
+                    var type = 'delSubjectSkills';
+                    $.ajax({
+                        url: 'ajax_data.php',
+                        type: 'post',
+                        data: { val: subid, type: type, academicId: academicId, programId: programId, classId: classId },
+                        async: true,
+                        success: function (response) {
+                            //$("#clickstaffunassign").click();
+                        }
+                    });
+                }
+            }
+        } else {
+            $(".skillId").prop('checked', false);
+        }
+
+    });
+
+    $(document).on('change', '.skillId', function () {
+        var skills = [];
+        var sknames = [];
+        var checked = $(".skillId:checked").length;
+        if (checked >= 1) {
             $.each($(".skillId:checked"), function () {
+                //console.log(1);
                 skills.push($(this).attr('data-id'));
                 var sid = $(this).attr('data-id');
                 var skname = $("#sname" + sid).val();
@@ -5008,7 +5072,7 @@
             var academicId = $("#pupilsightSchoolYearID").val();
             var programId = $("#pupilsightProgramID_MC").val();
             var classId = $("#pupilsightClassID").val();
-
+            //console.log(skid);
             if (skid != '' && subid != '') {
                 var type = 'addSubjectSkills';
                 $.ajax({
@@ -5022,42 +5086,23 @@
                 });
             }
         } else {
-            $(".skillId").prop('checked', false);
-        }
-    });
-
-    $(document).on('change', '.skillId', function () {
-        var skills = [];
-        var sknames = [];
-        $.each($(".skillId:checked"), function () {
-            skills.push($(this).attr('data-id'));
-            var sid = $(this).attr('data-id');
-            var skname = $("#sname" + sid).val();
-            sknames.push(sid + '-' + skname);
-        });
-        var skid = skills.join(",");
-        var skillname = sknames.join(",");
-
-        // var sub = [];
-        // $.each($(".subId:checked"), function () {
-        //     sub.push($(this).attr('data-id'));
-        // });
-        // var subid = sub.join(",");
-        var subid = $("#deptId").val();
-        var academicId = $("#pupilsightSchoolYearID").val();
-        var programId = $("#pupilsightProgramID_MC").val();
-        var classId = $("#pupilsightClassID").val();
-        if (skid != '' && subid != '') {
-            var type = 'addSubjectSkills';
-            $.ajax({
-                url: 'ajax_data.php',
-                type: 'post',
-                data: { val: skid, type: type, subid: subid, skillname: skillname, academicId: academicId, programId: programId, classId: classId },
-                async: true,
-                success: function (response) {
-                    //$("#clickstaffunassign").click();
-                }
-            });
+            var subid = $("#deptId").val();
+            var academicId = $("#pupilsightSchoolYearID").val();
+            var programId = $("#pupilsightProgramID_MC").val();
+            var classId = $("#pupilsightClassID").val();
+            //console.log(skid);
+            if (skid != '' && subid != '') {
+                var type = 'delSubjectSkills';
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: subid, type: type, academicId: academicId, programId: programId, classId: classId },
+                    async: true,
+                    success: function (response) {
+                        //$("#clickstaffunassign").click();
+                    }
+                });
+            }
         }
     });
 

@@ -53,17 +53,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
 
                             //$testMasterId = $values['test_master_id'];
 
-                            $sqlterm = 'SELECT id FROM examinationTest WHERE test_master_id = '.$tmId.' AND id != '.$testid.' ';
-                            $resultterm = $connection2->query($sqlterm);
-                            $copytestid = $resultterm->fetchAll();
-
-                            // $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
-                            // $pupilsightProgramID = $_POST['pupilsightProgramID'];
-                            // $classId = implode(',', $_POST['pupilsightYearGroupID']);
-
-                            // $sqlterm = 'SELECT test_id FROM examinationTestAssignClass WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID IN ('.$classId.') AND id != '.$testid.' ';
+                            // $sqlterm = 'SELECT id FROM examinationTest WHERE test_master_id = '.$tmId.' AND id != '.$testid.' ';
                             // $resultterm = $connection2->query($sqlterm);
                             // $copytestid = $resultterm->fetchAll();
+
+                            $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
+                            $pupilsightProgramID = $_POST['pupilsightProgramID'];
+                            $classId = implode(',', $_POST['pupilsightYearGroupID']);
+
+                            $sqlterm = 'SELECT test_id FROM examinationTestAssignClass WHERE test_master_id = '.$tmId.' AND pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID IN ('.$classId.') AND id != '.$testid.' ';
+                            $resultterm = $connection2->query($sqlterm);
+                            $copytestid = $resultterm->fetchAll();
 
                             $sqlsub = 'SELECT * FROM examinationSubjectToTest WHERE test_id = '.$testid.' ';
                             $resultsub = $connection2->query($sqlsub);
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_test_to_sec
                             // echo '</pre>';
                             // die();
                             foreach($copytestid as $ctestss){
-                                $ctestId = $ctestss['id'];
+                                $ctestId = $ctestss['test_id'];
                                 $subject_type = $values['subject_type'];
                                 $assesment_method = $values['assesment_method'];
                                 $assesment_option = $values['assesment_option'] ;

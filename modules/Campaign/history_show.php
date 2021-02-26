@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history_show.php'
          returnProcess($guid, $_GET['return'], null, null);
      }
 
-     $id="97";
+     $id=$_GET['id'];
      $formId = '';
     
 // print_r($id);die();
