@@ -79,6 +79,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
        
             //Write to database
             try {
+                $sqlrt = 'SELECT b.path FROM campaign AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.fn_fees_receipt_template_id = b.id WHERE a.id = ' . $cid . ' ';
+                $resultrt = $connection2->query($sqlrt);
+                $recTempData = $resultrt->fetch();
+                $receiptTemplate = $recTempData['path'];
+
+
                 if(!empty($fn_fees_receipt_series_id)){
                     $sqlrec = 'SELECT id, formatval FROM fn_fee_series WHERE id = "'.$fn_fees_receipt_series_id.'" ';
                     $resultrec = $connection2->query($sqlrec);
@@ -199,14 +205,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 $resultpt = $connection2->query($sqlpt);
                 $valuept = $resultpt->fetch();
 
-                $sqlstu = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = "'.$submission_id.'" AND sub_field_name = "first_name" ';
+                $sqlstu = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = "'.$submission_id.'" AND field_name = "student_name" ';
                 $resultstu = $connection2->query($sqlstu);
                 $studetails = $resultstu->fetch();
 
+                $payment_receipt_date = date('d-m-Y', strtotime($payment_date));
                 $class_section = $valuestu["prog"].' - '.$valuestu["class"];
                 $dts_receipt = array(
                     "receipt_no" => $receipt_number,
-                    "date" => date("d-M-Y"),
+                    "date" => $payment_receipt_date,
                     "student_name" => $studetails['field_value'],
                     "student_id" => $submission_id,
                     "class_section" => $class_section,
@@ -216,7 +223,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                     "fine_amount" => $fine,
                     "other_amount" => "NA",
                     "pay_mode" => $valuept['name'],
-                    "transactionId" => $transactionId
+                    "transactionId" => $transactionId,
+                    "receiptTemplate" => $receiptTemplate
                 );
                 
                 if(!empty($invoice_id)){
@@ -261,15 +269,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 }
                 
                
-        
-                $_SESSION["dts_receipt_feeitem"] = $dts_receipt_feeitem;
-                $_SESSION["dts_receipt"] = $dts_receipt;
-                $URL .= "&return=success0";
-                $_SESSION["admin_callback"] = $URL;
-                if(!empty($dts_receipt) && !empty($dts_receipt_feeitem)){ 
-                    $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receipt.php';
-                    header('Location: '.$callback);
-                }  
+                if (!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)) {
+                    $_SESSION["dts_receipt_feeitem"] = $dts_receipt_feeitem;
+                    $_SESSION["dts_receipt"] = $dts_receipt;
+                    $URL .= "&return=success0";
+                    $_SESSION["admin_callback"] = $URL;
+                    if(!empty($dts_receipt) && !empty($dts_receipt_feeitem)){ 
+                        $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receipt_offline.php';
+                        header('Location: '.$callback);
+                    }  
+                }
 
             } catch (PDOException $e) {
                 $URL .= '&return=error9';

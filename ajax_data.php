@@ -2142,7 +2142,8 @@ if ($type == 'updateApplicantData') {
     $application_id = '';
 
     $sqlchfee = "SELECT is_fee_generate FROM campaign WHERE id = " . $campaignid . " ";
-    $resultchkfee = database::doSelectOne($sqlchfee);
+    $resultrec1 = $connection2->query($sqlchfee);
+    $resultchkfee = $resultrec1->fetch();
     $chkfeeSettNew = $resultchkfee['is_fee_generate'];
 
     if ($chkfeeSettNew == '1') {
@@ -2190,11 +2191,12 @@ if ($type == 'updateApplicantData') {
         }
 
         $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
+
         $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
 
     } else {
-
         $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'id' => $submissionId);
+        //print_r($data);
         $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID WHERE id=:id';
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -3764,4 +3766,20 @@ if ($type == 'getCopyTestByClassProgram') {
         }
     }
     echo $returndata;
+}
+
+if ($type == 'delSubjectSkills') {
+    //$skid = $val;
+    $subid = explode(',', $val);
+    //$skillname = explode(',', $_POST['skillname']);
+    $pupilsightSchoolYearID = $_POST['academicId'];
+    $pupilsightProgramID = $_POST['programId'];
+    $classId = $_POST['classId'];
+    foreach ($subid as $sub) {
+        $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $classId, 'pupilsightDepartmentID' => $sub);
+        $sql1 = 'DELETE FROM subjectSkillMapping WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID';
+        $result1 = $connection2->prepare($sql1);
+        $result1->execute($data1);
+        
+    }
 }

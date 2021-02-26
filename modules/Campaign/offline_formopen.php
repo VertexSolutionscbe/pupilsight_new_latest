@@ -390,6 +390,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                             //     scrollTop: $("#showdiv").offset().top
                             // }, 2000);
                             //$("#admissionPay").submit();
+
+
                             $("#preloader").hide();
                             if (chkfees != '') {
                                 window.location.href = 'index.php?q=/modules/Campaign/application_fee_payment.php&cid=' + cmpid;
@@ -397,6 +399,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                         }
                     });
                 }, 500);
+            } else {
+                $("#preloader").hide();
             }
         }
 
