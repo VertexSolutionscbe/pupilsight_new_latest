@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     if ($sd['attribute_type'] == 'Student' || $sd['attribute_type'] == 'Parent' || $sd['attribute_type'] == 'Class Teacher' || $sd['attribute_type'] == 'Principal') {
                         $studentDetails = getStudentDetails($connection2, $studentIds, $mappingData,  $sd['attribute_type']);
                         foreach($studentDetails as $k => $std){
-                            if ($sd['attribute_type'] == 'Student' && array_key_exists($sd['report_column_word'], $std)) {
+                            if (($sd['attribute_type'] == 'Student' || $sd['attribute_type'] == 'Parent') && array_key_exists($sd['report_column_word'], $std)) {
                                 $dataarr[$k][$sd['attribute_name']] = $std[$sd['report_column_word']];
                             }
 
@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                             }
                         }
                     }
-                    
+                   
 
                     if ($sd['attribute_type'] == 'Marks' && $sd['attribute_category'] == 'Test') {
                         $erta_id =  $sd['erta_id'];
@@ -240,6 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                 $skill_configure = $getStuMarks['skill_configure'];
                                 $subjectId = $getStuMarks['subject'];
                                 $subjectName = $getStuMarks['subjectName'];
+                                $gradeName = '';
 
                                 if($skill_configure == 'Sum'){
                                     $gradeName =  getGradeByMarks($gradeSystemId, $getmarks, $gradeConfiguration);
@@ -247,7 +248,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                     $gradeName =  getGradeByMarks($gradeSystemId, $getmarks, $gradeConfiguration);
                                 } else {
                                     //echo (int)$grade_id.'</br>';
-                                    $gradeName = $finalGradeConfig[(int)$grade_id];
+                                    $gId = (int)$grade_id;
+                                    if(!empty($gId)){
+                                        $gradeName = $finalGradeConfig[(int)$grade_id];
+                                    }
                                 }
 
                                 $getSketchData[$sd['attribute_type']][$sd['erta_id']][$subjectId] = $gradeName;
@@ -443,9 +447,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                                             try{
                                                                 foreach($grmnew as $d => $subDa){
                                                                     $subName = $getAllSubjectName[$d];
-                                                                    $gmn = ($subDa / 100) * $gradeMaxMarks[$d];
-                                                                    if (!empty($grmnew)) {
-                                                                        $gradeName =  getGradeByMarks($grade_id, $grmnew, $gradeConfiguration);
+                                                                    if(!empty($gradeMaxMarks[$d])){
+                                                                        $gmn = ($subDa / 100) * $gradeMaxMarks[$d];
+                                                                    } else {
+                                                                        $gmn = $subDa;
+                                                                    }
+                                                                    
+                                                                    if (!empty($gmn)) {
+                                                                        $gradeName =  getGradeByMarks($grade_id, $gmn, $gradeConfiguration);
                                                                     
                                                                         $gradename = $gradeName;
                                                                     } else {
@@ -684,18 +693,18 @@ function getSubjectTeachers($connection2, $subject_val_id, $subject_type, $mappi
         if ($subject_type == 'Select Subject') {
             $subIds = $subject_val_id;
             if (!empty($subIds)) {
-                $sql = 'SELECT c.officialName as sub_teacher, d.name, sd.subject_display_name,  s.signature_path, c.image_240 FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightDepartment AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID LEFT JOIN subjectToClassCurriculum AS sd ON a.pupilsightDepartmentID = sd.pupilsightDepartmentID LEFT JOIN pupilsightStaff AS s ON c.pupilsightPersonID = s.pupilsightPersonID WHERE d.pupilsightDepartmentID IN (' . $subIds . ') AND sd.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND sd.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND sd.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY d.pupilsightDepartmentID ';
+                $sql = 'SELECT c.officialName as sub_teacher, d.name, sd.subject_display_name,  s.signature_path, c.image_240 FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightDepartment AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID LEFT JOIN subjectToClassCurriculum AS sd ON a.pupilsightDepartmentID = sd.pupilsightDepartmentID LEFT JOIN pupilsightStaff AS s ON c.pupilsightPersonID = s.pupilsightPersonID WHERE d.pupilsightDepartmentID IN (' . $subIds . ') AND sd.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND sd.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND sd.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY d.pupilsightDepartmentID ORDER BY sd.pos ASC ';
                 $resultsub = $connection2->query($sql);
                 $subData = $resultsub->fetchAll();
             }
         } else if ($subject_type == 'All Subject') {
 
-            $sql = 'SELECT c.officialName as sub_teacher, d.subject_display_name, s.signature_path, c.image_240 FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN subjectToClassCurriculum AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID LEFT JOIN pupilsightStaff AS s ON c.pupilsightPersonID = s.pupilsightPersonID WHERE d.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND d.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND d.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY d.pupilsightDepartmentID ';
+            $sql = 'SELECT c.officialName as sub_teacher, d.subject_display_name, s.signature_path, c.image_240 FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN subjectToClassCurriculum AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID LEFT JOIN pupilsightStaff AS s ON c.pupilsightPersonID = s.pupilsightPersonID WHERE d.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND d.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND d.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY d.pupilsightDepartmentID ORDER BY d.pos ASC ';
             $resultsub = $connection2->query($sql);
             $subData = $resultsub->fetchAll();
         } else {
 
-            $sql = 'SELECT c.officialName as sub_teacher, d.subject_display_name, s.signature_path, c.image_240 FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN subjectToClassCurriculum AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID LEFT JOIN pupilsightDepartment AS e ON d.pupilsightDepartmentID = e.pupilsightDepartmentID LEFT JOIN pupilsightStaff AS s ON c.pupilsightPersonID = s.pupilsightPersonID WHERE d.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND d.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND d.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' AND e.type = "' . $subject_type . '" GROUP BY d.pupilsightDepartmentID  ';
+            $sql = 'SELECT c.officialName as sub_teacher, d.subject_display_name, s.signature_path, c.image_240 FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS b ON a.pupilsightStaffID = b.pupilsightStaffID LEFT JOIN pupilsightPerson AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN subjectToClassCurriculum AS d ON a.pupilsightDepartmentID = d.pupilsightDepartmentID LEFT JOIN pupilsightDepartment AS e ON d.pupilsightDepartmentID = e.pupilsightDepartmentID LEFT JOIN pupilsightStaff AS s ON c.pupilsightPersonID = s.pupilsightPersonID WHERE d.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND d.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND d.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' AND e.type = "' . $subject_type . '" GROUP BY d.pupilsightDepartmentID ORDER BY d.pos ASC ';
             $resultsub = $connection2->query($sql);
             $subData = $resultsub->fetchAll();
         }
@@ -914,7 +923,7 @@ function runMultipleSubMax($stuResultData, $testIDs, $final_formula, $final_form
                             
                             if($final_formula == 'Average_Excluding_Ab_Ex'){
                                 if($stuResultData[$testIDs[$i]][$subid]["max_marks"] != '0.00'){
-                                    $testmarks[$cnt] = $stuResultData[$testIDs[$i]][$studentid][$subid]["max_marks"];
+                                    $testmarks[$cnt] = $stuResultData[$testIDs[$i]][$subid]["max_marks"];
                                     $cnt++;
                                 }
                             } else if($final_formula == 'Average_Excluding_Ab'){
@@ -1266,9 +1275,32 @@ function getTestData($connection2, $testid, $pupilsightPersonID = NULL, $kountTm
                 }
             }
         }
+        // $subOrder = array();
+        // foreach($subjectNames as $key => $subName){
+        //     $subOrder[$key] = $key;
+        // }
+        // $newdt = array();
+        // $i = 0;
+        // foreach($dt as $stuID => $ds){
+        //     foreach($ds as $k => $d){
+        //         // if(array_key_exists($k,$subOrder)) {
+        //         //     echo $k.'</br>';
+        //         //     $newdt[$stuID][$k] = $d;
+        //         //     unset($d[$k]);
+        //         // }
+        //         $newdt[$stuID][$i] = $subOrder[$d[$k]-1];
+        //         $i++;
+        //     }
+        // }
     } catch (Exception $ex) {
         print_r($ex);
     }
+
+    
+    // echo '<pre>';
+    // print_r($newdt);
+    // echo '</pre>';
+    // die();
     return $dt;
 }
 
@@ -1381,98 +1413,54 @@ function runMultiple($stuResultData, $testIDs, $final_formula, $final_formula_be
                     $i++;
                 }
                 //print_r($testmarks);
+                $getStudentMarksData = '';
                 if($final_formula == 'Sum'){
                     $getStudentMarksData = sum($testmarks);
-                }
-                if($final_formula == 'Sum_Excluding_Ab'){
+                } else if($final_formula == 'Sum_Excluding_Ab'){
                     $getStudentMarksData = sum($testmarks);
-                }
-
-                if($final_formula == 'Sum_Excluding_Ex'){
+                } else if($final_formula == 'Sum_Excluding_Ex'){
                     $getStudentMarksData = sum($testmarks);
-                }
-
-                if($final_formula == 'Sum_Excluding_Ab_Ex'){
+                } else if($final_formula == 'Sum_Excluding_Ab_Ex'){
                     $getStudentMarksData = sum($testmarks);
-                }
-
-                if($final_formula == 'Average'){
+                } else if($final_formula == 'Average'){
                    $getStudentMarksData = avg($testmarks);
-                }
-
-                if($final_formula == 'Average_Excluding_Ab'){
+                } else if($final_formula == 'Average_Excluding_Ab'){
                     $getStudentMarksData = avg($testmarks);
-                }
-
-                if($final_formula == 'Average_Excluding_Ex'){
+                } else if($final_formula == 'Average_Excluding_Ex'){
                     $getStudentMarksData = avg($testmarks);
-                }
-
-                if($final_formula == 'Average_Excluding_Ab_Ex'){
+                } else if($final_formula == 'Average_Excluding_Ab_Ex'){
                     $getStudentMarksData = avg($testmarks);
-                }
-
-                if($final_formula == 'Best_of_All'){
+                } else if($final_formula == 'Best_of_All'){
                     $getStudentMarksData = Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Best_of_All_Excluding_Ex'){
+                } else if($final_formula == 'Best_of_All_Excluding_Ex'){
                     $getStudentMarksData = Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Best_of_All_Excluding_Ab'){
+                } else if($final_formula == 'Best_of_All_Excluding_Ab'){
                     $getStudentMarksData = Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Best_of_All_Excluding_Ab_Ex'){
+                } else if($final_formula == 'Best_of_All_Excluding_Ab_Ex'){
                     $getStudentMarksData = Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Second_Best_of_All'){
+                } else if($final_formula == 'Second_Best_of_All'){
                    $getStudentMarksData = Third_Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Second_Best_of_All_Excluding_Ex'){
+                } else if($final_formula == 'Second_Best_of_All_Excluding_Ex'){
                     $getStudentMarksData = Second_Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Second_Best_of_All_Excluding_Ab'){
+                } else if($final_formula == 'Second_Best_of_All_Excluding_Ab'){
                     $getStudentMarksData = Second_Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Second_Best_of_All_Excluding_Ab_Ex'){
+                } else if($final_formula == 'Second_Best_of_All_Excluding_Ab_Ex'){
                     $getStudentMarksData = Second_Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Third_Best_of_All'){
+                } else if($final_formula == 'Third_Best_of_All'){
                     $getStudentMarksData = Third_Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Third_Best_of_All_Excluding_Ex'){
+                } else if($final_formula == 'Third_Best_of_All_Excluding_Ex'){
                     $getStudentMarksData = Third_Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Third_Best_of_All_Excluding_Ab'){
+                } else if($final_formula == 'Third_Best_of_All_Excluding_Ab'){
                     $getStudentMarksData = Third_Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Third_Best_of_All_Excluding_Ab_Ex'){
+                } else if($final_formula == 'Third_Best_of_All_Excluding_Ab_Ex'){
                     $getStudentMarksData = Third_Best_of_All($testmarks);
-                }
-
-                if($final_formula == 'Best_of_Sum'){
+                } else if($final_formula == 'Best_of_Sum'){
                     $getStudentMarksData = Best_of_Sum($testmarks, $final_formula_best_cal);
-                }
-
-                if($final_formula == 'Best_of_Sum_Excluding_Ab_Ex'){
+                } else if($final_formula == 'Best_of_Sum_Excluding_Ab_Ex'){
                     $getStudentMarksData = Best_of_Sum($testmarks, $final_formula_best_cal);
-                }
-
-                if($final_formula == 'Best_of_Average'){
+                } else if($final_formula == 'Best_of_Average'){
                     $getStudentMarksData = Best_of_Average($testmarks, $final_formula_best_cal);
-                }
-
-                if($final_formula == 'Best_of_Average_Excluding_Ab_Ex'){
+                } else if($final_formula == 'Best_of_Average_Excluding_Ab_Ex'){
                     $getStudentMarksData = Best_of_Average($testmarks, $final_formula_best_cal);
                 }
 
@@ -1798,6 +1786,7 @@ function getAllSubjectName($connection2, $mappingData){
 }
 
 function getFinalComputedMarks($finalFormuala,  $getComputedMarks, $final_formula_best_cal){
+    $computedData = '';
     if ($finalFormuala == 'Sum') {
         $computedData =  sum($getComputedMarks);
     } else if ($finalFormuala == 'Average') {
@@ -1822,7 +1811,7 @@ function getRemarks($connection2, $test_master_id, $mappingData){
     $testdata = $resultt->fetch();
     if (!empty($testdata)) {
         $testid = $testdata['test_id'];
-        $sqlmarks = 'SELECT a.test_id, a.pupilsightDepartmentID, b.subject_display_name, a.remarks, a.pupilsightPersonID FROM examinationMarksEntrybySubject AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID  WHERE  a.test_id = '.$testid.'  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' AND a.skill_id = 0  ';
+        $sqlmarks = 'SELECT a.test_id, a.pupilsightDepartmentID, b.subject_display_name, a.remarks, a.pupilsightPersonID FROM examinationMarksEntrybySubject AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID  WHERE  a.test_id = '.$testid.'  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' AND a.skill_id = 0 ORDER BY b.pos ASC  ';
         $resultmarks = $connection2->query($sqlmarks);
         $rem = $resultmarks->fetchAll();
         

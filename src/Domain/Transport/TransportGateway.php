@@ -606,7 +606,8 @@ class TransportGateway extends QueryableGateway
         ->leftJoin('fn_fees_head', 'trans_schedule.fee_head_id=fn_fees_head.id')
         ->leftJoin('fn_fee_series as inv', 'trans_schedule.invoice_series_id=inv.id')
         ->leftJoin('fn_fee_series as rec', 'trans_schedule.receipt_series_id=rec.id')
-        ;
+        ->orderby(['trans_schedule.id DESC']);
+        
         return $this->runQuery($query, $criteria, TRUE);
     }    
 

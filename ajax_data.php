@@ -2806,7 +2806,7 @@ if ($type == "getSelect_interaction") {
 if ($type == 'getSketchLabel') {
     $entity = $val;
     if ($entity == 'Entity') {
-        $label = "'Student','Parent','Principal','Staff','Subject Teacher','Class Teacher'";
+        $label = "'Student','Parent','Principal','Subject Teacher','Class Teacher'";
     } else if ($entity == 'Test') {
         $label = "'Marks','Max Marks','Min Marks','Grade','Grade Point','Remarks','Subject','Subject Code'";
     } else {
