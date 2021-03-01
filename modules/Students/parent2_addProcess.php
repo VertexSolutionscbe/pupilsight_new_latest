@@ -381,19 +381,26 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_add.php'
                         $fhomeAddressDistrict = $address1District;
                         $fhomeAddressCountry = $address1Country;
 
+                        $sqlchk = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= ' . $insertstudentId . ' ';
+                        $resultfam = $connection2->query($sqlchk);
+                        $famdata = $resultfam->fetch();
 
-                        $dataf = array('name' => $fname, 'status' => $fstatus, 'languageHomePrimary' => $flanguageHomePrimary, 'languageHomeSecondary' => $flanguageHomeSecondary, 'nameAddress' => $fnameAddress, 'homeAddress' => $fhomeAddress, 'homeAddressDistrict' => $fhomeAddressDistrict, 'homeAddressCountry' => $fhomeAddressCountry);
-                        $sqlf = 'INSERT INTO pupilsightFamily SET name=:name, status=:status, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry';
-                        $resultf = $connection2->prepare($sqlf);
-                        $resultf->execute($dataf);
+                        $familyId = $famdata['pupilsightFamilyID'];
 
-                        $familyId = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
+                        // if(empty($familyId)){
+                        //     $dataf = array('name' => $fname, 'status' => $fstatus, 'languageHomePrimary' => $flanguageHomePrimary, 'languageHomeSecondary' => $flanguageHomeSecondary, 'nameAddress' => $fnameAddress, 'homeAddress' => $fhomeAddress, 'homeAddressDistrict' => $fhomeAddressDistrict, 'homeAddressCountry' => $fhomeAddressCountry);
+                        //     $sqlf = 'INSERT INTO pupilsightFamily SET name=:name, status=:status, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry';
+                        //     $resultf = $connection2->prepare($sqlf);
+                        //     $resultf->execute($dataf);
 
-                        
-                        $sdata = array('pupilsightFamilyID' => $familyId, 'pupilsightPersonID' => $insertstudentId);
-                        $ssql = 'INSERT INTO pupilsightFamilyChild SET pupilsightFamilyID=:pupilsightFamilyID, pupilsightPersonID=:pupilsightPersonID';
-                        $sresult = $connection2->prepare($ssql);
-                        $sresult->execute($sdata);
+                        //     $familyId = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
+
+                            
+                        //     $sdata = array('pupilsightFamilyID' => $familyId, 'pupilsightPersonID' => $insertstudentId);
+                        //     $ssql = 'INSERT INTO pupilsightFamilyChild SET pupilsightFamilyID=:pupilsightFamilyID, pupilsightPersonID=:pupilsightPersonID';
+                        //     $sresult = $connection2->prepare($ssql);
+                        //     $sresult->execute($sdata);
+                        // }
 
                         $fdata = array('pupilsightFamilyID' => $familyId, 'pupilsightPersonID' => $parentId, 'comment' => '', 'childDataAccess' => 'Yes', 'contactPriority' => '1', 'contactCall' => 'Y', 'contactSMS' => 'Y', 'contactEmail' => 'Y', 'contactMail' => 'Y');
 

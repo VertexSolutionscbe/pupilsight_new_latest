@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 foreach ($sketchDataAttr as $sd) {
 
 
-                    if ($sd['attribute_type'] == 'Student' || $sd['attribute_type'] == 'Class Teacher' || $sd['attribute_type'] == 'Principal') {
+                    if ($sd['attribute_type'] == 'Student' || $sd['attribute_type'] == 'Parent' || $sd['attribute_type'] == 'Class Teacher' || $sd['attribute_type'] == 'Principal') {
                         $studentDetails = getStudentDetails($connection2, $studentIds, $mappingData,  $sd['attribute_type']);
                         foreach ($studentDetails as $k => $std) {
                             if ($sd['attribute_type'] == 'Student' && array_key_exists($sd['report_column_word'], $std)) {
@@ -900,7 +900,7 @@ function runMultipleSubMax($stuResultData, $testIDs, $final_formula, $final_form
 
                         if ($final_formula == 'Average_Excluding_Ab_Ex') {
                             if ($stuResultData[$testIDs[$i]][$subid]["max_marks"] != '0.00') {
-                                $testmarks[$cnt] = $stuResultData[$testIDs[$i]][$studentid][$subid]["max_marks"];
+                                $testmarks[$cnt] = $stuResultData[$testIDs[$i]][$subid]["max_marks"];
                                 $cnt++;
                             }
                         } else if ($final_formula == 'Average_Excluding_Ab') {
@@ -1632,7 +1632,7 @@ function loadSkillConfig($skillConfig, $result)
 
 function getSubjectList($connection2, $testId, $mappingData)
 {
-    $sq = "select  a.pupilsightDepartmentID, b.subject_display_name from examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID where a.test_id='" . $testId . "' AND b.pupilsightSchoolYearID = " . $mappingData['pupilsightSchoolYearID'] . " AND b.pupilsightProgramID = " . $mappingData['pupilsightProgramID'] . " AND b.pupilsightYearGroupID = " . $mappingData['pupilsightYearGroupID'] . "  ";
+    $sq = "select  a.pupilsightDepartmentID, b.subject_display_name from examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID where a.test_id='" . $testId . "' AND b.pupilsightSchoolYearID = " . $mappingData['pupilsightSchoolYearID'] . " AND b.pupilsightProgramID = " . $mappingData['pupilsightProgramID'] . " AND b.pupilsightYearGroupID = " . $mappingData['pupilsightYearGroupID'] . " ORDER BY b.pos ASC  ";
     $result = $connection2->query($sq);
     $data = $result->fetchAll();
     $sub = array();
