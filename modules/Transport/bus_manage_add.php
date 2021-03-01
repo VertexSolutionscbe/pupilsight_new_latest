@@ -70,6 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
             $col = $row->addColumn()->setClass('newdes');
                 $col->addLabel('capacity', __('Capacity'));
                 $col->addTextField('capacity')->addClass('numfield')->required();
+                echo '<div id="spnCapacityStatus"></div>';
+
     
             $col = $row->addColumn()->setClass('newdes');
                
@@ -94,7 +96,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
         
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('driver_mobile', __('Driver Mobile'));
-                    $col->addTextField('driver_mobile')->addClass('numfield')->maxLength(12)->required();
+                    $col->addTextField('driver_mobile')->addClass('numfield')->maxLength(10)->required();
+                    echo '<div id="spnPhoneStatus"></div>';
+                    
         
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('coordinator_name', __('Transport Coordinator Name'));
@@ -103,6 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
                $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('coordinator_mobile', __('Transport Coordinator Mobile'));
                     $col->addTextField('coordinator_mobile')->addClass('numfield')->maxLength(12)->required();
+                    echo '<div id="spnCoordinatorStatus"></div>';
             
 
 
@@ -131,3 +136,118 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
     echo $form->getOutput();
 
 }
+?>
+
+
+<script>
+
+$(document).ready(function() {
+    $('#driver_mobile').blur(function(e) {
+    //$('#program').submit(function(e) {
+
+              
+        //e.preventDefault();
+        if (validatePhone('driver_mobile')) {
+            //$('#spnPhoneStatus').html('Valid Driver Mobile');
+            //$('#spnPhoneStatus').css('color', 'green');
+            
+        }
+        else {
+            $('#spnPhoneStatus').html('Invalid Driver Mobile');
+            $('#spnPhoneStatus').css('color', 'red');
+            
+
+        }
+    });
+});
+
+function validatePhone(txtPhone) {
+    var a = document.getElementById(txtPhone).value;
+    var filter = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)*?[0-9]{3,4}?[ \-]*[0-9]{3,4}?$/;
+    if (filter.test(a)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+$(document).ready(function() {
+    $('#coordinator_mobile').blur(function(e) {
+    //$('#program').submit(function(e) {
+
+              
+        //e.preventDefault();
+        if (validatePhone('coordinator_mobile')) {
+            //$('#spnCoordinatorStatus').html('Valid Driver Mobile');
+            //$('#spnCoordinatorStatus').css('color', 'green');
+            
+        }
+        else {
+            $('#spnCoordinatorStatus').html('Invalid Coordinator Mobile');
+            $('#spnCoordinatorStatus').css('color', 'red');
+            
+
+        }
+    });
+});
+
+function validatePhone(txtPhone) {
+    var a = document.getElementById(txtPhone).value;
+    var filter = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)*?[0-9]{3,4}?[ \-]*[0-9]{3,4}?$/;
+    if (filter.test(a)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+
+
+
+$(document).ready(function() {
+    $('#capacity').blur(function(e) {
+    //$('#program').submit(function(e) {
+
+              
+        //e.preventDefault();
+        if (validateCapacity('capacity')) {
+           // $('#spnCapacityStatus').html('Valid Capacity');
+           // $('#spnCapacityStatus').css('color', 'green');
+        }
+        else {
+            $('#spnCapacityStatus').html('Invalid Capacity');
+            $('#spnCapacityStatus').css('color', 'red');
+
+        }
+    });
+});
+
+function validateCapacity(txtPhone) {
+    var a = document.getElementById(txtPhone).value;
+    var filter = /^[0-9]*$/;
+    if (filter.test(a)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+
+</script>
+
+<style>
+
+span
+{
+    font-weight:bold;
+}
+</style>
+
+
+
