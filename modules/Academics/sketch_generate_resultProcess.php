@@ -8,7 +8,6 @@ include '../../db.php';
 
 //$conn->close();
 
-
 if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_attribute.php') == false) {
     //Acess denied
     echo "<div class='error'>";
