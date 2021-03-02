@@ -148,7 +148,7 @@ $(document).ready(function() {
               
         //e.preventDefault();
         if (validatePhone('driver_mobile')) {
-            //$('#spnPhoneStatus').html('Valid Driver Mobile');
+            $('#spnPhoneStatus').html('');
             //$('#spnPhoneStatus').css('color', 'green');
             
         }
