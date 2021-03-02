@@ -22,9 +22,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee.ph
 
     $TransportGateway = $container->get(TransportGateway::class);
     $criteria = $TransportGateway->newQueryCriteria()
-    ->sortBy(['id'])
+        ->pageSize(5000)    
+        ->sortBy(['id'])
         ->fromPOST();
          $viewMember = $TransportGateway->getTransSchedule($criteria);
+        //  echo '<pre>';
+        // print_r($viewMember);
+        //  echo '</pre>';
 
          echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/Transport/transport_invoice_assign_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Class</a>";  
          echo "&nbsp;&nbsp;<a href='fullscreen.php?q=/modules/Transport/transport_invoice_assign_student_manage_add.php' class='thickbox btn btn-primary'>Generate Invoice By Student</a>";  
@@ -84,3 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee.ph
         echo $table->render($viewMember);
 
         }
+
+?>
+
+    

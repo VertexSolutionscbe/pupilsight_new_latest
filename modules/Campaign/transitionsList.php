@@ -101,6 +101,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionsList.p
                     if (!empty($f->attributes)) {
                         $fform[$f->attributes->name] = ucwords($f->attributes->name);
                     }
+                    if(!empty($f->columns)){
+                        foreach($f->columns as $cf){
+                            foreach($cf as $cff){
+                                foreach($cff as $ctf){
+                                    if (!empty($ctf->attributes)) {
+                                        $fform[$ctf->attributes->name] = ucwords($ctf->attributes->name);
+                                    }
+                                    // if (!empty($ctf->settings) && !empty($ctf->settings->container_class)) {
+                                    //     if ($ctf->settings->container_class == 'show-in-grid') {
+                                    //         $fform[$ctf->attributes->name] = $ctf->attributes->name;
+                                    //     }
+                                    // }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
