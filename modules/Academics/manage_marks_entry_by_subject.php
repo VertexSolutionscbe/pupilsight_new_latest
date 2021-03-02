@@ -241,6 +241,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     $students = $CurriculamGateway->getstudent_subject_skill_test_mappingdata($criteria, $pupilsightSchoolYearID, $pupilsightProgramID,$pupilsightYearGroupID, $pupilsightRollGroupID,$pupilsightDepartmentID,$skill_id,$test_id1,$test_type);
 
     $subject_wise_tests =  $CurriculamGateway->getStudentTestSubjectClassWise($criteria,$pupilsightSchoolYearID,$pupilsightDepartmentID,$pupilsightYearGroupID,$pupilsightRollGroupID,$test_id1);
+
+    // echo '<pre>';
+    // print_r($subject_wise_tests);
+    // echo '<pre>';
      
      $sql_check='SELECT di_mode  FROM `subjectToClassCurriculum` WHERE `pupilsightSchoolYearID` = "'.$pupilsightSchoolYearID.'" AND `pupilsightProgramID` = "'.$pupilsightProgramID.'" AND `pupilsightYearGroupID` = "'.$pupilsightYearGroupID.'" AND `pupilsightDepartmentID` = "'.$pupilsightDepartmentID.'" ';
             $re_mode_check= $connection2->query($sql_check);
@@ -315,14 +319,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             foreach($subject_wise_tests as $s_test){ 
                 if($i > 1){
             ?> 
-                <th rowspan="2" style="width:80px"> Student Name </th>
+               
+                <th rowspan="2" style="width:80px"> Student Name <?php echo 'dd'.$s_test['enable_remarks'];?> </th>
             <?php } ?>
                     <th>Marks history</th>            
                     <th colspan='2'> Marks <br/>Obtained(<?php echo str_replace(".00", "", $s_test['max_marks']);?>)</th>
                     <th>Grade</th>
                     <th>Grade Status</th>
                     <?php if($s_test['enable_remarks'] == '1') { ?>
-                        <th class="bdr_right">Remark all <input type="checkbox" data-id="<?php echo $s_test['test_id'];?>" class="remark_all"></th>
+                        <th class="bdr_right" data-orderable="false">Remark all <input type="checkbox" data-id="<?php echo $s_test['test_id'];?>" class="remark_all"></th>
                     <?php } ?>
                     
                     <?php $i++; } ?>
@@ -374,7 +379,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     // print_r($prevdata);
                     // echo '</pre>';
 
-
+                    
                     $data_sel = '<option value="">Select Remark</option>';
                     if($mode=="SUBJECT_GRADE_WISE_AUTO"){
                     foreach ($re_mode_data as  $val) {
@@ -512,8 +517,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     <select id="remarklist<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="" class="w-full remarklist rmk_width" style="display:none" data-id="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
                      <?php echo $data_sel;?>
                     </select>
+
+                    <?php 
+                        if($prevdata['remark_type'] == 'list'){
+                            $remList = $prevdata['remarks'];
+                        } else {
+                            $remList = '';
+                        }
+                    ?>
                 
-                    <input id="remarklistval<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" type="hidden" name="remark_frmlst[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="">
+                    <input id="remarklistval<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" type="hidden" name="remark_frmlst[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="<?php echo $remList;?>">
                     <?php 
                         if($prevdata['remark_type'] == 'own'){
                             $remOwnData = $prevdata['remarks'];
@@ -605,13 +618,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             $(".remark_div_"+id).show();
             $(".text_remark_"+id).show();
             $(".rcount_"+id).show();
-            $(".rm_type_"+id). prop("checked", true);
+            //$(".rm_type_"+id).prop("checked", true);
         }
         else if($(this). prop("checked") == false){
             $(".remark_div_"+id).hide();
             $(".text_remark_"+id).hide();
             $(".rcount_"+id).hide();
-            $(".rm_type_"+id). prop("checked", false);
+            //$(".rm_type_"+id).prop("checked", false);
         }
     });
     $(document).on('keyup','.remark_textarea',function(){
@@ -880,7 +893,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $("#chkMarksSaveData").val(1);
     }); 
 
+    $(function() {
+        var tableContainer = $("#expore_tbl_wrapper");
+        var table = $("#expore_tbl");
+        var fakeContainer = $(".large-table-fake-top-scroll-container-3");
+        var fakeDiv = $(".large-table-fake-top-scroll-container-3 div");
 
+        var tableWidth = table.width();
+        fakeDiv.width(tableWidth);
+        
+        fakeContainer.scroll(function() {
+            tableContainer.scrollLeft(fakeContainer.scrollLeft());
+        });
+        tableContainer.scroll(function() {
+            fakeContainer.scrollLeft(tableContainer.scrollLeft());
+        });
+    })
     
 
      

@@ -29,6 +29,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
     $kid = $_GET['kid'];
     $type = $_GET['type'];
 
+    $tid = $_GET['tid'];
+    $esid = $_GET['esid'];
+
     $sqlskl = 'SELECT * FROM subjectSkillMapping WHERE pupilsightSchoolYearID = '.$aid.' AND pupilsightProgramID = '.$pid.' AND pupilsightYearGroupID = '.$cid.'  AND pupilsightDepartmentID = '.$did.' ';
     $resultskl = $connection2->query($sqlskl);
     $getSkills = $resultskl->fetchAll();
@@ -52,14 +55,50 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
         echo '<a style="cursor:pointer;float: right;" id="configureSet" data-id="'.$kid.'" class="btn btn-primary">OK</a>';
 
     if(!empty($getSkills)){
-        echo '<div id="showPerc" style="display:none;"><form id="skillConfigureForm"><table style="margin: 20px;" class="table"> <thead><th>Skills</th><th>Weightage</th></thead><tbody>';
+        if($type == 'Percentage'){
+            $css = '';
+        } else {
+            $css = 'style="display:none;"';
+        }
+        echo '<div id="showPerc" '.$css.'><form id="skillConfigureForm"><table style="margin: 20px;" class="table"> <thead><th>Skills</th><th>Weightage</th></thead><tbody>';
 
         foreach($getSkills as $skl){
-            echo '<tr><td>'.$skl['skill_display_name'].'</td><td><input type="textbox" style="border:1px solid grey;" name="weightage['.$skl['skill_id'].']"></td></tr>';
+            $weVal = '';
+            if(!empty($esid)){
+                $sql = 'SELECT skill_weightage FROM examinationSubjectToTestSkillConfigure WHERE test_id = '.$tid.' AND examinationSubjectToTestID = '.$esid.' AND skill_id =  '.$skl['skill_id'].' ';
+                $result = $connection2->query($sql);
+                $weData = $result->fetch();
+                if(!empty($weData)){
+                    $weVal = $weData['skill_weightage'];
+                } else {
+                    $weVal = '';
+                }
+            }
+            echo '<tr><td>'.$skl['skill_display_name'].'</td><td><input type="textbox" style="border:1px solid grey;" name="weightage['.$skl['skill_id'].']" value="'.$weVal.'"></td></tr>';
         }
         echo '</tbody></table>';
 
-        echo '<span style="font-size: 16px;margin: 20px;">Select Formula</span><select name="weightage_formula" style="float:none;"><option>Select Formula</option><option value="Sum">Sum</option><option value="Average">Average</option></select></form></div>';
+        $sumSel = '';
+        $avgSel = '';
+        if(!empty($esid)){
+            $sql = 'SELECT skill_weightage_formula FROM examinationSubjectToTest WHERE id = '.$esid.'  ';
+            $result = $connection2->query($sql);
+            $weData = $result->fetch();
+            if(!empty($weData)){
+                $weForVal = $weData['skill_weightage_formula'];
+                if($weForVal == 'Sum'){
+                    $sumSel = 'selected';
+                } 
+                if($weForVal == 'Average'){
+                    $avgSel = 'selected';
+                } 
+            } else {
+                $sumSel = '';
+                $avgSel = '';
+            }
+        }
+
+        echo '<span style="font-size: 16px;margin: 20px;">Select Formula</span><select name="weightage_formula" style="float:none;"><option>Select Formula</option><option value="Sum" '.$sumSel.'>Sum</option><option value="Average" '.$avgSel.'>Average</option></select></form></div>';
     }
 }
 

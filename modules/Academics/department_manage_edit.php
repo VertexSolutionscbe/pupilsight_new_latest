@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', 'Subject Code');
-                $row->addTextField('nameShort')->setId('subCode')->required();
+                $row->addTextField('nameShort')->setId('subCode');
 
             // $row = $form->addRow();
             //     $row->addLabel('subjectListing', 'Subject Listing');

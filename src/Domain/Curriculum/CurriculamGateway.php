@@ -504,6 +504,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
                 $query->where('examinationTestAssignClass.test_id IN('.$test_id.') AND examinationSubjectToTest.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ');
             } 
             $query ->where('examinationSubjectToTest.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ')
+            ->where('examinationSubjectToTest.is_tested = "1" ')
             ->where('subjectToClassCurriculum.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" AND examinationTestAssignClass.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" AND examinationTestAssignClass.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" AND examinationTestAssignClass.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
          
             ->groupBy(['examinationSubjectToTest.test_id','examinationGradeSystemConfiguration.gradeSystemId'])
