@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
     $rowAI = $resultAI->fetch();
     $AI = str_pad($rowAI['Auto_increment'], 4, '0', STR_PAD_LEFT);
 
-    if ($type == '' or $name == '' or $nameShort == '') {
+    if ($type == '' or $name == '' ) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit();

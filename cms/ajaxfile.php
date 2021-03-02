@@ -37,6 +37,17 @@ foreach ($field as $fe) {
         if (!empty($f->attributes)) {
             $arrHeader[] = $f->attributes->name;
         }
+        if(!empty($f->columns)){
+            foreach($f->columns as $cf){
+                foreach($cf as $cff){
+                    foreach($cff as $ctf){
+                        if (!empty($ctf->attributes)) {
+                            $arrHeader[] = $ctf->attributes->name;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
