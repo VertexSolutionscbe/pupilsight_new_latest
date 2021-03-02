@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
     $row = $form->addRow();
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('file', __('Bus Bulk Details(CSV File)'));
-    $col->addFileUpload('file')->accepts('.csv')->setMaxUpload(false);
+    $col->addFileUpload('file')->accepts('.csv')->required()->setMaxUpload(false);
 
     $row = $form->addRow();
     $row->addFooter();
