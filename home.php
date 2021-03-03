@@ -25,6 +25,7 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
+//$baseurl = getDomain().'/pupilsight_new';
 $baseurl = getDomain();
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
@@ -73,6 +74,7 @@ if (isset($data['logo_image'])) {
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
 
     <!-- CSS files -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
 
 
@@ -208,6 +210,7 @@ if (isset($data['logo_image'])) {
 </head>
 
 <body id='chkCounterSession' class='antialiased'>
+
     <!-- Preloader Start Here -->
     <div id="preloader" style="display:none;"></div>
     <!-- Preloader End Here -->
@@ -339,6 +342,7 @@ if (isset($data['logo_image'])) {
 
                         <div class="mt-3">
                             <button type="button" class="btn btn-primary btn-lg btn-square" onclick="loginPanel();">Login</button>
+                            <a class="btn btn-primary btn-lg btn-square" href="#courses">View Course</a>
                         </div>
 
                     </div>
@@ -599,10 +603,22 @@ if (isset($data['logo_image'])) {
                     </div>
 
                     <div class="col-md-4 col-sm-12">
-                        <div class='font20'>
+                        <div class='font20' style="margin:10px">
+
+                             
+                            <?php if ($data['address'] != '') { ?>
+
+                                
+                            <!-- <label class="form-label font20">Address</label> -->
+                            
+                            <i class="fa fa-map-marker" style="font-size:24px;color:blue" aria-hidden="true"></i>
+                            <?php echo $data['address']; ?>
+                            <br><br>
+                            <?php  } ?>   
                             <?php if ($data['phone'] != '') { ?>
                                 <div>
-                                    <label class="form-label font20">Contact Number</label>
+                                    <!-- <label class="form-label font20">Contact Number</label> -->
+                                    <i class="fa fa-phone" style="font-size:24px;color:blue"></i>
                                     <?php echo $data['phone']; ?>
                                 </div>
                                 <br>
@@ -611,7 +627,9 @@ if (isset($data['logo_image'])) {
 
                             <?php if ($data['primary_email'] != '' || $data['secondary_email'] != '') { ?>
 
-                                <label class="form-label font20">Email</label>
+                                <!-- <label class="form-label font20">Email</label> -->
+
+                                <i class="fa fa-envelope-o" style="font-size:24px;color:blue"></i>
                                 <diV><?php echo $data['primary_email']; ?></div>
                                 <div><?php echo $data['secondary_email']; ?></div>
 
@@ -620,21 +638,15 @@ if (isset($data['logo_image'])) {
 
                             <?php if ($data['fax'] != '') { ?>
                                 <div>
-                                    <label class="form-label font20">Fax</label>
+                                    <!-- <label class="form-label font20">Fax</label> -->
+
+                                    <i class="fa fa-fax" style="font-size:24px;color:blue"></i>
                                     <?php echo $data['fax']; ?>
                                 </div>
 
                                 <br>
                             <?php  } ?>
 
-                            <?php if ($data['address'] != '') { ?>
-
-                                <div class="Address">
-                                    <label class="form-label font20">Address</label>
-                                </div>
-                                <div><?php echo $data['address']; ?></div>
-                                <br>
-                            <?php  } ?>
                         </div>
                     </div>
 
@@ -803,6 +815,7 @@ if (isset($data['logo_image'])) {
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
+        <!-- <form action="<?php echo $baseurl;?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
         <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
             <div class="card-body">
                 <div class="closeX">
@@ -831,6 +844,8 @@ if (isset($data['logo_image'])) {
 
                 <div class="form-footer mb-3">
                     <div class="row">
+                    <p class="login-remember"><label><input name="rememberme" type="checkbox" id="rememberme" value="forever" /> Remember
+                                                                                    Me</label></p>
                         <div class='col-12'><button type="submit" class="btn btn-primary btn-block btn-square">Sign in</button></div>
                         <!--
                         <div class='col-6'><button type="button" onclick="homePanel();" class="btn btn-secondary btn-block btn-square">Back</button></div>
@@ -874,9 +889,45 @@ if (isset($data['logo_image'])) {
                     <a href="#" class="link-secondary mr-2">Admission</a>
                 </div>
                 -->
-                <div class="col-auto align-self-end">
-                    <a href="#" class="link-secondary">Powered by ParentOf</a>
+                <!-- <div class="col-auto align-self-end"> -->
+                <div class="row">
+
+                <div class="col-md-10">
+                    <a href="https://www.parentof.com/" target="_blank" class="link-secondary">Powered by ParentOf</a>
                 </div>
+
+                <div class="col-md-2">            
+
+                    <?php if (!empty($data['facebook_link'])) { ?>
+                        
+                            <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
+                                <i class="social-icon fa fa-facebook" style="font-size:24px"></i>
+                            </a>&nbsp;&nbsp;
+                        
+                    <?php } ?>
+                    <?php if (!empty($data['twitter_link'])) { ?>
+                            <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
+                                <i class="social-icon fa fa-twitter" style="font-size:24px"></i>
+                            </a>&nbsp;&nbsp;
+                        
+                    <?php } ?>
+                    <?php if (!empty($data['pinterest_link'])) { ?>
+                            <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
+                                <i class="social-icon fa fa-pinterest-p" style="font-size:24px"></i>
+                            </a>&nbsp;&nbsp;
+                      
+                    <?php } ?>
+                    <?php if (!empty($data['linkdlin_link'])) { ?>
+                            <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
+                                <i class="social-icon fa fa-linkedin" style="font-size:24px"></i>
+                            </a>
+                    <?php } ?>
+                    
+                </div>
+
+                </div>
+
+  
             </div>
         </div>
     </footer>
