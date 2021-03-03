@@ -793,7 +793,8 @@ if (!$session->has('address')) {
         }
 
         $page->writeFromTemplate('welcome.twig.html', $templateData);
-        header("Location: cms/index.php");
+        //header("Location: cms/index.php");
+        header("Location: home.php");
         die();
     } else {
         // Custom content loader

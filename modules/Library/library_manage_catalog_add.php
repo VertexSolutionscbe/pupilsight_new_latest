@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('imageType', __('Image Type'));
-        $row->addSelect('imageType')->fromArray(array('File' => __('File'), 'Link' => __('Link')))->placeholder();
+        $row->addSelect('imageType')->fromArray(array(''=>__('Please Select'),'File' => __('File'), 'Link' => __('Link')))->placeholder();
 
     $form->toggleVisibilityByClass('imageFile')->onSelect('imageType')->when('File');
 
@@ -117,19 +117,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('ownershipType', __('Ownership Type'));
-        $row->addSelect('ownershipType')->fromArray(array('School' => __('School'), 'Individual' => __('Individual')))->placeholder();
+        $row->addSelect('ownershipType')->fromArray(array(''=>__('Please Select'),'School' => __('School'), 'Individual' => __('Individual')))->placeholder();
+
+
+    $sql = 'SELECT a.type, b.pupilsightPersonID, b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" ';
+    $result = $connection2->query($sql);
+    $staffs = $result->fetchAll();
+    $owner1 = array('' => 'Please Select ');
+   
+    foreach ($staffs as $dt) {
+        $owner2[$dt['pupilsightPersonID']] = $dt['officialName'];
+    }
+    $owner = $owner1 + $owner2;
+    
+    //echo '<pre>';print_r($owner);exit;    
 
     $form->toggleVisibilityByClass('ownershipSchool')->onSelect('ownershipType')->when('School');
 
     $row = $form->addRow()->addClass('ownershipSchool');
         $row->addLabel('pupilsightPersonIDOwnershipSchool', __('Main User'))->description(__('Person the device is assigned to.'));
-        $row->addSelectUsers('pupilsightPersonIDOwnershipSchool')->placeholder();
+        $row->addSelectUsers('pupilsightPersonIDOwnershipSchool')->placeholder()->fromArray($owner);
 
     $form->toggleVisibilityByClass('ownershipIndividual')->onSelect('ownershipType')->when('Individual');
 
     $row = $form->addRow()->addClass('ownershipIndividual');
         $row->addLabel('pupilsightPersonIDOwnershipIndividual', __('Owner'));
-        $row->addSelectUsers('pupilsightPersonIDOwnershipIndividual')->placeholder();
+        $row->addSelectUsers('pupilsightPersonIDOwnershipIndividual')->placeholder()->fromArray($owner);
 
     $sql = "SELECT pupilsightDepartmentID AS value, name FROM pupilsightDepartment ORDER BY name";
     $row = $form->addRow()->addClass('general');
@@ -171,6 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addCurrency('replacementCost')->maxLength(9);
 
     $conditions = array(
+        ''=>__('Please Select'),
         'As New' => __('As New'),
         'Lightly Worn' => __('Lightly Worn'),
         'Moderately Worn' => __('Moderately Worn'),

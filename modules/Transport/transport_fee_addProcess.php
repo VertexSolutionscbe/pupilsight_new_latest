@@ -36,7 +36,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee_ad
         $month = $_POST['start_month'];
         $m = date('m',strtotime($month));
         //$due_date = $start_year.'-'.$m.'-05';
-        $due_date = $_POST['due_date'];
+        if($_POST['due_date'])
+            $due_date = $_POST['due_date'];
+        else
+            $due_date='';
     } else {
         $due_date = '';
     }
@@ -75,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee_ad
                 }
 
                 $data1 = array('fee_item_id' => $fee_item_id,'schedule_name' => $schedule_name, 'type'=>$type,'pupilsightSchoolYearID'=> $pupilsightSchoolYearID, 'start_year' => $start_year, 'start_month' => $start_month, 'end_year' => $end_year, 'end_month' => $end_month, 'invoice_series_id' => $invoice_series_id,'receipt_series_id'=>$receipt_series_id,'fee_head_id'=>$fee_head_id,'due_date'=>$due_date,'route_id'=>$route_id,'total_invoice_generate' => $total_invoice_generate,'cdt' => $cdt);
-
+                //echo '<pre>';print_r($data1);exit;
                 $sql1 = 'INSERT INTO trans_schedule SET fee_item_id=:fee_item_id, schedule_name=:schedule_name, type=:type,pupilsightSchoolYearID=:pupilsightSchoolYearID,start_year=:start_year, start_month=:start_month, end_year=:end_year, end_month=:end_month,
                  invoice_series_id=:invoice_series_id, receipt_series_id=:receipt_series_id,fee_head_id=:fee_head_id, due_date=:due_date,route_id=:route_id, total_invoice_generate=:total_invoice_generate, cdt=:cdt';
                 $result1 = $connection2->prepare($sql1);

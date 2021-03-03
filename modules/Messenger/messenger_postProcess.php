@@ -87,6 +87,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			$subject = 'NA';
 		}
 		$category = $_POST["category"];
+		if($category==''){
+            $category='Other';
+        }
 		$body = stripslashes($_POST["body"]);
 		$body1 = stripslashes($_POST["body1"]);
 		$emailReceipt = $_POST["emailReceipt"];
@@ -97,11 +100,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			$emailReceiptText = $_POST["emailReceiptText"];
 
 		//print_r($_POST);die();
-		if (($body == "" and $body1 == "") or ($email == "Y" and $from == "") or $emailReceipt == '' or ($emailReceipt == "Y" and $emailReceiptText == "") or ($_POST["role"] == 'N' and $_POST["roleCategory"] == 'N' and $_POST["yearGroup"] == 'N' and $_POST["rollGroup"] == 'N' and $_POST["activity"] == 'N' and $_POST["applicants"] == 'N' and $_POST["houses"] == 'N' and $_POST["transport"] == 'N' and $_POST["attendance"] == 'N' and $_POST["group"] == 'N' and $_POST["individuals"] == 'N'  and $_POST["individualList"] == '') or ($email == "N" and $messageWall == "N" and $sms == "N")) {
+		if (($body == "" and $body1 == "") or ($email == "Y" and $from == "") or $emailReceipt == '' or ($emailReceipt == "Y" and $emailReceiptText == "") or ($_POST["role"] == 'N' and $_POST["roleCategory"] == 'N' and $_POST["yearGroup"] == 'N' and $_POST["rollGroup"] == 'N' and $_POST["activity"] == 'N' and $_POST["applicants"] == 'N' and $_POST["houses"] == 'N' and $_POST["transport"] == 'N' and $_POST["attendance"] == 'N' and $_POST["group"] == 'N' and $_POST["individuals"] == 'N'  and $_POST["individualList"] == '' and $_POST["pupilsightPersonID"] == '') or ($email == "N" and $messageWall == "N" and $sms == "N")) {
 			//Fail 3
 			$URL .= "&addReturn=fail3";
 			header("Location: {$URL}");
 		} else {
+            if($body == ""){
+                $body=$body1;
+            }
 			//Lock table
 			try {
 				$sql = "LOCK TABLES pupilsightMessenger WRITE";
@@ -140,6 +146,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 				exit();
 			}
 
+//die();
 			try {
 				$sql = "UNLOCK TABLES";
 				$result = $connection2->query($sql);
@@ -1895,6 +1902,83 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 				}
 			}
 
+			//advance student search
+            if ($_POST["advancestudents"] == "Y") {
+                $choices = $_POST["pupilsightPersonID"];
+                if ($choices != "") {
+                    foreach ($choices as $t) {
+                        try {
+                            $data = array("pupilsightMessengerID" => $AI, "id" => $t);
+                            $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            $partialFail = TRUE;
+                        }
+
+                        if ($email == "Y") {
+                            try {
+                                $dataEmail = array("pupilsightPersonID" => $t);
+                                $sqlEmail = "SELECT DISTINCT email, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT email='' AND pupilsightPersonID=:pupilsightPersonID AND status='Full'";
+                                $resultEmail = $connection2->prepare($sqlEmail);
+                                $resultEmail->execute($dataEmail);
+                            } catch (PDOException $e) {
+                            }
+                            while ($rowEmail = $resultEmail->fetch()) {
+                                $report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'Email', $rowEmail["email"]);
+                            }
+                            if ($emailbcc != '') {
+                                $report = reportAdd($report, 'BCC', 'bcc', 'Individuals', 'Bcc', 'Email', $emailbcc);
+                            }
+                        }
+                        if ($sms == "Y" and $countryCode != "") {
+                            try {
+                                $dataEmail = array("pupilsightPersonID" => $t);
+                                $getpersontype = "SELECT pupilsightPersonID,pupilsightRoleIDPrimary FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID";
+                                $resultpersontype = $connection2->prepare($getpersontype);
+                                $resultpersontype->execute($dataEmail);
+                                while ($rowPosts = $resultpersontype->fetch()) {
+                                    $persontype = $rowPosts['pupilsightRoleIDPrimary'];
+                                    if ($persontype == '003') {
+
+                                        $sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone1='' AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)";
+                                        $sqlEmail .= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone2=''  AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)";
+                                        $sqlEmail .= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone3=''  AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)";
+                                        $sqlEmail .= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID, pupilsightFamilyRelationship.pupilsightPersonID1,pupilsightFamilyRelationship.pupilsightPersonID2 FROM pupilsightPerson,pupilsightFamilyRelationship WHERE NOT phone4=''  AND pupilsightPersonID2=:pupilsightPersonID AND status='Full' AND pupilsightPerson.pupilsightPersonID=pupilsightFamilyRelationship.pupilsightPersonID1)";
+                                        //print_r($dataEmail);
+                                        //print_r($sqlEmail);
+                                        //die();
+                                    } else {
+                                        $sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone1=''  AND pupilsightPersonID=:pupilsightPersonID AND status='Full')";
+                                        $sqlEmail .= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone2=''  AND pupilsightPersonID=:pupilsightPersonID AND status='Full')";
+                                        $sqlEmail .= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone3=''  AND pupilsightPersonID=:pupilsightPersonID AND status='Full')";
+                                        $sqlEmail .= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson WHERE NOT phone4=''  AND pupilsightPersonID=:pupilsightPersonID AND status='Full')";
+                                    }
+                                    $resultEmail = $connection2->prepare($sqlEmail);
+                                    $resultEmail->execute($dataEmail);
+
+                                }
+                            } catch (PDOException $e) {
+                            }
+                            while ($rowEmail = $resultEmail->fetch()) {
+                                $countryCodeTemp = $countryCode;
+                                $targetperson=$rowEmail['pupilsightPersonID'];
+                                $data = array("pupilsightMessengerID" => $AI, "id" => $targetperson, "staff" => 'N', "students" => 'N', "parents" => 'N');
+                                $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id, staff=:staff, students=:students, parents=:parents";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                                if ($rowEmail["countryCode"] == "") {
+                                    $countryCodeTemp = $rowEmail["countryCode"];
+                                }
+                                //$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+                                $report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $targetperson, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+                            }
+
+                            $report = reportAdd($report, $emailReceipt, 'smscopy', 'Individuals', 'smscopy', 'SMS', $copysms);
+                        }
+                    }
+                }//print_r($report);
+            }//die();
 			//Individuals
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
 				if ($_POST["individuals"] == "Y") {
@@ -1950,15 +2034,23 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 										}
 										$resultEmail = $connection2->prepare($sqlEmail);
 										$resultEmail->execute($dataEmail);
+
+
 									}
 								} catch (PDOException $e) {
 								}
 								while ($rowEmail = $resultEmail->fetch()) {
 									$countryCodeTemp = $countryCode;
+                                    $targetperson=$rowEmail['pupilsightPersonID'];
+                                    $data = array("pupilsightMessengerID" => $AI, "id" => $targetperson, "staff" => 'N', "students" => 'N', "parents" => 'N');
+                                    $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id, staff=:staff, students=:students, parents=:parents";
+                                    $result = $connection2->prepare($sql);
+                                    $result->execute($data);
 									if ($rowEmail["countryCode"] == "") {
 										$countryCodeTemp = $rowEmail["countryCode"];
 									}
-									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+									//$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $targetperson, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
 								}
 
 								$report = reportAdd($report, $emailReceipt, 'smscopy', 'Individuals', 'smscopy', 'SMS', $copysms);
@@ -2080,7 +2172,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
 				$mail->smtpClose();
 			}
-
+            $dileveryid='';
 			if ($sms == "Y") {
 				//print_r($report);die();
 				if ($countryCode == "") {
@@ -2096,12 +2188,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
 					$recipients = array_merge($recipients, $messageBccListSms);
 
+                    $recipients=array_filter($recipients);
+
 					$sms = $container->get(SMS::class);
 
 					$result = $sms
 						->content($body1)
 						->send($recipients);
-
+                    $dileveryid=$result[0];
+                    //die();
 					$smsCount = count($recipients);
 					$smsBatchCount = count($result);
 
@@ -2119,15 +2214,23 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 					$confirmed = null;
 					if ($reportEntry[5] != '')
 						$confirmed = 'N';
-					$data = array("pupilsightMessengerID" => $AI, "pupilsightPersonID" => $reportEntry[0], "targetType" => $reportEntry[1], "targetID" => $reportEntry[2], "contactType" => $reportEntry[3], "contactDetail" => $reportEntry[4], "key" => $reportEntry[5], "confirmed" => $confirmed);
-					$sql = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=:pupilsightMessengerID, pupilsightPersonID=:pupilsightPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed";
+                    if($dileveryid=='') {
+                        $nowtime =date("Y-m-d H:i:s");
+                        $data = array("pupilsightMessengerID" => $AI, "pupilsightPersonID" => $_SESSION[$guid]['pupilsightPersonID'], "targetType" => $reportEntry[1], "targetID" => $reportEntry[2], "contactType" => $reportEntry[3], "contactDetail" => $reportEntry[4], "key" => $reportEntry[5], "confirmed" => $confirmed);
+                        $sql = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=:pupilsightMessengerID, pupilsightPersonID=:pupilsightPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed, confirmedTimestamp='$nowtime' ";
+                    }else{
+                        $nowtime =date("Y-m-d H:i:s");
+                        $data = array("pupilsightMessengerID" => $AI, "pupilsightPersonID" => $_SESSION[$guid]['pupilsightPersonID'], "targetType" => $reportEntry[1], "targetID" => $reportEntry[2], "contactType" => $reportEntry[3], "contactDetail" => $reportEntry[4], "key" => $reportEntry[5], "confirmed" => $confirmed );
+                        $sql = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID=:pupilsightMessengerID, pupilsightPersonID=:pupilsightPersonID, targetType=:targetType, targetID=:targetID, contactType=:contactType, contactDetail=:contactDetail, `key`=:key, confirmed=:confirmed, requestid=$dileveryid, confirmedTimestamp='$nowtime' ";
+                    }
 					$result = $connection2->prepare($sql);
 					$result->execute($data);
+
 				} catch (PDOException $e) {
 					$partialFail = true;
 				}
 			}
-
+            //die();
 			if ($partialFail == TRUE) {
 				//Fail 4
 				$URL .= "&addReturn=fail4";

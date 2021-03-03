@@ -17,8 +17,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/routes.php') == 
     //Proceed!
     $page->breadcrumbs->add(__('Manage Route Structure'));
 
-    if (isset($_GET['return'])) {
+    /*if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
+    }*/
+    if (isset($_GET['return'])) {
+        if($_GET['return']=='errorroute'){
+            echo "<div class='alert alert-danger'>This Route already exists. Route name must be unique.</div>";
+        }else{
+            returnProcess($guid, $_GET['return'], null, null);
+        }
     }
 
     $TransportGateway = $container->get(TransportGateway::class);
@@ -27,6 +34,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/routes.php') == 
         ->fromPOST();
 
     $yearGroups = $TransportGateway->getRouteStructure($criteria);
+
+    /*if (isset($_GET['return'])) {
+
+        returnProcess(
+            $guid,
+            $_GET['return'],
+            null,
+            array('success0' => __('Request completed Sucessfully'),)
+        );
+    }*/
+
+    // if (isset($_GET['return'])) {
+
+    //     returnProcess(
+    //         $guid,
+    //         $_GET['return'],
+    //         null,
+    //         array('error1' => __('Route Name for School already Exist'),)
+    //     );
+    // }
+
+    
     
     $table = DataTable::createPaginated('FeeStructureManage', $criteria);
 
@@ -41,6 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/routes.php') == 
     
     $table->addColumn('serial_number', __('SI No'));  
     $table->addColumn('route_name', __('Rout Name'));
+    $table->addColumn('year', __('Academic Year'));
     $table->addColumn('busname', __('Bus Name'));
     $table->addColumn('start_point', __('Start Point'));
 
@@ -81,6 +111,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/routes.php') == 
             $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Transport/transport_route_delete.php');
             
+            $actions->addAction('copy', __('Copy'))
+                    ->setURL('/modules/Transport/transport_route_copies.php');
+
             
         });
 

@@ -27,7 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         //$choices2 = isset($_POST['parentmembers'])? $_POST['parentmembers'] : array();
         $choices3 = isset($_POST['allmembers'])? $_POST['allmembers'] : array();
         $choices4 = isset($_POST['pupilsightPersonID'])? $_POST['pupilsightPersonID'] : array();
-
+        $choices5 = isset($_POST['pupilsightYearGroupID1'])? $_POST['pupilsightYearGroupID1'] : array();
+        $pupilsightSchoolYearID=$_POST['pupilsightSchoolYearID1'];
         if (empty($name)) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -77,6 +78,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                     $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID);
                     $inserted = $groupGateway->insertGroupPerson($data);
                     $partialFail &= !$inserted;
+                }
+
+                foreach ($choices5 as $classwithsections) {
+
+                    $choices5classes=explode('-',$classwithsections);
+
+                    $sqls = 'SELECT a.pupilsightPersonID FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $choices5classes[0] . '" AND a.pupilsightYearGroupID = "' . $choices5classes[1] . '" AND a.pupilsightRollGroupID = "' . $choices5classes[2] . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+                    $results = $connection2->query($sqls);
+                    $rowdatastd = $results->fetchAll();
+
+                    foreach ($rowdatastd as $pupilsightPersonID){
+                        $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID['pupilsightPersonID']);
+                        $inserted = $groupGateway->insertGroupPerson($data);
+                        $partialFail &= !$inserted;
+                    }
+
                 }
 
                 if ($partialFail) {

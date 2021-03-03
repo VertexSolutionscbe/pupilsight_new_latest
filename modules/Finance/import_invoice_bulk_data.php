@@ -67,6 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
 
     if ($_POST) {
+        set_time_limit(0);
         $handle = fopen($_FILES['file']['tmp_name'], "r");
         $headers = fgetcsv($handle, 10000, ",");
         $hders = array();
@@ -76,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
         // die();
         $chkHeaderKey = array();
         foreach ($headers as $key => $hd) {
-
+            set_time_limit(0);
             if ($hd == 'Invoice No') {
                 $headers[$key] = 'invoice_no';
             } else if ($hd == 'Invoice Amount') {
@@ -137,33 +138,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
             // die();
             try {
                 foreach ($all_rows as $key => $alrow) {
+                    set_time_limit(0);
                     unset($dts_receipt);
                     unset($dts_receipt_feeitem);
                     if (!empty($alrow['amount_paying']) && !empty($alrow['invoice_no'])) {
                         $pupilsightPersonID = $alrow['pupilsightPersonID'];
                         $discount = $alrow['discount'];
                         $payment_status = $alrow['payment_status'];
-                        if(!empty($pupilsightPersonID)){
+                        if (!empty($pupilsightPersonID)) {
                             if ($alrow['amount_paying'] < $alrow['transcation_amount']) {
                                 $invNo = $alrow['invoice_no'];
-                                $sqlcla = 'SELECT SUM(total_amount_collection) AS collected_amt, SUM(discount) AS discount_amt FROM fn_fees_student_collection  WHERE invoice_no = "' . $invNo . '" AND pupilsightPersonID = '.$pupilsightPersonID.' ';
+                                $sqlcla = 'SELECT SUM(total_amount_collection) AS collected_amt, SUM(discount) AS discount_amt FROM fn_fees_student_collection  WHERE invoice_no = "' . $invNo . '" AND pupilsightPersonID = ' . $pupilsightPersonID . ' ';
                                 $resultcla = $connection2->query($sqlcla);
                                 $collAmtData = $resultcla->fetch();
 
-                                if(!empty($collAmtData)){
+                                if (!empty($collAmtData)) {
                                     $collectedAmt = $collAmtData['collected_amt'];
                                     $discountAmt = $collAmtData['discount_amt'];
                                     $totalCollection = $collectedAmt + $alrow['amount_paying'];
                                     $transcation_amount = $alrow['transcation_amount'];
 
                                     //echo $invNo.'--'.$collectedAmt.'--'.$totalCollection;
-                                    if(!empty($discountAmt)){
+                                    if (!empty($discountAmt)) {
                                         $newTransactionAmt = $transcation_amount - $discountAmt;
                                     } else {
                                         $newTransactionAmt = $alrow['transcation_amount'];
                                     }
 
-                                    if($totalCollection < $newTransactionAmt) {
+                                    if ($totalCollection < $newTransactionAmt) {
                                         $invoice_status = 'Partial Paid';
                                     } else {
                                         $invoice_status = 'Fully Paid';
@@ -171,15 +173,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                 } else {
                                     $invoice_status = 'Partial Paid';
                                 }
-
-                                
                             } else {
                                 $invoice_status = 'Fully Paid';
                             }
 
                             //echo $invoice_status;
 
-                            
+
                             if (!empty($alrow['payment_mode'])) {
                                 $sql = 'SELECT id FROM fn_masters WHERE name = "' . $alrow['payment_mode'] . '"';
                                 $result = $connection2->query($sql);
@@ -216,11 +216,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
                             $invoiceNos = explode(',', $alrow['invoice_no']);
                             $inNos = array();
-                            foreach($invoiceNos as $invs){
-                                $inNos[] = "'".$invs."'";
+                            foreach ($invoiceNos as $invs) {
+                                $inNos[] = "'" . $invs . "'";
                             }
                             $invoice_nos = implode(',', $inNos);
-                            
+
 
                             $sql = 'SELECT b.*, GROUP_CONCAT(b.id) AS inv_id  FROM fn_fee_invoice_student_assign AS a LEFT JOIN fn_fee_invoice AS b ON a.fn_fee_invoice_id = b.id WHERE a.invoice_no IN (' . $invoice_nos . ') ';
                             $result = $connection2->query($sql);
@@ -334,7 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                             // $leftAmt = $chkamount - $paidamount; 
                                             // $balanceAmt = $leftAmt;
 
-                                            $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount,'discount' => $discount, 'status' => $status);
+                                            $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'discount' => $discount, 'status' => $status);
                                             $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection,discount=:discount, status=:status';
                                             $resulti = $connection2->prepare($sqli);
                                             $resulti->execute($datai);
@@ -369,7 +369,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                             $resulti = $connection2->prepare($sqli);
                                             $resulti->execute($datai);
                                         } else {
-                                            $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $itemamount,'discount' => $discount, 'status' => '1');
+                                            $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $itemamount, 'discount' => $discount, 'status' => '1');
                                             $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, discount=:discount, status=:status';
                                             echo "\n<br>";
                                             print_r($datai);
@@ -401,13 +401,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
                                 $class_section = $valuestu["class"] . " " . $valuestu["section"];
 
-                                if(!empty($valuestu["admission_no"])){
+                                if (!empty($valuestu["admission_no"])) {
                                     $admNo = $valuestu["admission_no"];
                                 } else {
                                     $admNo = '';
                                 }
 
-                                if(!empty($instrument_no)){
+                                if (!empty($instrument_no)) {
                                     $instrument_no = $instrument_no;
                                 } else {
                                     $instrument_no = '';
@@ -415,7 +415,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
                                 $fine = '';
 
-                                
+
                                 $dts_receipt = array(
                                     "receipt_no" => $receipt_number,
                                     "date" => date('d-M-Y', strtotime($payment_date)),
@@ -443,10 +443,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                 $session->forget(['doc_receipt_id']);
                                 $session->set('doc_receipt_id', $filename);
 
-                                if(!empty($invoice_id)){
+                                if (!empty($invoice_id)) {
                                     $allInvoiceIds = explode(',', $invoice_id);
-                                    foreach($allInvoiceIds as $invoiceId){
-                                        echo '</br>'.$invoiceId.'</br>';
+                                    foreach ($allInvoiceIds as $invoiceId) {
+                                        echo '</br>' . $invoiceId . '</br>';
                                         $dataiu = array('invoice_status' => $invoice_status,  'pupilsightPersonID' => $pupilsightPersonID,  'fn_fee_invoice_id' => $invoiceId);
                                         print_r($dataiu);
                                         $sqliu = 'UPDATE fn_fee_invoice_student_assign SET invoice_status=:invoice_status WHERE pupilsightPersonID=:pupilsightPersonID AND fn_fee_invoice_id=:fn_fee_invoice_id';
@@ -522,7 +522,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                         }
                                     }
                                 }
-
                             } catch (Exception $ex) {
                                 echo "\n<br>Exception 3\n";
                                 print_r($ex);
@@ -532,7 +531,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                             echo '<pre>';
                             print_r($dts_receipt_feeitem);
                             echo '</pre>';
-                            
+
                             try {
                                 if (!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)) {
                                     $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/phpword/receiptNew.php';
@@ -560,7 +559,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                 print_r($ex);
                             }
                         }
-                        
                     }
                 }
             } catch (Exception $ex) {
@@ -568,7 +566,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                 print_r($ex);
             }
         }
-//die();
+        //die();
 
         fclose($handle);
         $URL .= '&return=success1';

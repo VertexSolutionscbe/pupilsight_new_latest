@@ -65,7 +65,7 @@
         var ncid = parseInt(cid) + 1;
         $(this).attr('data-cid', ncid);
         //var design = ' <tr id="seatdiv" class=" flex flex-col sm:flex-row justify-between content-center p-0 deltr' + ncid + '"><td class="col-sm  newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="stop_no" name="stop_no[' + ncid + ']" class="w-full txtfield"></div></div></div></td><td class="col-sm  newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="stop_name" name="stop_name[' + ncid + ']" class="w-full txtfield"></div></div></div></td><td class="col-sm  newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="pickup_time" name="pickup_time[' + ncid + ']" class="w-full txtfield"></div></div></div></td><td class="w-full max-w-full sm:max-w-xs flex justify-end px-2 border-b-0 sm:border-b border-t-0 newdes  " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="drop_time" name="drop_time[' + ncid + ']" class="w-full txtfield kountseat szewdt"></div></div><div class="dte mb-1"  style="font-size: 22px; margin: 6px 0 0px 4px;"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div></td></tr>';
-        var design = ' <tr id="seatdiv" class="row mb-1 fixedfine mt-3 p-0 deltr' + ncid + '"><td class="col-sm  newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="stop_no" name="stop_no[' + ncid + ']" class="w-full txtfield"></div></div></div></td><td class="col-sm  newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="stop_name" name="stop_name[' + ncid + ']" class="w-full txtfield"></div></div></div></td><td class="col-sm  newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="pickup_time" name="pickup_time[' + ncid + ']" class="w-full txtfield"></div></div></div></td><td class="col-sm  newdes" ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="drop_time" name="drop_time[' + ncid + ']" class="w-full txtfield"></div></div><div class="dte mb-1"  style="font-size: 22px; margin: 6px 0 0px 4px;"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div></td></tr>';
+        var design = ' <tr id="seatdiv" class="row mb-1 fixedfine mt-3 p-0 deltr' + ncid + '"><td class="col-sm  newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="stop_no" name="stop_no[' + ncid + ']" class="w-full txtfield"></div></div></div></td><td class="col-sm  newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="stop_name" name="stop_name[' + ncid + ']" class="w-full txtfield"></div></div></div></td><td class="col-sm  newdes " ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="pickup_time" name="pickup_time[' + ncid + ']" minlength="5" maxlength="5" class="w-full txtfield"></div></div></div></td><td class="col-sm  newdes" ><div class="input-group stylish-input-group"><div class=" mb-1"></div><div class=" txtfield mb-1"><div class="flex-1 relative"><input type="text" id="drop_time" name="drop_time[' + ncid + ']" minlength="5" maxlength="5" class="w-full txtfield"></div></div><div class="dte mb-1"  style="font-size: 22px; margin: 6px 0 0px 4px;"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delSeattr" data-id="' + ncid + '"></i></div></div></td></tr>';
         $("#route_stops").before(design);
 
     });
@@ -1724,7 +1724,7 @@
         $.each($("input[name='stuid[]']:checked"), function () {
             var routeid = $(this).attr("routeid");
             if (routeid != "") {
-                alert("User is allready assigned for the route.");
+                alert("User is already assigned for the route.");
                 flag = false;
                 return;
             } else {
@@ -1748,6 +1748,58 @@
                     async: true,
                     success: function (response) {
                         $("#clickStudentroute").click();
+                    }
+                });
+            }
+        } else {
+            if (atype == 'student') {
+                alert('You Have to Select Students.');
+            } else {
+                alert('You Have to Select Staff.');
+            }
+
+        }
+    });
+
+
+    
+    $(document).on('click', '#copyStudentroute', function () {
+        var atype = $(this).attr('data-type');
+        var favorite = [];
+        var flag = true;
+        var count=0
+        $.each($("input[name='stuid[]']:checked"), function () {
+            var routeid = $(this).attr("routeid");
+            if (routeid == "") {
+                //alert("Sorry..For copying process you must select student who have Route Details.");
+                count++;
+                flag = false;
+                return;
+            } else {
+                favorite.push($(this).val());
+            }
+
+        });
+        if(count>0)
+        {
+            alert("Sorry..For copying process you must select students who have Route Details.");
+        }
+        if (!flag) {
+            return;
+        }
+
+        var stuid = favorite.join(",");
+        if (stuid) {
+            var val = stuid;
+            var type = 'addstudentidInSession';
+            if (val != '') {
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: val, type: type },
+                    async: true,
+                    success: function (response) {
+                        $("#copyroute").click();
                     }
                 });
             }
@@ -2967,7 +3019,7 @@
             success: function (response) {
 
                 $("#pupilsightYearGroupID").html('');
-                $("#pupilsightRollGroupID").html('');
+                //$("#pupilsightRollGroupID").html('');
                 $("#pupilsightYearGroupID").html(response);
             }
         });
@@ -3210,15 +3262,15 @@
         $('#due_day').empty();
         $('#hiderow').show();
         if (val == '1') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input name='due_date' style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate'  type='number' value='12' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input name='due_date' style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate'  type='number' value='12' readonly></td><br>");
         } else if (val == '2') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input name='due_date' style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate'  type='number' value='6' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input name='due_date' style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate'  type='number' value='6' readonly></td><br>");
         } else if (val == '3') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input  name='due_date' style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='4' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input  name='due_date' style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='4' readonly></td><br>");
         } else if (val == '6') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input  name='due_date' style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='2' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input  name='due_date' style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='2' readonly></td><br>");
         } else if (val == '12') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'></td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='1' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'></td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='1' readonly></td><br>");
         }
     }
 
@@ -3227,15 +3279,15 @@
         $('#due_day').empty();
         $('#hiderow').show();
         if (val == '1') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input name='due_date' style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate'  type='number' value='12' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input name='due_date' style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate'  type='number' value='12' readonly></td><br>");
         } else if (val == '2') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input name='due_date' style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate'  type='number' value='6' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input name='due_date' style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate'  type='number' value='6' readonly></td><br>");
         } else if (val == '3') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input  name='due_date' style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='4' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input  name='due_date' style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='4' readonly></td><br>");
         } else if (val == '6') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input  name='due_date' style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='2' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'>Due <input  name='due_date' style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' type='number' value='5' min='1' max='31'>Day Of First Month</td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='2' readonly></td><br>");
         } else if (val == '12') {
-            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'></td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:55px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='1' readonly></td><br>");
+            $("#due_day").append("<td style='color: #666;font-weight: bold !important;'></td><td style='color: #666;font-weight: bold !important;'>Number Of Invoice <input style='width:65px; font-weight: bold; border: 1px solid;color:#666; margin: 10px;' name='total_invoice_generate' type='number' value='1' readonly></td><br>");
         }
 
     });

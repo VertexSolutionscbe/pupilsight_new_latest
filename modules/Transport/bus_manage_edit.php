@@ -47,6 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_edit.
             //Let's go!
             $values = $result->fetch();
 
+            //echo '<pre>';print_r($values);exit;
+
             $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
             $resulta = $connection2->query($sqla);
             $academic = $resulta->fetchAll();
@@ -175,20 +177,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_edit.
                     $col = $row->addColumn()->setClass('newdes');
                        
                     $col->addLabel('register_date', __('Reg. Date'))->addClass('dte');
+                    if($values['register_date']!='0000-00-00')
+                        $register_date = date('d/m/Y', strtotime($values['register_date']));
+                    else
+                        $register_date = '';
 
-                    $register_date = date('d/m/Y', strtotime($values['register_date']));
-                    $col->addDate('register_date')->required()->setValue($register_date);
+                    $col->addDate('register_date')->setValue($register_date);
                    
             
                     $col = $row->addColumn()->setClass('newdes');
                         $col->addLabel('insurance_exp', __('Insurance Expiry'))->addClass('dte');
-                        $insurance_exp = date('d/m/Y', strtotime($values['insurance_exp']));             
-                        $col->addDate('insurance_exp')->required()->setValue($insurance_exp);
+
+                        if($values['insurance_exp']!='0000-00-00')
+                            $insurance_exp = date('d/m/Y', strtotime($values['insurance_exp']));
+                        else
+                            $insurance_exp = '';
+                        //$insurance_exp = date('d/m/Y', strtotime($values['insurance_exp']));             
+                        $col->addDate('insurance_exp')->setValue($insurance_exp);
             
                    $col = $row->addColumn()->setClass('newdes');
                    $col->addLabel('fc_expiry', __('FC Expiry Date'))->addClass('dte');
-                   $fc_expiry = date('d/m/Y', strtotime($values['fc_expiry']));          
-                   $col->addDate('fc_expiry')->required()->setValue($fc_expiry);
+                   if($values['fc_expiry']!='0000-00-00')
+                        $fc_expiry = date('d/m/Y', strtotime($values['fc_expiry']));
+                   else
+                        $fc_expiry = '';
+            
+                   //$fc_expiry = date('d/m/Y', strtotime($values['fc_expiry']));          
+                   $col->addDate('fc_expiry')->setValue($fc_expiry);
                        
                         
                    $imgpath = 'modules/Transport/'.$values['photo'];  
@@ -214,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_edit.
                           
                                 $row = $form->addRow();
                                 $col = $row->addColumn()->setClass('newdes');
-                                    $col->addLabel('file', __('Edit Image File'));
+                                    $col->addLabel('file', __('Edit Bus Image'));
                                     $col->addFileUpload('file')->addClass(' szewdt_file')->setValue($values['photo'])
                                     ->accepts('.jpg,.jpeg,.gif,.png')
                                     ->setMaxUpload(false);   

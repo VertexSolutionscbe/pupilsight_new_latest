@@ -35,14 +35,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_route_
     $lng = '';
     //print_r($_POST);
 
-    for($i=1;$i<=$noofstops;$i++){
-if($pickup_time[$i]<'24:00' AND $pickup_time[$i]>'00:00' AND $drop_time[$i]>'00:00' AND $drop_time[$i]<'24:00'){
+    foreach ($pickup_time as $pt){
+        if($pt<'24:00' AND $pt>'00:00'){
 
-}else{
-    $URL .= '&return=error1';
-    header("Location: {$URL}");
-}
+        }else{
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit();
+        }
+    }
+    foreach ($drop_time as $dt){
+        if($dt<'24:00' AND $dt>'00:00'){
 
+        }else{
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit();
+        }
     }
     //print_r($stop_name); die();
 if($start_time =="00:00"){
@@ -75,7 +84,7 @@ if($end_time =="00:00"){
         }
 
         if ($result->rowCount() > 0) {
-            $URL .= '&return=error3';
+            $URL .= '&return=errorroute';
             header("Location: {$URL}");
         } else {
             //Write to database

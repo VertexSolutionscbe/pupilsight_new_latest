@@ -728,7 +728,7 @@ if (isset($_SESSION["loginstatus"])) {
                                                                 </h3>
                                                                 <div class="form-row">
                                                                     <div class="wrap-form">
-                                                                        <div class="form-desc">We will need...ssss</div>
+                                                                        <div class="form-desc">We will need...</div>
                                                                         <form action="../login.php?" method="post" autocomplete="off" enctype="multipart/form-data" id="loginForm" onsubmit="pupilsightFormSubmitted(this)">
                                                                             <p class="login-username">
                                                                                 <label for="bp_login_name">Username or
@@ -1531,28 +1531,38 @@ if (isset($_SESSION["loginstatus"])) {
                                     <div class="vc_row-full-width vc_clearfix" style="padding:20px;"></div>
                                   
                                     
-                                    <div style="width: 100%; overflow: hidden;">
-                                        <div style="width: 600px; float: left;">
-                                            <div><h6>Contact Number:</h6><?php echo $data['phone'];?></div>
+                                    <div class="center">
+                                            <?php if($data['phone']!=''){?>
+
+                                                <div><h6>Contact Number:</h6><?php echo $data['phone'];?></div>
                                    
-                                            <br>
-                                            <h6>Email:</h6>
-                                            <diV><?php echo $data['primary_email'];?></div>    
-                                            <div><?php echo $data['secondary_email'];?></div>
+                                                <br>
 
-                                        </div>
-                                        <div style="margin-left: 620px;"> 
+                                            <?php  } ?>   
 
-                                            
-                                            <div><h6>Fax:</h6><?php echo $data['fax'];?></div>
+                                            <?php if($data['primary_email']!='' || $data['secondary_email']!=''){?>
+                                             
+                                                <h6>Email:</h6>
+                                                <diV><?php echo $data['primary_email'];?></div>    
+                                                <div><?php echo $data['secondary_email'];?></div>
 
-                                            <br>
-                                            <div class="Address"><h6>Address:</h6></div>
-                                            <diV><?php echo $data['address'];?></div>    
+                                                <br>
+                                            <?php  } ?>   
                                         
-                                 
+                                            <?php if($data['fax']!=''){?>
+                                                <div><h6>Fax:</h6><?php echo $data['fax'];?></div>
+
+                                                <br>
+                                            <?php  } ?>   
+
+                                            <?php if($data['address']!=''){?>
+                                            
+                                                 <div class="Address"><h6>Address:</h6></div>
+                                                 <diV><?php echo $data['address'];?></div>    
+                                                 <br>
+                                            <?php  } ?>      
                                     
-                                        </div>
+                                        
                                     </div>
                                     <br>
                                     <!--google map element-->
@@ -1566,6 +1576,13 @@ if (isset($_SESSION["loginstatus"])) {
 
                                     <?php echo html_entity_decode($data['contact_map']) ?>
                                         <style>
+
+                                                .center {
+                                                margin: auto;
+                                                width: 50%;
+                                                /* border: 3px solid green; */
+                                                padding: 10px;
+                                                }    
                                             .mapouter {
                                                 position: relative;
                                                 text-align: right;

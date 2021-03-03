@@ -142,7 +142,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow()->addClass('studentType hiddencol');
                 $row->addLabel('pupilsightProgramID', __('Program'));
-                $row->addSelect('pupilsightProgramID')->fromArray($program)->placeholder('Select Program');
+                $row->addSelect('pupilsightProgramID')->setId('pupilsightProgramID')->fromArray($program)->placeholder('Select Program');
         
         
             $row = $form->addRow()->addClass('studentType hiddencol');
@@ -212,10 +212,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             $row = $form->addRow();
                 $row->addLabel('returnAction', __('Action'))->description(__('What to do when item is next returned.'));
                 $row->addSelect('returnAction')->fromArray($actions)->selected($values['returnAction'])->placeholder();
+            
 
+                    
+            $sql = 'SELECT a.type, b.pupilsightPersonID, b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" ';
+            $result = $connection2->query($sql);
+            $staffs = $result->fetchAll();
+            $owner1 = array('' => 'Please Select ');
+        
+            foreach ($staffs as $dt) {
+                $owner2[$dt['pupilsightPersonID']] = $dt['officialName'];
+            }
+            $owner = $owner1 + $owner2;
             $row = $form->addRow();
                 $row->addLabel('pupilsightPersonIDReturnAction', __('Responsible User'))->description(__('Who will be responsible for the future status?'));
-                $row->addSelect('pupilsightPersonIDReturnAction')->fromArray($people)->placeholder();
+                //$row->addSelect('pupilsightPersonIDReturnAction')->fromArray($people)->placeholder();
+                $row->addSelect('pupilsightPersonIDReturnAction')->fromArray($owner)->placeholder();
+
 
 
             $row = $form->addRow();
@@ -252,10 +265,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                     success: function(response) {
                         $("#pupilsightPersonID").html();
                         $("#pupilsightPersonID").html(response);
-                        
+                        $("#pupilsightProgramID").val('');
+                        $("#pupilsightYearGroupID").val('');
+                        $("#pupilsightRollGroupID").val('');
                     }
                 });
             }
         }
     });
+
+
+    $(document).on('change','#pupilsightProgramID',function(){
+
+        var pupilsightProgramID=$('#pupilsightProgramID').val();
+        //alert(pupilsightProgramID);
+
+        var type = 'getAllStudentsByProgram';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { type: type, pupilsightProgramID: pupilsightProgramID  },
+            async: true,
+            success: function(response) {
+
+                
+                $("#pupilsightPersonID").html();
+                $("#pupilsightPersonID").html(response);
+                
+            },
+            error: function(response) {
+                console.log(response);
+            }
+        });
+
+});
+
+
+
 </script>    

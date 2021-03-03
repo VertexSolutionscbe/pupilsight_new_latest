@@ -22,12 +22,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     //$choices2 = isset($_POST['parentmembers'])? $_POST['parentmembers'] : array();
     $choices3 = isset($_POST['allmembers'])? $_POST['allmembers'] : array();
     $choices4 = isset($_POST['pupilsightPersonID'])? $_POST['pupilsightPersonID'] : array();
+    $choices5 = isset($_POST['pupilsightYearGroupID1'])? $_POST['pupilsightYearGroupID1'] : array();
 //print_r($choices);
 //print_r($choices1);
 //print_r($choices2);
 //print_r($choices3);
 //print_r($choices4);//die();
-    if (empty($name) || (empty($choices) && empty($choices1) && empty($choices3) && empty($choices4))) {
+//print_r($choices5);die();
+    $pupilsightSchoolYearID=$_POST['pupilsightSchoolYearID1'];
+
+    //print_r($_POST);
+    if (empty($name) || (empty($choices) && empty($choices1) && empty($choices3) && empty($choices4) && empty($choices5))) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -68,6 +73,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
                 $inserted = $groupGateway->insertGroupPerson($data);
                 $partialFail &= !$inserted;
             }
+
+            foreach ($choices5 as $classwithsections) {
+
+                $choices5classes=explode('-',$classwithsections);
+
+                $sqls = 'SELECT a.pupilsightPersonID FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $choices5classes[0] . '" AND a.pupilsightYearGroupID = "' . $choices5classes[1] . '" AND a.pupilsightRollGroupID = "' . $choices5classes[2] . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+                $results = $connection2->query($sqls);
+                $rowdatastd = $results->fetchAll();
+
+                foreach ($rowdatastd as $pupilsightPersonID){
+                    $data = array('pupilsightGroupID' => $pupilsightGroupID, 'pupilsightPersonID' => $pupilsightPersonID['pupilsightPersonID']);
+                    $inserted = $groupGateway->insertGroupPerson($data);
+                    $partialFail &= !$inserted;
+                }
+
+            }
+
 
             if ($partialFail) {
                 $URL .= '&return=warning1';
@@ -114,6 +136,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
                     $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID);
                     $inserted = $groupGateway->insertGroupPerson($data);
                     $partialFail &= !$inserted;
+                }
+                foreach ($choices5 as $classwithsections) {
+
+                    $choices5classes=explode('-',$classwithsections);
+
+                    $sqls = 'SELECT a.pupilsightPersonID FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $choices5classes[0] . '" AND a.pupilsightYearGroupID = "' . $choices5classes[1] . '" AND a.pupilsightRollGroupID = "' . $choices5classes[2] . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+                    $results = $connection2->query($sqls);
+                    $rowdatastd = $results->fetchAll();
+
+                    foreach ($rowdatastd as $pupilsightPersonID){
+                        $data = array('pupilsightGroupID' => $AI, 'pupilsightPersonID' => $pupilsightPersonID['pupilsightPersonID']);
+                        $inserted = $groupGateway->insertGroupPerson($data);
+                        $partialFail &= !$inserted;
+                    }
                 }
 
                 //Write to database

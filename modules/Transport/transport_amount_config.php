@@ -23,7 +23,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_amount
     $result->execute($data);
     $values = $result->fetch();
     //Proceed!
-    $page->breadcrumbs->add(__('Assign route'));
+    $page->breadcrumbs
+        ->add(__('Transport Fee'), 'transport_fee.php')
+        ->add(__('Amount Config'), 'transport_amount_manage.php&id='.$id)
+        ->add(__('Amount Config Add'));
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

@@ -17,8 +17,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_amount
     //Proceed!
     $id = $_GET['id'];
     $page->breadcrumbs
-        ->add(__('Transport'), 'transport_fee.php')
-        ->add(__('Transport Fee'));
+        ->add(__('Transport Fee'), 'transport_fee.php')
+        ->add(__('Amount Config'));
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -62,6 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_amount
         $table->addColumn('tax', __('Tax'));
         $table->addActionColumn()
         ->addParam('id')
+        ->addParam('backid',$id)
         ->format(function ($facilities, $actions) use ($guid) {
             $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Transport/transport_amount_edit.php');

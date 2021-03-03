@@ -120,10 +120,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_view_details
             </thead>
            </tr> ";
 
+            if($values['register_date']!='0000-00-00')
+                  $register_date = date('d/m/Y', strtotime($values['register_date']));
+            else
+                  $register_date = '';
+
+            if($values['insurance_exp']!='0000-00-00')
+                  $insurance_exp = date('d/m/Y', strtotime($values['insurance_exp']));
+            else
+                  $insurance_exp = '';
+
+            if($values['fc_expiry']!='0000-00-00')
+                  $fc_expiry = date('d/m/Y', strtotime($values['fc_expiry']));
+            else
+                  $fc_expiry = '';
+
             echo '<tr>';
-            echo "<td style='width: 33%; vertical-align: top'>".date('d/m/Y', strtotime($values['register_date']))."</td>";
-            echo "<td style='width: 33%; vertical-align: top'>".date('d/m/Y', strtotime($values['insurance_exp'])). "</td>";
-            echo "<td style='width: 33%; vertical-align: top'>".date('d/m/Y', strtotime($values['fc_expiry']))."</td>";
+            echo "<td style='width: 33%; vertical-align: top'>".$register_date."</td>";
+            echo "<td style='width: 33%; vertical-align: top'>".$insurance_exp. "</td>";
+            echo "<td style='width: 33%; vertical-align: top'>".$fc_expiry."</td>";
             echo "<td style='width: 33%; vertical-align: top'>".$values['driver_name']. "</td>";
             echo "<td style='width: 33%; vertical-align: top'>".$values['driver_mobile']."</td>";
             echo "<td style='width: 33%; vertical-align: top'>".$values['coordinator_name']. "</td>";

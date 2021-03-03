@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                         $rtype = 'Other';
                     }
 
-                    $sqle = "SELECT b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $st . " AND a.relationship = '" . $rtype . "' ";
+                    $sqle = "SELECT b.pupilsightPersonID, b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $st . " AND a.relationship = '" . $rtype . "' ";
                     $resulte = $connection2->query($sqle);
                     $rowdata = $resulte->fetch();
 
@@ -80,6 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                     $body = nl2br($emailquote);
                     $msg = $smsquote;
                     $number = $rowdata['phone1'];
+                    $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
 
 
                     if (!empty($body) && !empty($to)) {
@@ -109,13 +110,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                                 $mail->Send();
                                 $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', attachment= '" . $NewNameFile . "', uid=" . $cuid . " ";
                                 $connection2->query($sq);
+
+                                $msgby=$_SESSION[$guid]["pupilsightPersonID"];
+                                //$msgto=$smspupilsightPersonID;
+
+                                $msgby =$_SESSION[$guid]["pupilsightPersonID"];
+                                Updatemessesnger($connection2,$msgby,$st,$body,$subject);
+                                $nowtime =date("Y-m-d H:i:s");
+                                $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$msgby."', pupilsightPersonID='".$msgby."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
+                                $connection2->query($savedata);
                             } catch (Exception $ex) {
                                 print_r($x);
                             }
                         } else {
                             $res = file_get_contents($url);
+
+                            $senderid=$_SESSION[$guid]["pupilsightPersonID"];
+                            Updatemessesnger($connection2,$senderid,$st,$body,'na');
+                            $res = file_get_contents($url);
                             $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
                             $connection2->query($sq);
+                            $nowtime =date("Y-m-d H:i:s");
+                            $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$senderid."', pupilsightPersonID='".$senderid."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
+                            $connection2->query($savedata);
                         }
                     }
 
@@ -126,10 +143,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                         $urls .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                         //echo $urls;
                         $resms = file_get_contents($urls);*/
-                        $res = $sms->sendSMSPro($number, $msg);
+                        $msgto=$smspupilsightPersonID;
+                        $msgby=$_SESSION[$guid]["pupilsightPersonID"];
+                        $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                         if ($res) {
                             $sq = "INSERT INTO user_email_sms_sent_details SET type='1', sent_to = '1', pupilsightPersonID = " . $st . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
                             $connection2->query($sq);
+
+
                         }
                     }
                 }
@@ -152,4 +173,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
 
 
     }
+}
+function Updatemessesnger($connection2,$sender,$st, $body="", $subject=""){
+    //echo "hi"; //die();
+    $ppid = $st;
+
+
+    $msgby = $sender;
+    $msgto = $ppid;
+    //$emailreportp=$sms->updateMessengerTableforEmail($msgto,$subject,$body,$msgby);
+
+    $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
+    $resultAI = $connection2->query($sqlAI);
+    $rowAI = $resultAI->fetch();
+    $AI = str_pad($rowAI['Auto_increment'], 12, "0", STR_PAD_LEFT);
+
+    $email = "Y";
+    $messageWall = "N";
+    $sms = "N";
+    $date1 = date('Y-m-d');
+
+    $data = array("email" => $email, "messageWall" => $messageWall, "messageWall_date1" => $date1, "sms" => $sms, "subject" => $subject, "body" => $body, "pupilsightPersonID" => $msgby, "category" => 'Other', "timestamp" => date("Y-m-d H:i:s"));
+    $sql = "INSERT INTO pupilsightMessenger SET email=:email, messageWall=:messageWall, messageWall_date1=:messageWall_date1, sms=:sms, subject=:subject, body=:body, pupilsightPersonID=:pupilsightPersonID,messengercategory=:category, timestamp=:timestamp";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+
+    $data = array("AI" => $AI, "t" => $msgto);
+    $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 }

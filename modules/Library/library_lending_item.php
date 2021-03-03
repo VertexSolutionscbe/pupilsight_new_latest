@@ -167,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                 echo __('Recorded By');
                 echo '</th>';
                 echo "<th style='width: 110px'>";
-                echo __('Actions');
+                echo __('  Actions ');
                 echo '</th>';
                 echo '</tr>';
 
@@ -264,8 +264,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
                     echo '<td>';
                     if ($count == 1 and $rowEvent['status'] != 'Returned') {
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_edit.php&pupilsightLibraryItemID=$pupilsightLibraryItemID&pupilsightLibraryItemEventID=".$rowEvent['pupilsightLibraryItemEventID'].'&name='.$name.'&pupilsightLibraryTypeID='.$pupilsightLibraryTypeID.'&pupilsightSpaceID='.$pupilsightSpaceID.'&status='.$status."'><i title='".__('Edit')."' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_return.php&pupilsightLibraryItemID=$pupilsightLibraryItemID&pupilsightLibraryItemEventID=".$rowEvent['pupilsightLibraryItemEventID'].'&name='.$name.'&pupilsightLibraryTypeID='.$pupilsightLibraryTypeID.'&pupilsightSpaceID='.$pupilsightSpaceID.'&status='.$status."'><i title='Return' class='mdi-arrow-left-circle-outline' px-2></i></a>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_renew.php&pupilsightLibraryItemID=$pupilsightLibraryItemID&pupilsightLibraryItemEventID=".$rowEvent['pupilsightLibraryItemEventID'].'&name='.$name.'&pupilsightLibraryTypeID='.$pupilsightLibraryTypeID.'&pupilsightSpaceID='.$pupilsightSpaceID.'&status='.$status."'><i title='Renew'  class='mdi mdi-arrow-right-circle-outline px-2'></i></a>";
+                        // echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_return.php&pupilsightLibraryItemID=$pupilsightLibraryItemID&pupilsightLibraryItemEventID=".$rowEvent['pupilsightLibraryItemEventID'].'&name='.$name.'&pupilsightLibraryTypeID='.$pupilsightLibraryTypeID.'&pupilsightSpaceID='.$pupilsightSpaceID.'&status='.$status."'><i title='Return' class='mdi-arrow-left-circle-outline' px-2></i></a>";
+                        // echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_renew.php&pupilsightLibraryItemID=$pupilsightLibraryItemID&pupilsightLibraryItemEventID=".$rowEvent['pupilsightLibraryItemEventID'].'&name='.$name.'&pupilsightLibraryTypeID='.$pupilsightLibraryTypeID.'&pupilsightSpaceID='.$pupilsightSpaceID.'&status='.$status."'><i title='Renew'  class='mdi mdi-arrow-right-circle-outline px-2'></i></a>";
+                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_return.php&pupilsightLibraryItemID=$pupilsightLibraryItemID&pupilsightLibraryItemEventID=".$rowEvent['pupilsightLibraryItemEventID'].'&name='.$name.'&pupilsightLibraryTypeID='.$pupilsightLibraryTypeID.'&pupilsightSpaceID='.$pupilsightSpaceID.'&status='.$status."'><i title='Return' class='mdi mdi-keyboard-return'  style='font-size:24px;'></i></a>";
+                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_lending_item_renew.php&pupilsightLibraryItemID=$pupilsightLibraryItemID&pupilsightLibraryItemEventID=".$rowEvent['pupilsightLibraryItemEventID'].'&name='.$name.'&pupilsightLibraryTypeID='.$pupilsightLibraryTypeID.'&pupilsightSpaceID='.$pupilsightSpaceID.'&status='.$status."'><i title='Renew' class='mdi mdi-autorenew mdi-24px px-2'></i></a>";
                     }
                     echo '</td>';
                     echo '</tr>';
