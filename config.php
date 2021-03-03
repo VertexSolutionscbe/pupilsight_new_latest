@@ -16,9 +16,8 @@ $databaseUsername = 'root';
 //$databaseName = 'bips_erp'; //pd_demo
 //$databaseName = 'ups'; //pd_demo
 //live
-$databasePassword = ''; //xyz
-
-$databaseName = 'christacademy'; //pd_demo
+$databasePassword = 'xyz'; //xyz
+$databaseName = 'pd_demo'; //pd_demo
 
 //if (session_status() == PHP_SESSION_NONE) {
 //    session_start();
