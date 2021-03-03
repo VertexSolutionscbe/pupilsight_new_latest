@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_add.php')
     // echo "<div style='height:50px;'><div class='float-left mb-2'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/student_add.php' class='btn btn-primary active'>Student</a>";  
     // echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/parent_add.php' class='btn btn-primary'>Parent</a></div><div class='float-none'></div></div>"; 
 
-    $form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/User Admin'.'/student_addProcess.php?search='.$search);
+    $form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'].'/modules/Students'.'/student_addProcess.php?search='.$search);
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

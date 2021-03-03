@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
             $subjectListing = '';
             $blurb = '';
 
-            if ($name == '' or $nameShort == '') {
+            if ($name == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
                 exit();

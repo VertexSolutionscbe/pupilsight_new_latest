@@ -155,6 +155,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
         <tbody>
             <?php if(!empty($feeGroups)){
                 $i = 1;
+                $no_of_invoices = '';
+                $state_id = '';
                 foreach($feeGroups as $fg){    
                     if(!empty($fg['classes'])){
                         $checked = 'checked';
@@ -164,15 +166,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
                         $classes = array();
                     }
 
-                    $no_of_invoices = '';
-                    $state_id = '';
-
                     if(!empty($fg['no_of_invoices'])){
-                        echo $no_of_invoices = $fg['no_of_invoices'];
+                        $no_of_invoices = $fg['no_of_invoices'];
                     }
 
                     if(!empty($fg['state_id'])){
-                       echo $state_id = $fg['state_id'];
+                       $state_id = $fg['state_id'];
                     }
             ?>
                 <tr>

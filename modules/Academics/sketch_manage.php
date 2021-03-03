@@ -24,6 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage.ph
 
     // QUERY
     $criteria = $SketchGateway->newQueryCriteria()
+        ->pageSize(1000)
         ->sortBy(['id'])
         ->fromPOST();
 
@@ -80,8 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage.ph
                     ->setURL('/modules/Academics/sketch_manage_attribute.php')
                     ->setIcon('cog'); 
 
-            $actions->addAction('uploadtemplate', __('Upload Template'))
-                    ->setURL('/modules/Academics/sketch_report_template_add.php')
+            $actions->addAction('uploadtemplatenew', __('Upload Template'))
+                    ->setURL('/modules/Academics/sketch_report_template_manage.php')
                     ->setIcon('cog');        
 
             $actions->addAction('Generate Sketch', __('Generate Sketch'))

@@ -1,7 +1,8 @@
  <?php
     include '../../pupilsight.php';
     $session = $container->get('session');
-    $cid = $_SESSION['campaignid'];
+    $cid = $_GET['id'];
+    $_SESSION["campaignid"] = $cid;
 
     ?>
 

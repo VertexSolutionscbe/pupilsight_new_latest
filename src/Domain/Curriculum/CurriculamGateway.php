@@ -504,6 +504,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
                 $query->where('examinationTestAssignClass.test_id IN('.$test_id.') AND examinationSubjectToTest.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ');
             } 
             $query ->where('examinationSubjectToTest.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ')
+            ->where('examinationSubjectToTest.is_tested = "1" ')
             ->where('subjectToClassCurriculum.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" AND examinationTestAssignClass.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" AND examinationTestAssignClass.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" AND examinationTestAssignClass.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
          
             ->groupBy(['examinationSubjectToTest.test_id','examinationGradeSystemConfiguration.gradeSystemId'])
@@ -585,7 +586,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
             ->newQuery()
             ->from('examinationSubjectToTest')
             ->cols([
-                        'examinationSubjectToTest.*','examinationTest.name','examinationTest.lock_marks_entry','examinationGradeSystemConfiguration.gradeSystemId',"GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name SEPARATOR ', ') as grade_names","GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id SEPARATOR ', ') as grade_ids",'subjectToClassCurriculum.subject_type', 'pupilsightDepartment.name AS subject'
+                        'examinationSubjectToTest.*','examinationTest.name','examinationTest.lock_marks_entry','examinationGradeSystemConfiguration.gradeSystemId',"GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name SEPARATOR ', ') as grade_names","GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id SEPARATOR ', ') as grade_ids",'subjectToClassCurriculum.subject_type', 'pupilsightDepartment.name AS subject','subjectToClassCurriculum.pos'
                     ])
             ->leftJoin('examinationTest', 'examinationSubjectToTest.test_id=examinationTest.id')
             ->leftJoin('pupilsightDepartment', 'examinationSubjectToTest.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')     
@@ -594,11 +595,12 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
 
             ->where('examinationSubjectToTest.is_tested ="1"')
             ->where('examinationSubjectToTest.test_id ="'.$testId.'"')
+            ->where('subjectToClassCurriculum.pupilsightSchoolYearID ="'.$pupilsightSchoolYearID.'"')
             ->where('subjectToClassCurriculum.pupilsightProgramID ="'.$pupilsightProgramID.'"')
             ->where('subjectToClassCurriculum.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'"')
             ->groupBy(['examinationSubjectToTest.pupilsightDepartmentID'])
             ->orderBy(['subjectToClassCurriculum.pos ASC']);
-           // echo $query;
+            //echo $query;
             $res = $this->runQuery($query, $criteria);
             $data = $res->data;
 
@@ -1175,6 +1177,22 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
                 'examinationReportTemplateMaster.*'
             ])
             ->orderby(['examinationReportTemplateMaster.id DESC']);
+
+        return $this->runQuery($query, $criteria, true);
+    }
+
+    public function getSketchTemplate(QueryCriteria $criteria, $id)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('examinationReportSketchTemplateMaster')
+            ->cols([
+                'examinationReportSketchTemplateMaster.*','pupilsightProgram.name as progName','pupilsightYearGroup.name as clsName'
+            ])
+            ->leftJoin('pupilsightYearGroup', 'examinationReportSketchTemplateMaster.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightProgram', 'examinationReportSketchTemplateMaster.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->where('examinationReportSketchTemplateMaster.sketch_id = "' . $id . '" ')
+            ->orderby(['examinationReportSketchTemplateMaster.id DESC']);
 
         return $this->runQuery($query, $criteria, true);
     }

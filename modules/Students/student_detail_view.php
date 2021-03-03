@@ -336,7 +336,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                     if (in_array(34, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
-
                     }
                     if (in_array(35, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
@@ -349,18 +348,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo '<div class="float-left"><h2>Choose A Student</h2></div>';
             }
 
-            $sql = "SELECT GROUP_CONCAT(CONCAT('pupilsightPerson.', field_name )) AS fieldName FROM custom_field WHERE FIND_IN_SET('student', modules)";
+            /*$sql = "SELECT GROUP_CONCAT(CONCAT('pupilsightPerson.', field_name )) AS fieldName FROM custom_field WHERE FIND_IN_SET('student', modules)";
             $result = $connection2->query($sql);
             $customFields = $result->fetch();
             $customFieldNames = $customFields['fieldName'];
-            
-            
-
-            $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search, $customFieldNames);
+            */
+            // $sql = "SELECT  field_name FROM custom_field WHERE FIND_IN_SET('student', modules)";
 
             $sql = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
             $result = $connection2->query($sql);
             $customFields = $result->fetchAll();
+            //print_r($customFields);
+            $customFieldNames = "";
+            foreach ($customFields as $dt) {
+                if ($customFieldNames) {
+                    $customFieldNames .= ", ";
+                }
+                $customFieldNames .= "pupilsightPerson." . $dt["field_name"];
+            }
+
+            if ($_POST) {
+                $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search, $customFieldNames);
+            }
+            
+            /*$sql = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
+            $result = $connection2->query($sql);
+            $customFields = $result->fetchAll();*/
 
             // DATA TABLE
             $table = DataTable::createPaginated('students', $criteria);
@@ -922,7 +935,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             var newhrf = hrf + stuId;
             $("#promoteStudent").attr('href', newhrf);
             window.setTimeout(function() {
-            $("#promoteStudent")[0].click();
+                $("#promoteStudent")[0].click();
             }, 10);
         } else {
             alert('You Have to Select Student.');
@@ -941,14 +954,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             var newhrf = hrf + stuId;
             $("#detainStudent").attr('href', newhrf);
             window.setTimeout(function() {
-            $("#detainStudent")[0].click();
+                $("#detainStudent")[0].click();
             }, 10);
         } else {
             alert('You Have to Select Student.');
         }
     });
-
-
 </script>
 <style>
     #expore_tbl {

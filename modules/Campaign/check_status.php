@@ -343,7 +343,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 
                 if ($chkpayment == 'Paid') {
                     $cls = 'Paid';
-                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td><td>&nbsp;&nbsp;Paid</td><td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'" data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
+                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td><td>&nbsp;&nbsp;Paid</td><td><a href="cms/ajaxfile.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'" title="Download Pdf Form " data-aid="'.$applicationId.'" data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     $lin = $baseurl . "public/receipts/" . $ind["transaction_id"] . ".docx";
                     echo "<td><a href='" . $lin . "' download><i title='Fee Receipt Download' class='mdi mdi-file-pdf mdi-24px download_icon'></i></a></td></tr>";
                 } else {
@@ -416,7 +416,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
 
                 <?php } ?>
                 <?php
-                    echo '<td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
+                    // echo '<td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
+                    echo '<td><a href="cms/ajaxfile.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'"  title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     echo "<td>NA</td></tr>";
                 }
                 //echo '<tr><td>'.$ind['officialName'].'</td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['totalamount'].'</td><td>'.$ind['pendingamount'].'</td><td>'.$cls.'</td></tr>';
@@ -431,7 +432,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 <td>' . $cmstatus . '</td>
                 <td>' . $totalamountnew . '</td>
                 <td>NA</td>
-                <td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td><td>NA</td></tr>';
+                <td><a href="cms/ajaxfile.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td><td>NA</td></tr>';
             }
             
         }

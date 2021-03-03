@@ -3,7 +3,6 @@ include_once '../vendor/autoload.php';
 include_once 'w2f/adminLib.php';
 include $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 $adminlib = new adminlib();
-
 session_start();
 
 $cid = $_GET['cid'];
@@ -37,6 +36,17 @@ foreach ($field as $fe) {
     foreach ($fe as $f) {
         if (!empty($f->attributes)) {
             $arrHeader[] = $f->attributes->name;
+        }
+        if(!empty($f->columns)){
+            foreach($f->columns as $cf){
+                foreach($cf as $cff){
+                    foreach($cff as $ctf){
+                        if (!empty($ctf->attributes)) {
+                            $arrHeader[] = $ctf->attributes->name;
+                        }
+                    }
+                }
+            }
         }
     }
 }

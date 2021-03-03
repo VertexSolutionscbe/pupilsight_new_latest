@@ -932,6 +932,7 @@ function dateConvertToTimestamp($date)
 //Checks to see if a specified date (YYYY-MM-DD) is a day where school is open in the current academic year. There is an option to search all years
 function isSchoolOpen($guid, $date, $connection2, $allYears = '')
 {
+    //echo $date;
     //Set test variables
     $isInTerm = false;
     $isSchoolDay = false;
@@ -947,7 +948,7 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
         $sqlWhere = '';
         if ($allYears != true) {
             $data[$_SESSION[$guid]['pupilsightSchoolYearID']] = $_SESSION[$guid]['pupilsightSchoolYearID'];
-            $sqlWhere = ' AND pupilsightSchoolYear.pupilsightSchoolYearID=:' . $_SESSION[$guid]['pupilsightSchoolYearID'];
+            $sqlWhere = ' AND pupilsightSchoolYear.pupilsightSchoolYearID=' . $_SESSION[$guid]['pupilsightSchoolYearID'];
         }
 
         $sql = "SELECT pupilsightSchoolYearTerm.firstDay, pupilsightSchoolYearTerm.lastDay FROM pupilsightSchoolYearTerm, pupilsightSchoolYear WHERE pupilsightSchoolYearTerm.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID $sqlWhere";
@@ -960,7 +961,7 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
             $isInTerm = true;
         }
     }
-
+    
     //See if date's day of week is a school day
     if ($isInTerm == true) {
         try {
@@ -989,7 +990,7 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
             $isSchoolOpen = true;
         }
     }
-
+    
     return $isSchoolOpen;
 }
 

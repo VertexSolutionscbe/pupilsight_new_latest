@@ -15,18 +15,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     echo '</div>';
 } else {
     //Proceed!
+
+    $id = $_GET['id'];
+    $sqlchk = "SELECT a.*, b.pupilsightSchoolYearID, b.pupilsightProgramID, b.class_ids FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportTemplateSketch AS b ON a.sketch_id = b.id  WHERE a.id = ".$id." ";
+    $resultchk = $connection2->query($sqlchk);
+    $chkdata = $resultchk->fetch();
+
     $page->breadcrumbs
         ->add(__('Manage Sketch'), 'sketch_manage.php')
+        ->add(__('Manage Sketch Configurations'), 'sketch_manage_attribute.php&id='.$chkdata['sketch_id'].'')
         ->add(__('Edit Sketch Attribute'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $id = $_GET['id'];
-    $sqlchk = "SELECT a.*, b.pupilsightSchoolYearID, b.pupilsightProgramID, b.class_ids FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportTemplateSketch AS b ON a.sketch_id = b.id  WHERE a.id = " . $id . " ";
-    $resultchk = $connection2->query($sqlchk);
-    $chkdata = $resultchk->fetch();
+    
 
     if ($chkdata['attribute_category'] == 'Entity') {
 
@@ -94,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                         </select>
                                         <input id="formulaValue-<?php echo $ad['id']; ?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id']; ?>]" value="<?php echo $formulamapdata['formula_val']; ?>" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" <?php if (empty($formulamapdata['formula_val'])) { ?>readonly <?php } ?>>
                                     </td>
-                                    <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id']; ?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a> <?php echo $attrdata['pluginname']; ?></td>
+                                    <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $id; ?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a> <?php echo $attrdata['pluginname']; ?></td>
                                 </tr>
 
                         <?php
@@ -173,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                         </select>
                                         <input id="formulaValue-<?php echo $ad['id']; ?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id']; ?>]" value="<?php echo $formulamapdata['formula_val']; ?>" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" <?php if (empty($formulamapdata['formula_val'])) { ?>readonly <?php } ?>>
                                     </td>
-                                    <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id']; ?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a> <?php echo $attrdata['pluginname']; ?></td>
+                                    <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $id; ?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a> <?php echo $attrdata['pluginname']; ?></td>
                                 </tr>
 
                         <?php
@@ -257,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                         </select>
                                         <input id="formulaValue-<?php echo $ad['id']; ?>" type="textbox" class="form-control forVal" name="formula_val[<?php echo $ad['id']; ?>]" value="<?php echo $formulamapdata['formula_val']; ?>" style="border: 1px solid #ced4da;border-radius: 4px;height: 34px;width: 40%;font-size: 14px;" <?php if (empty($formulamapdata['formula_val'])) { ?>readonly <?php } ?>>
                                     </td>
-                                    <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $ad['id']; ?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a> <?php echo $attrdata['pluginname']; ?></td>
+                                    <td><a class="thickbox" href="fullscreen.php?q=/modules/Academics/sketch_manage_plugin.php&id=<?php echo $id; ?>"><i title="Add Plugin" class="mdi mdi-plus-circle mdi-24px"></i></a> <?php echo $attrdata['pluginname']; ?></td>
                                 </tr>
 
                         <?php

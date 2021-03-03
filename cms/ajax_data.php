@@ -2,71 +2,74 @@
 error_reporting(E_ERROR | E_PARSE);
 include_once 'w2f/adminLib.php';
 include '../pupilsight.php';
+
+use Pupilsight\Contracts\Comms\SMS;
+
 $adminlib = new adminlib();
 session_start();
 //$input = $_SESSION['campaignuserdata'];
 $type = $_POST['type'];
 if ($type == 'insertcampaigndetails') {
-    $campid = $_POST['val'];
-    $pupilsightProgramID = $_POST['pid'];
-    $form_id = $_POST['fid'];
-    $pupilsightYearGroupID = $_POST['clid'];
-    $submissionId = $_SESSION['submissionId'];
-    $chkfeeSett = $_POST['chkfeeSett'];
-    if (!empty($pupilsightYearGroupID) && !empty($submissionId)) {
+	$campid = $_POST['val'];
+	$pupilsightProgramID = $_POST['pid'];
+	$form_id = $_POST['fid'];
+	$pupilsightYearGroupID = $_POST['clid'];
+	$submissionId = $_SESSION['submissionId'];
+	$chkfeeSett = $_POST['chkfeeSett'];
+	if (!empty($pupilsightYearGroupID) && !empty($submissionId)) {
 		//$insert = $adminlib->createCampaignRegistration($input, $campid);
-		
+
 		$sqlchfee = "SELECT is_fee_generate FROM campaign WHERE id = " . $campid . " ";
 		$resultchkfee = database::doSelectOne($sqlchfee);
 		$chkfeeSettNew = $resultchkfee['is_fee_generate'];
 
-        // if($chkfeeSett == '2'){
-		if($chkfeeSettNew == '2'){
-            $insert = $adminlib->updateApplicantData($submissionId, $pupilsightProgramID, $pupilsightYearGroupID);
-        } else {
-            $sql = "SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = " . $campid . " ";
-            $result = database::doSelectOne($sql);
+		// if($chkfeeSett == '2'){
+		if ($chkfeeSettNew == '2') {
+			$insert = $adminlib->updateApplicantData($submissionId, $pupilsightProgramID, $pupilsightYearGroupID);
+		} else {
+			$sql = "SELECT b.id, b.formatval FROM campaign AS a LEFT JOIN fn_fee_series AS b ON a.application_series_id = b.id WHERE a.id = " . $campid . " ";
+			$result = database::doSelectOne($sql);
 
-            if (!empty($result['formatval'])) {
-                $seriesId = $result['id'];
-                $invformat = explode('$', $result['formatval']);
-                $iformat = '';
-                $orderwise = 0;
-                foreach ($invformat as $inv) {
-                    if ($inv == '{AB}') {
-                        $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=' . $seriesId . ' AND type= "numberwise"';
-                        $formatvalues = database::doSelectOne($sqlfort);
+			if (!empty($result['formatval'])) {
+				$seriesId = $result['id'];
+				$invformat = explode('$', $result['formatval']);
+				$iformat = '';
+				$orderwise = 0;
+				foreach ($invformat as $inv) {
+					if ($inv == '{AB}') {
+						$sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=' . $seriesId . ' AND type= "numberwise"';
+						$formatvalues = database::doSelectOne($sqlfort);
 
 
-                        $str_length = $formatvalues['no_of_digit'];
+						$str_length = $formatvalues['no_of_digit'];
 
-                        $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
+						$iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
 
-                        $lastnoadd = $formatvalues['last_no'] + 1;
+						$lastnoadd = $formatvalues['last_no'] + 1;
 
-                        $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
+						$lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
 
-                        $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
-                        $result1 = database::doUpdate($sql1);
-                    } else {
-                        $iformat .= $inv;
-                    }
-                    $orderwise++;
-                }
-                $application_id = $iformat;
-            } else {
-                $application_id = '';
-            }
+						$sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
+						$result1 = database::doUpdate($sql1);
+					} else {
+						$iformat .= $inv;
+					}
+					$orderwise++;
+				}
+				$application_id = $iformat;
+			} else {
+				$application_id = '';
+			}
 
-            $insert = $adminlib->updateApplicantData2($submissionId, $pupilsightProgramID, $pupilsightYearGroupID, $application_id);
+			$insert = $adminlib->updateApplicantData2($submissionId, $pupilsightProgramID, $pupilsightYearGroupID, $application_id);
 
-            $sqlfs = 'SELECT academic_id, pupilsightProgramID, fn_fee_structure_id, fn_fees_receipt_template_id  FROM campaign WHERE id = ' . $campid . ' ';
-            $resultfs = $connection2->query($sqlfs);
-            $campData = $resultfs->fetch();
+			$sqlfs = 'SELECT academic_id, pupilsightProgramID, fn_fee_structure_id, fn_fees_receipt_template_id  FROM campaign WHERE id = ' . $campid . ' ';
+			$resultfs = $connection2->query($sqlfs);
+			$campData = $resultfs->fetch();
 
-            if (!empty($campData['fn_fee_structure_id'])) {
-                $crtd =  date('Y-m-d H:i:s');
-		        $cdt = date('Y-m-d H:i:s');
+			if (!empty($campData['fn_fee_structure_id'])) {
+				$crtd =  date('Y-m-d H:i:s');
+				$cdt = date('Y-m-d H:i:s');
 				$fn_fee_structure_id = $campData['fn_fee_structure_id'];
 				$id = $fn_fee_structure_id;
 				$datas = array('id' => $id);
@@ -196,22 +199,36 @@ if ($type == 'insertcampaigndetails') {
 			$crtd =  date('Y-m-d H:i:s');
 			$cuid = '001';
 
-			$sqle = "SELECT response FROM wp_fluentform_submissions WHERE id = " . $subid . " ";
+			$sqle = "SELECT response, application_id FROM wp_fluentform_submissions WHERE id = " . $subid . " ";
 			$resulte = $connection2->query($sqle);
 			$rowdata = $resulte->fetch();
 			$sd = json_decode($rowdata['response'], TRUE);
 			$email = "";
 			$names = "";
+			$st_name = '';
+			$ft_name = '';
+			$mt_name = '';
 			$ft_number = '';
 			$mt_number = '';
 			$gt_number = '';
 			$ft_email = '';
 			$mt_email = '';
 			$gt_email = '';
+			$application_no = $rowdata['application_id'];
 
 			if ($sd) {
 				// $names = implode(' ', $sd['student_name']);
 				// $email = $sd['father_email'];
+				if (!empty($sd['father_name'])) {
+					$ft_name = $sd['father_name'];
+				}
+				if (!empty($sd['mother_name'])) {
+					$mt_name = $sd['mother_name'];
+				}
+				if (!empty($sd['student_name'])) {
+					$st_name = $sd['student_name'];
+				}
+
 				if (!empty($sd['father_mobile'])) {
 					$ft_number = $sd['father_mobile'];
 				}
@@ -233,6 +250,19 @@ if ($type == 'insertcampaigndetails') {
 				}
 			}
 
+			$emailquote = str_replace("@student_name", $st_name, $emailquote);
+			$emailquote = str_replace("@father_name", $ft_name, $emailquote);
+			$emailquote = str_replace("@mother_name", $mt_name, $emailquote);
+			
+			$smsquote = str_replace("@student_name", $st_name, $smsquote);
+			$smsquote = str_replace("@father_name", $ft_name, $smsquote);
+			$smsquote = str_replace("@mother_name", $mt_name, $smsquote);
+			
+			if(!empty($application_no)){
+				$emailquote = str_replace("@application_no", $application_no, $emailquote);
+				$smsquote = str_replace("@application_no", $application_no, $smsquote);
+			}
+
 			//$email = "it.rakesh@gmail.com";
 			$subject = nl2br($emailSubjct_camp);
 			$body = nl2br($emailquote);
@@ -249,7 +279,7 @@ if ($type == 'insertcampaigndetails') {
 					$url .= "?to=" . $ft_email;
 					$url .= "&subject=" . rawurlencode($subject);
 					$url .= "&body=" . rawurlencode($body);
-					echo $url;
+					//echo $url;
 					sendEmail($ft_email, $subject, $body, $subid, $cuid, $connection2, $url);
 				}
 				if (!empty($mt_email)) {
@@ -257,7 +287,7 @@ if ($type == 'insertcampaigndetails') {
 					$url .= "?to=" . $mt_email;
 					$url .= "&subject=" . rawurlencode($subject);
 					$url .= "&body=" . rawurlencode($body);
-					echo $url;
+					//echo $url;
 					sendEmail($mt_email, $subject, $body, $subid, $cuid, $connection2, $url);
 				}
 				if (!empty($gt_email)) {
@@ -271,63 +301,64 @@ if ($type == 'insertcampaigndetails') {
 
 			if (!empty($smsquote) && !empty($msg)) {
 				if (!empty($ft_number)) {
-					sendSMS($ft_number, $msg, $subid, $cuid, $connection2);
+					sendSMS($ft_number, $msg, $subid, $cuid, $connection2, $container);
 				}
 				if (!empty($mt_number)) {
-					sendSMS($mt_number, $msg, $subid, $cuid, $connection2);
+					sendSMS($mt_number, $msg, $subid, $cuid, $connection2, $container);
 				}
 				if (!empty($gt_number)) {
-					sendSMS($gt_number, $msg, $subid, $cuid, $connection2);
+					sendSMS($gt_number, $msg, $subid, $cuid, $connection2, $container);
 				}
 			}
-        
-            unset($_SESSION["submissionId"]);
-        }
 
-
-    }
+			unset($_SESSION["submissionId"]);
+		}
+	}
 }
 
 if ($type == 'saveApplicantForm') {
-    $submissionId = $_SESSION['submissionId'];
-    $data = base64_decode($_POST['pdf']);
-    // print_r($data);
-    file_put_contents("../public/applicationpdf/" . $submissionId . "-application.pdf", $data);
+	$submissionId = $_SESSION['submissionId'];
+	$data = base64_decode($_POST['pdf']);
+	// print_r($data);
+	file_put_contents("../public/applicationpdf/" . $submissionId . "-application.pdf", $data);
 }
 
 if ($type == 'chkPreviousSubmission') {
-    $val = $_POST['val'];
-    $form_id = $_POST['fid'];
-    $sql = 'SELECT id FROM wp_fluentform_entry_details WHERE form_id=' . $form_id . ' AND field_value = "'.$val.'" ';
-    $result = database::doSelectOne($sql);
-    if(!empty($result)){
-        echo '1';
-    } else {
-        echo '2';
-    }
+	$val = $_POST['val'];
+	$form_id = $_POST['fid'];
+	$sql = 'SELECT id FROM wp_fluentform_entry_details WHERE form_id=' . $form_id . ' AND field_value = "' . $val . '" ';
+	$result = database::doSelectOne($sql);
+	if (!empty($result)) {
+		echo '1';
+	} else {
+		echo '2';
+	}
 }
 
 if ($type == 'getCampClass') {
-    $val = $_POST['val'];
-    $cid = $_POST['cid'];
-    $sql = 'SELECT a.id, b.pupilsightYearGroupID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramId=' . $val . ' AND a.campaign_id = "'.$cid.'" ';
-    $result = database::doSelect($sql);
-    $data = '<option value="">Select Class</option>';
-    if (!empty($result)) {
-        foreach ($result as $k => $cl) {
-            $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
-        }
-    }
-    echo $data;
+	$val = $_POST['val'];
+	$cid = $_POST['cid'];
+	$sql = 'SELECT a.id, b.pupilsightYearGroupID, b.name FROM campaign_prog_class AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramId=' . $val . ' AND a.campaign_id = "' . $cid . '" ';
+	$result = database::doSelect($sql);
+	$data = '<option value="">Select Class</option>';
+	if (!empty($result)) {
+		foreach ($result as $k => $cl) {
+			$data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
+		}
+	}
+	echo $data;
 }
 
-function sendSMS($number, $msg, $subid, $cuid, $connection2)
+function sendSMS($number, $msg, $subid, $cuid, $connection2, $container)
 {
-	$urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
-	$urls .= "&send_to=" . $number;
-	$urls .= "&msg=" . rawurlencode($msg);
-	$urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
-	$resms = file_get_contents($urls);
+	// $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
+	// $urls .= "&send_to=" . $number;
+	// $urls .= "&msg=" . rawurlencode($msg);
+	// $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
+	// $resms = file_get_contents($urls);
+
+	$sms = $container->get(SMS::class);
+    $res = $sms->sendSMSPro($number, $msg);
 
 	$sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
 	$connection2->query($sq);
@@ -335,14 +366,9 @@ function sendSMS($number, $msg, $subid, $cuid, $connection2)
 
 function sendEMail($to, $subject, $body, $subid, $cuid, $connection2, $url)
 {
-
 	//sending attachment
-
 	$res = file_get_contents($url);
 	$sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
 	$connection2->query($sq);
 }
 //echo $msg;
-
-
-

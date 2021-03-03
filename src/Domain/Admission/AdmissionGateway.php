@@ -156,7 +156,7 @@ class AdmissionGateway extends QueryableGateway
             // ]);
 
             ->cols([
-                'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", "GROUP_CONCAT(fd.field_value  SEPARATOR '|$$|') as field_value", '(select workflow_transition.transition_display_name AS state from campaign_form_status AS cs LEFT JOIN workflow_transition ON cs.state_id = workflow_transition.id where cs.submission_id=fd.submission_id and cs.status=1 order by cs.id desc limit 1) as workflowstate', 'ws.id', 'ws.application_id'
+                'fd.submission_id', "GROUP_CONCAT(fd.field_name) as field_name", "GROUP_CONCAT(fd.field_value  SEPARATOR '|$$|') as field_value", 'fd.status', '(select workflow_transition.transition_display_name AS state from campaign_form_status AS cs LEFT JOIN workflow_transition ON cs.state_id = workflow_transition.id where cs.submission_id=fd.submission_id and cs.status=1 order by cs.id desc limit 1) as workflowstate', 'ws.id', 'ws.application_id'
             ])
             ->leftJoin('wp_fluentform_submissions AS ws', 'fd.submission_id=ws.id');
         if (!empty($applicationStatus) && $applicationStatus != 'Submitted') {

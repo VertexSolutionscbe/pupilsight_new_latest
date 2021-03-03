@@ -294,6 +294,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $table->addColumn('admission_no', __('Admission No'));
     $table->addColumn('transaction_id', __('Transaction Id'));
     $table->addColumn('paymentmode', __('payment Mode'));
+    $table->addColumn('instrument_no', __('Instrument No'));
+    $table->addColumn('instrument_date', __('Instrument Date'));
     $table->addColumn('bankname', __('Bank name'));
     $table->addColumn('total_amount_without_fine_discount', __('Amount'));
     $table->addColumn('fine', __('Fine Amount'));

@@ -3,6 +3,13 @@
 include '../../pupilsight.php';
 $session = $container->get('session');
 
+if(!empty($_GET)){
+    if(!empty($_GET['id'])){
+        $cid = $_GET['id'];
+        $_SESSION["campaignid"] = $cid;
+    }
+}
+
 ?>
 
 <div class="modal fade bd-example-modal-lg show" id="popUp" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display:block !important;">

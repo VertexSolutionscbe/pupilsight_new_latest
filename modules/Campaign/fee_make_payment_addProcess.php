@@ -79,6 +79,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
        
             //Write to database
             try {
+                $sqlrt = 'SELECT b.path FROM campaign AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.fn_fees_receipt_template_id = b.id WHERE a.id = ' . $cid . ' ';
+                $resultrt = $connection2->query($sqlrt);
+                $recTempData = $resultrt->fetch();
+                $receiptTemplate = $recTempData['path'];
+
+
                 if(!empty($fn_fees_receipt_series_id)){
                     $sqlrec = 'SELECT id, formatval FROM fn_fee_series WHERE id = "'.$fn_fees_receipt_series_id.'" ';
                     $resultrec = $connection2->query($sqlrec);
@@ -163,20 +169,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 }
 
                 if(!empty($state_id)){
-                    $sqlchk1 = "SELECT b.state_id FROM workflow_transition AS a LEFT JOIN fn_fee_admission_settings AS b ON a.fn_fee_admission_setting_ids = b.id WHERE a.id = ".$state_id." ";
-                    $resultchk1 = $connection2->query($sqlchk1);
-                    $valuechk1 = $resultchk1->fetch();
+                    // $sqlchk1 = "SELECT b.state_id FROM workflow_transition AS a LEFT JOIN fn_fee_admission_settings AS b ON a.fn_fee_admission_setting_ids = b.id WHERE a.id = ".$state_id." ";
+                    // $resultchk1 = $connection2->query($sqlchk1);
+                    // $valuechk1 = $resultchk1->fetch();
 
-                    $sqlchk = "SELECT a.campaign_id, a.transition_display_name, a.id, c.form_id FROM workflow_transition AS a LEFT JOIN campaign AS c ON a.campaign_id = c.id WHERE a.to_state = ".$valuechk1['state_id']." ";
-                    $resultchk = $connection2->query($sqlchk);
-                    $valuechk = $resultchk->fetch();
-                    if(!empty($valuechk)){
-                        $chgState_id = $valuechk['id'];
-                        $data = array('campaign_id' => $valuechk['campaign_id'],'form_id' => $valuechk['form_id'], 'submission_id' => $submission_id, 'state' => $valuechk['transition_display_name'],  'state_id' => $chgState_id, 'status' => '1', 'pupilsightPersonID' => $cuid, 'cdt' => $cdt);
-                
-                        $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, cdt=:cdt";
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
+                    $sqlchk1 = "SELECT fn_fee_admission_setting_ids FROM workflow_transition  WHERE id = ".$state_id." ";
+                    $resultchk1 = $connection2->query($sqlchk1);
+                    $getSettIds = $resultchk1->fetch();
+
+                    if(!empty($getSettIds)){
+                        $sqlchk1 = "SELECT state_id FROM fn_fee_admission_settings WHERE id IN (".$getSettIds['fn_fee_admission_setting_ids'].") ";
+                        $resultchk1 = $connection2->query($sqlchk1);
+                        $valuechk1 = $resultchk1->fetch();
+                        
+
+                        $sqlchk = "SELECT a.campaign_id, a.transition_display_name, a.id, c.form_id FROM workflow_transition AS a LEFT JOIN campaign AS c ON a.campaign_id = c.id WHERE a.to_state = ".$valuechk1['state_id']." ";
+                        $resultchk = $connection2->query($sqlchk);
+                        $valuechk = $resultchk->fetch();
+                        if(!empty($valuechk)){
+                            $chgState_id = $valuechk['id'];
+                            $data = array('campaign_id' => $valuechk['campaign_id'],'form_id' => $valuechk['form_id'], 'submission_id' => $submission_id, 'state' => $valuechk['transition_display_name'],  'state_id' => $chgState_id, 'status' => '1', 'pupilsightPersonID' => $cuid, 'cdt' => $cdt);
+                    
+                            $sql = "INSERT INTO campaign_form_status SET campaign_id=:campaign_id,form_id=:form_id, submission_id=:submission_id,state=:state,state_id=:state_id, status=:status, pupilsightPersonID=:pupilsightPersonID, cdt=:cdt";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        }
                     }
                 }
 
@@ -188,14 +205,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 $resultpt = $connection2->query($sqlpt);
                 $valuept = $resultpt->fetch();
 
-                $sqlstu = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = "'.$submission_id.'" AND sub_field_name = "first_name" ';
+                $sqlstu = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = "'.$submission_id.'" AND field_name = "student_name" ';
                 $resultstu = $connection2->query($sqlstu);
                 $studetails = $resultstu->fetch();
 
+                $payment_receipt_date = date('d-m-Y', strtotime($payment_date));
                 $class_section = $valuestu["prog"].' - '.$valuestu["class"];
                 $dts_receipt = array(
                     "receipt_no" => $receipt_number,
-                    "date" => date("d-M-Y"),
+                    "date" => $payment_receipt_date,
                     "student_name" => $studetails['field_value'],
                     "student_id" => $submission_id,
                     "class_section" => $class_section,
@@ -205,7 +223,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                     "fine_amount" => $fine,
                     "other_amount" => "NA",
                     "pay_mode" => $valuept['name'],
-                    "transactionId" => $transactionId
+                    "transactionId" => $transactionId,
+                    "receiptTemplate" => $receiptTemplate
                 );
                 
                 if(!empty($invoice_id)){
@@ -250,15 +269,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 }
                 
                
-        
-                $_SESSION["dts_receipt_feeitem"] = $dts_receipt_feeitem;
-                $_SESSION["dts_receipt"] = $dts_receipt;
-                $URL .= "&return=success0";
-                $_SESSION["admin_callback"] = $URL;
-                if(!empty($dts_receipt) && !empty($dts_receipt_feeitem)){ 
-                    $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receipt.php';
-                    header('Location: '.$callback);
-                }  
+                if (!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)) {
+                    $_SESSION["dts_receipt_feeitem"] = $dts_receipt_feeitem;
+                    $_SESSION["dts_receipt"] = $dts_receipt;
+                    $URL .= "&return=success0";
+                    $_SESSION["admin_callback"] = $URL;
+                    if(!empty($dts_receipt) && !empty($dts_receipt_feeitem)){ 
+                        $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receipt_offline.php';
+                        header('Location: '.$callback);
+                    }  
+                }
 
             } catch (PDOException $e) {
                 $URL .= '&return=error9';

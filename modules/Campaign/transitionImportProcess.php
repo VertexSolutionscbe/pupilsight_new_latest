@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
     
 
     try {
-        $sql = "SELECT a.*, b.form_id, b.academic_id, b.admission_series_id FROM campaign_transitions_form_map AS a LEFT JOIN campaign AS b ON a.campaign_id = b.id where b.id='" . $campaign_id . "' GROUP BY table_name";
+        $sql = "SELECT a.*, b.form_id, b.academic_id, b.admission_series_id FROM campaign_transitions_form_map AS a LEFT JOIN campaign AS b ON a.campaign_id = b.id where b.id= " . $campaign_id . " GROUP BY table_name";
         $result = $connection2->query($sql);
         $tablelist = $result->fetchAll();
     } catch (Exception $ex) {
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
     try {
         foreach ($tablelist as $k => $tbl) {
 
-            $sqlc = "SELECT column_name, fluent_form_column_name FROM campaign_transitions_form_map WHERE table_name = '" . $tbl['table_name'] . "' ";
+            $sqlc = 'SELECT column_name, fluent_form_column_name FROM campaign_transitions_form_map WHERE table_name = "' . $tbl['table_name'] . '" AND campaign_id = ' . $campaign_id . ' ';
             $resultc = $connection2->query($sqlc);
             $tablecol = $resultc->fetchAll();
 
@@ -233,6 +233,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         //$sql = rtrim($sql, ", ");
                         $sql .= ") VALUES (";
                         foreach ($td as $k => $value) {
+                            if ($k == "st_dob" && !empty($value)) {
+                                $sdate = str_replace('/', '-', $value);
+                                $value =  date('Y-m-d', strtotime($sdate));
+                            }
                             if (strpos($k, 'st_') !== false && !empty($value)) {
                                 $val = str_replace('"', "", $value);
                                 $sql .= '"' . $val . '",';
@@ -247,8 +251,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         $sql .= ")";
                         $sql = rtrim($sql, ", ");
 
-                        // echo $sql;
-                        // die();
+                        //  echo $sql;
+                        //  die();
                         $conn->query($sql);
                         $stu_id = $conn->insert_id;
 
@@ -265,6 +269,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         $sqlf = rtrim($sqlf, ", ");
                         $sqlf .= ") VALUES (";
                         foreach ($td as $k => $value) {
+                            if ($k == "ft_dob" && !empty($value)) {
+                                $sdate = str_replace('/', '-', $value);
+                                $value =  date('Y-m-d', strtotime($sdate));
+                            }
                             if (strpos($k, 'ft_') !== false  && !empty($value)) {
                                 $val = str_replace('"', "", $value);
                                 $sqlf .= '"' . $val . '",';
@@ -289,6 +297,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                         $sqlm = rtrim($sqlm, ", ");
                         $sqlm .= ") VALUES (";
                         foreach ($td as $k => $value) {
+                            if ($k == "mt_dob" && !empty($value)) {
+                                $sdate = str_replace('/', '-', $value);
+                                $value =  date('Y-m-d', strtotime($sdate));
+                            }
                             if (strpos($k, 'mt_') !== false  && !empty($value)) {
                                 $val = str_replace('"', "", $value);
                                 $sqlm .= '"' . $val . '",';
@@ -381,7 +393,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
         }
         echo 'success';
     }
-    //die();
+    die();
 
     //$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/transitionsList.php';
 

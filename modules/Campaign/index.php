@@ -65,6 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     $criteria = $admissionGateway->newQueryCriteria()
         ->searchBy($admissionGateway->getSearchableColumns(), $search)
         ->sortBy(['id'])
+        ->pageSize(5000)
         ->fromPOST();
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');

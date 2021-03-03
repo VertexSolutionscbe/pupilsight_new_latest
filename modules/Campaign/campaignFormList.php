@@ -238,6 +238,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                     $arrHeader[] = $f->attributes->name;
                 }
             }
+            if(!empty($f->columns)){
+                foreach($f->columns as $cf){
+                    foreach($cf as $cff){
+                        foreach($cff as $ctf){
+                            if (!empty($ctf->attributes) && $ctf->attributes->name == 'student_name') {
+                                $arrHeader[] = $ctf->attributes->name;
+                            }
+                            if (!empty($ctf->settings) && !empty($ctf->settings->container_class)) {
+                                if ($ctf->settings->container_class == 'show-in-grid') {
+                                    $arrHeader[] = $ctf->attributes->name;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -315,7 +331,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                         $dataSet->data[$i]["workflowstate"] = 'Created';
                     }
                 } else {
-                    $dataSet->data[$i]["workflowstate"] = 'Created';
+                    $dataSet->data[$i]["workflowstate"] = 'Submitted';
                 }
             }
 
@@ -396,7 +412,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
                 $actions->addAction('form', __('Form'))
                     ->setId('showform-' . $dataSet["submission_id"])
-                    ->setURL('/modules/Campaign/wplogin_form.php')
+                    ->setURL('/modules/Campaign/form_open.php')
                     ->modalWindow(1100, 550);
             });
     }

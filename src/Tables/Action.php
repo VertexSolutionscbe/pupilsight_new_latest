@@ -421,7 +421,7 @@ class Action extends WebLink
                     $this->getIcon()
                 ));
             } elseif($this->getLabel() == 'Generate Sketch'){
-				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-cog-outline mdi-24px"></i>', 
+				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-briefcase-plus mdi-24px"></i>', 
                     ($this->displayLabel? $this->getLabel() : ''),
                     $this->getLabel(), 
                     $this->getIcon()
