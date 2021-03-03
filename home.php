@@ -625,6 +625,8 @@ if (isset($data['logo_image'])) {
 
                             <?php  } ?>
 
+                            
+
                             <?php if ($data['primary_email'] != '' || $data['secondary_email'] != '') { ?>
 
                                 <!-- <label class="form-label font20">Email</label> -->
