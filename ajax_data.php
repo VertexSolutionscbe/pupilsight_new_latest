@@ -3830,3 +3830,32 @@ if ($type == 'delSubjectSkills') {
         $result1->execute($data1);
     }
 }
+
+
+if ($type == 'deRegisterBulkStudent') {
+    $ids = explode(',', $val);
+    $cdt = date('Y-m-d H:i:s');
+    $cuid = $_SESSION[$guid]['pupilsightPersonID'];  
+    foreach ($ids as $st) {
+        
+        $data = array('pupilsightPersonID' => $st);
+        $sql = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID=:pupilsightPersonID ';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+        $prevdata=  $result->fetch();
+
+        $data1 = array('active' => '0', 'pupilsightPersonID' => $st);
+        $sql = 'UPDATE pupilsightPerson SET active=:active WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data1);
+
+        $sql = 'UPDATE pupilsightStudentEnrolment SET active=:active WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data1);
+
+        $data3 = array('pupilsightPersonID'=>$st,'pupilsightStudentEnrolmentID' => $prevdata['pupilsightStudentEnrolmentID'], 'updated_by' => $cuid, 'cdt' => $cdt);
+        $sql3 = 'INSERT INTO pupilsight_deregister_students SET pupilsightPersonID=:pupilsightPersonID, pupilsightStudentEnrolmentID=:pupilsightStudentEnrolmentID, updated_by=:updated_by, cdt=:cdt';
+        $result3 = $connection2->prepare($sql3);
+        $result3->execute($data3);
+    }
+}

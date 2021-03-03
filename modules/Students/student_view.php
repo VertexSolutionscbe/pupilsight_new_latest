@@ -236,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 // echo "<a style='display:none' id='clickStudent_elect_subject' href='fullscreen.php?q=/modules/Students/assign_student_elective_subjects.php&width=1000'  class='thickbox '>Assign Elective Subjects to Students</a>";
                 // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-primary' href='#'  id='assignStu_elesub'>Assign Elective Subjects to Students</a>";
 
-                echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-primary'>Student Enrollment</a>&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-primary'>Remove Enrollment</a>&nbsp;&nbsp;<a   class='btn btn-primary' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>";
+                echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-primary'>Student Enrollment</a>&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-primary'>Remove Enrollment</a>&nbsp;&nbsp;<a   class='btn btn-primary' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>&nbsp;&nbsp;<a style='' id='deRegisterBulkStudent' class='btn btn-primary'>Bulk De-Register</a>";
 
                 // echo "&nbsp;&nbsp;<i style='cursor:pointer' id='expore_student_xl' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
 
@@ -299,6 +299,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     if (in_array(14, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>";
                     }
+
+                    if (in_array(36, $permissionChk)) {
+                        echo "&nbsp;&nbsp;<a style='' id='deRegisterBulkStudent' class='btn btn-primary'>Bulk De-Register</a>";
+                    }
+
+                    
                     if (in_array(25, $permissionChk)) {
                         echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
                     }
@@ -832,6 +838,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             window.setTimeout(function() {
                 $("#detainStudent")[0].click();
             }, 10);
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    
+    $(document).on('click', '#deRegisterBulkStudent', function() {
+        var favorite = [];
+        var chk = [];
+        var chkname = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        
+        if (stuId) {
+            var val = stuId;
+            var type = 'deRegisterBulkStudent';
+            if (val != '') {
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: {
+                        val: val,
+                        type: type
+                    },
+                    async: true,
+                    success: function(response) {
+                        alert('Student De-Registered Successfully!');
+                        location.reload();
+                    }
+                });
+            }
         } else {
             alert('You Have to Select Student.');
         }
