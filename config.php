@@ -18,6 +18,7 @@ $databaseUsername = 'root';
 
 //live
 $databasePassword = ''; //xyz
+
 $databaseName = 'christacademy'; //pd_demo
 
 //if (session_status() == PHP_SESSION_NONE) {
