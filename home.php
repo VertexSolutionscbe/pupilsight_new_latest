@@ -25,8 +25,8 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain().'/pupilsight_new';
-$baseurl = getDomain();
+$baseurl = getDomain() . '/pupilsight_new';
+//$baseurl = getDomain();
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
 $hero_image = $baseurl . "/cms/images/welcome.png";
@@ -118,6 +118,18 @@ if (isset($data['logo_image'])) {
             line-height: 42px;
             font-size: 42px;
             font-weight: 600;
+        }
+
+        .bannerTitle {
+            line-height: 42px;
+            font-size: 30px;
+            font-weight: 600;
+            /* font-family: "serif"; */
+        }
+
+        .bannerDes {
+            font-size: 18px;
+            font-family: "serif";
         }
 
         .carouselSubTitle {
@@ -222,7 +234,8 @@ if (isset($data['logo_image'])) {
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a href="<?= $baseurl; ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
-                    <img src="<?= $logo; ?>" class="navbar-brand-image" title="<?= $data["logo_title"]; ?>">
+                    <!-- <img src="<?= $logo; ?>" class="navbar-brand-image" title="<?= $data["logo_title"]; ?>"> -->
+                    <img src="<?= $logo; ?>" width="160" height="50" title="<?= $data["logo_title"]; ?>">
                 </a>
 
                 <div class="navbar-collapse collapse" id="navbar-menu" style='flex: inherit !important;'>
@@ -331,23 +344,24 @@ if (isset($data['logo_image'])) {
             <!---Hero Page---->
             <a name="home"></a>
             <div class="row">
-                <div class="col-md-6 col-sm-12 m-auto">
-                    <div class='my-3' style="width:400px;margin:auto;">
-                        <div class="carouselTitle"><?= trim(html_entity_decode($data['cms_banner_title'])); ?></div>
+                <div class="col-md-8 col-sm-12 m-auto">
+                    <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
+                    <div class='mx-6'>
+                        <div class="bannerTitle"><?= trim(html_entity_decode($data['cms_banner_title'])); ?></div>
                         <div class='mt-3'>
-                            <div>
+                            <div class="bannerDes">
                                 <?= trim(html_entity_decode($data['cms_banner_short_description'])); ?>
                             </div>
                         </div>
 
                         <div class="mt-3">
                             <button type="button" class="btn btn-primary btn-lg btn-square" onclick="loginPanel();">Login</button>
-                            <a class="btn btn-primary btn-lg btn-square" href="#courses">View Course</a>
+                            <!-- <a class="btn btn-primary btn-lg btn-square" href="#courses">View Course</a> -->
                         </div>
 
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-12 m-auto">
+                <div class="col-md-4 col-sm-12 m-auto">
                     <div style="min-height:315px;" class="mx-2 my-4">
                         <?php
                         $herocss = "";
@@ -448,7 +462,23 @@ if (isset($data['logo_image'])) {
 
                 </div>
             <?php
-            }
+            } ?>
+
+            <div class="row mt-5">
+                <div class="col-lg-6">
+                    <span class="carouselTitle" style="float:right"><?php echo $data['total_student']; ?><span>
+                            <h3 align="right"> Students </h3>
+                </div>
+
+
+                <div class="col-lg-6">
+
+                    <span class="carouselTitle"><?php echo $data['total_course']; ?><span>
+                            <h3> Courses </h3>
+                </div>
+            </div>
+
+            <?php
             if ($data["announcement_status"] == 1) {
             ?>
 
@@ -504,7 +534,7 @@ if (isset($data['logo_image'])) {
                                 <div class="col-md-6 col-sm-12 m-auto">
                                     <div class="mx-2 my-4 py-4">
                                         <center>
-                                            <img src="<?= $cmimg; ?>" class="img-fluid" style='max-height:300px;' />
+                                            <img src="<?= $cmimg; ?>" class="rounded-circle" style='max-height:300px;' />
                                         </center>
                                     </div>
                                 </div>
@@ -514,7 +544,8 @@ if (isset($data['logo_image'])) {
                             ?>
 
                             <div class="col-md-6 col-sm-12 m-auto">
-                                <div class='my-3' style="width:400px;margin:auto;">
+                                <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
+                                <div class='my-3'>
                                     <div class="carouselTitle">Chairman'S Message</div>
                                     <div class='mt-3'>
                                         <?php
@@ -525,7 +556,7 @@ if (isset($data['logo_image'])) {
                                         }
 
                                         if ($exp['short_description']) {
-                                            echo "<p>" . $exp['short_description'] . "</p>";
+                                            echo "<p class='bannerDes'>" . $exp['short_description'] . "</p>";
                                         } else {
                                             echo '<p>Programs are available in fall, spring, and summer semesters. Many fall and spring programs offer similar shorter programs in the summer, and some may be combined for a full academic year.</p>';
                                         }
@@ -603,18 +634,18 @@ if (isset($data['logo_image'])) {
                     </div>
 
                     <div class="col-md-4 col-sm-12">
-                        <div class='font20' style="margin:10px">
+                        <!-- <div class='font20' style="margin:10px"> -->
+                        <div class='bannerDes' style="margin:20px">
 
-                             
                             <?php if ($data['address'] != '') { ?>
 
-                                
-                            <!-- <label class="form-label font20">Address</label> -->
-                            
-                            <i class="fa fa-map-marker" style="font-size:24px;color:blue" aria-hidden="true"></i>
-                            <?php echo $data['address']; ?>
-                            <br><br>
-                            <?php  } ?>   
+
+                                <!-- <label class="form-label font20">Address</label> -->
+
+                                <i class="fa fa-map-marker" style="font-size:24px;color:blue" aria-hidden="true"></i>
+                                <?php echo $data['address']; ?>
+                                <br><br>
+                            <?php  } ?>
                             <?php if ($data['phone'] != '') { ?>
                                 <div>
                                     <!-- <label class="form-label font20">Contact Number</label> -->
@@ -625,7 +656,7 @@ if (isset($data['logo_image'])) {
 
                             <?php  } ?>
 
-                            
+
 
                             <?php if ($data['primary_email'] != '' || $data['secondary_email'] != '') { ?>
 
@@ -638,16 +669,19 @@ if (isset($data['logo_image'])) {
                                 <br>
                             <?php  } ?>
 
-                            <?php if ($data['fax'] != '') { ?>
-                                <div>
-                                    <!-- <label class="form-label font20">Fax</label> -->
+                            <?php //if ($data['fax'] != '') { 
+                            ?>
+                            <!-- <div>
+                                     <label class="form-label font20">Fax</label> 
 
                                     <i class="fa fa-fax" style="font-size:24px;color:blue"></i>
-                                    <?php echo $data['fax']; ?>
+                                    <?php //echo $data['fax']; 
+                                    ?>
                                 </div>
 
-                                <br>
-                            <?php  } ?>
+                                <br> -->
+                            <?php  //} 
+                            ?>
 
                         </div>
                     </div>
@@ -817,7 +851,8 @@ if (isset($data['logo_image'])) {
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
-        <form action="<?php echo $baseurl;?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+        <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+            <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
             <div class="card-body">
                 <div class="closeX">
                     <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
@@ -827,7 +862,7 @@ if (isset($data['logo_image'])) {
                 </div>
                 <h2 class="mb-3 text-center">Login to your account</h2>
                 <div class="mb-3">
-                    <label class="form-label">User Name</label>
+                    <label class="form-label">Username</label>
                     <input type="text" id="username" name="username" class="form-control" required="">
                     <div class="invalid-feedback">Invalid User Name or Email Addresss</div>
                 </div>
@@ -845,8 +880,8 @@ if (isset($data['logo_image'])) {
 
                 <div class="form-footer mb-3">
                     <div class="row">
-                    <p class="login-remember"><label><input name="rememberme" type="checkbox" id="rememberme" value="forever" /> Remember
-                                                                                    Me</label></p>
+                        <p class="login-remember"><label><input name="rememberme" type="checkbox" id="rememberme" value="forever" /> Remember
+                                Me</label></p>
                         <div class='col-12'><button type="submit" class="btn btn-primary btn-block btn-square">Sign in</button></div>
                         <!--
                         <div class='col-6'><button type="button" onclick="homePanel();" class="btn btn-secondary btn-block btn-square">Back</button></div>
@@ -893,42 +928,42 @@ if (isset($data['logo_image'])) {
                 <!-- <div class="col-auto align-self-end"> -->
                 <div class="row">
 
-                <div class="col-md-10">
-                    <a href="https://www.parentof.com/" target="_blank" class="link-secondary">Powered by ParentOf</a>
-                </div>
+                    <div class="col-md-10">
+                        <a href="https://www.parentof.com/" target="_blank" class="link-secondary">Powered by ParentOf</a>
+                    </div>
 
-                <div class="col-md-2">            
+                    <div class="col-md-2">
 
-                    <?php if (!empty($data['facebook_link'])) { ?>
-                        
+                        <?php if (!empty($data['facebook_link'])) { ?>
+
                             <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
                                 <i class="social-icon fa fa-facebook" style="font-size:24px"></i>
                             </a>&nbsp;&nbsp;
-                        
-                    <?php } ?>
-                    <?php if (!empty($data['twitter_link'])) { ?>
+
+                        <?php } ?>
+                        <?php if (!empty($data['twitter_link'])) { ?>
                             <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
                                 <i class="social-icon fa fa-twitter" style="font-size:24px"></i>
                             </a>&nbsp;&nbsp;
-                        
-                    <?php } ?>
-                    <?php if (!empty($data['pinterest_link'])) { ?>
+
+                        <?php } ?>
+                        <?php if (!empty($data['pinterest_link'])) { ?>
                             <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
                                 <i class="social-icon fa fa-pinterest-p" style="font-size:24px"></i>
                             </a>&nbsp;&nbsp;
-                      
-                    <?php } ?>
-                    <?php if (!empty($data['linkdlin_link'])) { ?>
+
+                        <?php } ?>
+                        <?php if (!empty($data['linkdlin_link'])) { ?>
                             <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
                                 <i class="social-icon fa fa-linkedin" style="font-size:24px"></i>
                             </a>
-                    <?php } ?>
-                    
-                </div>
+                        <?php } ?>
+
+                    </div>
 
                 </div>
 
-  
+
             </div>
         </div>
     </footer>
