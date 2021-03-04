@@ -138,7 +138,7 @@ class Date extends TextField
         }
 
         $output .= '<script type="text/javascript">';
-        $output .= '$(function() { '.$this->getID().' = $("#'.$this->getID().'").datepicker({onSelect: '.$onSelect.', onClose: function(){$(this).change();} }); });';
+        $output .= '$(function() { '.$this->getID().' = $("#'.$this->getID().'").datepicker({ changeMonth: true, changeYear: true, onSelect: '.$onSelect.', onClose: function(){$(this).change();} }); });';
 
         if ($this->to || $this->from) {
             $output .= 'function getDate(element) {

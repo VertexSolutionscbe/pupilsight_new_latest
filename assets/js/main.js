@@ -1151,6 +1151,8 @@
 
     $("#start_date").datepicker({
         //minDate: 0,
+        changeMonth: true,
+        changeYear: true,
         onClose: function (selectedDate) {
             $("#end_date").datepicker("option", "minDate", selectedDate);
         }
@@ -1762,12 +1764,12 @@
     });
 
 
-    
+
     $(document).on('click', '#copyStudentroute', function () {
         var atype = $(this).attr('data-type');
         var favorite = [];
         var flag = true;
-        var count=0
+        var count = 0
         $.each($("input[name='stuid[]']:checked"), function () {
             var routeid = $(this).attr("routeid");
             if (routeid == "") {
@@ -1780,8 +1782,7 @@
             }
 
         });
-        if(count>0)
-        {
+        if (count > 0) {
             alert("Sorry..For copying process you must select students who have Route Details.");
         }
         if (!flag) {

@@ -1322,10 +1322,11 @@ if ($type == 'getStudentClassAndSection') {
     $cid = $val;
     $pupilsightSchoolYearID = $_POST['yid'];
     $pupilsightProgramID = $_POST['pid'];
-    $pupilsightYearGroupIDs = $_POST['cid'];
-    //$data = '<option value="">Select Student</option>';
-    foreach ($pupilsightYearGroupIDs as $pupilsightYearGroupID) {
-        $sql = 'SELECT a.*, b.officialName,c.pupilsightRollGroupID as rollid, c.name as rollname, d.name as classname, d.pupilsightYearGroupID as yeargroup FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID JOIN pupilsightRollGroup as c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID JOIN pupilsightYearGroup as d ON a.pupilsightYearGroupID = d.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '"  AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+    $pupilsightYearGroupID = implode(',', $val);
+
+    $data = '<option value="">Select Student</option>';
+    //foreach ($pupilsightYearGroupIDs as $pupilsightYearGroupID) {
+        $sql = 'SELECT a.*, b.officialName,c.pupilsightRollGroupID as rollid, c.name as rollname, d.name as classname, d.pupilsightYearGroupID as yeargroup FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID JOIN pupilsightRollGroup as c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID JOIN pupilsightYearGroup as d ON a.pupilsightYearGroupID = d.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID IN (' . $pupilsightYearGroupID . ')  AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
         $result = $connection2->query($sql);
         $sections = $result->fetchAll();
 
@@ -1334,7 +1335,7 @@ if ($type == 'getStudentClassAndSection') {
                 $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'] . ' - ' . $cl['classname'] . ' - ' . $cl['rollname'] . '</option>';
             }
         }
-    }
+    //}
     echo $data;
 }
 
