@@ -693,7 +693,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightProgramID', __('Program'));
-        $col->addSelect('pupilsightProgramID')->placeholder();
+        $col->addSelect('pupilsightProgramID')->setId("pupilsightProgramIDA")->placeholder();
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
@@ -825,8 +825,8 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
                 },
                 async: true,
                 success: function(response) {
-                    $("#pupilsightProgramID").html();
-                    $("#pupilsightProgramID").html(response);
+                    $("#pupilsightProgramIDA").html();
+                    $("#pupilsightProgramIDA").html(response);
 
                 }
             });
@@ -834,7 +834,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
     });
 </script>
 <script type="text/javascript">
-    $(document).on('change', '#pupilsightProgramID', function() {
+    $(document).on('change', '#pupilsightProgramIDA', function() {
         var val = $(this).val();
         var type = "getClass";
         if (val != "") {
@@ -856,28 +856,29 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
     });
 </script>
 <script type="text/javascript">
-    $(document).on('change', '.pupilsightRollGroupIDP1', function() {
-        var id = $("#pupilsightRollGroupID").val();
+    $(document).on('change', '#pupilsightYearGroupIDA', function() {
+        //var id = $("#pupilsightRollGroupID").val();
         var yid = $('#pupilsightSchoolYearID').val();
-        var pid = $('#pupilsightProgramID').val();
-        var cid = $('#pupilsightYearGroupIDA').val();
-        var type = 'getStudentClassAndSection';
-        $.ajax({
-            url: 'ajax_data.php',
-            type: 'post',
-            data: {
-                val: id,
-                type: type,
-                yid: yid,
-                pid: pid,
-                cid: cid
-            },
-            async: true,
-            success: function(response) {
-                $("#pupilsightPersonID").html();
-                $("#pupilsightPersonID").append(response);
-            }
-        });
+        var pid = $('#pupilsightProgramIDA').val();
+        var cid = $(this).val();
+		if (cid != "") {
+			var type = 'getStudentClassAndSection';
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: cid,
+					type: type,
+					yid: yid,
+					pid: pid
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightPersonID").html('');
+					$("#pupilsightPersonID").append(response);
+				}
+			});
+		}
     });
 </script>
 <script type='text/javascript'>

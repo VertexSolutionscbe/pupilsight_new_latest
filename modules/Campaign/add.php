@@ -314,12 +314,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
 </style>
 <script>
 
-    $("#start_date").datepicker({
-        //minDate: 0,
-        onClose: function (selectedDate) {
-            $("#end_date").datepicker("option", "minDate", selectedDate);
-        }
-    });
+    // $("#start_date").datepicker({
+    //     //minDate: 0,
+    //     onClose: function (selectedDate) {
+    //         $("#end_date").datepicker("option", "minDate", selectedDate);
+    //     }
+    // });
     
     $(document).ready(function () {
       	$('#getMultiClassByProgCamp').selectize({

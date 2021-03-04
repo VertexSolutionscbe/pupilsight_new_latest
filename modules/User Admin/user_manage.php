@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $row->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
     echo $form->getOutput();
-    /*
+    
     echo '<h2>';
     echo __('View');
     echo '</h2>';
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         });
 
     echo $table->render($dataSet);
-    */
+    
 }
 
 ?>
