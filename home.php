@@ -110,9 +110,11 @@ if (isset($data['logo_image'])) {
 
 
     <style>
+
         body {
             display: none;
         }
+        
 
         .carouselTitle {
             line-height: 42px;
@@ -445,7 +447,10 @@ if (isset($data['logo_image'])) {
                                     $cimg = 'cms/images/upload/' . $sec['image'];
                                 }
                         ?>
-                                <div class="col-sm">
+
+                        <div class="col-sm">
+                         <a href="#courseModal" class="courseData"  data-toggle="modal" data-cimg="<?= $cimg; ?>" data-title="<?= ucwords($sec['title']); ?>" data-desc="<?= $sec['short_description'];?>">
+                                
                                     <div class="card">
                                         <img src="<?= $cimg; ?>" class="card-img-top" style='height: 200px;background-size: contain;'>
                                         <div class="card-body">
@@ -453,27 +458,57 @@ if (isset($data['logo_image'])) {
                                             <p class="wordwrap"><?= $sec['short_description']; ?></p>
                                         </div>
                                     </div>
-                                </div>
+                                
+                        </a>    
+                        </div>    
 
                         <?php }
                         }  ?>
                     </section>
 
                 </div>
+
+
+            <!-- Modal Popop -->
+            <div class="modal fade" id="courseModal" role="dialog">
+                <div class="modal-dialog">
+                
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h1></h1>
+                    <button type="button" id="clsbtn" class="close" data-dismiss="modal">&times;</button>
+                    
+                    </div>
+                    <div class="modal-body">
+
+                            <div class="col-sm">
+                                    <div class="card">
+                                        <img id="cimg" src="" align="center" >
+                                        <div class="card-body">
+                                            <h3 id="title" class="card-title wordwrap"></h3>
+                                            <p id="desc"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                    
+                    </div>
+                    <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div> -->
+                </div>
+                
+                </div>
+            </div>
             <?php
             }?>
 
             <div class="row mt-5">
-                <div class="col-lg-6">
-                <span class="carouselTitle" style="float:right"><?php echo $data['total_student']; ?><span>
-                  <h3 align="right">  Students </h3>
-                </div>
-                    
-
-                <div class="col-lg-6" >
+                <div class="col-lg-12 d-flex justify-content-center">
+                <span class="carouselTitle"><?php echo $data['total_student']; ?><span>  <span class="ml-2 carouselTitle"><?php echo $data['total_course']; ?><span>
+                 <h3> <span style="margin-left:10px">Students</span><span style="margin-left:40px">Courses</span> </h3>
                 
-                <span class="carouselTitle"><?php echo $data['total_course']; ?><span>
-                  <h3>  Courses </h3>
                 </div>    
             </div>
 
@@ -641,14 +676,14 @@ if (isset($data['logo_image'])) {
                                 
                             <!-- <label class="form-label font20">Address</label> -->
                             
-                            <i class="fa fa-map-marker" style="font-size:24px;color:blue" aria-hidden="true"></i>
+                            <i class="fa fa-map-marker" style="font-size:24px;color:#206bc4" aria-hidden="true"></i>
                             <?php echo $data['address']; ?>
                             <br><br>
                             <?php  } ?>   
                             <?php if ($data['phone'] != '') { ?>
                                 <div>
                                     <!-- <label class="form-label font20">Contact Number</label> -->
-                                    <i class="fa fa-phone" style="font-size:24px;color:blue"></i>
+                                    <i class="fa fa-phone" style="font-size:24px;color:#206bc4"></i>
                                     <?php echo $data['phone']; ?>
                                 </div>
                                 <br>
@@ -661,7 +696,7 @@ if (isset($data['logo_image'])) {
 
                                 <!-- <label class="form-label font20">Email</label> -->
 
-                                <i class="fa fa-envelope-o" style="font-size:24px;color:blue"></i>
+                                <i class="fa fa-envelope-o" style="font-size:24px;color:#206bc4"></i>
                                 <diV><?php echo $data['primary_email']; ?></div>
                                 <div><?php echo $data['secondary_email']; ?></div>
 
@@ -933,25 +968,25 @@ if (isset($data['logo_image'])) {
                     <?php if (!empty($data['facebook_link'])) { ?>
                         
                             <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
-                                <i class="social-icon fa fa-facebook" style="font-size:24px"></i>
+                                <i class="social-icon fa fa-facebook" style="font-size:24px;color:#206bc4"></i>
                             </a>&nbsp;&nbsp;
                         
                     <?php } ?>
                     <?php if (!empty($data['twitter_link'])) { ?>
                             <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
-                                <i class="social-icon fa fa-twitter" style="font-size:24px"></i>
+                                <i class="social-icon fa fa-twitter" style="font-size:24px;color:#206bc4"></i>
                             </a>&nbsp;&nbsp;
                         
                     <?php } ?>
                     <?php if (!empty($data['pinterest_link'])) { ?>
                             <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
-                                <i class="social-icon fa fa-pinterest-p" style="font-size:24px"></i>
+                                <i class="social-icon fa fa-pinterest-p" style="font-size:24px;color:#206bc4"></i>
                             </a>&nbsp;&nbsp;
                       
                     <?php } ?>
                     <?php if (!empty($data['linkdlin_link'])) { ?>
                             <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
-                                <i class="social-icon fa fa-linkedin" style="font-size:24px"></i>
+                                <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
                             </a>
                     <?php } ?>
                     
@@ -1092,6 +1127,21 @@ if (isset($data['logo_image'])) {
                 });
             }
         });
+
+        $(document).on("click", ".courseData", function () {
+            
+            var title = $(this).data('title');
+            var desc = $(this).data('desc');
+            var cimg = $(this).data('cimg');
+        
+        
+            $('#title').text(title);
+            $('#desc').text(desc);
+            $('#cimg').attr("src",cimg);
+            
+
+        });
+
     </script>
 
 </body>
