@@ -16,9 +16,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
     $fromdate = isset($_REQUEST['fromdate'])? $_REQUEST['fromdate'] : date($dateFormat);
     $msgtype = isset($_REQUEST['msgtype'])? $_REQUEST['msgtype'] : 'All';
 
+    //echo $fromdate.'--'.$todate;
+
     $page->breadcrumbs->add(($date === date($dateFormat)) ?
         __('Messenger Report') :
-        __('View Messages').' ('.$fromdate.' to '.$date.')');
+        __('View Messages').' ('.$fromdate.' to '.$todate.')');
 
     if (isset($_GET['return'])) {
         $status = (!empty($_GET['status'])) ? $_GET['status'] : __('Unknown');
@@ -41,7 +43,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
     $row = $form->addRow()->addClass('flex flex-wrap');
 
     $link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messenger_report.php';
-    $fromdate = DateTime::createFromFormat($dateFormat, $fromdate)->modify('-5 day')->format($dateFormat);
+    // $fromdate = DateTime::createFromFormat($dateFormat, $fromdate)->modify('-5 day')->format($dateFormat);
+    $fromdate = DateTime::createFromFormat($dateFormat, $fromdate)->format($dateFormat);
 
 
 
@@ -68,18 +71,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
     $col->addSubmit(__('Go'));
 
     echo $form->getOutput();
-    echo "<div class='row'><div class='col-md-8'><!--<a class='btn btn-primary' id='downloadLink' onclick='exportF(this)'>Export</a>--></div><div class='col-md-4'><input id='myInput' type='text' onkeyup='myFunction()' placeholder='Search' /></div></div>";
+    echo "<div class='row'><div class='col-md-8'><a class='btn btn-primary' id='downloadLink' onclick='exportF(this)'>Export</a></div><div class='col-md-4'><input id='myInput' type='text' onkeyup='myFunction()' placeholder='Search' /></div></div>";
     echo queryMembersreceipt($guid, $connection2, 'print', $msgtype, $fromdate, $todate);
 }
 ?>
 <script>
     function exportF(elem) {
-        var table = document.getElementById("example");
-        var html = table.outerHTML;
-        var url = 'data:application/vnd.ms-excel,' + escape(html); // Set your html table into url
-        elem.setAttribute("href", url);
-        elem.setAttribute("download", "export.xls"); // Choose the file name
-        return false;
+        $("#example").table2excel({
+            name: "Worksheet Name",
+            filename: "Message_Report.xls",
+            fileext: ".xls"
+        });
+        // var table = document.getElementById("example");
+        // var html = table.outerHTML;
+        // var url = 'data:application/vnd.ms-excel,' + escape(html); // Set your html table into url
+        // elem.setAttribute("href", url);
+        // elem.setAttribute("download", "Message_Report.xls"); // Choose the file name
+        // return false;
     }
 </script>
 <script>

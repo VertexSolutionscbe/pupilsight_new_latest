@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
                 $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
             } else {
                 $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
             }
 
             $sqld = 'SELECT pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum WHERE pupilsightSchoolYearID ="'.$pupilsightSchoolYearIDpost.'" AND pupilsightProgramID ="'.$pupilsightProgramID.'" AND pupilsightYearGroupID ="'.$pupilsightYearGroupID.'"   order by subject_display_name asc ';

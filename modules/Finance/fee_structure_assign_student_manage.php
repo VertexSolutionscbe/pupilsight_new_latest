@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
         $searchtype = $_POST['searchtype'];
         $searchfield = $_POST['searchfield'];
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
     } else {
         $input = '';
         $pupilsightProgramID =  '';

@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
                 } else {
                     $classes =  $HelperGateway->getClassByProgramAcademic($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
-                    $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+                    $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
                 }
 
                 if (empty($pupilsightProgramID)) {

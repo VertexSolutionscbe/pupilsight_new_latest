@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
             $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
         } else {
             $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
         }
 
     } else {

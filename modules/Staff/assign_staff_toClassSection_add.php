@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClass
             $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];  
             
             $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
           
             $stuId = $_POST['studentId'];
         } else {
