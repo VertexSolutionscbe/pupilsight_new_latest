@@ -64,19 +64,15 @@
 
          });
 
-
-         iframe.find(".el-icon-edit").click(function() {
-             setTimeout(function() {
-                 $.each(iframe.find(".el-form-item__label"), function() {
-                     console.log('work');
-                     var hidden = $(this).text();
-                     if (hidden == 'input_hidden') {
-                         alert('find');
-                         $(this).parent().hide();
-                     }
-                 });
-             }, 1000);
-         });
+        
+        iframe.find(".el-icon-edit").parent().click(function() {
+            $.each(iframe.find(".el-form-item__label"), function() {
+                var hidden = $(this).text();
+                if (hidden == 'input_hidden') {
+                    $(this).parent().hide();
+                }
+            });
+        });
 
 
      });
