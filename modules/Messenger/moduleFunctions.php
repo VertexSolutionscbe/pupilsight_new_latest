@@ -2689,6 +2689,7 @@ function queryMembersreceipt($guid, $connection2, $mode = '', $msgtype = '', $fr
     $return = '';
     $return1 = '';
     $return3 = '';
+    
 
     if($msgtype=='sms'){
         $msgtype = " pmr.contactType = 'SMS' ";
@@ -2790,7 +2791,7 @@ try {
     $return .= __('Sent');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
-    $return .= __('requestid');
+    $return .= __('RequestId');
     $return .= '</th>';
     $return .= "<th style='text-align: center'>";
     $return .= __('Date/Time');
@@ -2837,7 +2838,8 @@ try {
         $return .= $output[$i]['contactDetail'];
         $return .= '</td>';
         $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 5%'>";
-        $return .= "<i class='mdi mdi-check mdi-24px'></i>";
+        $txt = '✔';
+        $return .= "<i class='mdi mdi-check mdi-24px'></i><p style='display:none'>".$txt."</p>";
         $return .= '</td>';
         $return .= "<td style='text-align: center; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 10%'>";
         $return .= $output[$i]['requestid'];

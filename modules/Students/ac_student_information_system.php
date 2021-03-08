@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
         $searchbyPost = '';
 
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
 
         $students =  $HelperGateway->getStudentByAll($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID, $pupilsightRollGroupID);
       

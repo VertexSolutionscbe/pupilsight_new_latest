@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                     $classes =  $HelperGateway->getClassByProgram($connection2, $values['pupilsightProgramID']);
 
-                    $sections =  $HelperGateway->getSectionByProgram($connection2, $values['pupilsightYearGroupID'],  $values['pupilsightProgramID']);
+                    $sections =  $HelperGateway->getSectionByProgram($connection2, $values['pupilsightYearGroupID'],  $values['pupilsightProgramID'], $pupilsightSchoolYearID);
 
                     $subjects =  $HelperGateway->getSubjectByProgramClass($connection2, $values['pupilsightYearGroupID'],  $values['pupilsightProgramID'], $pupilsightSchoolYearID, $pupilsightPersonID);
                     //print_r($subjects);

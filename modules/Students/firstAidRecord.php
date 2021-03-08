@@ -40,6 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         echo __('Filter');
         echo '</h3>';
 
+        $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
         $classes = array('' => 'Select Class');
         $sections = array('' => 'Select Section');
 
@@ -71,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                 $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
             } else {
                 $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
             }    
             if(empty($pupilsightProgramID)){
                 unset($_SESSION['firstAid_search']);

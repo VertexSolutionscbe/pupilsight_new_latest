@@ -733,6 +733,23 @@ if ($isLoggedIn) {
 
     $currentYear = $session->get('pupilsightSchoolYearID');
 
+
+    $totalsmsbalance = 0;
+    $extrasmsused = 0;
+    $totalsmsused = 0;
+    
+    $karixsmscountvalue = getsmsBalance($connection2, 'Messenger', 'Karix');
+    $gupshupsmscountvalue = getsmsBalance($connection2, 'Messenger', 'Gupshup');
+    $totalsms = gettotalsmsBalance($connection2);
+    
+    $totalsmsused = $gupshupsmscountvalue + $karixsmscountvalue;
+    if ($totalsmsused > $totalsms) {
+        $extrasmsused = $totalsmsused - $totalsms;
+    } else {
+        $totalsmsbalance = $totalsms - $totalsmsused;
+    }
+   
+
     $page->addData([
         'menuMain'   => $session->get('menuMainItems', []),
         'menuMainIcon'   => $menu_icon,
@@ -748,7 +765,11 @@ if ($isLoggedIn) {
         'smsCredits' => $smsCredits_data['value'],
         'academicYear' => $yeardata,
         'pupilsightSchoolYearID' => $currentYear,
-        'changeyear'        => $changeyear
+        'changeyear'        => $changeyear,
+        'totalsmsused'    => $totalsmsused,
+        'extrasmsused'    => $extrasmsused,
+        'totalsmsbalance' => $totalsmsbalance
+
     ]);
 }
 

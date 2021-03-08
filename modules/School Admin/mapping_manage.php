@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
         $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
 
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
     } else {
         $classes = array('' => 'Select Class');
         $sections = array('' => 'Select Section');

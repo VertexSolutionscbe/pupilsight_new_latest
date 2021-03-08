@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
             $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
         } else {
             $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
         }
 
         $sqlp = 'SELECT GROUP_CONCAT(pupilsightMappingID) AS mappingIds FROM pupilsightProgramClassSectionMapping WHERE pupilsightSchoolYearID = ' . $pupilsightSchoolYearID . ' AND pupilsightProgramID = ' . $pupilsightProgramID . ' AND pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' ';

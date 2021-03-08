@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_discount_m
         if(!empty($pupilsightProgramID)){
             $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
             if(!empty($pupilsightYearGroupID)){
-                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
                 $invoiceData =  $HelperGateway->getInvoice($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
             }
         }

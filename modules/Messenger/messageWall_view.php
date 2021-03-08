@@ -85,10 +85,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     $col->addLabel('msgtype', __('Message Type'));
     $col->addSelect('msgtype')->fromArray($displaymsgwalltype)->selected($msgtype);
 
+    $col = $row->addColumn();
+        $col->addLabel('', __(''));
         $col->addSubmit(__('Go'));
 
 	echo $form->getOutput();
 
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+
     echo getMessages1($guid, $connection2, 'print', dateConvert($guid, $date), dateConvert($guid, $fromdate) , $category, $msgtype);
 }
+
+
 ?>
+
+<script>
+    <?php if($roleId == '004'){ ?>
+        $(".container-fluid").children().children(".navbar-nav").hide();
+    <?php } ?>
+</script>
