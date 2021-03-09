@@ -470,35 +470,38 @@ if (isset($data['logo_image'])) {
 
 
                 <!-- Modal Popop -->
-                <div class="modal fade" id="courseModal" role="dialog">
-                    <div class="modal-dialog">
 
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1></h1>
-                                <button type="button" id="clsbtn" class="close" data-dismiss="modal">&times;</button>
+                <div class="container">
+                    <div class="modal fade" id="courseModal" role="dialog">
+                        <div class="modal-dialog">
 
-                            </div>
-                            <div class="modal-body">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1></h1>
+                                    <button type="button" class="clsbtn close" data-dismiss="modal">&times;</button>
 
-                                <div class="col-sm">
-                                    <div class="card">
-                                        <img id="cimg" src="" align="center">
-                                        <div class="card-body">
-                                            <h3 id="title" class="card-title wordwrap"></h3>
-                                            <p id="desc"></p>
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="col-sm">
+                                        <div class="card">
+                                            <img id="cimg" src="" align="center">
+                                            <div class="card-body">
+                                                <h3 id="title" class="card-title"></h3>
+                                                <p id="desc"></p>
+                                            </div>
                                         </div>
                                     </div>
+
+
                                 </div>
-
-
+                                <div class="modal-footer">
+                                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                                </div>
                             </div>
-                            <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div> -->
-                        </div>
 
+                        </div>
                     </div>
                 </div>
             <?php
@@ -525,6 +528,7 @@ if (isset($data['logo_image'])) {
                     <div class="row">
                         <section id="announcementsSlide" class="lazy slider" data-sizes="50vw">
                             <?php if (!empty($section['3'])) {
+
                                 foreach ($section['3'] as $k => $crs) {
                                     $aimg = $announcements;
                                     if ($crs['image']) {
@@ -533,13 +537,17 @@ if (isset($data['logo_image'])) {
                             ?>
 
                                     <div class="col-sm">
-                                        <div class="card">
-                                            <img src="<?= $aimg; ?>" class="card-img-top" style='height: 200px;background-size: cover;'>
-                                            <div class="card-body wordwrap" title='<?= $crs['title']; ?>'>
-                                                <?= $crs['title']; ?>
+                                        <a href="#annModal" class="annData" data-toggle="modal" data-aimg="<?= $aimg; ?>" data-title="<?= $crs['title']; ?>" data-desc="<?= $crs['short_description']; ?>">
+                                            <div class="card">
+                                                <img src="<?= $aimg; ?>" class="card-img-top" style='height: 200px;background-size: cover;'>
+                                                <div class="card-body wordwrap" title='<?= $crs['title']; ?>'>
+                                                    <?= $crs['title']; ?>
+                                                </div>
                                             </div>
-                                        </div>
+
+                                        </a>
                                     </div>
+
 
                             <?php
                                 }
@@ -547,6 +555,44 @@ if (isset($data['logo_image'])) {
                             ?>
                         </section>
 
+                    </div>
+                </div>
+
+
+
+                <!-- Modal Popop -->
+
+                <div class="container">
+                    <div class="modal fade" id="annModal" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1></h1>
+                                    <button type="button" class="clsbtn close" data-dismiss="modal">&times;</button>
+
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="col-sm">
+                                        <div class="card">
+                                            <img id="aimg" src="" align="center">
+                                            <div class="card-body">
+                                                <h3 id="atitle" class="card-title"></h3>
+                                                <p id="adesc"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             <?php
@@ -660,7 +706,8 @@ if (isset($data['logo_image'])) {
 
                     <div class="col-md-4 col-sm-12">
                         <div id="map" class='card'>
-                            <?php echo html_entity_decode($data['contact_map']) ?>
+                            <?php if ($data['contact_map'])
+                                echo html_entity_decode($data['contact_map']) ?>
                             <!--
                             <iframe width="100%" height="407" border='0' id="gmap_canvas" src="https://maps.google.com/maps?q=12th%20A%20Main%20Rd%2C%20HAL%202nd%20Stage%2C%20Indiranagar%2C%20Bengaluru%2C%20Karnataka%20560008&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
                             -->
@@ -675,16 +722,24 @@ if (isset($data['logo_image'])) {
 
 
                                 <!-- <label class="form-label font20">Address</label> -->
+                                <div class="row">
+                                    <div class="col-lg-1">
 
-                                <i class="fa fa-map-marker" style="font-size:24px;color:#206bc4" aria-hidden="true"></i>
-                                <?php echo $data['address']; ?>
-                                <br><br>
+                                        <i class="fa fa-map-marker" style="font-size:24px;color:#206bc4" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="col-lg-11">
+                                        <?php echo $data['address']; ?>
+                                    </div>
+                                </div>
+                                <br>
                             <?php  } ?>
                             <?php if ($data['phone'] != '') { ?>
-                                <div>
-                                    <!-- <label class="form-label font20">Contact Number</label> -->
-                                    <i class="fa fa-phone" style="font-size:24px;color:#206bc4"></i>
-                                    <?php echo $data['phone']; ?>
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <!-- <label class="form-label font20">Contact Number</label> -->
+                                        <i class="fa fa-phone" style="font-size:24px;color:#206bc4"></i>
+                                    </div>
+                                    <div class="col-lg-11"><?php echo $data['phone']; ?></div>
                                 </div>
                                 <br>
 
@@ -695,11 +750,15 @@ if (isset($data['logo_image'])) {
                             <?php if ($data['primary_email'] != '' || $data['secondary_email'] != '') { ?>
 
                                 <!-- <label class="form-label font20">Email</label> -->
-
-                                <i class="fa fa-envelope-o" style="font-size:24px;color:#206bc4"></i>
-                                <diV><?php echo $data['primary_email']; ?></div>
-                                <div><?php echo $data['secondary_email']; ?></div>
-
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <i class="fa fa-envelope-o" style="font-size:24px;color:#206bc4"></i>
+                                    </div>
+                                    <div class="col-lg-11">
+                                        <diV><?php echo $data['primary_email']; ?></div>
+                                        <div><?php echo $data['secondary_email']; ?></div>
+                                    </div>
+                                </div>
                                 <br>
                             <?php  } ?>
 
@@ -885,8 +944,8 @@ if (isset($data['logo_image'])) {
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
-        <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
-            <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
+        <!-- <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
+        <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
             <div class="card-body">
                 <div class="closeX">
                     <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
@@ -1133,17 +1192,34 @@ if (isset($data['logo_image'])) {
 
         $(document).on("click", ".courseData", function() {
 
-            var title = $(this).data('title');
-            var desc = $(this).data('desc');
-            var cimg = $(this).data('cimg');
+                    var title = $(this).data('title');
+                    var desc = $(this).data('desc');
+                    var cimg = $(this).data('cimg');
 
 
-            $('#title').text(title);
-            $('#desc').text(desc);
-            $('#cimg').attr("src", cimg);
+                    $('#title').text(title);
+                    $('#desc').text(desc);
+                    $('#cimg').attr("src", cimg);
 
 
-        });
+                    $(document).on("click", ".annData", function() {
+
+                        var title = $(this).data('title');
+                        var desc = $(this).data('desc');
+                        var aimg = $(this).data('aimg');
+
+                        $('#atitle').text(title);
+                        $('#adesc').text(desc);
+                        $('#aimg').attr("src", aimg);
+
+
+                    });
+                    // $(document).on("click", ".clsbtn", function () {
+
+                    //     location.reload(true); 
+                    //      //$('.courseData').css('border', '0px'); 
+
+                    // });
     </script>
 
 </body>
