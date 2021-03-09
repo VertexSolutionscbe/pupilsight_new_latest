@@ -7156,19 +7156,21 @@ function CustomField() {
 
     this.getPageNames = function () {
         var tm = _this.getParameterByName("q");
-        var st = tm.split("/");
-        var len = st.length;
-        var i = 0;
         var pageName = "";
-        while (i < len) {
-            if (st[i]) {
-                var n = st[i].indexOf(".php");
-                if (n > 0) {
-                    pageName = st[i];
-                    break;
+        if (tm) {
+            var st = tm.split("/");
+            var len = st.length;
+            var i = 0;
+            while (i < len) {
+                if (st[i]) {
+                    var n = st[i].indexOf(".php");
+                    if (n > 0) {
+                        pageName = st[i];
+                        break;
+                    }
                 }
+                i++;
             }
-            i++;
         }
         return pageName;
     };

@@ -107,11 +107,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('submitInvoice', __(''));
-    $col->addContent('<button type=\'submit\' id="submitInvoice"  class=" btn btn-primary">Go</button>');
+    $col->addContent('<button type=\'submit\' id="submitInvoice"  class=" btn btn-white">Go</button>');
 
-    $col = $row->addColumn()->setClass('newdes');
+    $col = $row->addColumn()->setClass('newdes text-right');
     $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' id="addCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldModal();\'>Add Custom Field</button>');
+    $col->addContent('<button type=\'button\' id="addCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldModal();\'><i class="mdi mdi-plus-thick mr-2"></i>Custom Field</button>');
 
     $row = $form->addRow();
 
@@ -120,17 +120,17 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     //$col->addLabel('sortableBtn', __(''));
     //$col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'tabSortPanel(true);\'>Sort Tile / Tab</button>');
 
-    $col = $row->addColumn()->setClass('newdes');
+    $col = $row->addColumn()->setClass('newdes customHandleCol');
     $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'deactivateField();\'>Hide Field</button>');
+    $col->addContent('<button type=\'button\' class="btn btn-white" onclick=\'deactivateField();\'>Hide Field</button>');
 
-    $col = $row->addColumn()->setClass('newdes');
+    $col = $row->addColumn()->setClass('newdes customHandleCol');
     $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'activateField();\'>Show Field</button>');
+    $col->addContent('<button type=\'button\' class="btn btn-white" onclick=\'activateField();\'>Show Field</button>');
 
-    $col = $row->addColumn()->setClass('newdes');
+    $col = $row->addColumn()->setClass('newdes customHandleCol');
     $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' id="listCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldList();\'>Custom Field List</button>');
+    $col->addContent('<button type=\'button\' id="listCustomField"  class="btn btn-white" onclick=\'loadCustomFieldList();\'>Custom Field List</button>');
 
 
     /*
@@ -149,18 +149,17 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
 ?>
 
-    <form method="post" id="customFieldFormHideShow">
-        <table class="table display text-nowrap" cellspacing="0" id='customFieldTable'>
-            <tr class="flex flex-col sm:flex-row justify-between content-center p-0">
-                <thead>
+    <form method="post" id="customFieldFormHideShow" class="mt-4">
+        <table class="table display text-nowrap" id='customFieldTable'>
+            <thead>
+                <tr>
                     <th class='column' style='width:80px;'>Serial No</th>
                     <th class='column'>Status</th>
                     <th class='column'>Field Name</th>
                     <th class='column' style='max-width:200px;'>Field Type</th>
-                    <th class='column'>Key</th>
-                    <th class='column'>Default Value</th>
-                </thead>
-            </tr>
+                    <th class='column' style='max-width:200px;'>Field Key</th>
+                </tr>
+            </thead>
             <tbody>
                 <?php
 
@@ -171,7 +170,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 while ($i < $len) {
 
                     $isFieldActive = TRUE;
-                    $fieldStr = "&nbsp;"; //show or active
+                    $fieldStr = "Active"; //show or active
                     if (in_array($cd[$i]["Field"], $inactiveCol)) {
                         $isFieldActive = FALSE;
                         $fieldStr = "Hidden";
@@ -187,15 +186,17 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
                     if ($cd[$i]["Key"]) {
                         echo "\n<td><i class=\"mdi mdi-lock\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
+                        //echo "\n<td>" . strtoupper($cd[$i]["Field"]) . "</td>";
                         //} else if ($isFieldActive == FALSE) {
                         //echo "\n<td><i class=\"mdi mdi-eye-off\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
                     } else {
                         echo "\n<td><input type='checkbox' name='fields[]' value='" . $cd[$i]["Field"] . "' id='" . $cd[$i]["Field"] . "'><label for='" . $cd[$i]["Field"] . "'>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</label></td>";
+                        //echo "\n<td>" . strtoupper($cd[$i]["Field"]) . "</td>";
                     }
 
                     echo "\n<td>" . $cd[$i]["Type"] . "</td>";
                     echo "\n<td>" . $cd[$i]["Key"] . "</td>";
-                    echo "\n<td>" . $cd[$i]["Default"] . "</td>";
+                    //echo "\n<td>" . $cd[$i]["Default"] . "</td>";
                     echo "\n</tr>";
                     $i++;
                     $cnt++;
@@ -505,6 +506,18 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 ghostClass: 'blue-background-class'
             });
             //$("#fieldLengthPanel").hide();
+            //
+            $(".customHandleCol").addClass("col-auto").removeClass("col-sm");
+            $('#customFieldTable').DataTable({
+                "pageLength": 25,
+                "lengthMenu": [
+                    [10, 25, 50, 250, -1],
+                    [10, 25, 50, 250, "All"]
+                ],
+                "sDom": '<"top"ipf>rt<"bottom"ipf><"clear">',
+                "orderable": false,
+                "targets": [3, 4]
+            });
         });
 
         function saveSorting() {
