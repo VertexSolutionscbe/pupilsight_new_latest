@@ -20,7 +20,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
 
     $page->breadcrumbs->add(($date === date($dateFormat)) ?
         __('Messenger Report') :
-        __('View Messages').' ('.$fromdate.' to '.$todate.')');
+        __('Messenger Report').' ('.$fromdate.' to '.$todate.')');
 
     if (isset($_GET['return'])) {
         $status = (!empty($_GET['status'])) ? $_GET['status'] : __('Unknown');

@@ -9,8 +9,8 @@ require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
 
 try {
-    $dts = $_POST["dts_receipt"];
-    $fee_items = $_POST["dts_receipt_feeitem"];
+    $dts = $_SESSION["dts_receipt"];
+    $fee_items = $_SESSION["dts_receipt_feeitem"];
 
 
     $file = $dts['receiptTemplate'];
@@ -67,6 +67,21 @@ try {
 
         convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
     } catch (Exception $ex) {
+    }
+
+    $admincallback = $_SESSION["admin_callback"];
+    if(!empty($admincallback)){
+        $callback = $admincallback;
+    } else {
+        $callback = $_SESSION["paypost"]["callbackurl"];
+    }
+
+    if(isset($callback)){
+        header('Location: '.$callback);
+        exit;
+    }else{
+        header('Location: index.php');
+        exit;
     }
 
 } catch (Exception $ex) {

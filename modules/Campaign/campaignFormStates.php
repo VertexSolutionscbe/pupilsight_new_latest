@@ -39,25 +39,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
         $admsettingsId = $chknotitype['fn_fee_admission_setting_ids'];
         //print_r($submissionId);die();
         foreach($submissionId as $sub){
-            $sqle = "SELECT a.response, a.pupilsightProgramID, b.pupilsightYearGroupID FROM wp_fluentform_submissions AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.id = ".$sub." ";
+            $sqle = "SELECT a.response, a.pupilsightProgramID, a.application_id, b.pupilsightYearGroupID FROM wp_fluentform_submissions AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.id = ".$sub." ";
             $resulte = $connection2->query($sqle);
             $rowdata = $resulte->fetch();
             $sd = json_decode($rowdata['response'], TRUE);
             $email = '';
             $number = '';
             if(!empty($sd)){
-                $names = implode(' ', $sd['student_name']);
-                $email = $sd['father_email'];
-                $number = $sd['father_mobile'];
-                $father_name = $sd['father_name'];
-                $mother_email = $sd['mother_email'];
-                $mother_name = $sd['mother_name'];
-                $application_no = $sd['application_id'];
-                $pupilsightProgramID = $rowdata['pupilsightProgramID'];
-                $pupilsightYearGroupID = $rowdata['pupilsightYearGroupID'];
-                $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
-
-                
+                //print_r($sd);
+                try{
+                    $names = implode(' ', $sd['student_name']);
+                    $email = $sd['father_email'];
+                    $number = $sd['father_mobile'];
+                    $father_name = $sd['father_name'];
+                    $mother_email = $sd['mother_email'];
+                    $mother_name = $sd['mother_name'];
+                    $application_no = $rowdata['application_id'];
+                    $pupilsightProgramID = $rowdata['pupilsightProgramID'];
+                    $pupilsightYearGroupID = $rowdata['pupilsightYearGroupID'];
+                    $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
+                }  catch (Exception $ex) {
+                }
             }
             
             $sqlchk = "SELECT COUNT(id) AS kount FROM campaign_form_status WHERE submission_id = ".$sub." AND campaign_id = ".$campaignId." AND form_id = ".$formId." AND state_id = ".$stateid." ";
@@ -194,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                     $sqltemplate="SELECT * FROM pupilsightTemplate WHERE pupilsightTemplateID IN (".$chknotitype['pupilsightTemplateIDs'].") ";
                     $resulttem = $connection2->query($sqltemplate);
                     if($chknotitype['notification'] == '3'){
-                        echo '1';
+                        //echo '1';
                         $templateData = $resulttem->fetchAll();
                         
                         foreach($templateData as $td){
@@ -237,12 +239,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                             }    
                         }
                     } else {
-                        echo '2';
+                        //echo '2';
                         $templateData = $resulttem->fetch();
                         $subject = $templateData['subject'];
                         $description = $templateData['description'];
                         $body = str_replace('@student_name',$names , $description);
                         $body = str_replace('@student_email',$email , $body);
+                        $body = str_replace('@father_email',$email , $body);
+                        $body = str_replace('@father_name',$father_name , $body);
+                        $body = str_replace('@mother_email',$mother_email , $body);
+                        $body = str_replace('@mother_name',$mother_name , $body);
+                        $body = str_replace('@application_no',$application_no , $body);
                         if($chknotitype['notification'] == '1'){
                             if(!empty($body)){ 
                                 $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/mailsend.php';

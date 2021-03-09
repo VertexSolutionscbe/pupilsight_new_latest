@@ -4,6 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight.php';
 
+use Pupilsight\Contracts\Comms\SMS;
 use Pupilsight\Contracts\Comms\Mailer;
 $container = new League\Container\Container();
 $URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/campaignFormList.php';
@@ -12,6 +13,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
+    $sms = $container->get(SMS::class);
     //Proceed!
     //Validate Inputs
     // `id``from_state``to_state``transition_display_name``tansition_action``cuid``auto_gen_inv``tansition_action``cuid`
@@ -144,14 +146,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
 
 function sendSMS($number, $msg, $subid, $cuid, $connection2)
 {
-    $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
-    $urls .= "&send_to=" . $number;
-    $urls .= "&msg=" . rawurlencode($msg);
-    $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
-    $resms = file_get_contents($urls);
+    // $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
+    // $urls .= "&send_to=" . $number;
+    // $urls .= "&msg=" . rawurlencode($msg);
+    // $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
+    // $resms = file_get_contents($urls);
 
-    $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
-    $connection2->query($sq);
+    // $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
+    // $connection2->query($sq);
+
+    $msgto=$subid;
+    $msgby=$cuid;
+    $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
+    if ($res) {
+        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
+        $connection2->query($sq);
+    }
 }
 
 function sendEMail($container, $to, $subject, $body, $subid, $cuid, $uploadfile, $NewNameFile, $connection2, $url, $attachmentStatus)

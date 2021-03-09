@@ -1354,6 +1354,10 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
 
 function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '', $msgcategory = '', $msgtype = '')
 {
+
+    // $fromdate = $fromdate.' 00:00:01';
+    // $date = $date.' 23:59:59';
+    
     $return = '';
     $return1 = '';
 	$return3 = '';
@@ -2558,6 +2562,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         }
 
         //SPIT OUT RESULTS
+        //echo $sqlPosts;
         if ($mode == 'result') {
             $resultReturn = array();
             $resultReturn[0] = $dataPosts;
@@ -2726,6 +2731,8 @@ function queryMembersreceipt($guid, $connection2, $mode = '', $msgtype = '', $fr
     }
 
 try {
+    $fromdate = $fromdate.' 00:00:01';
+    $todate = $todate.' 23:59:59';
     $data = array();
     //$sql = "SELECT pupilsightMessengerReceipt.*,pupilsightPerson.officialName as sendername,pupilsightPerson.pupilsightPersonID FROM pupilsightMessengerReceipt,pupilsightPerson WHERE pupilsightPerson.pupilsightPersonID=pupilsightMessengerReceipt.pupilsightPersonID AND ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC ";
     //$sql ="SELECT pp.officialName as sender, pp2.officialName as reciever ,pmr.* FROM pupilsightMessengerReceipt as pmr join pupilsightPerson as pp ON pp.pupilsightPersonID=pmr.pupilsightPersonID join pupilsightPerson as pp2 ON pp2.pupilsightPersonID=pmr.targetID WHERE ($msgtype) ORDER BY pupilsightMessengerReceiptID DESC";
