@@ -699,6 +699,8 @@ if (isset($data['logo_image'])) {
             if ($data["contact_status"] == 1) {
             ?>
                 <!---Contact Us---->
+
+                
                 <div class="row" id="contact">
                     <div class="col-12 carouselTitle text-center my-5">
                         Contact Us
@@ -800,7 +802,7 @@ if (isset($data['logo_image'])) {
                                     </div>
 
                                     <div class="form-footer">
-                                        <button type="button" class="btn btn-primary btn-block" id="submitContact">Send Your Message</button>
+                                        <button type="submit" class="btn btn-primary btn-block" id="submitContact">Send Your Message</button>
                                     </div>
                                 </form>
                             </div>
@@ -1159,21 +1161,27 @@ if (isset($data['logo_image'])) {
 
 
         jQuery(document).on('click', '#submitContact', function(e) {
+        
             e.preventDefault();
             var chk = '0';
             jQuery('.chkempty').each(function() {
                 var val = jQuery(this).val();
                 if (val == '') {
                     jQuery(this).addClass('chkemptycolor');
-                    chk = '0';
-                } else {
+                    //chk = '0';
+                    chk++;
+                } 
+                
+                else {
                     jQuery(this).removeClass('chkemptycolor');
-                    chk = '1';
+                    //chk = '1';
+                    
                 }
             });
+            //if (chk == '1') {
+                if (chk == '0') {
 
-            if (chk == '1') {
-                jQuery.ajax({
+                   jQuery.ajax({
                     url: "cms/ajax.php",
                     type: 'POST',
                     data: jQuery('#contactForm').serialize(),
@@ -1213,12 +1221,13 @@ if (isset($data['logo_image'])) {
             
 
         });
-        // $(document).on("click", ".clsbtn", function () {
+        $(document).on("click", ".clsbtn", function () {
         
-        //     location.reload(true); 
-        //      //$('.courseData').css('border', '0px'); 
+            location.reload(true); 
+            
+             //$('.courseData').css('border', '0px'); 
 
-        // });
+        });
 
 
 
