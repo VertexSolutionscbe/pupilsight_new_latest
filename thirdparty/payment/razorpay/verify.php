@@ -2,7 +2,9 @@
 
 require('config.php');
 
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 require('razorpay/Razorpay.php');
 use Razorpay\Api\Api;
@@ -45,7 +47,7 @@ if ($success === true)
     $_SESSION['payment_gateway_id'] = $_POST['razorpay_payment_id'];
     //$callback = $_SESSION["paypost"]["callbackurl"];
     $baseurl = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
-    $callback = "/thirdparty/phpword/receipt.php";
+    $callback = "/thirdparty/phpword/receiptOnline.php";
     include $_SERVER['DOCUMENT_ROOT'].'/db.php';
 
     
@@ -56,7 +58,7 @@ if ($success === true)
 
         $data = array('gateway' => 'RAZORPAY', 'pupilsightPersonID' => $dt["stuid"], 'transaction_ref_no' => $_POST['razorpay_payment_id'], 'order_id' => $_SESSION['razorpay_order_id'], 'amount' => $dt["amount"], 'status' => 'S');
 
-		$sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+		$sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
 		$result = $connection2->prepare($sql);
 		$result->execute($data);
 
@@ -131,7 +133,13 @@ if ($success === true)
             }
         }
 
+        $sqlrt = 'SELECT b.path FROM fn_fees_head AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.receipt_template = b.id WHERE a.id = ' . $dt['fn_fees_head_id'] . ' ';
+        $resultrt = $connection2->query($sqlrt);
+        $recTempData = $resultrt->fetch();
+        $receiptTemplate = $recTempData['path'];
+
         $class_section = $clss ."".$section;
+        $bank_name = '';
         $dts_receipt = array(
             "receipt_no" => $receipt_number,
             "date" => date("d-M-Y"),
@@ -144,7 +152,9 @@ if ($success === true)
             "fine_amount" => $dt["fine"],
             "other_amount" => "NA",
             "pay_mode" => "Online",
-            "transactionId" => $transactionId
+            "transactionId" => $transactionId,
+            "receiptTemplate" => $receiptTemplate,
+            "bank_name" => $bank_name
         );
 
         $invoice_id = $dt["fn_fees_invoice_id"];

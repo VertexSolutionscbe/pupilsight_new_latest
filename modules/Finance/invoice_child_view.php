@@ -428,7 +428,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
             }
             echo '</td>';
             echo '<td>' . $ph['payment_status'] . '</td>';
-            echo '<td align=\'center\'><a href="public/receipts/' . $ph['transaction_id'] . '.docx"  download><i class="mdi mdi-download mdi-18px"></i></a></td></tr>';
+
+            if (!empty($ph['filename'])) {
+                $receipt = 'public/receipts/' . $ph['filename'] . '.pdf';
+            } else if (!empty($ph['transaction_id'])) {
+                $receipt = 'public/receipts/' . $ph['transaction_id'] . '.pdf';
+            } else {
+                $receipt = '';
+            }
+
+            echo '<td align=\'center\'><a href="'.$receipt.'"  download><i class="mdi mdi-download mdi-18px"></i></a></td></tr>';
         }
     }
     echo "</tbody>";
