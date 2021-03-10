@@ -246,7 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     </table>
     </form>
 <?php   
-} }
+    } }
 ?>
 
 <script>

@@ -310,7 +310,6 @@ if ($type == 'insertcampaigndetails') {
 					sendSMS($gt_number, $msg, $subid, $cuid, $connection2, $container);
 				}
 			}
-
 			unset($_SESSION["submissionId"]);
 		}
 	}

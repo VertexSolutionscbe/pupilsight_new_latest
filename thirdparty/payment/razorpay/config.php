@@ -14,7 +14,6 @@ if (!empty($value)) {
     $keySecret = 'Wml5p4NJvohYygIeYfvsNtCo';
 }
 
-
 $displayCurrency = 'INR';
 
 //These should be commented out in production

@@ -31,7 +31,6 @@ try {
             } else {
                 $phpword->setValue($key, '');
             }
-            
         } catch (Exception $ex) {
         }
     }
