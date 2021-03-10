@@ -75,6 +75,7 @@ if (isset($data['logo_image'])) {
 
     <!-- CSS files -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
     <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
 
 
@@ -228,7 +229,7 @@ if (isset($data['logo_image'])) {
     <div id="preloader" style="display:none;"></div>
     <!-- Preloader End Here -->
 
-    <div id="homePanel" class="page">
+    <div id="homePanel" class="page" >
         <header class="navbar navbar-expand-md navbar-light navDesktop">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
@@ -699,7 +700,6 @@ if (isset($data['logo_image'])) {
             if ($data["contact_status"] == 1) {
             ?>
                 <!---Contact Us---->
-
                 
                 <div class="row" id="contact">
                     <div class="col-12 carouselTitle text-center my-5">
@@ -943,8 +943,8 @@ if (isset($data['logo_image'])) {
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
-        <!-- <form action="<?php echo $baseurl;?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
-        <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+        <form action="<?php echo $baseurl;?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+        <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
             <div class="card-body">
                 <div class="closeX">
                     <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
@@ -1024,7 +1024,9 @@ if (isset($data['logo_image'])) {
                     <a href="https://www.parentof.com/" target="_blank" class="link-secondary">Powered by ParentOf</a>
                 </div>
 
-                <div class="col-md-2">            
+                <div class="col-md-2">    
+                    
+                   <div style="margin-left:50px">
 
                     <?php if (!empty($data['facebook_link'])) { ?>
                         
@@ -1050,6 +1052,7 @@ if (isset($data['logo_image'])) {
                                 <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
                             </a>
                     <?php } ?>
+                    </div>
                     
                 </div>
 
@@ -1059,6 +1062,21 @@ if (isset($data['logo_image'])) {
             </div>
         </div>
     </footer>
+
+    <div id="back-to-top" class="default">
+        <a href="<?php echo $baseurl.'/home.php'?>"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></a>
+    </div>
+
+    <style>
+        #back-to-top {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            color: white;
+            text-align: right;
+        }
+    </style>
 
     <script>
         $('.lazy').slick({

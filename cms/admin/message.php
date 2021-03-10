@@ -35,14 +35,16 @@ td {
          <!-- panel content -->
          <div class="panel-body">
             <table class="table table-striped table-hover table-bordered" id="sample_editable_1">
-               <thead>
+               
+            
+            <thead>
                   <tr>
                      <th style="width:5%">SL No</th>
                      <th style="width:10%">Date</th>
                      <th style="width:10%">Name</th>
-                     <th style="width:15%">Email</th>
+                     <th style="width:25%">Email</th>
                      <th style="width:10%">Subject</th>
-                     <th style="width:40%">Message</th>
+                     <th style="width:30%">Message</th>
 					      <th style="width:10%">Action</th>
                   </tr>
                </thead>
@@ -51,21 +53,14 @@ td {
                   $i=1; 
 				    foreach($section as $val){
                  
-                 $date_arr=$val['created_at'];
-                 if($date_arr)
-                 $res=explode(" ",$date_arr);
-
-                 if($res)
-                 $date_exp=explode("-",$res[0]);
-
-
-                 if($date_exp)
-                 $ddmmyy=$date_exp[2]."-".$date_exp[1]."-".$date_exp[0];
+               $date_arr=$val['created_at'];
+               $strdate = strtotime($date_arr);
+               $ddmmyy = date('d-m-Y',$strdate);
 
       ?>
                   <tr>
                      <td><?php echo $i++;?></td>
-                     <td><?php echo $ddmmyy;?></td>
+                     <td  data-sort="<?php echo $strdate; ?>"><?php echo $ddmmyy;?></td>
                      <td><?php echo $val['name'];?></td>
                      <td><?php echo $val['email'];?></td>
                      <td><?php echo $val['subject'];?></td>
@@ -95,3 +90,4 @@ td {
 </section>
 <!-- /MIDDLE -->
 <?php include("template/footer.php");?> 
+
