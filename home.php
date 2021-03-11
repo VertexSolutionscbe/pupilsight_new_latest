@@ -25,7 +25,7 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain() . '/pupilsight_new';
+//$baseurl = getDomain().'/pupilsight_new';
 $baseurl = getDomain();
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
@@ -946,8 +946,8 @@ if (isset($data['logo_image'])) {
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
-        <!-- <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
-        <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+        <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+            <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
             <div class="card-body">
                 <div class="closeX">
                     <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
@@ -1200,21 +1200,27 @@ if (isset($data['logo_image'])) {
             var title = $(this).data('title');
             var desc = $(this).data('desc');
             var cimg = $(this).data('cimg');
-        });
-        $(document).on("click", ".clsbtn", function() {
 
+            $('#title').text(title);
+            $('#desc').text(desc);
+            $('#cimg').attr("src", cimg);
+        });
+
+        $(document).on("click", ".annData", function() {
+
+            var title = $(this).data('title');
+            var desc = $(this).data('desc');
+            var aimg = $(this).data('aimg');
+
+            $('#atitle').text(title);
+            $('#adesc').text(desc);
+            $('#aimg').attr("src", aimg);
+        });
+
+        $(document).on("click", ".clsbtn", function() {
             location.reload(true);
             //$('.courseData').css('border', '0px'); 
-
         });
-
-
-        // $(document).on("click", ".clsbtn", function () {
-
-        //     location.reload(true); 
-        //      //$('.courseData').css('border', '0px'); 
-
-        // });
     </script>
 
 </body>
