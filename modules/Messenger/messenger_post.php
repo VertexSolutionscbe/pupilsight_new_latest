@@ -734,7 +734,6 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 
 			echo "<script>\nvar js_array = " . json_encode($individuals) . ";</script>";
 		}
-
 		$row = $form->addRow();
 		$row->addFooter();
 		$row->addSubmit();

@@ -42,10 +42,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             $result = $connection2->prepare($sql);
             $result->execute($data);
 
-            $data1 = array('pupilsightPersonID' => $childid);
-            $sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightPersonID2=:pupilsightPersonID';
-            $resultp = $connection2->prepare($sqlp);
-            $resultp->execute($data1);
+            // $data1 = array('pupilsightPersonID' => $childid);
+            // $sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightPersonID2=:pupilsightPersonID';
+            // $resultp = $connection2->prepare($sqlp);
+            // $resultp->execute($data1);
+
+            $sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= ' . $childid . ' ';
+			$resultfc = $connection2->query($sqlf);
+			$fdata = $resultfc->fetch();
+			$pupilsightFamilyID = $fdata['pupilsightFamilyID'];
+
+			
+			$data = array('pupilsightFamilyID' => $pupilsightFamilyID);
+			$sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightFamilyID=:pupilsightFamilyID';
+			$resultp = $connection2->prepare($sqlp);
+			$resultp->execute($data);
             
         } catch (PDOException $e) {
             echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
@@ -62,6 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             //Let's go!
             $values = $result->fetch();
             $parents = $resultp->fetchAll();
+            $kount = count($parents);
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
@@ -69,10 +81,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 echo '</div>';
             }
             echo "<div style='height:50px;'><div class='float-left mb-2'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=".$childid."&search=' class='btn btn-primary active'>Student</a>";  
-			foreach($parents as $par){
-				echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=".$par['pupilsightPersonID1']."&child_id=".$childid."&search=' class='btn btn-primary'>".$par['relationship']."</a>"; 
+
+
+            if(!empty($parents)){
+                foreach($parents as $par){
+                    echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=".$par['pupilsightPersonID1']."&child_id=".$childid."&search=' class='btn btn-primary'>".$par['relationship']."</a>"; 
+                }
+                echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=".$parents[0]['pupilsightFamilyID']."&child_id=".$childid."&search=' class='btn btn-primary'>Family</a>";
+            }
+
+            if($kount == 0){
+				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_add.php&studentid=" . $childid . " ' class='btn btn-primary'>Add Parent</a>";
 			}
-			echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=".$parents[0]['pupilsightFamilyID']."&child_id=".$childid."&search=' class='btn btn-primary'>Family</a></div><div class='float-none'></div></div>"; 
+
+			if($kount == 1){
+				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent2_add.php&studentid=" . $childid . " ' class='btn btn-primary'>Add Parent</a>";
+			}
+
+			echo "</div><div class='float-none'></div></div>";
+            
 
             $form = Form::create('action1', $_SESSION[$guid]['absoluteURL'].'/modules/User Admin'."/family_manage_editProcess.php?pupilsightFamilyID=$pupilsightFamilyID&child_id=$childid&search=$search");
             $form->setFactory(DatabaseFormFactory::create($pdo));

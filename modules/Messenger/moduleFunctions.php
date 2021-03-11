@@ -1354,7 +1354,6 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
 
 function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '', $msgcategory = '', $msgtype = '')
 {
-
     // $fromdate = $fromdate.' 00:00:01';
     // $date = $date.' 23:59:59';
     
