@@ -6675,10 +6675,11 @@ $(document).on('change', '#changeFeeStrByProgId', function () {
 
 $(document).on('change', '#program_class', function () {
     var id = $(this).val();
+    var aid = $("#aid").val();
     $.ajax({
         url: 'fullscreen.php?q=/modules/Finance/invoice_generatedBy_class_ajax_add.php',
         type: 'post',
-        data: { id: id },
+        data: { id: id, aid: aid },
         async: true,
         success: function (response) {
             $("#changeFeeStructure").html();

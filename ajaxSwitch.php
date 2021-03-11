@@ -405,7 +405,7 @@ if (isset($_POST['type'])) {
                         $t_id = $transactionId;
 
                         $pmode = $mdata['payment_mode_id'];
-                        $mcredit = $mdata['credit_id'];
+                        //$mcredit = $mdata['credit_id'];
                         $bank_id = $mdata['bank_id'];
                         $amount = $mdata['amount'];
                         $mrefno = $mdata['reference_no'];
@@ -413,17 +413,36 @@ if (isset($_POST['type'])) {
                         $l = sizeof($pmode);
                         $i = 1;
                         for ($i = 0; $i < $l; $i++) {
-                            $datam = array('transaction_id' => $t_id, 'payment_mode_id' => $pmode[$i],  'credit_id' => $mcredit[$i], 'bank_id' => $bank_id[$i],    'amount' => $amount[$i], 'reference_no' => $mrefno[$i], 'instrument_date' => $minstruDate[$i]);
-                            $sqlm = 'INSERT INTO fn_multi_payment_mode SET transaction_id=:transaction_id, payment_mode_id=:payment_mode_id, credit_id=:credit_id, bank_id=:bank_id,amount=:amount,reference_no=:reference_no,instrument_date=:instrument_date';
+                            $datam = array('transaction_id' => $t_id, 'payment_mode_id' => $pmode[$i],  'bank_id' => $bank_id[$i],    'amount' => $amount[$i], 'reference_no' => $mrefno[$i], 'instrument_date' => $minstruDate[$i]);
+                            $sqlm = 'INSERT INTO fn_multi_payment_mode SET transaction_id=:transaction_id, payment_mode_id=:payment_mode_id, bank_id=:bank_id,amount=:amount,reference_no=:reference_no,instrument_date=:instrument_date';
                             $resultm = $connection2->prepare($sqlm);
                             $resultm->execute($datam);
+
+                            if(!empty($mrefno[$i])){
+                                $instrument_no = $mrefno[$i];
+                            }
+                            
+                            if(!empty($minstruDate[$i])){
+                                $instrument_date = $minstruDate[$i];
+                            }
+
+                            if (!empty($bank_id[$i])) {
+                                $sqlbn = 'SELECT name FROM fn_masters WHERE id = ' . $bank_id[$i] . ' ';
+                                $resultbn = $connection2->query($sqlbn);
+                                $bankNameData = $resultbn->fetch();
+                                $bank_name = $bankNameData['name'];
+                            } else {
+                                $bank_name = '';
+                            }
                         }
 
-                        $pmId = implode(',', $payment_mode_id);
+                        $pmId = implode(',', $pmode);
                         $sqlpt = "SELECT GROUP_CONCAT(name) AS modeName FROM fn_masters WHERE id IN (" . $pmId . ") ";
                         $resultpt = $connection2->query($sqlpt);
                         $valuept = $resultpt->fetch();
-                        $paymentModeName = $valuept['modeName'];
+                        $paymentModeName = 'Multiple ('.$valuept['modeName'].')';
+
+                        
                     } else {
                         $sqlpt = "SELECT name FROM fn_masters WHERE id = " . $payment_mode_id . " ";
                         $resultpt = $connection2->query($sqlpt);
@@ -580,30 +599,36 @@ if (isset($_POST['type'])) {
                 $sp_item_sql = "SELECT SUM(discount.discount) as sp_discount
                 FROM fn_fee_invoice_item as fee_item
                 LEFT JOIN fn_fee_item_level_discount as discount
-                ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id='" . $d['invoiceid'] . "'";
+                ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id= ".$d['invoiceid']." AND pupilsightPersonID = ".$stuId."  ";
                 $result_sp_item = $connection2->query($sp_item_sql);
                 $sp_item_dis = $result_sp_item->fetch();
                 //unset($invdata[$k]['finalamount']);
 
                 if (!empty($d['transport_schedule_id']) && $d['transport_schedule_id'] != '') {
                     $routes = explode(',', $d['routes']);
-                    foreach ($routes as $rt) {
-                        $sqlsc = 'SELECT * FROM trans_route_price WHERE schedule_id = ' . $d['transport_schedule_id'] . ' AND route_id = ' . $rt . ' ';
-                        $resultsc = $connection2->query($sqlsc);
-                        $datasc = $resultsc->fetch();
-                        if ($d['routetype'] == 'oneway') {
-                            $price = $datasc['oneway_price'];
-                            $tax = $datasc['tax'];
-                            $amtperc = ($tax / 100) * $price;
-                            $tranamount = $price + $amtperc;
-                        } else {
-                            $price = $datasc['twoway_price'];
-                            $tax = $datasc['tax'];
-                            $amtperc = ($tax / 100) * $price;
-                            $tranamount = $price + $amtperc;
+                    if(!empty($routes)){
+                        $tranamount = 0;
+                        foreach ($routes as $rt) {
+                            if(!empty($rt)){
+                                $sqlsc = 'SELECT * FROM trans_route_price WHERE schedule_id = ' . $d['transport_schedule_id'] . ' AND route_id = ' . $rt . ' ';
+                                $resultsc = $connection2->query($sqlsc);
+                                $datasc = $resultsc->fetch();
+                                if ($d['routetype'] == 'oneway') {
+                                    $price = $datasc['oneway_price'];
+                                    $tax = $datasc['tax'];
+                                    $amtperc = ($tax / 100) * $price;
+                                    $tranamount = $price + $amtperc;
+                                } else {
+                                    $price = $datasc['twoway_price'];
+                                    $tax = $datasc['tax'];
+                                    $amtperc = ($tax / 100) * $price;
+                                    $tranamount = $price + $amtperc;
+                                }
+                            }
                         }
+                        $totalamount = $tranamount;
                     }
-                    $totalamount = $tranamount;
+                    
                 } else {
                     $totalamount = $dataamt['totalamount'];
                 }

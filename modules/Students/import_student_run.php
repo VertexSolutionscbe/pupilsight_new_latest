@@ -238,7 +238,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         }
                         $pupilsightYearGroupID =  '0';
                         if (!empty($alrow['at_pupilsightYearGroupID'])) {
-                            $sqlaca = 'SELECT pupilsightYearGroupID FROM pupilsightYearGroup WHERE name = "' . $alrow['at_pupilsightYearGroupID'] . '"';
+                            $sqlaca = 'SELECT pupilsightYearGroupID FROM pupilsightYearGroup WHERE name = "' . $alrow['at_pupilsightYearGroupID'] . '" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
                             $resultaca = $connection2->query($sqlaca);
                             $acaData = $resultaca->fetch();
                             if ($acaData['pupilsightYearGroupID']) {
@@ -250,7 +250,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 
                         $pupilsightRollGroupID = '0';
                         if (!empty($alrow['at_pupilsightRollGroupID'])) {
-                            $sqlaca = 'SELECT pupilsightRollGroupID FROM pupilsightRollGroup WHERE name = "' . $alrow['at_pupilsightRollGroupID'] . '"';
+                            $sqlaca = 'SELECT pupilsightRollGroupID FROM pupilsightRollGroup WHERE name = "' . $alrow['at_pupilsightRollGroupID'] . '" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
                             $resultaca = $connection2->query($sqlaca);
                             $acaData = $resultaca->fetch();
                             if ($acaData['pupilsightRollGroupID']) {

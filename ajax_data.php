@@ -796,7 +796,7 @@ if ($type == 'getSection') {
     } else {
         $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
     }
-    echo $sql;
+    //echo $sql;
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
@@ -3332,9 +3332,10 @@ if ($type == 'deleteBulkStudent') {
 
 if ($type == 'removeStudentEnrollment') {
     $ids = explode(',', $val);
+    $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
     foreach ($ids as $st) {
-        $data = array('pupilsightProgramID' => '', 'pupilsightYearGroupID' => '', 'pupilsightRollGroupID' => '', 'pupilsightPersonID' => $st);
-        $sql = 'UPDATE pupilsightStudentEnrolment SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID WHERE pupilsightPersonID=:pupilsightPersonID';
+        $data = array('pupilsightProgramID' => '', 'pupilsightYearGroupID' => '', 'pupilsightRollGroupID' => '', 'pupilsightPersonID' => $st, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID);
+        $sql = 'UPDATE pupilsightStudentEnrolment SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightSchoolYearID=:pupilsightSchoolYearID ';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     }
