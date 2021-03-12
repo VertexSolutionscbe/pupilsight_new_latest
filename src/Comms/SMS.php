@@ -378,9 +378,14 @@ class SMS implements SMSInterface
                 $val = $rs1[0]['value'];
             }
 
-            $charcount = $this->totalchars;
+            // $charcount = $this->totalchars;
+            // $cal = ceil($charcount / 160);
+            // $totalmsges = $cal * $this->noofrecipents;
+
+            $charcount = strlen($msg);
             $cal = ceil($charcount / 160);
-            $totalmsges = $cal * $this->noofrecipents;
+            $totalmsges = $cal;
+            
             $smsCount = $val + $totalmsges;
 
             switch ($activeGateway) {
@@ -440,11 +445,17 @@ class SMS implements SMSInterface
                 $val = $rs1[0]['value'];
             }
 
-            $charcount = $this->totalchars;
+            // $charcount = $this->totalchars;
+            // $cal = ceil($charcount / 160);
+            // $totalmsges = $cal * $this->noofrecipents;
+
+            $charcount = strlen($msg);
             $cal = ceil($charcount / 160);
-            $totalmsges = $cal * $this->noofrecipents;
+            $totalmsges = $cal;
+            
 
             $smsCount = $val + $totalmsges;
+            //echo $charcount.'--cal-'.$cal.'--totalmsges-'.$totalmsges.'--smsCount-'.$smsCount;
 
             switch ($activeGateway) {
                 case 'Karix':

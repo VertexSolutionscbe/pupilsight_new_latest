@@ -1354,8 +1354,7 @@ function getMessages($guid, $connection2, $mode = '', $date = '', $fromdate = ''
 
 function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '', $msgcategory = '', $msgtype = '')
 {
-    // $fromdate = $fromdate.' 00:00:01';
-    // $date = $date.' 23:59:59';
+   
     
     $return = '';
     $return1 = '';
@@ -1373,12 +1372,13 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
     }
     //echo $msgtype;
 
-    if($msgcategory=='All'){
-        $msgcategory = ' ';
-    }else{
-        $msgcategory = " AND pupilsightMessenger.messengercategory = '$msgcategory'";
-    }
+    // if($msgcategory=='All'){
+    //     $msgcategory = ' ';
+    // }else{
+    //     $msgcategory = " AND pupilsightMessenger.messengercategory = '$msgcategory'";
+    // }
     //echo $msgcategory;
+    $msgcategory = '';
     if ($date == '') {
         $date = date('Y-m-d');
     }
@@ -1391,7 +1391,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
 	$datecheck='fail';
 
 	}
-
+    
 
     if($fromdate!=$date){
 
@@ -2050,6 +2050,8 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
             }
         }
     }else{
+        // $fromdate = $fromdate.' 00:00:01';
+        // $date = $date.' 23:59:59';
         if ($mode != 'print' and $mode != 'count' and $mode != 'result') {
             $mode = 'print';
         }

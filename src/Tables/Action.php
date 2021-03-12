@@ -77,7 +77,9 @@ class Action extends WebLink
             case 'amountconfig':  $this->setIcon('list');
                         break;     
             case 'form':    $this->setIcon('zoom');
-                        break;                                                       
+                        break;      
+            case 'printInvoice':  $this->setIcon('config');
+            break;                                                 
         }
     }
 
@@ -368,6 +370,12 @@ class Action extends WebLink
                     $this->getIcon()
                 ));
 			}  elseif($this->getLabel() == 'Preview Invoice'){
+				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-printer mdi-24px"></i>', 
+                    ($this->displayLabel? $this->getLabel() : ''),
+                    $this->getLabel(), 
+                    $this->getIcon()
+                ));
+            } elseif($this->getLabel() == 'Print Invoice'){
 				$this->setContent(sprintf('%1$s <i title="%2$s" class="mdi mdi-printer mdi-24px"></i>', 
                     ($this->displayLabel? $this->getLabel() : ''),
                     $this->getLabel(), 
