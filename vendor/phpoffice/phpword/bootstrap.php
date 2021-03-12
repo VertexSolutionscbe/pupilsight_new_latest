@@ -15,8 +15,8 @@
  * @license     http://www.gnu.org/licenses/lgpl.txt LGPL version 3
  */
 
-$vendorDirPath = realpath(__DIR__ . '/pupilsight/vendor');
-$vendorDirPath = $_SERVER["DOCUMENT_ROOT"]."/pupilsight/vendor";
+$vendorDirPath = realpath(__DIR__ . '/vendor');
+$vendorDirPath = $_SERVER["DOCUMENT_ROOT"]."/vendor";
 //echo "vdp: ".$vendorDirPath;
 //die();
 //$vendorDirPath = 'vendor/autoload.php';

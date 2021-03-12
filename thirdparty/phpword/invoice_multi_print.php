@@ -134,10 +134,10 @@ try {
                     
                     convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
 
-                    $contenttype = "application/force-download";
-                    header("Content-Type: " . $contenttype);
-                    header("Content-Disposition: attachment; filename=\"" . basename($fileName) . "\";");
-                    readfile($savedocsx);
+                    // $contenttype = "application/force-download";
+                    // header("Content-Type: " . $contenttype);
+                    // header("Content-Disposition: attachment; filename=\"" . basename($fileName) . "\";");
+                    // readfile($savedocsx);
                 } catch (Exception $ex) {
                 }
             }
