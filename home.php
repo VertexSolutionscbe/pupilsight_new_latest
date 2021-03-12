@@ -413,15 +413,15 @@ if (isset($data['logo_image'])) {
                                     }*/
 
                                     if (!empty($section['6']['0']['short_description'])) {
-                                        echo "<b>" . $section['6']['0']['short_description'] . "</b>";
+                                        echo "<b class='bannerDes'>" . $section['6']['0']['short_description'] . "</b>";
                                     } else {
-                                        echo '<b>Limitless learning, more possibilities</b>';
+                                        echo '<b class="bannerDes">Limitless learning, more possibilities</b>';
                                     }
 
                                     if (!empty($section['6']['0']['description'])) {
-                                        echo "<p class='wordwrap'>" . $section['6']['0']['description'] . "</p>";
+                                        echo "<p class='bannerDes'>" . $section['6']['0']['description'] . "</p>";
                                     } else {
-                                        echo '<p class="wordwrap">High is a nationally recognized K-12 independent school situatedin the hills of Oakland, California. Our mission is to inspire a maplifelonglove of learning with a focus on scholarship. For 23 years of existence,Ed has more.</p>';
+                                        echo '<p class="bannerDes">High is a nationally recognized K-12 independent school situatedin the hills of Oakland, California. Our mission is to inspire a maplifelonglove of learning with a focus on scholarship. For 23 years of existence,Ed has more.</p>';
                                     }
 
                                     ?>
@@ -706,14 +706,17 @@ if (isset($data['logo_image'])) {
                         Contact Us
                     </div>
 
-                    <div class="col-md-4 col-sm-12">
-                        <div id="map" class='card'>
+                    <div class="col-md-6 col-sm-12">
+                        <!-- <div id="map" class='card'> -->
+
+                        <div id="mapshow">
                             <?php if($data['contact_map'])
                             echo html_entity_decode($data['contact_map']) ?>
+                        </div>
                             <!--
                             <iframe width="100%" height="407" border='0' id="gmap_canvas" src="https://maps.google.com/maps?q=12th%20A%20Main%20Rd%2C%20HAL%202nd%20Stage%2C%20Indiranagar%2C%20Bengaluru%2C%20Karnataka%20560008&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
                             -->
-                        </div>
+                        <!-- </div> -->
                     </div>
 
                     <div class="col-md-4 col-sm-12">
@@ -778,7 +781,7 @@ if (isset($data['logo_image'])) {
                         </div>
                     </div>
 
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-2 col-sm-12">
 
                         <div id="form" class="card">
                             <div class="card-body">
@@ -1064,19 +1067,71 @@ if (isset($data['logo_image'])) {
     </footer>
 
     <div id="back-to-top" class="default">
-        <a href="<?php echo $baseurl.'/home.php'?>"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></a>
+        
+        <button onclick="topFunction()" id="topBtn" title="Go to top"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></button>
+
+        <!-- <a href="<?php echo $baseurl.'/home.php'?>"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></a> -->
     </div>
 
     <style>
-        #back-to-top {
+
+        
+        /* #topBtn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        z-index: 99;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        padding: 15px;
+        border-radius: 4px;
+        background: none;
+        } */
+        #topBtn {
+            display: none;
             position: fixed;
             left: 0;
             bottom: 0;
             width: 100%;
             color: white;
             text-align: right;
+            border: none;
+            outline: none;
+            padding: 15px;
+            border-radius: 4px;
+            background: none;
+        
         }
+
+        #mapshow{
+            padding: 0px !important;
+            }
     </style>
+
+        
+    <script>
+    //Get the button
+    var topbutton = document.getElementById("topBtn");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        topbutton.style.display = "block";
+    } else {
+        topbutton.style.display = "none";
+    }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+    }
+    </script>
 
     <script>
         $('.lazy').slick({
