@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_discount_m
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('[pupilsightRollGroupID', __('Section'))->addClass('dte');
-            $col->addSelect('pupilsightRollGroupID')->setID('showMultiSecByProgClsStaff')->fromArray($sections)->selected($pupilsightRollGroupID)->selectMultiple()->required();
+            $col->addSelect('pupilsightRollGroupID')->setID('showMultiSecByProgClsStaff')->fromArray($sections)->selected($pupilsightRollGroupID)->selectMultiple();
 
             
             $col = $row->addColumn()->setClass('newdes');

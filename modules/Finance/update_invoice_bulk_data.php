@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
     $row = $form->addRow();
         $row->addLabel('due_date', __('Due Date'))->addClass('dte');
-        $row->addDate('due_date');
+        $row->addDate('due_date')->setId('start_date');
 
     $row = $form->addRow();
         $row->addLabel('fn_fees_head_id', __('Account Head'));
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 } ?>
 
 <!-- <form method="post">
-    <input type="hidden" name="invoice_student_id" value="<?php echo $id;?>">
+    <input type="hidden" name="invoice_student_id" value="<?php /* echo $id; */ ?>">
     <input type="text" name="invoice_title">
 
     <input type="submit" class="btn btn-primary" value="Update">
