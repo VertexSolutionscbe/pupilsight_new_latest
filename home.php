@@ -75,7 +75,7 @@ if (isset($data['logo_image'])) {
 
     <!-- CSS files -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    
+
     <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
 
 
@@ -229,7 +229,7 @@ if (isset($data['logo_image'])) {
     <div id="preloader" style="display:none;"></div>
     <!-- Preloader End Here -->
 
-    <div id="homePanel" class="page" >
+    <div id="homePanel" class="page">
         <header class="navbar navbar-expand-md navbar-light navDesktop">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
@@ -700,7 +700,7 @@ if (isset($data['logo_image'])) {
             if ($data["contact_status"] == 1) {
             ?>
                 <!---Contact Us---->
-                
+
                 <div class="row" id="contact">
                     <div class="col-12 carouselTitle text-center my-5">
                         Contact Us
@@ -946,8 +946,8 @@ if (isset($data['logo_image'])) {
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
-        <form action="<?php echo $baseurl;?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
-        <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
+        <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+            <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
             <div class="card-body">
                 <div class="closeX">
                     <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
@@ -1029,35 +1029,35 @@ if (isset($data['logo_image'])) {
 
                     <div class="col-md-2">
 
-                <div class="col-md-2">    
-                    
-                   <div style="margin-left:50px">
+                        <div style="margin-left:50px">
 
-                            <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
-                                <i class="social-icon fa fa-facebook" style="font-size:24px;color:#206bc4"></i>
-                            </a>&nbsp;&nbsp;
+                            <?php if (!empty($data['facebook_link'])) { ?>
 
-                        <?php } ?>
-                        <?php if (!empty($data['twitter_link'])) { ?>
-                            <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
-                                <i class="social-icon fa fa-twitter" style="font-size:24px;color:#206bc4"></i>
-                            </a>&nbsp;&nbsp;
+                                <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
+                                    <i class="social-icon fa fa-facebook" style="font-size:24px;color:#206bc4"></i>
+                                </a>&nbsp;&nbsp;
 
-                        <?php } ?>
-                        <?php if (!empty($data['pinterest_link'])) { ?>
-                            <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
-                                <i class="social-icon fa fa-pinterest-p" style="font-size:24px;color:#206bc4"></i>
-                            </a>&nbsp;&nbsp;
+                            <?php } ?>
+                            <?php if (!empty($data['twitter_link'])) { ?>
+                                <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
+                                    <i class="social-icon fa fa-twitter" style="font-size:24px;color:#206bc4"></i>
+                                </a>&nbsp;&nbsp;
 
-                        <?php } ?>
-                        <?php if (!empty($data['linkdlin_link'])) { ?>
-                            <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
-                                <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
-                            </a>
-                    <?php } ?>
+                            <?php } ?>
+                            <?php if (!empty($data['pinterest_link'])) { ?>
+                                <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
+                                    <i class="social-icon fa fa-pinterest-p" style="font-size:24px;color:#206bc4"></i>
+                                </a>&nbsp;&nbsp;
+
+                            <?php } ?>
+                            <?php if (!empty($data['linkdlin_link'])) { ?>
+                                <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
+                                    <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
+                                </a>
+                            <?php } ?>
+                        </div>
+
                     </div>
-                    
-                </div>
 
                 </div>
 
@@ -1067,7 +1067,7 @@ if (isset($data['logo_image'])) {
     </footer>
 
     <div id="back-to-top" class="default">
-        <a href="<?php echo $baseurl.'/home.php'?>"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></a>
+        <a href="<?php echo $baseurl . '/home.php' ?>"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></a>
     </div>
 
     <style>
@@ -1215,13 +1215,17 @@ if (isset($data['logo_image'])) {
         });
 
         $(document).on("click", ".courseData", function() {
+
             var title = $(this).data('title');
             var desc = $(this).data('desc');
             var cimg = $(this).data('cimg');
 
+
             $('#title').text(title);
             $('#desc').text(desc);
             $('#cimg').attr("src", cimg);
+
+
         });
 
         $(document).on("click", ".annData", function() {
@@ -1233,11 +1237,15 @@ if (isset($data['logo_image'])) {
             $('#atitle').text(title);
             $('#adesc').text(desc);
             $('#aimg').attr("src", aimg);
-        });
 
+
+        });
         $(document).on("click", ".clsbtn", function() {
+
             location.reload(true);
+
             //$('.courseData').css('border', '0px'); 
+
         });
     </script>
 
