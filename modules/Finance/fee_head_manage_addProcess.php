@@ -30,9 +30,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_head_manage_ad
         $payment_gateway_id = '';
     }
     
-    // $invoice_template = $_POST['invoice_template'];
+    $invoice_template = $_POST['invoice_template'];
     $receipt_template = $_POST['receipt_template'];
-    $invoice_template = '';
+    //$invoice_template = '';
     $cdt = date('Y-m-d H:i:s');
     
     if ($name == ''  or $account_code == '' ) {

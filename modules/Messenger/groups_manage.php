@@ -88,9 +88,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
                 <div class='modal-body emailField''>
                     <h3 class='font-semibold'>Subject</h3>
                     <input type='hidden' id='msgtype1' value='email'>
-                    <textarea name='email_quote' id='emailSubjectQuote_stud' rows='1'></textarea></br>
+                    <textarea name='subject' id='emailSubjectQuote_stud' rows='1'></textarea></br>
                     <h3 class='font-semibold'>Email Message</h3>
-                    <textarea name='email_quote' id='emailQuote_stud' rows='5'></textarea>
+                    <textarea name='body' id='emailQuote_stud' rows='5'></textarea>
                     <h3 class='font-semibold'>Attachments (Max Size 2MB)</h3>
                     <input type='hidden' name='MAX_FILE_SIZE' value='15728640' />
                     <input type='file' name='email_attach' id='emailattach_camp'>
@@ -160,7 +160,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 }
 ?>
 
-<script>function showsmsDiv() {
+<script>
+    function showsmsDiv() {
             var favorite = [];
             $.each($("input[name='group_id[]']:checked"), function () {
                 favorite.push($(this).val());
@@ -176,8 +177,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
                 alert('You Have to Select Group.');
             }
     }
-</script>
-<script>function showemailDiv() {
+
+    function showemailDiv() {
         var favorite = [];
         $.each($("input[name='group_id[]']:checked"), function () {
             favorite.push($(this).val());
@@ -193,16 +194,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
             alert('You Have to Select Group.');
         }
     }
-</script>
-<script>function hidesmsDiv() {
+
+    function hidesmsDiv() {
         document.getElementById('smsDiv').style.display = "none";
     }
-</script>
-<script>function hideemailDiv() {
+    function hideemailDiv() {
         document.getElementById('emailDiv').style.display = "none";
     }
-</script>
-<script>
+
     $(document).on('click', '#sendSms_group', function () {
         var msg = document.getElementById("smsQuote_stud").value;
         var msgtype = document.getElementById("msgtype").value;
@@ -217,13 +216,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
             //alert (msgtype);
             var grpval = grpid;
             var msgval = msg;
-            var type = 'groupmanagesms';
+            //var type = 'groupmanagesms';
 
             if (msgval != '') {
                 $.ajax({
-                    url: 'ajax_data.php',
+                    url: 'modules/Messenger/send_group_message.php',
                     type: 'post',
-                    data: { grpval: grpval, msgval: msgval, msgtype:msgtype, type:type },
+                    data: { grpval: grpval, msgval: msgval, msgtype:msgtype },
                     async: true,
                     success: function (response) {
                         alert('Message sent successfully.');
@@ -235,43 +234,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
             alert('You Have to Enter Message.');
         }
     });
-</script>
-<script>
-    $(document).on('click', '#sendEmail_group', function () {
-        //var url = $(this).attr('data-href');
-        var subject = document.getElementById("emailSubjectQuote_stud").value;
-        var body = document.getElementById("emailQuote_stud").value;
-        var msgtype = document.getElementById("msgtype1").value;
-        var emailattach_camp = document.getElementById("emailattach_camp").value;
-        var favorite = [];
-        $.each($("input[name='group_id[]']:checked"), function () {
-            favorite.push($(this).val());
-        });
-        var grpid = favorite.join(",");
-        if (body) {
-            //alert(subject);
-            //alert (body);
-            //alert (msgtype);
-            var grpval = grpid;
-            var subject = subject;
-            var body = body;
-            var type = 'groupmanageemail';
-            var image = emailattach_camp;
 
-            if (body != '') {
-                $.ajax({
-                    url: 'ajax_data.php',
-                    type: 'post',
-                    data: { grpval: grpval, subject:subject, body: body, msgtype:msgtype, type:type, email_attach_inv:image },
-                    async: true,
-                    success: function (response) {
-                        alert('Message sent successfully.');
-                        location.reload();
-                    }
-                });
+    $(document).on('click', '#sendEmail_group', function (e) {
+        //var url = $(this).attr('data-href');
+        e.preventDefault();
+        //$("#preloader").show();
+        window.setTimeout(function () {
+            var formData = new FormData(document.getElementById("sendEmail_groupform"));
+            //alert(formData);
+            var body = document.getElementById("emailQuote_stud").value;
+            var msgtype = document.getElementById("msgtype1").value;
+            //var emailattach_camp = document.getElementById("emailattach_camp").value;
+            var favorite = [];
+            $.each($("input[name='group_id[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var grpid = favorite.join(",");
+            if (body) {
+                
+                formData.append('msgtype', msgtype);
+                formData.append('grpval', grpid);
+
+                if (body != '') {
+                    $.ajax({
+                        url: 'modules/Messenger/send_group_message.php',
+                        type: 'post',
+                        data: formData ,
+                        contentType: false,
+                        cache: false,
+                        processData: false,
+                        async: false,
+                        success: function (response) {
+                            // alert('Message sent successfully.');
+                            // location.reload();
+                        }
+                    });
+                }
+            } else {
+                alert('You Have to Enter Message.');
             }
-        } else {
-            alert('You Have to Enter Message.');
-        }
+        }, 100);
     });
 </script>

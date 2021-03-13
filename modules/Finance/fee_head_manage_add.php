@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_head_manage_ad
     }
     $gatewayData = $gatewayData1 + $gatewayData2;
 
-    $sqlrt = 'SELECT id, name FROM fn_fees_receipt_template_master ';
+    $sqlrt = 'SELECT id, name FROM fn_fees_receipt_template_master WHERE type != "Invoice Template" ';
     $resultrt = $connection2->query($sqlrt);
     $templateData = $resultrt->fetchAll();
 
@@ -75,6 +75,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_head_manage_ad
         $receiptTemplate2[$td['id']] = $td['name'];
     }
     $receiptTemplate = $receiptTemplate1 + $receiptTemplate2;
+
+
+    $sqlit = 'SELECT id, name FROM fn_fees_receipt_template_master WHERE type = "Invoice Template" ';
+    $resultit = $connection2->query($sqlit);
+    $invtemplateData = $resultit->fetchAll();
+
+    $invTemplate = array();
+    $invTemplate2 = array();
+    $invTemplate1 = array(''=>'Select Invoice Template');
+    foreach ($invtemplateData as $td) {
+        $invTemplate2[$td['id']] = $td['name'];
+    }
+    $invTemplate = $invTemplate1 + $invTemplate2;
+
     
     $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_head_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -161,17 +175,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_head_manage_ad
             $col->addTextField('');    
                 
     $row = $form->addRow(); 
-        // $col = $row->addColumn()->setClass('newdes');
-        //     $col->addLabel('invoice_template', __('Invoice Template'));
-        //     $col->addSelect('invoice_template')->addClass('txtfield')->fromArray($seriesData);
+        $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('invoice_template', __('Invoice Template'));
+            $col->addSelect('invoice_template')->addClass('txtfield')->fromArray($invTemplate);
 
         $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('receipt_template', __('Receipt Template'));
             $col->addSelect('receipt_template')->addClass('txtfield')->fromArray($receiptTemplate);
         
-        $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''))->setClass('hiddencol');
-            $col->addTextField('')->setClass('hiddencol');
+        // $col = $row->addColumn()->setClass('newdes');
+        //     $col->addLabel('', __(''))->setClass('hiddencol');
+        //     $col->addTextField('')->setClass('hiddencol');
         
         $col = $row->addColumn()->setClass('hiddencol');
             $col->addLabel('', __(''));

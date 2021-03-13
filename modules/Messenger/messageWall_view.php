@@ -14,7 +14,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
     $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
     $fromdate = isset($_REQUEST['fromdate'])? $_REQUEST['fromdate'] : date($dateFormat);
-    $category = isset($_REQUEST['category'])? $_REQUEST['category'] : 'All';
+    // $category = isset($_REQUEST['category'])? $_REQUEST['category'] : 'All';
+    $category = '';
     $msgtype = isset($_REQUEST['msgtype'])? $_REQUEST['msgtype'] : 'All';
 
     $page->breadcrumbs->add(($date === date($dateFormat)) ?
@@ -77,9 +78,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
         'email' =>'Email',
     );
 
-    $col = $row->addColumn();
-    $col->addLabel('category', __('Category'));
-    $col->addSelect('category')->fromArray($display_fields)->selected($category);
+    // $col = $row->addColumn();
+    // $col->addLabel('category', __('Category'));
+    // $col->addSelect('category')->fromArray($display_fields)->selected($category);
 
     $col = $row->addColumn();
     $col->addLabel('msgtype', __('Message Type'));
