@@ -91,9 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
                     <textarea name='subject' id='emailSubjectQuote_stud' rows='1'></textarea></br>
                     <h3 class='font-semibold'>Email Message</h3>
                     <textarea name='body' id='emailQuote_stud' rows='5'></textarea>
-                    <!--<h3 class='font-semibold'>Attachments (Max Size 2MB)</h3>
+                    <h3 class='font-semibold'>Attachments (Max Size 2MB)</h3>
                     <input type='hidden' name='MAX_FILE_SIZE' value='15728640' />
-                    <input type='file' name='email_attach' id='emailattach_camp'>-->
+                    <input type='file' name='email_attach' id='emailattach_camp'>
                     <!--<div style='margin-top: 15px;' id='showEmailField'>
                         <input type='checkbox' class='chkType' data-type='fatherEmail' name='father_email' value='1'>
                         Father
@@ -265,8 +265,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
                         processData: false,
                         async: false,
                         success: function (response) {
-                            alert('Message sent successfully.');
-                            location.reload();
+                            // alert('Message sent successfully.');
+                            // location.reload();
                         }
                     });
                 }

@@ -54,12 +54,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                         $to = $email;
                         $subject = nl2br($_POST['subject']);
                         $body = nl2br($_POST['body']);
+
+                        $attachmentStatus = "No";
+                        $NewNameFile = '';
+                        $errStatus = "No";
+                        if (!empty($_FILES["email_attach"]["name"])) {
+                            $fileData = pathinfo(basename($_FILES["email_attach"]["name"]));
+                            $ex = explode(".", $_FILES["email_attach"]["name"]);
+                            $extension = end($ex);
+                            $NewNameFile = time() . '.' . $extension;
+                            $sourcePath = $_FILES['email_attach']['tmp_name'];
+
+                            //$uploaddir = '../../public/attactments_campaign/';
+                            $uploaddir = $_SERVER['DOCUMENT_ROOT'] . "/public/attachments/";
+                            $uploadfile = $uploaddir . $NewNameFile;
+
+                            //echo "\nupload file path : ".$uploadfile."\n";
+                            if (move_uploaded_file($sourcePath, $uploadfile)) {
+                                $attachmentStatus = "Yes";
+                            }
+                        }
+
                         if (!empty($body) && !empty($to)) {
                             $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Students/mailsend.php';
                             $url .= "&to=" . $to;
                             $url .= "&sub=" . rawurlencode($subject);
                             $url .= "&body=" . rawurlencode($body);
-                            $attachmentStatus = 'No';
+                            //$attachmentStatus = 'No';
                             $st = $pupilsightPersonID;
 
                             if ($attachmentStatus == "Yes") {
@@ -91,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                                     $msgby =$_SESSION[$guid]["pupilsightPersonID"];
                                     Updatemessesnger($connection2,$msgby,$st,$body,$subject);
                                     $nowtime =date("Y-m-d H:i:s");
-                                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$msgby."', pupilsightPersonID='".$msgby."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
+                                    $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$msgby."', pupilsightPersonID='".$msgby."', targetType='Group', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
                                     $connection2->query($savedata);
                                 } catch (Exception $ex) {
                                     print_r($x);
@@ -106,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                                 $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
                                 $connection2->query($sq);
                                 $nowtime =date("Y-m-d H:i:s");
-                                $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$senderid."', pupilsightPersonID='".$senderid."', targetType='Individuals', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
+                                $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='".$senderid."', pupilsightPersonID='".$senderid."', targetType='Group', targetID='".$st."', contactType='Email', contactDetail='".$to."', `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
                                 $connection2->query($savedata);
                             }
                         }
@@ -143,7 +164,7 @@ function Updatemessesnger($connection2,$sender,$st, $body="", $subject=""){
     $result->execute($data);
 
     $data = array("AI" => $AI, "t" => $msgto);
-    $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Individuals', id=:t";
+    $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Group', id=:t";
     $result = $connection2->prepare($sql);
     $result->execute($data);
 }
