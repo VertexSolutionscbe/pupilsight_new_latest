@@ -148,7 +148,6 @@ try {
     print_r($ex);
 }
 
-
 function convert_number_to_words($number) {
    
     $hyphen      = '-';

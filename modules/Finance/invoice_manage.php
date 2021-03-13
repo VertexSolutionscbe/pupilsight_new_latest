@@ -593,8 +593,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     });
 
     
-
-   
-
-    
 </script>

@@ -456,12 +456,7 @@ class Action extends WebLink
                     $this->getIcon()
                 ));
             }
-            
-            
            
-
-			
-			
             
         } else {
             $this->setContent($this->getLabel());

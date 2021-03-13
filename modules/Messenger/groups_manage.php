@@ -203,6 +203,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
     }
 
     $(document).on('click', '#sendSms_group', function () {
+        $("#preloader").show();
         var msg = document.getElementById("smsQuote_stud").value;
         var msgtype = document.getElementById("msgtype").value;
         var favorite = [];
@@ -238,7 +239,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
     $(document).on('click', '#sendEmail_group', function (e) {
         //var url = $(this).attr('data-href');
         e.preventDefault();
-        //$("#preloader").show();
+        $("#preloader").show();
         window.setTimeout(function () {
             var formData = new FormData(document.getElementById("sendEmail_groupform"));
             //alert(formData);
@@ -265,8 +266,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
                         processData: false,
                         async: false,
                         success: function (response) {
-                            // alert('Message sent successfully.');
-                            // location.reload();
+                            alert('Message sent successfully.');
+                            location.reload();
                         }
                     });
                 }

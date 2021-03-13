@@ -199,6 +199,5 @@ class WebLink extends Element
 		} else {
             return '<a  ' . $this->getAttributeString() . '>' . $this->content . $this->getEmbeddedElements() . '</a>';
 		}
-        
     }
 }

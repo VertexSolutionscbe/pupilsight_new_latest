@@ -21,7 +21,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
     //   die();
     $sms = $container->get(SMS::class);
 
-    
     $msg = $_POST['msgval'];
     $type = $_POST['msgtype'];
 
