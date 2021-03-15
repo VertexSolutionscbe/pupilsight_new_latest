@@ -25,8 +25,8 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain().'/pupilsight_new';
-$baseurl = getDomain();
+$baseurl = getDomain().'/pupilsight_new';
+//$baseurl = getDomain();
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
 $hero_image = $baseurl . "/cms/images/welcome.png";
@@ -508,13 +508,36 @@ if (isset($data['logo_image'])) {
             <?php
             }?>
 
-            <div class="row mt-5">
+            <!-- <div class="row mt-5">
                 <div class="col-lg-12 d-flex justify-content-center">
                 <span class="carouselTitle"><?php echo $data['total_student']; ?><span>  <span class="ml-2 carouselTitle"><?php echo $data['total_course']; ?><span>
                  <h3> <span style="margin-left:10px">Students</span><span style="margin-left:40px">Courses</span> </h3>
                 
                 </div>    
+            </div> -->
+
+
+            <div class="row mt-5">
+                <div class="col-lg-12 d-flex justify-content-center">
+                <?php if($data['total_student']) {?>
+               
+                        <div>
+                            <span class="carouselTitle"><?php echo $data['total_student']; ?><span>
+                             <h3> <span>Students</span></h3>
+                    
+                        </div>
+                <?php } ?>   
+
+                <?php if($data['total_course']) {?>      
+                     <div <?php if($data['total_student']) {?> class="ml-3" <?php } ?>>
+                          <span class="carouselTitle"><?php echo $data['total_course']; ?><span>
+                          <h3> <span>Courses</span></h3>
+                    </div>
+                <?php } ?>
+                </div>
             </div>
+
+
 
             <?php
             if ($data["announcement_status"] == 1) {
@@ -719,7 +742,7 @@ if (isset($data['logo_image'])) {
                         <!-- </div> -->
                     </div>
 
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-6 col-sm-12">
                         <!-- <div class='font20' style="margin:10px"> -->
                         <div class='bannerDes' style="margin:20px">     
                              
@@ -780,7 +803,7 @@ if (isset($data['logo_image'])) {
 
                         </div>
                     </div>
-
+<!-- 
                     <div class="col-md-2 col-sm-12">
 
                         <div id="form" class="card">
@@ -810,9 +833,45 @@ if (isset($data['logo_image'])) {
                                 </form>
                             </div>
                         </div>
+                    </div> -->
+
+
+                </div>
+
+
+                <div id="form" class="card m-3">
+                    <div class="card-body">
+                        <form id="contactForm" class="wpcf7-form">
+                            <div class="row">
+                                <div class="col-lg-6 col-mg-6">
+                                    <label class="form-label">Name *</label>
+                                    <input class="form-control chkempty" id="con_name" name="name" required>
+                                
+                                    <label class="form-label">Subject *</label>
+                                    <input class="form-control chkempty" id="con_subject" name="subject" required>
+                                </div>
+                                <div class="col-lg-6 col-mg-6">
+                                    <label class="form-label">Email *</label>
+                                    <input class="form-control chkempty" id="con_email" name="email" required>
+                                    <label class="form-label">Message *</label>
+                                    <textarea class="form-control chkempty" id="con_message" name="message" rows="5" required></textarea>
+                                
+                                    
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                    <div class="col-lg-12 col-mg-12">
+                                      <div class="text-center mt-2">
+  
+                                        <button type="submit" class="btn btn-primary btn-border" id="submitContact">Send Your Message</button>
+
+                                      </div>
+                                    </div>
+
+                            </div>
+                        </form>
                     </div>
-
-
                 </div>
             <?php
             }
@@ -948,6 +1007,7 @@ if (isset($data['logo_image'])) {
 
         <form action="<?php echo $baseurl;?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
         <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
+        
             <div class="card-body">
                 <div class="closeX">
                     <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
@@ -1089,6 +1149,10 @@ if (isset($data['logo_image'])) {
         border-radius: 4px;
         background: none;
         } */
+
+        .btn-border{
+            border-radius:30px;
+        }
         #topBtn {
             display: none;
             position: fixed;
