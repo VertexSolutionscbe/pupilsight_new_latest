@@ -2508,6 +2508,14 @@
 
         //only for number invoice
         var percentageFlag = false;
+        var feeItemLength = $('.selFeeItem').length;
+        var chkfeeItemLength = $('.selFeeItem:checked').length;
+        if (feeItemLength > chkfeeItemLength) {
+            $("input[name='invoice_status'").val("Partial Paid");
+        } else {
+            $("input[name='invoice_status'").val("Fully Paid");
+        }
+
         $.each($(".selFeeItem:checked"), function () {
 
             var flag = false;
@@ -9198,7 +9206,7 @@ $(document).on('click', '#exportExcel', function () {
 
 $(document).on('change', '#pupilsightProgramIDSchool', function () {
     var id = $(this).val();
-    var aid = $("#pupilsightSchoolYearID").val();
+    var aid = $("#pupilsightSchoolYearIDSchool").val();
     var type = 'getClassData';
     $.ajax({
         url: 'ajax_data.php',
@@ -9216,7 +9224,7 @@ $(document).on('change', '#pupilsightProgramIDSchool', function () {
 
 $(document).on('change', '#pupilsightYearGroupIDSchool', function () {
     var id = $(this).val();
-    var aid = $("#pupilsightSchoolYearID").val();
+    var aid = $("#pupilsightSchoolYearIDSchool").val();
     var pid = $('#pupilsightProgramIDSchool').val();
     var type = 'getSectionData';
     $.ajax({

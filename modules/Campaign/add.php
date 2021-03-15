@@ -326,6 +326,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
     });
 
     $(document).on('change', '#getMultiClassByProgCamp', function() {
+        var aid = $("#academic_id").val();
         var id = $(this).val();
         var type = 'getClassforCampaign';
         $('#showMultiClassByProg').selectize()[0].selectize.destroy();
@@ -335,7 +336,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
             type: 'post',
             data: {
                 val: id,
-                type: type
+                type: type,
+                aid: aid
             },
             async: true,
             success: function(response) {
@@ -345,7 +347,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/add.php') == fals
                 $('#showMultiClassByProg').selectize({
                     plugins: ['remove_button'],
                 });
-
             }
         });
     });

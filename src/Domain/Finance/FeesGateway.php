@@ -1676,8 +1676,11 @@ print_r($rs);
                 //     $query->where('fn_fee_invoice_student_assign.invoice_status = "'.$input['invoice_status'].'" ');
                 // } 
                 // echo $query;
-                $query->where('fn_fee_invoice_student_assign.fn_fee_structure_id = "'.$input['fn_fee_invoice_id'].'" ')
-                ->where('fn_fee_invoice_student_assign.invoice_status = "Not Paid" ')
+                if(!empty($input['fn_fee_invoice_id'])){
+                    $query->where('fn_fee_invoice.title = "'.$input['fn_fee_invoice_id'].'" ');
+                }
+                // $query->where('fn_fee_invoice_student_assign.fn_fee_structure_id = "'.$input['fn_fee_invoice_id'].'" ')
+                $query->where('fn_fee_invoice_student_assign.invoice_status = "Not Paid" ')
                 ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
                 //->where('fn_fee_invoice_student_assign.status = 1 ')
                 ->groupby(['fn_fee_invoice_student_assign.id'])
@@ -1768,15 +1771,19 @@ print_r($rs);
                             if(!empty($newdata2->data[0]['tot_discount'])){
                                 $amt = $newdata1->data[0]['tot_amount'] - $newdata2->data[0]['tot_discount'];
                                 $data[$k]['inv_amount'] = $amt;
+                                $data[$k]['tot_discount'] = $newdata2->data[0]['tot_discount'];
                             } else {
                                 $data[$k]['inv_amount'] = $newdata1->data[0]['tot_amount'];
+                                $data[$k]['tot_discount'] = '';
                             }
                         } else {
                             $data[$k]['inv_amount'] = '';
+                            $data[$k]['tot_discount'] = '';
                         }
                         
                     } else {
                         $data[$k]['inv_amount'] = '';
+                        $data[$k]['tot_discount'] = '';
                     }
                     
                 }

@@ -394,7 +394,7 @@ class HelperGateway extends QueryableGateway
         $sections2 = array();
         $sections1 = array('' => 'Select Invoice');
         foreach ($sectionsdata as $ct) {
-            $sections2[$ct['fn_fee_structure_id']] = $ct['title'];
+            $sections2[$ct['title']] = $ct['title'];
         }
         $invoices = $sections1 + $sections2;
         return $invoices;
