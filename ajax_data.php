@@ -463,7 +463,7 @@ if ($type == 'invoiceFeeItem') {
         $amtpaid = 0;
         $amtpending = 0;
         $paystatus = '';
-        $sql_dis = "SELECT discount FROM fn_fee_item_level_discount WHERE pupilsightPersonID = " . $sid . "  AND item_id='" . $fI['itemid'] . "' ";
+        $sql_dis = "SELECT SUM(discount) AS discount FROM fn_fee_item_level_discount WHERE pupilsightPersonID = " . $sid . "  AND item_id='" . $fI['itemid'] . "' ";
         $result_dis = $connection2->query($sql_dis);
         $special_dis = $result_dis->fetch();
         if (!empty($fI['transport_schedule_id'])) {
@@ -2485,7 +2485,7 @@ if ($type == 'getSectionByClassProgForMapping') {
         $sqlId = '0';
     }
 
-    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE  pupilsightSchoolYearID = "' . $aid . '" AND pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
+    echo $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE  pupilsightSchoolYearID = "' . $aid . '" AND pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
@@ -3209,10 +3209,11 @@ if ($type == 'getAjaxCampSeats') {
 }
 
 if ($type == 'getClassforCampaign') {
+    $pupilsightSchoolYearID = $_POST['aid'];
 
     if (!empty($_POST['val'])) {
         $pid = implode(',', $val);
-        $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
+        $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
         $result = $connection2->query($sql);
         $classes = $result->fetchAll();
         // echo '<pre>';
@@ -3630,7 +3631,7 @@ if ($type == 'getInvoice') {
     $data = '<option value="">Select Invoice</option>';
     if (!empty($sections)) {
         foreach ($sections as $k => $cl) {
-            $data .= '<option value="' . $cl['fn_fee_structure_id'] . '">' . $cl['title'] . '</option>';
+            $data .= '<option value="' . $cl['title'] . '">' . $cl['title'] . '</option>';
         }
     }
     echo $data;
@@ -3648,20 +3649,20 @@ if ($type == 'bulkItemDiscount') {
             $items = $_POST['items'];
             $count = sizeof($items);
             for ($i = 0; $i < $count; $i++) {
-                $sqlpt = "SELECT id FROM fn_fee_item_level_discount WHERE pupilsightPersonID = " . $stid . "  AND item_id=" . $items[$i] . " ";
-                $resultpt = $connection2->query($sqlpt);
-                $valuept = $resultpt->fetch();
-                if (empty($valuept['id'])) {
+                // $sqlpt = "SELECT id FROM fn_fee_item_level_discount WHERE pupilsightPersonID = " . $stid . "  AND item_id=" . $items[$i] . " ";
+                // $resultpt = $connection2->query($sqlpt);
+                // $valuept = $resultpt->fetch();
+                // if (empty($valuept['id'])) {
                     $datau = array('pupilsightPersonID' => $stid, 'fn_fee_invoice_id' => $invId, 'item_id' => $items[$i], 'discount' => $discountVal[$i]);
                     $sql = 'INSERT INTO fn_fee_item_level_discount SET pupilsightPersonID=:pupilsightPersonID, fn_fee_invoice_id=:fn_fee_invoice_id, item_id=:item_id, discount=:discount';
                     $result = $connection2->prepare($sql);
                     $result->execute($datau);
-                } else {
-                    $datau = array('pupilsightPersonID' => $stid, 'fn_fee_invoice_id' => $invId, 'discount' => $discountVal[$i], 'item_id' => $items[$i]);
-                    $sqlu = 'UPDATE fn_fee_item_level_discount SET pupilsightPersonID=:pupilsightPersonID, fn_fee_invoice_id=:fn_fee_invoice_id, discount=:discount WHERE item_id=:item_id';
-                    $resultu = $connection2->prepare($sqlu);
-                    $resultu->execute($datau);
-                }
+                // } else {
+                //     $datau = array('pupilsightPersonID' => $stid, 'fn_fee_invoice_id' => $invId, 'discount' => $discountVal[$i], 'item_id' => $items[$i]);
+                //     $sqlu = 'UPDATE fn_fee_item_level_discount SET pupilsightPersonID=:pupilsightPersonID, fn_fee_invoice_id=:fn_fee_invoice_id, discount=:discount WHERE item_id=:item_id AND pupilsightPersonID=:pupilsightPersonID';
+                //     $resultu = $connection2->prepare($sqlu);
+                //     $resultu->execute($datau);
+                // }
             }
         }
     }

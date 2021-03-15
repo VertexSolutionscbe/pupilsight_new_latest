@@ -208,6 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_discount_m
         }
         return $invoices['paid'];
     });
+    $table->addColumn('tot_discount', __('Discount'));
     $table->addColumn('account_head', __('Ac Head'));
     $table->addColumn('due_date', __('Due Date'))
     ->format(function ($invoices) {

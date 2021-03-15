@@ -93,10 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     $FeesGateway = $container->get(FeesGateway::class);
 
     // QUERY
-    $criteria = $FeesGateway->newQueryCriteria()
-        ->pageSize(5)
-        ->sortBy(['id'])
-        ->fromPOST();
+   
     // echo '<pre>';
     // print_r($_POST);
     // echo '</pre>';
@@ -156,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
-        ->pageSize(5)
+        ->pageSize(10000)
         ->sortBy(['id'])
         ->fromPOST();
 
