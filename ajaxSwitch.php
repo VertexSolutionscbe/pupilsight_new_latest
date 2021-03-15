@@ -210,8 +210,6 @@ if (isset($_POST['type'])) {
             $receiptTemplate = $recTempData['path'];
 
 
-
-
             $fn_fees_receipt_series_id = $_POST['fn_fees_receipt_series_id'];
 
 

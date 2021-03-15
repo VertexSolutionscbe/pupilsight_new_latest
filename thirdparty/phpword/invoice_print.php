@@ -7,7 +7,6 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
 require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
-
 try {
 
     $id = $_GET['invid'];
