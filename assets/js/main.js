@@ -3644,7 +3644,7 @@
                         if (response == 0) {
                             $("#clickStudentsection").click();
                         } else {
-                            alert('You Have to Select  Students with Same class.');
+                            alert('You Have to Select Students with Same class.');
                         }
 
                     }
