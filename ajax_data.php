@@ -1903,9 +1903,10 @@ if ($type == 'getsections_assignedtoStaff') {
 if ($type == 'addstudentid_toassign_section') {
     $session->forget(['student_ids']);
     $session->set('student_ids', $val);
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $sqlp = 'SELECT  pupilsightStudentEnrolment.pupilsightProgramID,pupilsightStudentEnrolment.pupilsightYearGroupID  FROM pupilsightPerson 
     JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) 
-    WHERE pupilsightPerson.pupilsightPersonID IN (' . $val . ') 
+    WHERE pupilsightStudentEnrolment.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightPerson.pupilsightPersonID IN (' . $val . ') 
         ';
     $resultp = $connection2->query($sqlp);
     $rowdata = $resultp->fetchAll();
@@ -1915,7 +1916,7 @@ if ($type == 'addstudentid_toassign_section') {
         $result_arr += $rdata;
         $result_arr1 = array_diff($result_arr, $rdata);
     }
-    echo   count($result_arr1);
+    echo count($result_arr1);
 }
 
 

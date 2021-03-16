@@ -86,7 +86,7 @@ $program= $program1 + $program2;
 
 $sqls = 'SELECT a.*, c.name FROM pupilsightProgramClassSectionMapping AS a ';       
 //$sqls .= "left join assignstaff_toclasssection as b on a.pupilsightMappingID= b.pupilsightMappingID ";     
-$sqls .= "LEFT JOIN pupilsightRollGroup AS c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID where a.pupilsightProgramID='".$pupilsightProgramID."'AND  a.pupilsightYearGroupID = '".$pupilsightYearGroupID."' ";
+$sqls .= "LEFT JOIN pupilsightRollGroup AS c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID where a.pupilsightSchoolYearID = ".$pupilsightSchoolYearID." AND a.pupilsightProgramID='".$pupilsightProgramID."'AND  a.pupilsightYearGroupID = '".$pupilsightYearGroupID."' ";
 
  $sqls .=" GROUP BY a.pupilsightRollGroupID";
 //echo $sqls;
