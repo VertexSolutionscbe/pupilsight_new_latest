@@ -729,20 +729,8 @@ if (isset($data['logo_image'])) {
                         Contact Us
                     </div>
 
-                    <div class="col-md-6 col-sm-12">
-                        <!-- <div id="map" class='card'> -->
-
-                        <div id="mapshow">
-                            <?php if ($data['contact_map'])
-                                echo html_entity_decode($data['contact_map']) ?>
-                        </div>
-                        <!--
-                            <iframe width="100%" height="407" border='0' id="gmap_canvas" src="https://maps.google.com/maps?q=12th%20A%20Main%20Rd%2C%20HAL%202nd%20Stage%2C%20Indiranagar%2C%20Bengaluru%2C%20Karnataka%20560008&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-                            -->
-                        <!-- </div> -->
-                    </div>
-
-                    <div class="col-md-6 col-sm-12">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4 col-sm-12">
                         <!-- <div class='font20' style="margin:10px"> -->
                         <div class='bannerDes' style="margin:20px">
 
@@ -806,8 +794,8 @@ if (isset($data['logo_image'])) {
 
                         </div>
                     </div>
-                    <!-- 
-                    <div class="col-md-2 col-sm-12">
+
+                    <div class="col-md-6 col-sm-12">
 
                         <div id="form" class="card">
                             <div class="card-body">
@@ -836,13 +824,25 @@ if (isset($data['logo_image'])) {
                                 </form>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
 
+                    <div class="col-md-1"></div>
 
                 </div>
 
+                <div class="row mt-2">
+                    <div class="col-md-3 col-sm-12"></div>
+                    <div class="col-md-6 col-sm-12">
+                        <div id="mapshow">
+                            <?php if ($data['contact_map'])
+                                echo html_entity_decode($data['contact_map']) ?>
+                        </div>
+                        <div class="col-md-3 col-sm-12"></div>
+                    </div>
+                </div>
 
-                <div id="form" class="card m-3">
+
+                <!-- <div id="form" class="card m-3">
                     <div class="card-body">
                         <form id="contactForm" class="wpcf7-form">
                             <div class="row">
@@ -875,7 +875,7 @@ if (isset($data['logo_image'])) {
                             </div>
                         </form>
                     </div>
-                </div>
+                </div> -->
             <?php
             }
             ?>
@@ -1021,12 +1021,18 @@ if (isset($data['logo_image'])) {
                 <h2 class="mb-3 text-center">Login to your account</h2>
                 <div class="mb-3">
                     <label class="form-label">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" required="">
+                    <input type="text" id="username" value="<?php if (isset($_COOKIE["username"])) {
+                                                                echo $_COOKIE["username"];
+                                                            } ?>" name="username" class="form-control" required="">
                     <div class="invalid-feedback">Invalid User Name or Email Addresss</div>
                 </div>
                 <div class="mb-2">
                     <label class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" autocomplete="password" required="">
+
+
+                    <input type="password" value="<?php if (isset($_COOKIE["password"])) {
+                                                        echo $_COOKIE["password"];
+                                                    } ?>" id="password" name="password" class="form-control" required="">
                     <div class="invalid-feedback">Invalid Password</div>
                     <select id="pupilsightSchoolYearID" name="pupilsightSchoolYearID" class="d-none fullWidth">
                         <option value="023">2017-18</option>
@@ -1038,8 +1044,12 @@ if (isset($data['logo_image'])) {
 
                 <div class="form-footer mb-3">
                     <div class="row">
-                        <p class="login-remember"><label><input name="rememberme" type="checkbox" id="rememberme" value="forever" /> Remember
-                                Me</label></p>
+                        <p class="login-remember">
+                            <label><input name="rememberme" type="checkbox" <?php if (isset($_COOKIE["username"])) {
+                                                                                echo "checked";
+                                                                            } ?> /> Remember
+                                Me</label>
+                        </p>
                         <div class='col-12'><button type="submit" class="btn btn-primary btn-block btn-square">Sign in</button></div>
                         <!--
                         <div class='col-6'><button type="button" onclick="homePanel();" class="btn btn-secondary btn-block btn-square">Back</button></div>
@@ -1234,8 +1244,8 @@ if (isset($data['logo_image'])) {
         });
 
         function loginPanel() {
-            $("#username").val("");
-            $("#password").val("");
+            // $("#username").val("");
+            // $("#password").val("");
             $("#homePanel, #footPanel, #applicationList, #applicationStatus").hide(400);
             $("#loginPanel").show(400);
         }
