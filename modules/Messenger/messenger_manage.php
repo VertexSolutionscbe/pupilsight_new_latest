@@ -42,20 +42,39 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 		print __("Search");
 		print "</h2>";
 
-		$search = isset($_GET['search']) ? $_GET['search'] : '';
+		$search = isset($_POST['search']) ? $_POST['search'] : '';
+		$categorysearch = isset($_POST['category']) ? $_POST['category'] : '';
+		$start_date = isset($_POST['start_date']) ? $_POST['start_date'] : '';
+		$end_date = isset($_POST['end_date']) ? $_POST['end_date'] : '';
 
-		$form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
+		$form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/messenger_manage.php', 'POST');
 		$form->setClass('noIntBorder fullWidth');
 
 		$form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/messenger_manage.php');
 
+		$category = array('' => 'Select Category', 'Email' => 'Email', 'Sms' => 'Sms', 'Wall' => 'Wall');
 		$row = $form->addRow();
-		$row->addLabel('search', __('Search In'))->description(__('Subject, body.'));
-		$row->addTextField('search')->setValue($search);
 
-		$row = $form->addRow()
-			->addClass('right_align');
-		$row->addSearchSubmit($pupilsight->session, __('Clear Search'));
+		$col = $row->addColumn()->setClass('newdes');
+		$col->addLabel('start_date', __('From Date'))->addClass('dte');
+		$col->addDate('start_date')->setValue($start_date)->addClass('txtfield');
+		
+		$col = $row->addColumn()->setClass('newdes');
+		$col->addLabel('end_date', __('To Date'))->addClass('dte');
+		$col->addDate('end_date')->setValue($end_date)->addClass('txtfield');
+
+		$col = $row->addColumn()->setClass('newdes');
+		$col->addLabel('category', __('Category'));
+		$col->addSelect('category')->fromArray($category)->selected($categorysearch);
+
+		//$row = $form->addRow();
+		$col = $row->addColumn()->setClass('newdes');
+		$col->addLabel('search', __('Search In (Subject, body.)'));
+		$col->addTextField('search')->setValue($search);
+
+		$col = $row->addColumn()->setClass('newdes');
+		$col->addLabel('', __(''));
+		$col->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
 		echo $form->getOutput();
 
@@ -73,22 +92,86 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 		}
 
 		try {
+			$catseData = '';
+			$catseSql = '';
+			if(!empty($start_date)){
+				$sdate = str_replace('/', '-', $start_date);
+				$start_date = date('Y-m-d 00:00:01', strtotime($sdate));
+			}
+
+			if(!empty($end_date)){
+				$edate = str_replace('/', '-', $end_date);
+				$end_date = date('Y-m-d 23:59:59', strtotime($edate));
+			}
+			
+			if(!empty($categorysearch)){
+				if($categorysearch == 'Email'){
+					$catseData = '"email" => "Y"';
+					$catseSql = 'pupilsightMessenger.email=:email';
+				} else if($categorysearch == 'Sms'){
+					$catseData = '[sms] => Y';
+					$catseSql = 'pupilsightMessenger.sms=:sms';
+				} if($categorysearch == 'Wall'){
+					$catseData = '"messageWall" => "Y"';
+					$catseSql = 'pupilsightMessenger.messageWall=:messageWall';
+				} 
+			}
 			if ($highestAction == "Manage Messages_all") {
-				if ($search == "") {
+				if ($search == "" && $category == "") {
 					$data = array();
-					$sql = "SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) ORDER BY timestamp DESC";
+					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) ORDER BY timestamp DESC";
 				} else {
-					$data = array("search1" => "%$search%", "search2" => "%$search%");
-					$sql = "SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC";
+					if(!empty($catseData)){
+						if($categorysearch == 'Email'){
+							$data = array("search1" => "%$search%", "search2" => "%$search%", "email" => 'Y');
+						} else if($categorysearch == 'Sms'){
+							$data = array("search1" => "%$search%", "search2" => "%$search%", "sms" => 'Y');
+						} if($categorysearch == 'Wall'){
+							$data = array("search1" => "%$search%", "search2" => "%$search%", "messageWall" => 'Y');
+						} 
+						
+					} else {
+						$data = array("search1" => "%$search%", "search2" => "%$search%");
+					}
+					//print_r($data);
+					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2)";
+					if(!empty($catseSql)){
+						$sql .= 'AND '.$catseSql.' ';
+					}
+					//$sql .= "ORDER BY timestamp DESC";
+					//echo $sql;
 				}
 			} else {
-				if ($search == "") {
+				if ($search == "" && $category == "") {
 					$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"]);
-					$sql = "SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID ORDER BY timestamp DESC";
+					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID ORDER BY timestamp DESC";
 				} else {
-					$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "search1" => "%$search%", "search2" => "%$search%");
-					$sql = "SELECT pupilsightMessenger.*, title, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID AND (subject LIKE :search1 OR body LIKE :search2) ORDER BY timestamp DESC";
+					if(!empty($catseData)){
+						if($categorysearch == 'Email'){
+							$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "search1" => "%$search%", "search2" => "%$search%", "email" => 'Y');
+						} else if($categorysearch == 'Sms'){
+							$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "search1" => "%$search%", "search2" => "%$search%", "sms" => 'Y');
+						} if($categorysearch == 'Wall'){
+							$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "search1" => "%$search%", "search2" => "%$search%", "messageWall" => 'Y');
+						} 
+						
+					} else {
+						$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "search1" => "%$search%", "search2" => "%$search%");
+					}
+					
+					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID AND (subject LIKE :search1 OR body LIKE :search2)";
+					if(!empty($catseSql)){
+						$sql .= 'AND '.$catseSql.' ';
+					}
+					//$sql .= "ORDER BY timestamp DESC";
 				}
+			}
+			if(!empty($start_date) && !empty($end_date)){
+				$sql .= 'AND pupilsightMessenger.timestamp BETWEEN "'.$start_date.'" AND "'.$end_date.'" ';
+			} else if(!empty($start_date) && empty($end_date)){
+				$sql .= 'AND pupilsightMessenger.timestamp >= "'.$start_date.'"  ';
+			} else if(empty($start_date) && !empty($end_date)){
+				$sql .= 'AND pupilsightMessenger.timestamp <=  "'.$end_date.'" ';
 			}
 			$result = $connection2->prepare($sql);
 			$result->execute($data);
@@ -96,7 +179,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 			print "<div class='alert alert-danger'>" . $e->getMessage() . "</div>";
 		}
 
-		$sqlPage = $sql . " LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page - 1) * $_SESSION[$guid]["pagination"]);
+		
+		
+		$sqlPage = $sql . " ORDER BY timestamp DESC LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page - 1) * $_SESSION[$guid]["pagination"]);
 
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php") == TRUE or isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php") == TRUE) {
 			print "<div class='linkTop'>";
@@ -135,20 +220,23 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 			print "<span style='font-style: italic; font-size: 85%'>" . __('Dates Published') . "</span>";
 			print "</th>";
 			print "<th>";
-			print __("Author");
+			print __("Sent By");
 			print "</th>";
 			print "<th>";
 			print __("Recipients");
 			print "</th>";
+			// print "<th>";
+			// print __("Count");
+			// print "</th>";
 			print "<th>";
-			print __("Email");
+			print __("Category");
 			print "</th>";
-			print "<th>";
-			print __("Wall");
-			print "</th>";
-			print "<th>";
-			print __("SMS");
-			print "</th>";
+			// print "<th>";
+			// print __("Wall");
+			// print "</th>";
+			// print "<th>";
+			// print __("SMS");
+			// print "</th>";
 			/*print "<th style='width: 120px'>" ;
 						print __("Actions") ;
 					print "</th>" ;*/
@@ -202,7 +290,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				}
 				print "</td>";
 				print "<td>";
-				print formatName($row["title"], $row["preferredName"], $row["surname"], $row["category"]);
+				print $row["officialName"];
 				print "</td>";
 				print "<td>";
 				try {
@@ -355,7 +443,35 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				}
 				print $targets;
 				print "</td>";
+
+				// print "<td>";
+				// try {
+				// 	$sql = "SELECT COUNT(pupilsightMessengerReceiptID) AS kount FROM pupilsightMessengerReceipt WHERE pupilsightMessengerID= ".$row["pupilsightMessengerID"]." ";
+				// 	$result = $connection2->query($sql);
+    			// 	$recData = $result->fetch();
+				// 	$recKount = $recData['kount'];
+					
+				// } catch (PDOException $e) {
+				// 	print "<div class='alert alert-danger'>" . $e->getMessage() . "</div>";
+				// }
+				// // print $row["pupilsightMessengerID"].'--'.$recKount;
+				// print $recKount;
+				// print "</td>";
+
+
 				print "<td>";
+				if ($row["email"] == "Y") {
+					print "Email";
+				} else if ($row["sms"] == "Y") {
+					print "Sms";
+				} if ($row["messageWall"] == "Y") {
+					print "Wall";
+				} 
+				print "</td>";
+
+				
+
+				/* closed by Bikash
 				if ($row["email"] == "Y") {
 					print "<i class='mdi mdi-check mdi-24px' title='" . __('Sent by email.') . "'></i>
 								 ";
@@ -381,6 +497,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 								<i class='mdi mdi-close mdi-24px' title='" . __('Not sent by sms.') . "'></i>";
 				}
 				print "</td>";
+				close by bikash
+				*/ 
+
 				/*print "<td>" ;
                     if ($row["sms"]=="Y" || $row["email"]=="Y") {
                         //print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
