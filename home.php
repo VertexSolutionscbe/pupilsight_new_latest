@@ -25,8 +25,8 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain().'/pupilsight_new';
-$baseurl = getDomain();
+$baseurl = getDomain().'/pupilsight_new';
+//$baseurl = getDomain();
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
 $hero_image = $baseurl . "/cms/images/welcome.png";
@@ -798,25 +798,31 @@ if (isset($data['logo_image'])) {
                             <div class="card-body">
                                 <form id="contactForm" class="wpcf7-form">
                                     <div class="mb-2">
-                                        <label class="form-label">Name *</label>
-                                        <input class="form-control chkempty" id="con_name" name="name" required>
-                                    </div>
-                                    <div class="mb-2">
-                                        <label class="form-label">Subject *</label>
-                                        <input class="form-control chkempty" id="con_subject" name="subject" required>
-                                    </div>
-                                    <div class="mb-2">
-                                        <label class="form-label">Email *</label>
-                                        <input class="form-control chkempty" id="con_email" name="email" required>
+                                        <!-- <label class="form-label">Name *</label> -->
+                                        <input placeholder="Name *" class="form-control chkempty" id="con_name" name="name" required>
                                     </div>
 
                                     <div class="mb-2">
-                                        <label class="form-label">Message *</label>
-                                        <textarea class="form-control chkempty" id="con_message" name="message" rows="5" required></textarea>
+                                        <!-- <label class="form-label">Email *</label> -->
+                                        <input placeholder="Email *" class="form-control chkempty" id="con_email" name="email" required>
                                     </div>
 
-                                    <div class="form-footer">
-                                        <button type="submit" class="btn btn-primary btn-block" id="submitContact">Send Your Message</button>
+
+                                    <div class="mb-2">
+                                        <!-- <label class="form-label">Subject *</label> -->
+                                        <input placeholder="Subject *" class="form-control chkempty" id="con_subject" name="subject" required>
+                                    </div>
+                                    
+
+                                    <div class="mb-2">
+                                        <!-- <label class="form-label">Message *</label> -->
+                                        <textarea placeholder="Message *" class="form-control chkempty" id="con_message" name="message" rows="5" required></textarea>
+                                    </div>
+
+                                    <div class="form-footer mt-2">
+                                        <!-- <button type="submit" class="btn btn-primary btn-block" id="submitContact">Send Your Message</button> -->
+                                        
+                                        <button type="submit" class="btn btn-primary" id="submitContact">Send Your Message</button>
                                     </div>
                                 </form>
                             </div>
@@ -827,52 +833,20 @@ if (isset($data['logo_image'])) {
 
                 </div>
 
-                <div class="row mt-2">
-                    <div class="col-md-3 col-sm-12"></div>            
-                    <div class="col-md-6 col-sm-12">
-                        <div id="mapshow">
+                <!-- <div class="row mt-2">
+                    <div class="col-md-12 col-sm-12 d-flex justify-content-center">
+                        <div id="mapshow" >
+                            <?php //if($data['contact_map'])
+                            //echo html_entity_decode($data['contact_map']) ?>
+                        </div>
+                    </div>
+                </div> -->
+
+                        <div class="google-maps m-5" >
                             <?php if($data['contact_map'])
                             echo html_entity_decode($data['contact_map']) ?>
                         </div>
-                        <div class="col-md-3 col-sm-12"></div>
-                    </div>
-                </div>
-
-
-                <!-- <div id="form" class="card m-3">
-                    <div class="card-body">
-                        <form id="contactForm" class="wpcf7-form">
-                            <div class="row">
-                                <div class="col-lg-6 col-mg-6">
-                                    <label class="form-label">Name *</label>
-                                    <input class="form-control chkempty" id="con_name" name="name" required>
-                                
-                                    <label class="form-label">Subject *</label>
-                                    <input class="form-control chkempty" id="con_subject" name="subject" required>
-                                </div>
-                                <div class="col-lg-6 col-mg-6">
-                                    <label class="form-label">Email *</label>
-                                    <input class="form-control chkempty" id="con_email" name="email" required>
-                                    <label class="form-label">Message *</label>
-                                    <textarea class="form-control chkempty" id="con_message" name="message" rows="5" required></textarea>
-                                
                                     
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                    <div class="col-lg-12 col-mg-12">
-                                      <div class="text-center mt-2">
-  
-                                        <button type="submit" class="btn btn-primary btn-border" id="submitContact">Send Your Message</button>
-
-                                      </div>
-                                    </div>
-
-                            </div>
-                        </form>
-                    </div>
-                </div> -->
             <?php
             }
             ?>
@@ -1058,12 +1032,44 @@ if (isset($data['logo_image'])) {
                     --->
                     <div class="float-right">
 
-                        <button class="btn btn-link" type="button">Lost your password?</button>
+                        <button class="btn btn-link" type="button" onclick="forgetPanel();">Lost your password?</button>
 
                     </div>
                     <div class="float-none">&nbsp;</div>
                 </div>
 
+            </div>
+        </form>
+    </div>
+
+    <div id="forgetPanel" class="container-tight py-6 hide">
+
+        
+        <!-- <form action="<?php echo $baseurl;?>/forgetProcess.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
+        <form action="" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+        
+            <div class="card-body">
+                <div class="closeX">
+                    <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
+                </div>
+                <div class="text-center my-3">
+                    <img src="<?= $logo; ?>" height="36" alt="">
+                </div>
+                <h2 class="mb-3 text-center">Reset Password</h2>
+                <h4>(Please enter your username or email address. You will receive a link to create a new password via email)</h4>
+                <div class="mb-3">
+                    <label class="form-label">Username or Email</label>
+                    <input type="text" id="email" name="email" class="form-control" required="">
+                    <div class="invalid-feedback">Invalid User Email Addresss</div>
+                </div>
+               
+                <div class="form-footer mb-3">
+                    <div class="row">
+                        <div class='col-12'><button type="submit" class="btn btn-primary btn-block btn-square">Reset Password</button></div>
+                    </div>
+                </div>
+
+               
             </div>
         </form>
     </div>
@@ -1137,6 +1143,23 @@ if (isset($data['logo_image'])) {
     </div>
 
     <style>
+
+
+        .google-maps {
+            position: relative;
+            padding-bottom: 1%; // This is the aspect ratio
+            height: 0;
+            overflow: hidden;
+        }
+        .google-maps iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 90% !important;
+            height: 100% !important;
+            margin-left:5%;
+        }
+
 
         
         /* #topBtn {
@@ -1224,7 +1247,7 @@ if (isset($data['logo_image'])) {
     <script>
         document.body.style.display = "block";
         $(document).ready(function() {
-            $("#loginPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+            $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
             try {
                 $('.gmap_canvas a').remove();
             } catch (ex) {
@@ -1235,8 +1258,15 @@ if (isset($data['logo_image'])) {
         function loginPanel() {
             // $("#username").val("");
             // $("#password").val("");
-            $("#homePanel, #footPanel, #applicationList, #applicationStatus").hide(400);
+            $("#homePanel,#forgetPanel, #footPanel, #applicationList, #applicationStatus").hide(400);
             $("#loginPanel").show(400);
+        }
+
+        function forgetPanel() {
+            // $("#username").val("");
+            // $("#password").val("");
+            $("#homePanel,#loginPanel, #footPanel, #applicationList, #applicationStatus").hide(400);
+            $("#forgetPanel").show(400);
         }
 
         function applicationList() {
@@ -1257,7 +1287,7 @@ if (isset($data['logo_image'])) {
         }
 
         function homePanel() {
-            $("#loginPanel, #applicationList, #applicationStatus").hide(400);
+            $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide(400);
             $("#homePanel, #contentPanel, #footPanel").show(400);
         }
     </script>
