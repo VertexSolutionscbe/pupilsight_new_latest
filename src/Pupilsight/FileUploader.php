@@ -167,7 +167,6 @@ class FileUploader
         if (!empty($filenameChange)) {
             $filename = $filenameChange.mb_strrchr($filename, '.');
         }
-
         return $this->upload($filename, $sourcePath);
     }
 

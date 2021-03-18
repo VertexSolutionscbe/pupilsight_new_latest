@@ -51,7 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
     );
 
-
     $tran_status =  array(
         '' => __('Select Transaction Status')
     );
