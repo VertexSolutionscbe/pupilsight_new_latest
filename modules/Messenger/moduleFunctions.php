@@ -2749,7 +2749,7 @@ try {
     $slno=1;
     $output = array();
             while ($row = $result->fetch()) {
-    //print_r($row);
+    
                 $output[$count]['pupilsightMessengerReceiptID'] = $row['pupilsightMessengerReceiptID'];
                 $output[$count]['pupilsightMessengerID'] = $row['pupilsightMessengerID'];
                 $output[$count]['pupilsightPersonID'] = $row['pupilsightPersonID'];

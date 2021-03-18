@@ -469,8 +469,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				} 
 				print "</td>";
 
-				
-
 				/* closed by Bikash
 				if ($row["email"] == "Y") {
 					print "<i class='mdi mdi-check mdi-24px' title='" . __('Sent by email.') . "'></i>
