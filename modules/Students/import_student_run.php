@@ -657,7 +657,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 </style>
 <script>
     $(document).ready(function() {
-        /*$('#validate_tbl').DataTable({
+        $('#validate_tbl').DataTable({
             "pageLength": 25,
             "lengthMenu": [
                 [10, 25, 50, 250, -1],
@@ -666,7 +666,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
             "sDom": '<"top"lfpi>rt<"bottom"ifp><"clear">'
         });
         $(".dataTables_length").find("select").css("width", "90px");
-        $(".dataTables_length").find("select").css("display", "inline-block");*/
+        $(".dataTables_length").find("select").css("display", "inline-block");
     });
 </script>
 <script>
