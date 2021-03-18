@@ -979,7 +979,7 @@ if (isset($data['logo_image'])) {
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
-        <form action="<?php echo $baseurl;?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+        <form action="<?php echo $baseurl;?>/login.php?" class="card card-md needs-validation" onsubmit="return validateLogin()" novalidate="" method="post" autocomplete="off">
         <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
         
             <div class="card-body">
@@ -1155,9 +1155,9 @@ if (isset($data['logo_image'])) {
             position: absolute;
             top: 0;
             left: 0;
-            width: 90% !important;
+            width: 100% !important;
             height: 100% !important;
-            margin-left:5%;
+            
         }
 
 
@@ -1220,6 +1220,19 @@ if (isset($data['logo_image'])) {
     function topFunction() {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
+    }
+
+    function validateLogin()
+    {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        if(username=='' || password=='')
+        {
+            alert('Please enter Username and Password');
+            return false;
+        }
+        else
+        return true;
     }
     </script>
 
