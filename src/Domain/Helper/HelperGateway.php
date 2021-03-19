@@ -137,9 +137,9 @@ class HelperGateway extends QueryableGateway
         return $sections;
     }
 
-    public function getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID, $pupilsightProgramID) {
+    public function getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID, $pupilsightProgramID, $pupilsightSchoolYearID) {
        
-        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" GROUP BY a.pupilsightRollGroupID ';       
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" GROUP BY a.pupilsightRollGroupID ';       
 
        
         $result = $connection2->query($sql);

@@ -182,8 +182,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_discount_m
     // $table->addHeaderAction('add', __('Add'))
     //     ->setURL('/modules/Finance/program_manage_add.php')
     //     ->displayLabel();
+
+    $sql = 'SELECT fn_fee_structure_id FROM fn_fee_invoice WHERE title = "'.$fn_fee_invoice_id.'" ';
+    $result = $connection2->query($sql);
+    $strdata = $result->fetch();
+    $strId = $strdata['fn_fee_structure_id'];
+
     echo "<hr />";
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a style='' id='bulkDiscount' class='btn btn-primary' data-hrf='fullscreen.php?q=/modules/Finance/apply_bulk_discount.php&id=".$fn_fee_invoice_id."'>Bulk Discount</a><a href=''   class='thickbox' id='apply_discount_popup' style='display:none'></a></div><div class='float-none'></div></div>";  
+    echo "<div style='height:50px;'><div class='float-right mb-2'><a style='' id='bulkDiscount' class='btn btn-primary' data-hrf='fullscreen.php?q=/modules/Finance/apply_bulk_discount.php&id=".$strId."'>Bulk Discount</a><a href=''   class='thickbox' id='apply_discount_popup' style='display:none'></a></div><div class='float-none'></div></div>";  
 
     
     

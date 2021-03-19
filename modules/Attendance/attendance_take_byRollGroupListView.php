@@ -164,8 +164,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             $pupilsightYearGroupID = isset($_GET['pupilsightYearGroupID'])?$_GET['pupilsightYearGroupID']:"";
        }
         if($_GET){             
+            $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
             $classes =  $HelperGateway->getClassByProgram_Attconfig($connection2, $pupilsightProgramID);
-            $sections =  $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
             
         } else {      
             $classes = array('');

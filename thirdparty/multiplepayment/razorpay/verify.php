@@ -2,7 +2,9 @@
 
 require('config.php');
 
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 require('razorpay/Razorpay.php');
 use Razorpay\Api\Api;
@@ -54,17 +56,20 @@ if ($success === true)
     try{
         $dtall = $_SESSION["paypost"];
         $newdt = json_decode($dtall['formdata']);
+        $stuID = $newdt[0]->stuid;
+        //  echo '<pre>';
+        // print_r($newdt);
+        // echo '</pre>';
+        //die();
+        $amountR = $_SESSION['razorpay_amount'] / 100;
 
-        $data = array('gateway' => 'RAZORPAY', 'pupilsightPersonID' => $dt["stuid"], 'transaction_ref_no' => $_POST['razorpay_payment_id'], 'order_id' => $_SESSION['razorpay_order_id'], 'amount' => $_SESSION['razorpay_amount'], 'status' => 'S');
+        $data = array('gateway' => 'RAZORPAY', 'pupilsightPersonID' => $stuID, 'transaction_ref_no' => $_POST['razorpay_payment_id'], 'order_id' => $_SESSION['razorpay_order_id'], 'amount' => $amountR, 'status' => 'S');
 
-		$sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+		$sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
 		$result = $connection2->prepare($sql);
 		$result->execute($data);
 
-        // echo '<pre>';
-        // print_r($newdt);
-        // echo '</pre>';
-        // die();
+       
        
 
         $section = "";
@@ -141,9 +146,14 @@ if ($success === true)
                 }
             }
 
+            $sqlrt = 'SELECT b.path FROM fn_fees_head AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.receipt_template = b.id WHERE a.id = ' . $dt->fn_fees_head_id . ' ';
+            $resultrt = $connection2->query($sqlrt);
+            $recTempData = $resultrt->fetch();
+            $receiptTemplate = $recTempData['path'];
+
             $class_section = $clss ."".$section;
             $dts_receipt = array(
-                "receipt_no" => $dt->payid,
+                "receipt_no" => $receipt_number,
                 "date" => date("d-M-Y"),
                 "student_name" => $dt->name,
                 "student_id" => $dt->stuid,
@@ -154,7 +164,8 @@ if ($success === true)
                 "fine_amount" => $dt->fine,
                 "other_amount" => "NA",
                 "pay_mode" => "Online",
-                "transactionId" => $transactionId
+                "transactionId" => $transactionId,
+                "receiptTemplate" => $receiptTemplate,
             );
 
             $invoice_id = $dt->fn_fees_invoice_id;
@@ -171,7 +182,7 @@ if ($success === true)
                     $valuech = $resultch->fetch();
                 }
                 if($valuech['display_fee_item'] == '2'){
-                   echo $sqcs = "select SUM(fi.total_amount) AS tamnt from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$dt->fn_fee_invoice_item_id.")";
+                   $sqcs = "select SUM(fi.total_amount) AS tamnt from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$dt->fn_fee_invoice_item_id.")";
                     $resultfi = $connection2->query($sqcs);
                     $valuefi = $resultfi->fetchAll();
                     if (!empty($valuefi)) {
@@ -187,7 +198,7 @@ if ($success === true)
                     }
 
                 } else {
-                    echo $sqcs = "select fi.total_amount, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$dt->fn_fee_invoice_item_id.")";
+                    $sqcs = "select fi.total_amount, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$dt->fn_fee_invoice_item_id.")";
                     $result = $conn->query($sqcs);
                     if ($result->num_rows > 0) {
                         $cnt = 1;
@@ -256,6 +267,12 @@ if ($success === true)
                 }
                 $tsq .= $tsq1.";";
             }
+
+
+            $dataiu = array('invoice_status' => 'Fully Paid',  'pupilsightPersonID' => $dt->stuid,  'invoice_no' => $dt->payid);
+            $sqliu = 'UPDATE fn_fee_invoice_student_assign SET invoice_status=:invoice_status WHERE pupilsightPersonID=:pupilsightPersonID AND invoice_no=:invoice_no';
+            $resultiu = $connection2->prepare($sqliu);
+            $resultiu->execute($dataiu);
                     
                 
             if ($conn->query($sq) === TRUE) {
@@ -277,6 +294,7 @@ if ($success === true)
         $conn->close();
     }catch(Exception $ex){
         print_r($ex);
+        die();
     }
 
     if(isset($callback)){

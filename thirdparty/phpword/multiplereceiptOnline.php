@@ -4,26 +4,26 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
-require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
+require_once $_SERVER["DOCUMENT_ROOT"].'/pupilsight/vendor/phpoffice/phpword/bootstrap.php';
+//require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
 
-try {
-    $dts = $_SESSION["dts_receipt"];
-    $fee_items = $_SESSION["dts_receipt_feeitem"];
+$dtsmulti = $_SESSION["dts_receipt"];
+$fee_items_multi = $_SESSION["dts_receipt_feeitem"];
 
+// echo '<pre>';
+// print_r($dtsmulti);
+// print_r($fee_items_multi);
+// echo '</pre>';
+// die();
+
+
+foreach($dtsmulti as $k => $dts){
 
     $file = $dts['receiptTemplate'];
 
     $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
-
-
     $dts["total"]=$dts["transcation_amount"];
-
-    $stuName = str_replace(' ', '_', $dts["student_name"]);
-    $receiptfilename = $stuName.'_'.$dts["transactionId"];
-    // $_SESSION['doc_receipt_id']=$dts["transactionId"];
-    $_SESSION['doc_receipt_id']=$receiptfilename;
     foreach ($dts as $key => $value) {
         try {
             if(!empty($value)){
@@ -36,21 +36,25 @@ try {
     }
 
     if(!empty($dts["transcation_amount"])){
-        /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-        $total_in_words = $nf->format($dts["transcation_amount"]);*/
         $total_in_words=convert_number_to_words($dts["transcation_amount"]);
         $phpword->setValue('total_in_words', ucwords($total_in_words));
     }
 
-    if(!empty($fee_items)){
+    
+    if(!empty($fee_items_multi[$k])){
         try {
-            $phpword->cloneRowAndSetValues('serial.all', $fee_items);
+            $phpword->cloneRowAndSetValues('serial.all', $fee_items_multi[$k]);
         } catch (Exception $ex) {
             //print_r($ex);
         }
+        
     }
 
     try {
+        $stuName = str_replace(' ', '_', $dts["student_name"]);
+        $receiptfilename = $stuName.'_'.$dts["transactionId"];
+        $_SESSION['doc_receipt_id']=$receiptfilename;
+
         $dataiu = array('filename' => $receiptfilename,  'transaction_id' => $dts["transactionId"]);
         $sqliu = 'UPDATE fn_fees_collection SET filename=:filename WHERE transaction_id=:transaction_id';
         $resultiu = $connection2->prepare($sqliu);
@@ -58,36 +62,47 @@ try {
 
         // $fileName = $dts["transactionId"] . ".docx";
         $fileName = $receiptfilename . ".docx";
-        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/receipts/";
+        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/pupilsight/public/receipts/";
         $savedocsx = $inFilePath . $fileName;
         //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
         //echo $savedocsx;
         $phpword->saveAs($savedocsx);
 
-        convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+        //convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
     } catch (Exception $ex) {
     }
 
-    $admincallback = $_SESSION["admin_callback"];
-    if(!empty($admincallback)){
-        $callback = $admincallback;
-    } else {
-        $callback = $_SESSION["paypost"]["callbackurl"];
-    }
-
-    $callback = $callback.'&success=1';
-
-    if(isset($callback)){
-        header('Location: '.$callback);
-        exit;
-    }else{
-        header('Location: index.php');
-        exit;
-    }
-
-} catch (Exception $ex) {
+    
 }
 
+unset($_SESSION['dts_receipt']);
+unset($_SESSION['dts_receipt_feeitem']);
+
+// echo 'work';
+// die();
+
+
+$dtall = $_SESSION["paypost"];
+$newdt = json_decode($dtall['formdata']);
+foreach($newdt as $k=>$dt){
+    $callbackurl = $dt->callbackurl;
+}    
+
+
+$admincallback = $_SESSION["admin_callback"];
+if(!empty($admincallback)){
+    $callback = $admincallback;
+} else {
+    $callback = $callbackurl.'&success=1';
+}
+
+if(isset($callback)){
+    header('Location: '.$callback);
+    exit;
+}else{
+    header('Location: index.php');
+    exit;
+}
 
 function convert_number_to_words($number) {
    
@@ -197,6 +212,7 @@ function convert_number_to_words($number) {
         }
         $string .= implode(' ', $words);
     }
+   
     return $string;
 }
 ?>

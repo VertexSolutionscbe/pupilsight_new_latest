@@ -10,8 +10,8 @@ if(!empty($value)){
     $keyId = $value['key_id'];
     $keySecret = $value['key_secret'];
 } else {
-    $keyId = 'rzp_test_Pf0RDiwsT7TW8S';
-    $keySecret = 'BrdtAlpR4wFXnXh4PvRC8V7x';
+    $keyId = 'rzp_test_0VvfTtnAI840VO';
+    $keySecret = 'Wml5p4NJvohYygIeYfvsNtCo';
 }
 
 $displayCurrency = 'INR';

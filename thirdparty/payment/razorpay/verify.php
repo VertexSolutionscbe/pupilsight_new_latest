@@ -255,6 +255,11 @@ if ($success === true)
             }
             $tsq .= $tsq1.";";
         }
+
+        $dataiu = array('invoice_status' => 'Fully Paid',  'pupilsightPersonID' => $dt["stuid"],  'invoice_no' => $dt["payid"]);
+        $sqliu = 'UPDATE fn_fee_invoice_student_assign SET invoice_status=:invoice_status WHERE pupilsightPersonID=:pupilsightPersonID AND invoice_no=:invoice_no';
+        $resultiu = $connection2->prepare($sqliu);
+        $resultiu->execute($dataiu);
                 
               
         if ($conn->query($sq) === TRUE) {

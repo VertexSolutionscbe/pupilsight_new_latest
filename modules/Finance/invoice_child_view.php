@@ -31,6 +31,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     $baseurl .= str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']);
 
     $FeesGateway = $container->get(FeesGateway::class);
+
+    $terms = '';
+    $sql = 'SELECT * FROM fn_fee_payment_gateway ';
+    $result = $connection2->query($sql);
+    $gatewayData = $result->fetch();
+    $terms = $gatewayData['terms_and_conditions'];
+
+
+
+
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
     $childs = 'SELECT b.pupilsightPersonID, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID2 = b.pupilsightPersonID WHERE a.pupilsightPersonID1 = ' . $cuid . ' GROUP BY a.pupilsightPersonID1 LIMIT 0,1';
     $resulta = $connection2->query($childs);
@@ -42,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     $criteria = $FeesGateway->newQueryCriteria()
         ->sortBy(['id'])
         ->fromPOST();
-    $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE pupilsightPerson.pupilsightPersonID = "' . $stuId . '" GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC';
+    $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" AND pupilsightPerson.pupilsightPersonID = "' . $stuId . '" GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC';
 
     $resultinv = $connection2->query($invoices);
     $invdata = $resultinv->fetchAll();
@@ -51,6 +61,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
         $sqlamt = 'SELECT SUM(fn_fee_invoice_item.total_amount) as totalamount, group_concat(fn_fee_invoice_item.id) as fn_fee_invoice_item_id FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ' . $d['invoiceid'] . ' ';
         $resultamt = $connection2->query($sqlamt);
         $dataamt = $resultamt->fetch();
+
+        $sql_dis = "SELECT discount FROM fn_invoice_level_discount WHERE pupilsightPersonID = " . $stuId . "  AND invoice_id=".$d['invoiceid']." ";
+        $result_dis = $connection2->query($sql_dis);
+        $special_dis = $result_dis->fetch();
+
+        $sp_item_sql = "SELECT SUM(discount.discount) as sp_discount
+        FROM fn_fee_invoice_item as fee_item
+        LEFT JOIN fn_fee_item_level_discount as discount
+        ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id= ".$d['invoiceid']." AND pupilsightPersonID = ".$stuId."  ";
+        $result_sp_item = $connection2->query($sp_item_sql);
+        $sp_item_dis = $result_sp_item->fetch();
 
 
         //unset($invdata[$k]['finalamount']);
@@ -76,7 +97,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
         } else {
             $totalamount = $dataamt['totalamount'];
         }
-        $invdata[$k]['finalamount'] = $totalamount;
+
+        if (!empty($special_dis['discount']) || !empty($sp_item_dis['sp_discount'])) {
+            $invdata[$k]['finalamount'] = $totalamount - $special_dis['discount'] - $sp_item_dis['sp_discount'];
+            $totalamount = $totalamount - $special_dis['discount'] - $sp_item_dis['sp_discount'];
+        } else {
+            $invdata[$k]['finalamount'] = $totalamount;
+        }
+
+        //$invdata[$k]['finalamount'] = $totalamount;
         $invdata[$k]['fn_fee_invoice_item_id'] = $dataamt['fn_fee_invoice_item_id'];
 
 
@@ -211,6 +240,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     // echo '</pre>';
     // die();
 
+    if($_GET['success'] == '1'){
+        echo '<h3 style="color:light-green;color: green;border: 1px solid grey;text-align: center;padding: 5px 5px;">Payment Succesfully Done!</h3>';
+    }
     echo "<div class ='row fee_hdr FeeInvoiceListManage'><div class='col-md-12'><h2>Invoices <a  id='payMultiple' style='float:right; color:white;font-size: 14px; margin: -6px 0 0 0px;
 ' class='btn btn-primary '>Multiple Pay</a></h2></div></div>";
 
@@ -218,7 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     echo "<thead>";
     echo "<tr class='head'>";
     echo '<th>';
-    echo __('Select');
+    echo __('<input type="checkbox" class="chkAll" >');
     echo '</th>';
     echo '<th>';
     echo __('Child Name');
@@ -288,7 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
                 $style = $curdate >= $duedate ? '#FAFD94' : '#fff';
                 // echo '<tr style="background:'.$style.'"><td><input type="checkbox" class="multiplePayFees" value="'.$ind['id'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
-                echo '<tr><td><input type="checkbox" class="multiplePayFees" value="' . $ind['id'] . '"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
+                echo '<tr><td><input type="checkbox" class="multiplePayFees chkChild" value="' . $ind['id'] . '"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
 
 ?>
                 <td>
@@ -316,8 +348,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                         <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
                         <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
 
-                        <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
-                        <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
+                        <?php if(!empty($terms)){   ?>
+                            <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
+                            <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
+                        <?php } else { ?>
+                            <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>'  class="btn btn-primary ">Pay</button>
+                        <?php } ?>
+                        
+                        
                     </form>
                 </td>
     <?php
@@ -341,6 +379,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     echo "<tr class='head'>";
     echo '<th>';
     echo __('S.No');
+    echo '</th>';
+    echo '<th>';
+    echo __('Child Name');
     echo '</th>';
     echo '<th>';
     echo __('Transaction Id');
@@ -372,11 +413,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     echo "</thead>";
     echo "<tbody id='getPaymentHistory'>";
     //print_r($pupilsightSchoolYearID); 
-    $paymenthistory = 'SELECT  f.*,m.name as payMode,b.name as bankname,f.dd_cheque_no,f.reference_no,f.pay_gateway_id FROM fn_fees_collection as f 
+    $paymenthistory = 'SELECT  f.*,m.name as payMode,b.name as bankname,f.dd_cheque_no,f.reference_no,f.pay_gateway_id, c.officialName as StuName FROM fn_fees_collection as f 
     LEFT JOIN fn_masters as m
     ON f.payment_mode_id = m.id
     LEFT JOIN fn_masters as b ON f.bank_id = b.id
-    WHERE f.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND f.pupilsightPersonID = "' . $stuId . '" AND f.transaction_status = "1" ORDER BY f.id DESC';
+    LEFT JOIN pupilsightPerson as c ON f.pupilsightPersonID = c.pupilsightPersonID
+    WHERE  f.pupilsightPersonID = "' . $stuId . '" AND f.transaction_status = "1" ORDER BY f.id DESC';
     $resultPhis = $connection2->query($paymenthistory);
     $payhistory = $resultPhis->fetchAll();
 
@@ -406,6 +448,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
             }
             echo '<tr>
                   <td>' . $i++ . '</td>
+                  <td>' . $ph['StuName'] . '</td>
                   <td>' . $ph['transaction_id'] . '</td>
                   <td>' . $ph['receipt_number'] . '</td>
                   <td>' . $ph['transcation_amount'] . '</td>
@@ -534,6 +577,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 <?php
 
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -552,11 +597,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                         <span class="modal-title">Terms and Conditions </span>
                     </div>
                     <div class="modal-body">
-                        <p>Help protect your website and its users with clear and fair website terms and conditions. These terms and conditions for a website set out key issues such as acceptable use, privacy, cookies, registration and passwords, intellectual property, links to other sites, termination and disclaimers of responsibility. Terms and conditions are used and necessary to protect a website owner from liability of a user relying on the information or the goods provided from the site then suffering a loss.</p>
+                        <?php echo $terms;?>
+                        <!-- <p>Help protect your website and its users with clear and fair website terms and conditions. These terms and conditions for a website set out key issues such as acceptable use, privacy, cookies, registration and passwords, intellectual property, links to other sites, termination and disclaimers of responsibility. Terms and conditions are used and necessary to protect a website owner from liability of a user relying on the information or the goods provided from the site then suffering a loss.</p>
 
                         <p>Making your own terms and conditions for your website is hard, not impossible, to do. It can take a few hours to few days for a person with no legal background to make. But worry no more; we are here to help you out.</p>
 
-                        <p>All you need to do is fill up the blank spaces and then you will receive an email with your personalized terms and conditions.</p>
+                        <p>All you need to do is fill up the blank spaces and then you will receive an email with your personalized terms and conditions.</p> -->
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary proceed_decline" data-id="" id="clickPayButton" data-dismiss="modal">PROCEED</button>

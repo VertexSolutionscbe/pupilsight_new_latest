@@ -65,6 +65,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     $feeItem = $resulti->fetchAll();
 
     $data = '';
+
+    // $sql_dis = "SELECT discount FROM fn_invoice_level_discount WHERE pupilsightPersonID = " . $stuId . "  AND invoice_id=".$id." ";
+    // $result_dis = $connection2->query($sql_dis);
+    // $special_dis = $result_dis->fetch();
+
+
+    // $sp_item_sql = "SELECT SUM(discount.discount) as sp_discount
+    // FROM fn_fee_invoice_item as fee_item
+    // LEFT JOIN fn_fee_item_level_discount as discount
+    // ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id= ".$id." AND pupilsightPersonID = ".$stuId."  ";
+    // $result_sp_item = $connection2->query($sp_item_sql);
+    // $sp_item_dis = $result_sp_item->fetch();
  
 
 
@@ -137,7 +149,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
         $totalamount = $fI['total_amount'];
     }
 
-// print_r($totalamount);die();
+    $sp_item_sql = "SELECT SUM(discount) as sp_discount
+    FROM  fn_fee_item_level_discount WHERE item_id = ".$fI['itemid']." AND pupilsightPersonID = ".$stuId."  ";
+    $result_sp_item = $connection2->query($sp_item_sql);
+    $sp_item_dis = $result_sp_item->fetch();
+    $itemDiscount = 0;
+
+    if (!empty($sp_item_dis['sp_discount'])) {
+        $itemDiscount = $sp_item_dis['sp_discount'];
+        $totalamount = $totalamount - $sp_item_dis['sp_discount'];
+    } else {
+        $totalamount = $totalamount;
+    }
+
+    // print_r($totalamount);die();
     $sqlchk = 'SELECT COUNT(a.id) as kount,amount_paying FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fee_invoice_item_id = ' . $fI['itemid'] . ' AND a.pupilsightPersonID = ' . $sid . ' AND b.transaction_status = "1" ';
 
     $resultchk = $connection2->query($sqlchk);
@@ -165,6 +190,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     if($pendding<0){
     $pendding=abs($pendding)."(Fine paid)";
     }
+
+    $discountamt = $discountamt + $itemDiscount;
     $data .= '<tr class="odd invrow' . $id . '" role="row">
      
          

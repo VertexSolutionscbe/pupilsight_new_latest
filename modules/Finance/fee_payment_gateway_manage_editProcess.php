@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
             $mid = $_POST['mid'];
             $key_id = $_POST['key_id'];
             $key_secret = $_POST['key_secret'];
-            // $nameShort = $_POST['nameShort'];
+            $terms_and_conditions = $_POST['terms_and_conditions'];
             // $sequenceNumber = $_POST['sequenceNumber'];
             
 
@@ -64,8 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
                 } else {
                     //Write to database
                     try {
-                        $data = array('name' => $name,'mid' => $mid,'key_id' => $key_id,'key_secret' => $key_secret, 'id' => $id);
-                        $sql = 'UPDATE fn_fee_payment_gateway SET name=:name, mid=:mid, key_id=:key_id, key_secret=:key_secret WHERE id=:id';
+                        $data = array('name' => $name,'mid' => $mid,'key_id' => $key_id,'key_secret' => $key_secret, 'terms_and_conditions' => $terms_and_conditions, 'id' => $id);
+                        $sql = 'UPDATE fn_fee_payment_gateway SET name=:name, mid=:mid, key_id=:key_id, key_secret=:key_secret, terms_and_conditions=:terms_and_conditions WHERE id=:id';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

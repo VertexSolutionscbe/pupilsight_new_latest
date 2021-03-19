@@ -51,6 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
         $row->addLabel('key_secret', __('key Secret'))->description(__('Must be unique.'));
         $row->addTextField('key_secret'); 
 
+    $row = $form->addRow();
+        $row->addLabel('terms_and_conditions', __('Terms & Conditions'));
+        $row->addTextArea('terms_and_conditions');
+
     // $row = $form->addRow();
     //     $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
     //     $row->addSequenceNumber('sequenceNumber', 'pupilsightProgram')->required()->maxLength(3);
