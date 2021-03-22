@@ -9,8 +9,8 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-$baseurl = getDomain();
-
+//$baseurl = getDomain();
+$baseurl = getDomain().'/pupilsight';
 include_once 'w2f/adminLib.php';
 $adminlib = new adminlib();
 session_start();
@@ -429,6 +429,35 @@ if (isset($data['logo_image'])) {
 
                                                 <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
                                             </form>
+                                        <?php } elseif ($gateway == 'AIRPAY') {
+                                            $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                            $responseLink = $base_url . "/cms/index.php?return=1";
+                                            $airpayamount = number_format($applicationAmount, 2, '.', '');
+                                        ?>
+                                            <form id="admissionPay" action="../thirdparty/payment/airpay/sendtoairpay.php" method="post">
+
+                                                <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="orderid">
+                                                <input type="hidden" name="amount" value="<?php echo $airpayamount; ?>">
+
+                                                <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                                <input type="hidden" name="sid" value="0">
+                                                <input type="hidden" class="applicantName" name="buyerFirstName" value="">
+                                                <input type="hidden" class="applicantName" name="buyerLastName" value="">
+                                                <input type="hidden" class="applicantEmail" name="buyerEmail" value="">
+                                                <input type="hidden" class="applicantAirPayPhone" name="buyerPhone" value="">
+
+                                                <input type="hidden" class="buyerAddress" name="buyerAddress" value="">
+                                                <input type="hidden" class="buyerCity" name="buyerCity" value="">
+                                                <input type="hidden" class="buyerState" name="buyerState" value="">
+                                                <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
+                                                <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
+
+                                                <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+                                                <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                                                <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+
+                                                <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
+                                            </form>
                                 <?php }
                                     }
                                 } ?>
@@ -790,9 +819,12 @@ if (isset($data['logo_image'])) {
 
             iframe.find("input[name=father_mobile]").change(function() {
                 var val = '+91' + $(this).val();
+                var aval = $(this).val();
                 //alert(val);
                 if (val != '') {
                     $(".applicantPhone").val(val);
+                    $(".applicantAirPayPhone").val(aval);
+                    
                 }
             });
 

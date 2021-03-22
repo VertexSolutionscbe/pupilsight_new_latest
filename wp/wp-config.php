@@ -21,7 +21,7 @@
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-include_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+include_once($_SERVER['DOCUMENT_ROOT'] . '/pupilsight/config.php');
 
 //define('DB_NAME', 'christacademy');
 //define( 'DB_NAME', "pd_demo");

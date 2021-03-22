@@ -433,8 +433,8 @@ window.location.reload();
                                 $dataRollGroup = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'date' => $currentDate);
                                 $sqlRollGroup = "SELECT pupilsightPerson.image_240,pupilsightPerson.gender,pupilsightPerson.dob,pupilsightPerson.preferredName, pupilsightPerson.officialName,pupilsightPerson.phone1, pupilsightPerson.pupilsightPersonID,pupilsightPerson.admission_no as admno,pupilsightYearGroup.name as classname FROM pupilsightStudentEnrolment INNER JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID LEFT JOIN pupilsightYearGroup ON pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID WHERE pupilsightRollGroupID=:pupilsightRollGroupID AND  pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID AND  pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date)AND pupilsightPerson.pupilsightRoleIDPrimary=003 ORDER BY rollOrder, officialName, preferredName";
                             }
-                            //print_r($dataRollGroup);
-                           // print_r($sqlRollGroup);
+                        //     print_r($dataRollGroup);
+                        //    print_r($sqlRollGroup);
                             $resultRollGroup = $connection2->prepare($sqlRollGroup);
                             $resultRollGroup->execute($dataRollGroup);
                         } catch (PDOException $e) {

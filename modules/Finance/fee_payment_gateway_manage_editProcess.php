@@ -35,6 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
         } else {
             //Validate Inputs
             $name = $_POST['name'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
             $mid = $_POST['mid'];
             $key_id = $_POST['key_id'];
             $key_secret = $_POST['key_secret'];
@@ -64,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
                 } else {
                     //Write to database
                     try {
-                        $data = array('name' => $name,'mid' => $mid,'key_id' => $key_id,'key_secret' => $key_secret, 'terms_and_conditions' => $terms_and_conditions, 'id' => $id);
-                        $sql = 'UPDATE fn_fee_payment_gateway SET name=:name, mid=:mid, key_id=:key_id, key_secret=:key_secret, terms_and_conditions=:terms_and_conditions WHERE id=:id';
+                        $data = array('name' => $name,'username' => $username,'password' => $password,'mid' => $mid,'key_id' => $key_id,'key_secret' => $key_secret, 'terms_and_conditions' => $terms_and_conditions, 'id' => $id);
+                        $sql = 'UPDATE fn_fee_payment_gateway SET name=:name, username=:username, password=:password, mid=:mid, key_id=:key_id, key_secret=:key_secret, terms_and_conditions=:terms_and_conditions WHERE id=:id';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
