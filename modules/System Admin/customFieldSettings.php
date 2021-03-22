@@ -107,11 +107,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('submitInvoice', __(''));
-    $col->addContent('<button type=\'submit\' id="submitInvoice"  class=" btn btn-primary">Go</button>');
+    $col->addContent('<button type=\'submit\' id="submitInvoice"  class=" btn btn-white">Go</button>');
 
-    $col = $row->addColumn()->setClass('newdes');
+    $col = $row->addColumn()->setClass('newdes text-right');
     $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' id="addCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldModal();\'>Add Custom Field</button>');
+    $col->addContent('<button type=\'button\' id="addCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldModal();\'><i class="mdi mdi-plus-thick mr-2"></i>Custom Field</button>');
 
     $row = $form->addRow();
 
@@ -120,17 +120,17 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     //$col->addLabel('sortableBtn', __(''));
     //$col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'tabSortPanel(true);\'>Sort Tile / Tab</button>');
 
-    $col = $row->addColumn()->setClass('newdes');
+    $col = $row->addColumn()->setClass('newdes customHandleCol');
     $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'deactivateField();\'>Hide Field</button>');
+    $col->addContent('<button type=\'button\' class="btn btn-white" onclick=\'deactivateField();\'>Hide Field</button>');
 
-    $col = $row->addColumn()->setClass('newdes');
+    $col = $row->addColumn()->setClass('newdes customHandleCol');
     $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'activateField();\'>Show Field</button>');
+    $col->addContent('<button type=\'button\' class="btn btn-white" onclick=\'activateField();\'>Show Field</button>');
 
-    $col = $row->addColumn()->setClass('newdes');
+    $col = $row->addColumn()->setClass('newdes customHandleCol');
     $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' id="listCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldList();\'>Custom Field List</button>');
+    $col->addContent('<button type=\'button\' id="listCustomField"  class="btn btn-white" onclick=\'loadCustomFieldList();\'>Custom Field List</button>');
 
 
     /*
@@ -149,62 +149,65 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
 ?>
 
-    <form method="post" id="customFieldFormHideShow">
-        <table class="table display text-nowrap" cellspacing="0" id='customFieldTable'>
-            <tr class="flex flex-col sm:flex-row justify-between content-center p-0">
+    <form method="post" id="customFieldFormHideShow" class="mt-4">
+        <div class="table-responsive dataTables_wrapper">
+            <table class="table display text-nowrap filterTable" id='customFieldTable'>
                 <thead>
-                    <th class='column' style='width:80px;'>Serial No</th>
-                    <th class='column'>Status</th>
-                    <th class='column'>Field Name</th>
-                    <th class='column' style='max-width:200px;'>Field Type</th>
-                    <th class='column'>Key</th>
-                    <th class='column'>Default Value</th>
+                    <tr>
+                        <th class='column' style='width:80px;'>Serial No</th>
+                        <th class='column'>Status</th>
+                        <th class='column'>Field Name</th>
+                        <th class='column' style='max-width:200px;'>Field Type</th>
+                        <th class='column' style='max-width:200px;'>Field Key</th>
+                    </tr>
                 </thead>
-            </tr>
-            <tbody>
-                <?php
+                <tbody>
+                    <?php
 
-                $len = count($cd);
-                $i = 0;
-                $cnt = 1;
-                $cls = "odd";
-                while ($i < $len) {
-
-                    $isFieldActive = TRUE;
-                    $fieldStr = "&nbsp;"; //show or active
-                    if (in_array($cd[$i]["Field"], $inactiveCol)) {
-                        $isFieldActive = FALSE;
-                        $fieldStr = "Hidden";
-                    }
+                    $len = count($cd);
+                    $i = 0;
+                    $cnt = 1;
                     $cls = "odd";
-                    if ($i % 2 == 0) {
-                        $cls = "even";
+                    while ($i < $len) {
+
+                        $isFieldActive = TRUE;
+                        $fieldStr = "Active"; //show or active
+                        if (in_array($cd[$i]["Field"], $inactiveCol)) {
+                            $isFieldActive = FALSE;
+                            $fieldStr = "Hidden";
+                        }
+                        $cls = "odd";
+                        if ($i % 2 == 0) {
+                            $cls = "even";
+                        }
+
+                        echo "\n<tr class='" . $cls . "'>";
+                        echo "\n<td>" . $cnt . "</td>";
+                        echo "\n<td>" . $fieldStr . "</td>";
+
+                        if ($cd[$i]["Key"]) {
+                            echo "\n<td><i class=\"mdi mdi-lock\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
+                            //echo "\n<td>" . strtoupper($cd[$i]["Field"]) . "</td>";
+                            //} else if ($isFieldActive == FALSE) {
+                            //echo "\n<td><i class=\"mdi mdi-eye-off\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
+                        } else {
+                            echo "\n<td><input type='checkbox' name='fields[]' value='" . $cd[$i]["Field"] . "' id='" . $cd[$i]["Field"] . "'><label for='" . $cd[$i]["Field"] . "'>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</label></td>";
+                            //echo "\n<td>" . strtoupper($cd[$i]["Field"]) . "</td>";
+                        }
+
+                        echo "\n<td>" . $cd[$i]["Type"] . "</td>";
+                        echo "\n<td>" . $cd[$i]["Key"] . "</td>";
+                        //echo "\n<td>" . $cd[$i]["Default"] . "</td>";
+                        echo "\n</tr>";
+                        $i++;
+                        $cnt++;
                     }
-
-                    echo "\n<tr class='" . $cls . "'>";
-                    echo "\n<td>" . $cnt . "</td>";
-                    echo "\n<td>" . $fieldStr . "</td>";
-
-                    if ($cd[$i]["Key"]) {
-                        echo "\n<td><i class=\"mdi mdi-lock\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
-                        //} else if ($isFieldActive == FALSE) {
-                        //echo "\n<td><i class=\"mdi mdi-eye-off\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
-                    } else {
-                        echo "\n<td><input type='checkbox' name='fields[]' value='" . $cd[$i]["Field"] . "' id='" . $cd[$i]["Field"] . "'><label for='" . $cd[$i]["Field"] . "'>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</label></td>";
-                    }
-
-                    echo "\n<td>" . $cd[$i]["Type"] . "</td>";
-                    echo "\n<td>" . $cd[$i]["Key"] . "</td>";
-                    echo "\n<td>" . $cd[$i]["Default"] . "</td>";
-                    echo "\n</tr>";
-                    $i++;
-                    $cnt++;
-                }
-                ?>
-            </tbody>
-        </table>
-        <input type="hidden" name="type" value="hideCustomControl" id="ajaxCustomFieldType">
-        <input type="hidden" name="val" value="" id='hideCustomControlTable'>
+                    ?>
+                </tbody>
+            </table>
+            <input type="hidden" name="type" value="hideCustomControl" id="ajaxCustomFieldType">
+            <input type="hidden" name="val" value="" id='hideCustomControlTable'>
+        </div>
     </form>
 
     <!-- Custom Field Panel -->
@@ -505,6 +508,20 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 ghostClass: 'blue-background-class'
             });
             //$("#fieldLengthPanel").hide();
+            //
+            $(".customHandleCol").addClass("col-auto").removeClass("col-sm");
+            $('.filterTable').DataTable({
+                "pageLength": 25,
+                "lengthMenu": [
+                    [10, 25, 50, 250, -1],
+                    [10, 25, 50, 250, "All"]
+                ],
+                "sDom": '<"top"lpf>rt<"bottom"ipf><"clear">',
+                "orderable": false,
+                "targets": [3, 4]
+            });
+            $(".dataTables_length").find("select").css("width", "90px");
+            $(".dataTables_length").find("select").css("display", "inline-block");
         });
 
         function saveSorting() {
@@ -680,13 +697,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
         function loadCustomFieldModal() {
             $("#customFieldSearchForm").hide();
-            $('#customFieldTable').hide();
+            $('#customFieldFormHideShow').hide();
             $("#customFieldPanel").show();
         }
 
         function cancelCustomField() {
             $("#customFieldSearchForm").show();
-            $('#customFieldTable').show();
+            $('#customFieldFormHideShow').show();
             $("#customFieldPanel").hide();
         }
 
@@ -789,97 +806,103 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     $len = count($customFieldList);
     ?>
     <!----Custom Field List----->
-
-    <table class="table display text-nowrap" cellspacing="0" id='customFieldList'>
-        <tr>
+    <div id="customFieldListPanel">
+        <table class="table display text-nowrap" cellspacing="0">
             <thead>
-                <th colspan='4' style='line-height: 28px;'>Total Custom Fields : <b><?= $len; ?></b></th>
-                <th colspan='3' style='text-align:right;line-height: 28px;'>
-                    To change tab or section use dropdown
-                </th>
-                <th colspan='2' style='text-align:right;line-height: 28px;'>
-                    <span onclick="cancelCustomFieldList();" style='width:40px;cursor:pointer;margin-left:20px;'><i class="mdi mdi-close" style='font-size:24px;'></i></span>
-                </th>
+                <tr>
+
+                    <th colspan='4' style='line-height: 28px;'>Total Custom Fields : <b><?= $len; ?></b></th>
+                    <th colspan='3' style='text-align:right;line-height: 28px;'>
+                        To change tab or section use dropdown
+                    </th>
+                    <th colspan='2' style='text-align:right;line-height: 28px;'>
+                        <span onclick="cancelCustomFieldList();" style='width:40px;cursor:pointer;margin-left:20px;'><i class="mdi mdi-close" style='font-size:24px;'></i></span>
+                    </th>
+
+                </tr>
             </thead>
-        </tr>
-        <tr class="flex flex-col sm:flex-row justify-between content-center p-0">
+        </table>
+        <table class="table display text-nowrap filterTable" cellspacing="0" id='customFieldList'>
             <thead>
-                <th class='column'>Table</th>
-                <th class='column'>Field Name</th>
-                <th class='column'>Field Type</th>
-                <th class='column'>Modules</th>
-                <th class='column'>Tab / Section</th>
-                <th class='column'>Active</th>
-                <th class='column'>Page View</th>
-                <th class='column'>Page Edit</th>
-                <th class='column'>Action</th>
+                <tr>
+                    <th class='column'>Table</th>
+                    <th class='column'>Field Name</th>
+                    <th class='column'>Field Type</th>
+                    <th class='column'>Modules</th>
+                    <th class='column'>Tab / Section</th>
+                    <th class='column'>Active</th>
+                    <th class='column'>Page View</th>
+                    <th class='column'>Page Edit</th>
+                    <th class='column'>Action</th>
+                </tr>
             </thead>
-        </tr>
+            <tbody>
+            <?php
+            $i = 0;
+            $str = "";
+            //print_r($customFieldList);
+            while ($i < $len) {
+                $field_type = $customFieldList[$i]["field_type"];
+                //if ($field_type) {
+                $isColAvl = $customField->isColumnAvailable($customFieldList[$i]["table_name"], $customFieldList[$i]["field_name"]);
+                $id = $customFieldList[$i]["id"];
+                if ($isColAvl == FALSE) {
+                    $customField->removeUnusedColumn($id);
+                } else {
+                    $fieldTitle = $customFieldList[$i]["field_title"];
+                    $fieldName = $customFieldList[$i]["field_name"];
+                    if (empty($fieldTitle)) {
+                        $fieldTitle = $fieldName;
+                    }
 
-    <?php
-    $i = 0;
-    $str = "";
-    //print_r($customFieldList);
-    while ($i < $len) {
-        $field_type = $customFieldList[$i]["field_type"];
-        //if ($field_type) {
-        $isColAvl = $customField->isColumnAvailable($customFieldList[$i]["table_name"], $customFieldList[$i]["field_name"]);
-        $id = $customFieldList[$i]["id"];
-        if ($isColAvl == FALSE) {
-            $customField->removeUnusedColumn($id);
-        } else {
-            $fieldTitle = $customFieldList[$i]["field_title"];
-            $fieldName = $customFieldList[$i]["field_name"];
-            if (empty($fieldTitle)) {
-                $fieldTitle = $fieldName;
-            }
+                    $str .= "\n<tr id='custom_row_" . $id . "' >";
+                    $str .= "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
+                    $str .= "<td>" . $fieldTitle . "</td>";
+                    $str .= "<td>" . $customField->getInputTag($customFieldList[$i]["field_type"]) . "</td>";
+                    $mod = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["modules"]) . "</div>";
+                    $str .= "<td>" . $mod . "</td>";
 
-            $str .= "\n<tr id='custom_row_" . $id . "' >";
-            $str .= "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
-            $str .= "<td>" . $fieldTitle . "</td>";
-            $str .= "<td>" . $customField->getInputTag($customFieldList[$i]["field_type"]) . "</td>";
-            $mod = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["modules"]) . "</div>";
-            $str .= "<td>" . $mod . "</td>";
+                    $tabs = explode(",", $customFieldList[$i]["tabs"]);
+                    $jlen = count($tabs);
+                    $j = 0;
+                    $opt = "<input type='hidden' id='fieldid_" . $fieldName . "' value='" . $customFieldList[$i]["id"] . "'>";
+                    $opt .= "<input type='hidden' id='tabSelect_" . $fieldName . "' value='" . $customFieldList[$i]["tab"] . "'>";
+                    $opt .= "<select id='switchTab_" . $fieldName . "' onchange=\"changeTab('" . $fieldName . "');\">";
+                    $opt .= "\n<option value=''>Select</option>";
+                    $optse = "";
+                    while ($j < $jlen) {
+                        $optse = "";
+                        if ($tabs[$j] == $customFieldList[$i]["tab"]) {
+                            $optse = " selected";
+                        }
+                        $opt .= "\n<option value='" . $tabs[$j] . "' " . $optse . ">" . $tabs[$j] . "</option>";
+                        $j++;
+                    }
+                    $opt .= "</select>";
 
-            $tabs = explode(",", $customFieldList[$i]["tabs"]);
-            $jlen = count($tabs);
-            $j = 0;
-            $opt = "<input type='hidden' id='fieldid_" . $fieldName . "' value='" . $customFieldList[$i]["id"] . "'>";
-            $opt .= "<input type='hidden' id='tabSelect_" . $fieldName . "' value='" . $customFieldList[$i]["tab"] . "'>";
-            $opt .= "<select id='switchTab_" . $fieldName . "' onchange=\"changeTab('" . $fieldName . "');\">";
-            $opt .= "\n<option value=''>Select</option>";
-            $optse = "";
-            while ($j < $jlen) {
-                $optse = "";
-                if ($tabs[$j] == $customFieldList[$i]["tab"]) {
-                    $optse = " selected";
+                    $str .= "<td>" . $opt . "</td>";
+
+                    $str .= "<td>" . $customFieldList[$i]["active"] . "</td>";
+                    $pv = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_view"]) . "</div>";
+                    $str .= "<td>" . $pv . "</td>";
+                    $pe = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_edit"]) . "</div>";
+                    $str .= "<td>" . $pe . "</td>";
+
+                    $str .= "<td><button class='btn btn-secondary' onclick=\"deleteCustomField('" . $id . "','" . $customFieldList[$i]["table_name"] . "','" . $fieldName . "');\">Delete</button></td>";
+                    $str .= "</tr>";
                 }
-                $opt .= "\n<option value='" . $tabs[$j] . "' " . $optse . ">" . $tabs[$j] . "</option>";
-                $j++;
+                //}
+                $i++;
             }
-            $opt .= "</select>";
 
-            $str .= "<td>" . $opt . "</td>";
-
-            $str .= "<td>" . $customFieldList[$i]["active"] . "</td>";
-            $pv = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_view"]) . "</div>";
-            $str .= "<td>" . $pv . "</td>";
-            $pe = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_edit"]) . "</div>";
-            $str .= "<td>" . $pe . "</td>";
-
-            $str .= "<td><button class='btn btn-secondary' onclick=\"deleteCustomField('" . $id . "','" . $customFieldList[$i]["table_name"] . "','" . $fieldName . "');\">Delete</button></td>";
-            $str .= "</tr>";
-        }
-        //}
-        $i++;
-    }
-
-    echo $str;
-} ?>
-    </table>
+            echo $str;
+        } ?>
+            </tbody>
+        </table>
+    </div>
     <script>
         $(function() {
-            $("#customFieldList").hide();
+            $("#customFieldListPanel").hide();
         });
 
 
@@ -929,21 +952,21 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
         function hideAllPanel() {
             $("#tabSortPanel").hide();
-            $("#customFieldList").hide();
+            $("#customFieldListPanel").hide();
             $("#customFieldSearchForm").hide();
-            $('#customFieldTable').hide();
+            $('#customFieldFormHideShow').hide();
             $("#customFieldPanel").hide();
         }
 
         function loadCustomFieldList() {
             hideAllPanel();
-            $("#customFieldList").show();
+            $("#customFieldListPanel").show();
         }
 
         function cancelCustomFieldList() {
             hideAllPanel();
             $("#customFieldSearchForm").show();
-            $('#customFieldTable').show();
+            $('#customFieldFormHideShow').show();
         }
 
         function changeTab(fieldName) {

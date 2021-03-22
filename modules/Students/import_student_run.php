@@ -5,8 +5,7 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
-use Pupilsight\Domain\DataSet;
-use Pupilsight\Services\Format;
+
 
 
 include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
@@ -15,6 +14,7 @@ include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
 require __DIR__ . '/moduleFunctions.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Students/import_student_run.php';
+//$FURL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Students/import_student_run_final.php';
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_run.php") == false) {
     // Access denied
@@ -40,14 +40,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
     $row->addSubmit();
 
     echo $form->getOutput();
-    
+
     if ($_POST) {
+        //print_r($_POST);
         if (isset($_POST["validFormData"])) {
-        // echo '<pre>';
-        // print_r($_POST["data"]);
-        // echo '</pre>';
-        // die();
-            //print_r($_POST);
 
             if (isset($_POST["data"])) {
                 $data = $_POST["data"];
@@ -55,7 +51,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
             $exception_count = 0;
             $exception_result = array();
 
-            
+            $isValidImport = TRUE;
+
             try {
                 $cnt = 0;
                 $dcnt = 0;
@@ -99,7 +96,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     }
                     $pupilsightYearGroupID =  '0';
                     if (!empty($alrow['at_pupilsightYearGroupID'])) {
-                        $sqlaca = 'SELECT pupilsightYearGroupID FROM pupilsightYearGroup WHERE name = "' . $alrow['at_pupilsightYearGroupID'] . '" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
+                        $sqlaca = 'SELECT pupilsightYearGroupID FROM pupilsightYearGroup WHERE name = "' . $alrow['at_pupilsightYearGroupID'] . '" AND pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ';
                         $resultaca = $connection2->query($sqlaca);
                         $acaData = $resultaca->fetch();
                         if ($acaData['pupilsightYearGroupID']) {
@@ -111,7 +108,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 
                     $pupilsightRollGroupID = '0';
                     if (!empty($alrow['at_pupilsightRollGroupID'])) {
-                        $sqlaca = 'SELECT pupilsightRollGroupID FROM pupilsightRollGroup WHERE name = "' . $alrow['at_pupilsightRollGroupID'] . '" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
+                        $sqlaca = 'SELECT pupilsightRollGroupID FROM pupilsightRollGroup WHERE name = "' . $alrow['at_pupilsightRollGroupID'] . '" AND pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ';
                         $resultaca = $connection2->query($sqlaca);
                         $acaData = $resultaca->fetch();
                         if ($acaData['pupilsightRollGroupID']) {
@@ -361,18 +358,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                             }
                             $conn->commit();
                         }
-                    } catch (PDOException $ex) {
+                    } catch (Exception $ex) {
                         $conn->rollback();
                         $exception_result[$exception_count] = $e->getMessage();
                         $exception_count++;
+                        $isValidImport = FALSE;
                     }
                 }
 
-                echo "\n<a href='" . $URL . "'>Back</a>\n<br>";
-                if ($exception_result) {
-                    echo json_encode($exception_result);
-                    die();
-                }
                 if ($dusername_stock) {
                     echo "\n<p style='color:red'><b>Duplicate Usernames " . count($dusername_stock) . "</b>. <br/>Please correct these username and upload once again.</p>";
                     echo "<table border='1'><tr><th>Srno</th><th>Username</th><th>OfficalName</th>";
@@ -382,19 +375,26 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     echo json_encode($dusername_stock);
                     die();
                 }
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
-
             } catch (Exception $ex) {
                 $exception_result[$exception_count] = $e->getMessage();
                 $exception_count++;
             }
-                
 
+            echo "\n<a href='" . $URL . "'>Back</a>\n<br>";
+            if ($exception_result) {
+                echo json_encode($exception_result);
+                die();
+            }
+
+            if ($isValidImport) {
+                $URL .= '&return=success0';
+                header("Location: {$URL}");
+            }
         } else {
+            //echo "else enter";
             //print_r($_FILES);
             //die();
-           
+
 
             if (!empty($_FILES['file']['name'])) {
                 $handle = fopen($_FILES['file']['tmp_name'], "r");
@@ -537,16 +537,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $salt = getSaltNew();
                     $pass = 'Admin@123456';
                     $password = hash('sha256', $salt . $pass);
-                    
+
                     // echo '<pre>';
                     // print_r($all_rows);
                     // echo '</pre>';
                     // die();
-                    
 
-                    $tbl = '<hr/><form id="formValidSubmit" class="mt-3" action="' . $URL . '" method="post" enctype="multipart/form-data">';
+
+                    $tbl = '<hr/><form id="formValidSubmit" class="mt-3" action="' . $URL . '" method="post">';
                     $tbl .= "<input type='hidden' name='validFormData' value='1'>";
-                    $tbl .= "<div class='table-responsive dataTables_wrapper'>";
+                    $tbl .= "<div class='table-responsive'>";
                     $tbl .= "\n<table id='validate_tbl' class='table'>";
                     //header
                     $tbl .= "\n<thead>";
@@ -571,9 +571,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 
                                 if ($clname == "phone1" || $clname == "email" || $clname == "username" || $clname == "dob") {
                                     $clname .= " - validate";
-                                    
                                 }
-                                $tbl .= "\n<th " . $colWidth . "> Father ". $clname . "</th>";
+                                $tbl .= "\n<th " . $colWidth . "> Father " . $clname . "</th>";
                             }
 
                             if (strpos($key, '$$_') !== false) {
@@ -594,8 +593,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $tbl .= "\n<tbody>";
                     $cnt = 1;
                     $row = 0;
+
                     foreach ($all_rows as  $alrow) {
-                        $tbl .= "\n<tr>";
+                        $tbl .= "\n<tr id='row_" . $row . "' class='dataRow'>";
+                        $js = 0;
                         foreach ($alrow as $k => $value) {
                             if ($k == "##_dob" && !empty($value)) {
                                 $value = date('Y-m-d', strtotime($value));
@@ -621,25 +622,23 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 $tfValidate = " validActive ";
                             }
 
-
-
-                            $tbl .= "\n<td><span class='hide'>" . $value . "</span><input type='text' id='" . $k . "_" . $cnt . "' data-type='" . $k . "' class='w-full " . $tfValidate . "' " . $tfwidth . " name='data[" . $row . "][" . $k . "]' value='" . $value . "'></td>";
+                            $tbl .= "\n<td><span class='hide'>" . $value . "</span><input type='text' id='" . $k . "_" . $cnt . "' data-type='" . $k . "' class='w-full " . $tfValidate . "' " . $tfwidth . " name=\"data[" . $row . "][" . $k . "]\" value='" . $value . "'></td>";
                             $cnt++;
+                            $js++;
                         }
                         $tbl .= "\n</tr>";
                         $row++;
                         $cnt++;
                     }
                     $tbl .= "\n</tbody></table></div>";
-                    $tbl .= "\n<button type='button' class='btn btn-primary mt-3' onclick='validateImport();'>Validate & Submit</button>";
+                    $tbl .= "\n<button type='button' class='btn btn-secondary mt-3' onclick='validateOnly();'>Validate</button>";
+                    $tbl .= "\n<button type='button' class='btn btn-white mt-3 ml-2' onclick='resetTableRows();'>Reset</button>";
+                    $tbl .= "\n<button type='button' class='btn btn-primary mt-3 ml-4' onclick='validateImport();'>Validate & Submit</button>";
                     $tbl .= "\n</form>";
                     echo $tbl;
-
-
                 }
                 //die();
                 fclose($handle);
-
             } else {
                 //die();
                 $URL .= '&return=error0';
@@ -675,6 +674,53 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
     var em = new Array(); //email
     var ph = new Array(); // phone
     var formValid = true;
+
+    function resetTableRows() {
+        $(".dataRow").show();
+    }
+
+    function validateOnly() {
+        un = new Array();
+        em = new Array();
+        ph = new Array();
+        formValid = true;
+        $(".validActive").each(function() {
+            //console.log($(this).val());
+            if ($(this).attr("data-type") == "##_username" || $(this).attr("data-type") == "&&_username" || $(this).attr("data-type") == "$$_username") {
+                if ($(this).val()) {
+                    un.push($(this).val());
+                }
+            }
+
+            if ($(this).attr("data-type") == "##_email" || $(this).attr("data-type") == "&&_email" || $(this).attr("data-type") == "$$_email") {
+                if ($(this).val()) {
+                    em.push($(this).val());
+                }
+            }
+
+            if ($(this).attr("data-type") == "##_phone1" || $(this).attr("data-type") == "&&_phone1" || $(this).attr("data-type") == "$$_phone1") {
+                if ($(this).val()) {
+                    ph.push($(this).val());
+                }
+            }
+        });
+
+        $(".dataRow").removeClass("errorRow");
+        $(".validActive").each(function() {
+            var val = $(this).val();
+            var dataType = $(this).attr("data-type");
+            var flag = isValidDuplicate(dataType, val);
+            if (flag) {
+                $(this).css("border", "1px solid rgba(110, 117, 130, 0.2)");
+            } else {
+                $(this).closest('tr').addClass("errorRow");
+                $(this).css("border", "1px solid red");
+                formValid = false;
+            }
+        });
+        $(".dataRow").hide();
+        $(".errorRow").show();
+    }
 
     function validateImport() {
         un = new Array();
@@ -713,6 +759,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                 formValid = false;
             }
         });
+
         if (formValid) {
             ///start submit
             $("form#formValidSubmit").submit();
@@ -723,6 +770,38 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
     }
 
     function isValid(dataType, val) {
+        //console.log(dataType, val);
+        if (val == "") {
+            if (dataType != "##_username" || dataType != "&&_username" || dataType != "$$_username") {
+                return true;
+            }
+        }
+
+        if (dataType == "##_phone1" || dataType == "&&_phone1" || dataType == "$$_phone1") {
+            var regx = /^[6-9]\d{9}$/;
+            if (regx.test(val)) {
+                return true;
+                //return isDuplicate(ph, val);
+            } else {
+                return false;
+            }
+        } else if (dataType == "##_email" || dataType == "&&_email" || dataType == "$$_email") {
+            if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(val)) {
+                //return isDuplicate(em, val);
+                return true;
+            } else {
+                return false;
+            }
+        } else if (dataType == "##_username" || dataType == "&&_username" || dataType == "$$_username") {
+            return isDuplicate(un, val);
+        } else if (dataType == "##_dob" || dataType == "&&_dob" || dataType == "$$_dob") {
+            if (moment(val, 'YYYY-MM-DD', true).isValid()) {
+                return true;
+            }
+        }
+    }
+
+    function isValidDuplicate(dataType, val) {
         //console.log(dataType, val);
         if (val == "") {
             if (dataType != "##_username" || dataType != "&&_username" || dataType != "$$_username") {

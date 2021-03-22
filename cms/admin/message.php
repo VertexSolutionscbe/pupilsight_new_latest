@@ -3,7 +3,20 @@ include("template/header.php");
    include_once '../w2f/adminLib.php';
    $adminlib = new adminlib();
    $section = $adminlib->getUserMessageData();
+
+   //echo '<pre>';print_r($section);exit;
+
 ?>
+<style>
+table {
+  table-layout: fixed; 
+  width: 100%
+}
+
+td {
+  word-wrap: break-word;
+}
+</style>
 <section id="middle">
    <div id="content" class="padding-20">
       <div id="panel-1" class="panel panel-default">
@@ -22,25 +35,39 @@ include("template/header.php");
          <!-- panel content -->
          <div class="panel-body">
             <table class="table table-striped table-hover table-bordered" id="sample_editable_1">
-               <thead>
+               
+            
+            <thead>
                   <tr>
-                     <th>Name</th>
-                     <th>Email</th>
-                     <th>Subject</th>
-                     <th>Message</th>
-					 <th>Action</th>
+                     <th style="width:5%">SL No</th>
+                     <th style="width:10%">Date</th>
+                     <th style="width:10%">Name</th>
+                     <th style="width:25%">Email</th>
+                     <th style="width:10%">Subject</th>
+                     <th style="width:30%">Message</th>
+					      <th style="width:10%">Action</th>
                   </tr>
                </thead>
                <tbody>
                   <?php
+                  $i=1; 
 				    foreach($section as $val){
-                                                 
-                     ?>
+                 
+               $date_arr=$val['created_at'];
+               $strdate = strtotime($date_arr);
+               $ddmmyy = date('d-m-Y',$strdate);
+
+      ?>
                   <tr>
-                     <td><?php echo$val['name'];?></td>
-                     <td><?php echo$val['email'];?></td>
-                     <td><?php echo$val['subject'];?></td>
-					 <td><?php echo$val['message'];?></td>
+                     <td><?php echo $i++;?></td>
+                     <td  data-sort="<?php echo $strdate; ?>"><?php echo $ddmmyy;?></td>
+                     <td><?php echo $val['name'];?></td>
+                     <td><?php echo $val['email'];?></td>
+                     <td><?php echo $val['subject'];?></td>
+					      <td><?php echo $val['message'];?></td>
+                    
+
+                
 					<td > 
 						
                         <a class="btn btn-danger btn-xs" href="deletemsg.php?id=<?php echo $val['id']; ?>" ><i class="fa fa-trash-o"></i></a> 
@@ -63,3 +90,4 @@ include("template/header.php");
 </section>
 <!-- /MIDDLE -->
 <?php include("template/footer.php");?> 
+

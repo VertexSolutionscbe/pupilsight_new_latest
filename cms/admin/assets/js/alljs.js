@@ -128,11 +128,12 @@ loadScript(plugin_path + "datatables/js/jquery.dataTables.min.js", function(){
 
 							var oTable = table.dataTable({
 								"lengthMenu": [
-									[5, 15, 20, -1],
-									[5, 15, 20, "All"] // change per page values here
+									[5, 10, 15, 20, -1],
+									[5, 10, 15, 20, "All"] // change per page values here
 								],
 								// set the initial value
 								"pageLength": 10,
+								
 
 								"language": {
 									"lengthMenu": " _MENU_ records"

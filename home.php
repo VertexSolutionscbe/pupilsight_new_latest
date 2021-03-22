@@ -25,8 +25,8 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-$baseurl = getDomain().'/pupilsight';
-//$baseurl = getDomain();
+//$baseurl = getDomain().'/pupilsight_new';
+$baseurl = getDomain();
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
 $hero_image = $baseurl . "/cms/images/welcome.png";
@@ -74,6 +74,8 @@ if (isset($data['logo_image'])) {
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
 
     <!-- CSS files -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
 
 
@@ -113,10 +115,23 @@ if (isset($data['logo_image'])) {
             display: none;
         }
 
+
         .carouselTitle {
             line-height: 42px;
             font-size: 42px;
             font-weight: 600;
+        }
+
+        .bannerTitle {
+            line-height: 42px;
+            font-size: 30px;
+            font-weight: 600;
+            /* font-family: "serif"; */
+        }
+
+        .bannerDes {
+            font-size: 18px;
+            font-family: "serif";
         }
 
         .carouselSubTitle {
@@ -209,6 +224,7 @@ if (isset($data['logo_image'])) {
 </head>
 
 <body id='chkCounterSession' class='antialiased'>
+
     <!-- Preloader Start Here -->
     <div id="preloader" style="display:none;"></div>
     <!-- Preloader End Here -->
@@ -220,7 +236,8 @@ if (isset($data['logo_image'])) {
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a href="<?= $baseurl; ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
-                    <img src="<?= $logo; ?>" class="navbar-brand-image" title="<?= $data["logo_title"]; ?>">
+                    <!-- <img src="<?= $logo; ?>" class="navbar-brand-image" title="<?= $data["logo_title"]; ?>"> -->
+                    <img src="<?= $logo; ?>" width="160" height="50" title="<?= $data["logo_title"]; ?>">
                 </a>
 
                 <div class="navbar-collapse collapse" id="navbar-menu" style='flex: inherit !important;'>
@@ -329,22 +346,24 @@ if (isset($data['logo_image'])) {
             <!---Hero Page---->
             <a name="home"></a>
             <div class="row">
-                <div class="col-md-6 col-sm-12 m-auto">
-                    <div class='my-3' style="width:400px;margin:auto;">
-                        <div class="carouselTitle"><?= trim(html_entity_decode($data['cms_banner_title'])); ?></div>
+                <div class="col-md-8 col-sm-12 m-auto">
+                    <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
+                    <div class='mx-6'>
+                        <div class="bannerTitle"><?= trim(html_entity_decode($data['cms_banner_title'])); ?></div>
                         <div class='mt-3'>
-                            <div>
+                            <div class="bannerDes">
                                 <?= trim(html_entity_decode($data['cms_banner_short_description'])); ?>
                             </div>
                         </div>
 
                         <div class="mt-3">
                             <button type="button" class="btn btn-primary btn-lg btn-square" onclick="loginPanel();">Login</button>
+                            <!-- <a class="btn btn-primary btn-lg btn-square" href="#courses">View Course</a> -->
                         </div>
 
                     </div>
                 </div>
-                <div class="col-md-6 col-sm-12 m-auto">
+                <div class="col-md-4 col-sm-12 m-auto">
                     <div style="min-height:315px;" class="mx-2 my-4">
                         <?php
                         $herocss = "";
@@ -394,15 +413,15 @@ if (isset($data['logo_image'])) {
                                     }*/
 
                                     if (!empty($section['6']['0']['short_description'])) {
-                                        echo "<b>" . $section['6']['0']['short_description'] . "</b>";
+                                        echo "<b class='bannerDes'>" . $section['6']['0']['short_description'] . "</b>";
                                     } else {
-                                        echo '<b>Limitless learning, more possibilities</b>';
+                                        echo '<b class="bannerDes">Limitless learning, more possibilities</b>';
                                     }
 
                                     if (!empty($section['6']['0']['description'])) {
-                                        echo "<p class='wordwrap'>" . $section['6']['0']['description'] . "</p>";
+                                        echo "<p class='bannerDes'>" . $section['6']['0']['description'] . "</p>";
                                     } else {
-                                        echo '<p class="wordwrap">High is a nationally recognized K-12 independent school situatedin the hills of Oakland, California. Our mission is to inspire a maplifelonglove of learning with a focus on scholarship. For 23 years of existence,Ed has more.</p>';
+                                        echo '<p class="bannerDes">High is a nationally recognized K-12 independent school situatedin the hills of Oakland, California. Our mission is to inspire a maplifelonglove of learning with a focus on scholarship. For 23 years of existence,Ed has more.</p>';
                                     }
 
                                     ?>
@@ -429,14 +448,19 @@ if (isset($data['logo_image'])) {
                                     $cimg = 'cms/images/upload/' . $sec['image'];
                                 }
                         ?>
+
                                 <div class="col-sm">
-                                    <div class="card">
-                                        <img src="<?= $cimg; ?>" class="card-img-top" style='height: 200px;background-size: contain;'>
-                                        <div class="card-body">
-                                            <h3 class="card-title wordwrap"><?= ucwords($sec['title']); ?></h3>
-                                            <p class="wordwrap"><?= $sec['short_description']; ?></p>
+                                    <a href="#courseModal" class="courseData" data-toggle="modal" data-cimg="<?= $cimg; ?>" data-title="<?= ucwords($sec['title']); ?>" data-desc="<?= $sec['short_description']; ?>">
+
+                                        <div class="card">
+                                            <img src="<?= $cimg; ?>" class="card-img-top" style='height: 200px;background-size: contain;'>
+                                            <div class="card-body">
+                                                <h3 class="card-title wordwrap"><?= ucwords($sec['title']); ?></h3>
+                                                <p class="wordwrap"><?= $sec['short_description']; ?></p>
+                                            </div>
                                         </div>
-                                    </div>
+
+                                    </a>
                                 </div>
 
                         <?php }
@@ -444,8 +468,78 @@ if (isset($data['logo_image'])) {
                     </section>
 
                 </div>
+
+
+                <!-- Modal Popop -->
+
+                <div class="container">
+                    <div class="modal fade" id="courseModal" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1></h1>
+                                    <button type="button" class="clsbtn close" data-dismiss="modal">&times;</button>
+
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="col-sm">
+                                        <div class="card">
+                                            <img id="cimg" src="" align="center">
+                                            <div class="card-body">
+                                                <h3 id="title" class="card-title"></h3>
+                                                <p id="desc"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             <?php
-            }
+            } ?>
+
+            <!-- <div class="row mt-5">
+                <div class="col-lg-12 d-flex justify-content-center">
+                <span class="carouselTitle"><?php echo $data['total_student']; ?><span>  <span class="ml-2 carouselTitle"><?php echo $data['total_course']; ?><span>
+                 <h3> <span style="margin-left:10px">Students</span><span style="margin-left:40px">Courses</span> </h3>
+                
+                </div>    
+            </div> -->
+
+
+            <div class="row mt-5">
+                <div class="col-lg-12 d-flex justify-content-center">
+                    <?php if ($data['total_student']) { ?>
+
+                        <div>
+                            <span class="carouselTitle"><?php echo $data['total_student']; ?><span>
+                                    <h3> <span>Students</span></h3>
+
+                        </div>
+                    <?php } ?>
+
+                    <?php if ($data['total_course']) { ?>
+                        <div <?php if ($data['total_student']) { ?> class="ml-3" <?php } ?>>
+                            <span class="carouselTitle"><?php echo $data['total_course']; ?><span>
+                                    <h3> <span>Courses</span></h3>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+
+
+
+            <?php
             if ($data["announcement_status"] == 1) {
             ?>
 
@@ -458,6 +552,7 @@ if (isset($data['logo_image'])) {
                     <div class="row">
                         <section id="announcementsSlide" class="lazy slider" data-sizes="50vw">
                             <?php if (!empty($section['3'])) {
+
                                 foreach ($section['3'] as $k => $crs) {
                                     $aimg = $announcements;
                                     if ($crs['image']) {
@@ -466,13 +561,17 @@ if (isset($data['logo_image'])) {
                             ?>
 
                                     <div class="col-sm">
-                                        <div class="card">
-                                            <img src="<?= $aimg; ?>" class="card-img-top" style='height: 200px;background-size: cover;'>
-                                            <div class="card-body wordwrap" title='<?= $crs['title']; ?>'>
-                                                <?= $crs['title']; ?>
+                                        <a href="#annModal" class="annData" data-toggle="modal" data-aimg="<?= $aimg; ?>" data-title="<?= $crs['title']; ?>" data-desc="<?= $crs['short_description']; ?>">
+                                            <div class="card">
+                                                <img src="<?= $aimg; ?>" class="card-img-top" style='height: 200px;background-size: cover;'>
+                                                <div class="card-body wordwrap" title='<?= $crs['title']; ?>'>
+                                                    <?= $crs['title']; ?>
+                                                </div>
                                             </div>
-                                        </div>
+
+                                        </a>
                                     </div>
+
 
                             <?php
                                 }
@@ -480,6 +579,44 @@ if (isset($data['logo_image'])) {
                             ?>
                         </section>
 
+                    </div>
+                </div>
+
+
+
+                <!-- Modal Popop -->
+
+                <div class="container">
+                    <div class="modal fade" id="annModal" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1></h1>
+                                    <button type="button" class="clsbtn close" data-dismiss="modal">&times;</button>
+
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="col-sm">
+                                        <div class="card">
+                                            <img id="aimg" src="" align="center">
+                                            <div class="card-body">
+                                                <h3 id="atitle" class="card-title"></h3>
+                                                <p id="adesc"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             <?php
@@ -501,7 +638,7 @@ if (isset($data['logo_image'])) {
                                 <div class="col-md-6 col-sm-12 m-auto">
                                     <div class="mx-2 my-4 py-4">
                                         <center>
-                                            <img src="<?= $cmimg; ?>" class="img-fluid" style='max-height:300px;' />
+                                            <img src="<?= $cmimg; ?>" class="rounded-circle" style='max-height:300px;' />
                                         </center>
                                     </div>
                                 </div>
@@ -511,7 +648,8 @@ if (isset($data['logo_image'])) {
                             ?>
 
                             <div class="col-md-6 col-sm-12 m-auto">
-                                <div class='my-3' style="width:400px;margin:auto;">
+                                <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
+                                <div class='my-3'>
                                     <div class="carouselTitle">Chairman'S Message</div>
                                     <div class='mt-3'>
                                         <?php
@@ -522,7 +660,7 @@ if (isset($data['logo_image'])) {
                                         }
 
                                         if ($exp['short_description']) {
-                                            echo "<p>" . $exp['short_description'] . "</p>";
+                                            echo "<p class='bannerDes'>" . $exp['short_description'] . "</p>";
                                         } else {
                                             echo '<p>Programs are available in fall, spring, and summer semesters. Many fall and spring programs offer similar shorter programs in the summer, and some may be combined for a full academic year.</p>';
                                         }
@@ -585,93 +723,134 @@ if (isset($data['logo_image'])) {
             if ($data["contact_status"] == 1) {
             ?>
                 <!---Contact Us---->
+
                 <div class="row" id="contact">
                     <div class="col-12 carouselTitle text-center my-5">
                         Contact Us
                     </div>
 
+                    <div class="col-md-1"></div>
                     <div class="col-md-4 col-sm-12">
-                        <div id="map" class='card'>
-                            <?php echo html_entity_decode($data['contact_map']) ?>
-                            <!--
-                            <iframe width="100%" height="407" border='0' id="gmap_canvas" src="https://maps.google.com/maps?q=12th%20A%20Main%20Rd%2C%20HAL%202nd%20Stage%2C%20Indiranagar%2C%20Bengaluru%2C%20Karnataka%20560008&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>
-                            -->
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-12">
-                        <div class='font20'>
-                            <?php if ($data['phone'] != '') { ?>
-                                <div>
-                                    <label class="form-label font20">Contact Number</label>
-                                    <?php echo $data['phone']; ?>
-                                </div>
-                                <br>
-
-                            <?php  } ?>
-
-                            <?php if ($data['primary_email'] != '' || $data['secondary_email'] != '') { ?>
-
-                                <label class="form-label font20">Email</label>
-                                <diV><?php echo $data['primary_email']; ?></div>
-                                <div><?php echo $data['secondary_email']; ?></div>
-
-                                <br>
-                            <?php  } ?>
-
-                            <?php if ($data['fax'] != '') { ?>
-                                <div>
-                                    <label class="form-label font20">Fax</label>
-                                    <?php echo $data['fax']; ?>
-                                </div>
-
-                                <br>
-                            <?php  } ?>
+                        <!-- <div class='font20' style="margin:10px"> -->
+                        <div class='bannerDes' style="margin:20px">
 
                             <?php if ($data['address'] != '') { ?>
 
-                                <div class="Address">
-                                    <label class="form-label font20">Address</label>
+
+                                <!-- <label class="form-label font20">Address</label> -->
+                                <div class="row">
+                                    <div class="col-lg-1">
+
+                                        <i class="fa fa-map-marker" style="font-size:24px;color:#206bc4" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="col-lg-11">
+                                        <?php echo $data['address']; ?>
+                                    </div>
                                 </div>
-                                <div><?php echo $data['address']; ?></div>
                                 <br>
                             <?php  } ?>
+                            <?php if ($data['phone'] != '') { ?>
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <!-- <label class="form-label font20">Contact Number</label> -->
+                                        <i class="fa fa-phone" style="font-size:24px;color:#206bc4"></i>
+                                    </div>
+                                    <div class="col-lg-11"><?php echo $data['phone']; ?></div>
+                                </div>
+                                <br>
+
+                            <?php  } ?>
+
+
+
+                            <?php if ($data['primary_email'] != '' || $data['secondary_email'] != '') { ?>
+
+                                <!-- <label class="form-label font20">Email</label> -->
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <i class="fa fa-envelope-o" style="font-size:24px;color:#206bc4"></i>
+                                    </div>
+                                    <div class="col-lg-11">
+                                        <diV><?php echo $data['primary_email']; ?></div>
+                                        <div><?php echo $data['secondary_email']; ?></div>
+                                    </div>
+                                </div>
+                                <br>
+                            <?php  } ?>
+
+                            <?php //if ($data['fax'] != '') { 
+                            ?>
+                            <!-- <div>
+                                     <label class="form-label font20">Fax</label> 
+
+                                    <i class="fa fa-fax" style="font-size:24px;color:blue"></i>
+                                    <?php //echo $data['fax']; 
+                                    ?>
+                                </div>
+
+                                <br> -->
+                            <?php  //} 
+                            ?>
+
                         </div>
                     </div>
 
-                    <div class="col-md-4 col-sm-12">
+                    <div class="col-md-6 col-sm-12">
 
                         <div id="form" class="card">
                             <div class="card-body">
                                 <form id="contactForm" class="wpcf7-form">
                                     <div class="mb-2">
-                                        <label class="form-label">Name *</label>
-                                        <input class="form-control chkempty" id="con_name" name="name" required>
-                                    </div>
-                                    <div class="mb-2">
-                                        <label class="form-label">Subject *</label>
-                                        <input class="form-control chkempty" id="con_subject" name="subject" required>
-                                    </div>
-                                    <div class="mb-2">
-                                        <label class="form-label">Email *</label>
-                                        <input class="form-control chkempty" id="con_email" name="email" required>
+                                        <!-- <label class="form-label">Name *</label> -->
+                                        <input placeholder="Name *" class="form-control chkempty" id="con_name" name="name" required>
                                     </div>
 
                                     <div class="mb-2">
-                                        <label class="form-label">Message *</label>
-                                        <textarea class="form-control chkempty" id="con_message" name="message" rows="5" required></textarea>
+                                        <!-- <label class="form-label">Email *</label> -->
+                                        <input placeholder="Email *" class="form-control chkempty" id="con_email" name="email" required>
                                     </div>
 
-                                    <div class="form-footer">
-                                        <button type="button" class="btn btn-primary btn-block" id="submitContact">Send Your Message</button>
+
+                                    <div class="mb-2">
+                                        <!-- <label class="form-label">Subject *</label> -->
+                                        <input placeholder="Subject *" class="form-control chkempty" id="con_subject" name="subject" required>
+                                    </div>
+
+
+                                    <div class="mb-2">
+                                        <!-- <label class="form-label">Message *</label> -->
+                                        <textarea placeholder="Message *" class="form-control chkempty" id="con_message" name="message" rows="5" required></textarea>
+                                    </div>
+
+                                    <div class="form-footer mt-2">
+                                        <!-- <button type="submit" class="btn btn-primary btn-block" id="submitContact">Send Your Message</button> -->
+
+                                        <button type="submit" class="btn btn-primary" id="submitContact">Send Your Message</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
 
+                    <div class="col-md-1"></div>
 
                 </div>
+
+                <!-- <div class="row mt-2">
+                    <div class="col-md-12 col-sm-12 d-flex justify-content-center">
+                        <div id="mapshow" >
+                            <?php //if($data['contact_map'])
+                            //echo html_entity_decode($data['contact_map']) 
+                            ?>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="google-maps m-5">
+                    <?php if ($data['contact_map'])
+                        echo html_entity_decode($data['contact_map']) ?>
+                </div>
+
             <?php
             }
             ?>
@@ -804,7 +983,9 @@ if (isset($data['logo_image'])) {
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
-        <form action="<?php echo $baseurl;?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+        <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+            <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
+
             <div class="card-body">
                 <div class="closeX">
                     <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
@@ -814,13 +995,19 @@ if (isset($data['logo_image'])) {
                 </div>
                 <h2 class="mb-3 text-center">Login to your account</h2>
                 <div class="mb-3">
-                    <label class="form-label">User Name</label>
-                    <input type="text" id="username" name="username" class="form-control" required="">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="username" value="<?php if (isset($_COOKIE["username"])) {
+                                                                echo $_COOKIE["username"];
+                                                            } ?>" name="username" class="form-control" required="">
                     <div class="invalid-feedback">Invalid User Name or Email Addresss</div>
                 </div>
                 <div class="mb-2">
                     <label class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" autocomplete="password" required="">
+
+
+                    <input type="password" value="<?php if (isset($_COOKIE["password"])) {
+                                                        echo $_COOKIE["password"];
+                                                    } ?>" id="password" name="password" class="form-control" required="">
                     <div class="invalid-feedback">Invalid Password</div>
                     <select id="pupilsightSchoolYearID" name="pupilsightSchoolYearID" class="d-none fullWidth">
                         <option value="023">2017-18</option>
@@ -832,6 +1019,12 @@ if (isset($data['logo_image'])) {
 
                 <div class="form-footer mb-3">
                     <div class="row">
+                        <p class="login-remember">
+                            <label><input name="rememberme" type="checkbox" <?php if (isset($_COOKIE["username"])) {
+                                                                                echo "checked";
+                                                                            } ?> /> Remember
+                                Me</label>
+                        </p>
                         <div class='col-12'><button type="submit" class="btn btn-primary btn-block btn-square">Sign in</button></div>
                         <!--
                         <div class='col-6'><button type="button" onclick="homePanel();" class="btn btn-secondary btn-block btn-square">Back</button></div>
@@ -850,11 +1043,43 @@ if (isset($data['logo_image'])) {
                     --->
                     <div class="float-right">
 
-                        <button class="btn btn-link" type="button">Lost your password?</button>
+                        <button class="btn btn-link" type="button" onclick="forgetPanel();">Lost your password?</button>
 
                     </div>
                     <div class="float-none">&nbsp;</div>
                 </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div id="forgetPanel" class="container-tight py-6 hide">
+
+
+        <!-- <form action="<?php echo $baseurl; ?>/forgetProcess.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
+        <form action="" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+
+            <div class="card-body">
+                <div class="closeX">
+                    <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
+                </div>
+                <div class="text-center my-3">
+                    <img src="<?= $logo; ?>" height="36" alt="">
+                </div>
+                <h2 class="mb-3 text-center">Reset Password</h2>
+                <h4>(Please enter your username or email address. You will receive a link to create a new password via email)</h4>
+                <div class="mb-3">
+                    <label class="form-label">Username or Email</label>
+                    <input type="text" id="email" name="email" class="form-control" required="">
+                    <div class="invalid-feedback">Invalid User Email Addresss</div>
+                </div>
+
+                <div class="form-footer mb-3">
+                    <div class="row">
+                        <div class='col-12'><button type="submit" class="btn btn-primary btn-block btn-square">Reset Password</button></div>
+                    </div>
+                </div>
+
 
             </div>
         </form>
@@ -875,12 +1100,142 @@ if (isset($data['logo_image'])) {
                     <a href="#" class="link-secondary mr-2">Admission</a>
                 </div>
                 -->
-                <div class="col-auto align-self-end">
-                    <a href="#" class="link-secondary">Powered by ParentOf</a>
+                <!-- <div class="col-auto align-self-end"> -->
+                <div class="row">
+
+                    <div class="col-md-10">
+                        <a href="https://www.parentof.com/" target="_blank" class="link-secondary">Powered by ParentOf</a>
+                    </div>
+
+                    <div class="col-md-2">
+
+                        <div style="margin-left:50px">
+
+                            <?php if (!empty($data['facebook_link'])) { ?>
+
+                                <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
+                                    <i class="social-icon fa fa-facebook" style="font-size:24px;color:#206bc4"></i>
+                                </a>&nbsp;&nbsp;
+
+                            <?php } ?>
+                            <?php if (!empty($data['twitter_link'])) { ?>
+                                <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
+                                    <i class="social-icon fa fa-twitter" style="font-size:24px;color:#206bc4"></i>
+                                </a>&nbsp;&nbsp;
+
+                            <?php } ?>
+                            <?php if (!empty($data['pinterest_link'])) { ?>
+                                <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
+                                    <i class="social-icon fa fa-pinterest-p" style="font-size:24px;color:#206bc4"></i>
+                                </a>&nbsp;&nbsp;
+
+                            <?php } ?>
+                            <?php if (!empty($data['linkdlin_link'])) { ?>
+                                <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
+                                    <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
+                                </a>
+                            <?php } ?>
+                        </div>
+
+                    </div>
+
                 </div>
+
+
             </div>
         </div>
     </footer>
+
+    <div id="back-to-top" class="default">
+
+        <button onclick="topFunction()" id="topBtn" title="Go to top"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></button>
+
+        <!-- <a href="<?php echo $baseurl . '/home.php' ?>"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></a> -->
+    </div>
+
+    <style>
+        <<<<<<< HEAD=======.google-maps {
+            position: relative;
+            padding-bottom: 1%; // This is the aspect ratio
+            height: 0;
+            overflow: hidden;
+        }
+
+        .google-maps iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 90% !important;
+            height: 100% !important;
+            margin-left: 5%;
+        }
+
+
+
+        >>>>>>>08140711c5e7e0055a4d95958116462bff01d1e4
+        /* #topBtn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        z-index: 99;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        padding: 15px;
+        border-radius: 4px;
+        background: none;
+        } */
+
+        .btn-border {
+            border-radius: 30px;
+        }
+
+        #topBtn {
+            display: none;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            color: white;
+            text-align: right;
+            border: none;
+            outline: none;
+            padding: 15px;
+            border-radius: 4px;
+            background: none;
+
+        }
+
+        #mapshow {
+            padding: 0px !important;
+        }
+    </style>
+
+
+    <script>
+        //Get the button
+        var topbutton = document.getElementById("topBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {
+            scrollFunction()
+        };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                topbutton.style.display = "block";
+            } else {
+                topbutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+    </script>
 
     <script>
         $('.lazy').slick({
@@ -906,7 +1261,7 @@ if (isset($data['logo_image'])) {
     <script>
         document.body.style.display = "block";
         $(document).ready(function() {
-            $("#loginPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+            $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
             try {
                 $('.gmap_canvas a').remove();
             } catch (ex) {
@@ -915,10 +1270,17 @@ if (isset($data['logo_image'])) {
         });
 
         function loginPanel() {
-            $("#username").val("");
-            $("#password").val("");
-            $("#homePanel, #footPanel, #applicationList, #applicationStatus").hide(400);
+            // $("#username").val("");
+            // $("#password").val("");
+            $("#homePanel,#forgetPanel, #footPanel, #applicationList, #applicationStatus").hide(400);
             $("#loginPanel").show(400);
+        }
+
+        function forgetPanel() {
+            // $("#username").val("");
+            // $("#password").val("");
+            $("#homePanel,#loginPanel, #footPanel, #applicationList, #applicationStatus").hide(400);
+            $("#forgetPanel").show(400);
         }
 
         function applicationList() {
@@ -939,7 +1301,7 @@ if (isset($data['logo_image'])) {
         }
 
         function homePanel() {
-            $("#loginPanel, #applicationList, #applicationStatus").hide(400);
+            $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide(400);
             $("#homePanel, #contentPanel, #footPanel").show(400);
         }
     </script>
@@ -983,20 +1345,24 @@ if (isset($data['logo_image'])) {
 
 
         jQuery(document).on('click', '#submitContact', function(e) {
+
             e.preventDefault();
             var chk = '0';
             jQuery('.chkempty').each(function() {
                 var val = jQuery(this).val();
                 if (val == '') {
                     jQuery(this).addClass('chkemptycolor');
-                    chk = '0';
+                    //chk = '0';
+                    chk++;
                 } else {
                     jQuery(this).removeClass('chkemptycolor');
-                    chk = '1';
+                    //chk = '1';
+
                 }
             });
+            //if (chk == '1') {
+            if (chk == '0') {
 
-            if (chk == '1') {
                 jQuery.ajax({
                     url: "cms/ajax.php",
                     type: 'POST',
@@ -1009,6 +1375,40 @@ if (isset($data['logo_image'])) {
                     }
                 });
             }
+        });
+
+        $(document).on("click", ".courseData", function() {
+
+            var title = $(this).data('title');
+            var desc = $(this).data('desc');
+            var cimg = $(this).data('cimg');
+
+
+            $('#title').text(title);
+            $('#desc').text(desc);
+            $('#cimg').attr("src", cimg);
+
+
+        });
+
+        $(document).on("click", ".annData", function() {
+
+            var title = $(this).data('title');
+            var desc = $(this).data('desc');
+            var aimg = $(this).data('aimg');
+
+            $('#atitle').text(title);
+            $('#adesc').text(desc);
+            $('#aimg').attr("src", aimg);
+
+
+        });
+        $(document).on("click", ".clsbtn", function() {
+
+            location.reload(true);
+
+            //$('.courseData').css('border', '0px'); 
+
         });
     </script>
 

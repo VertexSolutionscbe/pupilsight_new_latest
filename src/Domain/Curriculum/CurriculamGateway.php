@@ -38,18 +38,18 @@ class CurriculamGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
-    
-    
+
+
     public function getstudent_subject_assigned_data(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $pupilsightPersonID)
     {
-        if(!empty($pupilsightProgramID) && !empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)){
+        if (!empty($pupilsightProgramID) && !empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)) {
             //print_r($criteria);
             $pupilsightRoleIDAll = '003';
             $query = $this
                 ->newQuery()
                 ->from('pupilsightPerson')
                 ->cols([
-                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.officialName AS student_name', 'pupilsightPerson.admission_no','pupilsightProgram.name as progname','pupilsightYearGroup.name as clsname','pupilsightRollGroup.name as secname'
+                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.officialName AS student_name', 'pupilsightPerson.admission_no', 'pupilsightProgram.name as progname', 'pupilsightYearGroup.name as clsname', 'pupilsightRollGroup.name as secname'
                 ])
                 ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
                 ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
@@ -92,11 +92,11 @@ class CurriculamGateway extends QueryableGateway
                 'examinationTestMaster.*', 'pupilsightSchoolYear.name as academic_year'
             ])
             ->leftJoin('pupilsightSchoolYear', 'examinationTestMaster.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID');
-            if (!empty($pupilsightSchoolYearID)) {
-                $query->where('examinationTestMaster.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
-            }
-            $query->orderBy(['examinationTestMaster.id DESC']);
-            //echo $query;
+        if (!empty($pupilsightSchoolYearID)) {
+            $query->where('examinationTestMaster.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
+        }
+        $query->orderBy(['examinationTestMaster.id DESC']);
+        //echo $query;
 
         return $this->runQuery($query, $criteria, true);
     }
@@ -108,27 +108,27 @@ class CurriculamGateway extends QueryableGateway
             ->newQuery()
             ->from('examinationTest')
             ->cols([
-                'examinationTest.*', 'pupilsightSchoolYear.name as academic_year','pupilsightYearGroup.name as classname', 'pupilsightProgram.name as progname'
+                'examinationTest.*', 'pupilsightSchoolYear.name as academic_year', 'pupilsightYearGroup.name as classname', 'pupilsightProgram.name as progname'
             ])
             ->leftJoin('examinationTestAssignClass', 'examinationTest.id=examinationTestAssignClass.test_id')
             ->leftJoin('pupilsightSchoolYear', 'examinationTest.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
             ->leftJoin('pupilsightProgram', 'examinationTestAssignClass.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
             ->leftJoin('pupilsightYearGroup', 'examinationTestAssignClass.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
-            if (!empty($pupilsightSchoolYearIDpost)) {
-                $query->where('examinationTest.pupilsightSchoolYearID = "' . $pupilsightSchoolYearIDpost . '" ');
-            }
-            if (!empty($pupilsightProgramID)) {
-                $query->where('examinationTestAssignClass.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
-            }
-            
-            if (!empty($pupilsightYearGroupID)) {
-                $query->where('examinationTestAssignClass.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
-            }
-            if (!empty($pupilsightRollGroupID)) {
-                $query->where('examinationTestAssignClass.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
-            }
-            $query->orderby(['examinationTest.id DESC']);
-            //echo $query;
+        if (!empty($pupilsightSchoolYearIDpost)) {
+            $query->where('examinationTest.pupilsightSchoolYearID = "' . $pupilsightSchoolYearIDpost . '" ');
+        }
+        if (!empty($pupilsightProgramID)) {
+            $query->where('examinationTestAssignClass.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
+        }
+
+        if (!empty($pupilsightYearGroupID)) {
+            $query->where('examinationTestAssignClass.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
+        }
+        if (!empty($pupilsightRollGroupID)) {
+            $query->where('examinationTestAssignClass.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
+        }
+        $query->orderby(['examinationTest.id DESC']);
+        //echo $query;
 
         return $this->runQuery($query, $criteria, true);
     }
@@ -393,54 +393,54 @@ class CurriculamGateway extends QueryableGateway
         return $this->runQuery($query, $criteria, TRUE);
     }
 
-     
-public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupilsightRollGroupID)
-{
-    $pupilsightRoleIDAll = '003';
-    if (!empty($pupilsightYearGroupID)) {
-        $query = $this
-        ->newQuery()
-        ->from('pupilsightPerson')
-        ->cols([
-            'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','pupilsightPerson.pupilsightPersonID AS studentID'
-        ])
-     
-       // ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
-        ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
-        ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
-        ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
-  
-        ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
 
-       
-        if(!empty($pupilsightYearGroupID)){
-            $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
-        } 
-        if(!empty($pupilsightRollGroupID)){
-            $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" ');
-        } 
-    
-        $query->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
-            ->groupBy(['pupilsightPerson.pupilsightPersonID'])
-            ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']) ;
-          //  echo $query;    
-    }else{
-        $query = $this
-        ->newQuery()
-        ->from('pupilsightPerson')
-        ->cols([
-          'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','pupilsightPerson.pupilsightPersonID AS studentID'
-        ])
-        ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
-      //  ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
-        ->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
-        ->groupBy(['pupilsightPerson.pupilsightPersonID'])
-        ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
-        //echo $query;
-    }   
-   
-    return $this->runQuery($query, $criteria,TRUE );
-}
+    public function getstdData(QueryCriteria $criteria, $pupilsightYearGroupID, $pupilsightRollGroupID)
+    {
+        $pupilsightRoleIDAll = '003';
+        if (!empty($pupilsightYearGroupID)) {
+            $query = $this
+                ->newQuery()
+                ->from('pupilsightPerson')
+                ->cols([
+                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.officialName AS student_name', 'pupilsightPerson.pupilsightPersonID AS studentID'
+                ])
+
+                // ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
+                ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                ->leftJoin('pupilsightSchoolYear', 'pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+                ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+
+                ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
+
+
+            if (!empty($pupilsightYearGroupID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
+            }
+            if (!empty($pupilsightRollGroupID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
+            }
+
+            $query->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ')
+                ->groupBy(['pupilsightPerson.pupilsightPersonID'])
+                ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
+            //  echo $query;    
+        } else {
+            $query = $this
+                ->newQuery()
+                ->from('pupilsightPerson')
+                ->cols([
+                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.officialName AS student_name', 'pupilsightPerson.pupilsightPersonID AS studentID'
+                ])
+                ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                //  ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
+                ->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ')
+                ->groupBy(['pupilsightPerson.pupilsightPersonID'])
+                ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
+            //echo $query;
+        }
+
+        return $this->runQuery($query, $criteria, TRUE);
+    }
 
     public function getstudent_subject_skill_test_mappingdata(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $pupilsightDepartmentID, $skill_id, $test_id, $test_type)
     {
@@ -454,8 +454,8 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
             ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
             ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
             ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
-           // ->leftJoin('subjectToClassCurriculum', 'subjectToClassCurriculum.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
-           // ->leftJoin('subjectSkillMapping', 'subjectSkillMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
+        // ->leftJoin('subjectToClassCurriculum', 'subjectToClassCurriculum.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+        // ->leftJoin('subjectSkillMapping', 'subjectSkillMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
         if (!empty($pupilsightProgramID)) {
             $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
         }
@@ -468,7 +468,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
         if (!empty($pupilsightRollGroupID)) {
             $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
         }
-     /*   if (!empty($pupilsightDepartmentID)) {
+        /*   if (!empty($pupilsightDepartmentID)) {
             $query->where('subjectToClassCurriculum.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ');
         }
         if (!empty($skill_id)) {
@@ -486,34 +486,34 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
         return $res;
     }
 
-    public function getStudentTestSubjectClassWise(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightDepartmentID, $pupilsightYearGroupID,$pupilsightRollGroupID, $test_id)
+    public function getStudentTestSubjectClassWise(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightDepartmentID, $pupilsightYearGroupID, $pupilsightRollGroupID, $test_id)
     {
         $query = $this
             ->newQuery()
             ->from('examinationSubjectToTest')
             ->cols([
-                'examinationSubjectToTest.*','examinationTest.name','examinationTest.id','examinationTest.lock_marks_entry','examinationGradeSystem.id','examinationGradeSystemConfiguration.id ','examinationGradeSystemConfiguration.gradeSystemId',"GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name ORDER BY examinationGradeSystemConfiguration.rank ASC ) as grade_names","GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id ORDER BY examinationGradeSystemConfiguration.rank ASC) as grade_ids",'subjectToClassCurriculum.subject_display_name'
+                'examinationSubjectToTest.*', 'examinationTest.name', 'examinationTest.id', 'examinationTest.lock_marks_entry', 'examinationGradeSystem.id', 'examinationGradeSystemConfiguration.id ', 'examinationGradeSystemConfiguration.gradeSystemId', "GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name ORDER BY examinationGradeSystemConfiguration.rank ASC ) as grade_names", "GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id ORDER BY examinationGradeSystemConfiguration.rank ASC) as grade_ids", 'subjectToClassCurriculum.subject_display_name'
             ])
             ->leftJoin('examinationTest', 'examinationSubjectToTest.test_id=examinationTest.id')
             ->leftJoin('examinationTestAssignClass', 'examinationTestAssignClass.test_id=examinationSubjectToTest.test_id')
             ->leftJoin('subjectToClassCurriculum', 'subjectToClassCurriculum.pupilsightDepartmentID=examinationSubjectToTest.pupilsightDepartmentID')
             ->leftJoin('examinationGradeSystem', 'examinationSubjectToTest.gradeSystemId=examinationGradeSystem.id')
             ->leftJoin('examinationGradeSystemConfiguration', 'examinationGradeSystemConfiguration.gradeSystemId=examinationGradeSystem.id');
-                
-            if(!empty($test_id)){
-                $query->where('examinationTestAssignClass.test_id IN('.$test_id.') AND examinationSubjectToTest.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ');
-            } 
-            $query ->where('examinationSubjectToTest.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ')
+
+        if (!empty($test_id)) {
+            $query->where('examinationTestAssignClass.test_id IN(' . $test_id . ') AND examinationSubjectToTest.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ');
+        }
+        $query->where('examinationSubjectToTest.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ')
             ->where('examinationSubjectToTest.is_tested = "1" ')
-            ->where('subjectToClassCurriculum.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" AND examinationTestAssignClass.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" AND examinationTestAssignClass.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" AND examinationTestAssignClass.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ')
-         
-            ->groupBy(['examinationSubjectToTest.test_id','examinationGradeSystemConfiguration.gradeSystemId'])
-            ->orderBy(['examinationTest.id ASC']) ;
+            ->where('subjectToClassCurriculum.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" AND examinationTestAssignClass.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND examinationTestAssignClass.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" AND examinationTestAssignClass.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+
+            ->groupBy(['examinationSubjectToTest.test_id', 'examinationGradeSystemConfiguration.gradeSystemId'])
+            ->orderBy(['examinationTest.id ASC']);
         //$query;
-            $res = $this->runQuery($query, $criteria);
-            $data = $res->data;
-            $res->data = $data;
-            return $res;
+        $res = $this->runQuery($query, $criteria);
+        $data = $res->data;
+        $res->data = $data;
+        return $res;
     }
 
     public function examinationSubjectToTest(QueryCriteria $criteria)
@@ -581,53 +581,53 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
 
     //getTestResults
 
-    public function getsubjectmarksStdWise(QueryCriteria $criteria, $pupilsightProgramID, $pupilsightYearGroupID,$pupilsightSchoolYearID,$testId){
+    public function getsubjectmarksStdWise(QueryCriteria $criteria, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightSchoolYearID, $testId)
+    {
         $query = $this
             ->newQuery()
             ->from('examinationSubjectToTest')
             ->cols([
-                        'examinationSubjectToTest.*','examinationTest.name','examinationTest.lock_marks_entry','examinationGradeSystemConfiguration.gradeSystemId',"GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name SEPARATOR ', ') as grade_names","GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id SEPARATOR ', ') as grade_ids",'subjectToClassCurriculum.subject_type', 'pupilsightDepartment.name AS subject','subjectToClassCurriculum.pos'
-                    ])
+                'examinationSubjectToTest.*', 'examinationTest.name', 'examinationTest.lock_marks_entry', 'examinationGradeSystemConfiguration.gradeSystemId', "GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name SEPARATOR ', ') as grade_names", "GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id SEPARATOR ', ') as grade_ids", 'subjectToClassCurriculum.subject_type', 'pupilsightDepartment.name AS subject', 'subjectToClassCurriculum.pos'
+            ])
             ->leftJoin('examinationTest', 'examinationSubjectToTest.test_id=examinationTest.id')
-            ->leftJoin('pupilsightDepartment', 'examinationSubjectToTest.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')     
+            ->leftJoin('pupilsightDepartment', 'examinationSubjectToTest.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
             ->leftJoin('examinationGradeSystemConfiguration', 'examinationSubjectToTest.gradeSystemId=examinationGradeSystemConfiguration.gradeSystemId')
-            ->leftJoin('subjectToClassCurriculum', 'examinationSubjectToTest.pupilsightDepartmentID=subjectToClassCurriculum.pupilsightDepartmentID')  
+            ->leftJoin('subjectToClassCurriculum', 'examinationSubjectToTest.pupilsightDepartmentID=subjectToClassCurriculum.pupilsightDepartmentID')
 
             ->where('examinationSubjectToTest.is_tested ="1"')
-            ->where('examinationSubjectToTest.test_id ="'.$testId.'"')
-            ->where('subjectToClassCurriculum.pupilsightSchoolYearID ="'.$pupilsightSchoolYearID.'"')
-            ->where('subjectToClassCurriculum.pupilsightProgramID ="'.$pupilsightProgramID.'"')
-            ->where('subjectToClassCurriculum.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'"')
+            ->where('examinationSubjectToTest.test_id ="' . $testId . '"')
+            ->where('subjectToClassCurriculum.pupilsightSchoolYearID ="' . $pupilsightSchoolYearID . '"')
+            ->where('subjectToClassCurriculum.pupilsightProgramID ="' . $pupilsightProgramID . '"')
+            ->where('subjectToClassCurriculum.pupilsightYearGroupID ="' . $pupilsightYearGroupID . '"')
             ->groupBy(['examinationSubjectToTest.pupilsightDepartmentID'])
             ->orderBy(['subjectToClassCurriculum.pos ASC']);
-            //echo $query;
-            $res = $this->runQuery($query, $criteria);
-            $data = $res->data;
+        //echo $query;
+        $res = $this->runQuery($query, $criteria);
+        $data = $res->data;
 
-            foreach($data as $k=>$sd){
-                $query2 = $this
+        foreach ($data as $k => $sd) {
+            $query2 = $this
                 ->newQuery()
                 ->from('examinationSubjectToTest')
                 ->cols([
-                    'examinationSubjectToTest.*','subjectSkillMapping.skill_display_name'
-                    ])
+                    'examinationSubjectToTest.*', 'subjectSkillMapping.skill_display_name'
+                ])
                 ->leftJoin('subjectSkillMapping', 'examinationSubjectToTest.skill_id=subjectSkillMapping.skill_id')
                 ->where('examinationSubjectToTest.is_tested ="1"')
-                ->where('examinationSubjectToTest.test_id ="'.$testId.'"')
-                ->where('examinationSubjectToTest.pupilsightDepartmentID ="'.$sd['pupilsightDepartmentID'].'"')
+                ->where('examinationSubjectToTest.test_id ="' . $testId . '"')
+                ->where('examinationSubjectToTest.pupilsightDepartmentID ="' . $sd['pupilsightDepartmentID'] . '"')
                 ->groupBy(['examinationSubjectToTest.skill_id']);
 
-                $newdata = $this->runQuery($query2, $criteria);
-                if(!empty($newdata)){
-                    $data[$k]['skills'] = $newdata;
-                } else {
-                    $data[$k]['skills'] = '';
-                }    
+            $newdata = $this->runQuery($query2, $criteria);
+            if (!empty($newdata)) {
+                $data[$k]['skills'] = $newdata;
+            } else {
+                $data[$k]['skills'] = '';
             }
-            
-            $res->data = $data;
-            return $res;
+        }
 
+        $res->data = $data;
+        return $res;
     }
 
     public function getTestResults(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightYearGroupID, $pupilsightRollGroupID, $test_id)
@@ -643,7 +643,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
             ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
             ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
 
-            // ->innerJoin('examinationMarksEntrybySubject', 'pupilsightPerson.pupilsightPersonID=examinationMarksEntrybySubject.pupilsightPersonID');
+        // ->innerJoin('examinationMarksEntrybySubject', 'pupilsightPerson.pupilsightPersonID=examinationMarksEntrybySubject.pupilsightPersonID');
 
         if (!empty($pupilsightSchoolYearID)) {
             $query->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
@@ -662,11 +662,11 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
         //  $query->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
         $query->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
-         //echo $query;    
+        //echo $query;    
         $res = $this->runQuery($query, $criteria);
         $data = $res->data;
 
-        if(!empty($data)){
+        if (!empty($data)) {
             foreach ($data as $k => $d) {
                 $query2 = $this
                     ->newQuery()
@@ -675,9 +675,9 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
                         'examinationMarksEntrybySubject.*'
                     ])
                     ->where('examinationMarksEntrybySubject.pupilsightPersonID = "' . $d['pupilsightPersonID'] . '" ');
-                    if (!empty($test_id)) {
-                        $query->where('examinationMarksEntrybySubject.test_id = "' . $test_id . '"   ');
-                    }
+                if (!empty($test_id)) {
+                    $query->where('examinationMarksEntrybySubject.test_id = "' . $test_id . '"   ');
+                }
 
                 $newdata = $this->runQuery($query2, $criteria);
                 if (!empty($newdata->data[0]['id'])) {
@@ -769,61 +769,61 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
 
     //     return $db->select($sq);
     // }
-    public function getstdDataNew(QueryCriteria $criteria,$pupilsightProgramID,$pupilsightYearGroupID, $pupilsightRollGroupID,$test_id)
+    public function getstdDataNew(QueryCriteria $criteria, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $test_id)
     {
-    
+
         $pupilsightRoleIDAll = '003';
         if (!empty($pupilsightYearGroupID)) {
             $query = $this
-            ->newQuery()
-            ->from('pupilsightPerson')
-            ->cols([
-                'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','pupilsightPerson.pupilsightPersonID AS studentID', 'pupilsightPerson.admission_no'
-            ])
-         
-           // ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
-            ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
-            ->leftJoin('examinationTestAssignClass', 'pupilsightStudentEnrolment.pupilsightYearGroupID=examinationTestAssignClass.pupilsightYearGroupID')
-            ->leftJoin('pupilsightSchoolYear', 'examinationTestAssignClass.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
-            ->leftJoin('pupilsightRollGroup', 'examinationTestAssignClass.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
-      
-            ->leftJoin('pupilsightYearGroup', 'examinationTestAssignClass.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
-           if(!empty($pupilsightProgramID)){
-               $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "'.$pupilsightProgramID.'" ');
-           }
-            if(!empty($pupilsightYearGroupID)){
-                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
-            } 
-             if(!empty($test_id)){
-                $test_id=implode(",",$test_id);
-                $query->where('examinationTestAssignClass.test_id IN("'.$test_id.'")');
-            } 
-            if(!empty($pupilsightRollGroupID)){
-                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" ');
-            } 
-           
-            $query->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
+                ->newQuery()
+                ->from('pupilsightPerson')
+                ->cols([
+                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.officialName AS student_name', 'pupilsightPerson.pupilsightPersonID AS studentID', 'pupilsightPerson.admission_no'
+                ])
+
+                // ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
+                ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                ->leftJoin('examinationTestAssignClass', 'pupilsightStudentEnrolment.pupilsightYearGroupID=examinationTestAssignClass.pupilsightYearGroupID')
+                ->leftJoin('pupilsightSchoolYear', 'examinationTestAssignClass.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+                ->leftJoin('pupilsightRollGroup', 'examinationTestAssignClass.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+
+                ->leftJoin('pupilsightYearGroup', 'examinationTestAssignClass.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
+            if (!empty($pupilsightProgramID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "' . $pupilsightProgramID . '" ');
+            }
+            if (!empty($pupilsightYearGroupID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
+            }
+            if (!empty($test_id)) {
+                $test_id = implode(",", $test_id);
+                $query->where('examinationTestAssignClass.test_id IN("' . $test_id . '")');
+            }
+            if (!empty($pupilsightRollGroupID)) {
+                $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
+            }
+
+            $query->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ')
                 ->groupBy(['pupilsightPerson.pupilsightPersonID'])
-                ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']) ;
-               //echo $query;    
-        }else{
+                ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
+            //echo $query;    
+        } else {
             $query = $this
-            ->newQuery()
-            ->from('pupilsightPerson')
-            ->cols([
-              'pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.officialName AS student_name','pupilsightPerson.pupilsightPersonID AS studentID'
-            ])
-            ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
-          //  ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
-            ->where('pupilsightPerson.pupilsightRoleIDAll = "'.$pupilsightRoleIDAll.'" ')
-            ->groupBy(['pupilsightPerson.pupilsightPersonID'])
-            ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
+                ->newQuery()
+                ->from('pupilsightPerson')
+                ->cols([
+                    'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.officialName AS student_name', 'pupilsightPerson.pupilsightPersonID AS studentID'
+                ])
+                ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                //  ->leftJoin('assignstudent_tostaff', 'pupilsightPerson.pupilsightPersonID=assignstudent_tostaff.pupilsightPersonID')
+                ->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ')
+                ->groupBy(['pupilsightPerson.pupilsightPersonID'])
+                ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
             //echo $query;
-        }   
-       
-        return $this->runQuery($query, $criteria, true );
+        }
+
+        return $this->runQuery($query, $criteria, true);
     }
-    
+
     public function isRemarksAdded($pupilsightYearGroupID, $pupilsightDepartmentID, $skill_id = NULL)
     {
         $db = new DBQuery();
@@ -847,54 +847,54 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
         return $db->select($sq);
     }
 
-    public function getExamMarksNotEntered($search=NULL)
+    public function getExamMarksNotEntered($search = NULL)
     {
         $db = new DBQuery();
         $examids = $this->getAllActiveExams($search);
-        
+
         $len = count($examids);
         $i = 0;
-        while($i<$len){
+        while ($i < $len) {
 
-            $examids[$i]["pupilsightYearGroup"] = $db->getColVal("pupilsightYearGroup","name","pupilsightYearGroupID",$examids[$i]["pupilsightYearGroupID"]);
-            $examids[$i]["pupilsightDepartment"] = $db->getColVal("pupilsightDepartment","name","pupilsightDepartmentID",$examids[$i]["pupilsightDepartmentID"]);
-            $examids[$i]["pupilsightRollGroup"] = $db->getColVal("pupilsightRollGroup","name","pupilsightRollGroupID",$examids[$i]["pupilsightRollGroupID"]);
-            $examids[$i]["skill"] = $db->getColVal("ac_manage_skill","name","id",$examids[$i]["skill_id"]);
-            
-            if(empty($examids[$i]["pupilsightRollGroup"])){
+            $examids[$i]["pupilsightYearGroup"] = $db->getColVal("pupilsightYearGroup", "name", "pupilsightYearGroupID", $examids[$i]["pupilsightYearGroupID"]);
+            $examids[$i]["pupilsightDepartment"] = $db->getColVal("pupilsightDepartment", "name", "pupilsightDepartmentID", $examids[$i]["pupilsightDepartmentID"]);
+            $examids[$i]["pupilsightRollGroup"] = $db->getColVal("pupilsightRollGroup", "name", "pupilsightRollGroupID", $examids[$i]["pupilsightRollGroupID"]);
+            $examids[$i]["skill"] = $db->getColVal("ac_manage_skill", "name", "id", $examids[$i]["skill_id"]);
+
+            if (empty($examids[$i]["pupilsightRollGroup"])) {
                 $examids[$i]["pupilsightRollGroup"] = "";
                 $examids[$i]["totalStudents"] = "-";
                 $examids[$i]["staff"] = "-";
                 $tme = $this->totalMarksEntered($examids[$i]["test_id"], $examids[$i]["pupilsightYearGroupID"], $examids[$i]["pupilsightDepartmentID"]);
-                
-                $examids[$i]["marksStatus"] ="Incomplete";
-                $examids[$i]["marksEntered"] =0;
-                if($tme>0){
-                    $examids[$i]["marksStatus"] ="In Progress";
-                    $examids[$i]["marksEntered"] =$tme;
+
+                $examids[$i]["marksStatus"] = "Incomplete";
+                $examids[$i]["marksEntered"] = 0;
+                if ($tme > 0) {
+                    $examids[$i]["marksStatus"] = "In Progress";
+                    $examids[$i]["marksEntered"] = $tme;
                 }
                 //$result[] = $examids[$i];
-            }else{
-                $ts = $this->classTotalStudent($examids[$i]["pupilsightSchoolYearID"],$examids[$i]["pupilsightProgramID"],$examids[$i]["pupilsightYearGroupID"], $examids[$i]["pupilsightRollGroupID"]);
-                
+            } else {
+                $ts = $this->classTotalStudent($examids[$i]["pupilsightSchoolYearID"], $examids[$i]["pupilsightProgramID"], $examids[$i]["pupilsightYearGroupID"], $examids[$i]["pupilsightRollGroupID"]);
+
                 $examids[$i]["totalStudents"] = "-";
-                if($ts>0){
+                if ($ts > 0) {
                     $examids[$i]["totalStudents"] = $ts;
                 }
-                
+
                 $examids[$i]["staff"] = $this->getStaffName($examids[$i]["pupilsightYearGroupID"], $examids[$i]["pupilsightRollGroupID"], $examids[$i]["pupilsightDepartmentID"]);
                 $tme = $this->totalMarksEntered($examids[$i]["test_id"], $examids[$i]["pupilsightYearGroupID"], $examids[$i]["pupilsightDepartmentID"], $examids[$i]["pupilsightRollGroupID"]);
-                
-                $examids[$i]["marksStatus"] ="Incomplete";
-                $examids[$i]["marksEntered"] =0;
-                if($tme>0){
-                    if($tme>=$ts){
-                        $examids[$i]["marksStatus"] ="Complete";
-                        $examids[$i]["marksEntered"] =$tme;
-                        unset($examids[$i]); 
-                    }else{
-                        $examids[$i]["marksStatus"] ="In Progress";
-                        $examids[$i]["marksEntered"] =$tme;
+
+                $examids[$i]["marksStatus"] = "Incomplete";
+                $examids[$i]["marksEntered"] = 0;
+                if ($tme > 0) {
+                    if ($tme >= $ts) {
+                        $examids[$i]["marksStatus"] = "Complete";
+                        $examids[$i]["marksEntered"] = $tme;
+                        unset($examids[$i]);
+                    } else {
+                        $examids[$i]["marksStatus"] = "In Progress";
+                        $examids[$i]["marksEntered"] = $tme;
                     }
                 }
                 //$result[] = $examids[$i];
@@ -903,13 +903,13 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
             //$pupilsightProgramID = $examids[$i]["pupilsightProgramID"];
             //$pupilsightDepartmentID = $examids[$i]["pupilsightDepartmentID"];
             //$skill_id = $examids[$i]["skill_id"];
-            
+
             $i++;
         }
         return $db->convertDataset($examids);
     }
 
-    public function getAllActiveExams($search=NULL)
+    public function getAllActiveExams($search = NULL)
     {
 
         $db = new DBQuery();
@@ -919,106 +919,109 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
         //$sq .= "left join examinationTestSubjectCategory as sub on sub.test_id= t.id ";
         $sq .= "left join examinationSubjectToTest as sub on sub.test_id = t.id ";
         $sq .= "where t.end_date < DATE(NOW()) AND sub.is_tested = 1 ";
-        if(!empty($search)){
-            if(!empty($search["test_id"])){
-                $sq .= "and c.test_master_id='".$search["test_id"]."' ";
+        if (!empty($search)) {
+            if (!empty($search["test_id"])) {
+                $sq .= "and c.test_master_id='" . $search["test_id"] . "' ";
             }
-            if(!empty($search['pupilsightProgramIDBytest'])){
-               $sq.=" AND c.pupilsightProgramID= ".$search['pupilsightProgramIDBytest']." ";
+            if (!empty($search['pupilsightProgramIDBytest'])) {
+                $sq .= " AND c.pupilsightProgramID= " . $search['pupilsightProgramIDBytest'] . " ";
             }
-            if(!empty($search["pupilsightYearGroupIDT"])){
-                $pupilsightYearGroupIDT=implode(',', $search["pupilsightYearGroupIDT"]);
-                $sq .= "and c.pupilsightYearGroupID IN (".$pupilsightYearGroupIDT.")";
-            }
-
-            if(!empty($search["pupilsightRollGroupID"])){
-                $sq .= "and c.pupilsightRollGroupID='".$search["pupilsightRollGroupID"]."' ";
+            if (!empty($search["pupilsightYearGroupIDT"])) {
+                $pupilsightYearGroupIDT = implode(',', $search["pupilsightYearGroupIDT"]);
+                $sq .= "and c.pupilsightYearGroupID IN (" . $pupilsightYearGroupIDT . ")";
             }
 
-            if(!empty($search["pupilsightDepartmentID"])){
-                $sq .= "and sub.pupilsightDepartmentID='".$search["pupilsightDepartmentID"]."' ";
+            if (!empty($search["pupilsightRollGroupID"])) {
+                $sq .= "and c.pupilsightRollGroupID='" . $search["pupilsightRollGroupID"] . "' ";
             }
 
-            if(!empty($search["skill_id"])){
-                $sq .= "and sub.skill_id='".$search["skill_id"]."' ";
+            if (!empty($search["pupilsightDepartmentID"])) {
+                $sq .= "and sub.pupilsightDepartmentID='" . $search["pupilsightDepartmentID"] . "' ";
+            }
+
+            if (!empty($search["skill_id"])) {
+                $sq .= "and sub.skill_id='" . $search["skill_id"] . "' ";
             }
         }
         return $db->selectRaw($sq);
     }
 
-    public function getRollGroup($pupilsightRollGroupID){
+    public function getRollGroup($pupilsightRollGroupID)
+    {
         $db = new DBQuery();
-        $sq = "select pupilsightRollGroupID, name from pupilsightRollGroup where pupilsightRollGroupID IN(".$pupilsightRollGroupID.") ";
+        $sq = "select pupilsightRollGroupID, name from pupilsightRollGroup where pupilsightRollGroupID IN(" . $pupilsightRollGroupID . ") ";
         return $db->selectRaw($sq);
     }
 
-    public function totalMarksEntered($testId, $pupilsightYearGroupID=NULL, $pupilsightDepartmentID=NULL, $pupilsightRollGroupID=NULL){
+    public function totalMarksEntered($testId, $pupilsightYearGroupID = NULL, $pupilsightDepartmentID = NULL, $pupilsightRollGroupID = NULL)
+    {
         $db = new DBQuery();
         $sq = "select count(id) as count from examinationMarksEntrybySubject ";
-        $sq .= "where test_id='".$testId."' ";
+        $sq .= "where test_id='" . $testId . "' ";
 
-        if($pupilsightYearGroupID){
-            $sq .= "and pupilsightYearGroupID='".$pupilsightYearGroupID."' ";
-        }
-        
-        if($pupilsightDepartmentID){
-            $sq .= "and pupilsightDepartmentID='".$pupilsightDepartmentID."' ";
+        if ($pupilsightYearGroupID) {
+            $sq .= "and pupilsightYearGroupID='" . $pupilsightYearGroupID . "' ";
         }
 
-        if($pupilsightRollGroupID){
-            $sq .= "and pupilsightRollGroupID='".$pupilsightRollGroupID."' ";
+        if ($pupilsightDepartmentID) {
+            $sq .= "and pupilsightDepartmentID='" . $pupilsightDepartmentID . "' ";
+        }
+
+        if ($pupilsightRollGroupID) {
+            $sq .= "and pupilsightRollGroupID='" . $pupilsightRollGroupID . "' ";
         }
         $row = $db->selectRaw($sq);
-        if(!empty($row)){
+        if (!empty($row)) {
             return $row[0]["count"];
         }
         return 0;
     }
 
-    public function classTotalStudent($pupilsightSchoolYearID=NULL,$pupilsightProgramID=NULL,$pupilsightYearGroupID=NULL, $pupilsightRollGroupID=NULL){
-        if(!empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)){
+    public function classTotalStudent($pupilsightSchoolYearID = NULL, $pupilsightProgramID = NULL, $pupilsightYearGroupID = NULL, $pupilsightRollGroupID = NULL)
+    {
+        if (!empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)) {
             $db = new DBQuery();
             $sq = "select count(a.pupilsightStudentEnrolmentID) as count from pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID  ";
-            $sq .= "WHERE b.pupilsightRoleIDPrimary = '003' AND a.pupilsightSchoolYearID='".$pupilsightSchoolYearID."' ";
-            $sq .= " AND a.pupilsightProgramID= ".$pupilsightProgramID." ";
-            $sq .= "AND a.pupilsightYearGroupID= ".$pupilsightYearGroupID." ";
-            if($pupilsightRollGroupID){
-                $sq .= "AND a.pupilsightRollGroupID='".$pupilsightRollGroupID."' ";
+            $sq .= "WHERE b.pupilsightRoleIDPrimary = '003' AND a.pupilsightSchoolYearID='" . $pupilsightSchoolYearID . "' ";
+            $sq .= " AND a.pupilsightProgramID= " . $pupilsightProgramID . " ";
+            $sq .= "AND a.pupilsightYearGroupID= " . $pupilsightYearGroupID . " ";
+            if ($pupilsightRollGroupID) {
+                $sq .= "AND a.pupilsightRollGroupID='" . $pupilsightRollGroupID . "' ";
             }
             //echo $sq;
-           
+
             $row = $db->selectRaw($sq);
-            if(!empty($row)){
+            if (!empty($row)) {
                 return $row[0]["count"];
             }
         }
         return 0;
     }
 
-    public function getStaffName($pupilsightYearGroupID=NULL, $pupilsightRollGroupID=NULL, $pupilsightDepartmentID=NULL){
-        
-        if(!empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)){
-           
+    public function getStaffName($pupilsightYearGroupID = NULL, $pupilsightRollGroupID = NULL, $pupilsightDepartmentID = NULL)
+    {
+
+        if (!empty($pupilsightYearGroupID) && !empty($pupilsightRollGroupID)) {
+
 
             $db = new DBQuery();
             $sq = "select group_concat(p.pupilsightPersonID) as staffID from assignstaff_toclasssection as a ";
-            $sq .="left join pupilsightProgramClassSectionMapping as m on m.pupilsightMappingID = a.pupilsightMappingID ";
-            $sq .="left join pupilsightPerson as p on p.pupilsightPersonID=a.pupilsightPersonID ";
-            $sq .="where m.pupilsightYearGroupID = '".$pupilsightYearGroupID."' and m.pupilsightRollGroupID='".$pupilsightRollGroupID."' ";
+            $sq .= "left join pupilsightProgramClassSectionMapping as m on m.pupilsightMappingID = a.pupilsightMappingID ";
+            $sq .= "left join pupilsightPerson as p on p.pupilsightPersonID=a.pupilsightPersonID ";
+            $sq .= "where m.pupilsightYearGroupID = '" . $pupilsightYearGroupID . "' and m.pupilsightRollGroupID='" . $pupilsightRollGroupID . "' ";
             $row = $db->selectRaw($sq);
-            if(!empty($row)){
+            if (!empty($row)) {
                 $staffIds =  $row[0]["staffID"];
                 $db = new DBQuery();
-                $sq = 'SELECT GROUP_CONCAT(p.officialName) as staff FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff as s on a.pupilsightStaffID=s.pupilsightStaffID LEFT JOIN pupilsightPerson as p on s.pupilsightPersonID=p.pupilsightPersonID WHERE a.pupilsightdepartmentID = '.$pupilsightDepartmentID.' AND p.pupilsightPersonID IN ('.$staffIds.') ';
+                $sq = 'SELECT GROUP_CONCAT(p.officialName) as staff FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff as s on a.pupilsightStaffID=s.pupilsightStaffID LEFT JOIN pupilsightPerson as p on s.pupilsightPersonID=p.pupilsightPersonID WHERE a.pupilsightdepartmentID = ' . $pupilsightDepartmentID . ' AND p.pupilsightPersonID IN (' . $staffIds . ') ';
                 //echo $sq;
                 $row = $db->selectRaw($sq);
-                if(!empty($row)){
+                if (!empty($row)) {
                     return $row[0]["staff"];
                 }
             }
         }
         return "";
-        
     }
 
     public function getExamList()
@@ -1030,88 +1033,89 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
     }
 
 
-    public function getStudentSubjectskillsClassWise_ATT(QueryCriteria $criteria, $pupilsightSchoolYearID,$pupilsightYearGroupID,$pupilsightDepartmentID,$skill_id,$test_id,$test_type){
-      //  echo $skill_id;
+    public function getStudentSubjectskillsClassWise_ATT(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightYearGroupID, $pupilsightDepartmentID, $skill_id, $test_id, $test_type)
+    {
+        //  echo $skill_id;
         $query = $this
             ->newQuery()
             ->from('subjectSkillMapping')
             ->cols([
-               'DISTINCT subjectSkillMapping.skill_id as skill_ids','subjectSkillMapping.skill_display_name as skillname','examinationSubjectToTest.max_marks'
+                'DISTINCT subjectSkillMapping.skill_id as skill_ids', 'subjectSkillMapping.skill_display_name as skillname', 'examinationSubjectToTest.max_marks'
             ])
-            
-           // ->leftJoin('subjectSkillMapping', 'subjectSkillMapping.pupilsightDepartmentID=subjectToClassCurriculum.pupilsightDepartmentID')
-            ->leftJoin('pupilsightDepartment', 'subjectSkillMapping.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')     
-           ->leftJoin('examinationSubjectToTest', 'examinationSubjectToTest.pupilsightDepartmentID=subjectSkillMapping.pupilsightDepartmentID') ;
-           
-           if(!empty($pupilsightSchoolYearID)){
-            $query->where('subjectSkillMapping.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ');
-        }
-        if(!empty($pupilsightYearGroupID)){
-            $query->where('subjectSkillMapping.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
-        } 
-       
-       if(!empty($test_id)){
-            $query->where('examinationSubjectToTest.test_id = "'.$test_id.'"  AND examinationSubjectToTest.pupilsightDepartmentID="'.$pupilsightDepartmentID.'" ');
-        } 
-        if(!empty($skill_id)){
-            $query->where('subjectSkillMapping.skill_id = "'.$skill_id.'"   ');
-        } 
 
-        $query ->where('subjectSkillMapping.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND subjectSkillMapping.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" AND subjectSkillMapping.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ')
+            // ->leftJoin('subjectSkillMapping', 'subjectSkillMapping.pupilsightDepartmentID=subjectToClassCurriculum.pupilsightDepartmentID')
+            ->leftJoin('pupilsightDepartment', 'subjectSkillMapping.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
+            ->leftJoin('examinationSubjectToTest', 'examinationSubjectToTest.pupilsightDepartmentID=subjectSkillMapping.pupilsightDepartmentID');
+
+        if (!empty($pupilsightSchoolYearID)) {
+            $query->where('subjectSkillMapping.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
+        }
+        if (!empty($pupilsightYearGroupID)) {
+            $query->where('subjectSkillMapping.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
+        }
+
+        if (!empty($test_id)) {
+            $query->where('examinationSubjectToTest.test_id = "' . $test_id . '"  AND examinationSubjectToTest.pupilsightDepartmentID="' . $pupilsightDepartmentID . '" ');
+        }
+        if (!empty($skill_id)) {
+            $query->where('subjectSkillMapping.skill_id = "' . $skill_id . '"   ');
+        }
+
+        $query->where('subjectSkillMapping.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND subjectSkillMapping.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND subjectSkillMapping.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ')
             ->groupBy(['subjectSkillMapping.skill_id '])
-          ->orderBy(['subjectSkillMapping.id ASC']) ;
-       // echo $query;
-            $res = $this->runQuery($query, $criteria);
-            $data = $res->data;
-            $res->data = $data;
-            return $res;
+            ->orderBy(['subjectSkillMapping.id ASC']);
+        // echo $query;
+        $res = $this->runQuery($query, $criteria);
+        $data = $res->data;
+        $res->data = $data;
+        return $res;
     }
 
-    public function getstudent_subject_assigned_data_for_AAT(QueryCriteria $criteria,  $pupilsightSchoolYearID,$pupilsightYearGroupID, $pupilsightRollGroupID,$pupilsightDepartmentID,$skill_id,$test_id,$test_type)
+    public function getstudent_subject_assigned_data_for_AAT(QueryCriteria $criteria,  $pupilsightSchoolYearID, $pupilsightYearGroupID, $pupilsightRollGroupID, $pupilsightDepartmentID, $skill_id, $test_id, $test_type)
     {
-      //  $pupilsightRoleIDAll = '003';
-            $query = $this
+        //  $pupilsightRoleIDAll = '003';
+        $query = $this
             ->newQuery()
             ->from('examinationMarksEntrybySubject')
             ->cols([
-                'examinationMarksEntrybySubject.*','examinationSubjectToTest.*','pupilsightPerson.pupilsightPersonID AS stuid','pupilsightPerson.pupilsightPersonID','pupilsightPerson.officialName AS student_name',"( CASE WHEN examinationMarksEntrybySubject.skill_id  != '0' THEN GROUP_CONCAT(DISTINCT examinationMarksEntrybySubject.skill_id ORDER BY examinationMarksEntrybySubject.skill_id ASC)   ELSE examinationMarksEntrybySubject.pupilsightDepartmentID  END) as columname","GROUP_CONCAT(DISTINCT subjectSkillMapping.skill_display_name ORDER BY subjectSkillMapping.skill_id ASC) as skill_names",'pupilsightDepartment.pupilsightDepartmentID', 'pupilsightDepartment.name'
+                'examinationMarksEntrybySubject.*', 'examinationSubjectToTest.*', 'pupilsightPerson.pupilsightPersonID AS stuid', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.officialName AS student_name', "( CASE WHEN examinationMarksEntrybySubject.skill_id  != '0' THEN GROUP_CONCAT(DISTINCT examinationMarksEntrybySubject.skill_id ORDER BY examinationMarksEntrybySubject.skill_id ASC)   ELSE examinationMarksEntrybySubject.pupilsightDepartmentID  END) as columname", "GROUP_CONCAT(DISTINCT subjectSkillMapping.skill_display_name ORDER BY subjectSkillMapping.skill_id ASC) as skill_names", 'pupilsightDepartment.pupilsightDepartmentID', 'pupilsightDepartment.name'
             ])
-            ->leftJoin('pupilsightDepartment', 'examinationMarksEntrybySubject.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')     
+            ->leftJoin('pupilsightDepartment', 'examinationMarksEntrybySubject.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
             ->leftJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=examinationMarksEntrybySubject.pupilsightPersonID')
             ->leftJoin('examinationSubjectToTest', 'examinationSubjectToTest.test_id=examinationMarksEntrybySubject.test_id')
             ->leftJoin('subjectSkillMapping', 'subjectSkillMapping.skill_id=examinationMarksEntrybySubject.skill_id');
-         
-            if(!empty($pupilsightYearGroupID)){
-                $query->where('examinationMarksEntrybySubject.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" ');
-            } 
-            if(!empty($pupilsightRollGroupID)){
-                $query->where('examinationMarksEntrybySubject.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'" ');
-            } 
-            if(!empty($pupilsightDepartmentID)){
-                $query->where('examinationMarksEntrybySubject.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ');
-            } 
-           if(!empty($test_id)){
-                $query->where('examinationMarksEntrybySubject.test_id = "'.$test_id.'"   ');
-            } 
-            if(!empty($skill_id)){
-                $query->where('examinationMarksEntrybySubject.skill_id = "'.$skill_id.'"  ');
-            } 
-            $query->where('examinationSubjectToTest.aat = 1 AND examinationMarksEntrybySubject.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'"'   );
 
-               $query ->groupBy(['examinationMarksEntrybySubject.pupilsightPersonID'])
-                ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']) ;
-             //   echo $query;    
-            $res = $this->runQuery($query, $criteria);
-            $data = $res->data;
-        
-            $res->data = $data;
-            return $res;
+        if (!empty($pupilsightYearGroupID)) {
+            $query->where('examinationMarksEntrybySubject.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
+        }
+        if (!empty($pupilsightRollGroupID)) {
+            $query->where('examinationMarksEntrybySubject.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
+        }
+        if (!empty($pupilsightDepartmentID)) {
+            $query->where('examinationMarksEntrybySubject.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ');
+        }
+        if (!empty($test_id)) {
+            $query->where('examinationMarksEntrybySubject.test_id = "' . $test_id . '"   ');
+        }
+        if (!empty($skill_id)) {
+            $query->where('examinationMarksEntrybySubject.skill_id = "' . $skill_id . '"  ');
+        }
+        $query->where('examinationSubjectToTest.aat = 1 AND examinationMarksEntrybySubject.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '"');
+
+        $query->groupBy(['examinationMarksEntrybySubject.pupilsightPersonID'])
+            ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
+        //   echo $query;    
+        $res = $this->runQuery($query, $criteria);
+        $data = $res->data;
+
+        $res->data = $data;
+        return $res;
     }
 
 
     public function getSubNew(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $eid, $subId)
     {
-        
+
         $query = $this
             ->newQuery()
             ->from('subjectToClassCurriculum')
@@ -1122,10 +1126,10 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
             ->where('subjectToClassCurriculum.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
             ->where('subjectToClassCurriculum.pupilsightProgramID = "' . $pupilsightProgramID . '" ')
             ->where('subjectToClassCurriculum.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ');
-            if(!empty($subId)){
-                $query->where('subjectToClassCurriculum.pupilsightDepartmentID  Not In ('.$subId.') ');
-            }
-            $query->groupby(['subjectToClassCurriculum.pupilsightDepartmentID'])
+        if (!empty($subId)) {
+            $query->where('subjectToClassCurriculum.pupilsightDepartmentID  Not In (' . $subId . ') ');
+        }
+        $query->groupby(['subjectToClassCurriculum.pupilsightDepartmentID'])
             ->orderby(['subjectToClassCurriculum.pupilsightDepartmentID DESC']);
         //echo $query;
         $res = $this->runQuery($query, $criteria);
@@ -1187,7 +1191,7 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
             ->newQuery()
             ->from('examinationReportSketchTemplateMaster')
             ->cols([
-                'examinationReportSketchTemplateMaster.*','pupilsightProgram.name as progName','pupilsightYearGroup.name as clsName'
+                'examinationReportSketchTemplateMaster.*', 'pupilsightProgram.name as progName', 'pupilsightYearGroup.name as clsName'
             ])
             ->leftJoin('pupilsightYearGroup', 'examinationReportSketchTemplateMaster.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
             ->leftJoin('pupilsightProgram', 'examinationReportSketchTemplateMaster.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
@@ -1196,6 +1200,4 @@ public function getstdData(QueryCriteria $criteria,$pupilsightYearGroupID, $pupi
 
         return $this->runQuery($query, $criteria, true);
     }
-
-
 }
