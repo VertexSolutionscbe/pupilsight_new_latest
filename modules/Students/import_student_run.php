@@ -243,11 +243,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 
                             // Mother Entry
                             if ($chkFamily == '0') {
-                                if (!empty($alrow['$$_officialName'])) {
+                                if (!empty($alrow['!!_officialName'])) {
                                     $sqlm = "INSERT INTO pupilsightPerson (";
                                     foreach ($alrow as $key => $ar) {
-                                        if (strpos($key, '$$_') !== false  && !empty($ar)) {
-                                            //$clname = ltrim($key, '$$_'); 
+                                        if (strpos($key, '!!_') !== false  && !empty($ar)) {
+                                            //$clname = ltrim($key, '!!_'); 
                                             $clname = substr($key, 3, strlen($key));
                                             $sqlm .= $clname . ',';
                                         }
@@ -260,12 +260,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                             $value = date('Y-m-d', strtotime($value));
                                         }
 
-                                        if (strpos($k, '$$_') !== false  && !empty($value)) {
+                                        if (strpos($k, '!!_') !== false  && !empty($value)) {
                                             $val = str_replace('"', "", $value);
                                             $sqlm .= '"' . $conn->real_escape_string($val) . '",';
                                         }
                                     }
-                                    $sqlm .= '"' . $alrow['$$_officialName'] . '","F","' . $password . '","' . $salt . '","004","004"';
+                                    $sqlm .= '"' . $alrow['!!_officialName'] . '","F","' . $password . '","' . $salt . '","004","004"';
                                     //$sqlm = rtrim($sqlm, ", ");
                                     $sqlm .= ")";
                                     $sqlm = rtrim($sqlm, ", ");
@@ -306,12 +306,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                             if ($chkFamily == '0') {
                                 if (!empty($fat_id) || !empty($mot_id)) {
 
-                                    if (!empty($alrow['&&_officialName']) && !empty($alrow['$$_officialName'])) {
-                                        $name = $alrow['&&_officialName'] . ' & ' . $alrow['$$_officialName'] . ' Family';
-                                    } elseif (!empty($alrow['&&_officialName']) && empty($alrow['$$_officialName'])) {
+                                    if (!empty($alrow['&&_officialName']) && !empty($alrow['!!_officialName'])) {
+                                        $name = $alrow['&&_officialName'] . ' & ' . $alrow['!!_officialName'] . ' Family';
+                                    } elseif (!empty($alrow['&&_officialName']) && empty($alrow['!!_officialName'])) {
                                         $name = $alrow['&&_officialName'] . ' Family';
-                                    } elseif (empty($alrow['&&_officialName']) && !empty($alrow['$$_officialName'])) {
-                                        $name = $alrow['$$_officialName'] . ' Family';
+                                    } elseif (empty($alrow['&&_officialName']) && !empty($alrow['!!_officialName'])) {
+                                        $name = $alrow['!!_officialName'] . ' Family';
                                     } else {
                                         $name = 'Family';
                                     }
@@ -466,23 +466,23 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     } else if ($hd == 'Father Landline No') {
                         $headers[$key] = '&&_phone2';
                     } else if ($hd == 'Mother Official Name') {
-                        $headers[$key] = '$$_officialName';
+                        $headers[$key] = '!!_officialName';
                     } else if ($hd == 'Mother Date of Birth') {
-                        $headers[$key] = '$$_dob';
+                        $headers[$key] = '!!_dob';
                     } else if ($hd == 'Mother Username') {
-                        $headers[$key] = '$$_username';
+                        $headers[$key] = '!!_username';
                     } else if ($hd == 'Mother Can Login') {
-                        $headers[$key] = '$$_canLogin';
+                        $headers[$key] = '!!_canLogin';
                     } else if ($hd == 'Mother Email') {
-                        $headers[$key] = '$$_email';
+                        $headers[$key] = '!!_email';
                     } else if ($hd == 'Mother Mobile (Country Code)') {
-                        $headers[$key] = '$$_phone1CountryCode';
+                        $headers[$key] = '!!_phone1CountryCode';
                     } else if ($hd == 'Mother Mobile No') {
-                        $headers[$key] = '$$_phone1';
+                        $headers[$key] = '!!_phone1';
                     } else if ($hd == 'Mother LandLine (Country Code)') {
-                        $headers[$key] = '$$_phone2CountryCode';
+                        $headers[$key] = '!!_phone2CountryCode';
                     } else if ($hd == 'Mother Landline No') {
-                        $headers[$key] = '$$_phone2';
+                        $headers[$key] = '!!_phone2';
                     } else {
 
                         //$sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
@@ -503,10 +503,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                             $chkHeaderKey[] = '&&_' . $cd['field_name'];
                         }
                         //}
-                        //else if(!in_array('$$_'.$cd['field_name'], $chkHeaderKey)){
+                        //else if(!in_array('!!_'.$cd['field_name'], $chkHeaderKey)){
                         if (in_array('mother', $modules)) {
-                            $headers[$key] = '$$_' . $cd['field_name'];
-                            $chkHeaderKey[] = '$$_' . $cd['field_name'];
+                            $headers[$key] = '!!_' . $cd['field_name'];
+                            $chkHeaderKey[] = '!!_' . $cd['field_name'];
                         }
                         //}
                     }
@@ -575,7 +575,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 $tbl .= "\n<th " . $colWidth . "> Father " . $clname . "</th>";
                             }
 
-                            if (strpos($key, '$$_') !== false) {
+                            if (strpos($key, '!!_') !== false) {
                                 $clname = substr($key, 3, strlen($key));
 
                                 if ($clname == "phone1" || $clname == "email" || $clname == "username" || $clname == "dob") {
@@ -617,7 +617,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 $tfValidate = " validActive ";
                             }
 
-                            if ($k == "$$_phone1" || $k == "$$_email" || $k == "$$_username" || $k == "$$_dob") {
+                            if ($k == "!!_phone1" || $k == "!!_email" || $k == "!!_username" || $k == "!!_dob") {
                                 $tfwidth = " style='width:180px;'";
                                 $tfValidate = " validActive ";
                             }
@@ -686,19 +686,19 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
         formValid = true;
         $(".validActive").each(function() {
             //console.log($(this).val());
-            if ($(this).attr("data-type") == "##_username" || $(this).attr("data-type") == "&&_username" || $(this).attr("data-type") == "$$_username") {
+            if ($(this).attr("data-type") == "##_username" || $(this).attr("data-type") == "&&_username" || $(this).attr("data-type") == "!!_username") {
                 if ($(this).val()) {
                     un.push($(this).val());
                 }
             }
 
-            if ($(this).attr("data-type") == "##_email" || $(this).attr("data-type") == "&&_email" || $(this).attr("data-type") == "$$_email") {
+            if ($(this).attr("data-type") == "##_email" || $(this).attr("data-type") == "&&_email" || $(this).attr("data-type") == "!!_email") {
                 if ($(this).val()) {
                     em.push($(this).val());
                 }
             }
 
-            if ($(this).attr("data-type") == "##_phone1" || $(this).attr("data-type") == "&&_phone1" || $(this).attr("data-type") == "$$_phone1") {
+            if ($(this).attr("data-type") == "##_phone1" || $(this).attr("data-type") == "&&_phone1" || $(this).attr("data-type") == "!!_phone1") {
                 if ($(this).val()) {
                     ph.push($(this).val());
                 }
@@ -729,19 +729,19 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
         formValid = true;
         $(".validActive").each(function() {
             //console.log($(this).val());
-            if ($(this).attr("data-type") == "##_username" || $(this).attr("data-type") == "&&_username" || $(this).attr("data-type") == "$$_username") {
+            if ($(this).attr("data-type") == "##_username" || $(this).attr("data-type") == "&&_username" || $(this).attr("data-type") == "!!_username") {
                 if ($(this).val()) {
                     un.push($(this).val());
                 }
             }
 
-            if ($(this).attr("data-type") == "##_email" || $(this).attr("data-type") == "&&_email" || $(this).attr("data-type") == "$$_email") {
+            if ($(this).attr("data-type") == "##_email" || $(this).attr("data-type") == "&&_email" || $(this).attr("data-type") == "!!_email") {
                 if ($(this).val()) {
                     em.push($(this).val());
                 }
             }
 
-            if ($(this).attr("data-type") == "##_phone1" || $(this).attr("data-type") == "&&_phone1" || $(this).attr("data-type") == "$$_phone1") {
+            if ($(this).attr("data-type") == "##_phone1" || $(this).attr("data-type") == "&&_phone1" || $(this).attr("data-type") == "!!_phone1") {
                 if ($(this).val()) {
                     ph.push($(this).val());
                 }
@@ -772,12 +772,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
     function isValid(dataType, val) {
         //console.log(dataType, val);
         if (val == "") {
-            if (dataType != "##_username" || dataType != "&&_username" || dataType != "$$_username") {
+            if (dataType != "##_username" || dataType != "&&_username" || dataType != "!!_username") {
                 return true;
             }
         }
 
-        if (dataType == "##_phone1" || dataType == "&&_phone1" || dataType == "$$_phone1") {
+        if (dataType == "##_phone1" || dataType == "&&_phone1" || dataType == "!!_phone1") {
             var regx = /^[6-9]\d{9}$/;
             if (regx.test(val)) {
                 return true;
@@ -785,16 +785,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
             } else {
                 return false;
             }
-        } else if (dataType == "##_email" || dataType == "&&_email" || dataType == "$$_email") {
+        } else if (dataType == "##_email" || dataType == "&&_email" || dataType == "!!_email") {
             if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(val)) {
                 //return isDuplicate(em, val);
                 return true;
             } else {
                 return false;
             }
-        } else if (dataType == "##_username" || dataType == "&&_username" || dataType == "$$_username") {
+        } else if (dataType == "##_username" || dataType == "&&_username" || dataType == "!!_username") {
             return isDuplicate(un, val);
-        } else if (dataType == "##_dob" || dataType == "&&_dob" || dataType == "$$_dob") {
+        } else if (dataType == "##_dob" || dataType == "&&_dob" || dataType == "!!_dob") {
             if (moment(val, 'YYYY-MM-DD', true).isValid()) {
                 return true;
             }
@@ -804,27 +804,27 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
     function isValidDuplicate(dataType, val) {
         //console.log(dataType, val);
         if (val == "") {
-            if (dataType != "##_username" || dataType != "&&_username" || dataType != "$$_username") {
+            if (dataType != "##_username" || dataType != "&&_username" || dataType != "!!_username") {
                 return true;
             }
         }
 
-        if (dataType == "##_phone1" || dataType == "&&_phone1" || dataType == "$$_phone1") {
+        if (dataType == "##_phone1" || dataType == "&&_phone1" || dataType == "!!_phone1") {
             var regx = /^[6-9]\d{9}$/;
             if (regx.test(val)) {
                 return isDuplicate(ph, val);
             } else {
                 return false;
             }
-        } else if (dataType == "##_email" || dataType == "&&_email" || dataType == "$$_email") {
+        } else if (dataType == "##_email" || dataType == "&&_email" || dataType == "!!_email") {
             if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(val)) {
                 return isDuplicate(em, val);
             } else {
                 return false;
             }
-        } else if (dataType == "##_username" || dataType == "&&_username" || dataType == "$$_username") {
+        } else if (dataType == "##_username" || dataType == "&&_username" || dataType == "!!_username") {
             return isDuplicate(un, val);
-        } else if (dataType == "##_dob" || dataType == "&&_dob" || dataType == "$$_dob") {
+        } else if (dataType == "##_dob" || dataType == "&&_dob" || dataType == "!!_dob") {
             if (moment(val, 'YYYY-MM-DD', true).isValid()) {
                 return true;
             }

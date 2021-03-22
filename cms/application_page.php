@@ -9,8 +9,8 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain();
-$baseurl = getDomain().'/pupilsight';
+$baseurl = getDomain();
+//$baseurl = getDomain().'/pupilsight';
 include_once 'w2f/adminLib.php';
 $adminlib = new adminlib();
 session_start();
