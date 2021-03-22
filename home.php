@@ -450,7 +450,7 @@ if (isset($data['logo_image'])) {
                         ?>
 
                         <div class="col-sm">
-                         <a href="#courseModal" class="courseData"  data-toggle="modal" data-cimg="<?= $cimg; ?>" data-title="<?= ucwords($sec['title']); ?>" data-desc="<?= $sec['short_description'];?>">
+                         <a href="#courseModal" class="courseData ablack"  data-toggle="modal" data-cimg="<?= $cimg; ?>" data-title="<?= ucwords($sec['title']); ?>" data-desc="<?= $sec['short_description'];?>">
                                 
                                     <div class="card">
                                         <img src="<?= $cimg; ?>" class="card-img-top" style='height: 200px;background-size: contain;'>
@@ -561,7 +561,7 @@ if (isset($data['logo_image'])) {
                             ?>
 
                                     <div class="col-sm">
-                                    <a href="#annModal" class="annData"  data-toggle="modal" data-aimg="<?= $aimg; ?>" data-title="<?= $crs['title']; ?>" data-desc="<?= $crs['short_description'];?>">
+                                    <a href="#annModal" class="annData ablack"  data-toggle="modal" data-aimg="<?= $aimg; ?>" data-title="<?= $crs['title']; ?>" data-desc="<?= $crs['short_description'];?>">
                                         <div class="card">
                                             <img src="<?= $aimg; ?>" class="card-img-top" style='height: 200px;background-size: cover;'>
                                             <div class="card-body wordwrap" title='<?= $crs['title']; ?>'>
@@ -1092,13 +1092,13 @@ if (isset($data['logo_image'])) {
                 <!-- <div class="col-auto align-self-end"> -->
                 <div class="row">
 
-                <div class="col-md-10">
+                <div class="col-md-10 col-sm-12">
                     <a href="https://www.parentof.com/" target="_blank" class="link-secondary">Powered by ParentOf</a>
                 </div>
 
-                <div class="col-md-2">    
+                <div class="col-md-2 col-sm-12">    
                     
-                   <div style="margin-left:50px">
+                   <!-- <div style="margin-left:50px"> -->
 
                     <?php if (!empty($data['facebook_link'])) { ?>
                         
@@ -1124,7 +1124,7 @@ if (isset($data['logo_image'])) {
                                 <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
                             </a>
                     <?php } ?>
-                    </div>
+                    <!-- </div> -->
                     
                 </div>
 
@@ -1144,6 +1144,11 @@ if (isset($data['logo_image'])) {
 
     <style>
 
+        .ablack 
+        {                
+            color:black;
+        }    
+
 
         .google-maps {
             position: relative;
@@ -1162,10 +1167,10 @@ if (isset($data['logo_image'])) {
 
 
         
-        /* #topBtn {
+        #topBtn {
         display: none;
         position: fixed;
-        bottom: 20px;
+        bottom: 0;
         right: 30px;
         z-index: 99;
         font-size: 18px;
@@ -1174,17 +1179,17 @@ if (isset($data['logo_image'])) {
         padding: 15px;
         border-radius: 4px;
         background: none;
-        } */
+        }
 
         .btn-border{
             border-radius:30px;
         }
-        #topBtn {
+        /* #topBtn {
             display: none;
             position: fixed;
             left: 0;
             bottom: 0;
-            width: 100%;
+            width: 100%; 
             color: white;
             text-align: right;
             border: none;
@@ -1193,7 +1198,7 @@ if (isset($data['logo_image'])) {
             border-radius: 4px;
             background: none;
         
-        }
+        } */
 
         #mapshow{
             padding: 0px !important;
