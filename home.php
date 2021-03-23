@@ -458,6 +458,7 @@ if (isset($data['logo_image'])) {
                                                 <h3 class="card-title wordwrap"><?= ucwords($sec['title']); ?></h3>
                                                 <p class="wordwrap"><?= $sec['short_description']; ?></p>
                                             </div>
+                                        </div>
 
                                     </a>
                                 </div>
@@ -566,6 +567,7 @@ if (isset($data['logo_image'])) {
                                                 <div class="card-body wordwrap" title='<?= $crs['title']; ?>'>
                                                     <?= $crs['title']; ?>
                                                 </div>
+                                            </div>
 
                                         </a>
                                     </div>
