@@ -451,6 +451,7 @@ if (isset($data['logo_image'])) {
                                                 <input type="hidden" class="buyerState" name="buyerState" value="">
                                                 <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
                                                 <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
+                                                <input type="hidden" class="ptype" name="ptype" value="admission">
 
                                                 <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
                                                 <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">

@@ -1,4 +1,4 @@
-<form id="myForm" action="/thirdparty/airpay/responsefromairpay.php" method="post">
+<form id="myForm" action="/thirdparty/payment/airpay/responsefromairpay.php" method="post">
     <?php
     foreach ($_POST as $a => $b) {
         echo '<input type="hidden" name="' . htmlentities($a) . '" value="' . htmlentities($b) . '">';

@@ -1,7 +1,9 @@
 <?php
 
 include '../../pupilsight.php';
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
 require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 

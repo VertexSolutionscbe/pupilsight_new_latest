@@ -1,5 +1,5 @@
 <?php
-echo "<div align = 'center'><a href= 'transaction.html'>Back</a></div>";
+echo "<div align = 'center'><a href= ".$_SESSION[$guid]['absoluteURL'].">Back</a></div>";
 if(isset($_REQUEST['status']) && $_REQUEST['status']!='')
 {
 	$status = $_REQUEST['status'];
