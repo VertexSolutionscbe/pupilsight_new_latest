@@ -450,7 +450,7 @@ if (isset($data['logo_image'])) {
                         ?>
 
                                 <div class="col-sm">
-                                    <a href="#courseModal" class="courseData" data-toggle="modal" data-cimg="<?= $cimg; ?>" data-title="<?= ucwords($sec['title']); ?>" data-desc="<?= $sec['short_description']; ?>">
+                                    <a href="#courseModal" class="courseData ablack" data-toggle="modal" data-cimg="<?= $cimg; ?>" data-title="<?= ucwords($sec['title']); ?>" data-desc="<?= $sec['short_description']; ?>">
 
                                         <div class="card">
                                             <img src="<?= $cimg; ?>" class="card-img-top" style='height: 200px;background-size: contain;'>
@@ -458,7 +458,6 @@ if (isset($data['logo_image'])) {
                                                 <h3 class="card-title wordwrap"><?= ucwords($sec['title']); ?></h3>
                                                 <p class="wordwrap"><?= $sec['short_description']; ?></p>
                                             </div>
-                                        </div>
 
                                     </a>
                                 </div>
@@ -561,13 +560,12 @@ if (isset($data['logo_image'])) {
                             ?>
 
                                     <div class="col-sm">
-                                        <a href="#annModal" class="annData" data-toggle="modal" data-aimg="<?= $aimg; ?>" data-title="<?= $crs['title']; ?>" data-desc="<?= $crs['short_description']; ?>">
+                                        <a href="#annModal" class="annData ablack" data-toggle="modal" data-aimg="<?= $aimg; ?>" data-title="<?= $crs['title']; ?>" data-desc="<?= $crs['short_description']; ?>">
                                             <div class="card">
                                                 <img src="<?= $aimg; ?>" class="card-img-top" style='height: 200px;background-size: cover;'>
                                                 <div class="card-body wordwrap" title='<?= $crs['title']; ?>'>
                                                     <?= $crs['title']; ?>
                                                 </div>
-                                            </div>
 
                                         </a>
                                     </div>
@@ -983,7 +981,7 @@ if (isset($data['logo_image'])) {
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
-        <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
+        <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" onsubmit="return validateLogin()" novalidate="" method="post" autocomplete="off">
             <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
 
             <div class="card-body">
@@ -1103,39 +1101,39 @@ if (isset($data['logo_image'])) {
                 <!-- <div class="col-auto align-self-end"> -->
                 <div class="row">
 
-                    <div class="col-md-10">
+                    <div class="col-md-10 col-sm-12">
                         <a href="https://www.parentof.com/" target="_blank" class="link-secondary">Powered by ParentOf</a>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-2 col-sm-12">
 
-                        <div style="margin-left:50px">
+                        <!-- <div style="margin-left:50px"> -->
 
-                            <?php if (!empty($data['facebook_link'])) { ?>
+                        <?php if (!empty($data['facebook_link'])) { ?>
 
-                                <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
-                                    <i class="social-icon fa fa-facebook" style="font-size:24px;color:#206bc4"></i>
-                                </a>&nbsp;&nbsp;
+                            <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
+                                <i class="social-icon fa fa-facebook" style="font-size:24px;color:#206bc4"></i>
+                            </a>&nbsp;&nbsp;
 
-                            <?php } ?>
-                            <?php if (!empty($data['twitter_link'])) { ?>
-                                <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
-                                    <i class="social-icon fa fa-twitter" style="font-size:24px;color:#206bc4"></i>
-                                </a>&nbsp;&nbsp;
+                        <?php } ?>
+                        <?php if (!empty($data['twitter_link'])) { ?>
+                            <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
+                                <i class="social-icon fa fa-twitter" style="font-size:24px;color:#206bc4"></i>
+                            </a>&nbsp;&nbsp;
 
-                            <?php } ?>
-                            <?php if (!empty($data['pinterest_link'])) { ?>
-                                <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
-                                    <i class="social-icon fa fa-pinterest-p" style="font-size:24px;color:#206bc4"></i>
-                                </a>&nbsp;&nbsp;
+                        <?php } ?>
+                        <?php if (!empty($data['pinterest_link'])) { ?>
+                            <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
+                                <i class="social-icon fa fa-pinterest-p" style="font-size:24px;color:#206bc4"></i>
+                            </a>&nbsp;&nbsp;
 
-                            <?php } ?>
-                            <?php if (!empty($data['linkdlin_link'])) { ?>
-                                <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
-                                    <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
-                                </a>
-                            <?php } ?>
-                        </div>
+                        <?php } ?>
+                        <?php if (!empty($data['linkdlin_link'])) { ?>
+                            <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
+                                <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
+                            </a>
+                        <?php } ?>
+                        <!-- </div> -->
 
                     </div>
 
@@ -1154,7 +1152,12 @@ if (isset($data['logo_image'])) {
     </div>
 
     <style>
-        <<<<<<< HEAD=======.google-maps {
+        .ablack {
+            color: black;
+        }
+
+
+        .google-maps {
             position: relative;
             padding-bottom: 1%; // This is the aspect ratio
             height: 0;
@@ -1165,38 +1168,37 @@ if (isset($data['logo_image'])) {
             position: absolute;
             top: 0;
             left: 0;
-            width: 90% !important;
+            width: 100% !important;
             height: 100% !important;
-            margin-left: 5%;
+
         }
 
 
 
-        >>>>>>>08140711c5e7e0055a4d95958116462bff01d1e4
-        /* #topBtn {
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        right: 30px;
-        z-index: 99;
-        font-size: 18px;
-        border: none;
-        outline: none;
-        padding: 15px;
-        border-radius: 4px;
-        background: none;
-        } */
+        #topBtn {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            right: 30px;
+            z-index: 99;
+            font-size: 18px;
+            border: none;
+            outline: none;
+            padding: 15px;
+            border-radius: 4px;
+            background: none;
+        }
 
         .btn-border {
             border-radius: 30px;
         }
 
-        #topBtn {
+        /* #topBtn {
             display: none;
             position: fixed;
             left: 0;
             bottom: 0;
-            width: 100%;
+            width: 100%; 
             color: white;
             text-align: right;
             border: none;
@@ -1204,8 +1206,8 @@ if (isset($data['logo_image'])) {
             padding: 15px;
             border-radius: 4px;
             background: none;
-
-        }
+        
+        } */
 
         #mapshow {
             padding: 0px !important;
@@ -1234,6 +1236,16 @@ if (isset($data['logo_image'])) {
         function topFunction() {
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
+        }
+
+        function validateLogin() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            if (username == '' || password == '') {
+                alert('Please enter Username and Password');
+                return false;
+            } else
+                return true;
         }
     </script>
 

@@ -130,7 +130,7 @@ else {
             $URL .= '?loginReturn=fail6';
             // header("Location: {$URL}");
             // exit;
-            echo "<script type='text/javascript'>alert('You Account is Locked, Please Contact to Admin');
+            echo "<script type='text/javascript'>alert('Your Account is Locked, Please Contact to Admin');
             window.location.href='./index.php';
 
             </script>";
@@ -181,7 +181,12 @@ else {
 
                 setLog($connection2, $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'], null, $row['pupilsightPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Incorrect password'), $_SERVER['REMOTE_ADDR']);
                 $URL .= '?loginReturn=fail1';
-                header("Location: {$URL}");
+                echo "<script type='text/javascript'>alert('Wrong Username or Password');
+                window.location.href='./index.php';
+
+                </script>";
+            
+                //header("Location: {$URL}");
                 exit;
             } else {
                 if ($row['pupilsightRoleIDPrimary'] == '' or count(getRoleList($row['pupilsightRoleIDAll'], $connection2)) == 0) {
