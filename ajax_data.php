@@ -2215,6 +2215,8 @@ if ($type == 'updateApplicantData') {
         $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
 
         $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
     } else {
         $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'id' => $submissionId);
         //print_r($data);

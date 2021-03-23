@@ -8,6 +8,7 @@ header( 'Cache-Control: post-check=0, pre-check=0', false );
 header( 'Pragma: no-cache' );
 
 include('config.php');
+include $_SERVER['DOCUMENT_ROOT'].'/pupilsight.php';
 
 // This is landing page where you will receive response from airpay. 
 // The name of the page should be as per you have configured in airpay system
@@ -20,8 +21,6 @@ $TRANSACTIONSTATUS  = trim($_POST['TRANSACTIONSTATUS']);
 $MESSAGE  = trim($_POST['MESSAGE']);
 $ap_SecureHash = trim($_POST['ap_SecureHash']);
 $CUSTOMVAR  = trim($_POST['CUSTOMVAR']);
-
-
 
 
 
@@ -76,17 +75,73 @@ exit();
 
 
 if($TRANSACTIONSTATUS == 200){
-echo '<table><tr><td>Success Transaction</td></tr></table>
-<table>
-<tr><td>Variable Name</td><td> Value</td></tr>
-<tr><td>TRANSACTIONID:</td><td> '.$TRANSACTIONID.'</td></tr>
-<tr><td>APTRANSACTIONID:</td><td> '.$APTRANSACTIONID.'</td></tr>
-<tr><td>AMOUNT:</td><td> '.$AMOUNT.'</td></tr>
-<tr><td>TRANSACTIONSTATUS:</td><td> '.$TRANSACTIONSTATUS.'</td></tr>
-<tr><td>MESSAGE:</td><td> '.$MESSAGE.'</td></tr>
-<tr><td>CUSTOMVAR:</td><td> '.$CUSTOMVAR.'</td></tr>
+// echo '<pre>';
+// print_r($_POST);
+// echo '</pre>';
+// echo '<table><tr><td>Success Transaction</td></tr></table>
+// <table>
+// <tr><td>Variable Name</td><td> Value</td></tr>
+// <tr><td>TRANSACTIONID:</td><td> '.$TRANSACTIONID.'</td></tr>
+// <tr><td>APTRANSACTIONID:</td><td> '.$APTRANSACTIONID.'</td></tr>
+// <tr><td>AMOUNT:</td><td> '.$AMOUNT.'</td></tr>
+// <tr><td>TRANSACTIONSTATUS:</td><td> '.$TRANSACTIONSTATUS.'</td></tr>
+// <tr><td>MESSAGE:</td><td> '.$MESSAGE.'</td></tr>
+// <tr><td>CUSTOMVAR:</td><td> '.$CUSTOMVAR.'</td></tr>
 
-</table>';
+// </table>';
+
+$txnid = $TRANSACTIONID;
+$mihpayid = $APTRANSACTIONID;
+$amount = $AMOUNT;
+$custVar = explode('-',$CUSTOMVAR);
+$sid = $custVar[0];
+$cid = $custVar[1];
+$ptype = $custVar[2];
+
+
+if(!empty($sid) && !empty($cid) && !empty($txnid)){
+
+    
+
+    if($ptype == 'admission'){
+        $data = array('gateway' => 'AIRPAY', 'submission_id' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
+
+        $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+        $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/admission_success.php?sid=' . $sid.'&cid='.$cid.'&amt='.$amount;
+        header('Location: '.$callback);
+    } else if($ptype == 'parent_admission'){
+        $data = array('gateway' => 'AIRPAY', 'submission_id' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
+
+        $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, submission_id=:submission_id, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+        $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/parent_admission_success.php?sid=' . $sid.'&amt='.$amount;
+        header('Location: '.$callback);
+    } else if($ptype == 'fee_collection'){
+        $data = array('gateway' => 'AIRPAY', 'pupilsightPersonID' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
+
+        $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+        $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/fee_collection_success.php?sid=' . $sid.'&amt='.$amount;
+        header('Location: '.$callback);
+    } else if($ptype == 'multiple_fee_collection'){
+        $data = array('gateway' => 'AIRPAY', 'pupilsightPersonID' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
+
+        $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+
+        $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/multiple_fee_collection_success.php?sid=' . $sid.'&amt='.$amount;
+        header('Location: '.$callback);
+    }
+}
+
 // Process Successfull transaction
 }else{
 echo '<table><tr><td>Failed Transaction</td></tr></table>
@@ -97,10 +152,18 @@ echo '<table><tr><td>Failed Transaction</td></tr></table>
 <tr><td>AMOUNT:</td><td> '.$AMOUNT.'</td></tr>
 <tr><td>TRANSACTIONSTATUS:</td><td> '.$TRANSACTIONSTATUS.'</td></tr>
 <tr><td>MESSAGE:</td><td> '.$MESSAGE.'</td></tr>
-<tr><td>CUSTOMVAR:</td><td> '.$CUSTOMVAR.'</td></tr>
 
-</table>';
+
+</table></br>
+<a class="btn btn-primary" href='.$_SERVER['DOCUMENT_ROOT'].'>Back</a>
+';
 // Process Failed Transaction
+    $returnArr = json_encode($_POST);
+    $data = array('gateway' => 'AIRPAY', 'return_data' => $returnArr, 'status' => 'F1');
+
+    $sql = 'INSERT INTO fn_fee_failed_payment_details SET gateway=:gateway, return_data=:return_data, status=:status';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
 }
 
 

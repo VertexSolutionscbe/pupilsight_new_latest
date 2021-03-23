@@ -42,9 +42,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
 
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
-    $childs = 'SELECT b.pupilsightPersonID, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID2 = b.pupilsightPersonID WHERE a.pupilsightPersonID1 = ' . $cuid . ' GROUP BY a.pupilsightPersonID1 LIMIT 0,1';
+    $childs = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID2 = b.pupilsightPersonID WHERE a.pupilsightPersonID1 = ' . $cuid . ' GROUP BY a.pupilsightPersonID1 LIMIT 0,1';
     $resulta = $connection2->query($childs);
     $students = $resulta->fetch();
+
+    $parents = 'SELECT email, phone1 FROM pupilsightPerson WHERE pupilsightPersonID = ' . $cuid . ' ';
+    $resultp = $connection2->query($parents);
+    $parData = $resultp->fetch();
 
     $stuId = $students['pupilsightPersonID'];
 
@@ -58,6 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     $invdata = $resultinv->fetchAll();
 
     foreach ($invdata as $k => $d) {
+
         $sqlamt = 'SELECT SUM(fn_fee_invoice_item.total_amount) as totalamount, group_concat(fn_fee_invoice_item.id) as fn_fee_invoice_item_id FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ' . $d['invoiceid'] . ' ';
         $resultamt = $connection2->query($sqlamt);
         $dataamt = $resultamt->fetch();
@@ -235,6 +240,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     $resulto = $connection2->query($sqlo);
     $orgData = $resulto->fetch();
 
+    $sqlchk = "SELECT name FROM fn_fee_payment_gateway";
+    $resultchk = $connection2->query($sqlchk);
+    $gatewayData = $resultchk->fetch();
+
     // echo '<pre>';
     // print_r($invdata);
     // echo '</pre>';
@@ -320,9 +329,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
                 $style = $curdate >= $duedate ? '#FAFD94' : '#fff';
                 // echo '<tr style="background:'.$style.'"><td><input type="checkbox" class="multiplePayFees" value="'.$ind['id'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
-                echo '<tr><td><input type="checkbox" class="multiplePayFees chkChild" value="' . $ind['id'] . '"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
+                echo '<tr><td><input type="checkbox" class="multiplePayFees chkChild" data-amt="'.$totalamountnew.'" value="' . $ind['id'] . '"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
+
+                
 
 ?>
+
+            <?php if($gatewayData['name'] == 'RAZORPAY'){ ?>
                 <td>
                     <form action="thirdparty/payment/razorpay/pay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
                         <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
@@ -334,7 +347,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                         <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $ind['fn_fee_invoice_item_id'] ?>">
 
                         <input type="hidden" name="total_amount_without_fine_discount" value="<?= $ind['finalamount'] ?>">
-                        <input type="hidden" name="amount" value="<?= $totalamountnew ?>">
+                        <input type="hidden" class="fee_amt" name="amount" value="<?= $totalamountnew ?>">
                         <input type="hidden" name="fine" value="<?= $fineamount ?>">
                         <input type="hidden" name="discount" value="0">
                         <!-- Discount calculation pending--->
@@ -358,7 +371,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                         
                     </form>
                 </td>
-    <?php
+            <?php } if($gatewayData['name'] == 'AIRPAY'){ 
+                    $random_number = mt_rand(1000, 9999);
+                    $today = time();
+                    $orderId = $today . $random_number;
+            ?>
+                <td>
+                    <form action="thirdparty/payment/airpay/sendtoairpay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
+                        <input type="hidden" value="<?= $orderId; ?>" id="OrderId" name="orderid">
+                        <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
+                        <input type="hidden" name="classid" value="<?= $ind['classid'] ?>">
+                        <input type="hidden" name="sectionid" value="<?= $ind['sectionid'] ?>">
+                        <input type="hidden" name="fn_fees_invoice_id" value="<?= $ind['invoiceid'] ?>">
+                        <input type="hidden" name="fn_fees_head_id" value="<?= $ind['fn_fees_head_id'] ?>">
+                        <input type="hidden" name="rec_fn_fee_series_id" value="<?= $ind['rec_fn_fee_series_id'] ?>">
+                        <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $ind['fn_fee_invoice_item_id'] ?>">
+
+                        <input type="hidden" name="total_amount_without_fine_discount" value="<?= $ind['finalamount'] ?>">
+                        <input type="hidden" class="fee_amt" name="amount" value="<?= $totalamountnew ?>">
+                        <input type="hidden" name="fine" value="<?= $fineamount ?>">
+                        <input type="hidden" name="discount" value="0">
+                        <!-- Discount calculation pending--->
+                        <input type="hidden" name="receipt_number" value="<?= $ind['rec_fn_fee_series_id'] ?>">
+                        <input type="hidden" name="name" value="<?= $ind['officialName'] ?>">
+                        <input type="hidden" name="email" value="<?= $parData['email'] ?>">
+                        <input type="hidden" name="phone" value="<?= $parData['phone1'] ?>">
+                        <input type="hidden" name="payid" value="<?= $ind['stu_invoice_no'] ?>">
+                        <input type="hidden" name="stuid" value="<?= $stuId ?>">
+                        <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
+                        <input type="hidden" name="buyerFirstName" value="<?= $ind['officialName'] ?>">
+                        <input type="hidden" name="buyerLastName" value="<?= $ind['officialName'] ?>">
+                        <input type="hidden" name="buyerEmail" value="<?= $parData['email'] ?>">
+                        <input type="hidden" name="buyerPhone" value="<?= $parData['phone1'] ?>">
+                        
+                        <input type="hidden" class="buyerAddress" name="buyerAddress" value="">
+                        <input type="hidden" class="buyerCity" name="buyerCity" value="">
+                        <input type="hidden" class="buyerState" name="buyerState" value="">
+                        <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
+                        <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
+                        <input type="hidden" class="ptype" name="ptype" value="fee_collection">
+                        <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                        <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+
+                        <?php if(!empty($terms)){   ?>
+                            <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
+                            <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
+                        <?php } else { ?>
+                            <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>'  class="btn btn-primary ">Pay</button>
+                        <?php } ?>
+                        
+                        
+                    </form>
+                </td>
+            <?php } ?>
+
+        <?php
                 // echo "<td>NA</td></tr>";
                 echo "</tr>";
             }
@@ -488,7 +555,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
     ?>
 
+<?php if($gatewayData['name'] == 'RAZORPAY'){ ?>
     <form action='thirdparty/multiplepayment/razorpay/multiplepay.php' method='post'>
+<?php } else if($gatewayData['name'] == 'AIRPAY'){ 
+    $random_number = mt_rand(1000, 9999);
+    $today = time();
+    $orderId = $today . $random_number;    
+?> 
+    <form action='thirdparty/payment/airpay/sendtoairpay.php' method='post'>
+    <input type="hidden" value="<?= $orderId; ?>" id="OrderId" name="orderid">
+    <input type="hidden" name="buyerFirstName" value="<?= $students['officialName'] ?>">
+    <input type="hidden" name="buyerLastName" value="<?= $students['officialName'] ?>">
+    <input type="hidden" name="buyerEmail" value="<?= $parData['email'] ?>">
+    <input type="hidden" name="buyerPhone" value="<?= $parData['phone1'] ?>">
+    
+    <input type="hidden" class="buyerAddress" name="buyerAddress" value="">
+    <input type="hidden" class="buyerCity" name="buyerCity" value="">
+    <input type="hidden" class="buyerState" name="buyerState" value="">
+    <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
+    <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
+    <input type="hidden" class="amount" id="multiAmt" name="amount" value="10.00">
+    <input type="hidden" class="ptype" name="ptype" value="multiple_fee_collection">
+<?php } ?>
         <input type='hidden' id='multiplepayData' name='formdata' value=''>
         <button type='submit' id='clickMultiplePay' style='display:none'>Submit</button>
     </form>
@@ -544,12 +632,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
             var val = '';
             var multipleData = [];
             var cheked = [];
+            var amt = 0;
+            var tamt = 0;
             $.each($(".multiplePayFees:checked"), function() {
                 val = $(this).val();
                 var formData = $('#payform-' + val).serializeArray();
                 multipleData.push(formData);
                 cheked.push($(this).val());
-            });
+                amt = $(this).attr('data-amt');
+                tamt += parseInt(amt);
+            }); 
+            $("#multiAmt").val(Number(tamt).toFixed(2));
+            
             var chkid = cheked.join(", ");
             if (chkid) {
                 if (multipleData) {

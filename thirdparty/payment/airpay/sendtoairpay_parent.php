@@ -22,57 +22,15 @@ header( 'Pragma: no-cache' );
 	$buyerCountry = trim($_POST['buyerCountry']);
 	$orderid = trim($_POST['orderid']); //Your System Generated Order ID
 
-	
-	$type = $_POST['ptype'];
-
-	if($type == 'admission'){
-		
-		if (!empty($_POST['sid'])) {
-			$submissionId = $_POST['sid'];
-		} else {
-			$submissionId = $_SESSION['submissionId'];
-		}
-		
-		$campaignId = trim($_POST['campaignid']);
-		$customvar = $submissionId.'-'.$campaignId.'-'.$type;
-		
-	} else if($type == 'parent_admission'){
-		
-		$_SESSION["paypost"] = $_POST;
-		$submissionId = $_POST['stuid'];
-		$campaignId = 'parent';
-		$customvar = $submissionId.'-'.$campaignId.'-'.$type;
-	} else if($type == 'fee_collection'){
-		
-		$_SESSION["paypost"] = $_POST;
-		$submissionId = $_POST['stuid'];
-		$campaignId = 'fees';
-		$customvar = $submissionId.'-'.$campaignId.'-'.$type;
-	} else if($type == 'multiple_fee_collection'){
-		$_SESSION["paypost"] = $_POST;
-		$newpost = json_decode($_POST['formdata']);
-		
-		$namount = 0;
-		foreach($newpost as $np){
-			$name = $np->name;
-			$email = $np->email;
-			$phone = $np->phone;
-			$payid = $np->payid;
-			$callbackurl = $np->callbackurl;
-			$stid = $np->stuid;
-			$namount += $np->amount;
-		}
-		//$amount = number_format($namount, 2, '.', '');
-		$submissionId = $stid;
-		$campaignId = 'fees';
-		$customvar = $submissionId.'-'.$campaignId.'-'.$type;
+	if (!empty($_POST['sid'])) {
+		$submissionId = $_POST['sid'];
+	} else {
+		$submissionId = $_SESSION['submissionId'];
 	}
-	// echo '<pre>';
-	// print_r($_POST);
-	// echo '</pre>';
-	// echo $amount.'--'.$submissionId;
-	// die();
-
+	
+	$campaignId = trim($_POST['campaignid']);
+	$type = $_POST['ptype'];
+	$customvar = $submissionId.'-'.$campaignId.'-'.$type;
 
     include('config.php');
     include('checksum.php');

@@ -25,7 +25,7 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain().'/pupilsight_new';
+//$baseurl = getDomain().'/pupilsight';
 $baseurl = getDomain();
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
