@@ -45,12 +45,18 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
         if ($newPostFlag) {
             $_SESSION["customFieldKey"] = $customFieldKey;
-            $_POST["modules"] = implode(",", $_POST["modules"]);
+            $customAction = $_POST["customAction"];
+            if ($customAction == "add") {
 
-            if ($_POST["field_type"] == "tab") {
-                $flag = $customField->addCustomTab($_POST);
-            } else {
-                $flag = $customField->addCustomField($_POST);
+                $_POST["modules"] = implode(",", $_POST["modules"]);
+                if ($_POST["field_type"] == "tab") {
+                    $flag = $customField->addCustomTab($_POST);
+                } else {
+                    $flag = $customField->addCustomField($_POST);
+                }
+            } else if ($customAction == "edit") {
+                $flag = $customField->editCustomField($_POST);
+                //die();
             }
 
             if ($flag) {
@@ -130,7 +136,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
     $col = $row->addColumn()->setClass('newdes customHandleCol');
     $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' id="listCustomField"  class="btn btn-white" onclick=\'loadCustomFieldList();\'>Custom Field List</button>');
+    $col->addContent('<button type=\'button\' id="listCustomField"  class="btn btn-white" onclick=\'loadCustomFieldList();\'>Manage Custom Field List</button>');
 
 
     /*
@@ -141,6 +147,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
     echo $form->getOutput();
     $cd = $customField->getAllColumn($tableID);
+
     $inactiveCol = $customField->getAllInactiveColumn($tableID);
     $customModel = $customField->loadCustomFieldModal($tableID);
     $cuModules = $customModel[0]["modules"];
@@ -215,6 +222,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
         <div class="container" id='customFieldPanel' style='font-size:14px;'>
             <h3 class='mt-4'>General Information</h3>
             <input type='hidden' name='table_name' id='dbTable' value='<?= $tableID; ?>'>
+            <input type='hidden' name='customAction' value='add'>
 
             <div class="row mt-4">
                 <div class="col-sm">Modules</div>
@@ -306,7 +314,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             </div>
 
             <div class="row mt-2" id='optionPanel'>
-                <div class="col-sm">Dropdown (comma separated list of options.)</div>
+                <div class="col-sm">Dropdown, Radio, Checkbox (comma separated values eg. male,female.)</div>
                 <div class="col-sm">
                     <input type='text' class='w-full txtfield' name='options'>
                 </div>
@@ -462,9 +470,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     <form method="post" autocomplete="on" enctype="multipart/form-data" class="smallIntBorder fullWidth standardForm" id="customFieldEditForm" onsubmit="pupilsightFormEditSubmitted(this)">
         <div class="container" id='customFieldEditPanel' style='font-size:14px;'>
             <h3 class='mt-4'>Edit Custom Field</h3>
-            <input type='hidden' name='table_name' id='edit_dbTable' value='<?= $tableID; ?>'>
+            <hr style='margin:5px 0px !important;'>
+            <input type='hidden' name='table_name' id='edit_dbTable' value=''>
+            <input type='hidden' name='id' id='edit_id'>
+            <input type='hidden' name='field_type_org' id='edit_field_type_org'>
+            <input type='hidden' name='customAction' value='edit'>
 
-            <div class="row mt-2">
+            <div class="row mt-4">
                 <div class="col-sm" id='tabId'>Tab / Section / Tile</div>
                 <div class="col-sm">
                     <?php
@@ -475,8 +487,8 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     while ($ci < $clen) {
                         $tabName = trim($cust[$ci]);
                         $tabTitle = str_replace("_", " ", $tabName);
-                        echo "\n<div class='float-left mr-2'><input type='radio' name='tab' id='edit_rdh_" . $ci . "' value='" . $tabName . "' " . $strChecked . ">";
-                        echo "<label for='rdh_" . $ci . "' class='ml-2 mr-2'>" . ucwords($tabTitle) . "</label></div>";
+                        echo "\n<div class='float-left mr-2'><input type='radio' name='edit_tab' id='edit_rdh_" . $ci . "' value='" . $tabName . "' " . $strChecked . ">";
+                        echo "<label for='edit_rdh_" . $ci . "' class='ml-2 mr-2'>" . ucwords($tabTitle) . "</label></div>";
                         $ci++;
                         $strChecked = "";
                     }
@@ -489,27 +501,27 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             <div class="row mt-2">
                 <div class="col-sm">Field Type</div>
                 <div class="col-sm">
-                    <select class='w-full' id='edit_fieldTypeSelect' name='field_type' onchange="activateOption();">
-                        <option value='tinytext'>Text Field</option>
-                        <option value='text'>Text Area</option>
-                        <option value='dropdown'>Dropdown</option>
-                        <option value='email'>EMAIL</option>
-                        <option value='mobile'>MOBILE</option>
-                        <option value='number'>NUMBER</option>
-                        <option value='date'>Date</option>
-                        <option value='image'>Image</option>
-                        <option value='file'>File Upload</option>
-                        <option value='tab'>Tab / Section / Tile</option>
-                        <option value='checkboxes'>Checkboxes</option>
-                        <option value='radioboxes'>Radio Buttons</option>
+                    <select class='w-full' id='edit_fieldTypeSelect' name='field_type' onchange="editActivateOption();">
+                        <option value='tinytext' class='editType'>Text Field</option>
+                        <option value='text' class='editType'>Text Area</option>
+                        <option value='dropdown' class='editType'>Dropdown</option>
+                        <option value='email' class='editType'>EMAIL</option>
+                        <option value='mobile' class='editType'>MOBILE</option>
+                        <option value='number' class='editType'>NUMBER</option>
+                        <option value='date' class='editType'>Date</option>
+                        <option value='image' class='editType'>Image</option>
+                        <option value='file' class='editType'>File Upload</option>
+                        <option value='tab' id='tabFieldType'>Tab / Section / Tile</option>
+                        <option value='checkboxes' class='editType'>Checkboxes</option>
+                        <option value='radioboxes' class='editType'>Radio Buttons</option>
                     </select>
                 </div>
             </div>
 
             <div class="row mt-2" id='edit_optionPanel'>
-                <div class="col-sm">Dropdown (comma separated list of options.)</div>
+                <div class="col-sm">Dropdown, Radio, Checkbox (comma separated values eg. male,female.)</div>
                 <div class="col-sm">
-                    <input type='text' class='w-full txtfield' name='options'>
+                    <input type='text' class='w-full txtfield' name='options' id='edit_options'>
                 </div>
             </div>
 
@@ -530,7 +542,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             <div class="row mt-2 notab">
                 <div class="col-sm">Default Value</div>
                 <div class="col-sm">
-                    <input type='text' class='w-full txtfield' name='default_value' id='defaultValue'>
+                    <input type='text' class='w-full txtfield' name='default_value' id='edit_defaultValue'>
                 </div>
             </div>
 
@@ -538,44 +550,33 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <div class="row mt-2">
                     <div class="col-sm">Should this field unique</div>
                     <div class="col-sm">
-                        <input type='radio' name='isunique' id='rdUYes' value='Y'>
-                        <label for='rdUYes' class='ml-2 mr-2'>Yes</label>
+                        <input type='radio' name='edit_isunique' id='edit_rdUYes' value='Y'>
+                        <label for='edit_rdUYes' class='ml-2 mr-2'>Yes</label>
 
-                        <input type='radio' name='isunique' id='rdUNo' value='N' checked>
-                        <label for='rdUNo' class='ml-2 mr-2'>No</label>
-                    </div>
-                </div>
-
-                <div class="row mt-2">
-                    <div class="col-sm">Should this field searchable</div>
-                    <div class="col-sm">
-                        <input type='radio' name='search' id='rdSYes' value='Y'>
-                        <label for='rdSYes' class='ml-2 mr-2'>Yes</label>
-
-                        <input type='radio' name='search' id='rdSNo' value='N' checked>
-                        <label for='rdSNo' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='edit_isunique' id='edit_rdUNo' value='N' checked>
+                        <label for='edit_rdUNo' class='ml-2 mr-2'>No</label>
                     </div>
                 </div>
 
                 <div class="row mt-2">
                     <div class="col-sm">Should this field required</div>
                     <div class="col-sm">
-                        <input type='radio' name='required' id='rdRYes' value='Y' checked>
-                        <label for='rdRYes' class='ml-2 mr-2'>Yes</label>
+                        <input type='radio' name='edit_required' id='edit_rdRYes' value='Y' checked>
+                        <label for='edit_rdRYes' class='ml-2 mr-2'>Yes</label>
 
-                        <input type='radio' name='required' id='rdRNo' value='N'>
-                        <label for='rdRNo' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='edit_required' id='edit_rdRNo' value='N'>
+                        <label for='edit_rdRNo' class='ml-2 mr-2'>No</label>
                     </div>
                 </div>
 
                 <div class="row mt-2">
                     <div class="col-sm">Should this field active</div>
                     <div class="col-sm">
-                        <input type='radio' name='active' id='rdAYes' value='Y' checked>
-                        <label for='rdAYes' class='ml-2 mr-2'>Yes</label>
+                        <input type='radio' name='edit_active' id='edit_rdAYes' value='Y' checked>
+                        <label for='edit_rdAYes' class='ml-2 mr-2'>Yes</label>
 
-                        <input type='radio' name='active' id='rdANo' value='N'>
-                        <label for='rdANo' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='edit_active' id='edit_rdANo' value='N'>
+                        <label for='edit_rdANo' class='ml-2 mr-2'>No</label>
                     </div>
                 </div>
 
@@ -584,22 +585,22 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <div class="row mb-2">
                     <div class="col-sm">Should this field visible</div>
                     <div class="col-sm">
-                        <input type='radio' name='visibility' id='rdVYes' value='Y' checked>
-                        <label for='rdVYes' class='ml-2 mr-2'>Yes</label>
+                        <input type='radio' name='edit_visibility' id='edit_rdVYes' value='Y' checked>
+                        <label for='edit_rdVYes' class='ml-2 mr-2'>Yes</label>
 
-                        <input type='radio' name='visibility' id='rdVNo' value='N'>
-                        <label for='rdVNo' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='edit_visibility' id='edit_rdVNo' value='N'>
+                        <label for='edit_rdVNo' class='ml-2 mr-2'>No</label>
                     </div>
                 </div>
 
                 <div class="row mb-2">
                     <div class="col-sm">Should this field editable</div>
                     <div class="col-sm">
-                        <input type='radio' name='editable' id='rdEYes' value='Y' checked>
-                        <label for='rdEYes' class='ml-2 mr-2'>Yes</label>
+                        <input type='radio' name='edit_editable' id='edit_rdEYes' value='Y' checked>
+                        <label for='edit_rdEYes' class='ml-2 mr-2'>Yes</label>
 
-                        <input type='radio' name='editable' id='rdENo' value='N'>
-                        <label for='rdENo' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='edit_editable' id='edit_rdENo' value='N'>
+                        <label for='edit_rdENo' class='ml-2 mr-2'>No</label>
                     </div>
                 </div>
 
@@ -608,22 +609,22 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <div class="row mb-2">
                     <div class="col-sm">Should this field visible</div>
                     <div class="col-sm">
-                        <input type='radio' name='parent_visible' id='rdVYes2' value='Y' checked>
-                        <label for='rdVYes2' class='ml-2 mr-2'>Yes</label>
+                        <input type='radio' name='edit_parent_visible' id='edit_rdVYes2' value='Y' checked>
+                        <label for='edit_rdVYes2' class='ml-2 mr-2'>Yes</label>
 
-                        <input type='radio' name='parent_visible' id='rdVNo2' value='N'>
-                        <label for='rdVNo2' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='edit_parent_visible' id='edit_rdVNo2' value='N'>
+                        <label for='edit_rdVNo2' class='ml-2 mr-2'>No</label>
                     </div>
                 </div>
 
                 <div class="row mb-2">
                     <div class="col-sm">Should this field editable</div>
                     <div class="col-sm">
-                        <input type='radio' name='parent_editable' id='rdEYes2' value='Y' checked>
-                        <label for='rdEYes2' class='ml-2 mr-2'>Yes</label>
+                        <input type='radio' name='edit_parent_editable' id='edit_rdEYes2' value='Y' checked>
+                        <label for='edit_rdEYes2' class='ml-2 mr-2'>Yes</label>
 
-                        <input type='radio' name='parent_editable' id='rdENo2' value='N'>
-                        <label for='rdENo2' class='ml-2 mr-2'>No</label>
+                        <input type='radio' name='edit_parent_editable' id='edit_rdENo2' value='N'>
+                        <label for='edit_rdENo2' class='ml-2 mr-2'>No</label>
                     </div>
                 </div>
             </div>
@@ -635,8 +636,8 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     <button type="button" class="btn btn-secondary ml-4" onclick="cancelCustomFieldEditModal();">Cancel</button>
                 </div>
                 <div class="col-sm-auto ml-auto">
-                    <button type="button" class="btn btn-primary ml-2" onclick="validate();">Save</button>
-                    <button type="submit" id='btnSubmit' style="display:none;visibility:hidden;"></button>
+                    <button type="button" class="btn btn-primary ml-2" onclick="validateEdit();">Save</button>
+                    <button type="submit" id='btnEditSubmit' style="display:none;visibility:hidden;"></button>
                 </div>
             </div>
             <br />
@@ -878,15 +879,6 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             }
         }
 
-        function loadCustomFieldEditModal() {
-            hideAllPanel();
-            $("#customFieldEditPanel").show();
-        }
-
-        function cancelCustomFieldEditModal() {
-            hideAllPanel();
-            $("#customFieldSearchForm, #customFieldFormHideShow").show();
-        }
 
         function loadCustomFieldModal() {
             $("#customFieldSearchForm, #customFieldFormHideShow").hide();
@@ -1081,7 +1073,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
                     $str .= "<td>";
                     $str .= "<button class='btn btn-danger' title='Delete' onclick=\"deleteCustomField('" . $id . "','" . $customFieldList[$i]["table_name"] . "','" . $fieldName . "');\"><i class='mdi mdi-delete mdi-18px'></i></button>";
-                    $str .= "<button class='btn btn-info ml-1' title='Edit' onclick=\"loadCustomFieldEditModal();\"><i class='mdi mdi-pencil mdi-18px'></i></button>";
+                    $str .= "<button class='btn btn-info ml-1' title='Edit' onclick=\"loadCustomFieldEditModal('" . $id . "');\"><i class='mdi mdi-pencil mdi-18px'></i></button>";
                     $str .= "</td>";
                     $str .= "</tr>";
                 }
@@ -1094,6 +1086,104 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             </tbody>
         </table>
     </div>
+    <script>
+        var objCustomFieldList = <?php echo json_encode($customFieldList); ?>;
+
+        function loadCustomFieldEditModal(id) {
+            hideAllPanel();
+
+            $("#customFieldEditPanel").show();
+            var len = objCustomFieldList.length;
+            var i = 0;
+            var obj = null;
+            while (i < len) {
+                if (objCustomFieldList[i]["id"] == id) {
+                    obj = objCustomFieldList[i];
+                    break;
+                }
+                i++;
+            }
+            console.log(obj);
+            if (obj) {
+                //set edit Value
+                setEditValue(obj);
+                editActivateOption();
+            }
+        }
+
+        function setEditValue(obj) {
+            $("#edit_dbTable").val(obj["table_name"]);
+            $("#edit_id").val(obj["id"]);
+
+
+            $("input[name=edit_tab][value=" + obj["tab"] + "]").attr('checked', 'checked');
+            $("#tabFieldType").hide();
+            $(".editType").show();
+            if (obj["field_type"] == "varchar") {
+                obj["field_type"] = "tinytext";
+            } else if (obj["field_type"] == "tab") {
+                $("#tabFieldType").show();
+                $(".editType").hide();
+            }
+
+            $("#edit_field_type_org").val(obj["field_type"]);
+            $("#edit_fieldTypeSelect").val(obj["field_type"]);
+            $("#edit_options").val(obj["options"]);
+            $("#edit_displayName").val(obj["field_title"]);
+            $("#edit_description").val(obj["field_description"]);
+            $("#edit_defaultValue").val(obj["default_value"]);
+
+            $("input[name=edit_isunique][value=" + obj["isunique"] + "]").attr('checked', 'checked');
+            $("input[name=edit_required][value=" + obj["required"] + "]").attr('checked', 'checked');
+            $("input[name=edit_active][value=" + obj["required"] + "]").attr('checked', 'checked');
+            $("input[name=edit_visibility][value=" + obj["visibility"] + "]").attr('checked', 'checked');
+            $("input[name=edit_editable][value=" + obj["editable"] + "]").attr('checked', 'checked');
+            $("input[name=edit_parent_visible][value=" + obj["parent_visible"] + "]").attr('checked', 'checked');
+            $("input[name=edit_parent_editable][value=" + obj["parent_editable"] + "]").attr('checked', 'checked');
+        }
+
+        function editActivateOption() {
+            //'varchar','text','date','url','select','checkboxes','radioboxes'
+            var element = $("#edit_fieldTypeSelect").val();
+            $("#fieldLengthPanel, #edit_optionPanel").hide();
+            $("#tabId").html("Tab / Section / Tile");
+            isTabSelectActive(false);
+            if (element == "dropdown" || element == "checkboxes" || element == "radioboxes") {
+                $("#edit_optionPanel").show();
+            } else if (element == "tab") {
+                isTabSelectActive(true);
+                $("#tabId").html("<b>After</b> Tab / Section / Tile ");
+            }
+        }
+
+
+        function cancelCustomFieldEditModal() {
+            // hideAllPanel();
+            loadCustomFieldList();
+            //$("#customFieldSearchForm, #customFieldFormHideShow").show();
+        }
+
+        function validateEdit() {
+
+            var flag = true;
+            if (!isUnique('edit_displayName')) {
+                alert("Element Display Name can't left blank");
+                flag = false;
+            }
+
+            var fieldType = $("#edit_fieldTypeSelect").val();
+            if (fieldType == "dropdown" || fieldType == "checkboxes" || fieldType == "radioboxes") {
+                if (!isUnique('edit_options')) {
+                    alert("Dropdown, Radio, Checkbox (comma separated values required).");
+                    flag = false;
+                }
+            }
+
+            if (flag) {
+                $("#btnEditSubmit").click();
+            }
+        }
+    </script>
     <script>
         $(function() {
             $("#customFieldListPanel").hide();
