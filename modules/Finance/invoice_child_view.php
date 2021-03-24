@@ -375,6 +375,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                     $random_number = mt_rand(1000, 9999);
                     $today = time();
                     $orderId = $today . $random_number;
+
+                    $totalamountnewAirpay = number_format($totalamountnew, 2, '.', '');
             ?>
                 <td>
                     <form action="thirdparty/payment/airpay/sendtoairpay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
@@ -388,7 +390,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                         <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $ind['fn_fee_invoice_item_id'] ?>">
 
                         <input type="hidden" name="total_amount_without_fine_discount" value="<?= $ind['finalamount'] ?>">
-                        <input type="hidden" class="fee_amt" name="amount" value="<?= $totalamountnew ?>">
+                        <input type="hidden" class="fee_amt" name="amount" value="<?= $totalamountnewAirpay ?>">
                         <input type="hidden" name="fine" value="<?= $fineamount ?>">
                         <input type="hidden" name="discount" value="0">
                         <!-- Discount calculation pending--->

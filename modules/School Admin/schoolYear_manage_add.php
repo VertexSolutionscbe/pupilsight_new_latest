@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
-        $row->addTextField('name')->required()->maxLength(9);
+        $row->addTextField('name')->required();
 
     $row = $form->addRow();
         $row->addLabel('status', __('Status'));

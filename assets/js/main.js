@@ -2833,10 +2833,13 @@
 
             $(".ddChequeRow").removeClass('hiddencol');
             $(".neft_cls").addClass('hiddencol');
-
+            $(".ddDepositRow").addClass('hiddencol');
+            $("#deposit_account_id").val('').change();
         } else if (val == 'MULTIPLE') {
             // $("#multiplePayment").click(); 
             $(".ddChequeRow").addClass('hiddencol');
+            $(".ddDepositRow").addClass('hiddencol');
+            $("#deposit_account_id").val('').change();
             var amount = $('#amount_paying').val();
             var type = 'AmountSession';
             if (amount != '') {
@@ -2851,18 +2854,29 @@
                 });
             }
 
+        } else if (val == 'DEPOSIT') {
+            $(".ddCashRow").removeClass('hiddencol');
+            $(".ddChequeRow").addClass('hiddencol');
+            $("#cashPaymentStatus").val('Payment Received');
+            $("#payment_status").val('Payment Received').change();
+            $(".neft_cls").addClass('hiddencol');
+            $(".ddDepositRow").removeClass('hiddencol');
+
         } else if (val == 'NEFT' || val == 'RTGS' || val == 'CREDIT CARD' || val == 'DEBIT CARD') {
             $("#payment_status").val('Payment Received').change();
             $("#cashPaymentStatus").val('Payment Received');
             $(".ddChequeRow").addClass('hiddencol');
             $(".neft_cls").removeClass('hiddencol');
-
+            $(".ddDepositRow").addClass('hiddencol');
+            $("#deposit_account_id").val('').change();
         } else {
             $(".ddCashRow").removeClass('hiddencol');
             $("#cashPaymentStatus").val('Payment Received');
             $("#payment_status").val('Payment Received').change();
             $(".neft_cls").addClass('hiddencol');
             $(".ddChequeRow").addClass('hiddencol');
+            $(".ddDepositRow").addClass('hiddencol');
+            $("#deposit_account_id").val('').change();
         }
     });
 
