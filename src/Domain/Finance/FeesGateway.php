@@ -233,11 +233,54 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fees_deposit_account')
             ->cols([
-                'fn_fees_deposit_account.id','fn_fees_deposit_account.ac_name', 'fn_fees_deposit_account.ac_code', 'fn_fees_deposit_account.overpayment_account','fn_fee_items.name as fee_item'
+                'fn_fees_deposit_account.id','fn_fees_deposit_account.ac_name', 'fn_fees_deposit_account.ac_code', 'fn_fees_deposit_account.overpayment_account','fn_fee_items.name as fee_item', 'SUM(if(fn_fees_collection_deposit.status = "Credit",fn_fees_collection_deposit.amount,0) ) AS creditData'
             ])
-            ->leftJoin('fn_fee_items', 'fn_fees_deposit_account.fn_fee_item_id=fn_fee_items.id');
+            ->leftJoin('fn_fee_items', 'fn_fees_deposit_account.fn_fee_item_id=fn_fee_items.id')
+            ->leftJoin('fn_fees_collection_deposit', 'fn_fees_deposit_account.id=fn_fees_collection_deposit.deposit_account_id')
+            //->where('fn_fees_collection_deposit.status = "Credit" ')
+            ->groupBy(['fn_fees_deposit_account.id']);
 
-        return $this->runQuery($query, $criteria, TRUE);
+        //return $this->runQuery($query, $criteria, TRUE);
+        //echo $query;
+
+        $res = $this->runQuery($query, $criteria, TRUE);
+        $data = $res->data;
+        // echo '<pre>';
+        // print_r($data);
+        // echo '</pre>';
+        // die();
+        if(!empty($data)){
+            foreach($data as $k=>$d){
+                $deposit_account_id = $d['id'];
+                $creditdata = $d['creditData'];
+                    $query2 = $this
+                    ->newQuery()
+                    ->from('fn_fees_collection_deposit')
+                    ->cols([
+                        'SUM(fn_fees_collection_deposit.amount) AS debitData'
+                    ])
+                    ->where('fn_fees_collection_deposit.deposit_account_id = "'.$deposit_account_id.'" ')
+                    ->where('fn_fees_collection_deposit.status = "Debit" ');
+                
+                    $newdata = $this->runQuery($query2, $criteria);
+                    if(!empty($newdata->data[0]['debitData'])){
+                        $debitdata = $newdata->data[0]['debitData'];
+                        $depAmount = $creditdata - $debitdata;
+                        $data[$k]['amount'] = $depAmount;
+                    } else {
+                        $depAmount = $creditdata;
+                        $data[$k]['amount'] = $depAmount;
+                    }
+                
+            }
+            
+        }
+        // echo '<pre>';
+        // print_r($data);
+        // echo '</pre>';
+        // die();
+        $res->data = $data;
+        return $res;
     }
 
     public function getFeesSeries(QueryCriteria $criteria, $pupilsightSchoolYearID)
@@ -1795,6 +1838,24 @@ print_r($rs);
             // die();
             $res->data = $data;
             return $res;
+    }
+
+    public function getDepositAccountDetails($criteria, $id)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('fn_fees_deposit_account')
+            ->cols([
+                'fn_fees_deposit_account.id','fn_fees_deposit_account.ac_name', 'fn_fees_collection_deposit.pupilsightPersonID', 'fn_fees_collection_deposit.amount','fn_fees_collection_deposit.transaction_id', 'fn_fees_collection_deposit.status','fn_fees_collection_deposit.cdt','fn_fees_collection.receipt_number','fn_fees_collection.payment_mode_id', 'fn_fees_student_collection.invoice_no', 'pupilsightPerson.officialName','fn_masters.name as paymentMode'
+            ])
+            ->leftJoin('fn_fees_collection_deposit', 'fn_fees_deposit_account.id=fn_fees_collection_deposit.deposit_account_id')
+            ->leftJoin('fn_fees_collection', 'fn_fees_collection_deposit.transaction_id=fn_fees_collection.transaction_id')
+            ->leftJoin('fn_fees_student_collection', 'fn_fees_collection_deposit.transaction_id=fn_fees_student_collection.transaction_id')
+            ->leftJoin('fn_masters', 'fn_fees_collection.payment_mode_id=fn_masters.id')
+            ->leftJoin('pupilsightPerson', 'fn_fees_collection_deposit.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+            ->where('fn_fees_deposit_account.id = "'.$id.'" ');
+
+        return $this->runQuery($query, $criteria, TRUE);
     }
 
 }

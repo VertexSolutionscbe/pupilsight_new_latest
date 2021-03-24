@@ -52,7 +52,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/deposit_account_ma
              }
              return $dataSet['overpayment_account'];
     });  
-    
+    $table->addColumn('amount', __('Current Balance'))
+        ->format(function ($dataSet) {
+            return '<a href="fullScreen.php?q=/modules/Finance/deposit_account_details.php&id='.$dataSet['id'].'" class="thickbox">'.$dataSet['amount'].'</a>';
+        });  
    
         
     // ACTIONS

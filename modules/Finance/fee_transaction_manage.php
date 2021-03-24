@@ -303,6 +303,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
    
     $table->addColumn('transcation_amount', __('Transaction Amount'));
     $table->addColumn('amount_paying', __('Amount Paid'));
+    $table->addColumn('over_payment', __('Over Payment'));
     $table->addColumn('payment_date', __('Payment Date'))
     ->format(function ($feeTransaction) {
         if (!empty($feeTransaction['payment_status_up_date'])) {

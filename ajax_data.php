@@ -3865,3 +3865,33 @@ if ($type == 'deRegisterBulkStudent') {
         $result3->execute($data3);
     }
 }
+
+if ($type == 'chkCautionAmt') {
+    $id = $val;
+    $amount = $_POST['ap'];
+    $sqlo = 'SELECT SUM(amount) AS creditData FROM fn_fees_collection_deposit  WHERE deposit_account_id = '.$id.' AND status = "Credit"  ';
+    $resulto = $connection2->query($sqlo);
+    $overPayCreData = $resulto->fetch();
+
+    $sqld = 'SELECT SUM(amount) AS debitData FROM fn_fees_collection_deposit  WHERE deposit_account_id = '.$id.' AND status = "Debit"  ';
+    $resultd = $connection2->query($sqld);
+    $overPayDebData = $resultd->fetch();
+
+    $depAmount = '';
+    if(!empty($overPayCreData)){
+        $creditdata = $overPayCreData['creditData'];
+        if(!empty($overPayDebData)){
+            $debitdata = $overPayDebData['debitData'];
+            $depAmount = $creditdata - $debitdata;
+        } else {
+            $depAmount = $creditdata;
+        }
+    }
+
+    $data = 'fail';
+    if($depAmount > $amount){
+        $data = 'pass';
+    } 
+    echo $data;
+}
+
