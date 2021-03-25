@@ -302,13 +302,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                         <option value='date'>Date</option>
                         <option value='image'>Image</option>
                         <option value='file'>File Upload</option>
-                        <option value='tab'>Tab / Section / Tile</option>
-                        <!--
-                        <option value='date'>Date</option>
                         <option value='checkboxes'>Checkboxes</option>
                         <option value='radioboxes'>Radioboxes</option>
-                        <option value='url'>Url</option>
-                        -->
+                        <option value='tab'>Tab / Section / Tile</option>
                     </select>
                 </div>
             </div>
@@ -337,7 +333,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             <div class="row mt-2 notab">
                 <div class="col-sm">Element Label Description</div>
                 <div class="col-sm">
-                    <textarea rows='2' name='field_description' id='description'></textarea>
+                    <textarea rows='2' name='field_description' id='description' class='smarteditor'></textarea>
                 </div>
             </div>
 
@@ -535,7 +531,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             <div class="row mt-2 notab">
                 <div class="col-sm">Element Label Description</div>
                 <div class="col-sm">
-                    <textarea rows='2' name='field_description' id='edit_description'></textarea>
+                    <textarea rows='2' name='field_description' id='edit_description' class="smarteditor"></textarea>
                 </div>
             </div>
 
@@ -1130,12 +1126,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             $("#edit_fieldTypeSelect").val(obj["field_type"]);
             $("#edit_options").val(obj["options"]);
             $("#edit_displayName").val(obj["field_title"]);
-            $("#edit_description").val(obj["field_description"]);
+            $('#edit_description').trumbowyg('html', obj["field_description"]);
+            //$("#edit_description").val(obj["field_description"]);
             $("#edit_defaultValue").val(obj["default_value"]);
 
             $("input[name=edit_isunique][value=" + obj["isunique"] + "]").attr('checked', 'checked');
             $("input[name=edit_required][value=" + obj["required"] + "]").attr('checked', 'checked');
-            $("input[name=edit_active][value=" + obj["required"] + "]").attr('checked', 'checked');
+            $("input[name=edit_active][value=" + obj["active"] + "]").attr('checked', 'checked');
             $("input[name=edit_visibility][value=" + obj["visibility"] + "]").attr('checked', 'checked');
             $("input[name=edit_editable][value=" + obj["editable"] + "]").attr('checked', 'checked');
             $("input[name=edit_parent_visible][value=" + obj["parent_visible"] + "]").attr('checked', 'checked');
@@ -1285,5 +1282,26 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 $("#switchTab_" + fieldName).val(fieldNameVal);
             }
         }
+    </script>
+    <script>
+        $('.smarteditor').trumbowyg({
+            autogrow: true,
+            btns: [
+
+                ['viewHTML'],
+                ['undo', 'redo'], // Only supported in Blink browsers
+                ['formatting'],
+                ['strong', 'em', 'del'],
+                ['superscript', 'subscript'],
+                ['link'],
+                ['foreColor', 'backColor'],
+                ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+                ['unorderedList', 'orderedList'],
+                ['horizontalRule'],
+                ['removeformat'],
+                ['fullscreen']
+            ],
+        });
+        //['insertImage'], ignore for now
     </script>
     <?php

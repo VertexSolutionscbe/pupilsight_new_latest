@@ -6,9 +6,7 @@ Pupilsight, Flexible & Open School System
 namespace Pupilsight\Domain\System;
 
 use Exception;
-use phpDocumentor\Reflection\Types\Null_;
 use Pupilsight\Domain\Traits\TableAware;
-use Pupilsight\Domain\QueryCriteria;
 use Pupilsight\Domain\QueryableGateway;
 
 use Pupilsight\Domain\DBQuery;
@@ -224,14 +222,18 @@ class CustomField extends QueryableGateway
                 //echo $data." - ".$val;
                 $tbl = $table;
                 foreach ($field_type as $ft => $fields) {
-                    //echo $tbl . "=>" . $ft;
-                    //print_r($fields);
-                    /*if ($ft == "image") {
-                        //handle image 
-                    } else {*/
+
+                    $isCheckBox = FALSE;
+                    if ($ft == "checkboxes") {
+                        //handle checkbox 
+                        $isCheckBox = TRUE;
+                    }
                     foreach ($fields as $key => $val) {
                         if ($squ) {
                             $squ .= ", ";
+                        }
+                        if ($isCheckBox) {
+                            $val = implode(' |$$| ', $val);
                         }
                         $squ .= $key . "='" . $val . "'";
                     }
