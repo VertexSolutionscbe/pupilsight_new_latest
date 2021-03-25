@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
             $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
         } else {
             $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
         }
 
     } else {
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
                 $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
             } else {
                 $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
             }
         }
        

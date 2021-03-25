@@ -49,7 +49,7 @@ if (!empty($camdata)) {
 
 			echo '</td>';
 			echo '<td>';
-			if (!empty($row['application_no']) && !empty($row['transaction_id'])) {
+			if (!empty($row['application_no']) || !empty($row['transaction_id'])) {
 				$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 				$fname = trim(str_replace("/", "_", $row['application_no']));
 				//$link = $base_url . '/public/applicationpdf/parent/' . $fname;

@@ -204,10 +204,11 @@ if (isset($_POST['type'])) {
             }
 
             $fn_fees_head_id = $_POST['fn_fees_head_id'];
-            $sqlrt = 'SELECT b.path FROM fn_fees_head AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.receipt_template = b.id WHERE a.id = ' . $fn_fees_head_id . ' ';
+            $sqlrt = 'SELECT a.ac_no, b.path FROM fn_fees_head AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.receipt_template = b.id WHERE a.id = ' . $fn_fees_head_id . ' ';
             $resultrt = $connection2->query($sqlrt);
             $recTempData = $resultrt->fetch();
             $receiptTemplate = $recTempData['path'];
+            $fee_head_acc_no = $recTempData['ac_no'];
 
 
             $fn_fees_receipt_series_id = $_POST['fn_fees_receipt_series_id'];
@@ -507,9 +508,42 @@ if (isset($_POST['type'])) {
                     }
 
 
-                    $sqlstu = "SELECT a.officialName , a.admission_no, b.name as class, c.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " ";
+                    $sqlstu = "SELECT a.officialName , a.admission_no, a.roll_no, p.name as progname, b.name as class, c.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON d.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " ";
                     $resultstu = $connection2->query($sqlstu);
                     $valuestu = $resultstu->fetch();
+
+                    $sqlfat = "SELECT b.officialName , b.phone1, b.email FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $pupilsightPersonID . " AND a.relationship = 'Father' ";
+                    $resultfat = $connection2->query($sqlfat);
+                    $valuefat = $resultfat->fetch();
+
+                    $father_name = '';
+                    $father_email = '';
+                    $father_phone = '';
+                    if(!empty($valuefat)){
+                        $father_name = $valuefat['officialName'];
+                        $father_email = $valuefat['email'];
+                        $father_phone = $valuefat['phone1'];
+                    }
+
+                    $sqlmot = "SELECT b.officialName , b.phone1, b.email FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $pupilsightPersonID . " AND a.relationship = 'Mother' ";
+                    $resultmot = $connection2->query($sqlmot);
+                    $valuemot = $resultmot->fetch();
+
+                    $mother_name = '';
+                    $mother_email = '';
+                    $mother_phone = '';
+                    if(!empty($valuemot)){
+                        $mother_name = $valuemot['officialName'];
+                        $mother_email = $valuemot['email'];
+                        $mother_phone = $valuemot['phone1'];
+                    }
+
+
+                    $sqlinv = 'SELECT GROUP_CONCAT(DISTINCT b.invoice_no) AS invNo FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_student_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id WHERE a.id IN (' . $invoice_item_id . ') AND b.pupilsightPersonID = ' . $pupilsightPersonID . '  ORDER BY b.id ASC';
+                    $resultinv = $connection2->query($sqlinv);
+                    $valueinv = $resultinv->fetch();
+
+                    $invNo = $valueinv['invNo'];
 
 
 
@@ -521,10 +555,16 @@ if (isset($_POST['type'])) {
                         $instrument_receipt_date = '';
                     }
                     $dts_receipt = array(
+                        "invoice_no" => $invNo,
                         "receipt_no" => $receipt_number,
                         "date" => $payment_receipt_date,
                         "student_name" => $valuestu["officialName"],
-                        "student_id" => $valuestu["admission_no"],
+                        "student_id" => $pupilsightPersonID,
+                        "admission_no" => $valuestu["admission_no"],
+                        "roll_no" => $valuestu["roll_no"],
+                        "father_name" => $father_name,
+                        "mother_name" => $mother_name,
+                        "program_name" => $valuestu["progname"],
                         "class_section" => $class_section,
                         "instrument_date" => $instrument_receipt_date,
                         "instrument_no" => $instrument_no,
@@ -534,7 +574,8 @@ if (isset($_POST['type'])) {
                         "pay_mode" => $paymentModeName,
                         "transactionId" => $transactionId,
                         "receiptTemplate" => $receiptTemplate,
-                        "bank_name" => $bank_name
+                        "bank_name" => $bank_name,
+                        "fee_head_acc_no" => $fee_head_acc_no
                     );
 
                     // echo '<pre>';
@@ -900,8 +941,8 @@ if (isset($_POST['type'])) {
                 $invdata[$k]['pendingamount'] = '';
 
 
-                $invdata[$k]['chkpayment'] = '';
-                $invdata[$k]['pendingamount'] = '';
+                $invdata[$k]['invno'] = $invno;
+                
 
                 $sqlchkInv = 'SELECT count(b.id) as kount FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "' . $invno . '" AND b.invoice_status = "Fully Paid" AND b.transaction_status IN (1,3) ';
                 $resultchkInv = $connection2->query($sqlchkInv);
@@ -957,7 +998,7 @@ if (isset($_POST['type'])) {
                         echo '<tr><td><input type="checkbox" class=" invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" value="0" checked disabled ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
                     } else {
                         $cls = 'value="' . $ind['invoiceid'] . '"';
-                        echo '<tr><td><input type="checkbox" class="chkinvoiceM invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '"  ' . $cls . '  data-amtedt="' . $ind['amount_editable'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '"></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
+                        echo '<tr><td><input type="checkbox" class="chkinvoiceM invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '"  ' . $cls . '  data-amtedt="' . $ind['amount_editable'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
                     }
                 }
             } else {

@@ -16,11 +16,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/deposit_account_ma
     //Proceed!
     $page->breadcrumbs->add(__('Manage Deposit Account Details'));
 
+    echo '<h2>';
+    echo __('Deposit Account Details');
+    echo '</h2>';
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     $id = $_GET['id'];
+    $pupilsightPersonID = $_GET['stid'];
 
     $FeesGateway = $container->get(FeesGateway::class);
 
@@ -30,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/deposit_account_ma
         ->pageSize(100)
         ->fromPOST();
 
-    $depositDetails = $FeesGateway->getDepositAccountDetails($criteria, $id);
+    $depositDetails = $FeesGateway->getDepositAccountDetails($criteria, $id, $pupilsightPersonID);
 
     // DATA TABLE
     $table = DataTable::createPaginated('DepositAccountManage', $criteria);
@@ -56,3 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/deposit_account_ma
 
     //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }
+?>
+
+<script>
+    var table = $('#expore_tbl').DataTable();
+    table.destroy();
+ 
+ 
+</script>

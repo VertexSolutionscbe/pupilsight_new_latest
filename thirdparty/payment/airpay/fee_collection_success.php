@@ -60,6 +60,18 @@ try{
 
     $section = "";
     $clss = "";
+    $prog = "";
+
+    if(!empty($dt["pupilsightProgramID"])){
+        $sqcs = "select name from pupilsightProgram where pupilsightProgramID='".$dt["pupilsightProgramID"]."'";
+        $result = $conn->query($sqcs);
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                $prog = $row["name"];
+            }
+        }
+    }
+
     if(!empty($dt["sectionid"])){
         $sqcs = "select name from pupilsightRollGroup where pupilsightRollGroupID='".$dt["sectionid"]."'";
         $result = $conn->query($sqcs);
@@ -80,18 +92,61 @@ try{
         }
     }
 
-    $sqlrt = 'SELECT b.path FROM fn_fees_head AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.receipt_template = b.id WHERE a.id = ' . $dt['fn_fees_head_id'] . ' ';
+    $sqlfat = "SELECT b.officialName , b.phone1, b.email FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $dt["stuid"] . " AND a.relationship = 'Father' ";
+    $resultfat = $connection2->query($sqlfat);
+    $valuefat = $resultfat->fetch();
+
+    $father_name = '';
+    $father_email = '';
+    $father_phone = '';
+    if(!empty($valuefat)){
+        $father_name = $valuefat['officialName'];
+        $father_email = $valuefat['email'];
+        $father_phone = $valuefat['phone1'];
+    }
+
+    $sqlmot = "SELECT b.officialName , b.phone1, b.email FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $dt["stuid"] . " AND a.relationship = 'Mother' ";
+    $resultmot = $connection2->query($sqlmot);
+    $valuemot = $resultmot->fetch();
+
+    $mother_name = '';
+    $mother_email = '';
+    $mother_phone = '';
+    if(!empty($valuemot)){
+        $mother_name = $valuemot['officialName'];
+        $mother_email = $valuemot['email'];
+        $mother_phone = $valuemot['phone1'];
+    }
+
+    $sqlinv = 'SELECT GROUP_CONCAT(DISTINCT b.invoice_no) AS invNo FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_student_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id WHERE a.id IN (' . $dt["fn_fee_invoice_item_id"] . ') AND b.pupilsightPersonID = ' . $dt["stuid"] . '  ORDER BY b.id ASC';
+    $resultinv = $connection2->query($sqlinv);
+    $valueinv = $resultinv->fetch();
+
+    $invNo = $valueinv['invNo'];
+
+    $sqlrt = 'SELECT a.ac_no, b.path FROM fn_fees_head AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.receipt_template = b.id WHERE a.id = ' . $dt['fn_fees_head_id'] . ' ';
     $resultrt = $connection2->query($sqlrt);
     $recTempData = $resultrt->fetch();
     $receiptTemplate = $recTempData['path'];
+    $fee_head_acc_no = $recTempData['ac_no'];
+
+    $sqlst = 'SELECT admission_no, roll_no FROM pupilsightPerson WHERE pupilsightPersonID = ' . $dt['stuid'] . ' ';
+    $resultst = $connection2->query($sqlst);
+    $stData = $resultst->fetch();
 
     $class_section = $clss ."".$section;
     $bank_name = '';
     $dts_receipt = array(
+        "invoice_no" => $invNo,
         "receipt_no" => $receipt_number,
         "date" => date("d-M-Y"),
         "student_name" => $dt["name"],
         "student_id" => $dt["stuid"],
+        "admission_no" => $stData["admission_no"],
+        "roll_no" => $stData["roll_no"],
+        "father_name" => $father_name,
+        "mother_name" => $mother_name,
+        "program_name" => $prog,
         "class_section" => $class_section,
         "instrument_date" => "NA",
         "instrument_no" => "NA",
@@ -101,7 +156,8 @@ try{
         "pay_mode" => "Online",
         "transactionId" => $transactionId,
         "receiptTemplate" => $receiptTemplate,
-        "bank_name" => $bank_name
+        "bank_name" => $bank_name,
+        "fee_head_acc_no" => $fee_head_acc_no
     );
 
     $invoice_id = $dt["fn_fees_invoice_id"];
@@ -164,7 +220,7 @@ try{
     //$sql = "INSERT INTO fn_fees_collection SET fn_fees_invoice_id=:fn_fees_invoice_id, pupilsightPersonID=:pupilsightPersonID, pupilsightSchoolYearID =:pupilsightSchoolYearID, fn_fees_counter_id=:fn_fees_counter_id, receipt_number=:receipt_number, is_custom=:is_custom, payment_mode_id=:payment_mode_id, bank_id=:bank_id, dd_cheque_no=:dd_cheque_no, dd_cheque_date=:dd_cheque_date, dd_cheque_amount=:dd_cheque_amount, payment_status=:payment_status, payment_date=:payment_date, fn_fees_head_id=:fn_fees_head_id, fn_fees_receipt_series_id=:fn_fees_receipt_series_id, transcation_amount=:transcation_amount, total_amount_without_fine_discount=:total_amount_without_fine_discount, amount_paying=:amount_paying, fine=:fine, discount=:discount, remarks=:remarks, status=:status,cdt=:cdt";
     $sq = "INSERT INTO fn_fees_collection (fn_fees_invoice_id, transaction_id,pupilsightPersonID, pupilsightSchoolYearID,
      receipt_number, payment_status, payment_date, fn_fees_head_id, fn_fees_receipt_series_id, 
-     transcation_amount, total_amount_without_fine_discount, amount_paying, fine, discount, status, cdt) ";
+     transcation_amount, total_amount_without_fine_discount, amount_paying, fine, discount, status, cdt, invoice_status) ";
     $sq .=" values(
             '".$dt["fn_fees_invoice_id"]."'
             ,'".$transactionId."'
@@ -182,6 +238,7 @@ try{
             ,'".$dt["discount"]."'
             ,'1'
             ,'".$cdt."'
+            ,'Fully Paid'
             ); ";
     //echo $sq;
 

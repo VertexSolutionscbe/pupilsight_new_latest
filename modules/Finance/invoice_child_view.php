@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     $criteria = $FeesGateway->newQueryCriteria()
         ->sortBy(['id'])
         ->fromPOST();
-    $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" AND pupilsightPerson.pupilsightPersonID = "' . $stuId . '" GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC';
+    $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid, pupilsightStudentEnrolment.pupilsightProgramID FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" AND pupilsightPerson.pupilsightPersonID = "' . $stuId . '" GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC';
 
     $resultinv = $connection2->query($invoices);
     $invdata = $resultinv->fetchAll();
@@ -339,6 +339,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                 <td>
                     <form action="thirdparty/payment/razorpay/pay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
                         <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
+                        <input type="hidden" name="pupilsightProgramID" value="<?= $ind['pupilsightProgramID'] ?>">
                         <input type="hidden" name="classid" value="<?= $ind['classid'] ?>">
                         <input type="hidden" name="sectionid" value="<?= $ind['sectionid'] ?>">
                         <input type="hidden" name="fn_fees_invoice_id" value="<?= $ind['invoiceid'] ?>">
@@ -382,6 +383,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                     <form action="thirdparty/payment/airpay/sendtoairpay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
                         <input type="hidden" value="<?= $orderId; ?>" id="OrderId" name="orderid">
                         <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
+                        <input type="hidden" name="pupilsightProgramID" value="<?= $ind['pupilsightProgramID'] ?>">
                         <input type="hidden" name="classid" value="<?= $ind['classid'] ?>">
                         <input type="hidden" name="sectionid" value="<?= $ind['sectionid'] ?>">
                         <input type="hidden" name="fn_fees_invoice_id" value="<?= $ind['invoiceid'] ?>">
