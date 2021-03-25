@@ -104,9 +104,14 @@ class adminlib
 			$val = htmlspecialchars($value);
 			$sql .= $key . '= "' . $val . '", ';
 		}
+		$sql.="theme_id=0";
 		$sql = rtrim($sql, ", ");
 
+		//echo '<pre>';print_r($sql);exit;
+
 		$result = database::doInsert($sql);
+
+		//echo '<pre>';print_r($result);exit;
 		//return $result;
 	}
 

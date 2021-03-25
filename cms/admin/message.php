@@ -21,7 +21,7 @@ td {
    <div id="content" class="padding-20">
       <div id="panel-1" class="panel panel-default">
          <div class="panel-heading">
-            <h3> List 
+            <h3>Message List 
 			<!--<a href="addcategory.php" class="btn btn-sm btn-success" style="float:right;">Add</a>-->
 			</h3>
             <!-- right options -->

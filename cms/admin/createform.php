@@ -112,11 +112,12 @@ if ($_POST) {
               <input type="text" name="title" class="form-control" placeholder="Title" value="<?php echo $data['title']; ?>">
             </div>
             <div class="form-group">
-              <label for="exampleInputEmail1">Banner Title (For break line <?= htmlentities('<br>'); ?>)</label>
+              <!-- <label for="exampleInputEmail1">Banner Title (For break line <?= htmlentities('<br>'); ?>)</label> -->
+              <label for="exampleInputEmail1">Banner Title</label>
               <input type="text" name="cms_banner_title" class="form-control" placeholder="Banner Title" value="<?php echo $data['cms_banner_title']; ?>">
             </div>
             <div class="form-group">
-              <label for="exampleInputPassword1">Banner Description (For break line <?= htmlentities('<br>'); ?>)</label>
+              <label for="exampleInputPassword1">Banner Description</label>
               <input type="text" name="cms_banner_short_description" class="form-control" id="exampleInputPassword1" placeholder="Banner Description" value="<?php echo $data['cms_banner_short_description']; ?>">
               <!-- <textarea name="cms_banner_short_description" class="form-control" placeholder="Banner Description"><?php echo $data['cms_banner_short_description']; ?></textarea> -->
             </div>
@@ -365,4 +366,6 @@ if ($_POST) {
       }
     });
   });
+
+  
 </script>

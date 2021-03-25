@@ -8,7 +8,7 @@ include("template/header.php");
    <div id="content" class="padding-20">
       <div id="panel-1" class="panel panel-default">
          <div class="panel-heading">
-            <h3> List 
+            <h3> Category List 
 			<a href="addcategory.php" class="btn btn-sm btn-success" style="float:right;">Add</a>
 			</h3>
 			 
@@ -44,7 +44,7 @@ include("template/header.php");
                      <th>Image</th>
 					 <th>Sorting Order</th>
                      <th>Status</th>
-                     <th>Action</th>
+                     <th style="width:10%">Action</th>
                   </tr>
                </thead>
                <tbody>
