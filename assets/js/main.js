@@ -8891,11 +8891,12 @@ $(document).on('change', '.payment_slt_mode', function () {
 $(document).on('change', '#pupilsightProgramID_MC', function () {
     var id = $(this).val();
     var pid = $('#pupilsightProgramID_MC').val();
+    var aid = $("#pupilsightSchoolYearID").val();
     var type = 'getClass_new';
     $.ajax({
         url: 'ajax_data.php',
         type: 'post',
-        data: { val: id, type: type, pid: pid },
+        data: { val: id, type: type, pid: pid, aid: aid },
         async: true,
         success: function (response) {
             $('#pupilsightClassID').empty();

@@ -25,22 +25,25 @@ try {
     //print_r($fee_items);
 
     $dts["total"] = $dts["transcation_amount"];
-    foreach ($dts as $key => $value) {
-        $phpword->setValue($key, $value);
-    }
 
-    if (!empty($dts["transcation_amount"])) {
-        /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
-    $total_in_words = $nf->format($dts["transcation_amount"]);*/
-        $total_in_words = convert_number_to_words($dts["transcation_amount"]);
-        $phpword->setValue('total_in_words', ucwords($total_in_words));
-    }
+    for ($x = 1; $x <= 3; $x++) {
+        foreach ($dts as $key => $value) {
+            $phpword->setValue($key, $value);
+        }
 
-    if (!empty($fee_items)) {
-        try {
-            $phpword->cloneRowAndSetValues('serial.all', $fee_items);
-        } catch (Exception $ex) {
-            //print_r($ex);
+        if (!empty($dts["transcation_amount"])) {
+            /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
+        $total_in_words = $nf->format($dts["transcation_amount"]);*/
+            $total_in_words = convert_number_to_words($dts["transcation_amount"]);
+            $phpword->setValue('total_in_words', ucwords($total_in_words));
+        }
+
+        if (!empty($fee_items)) {
+            try {
+                $phpword->cloneRowAndSetValues('serial.all', $fee_items);
+            } catch (Exception $ex) {
+                //print_r($ex);
+            }
         }
     }
     try {

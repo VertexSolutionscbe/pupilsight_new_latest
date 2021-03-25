@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_class
             $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         }
     }
-    $cls_sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
+    $cls_sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
     $cls_res = $connection2->query($cls_sql);
     $cls_res1 = $cls_res->fetchAll();
     $searchform = Form::create('searchForm', '');

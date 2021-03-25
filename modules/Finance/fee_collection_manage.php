@@ -295,6 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $form->addHiddenValue('chkamount', '0');
         $form->addHiddenValue('invoice_status', 'Fully Paid');
         $form->addHiddenValue('fineold', '');
+        $form->addHiddenValue('invno', '0');
        
      
         $row = $form->addRow();
@@ -648,6 +649,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         echo "<tbody id='getPaymentHistory'>";
         echo "</tbody>";
         echo '</table></div></div>';
+
+
+        
+
+        $depositDetails = $FeesGateway->getDepositAccountForStudent($criteria, $stuId);
+        // echo '<pre>';
+        // print_r($depositDetails);
+        // echo '</pre>';
+        if(!empty($depositDetails->data)){
+
+            //Deposit Account
+            echo "<div class ='row fee_hdr feeitem' data-type='5'><div class='col-md-12'> Deposit Acount <i class='mdi mdi-arrow-right-thick  icon_5 icon_m'></i></div>       
+            </div>";
+
+            echo "<div id='table-wrapper'><div id='table-scroll' style='display:none;width: 100%;  margin-top: 40px;' class='oCls_5 oClose table' id='FeeInvoiceListManage'>";
+            
+
+        // DATA TABLE
+            $table = DataTable::createPaginated('DepositAccountManage', $criteria);
+
+            $table->addColumn('serial_number', __('SI No'));
+            $table->addColumn('fee_item', __('Fee Item'));
+            $table->addColumn('ac_name', __('Account Name'));
+            $table->addColumn('ac_code', __('Account Code'));
+            $table->addColumn('overpayment_account', __('Account Type'))
+                ->format(function ($depositDetails) {
+                    if ($depositDetails['overpayment_account'] == '1') {
+                        return 'Over Payment Account';
+                    } else {
+                        return ' ';
+                    }
+                    return $depositDetails['overpayment_account'];
+            });  
+            $table->addColumn('amount', __('Current Balance'))
+                ->format(function ($depositDetails) {
+                    return '<a title="Click Here For Details" href="fullScreen.php?q=/modules/Finance/deposit_account_details.php&id='.$depositDetails['id'].'&stid='.$depositDetails['pupilsightPersonID'].'&width=1100" class="thickbox">'.$depositDetails['amount'].'</a>';
+                });  
+            echo $table->render($depositDetails);
+
+            echo "</div></div>";
+       
+        }
     }    
 }
 ?>
