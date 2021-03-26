@@ -83,4 +83,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/apply_discount.php
             $(".feeItem").addClass('hiddencol');
         }
     });
+
+    $(document).on('change', '#fn_fee_item_id', function () {
+        var val = $("#fn_fee_item_id option:selected").text();
+        if(val == 'Waive Off'){
+            $(".waiveClass").show();
+        } else {
+            $(".waiveClass").hide();
+        }
+    });
+    
 </script>

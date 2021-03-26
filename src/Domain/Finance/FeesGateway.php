@@ -1917,4 +1917,19 @@ print_r($rs);
         return $res;
     }
 
+
+    public function getWaiveOffForStudent($criteria, $pupilsightPersonID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('fn_fee_waive_off')
+            ->cols([
+                'fn_fee_waive_off.*','pupilsightPerson.officialName'
+            ])
+            ->leftJoin('pupilsightPerson', 'fn_fee_waive_off.assigned_by=pupilsightPerson.pupilsightPersonID')
+            ->where('fn_fee_waive_off.pupilsightPersonID = "'.$pupilsightPersonID.'" ');
+
+        return $this->runQuery($query, $criteria, TRUE);
+    }
+
 }
