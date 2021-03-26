@@ -90,7 +90,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
         ->width('10%')
         ->translatable();
 
+    $table->addColumn('transaction_ref_no', __('Gateway Reference No'))
+        ->width('10%')
+        ->translatable();
+
     $table->addColumn('amount', __('Amount'))
+        ->width('10%')
+        ->translatable();
+
+    $table->addColumn('cdt', __('Date & Time'))
         ->width('10%')
         ->translatable();
 

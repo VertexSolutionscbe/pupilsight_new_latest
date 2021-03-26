@@ -686,7 +686,7 @@ if (isset($_POST['type'])) {
             // die();
             $totalamount = 0;
             foreach ($invdata as $k => $d) {
-                $sqlamt = 'SELECT SUM(fn_fee_invoice_item.total_amount) as totalamount FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ' . $d['invoiceid'] . ' ';
+                $sqlamt = 'SELECT SUM(fn_fee_invoice_item.total_amount) as totalamount, SUM(fn_fee_invoice_item.discount) as disamount FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ' . $d['invoiceid'] . ' ';
                 $resultamt = $connection2->query($sqlamt);
                 $dataamt = $resultamt->fetch();
                 $sql_dis = "SELECT discount FROM fn_invoice_level_discount WHERE pupilsightPersonID = " . $stuId . "  AND invoice_id='" . $d['invoiceid'] . "' ";
@@ -729,6 +729,10 @@ if (isset($_POST['type'])) {
                 } else {
                     $totalamount = $dataamt['totalamount'];
                 }
+
+                
+
+
                 if (!empty($special_dis['discount']) || !empty($sp_item_dis['sp_discount'])) {
                     $invdata[$k]['finalamount'] = $totalamount - $special_dis['discount'] - $sp_item_dis['sp_discount'];
                     $totalamount = $totalamount - $special_dis['discount'] - $sp_item_dis['sp_discount'];
@@ -942,6 +946,11 @@ if (isset($_POST['type'])) {
 
 
                 $invdata[$k]['invno'] = $invno;
+
+                $disamount = $dataamt['disamount'];
+                $totamtdisamount = $totalamount + $dataamt['disamount'];
+                $invdata[$k]['totamtdisamount'] = $totamtdisamount;
+                $invdata[$k]['disamount'] = $disamount;
                 
 
                 $sqlchkInv = 'SELECT count(b.id) as kount FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "' . $invno . '" AND b.invoice_status = "Fully Paid" AND b.transaction_status IN (1,3) ';
@@ -989,16 +998,19 @@ if (isset($_POST['type'])) {
                         $invdata[$k]['chkpayment'] = 'UnPaid';
                     }
                 }
+                
             }
             if (!empty($invdata)) {
                 foreach ($invdata as $ind) {
                     $totAmt = number_format($ind['finalamount'], 2, '.', '');
+                    $totAmtdisAmt = number_format($ind['totamtdisamount'], 2, '.', '');
+                    $totDisAmt = number_format($ind['disamount'], 2, '.', '');
                     if ($ind['chkpayment'] == 'Paid') {
                         //$cls = 'value="0" checked disabled';
-                        echo '<tr><td><input type="checkbox" class=" invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" value="0" checked disabled ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
+                        echo '<tr><td><input type="checkbox" class=" invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" value="0" checked disabled ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt . '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
                     } else {
                         $cls = 'value="' . $ind['invoiceid'] . '"';
-                        echo '<tr><td><input type="checkbox" class="chkinvoiceM invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '"  ' . $cls . '  data-amtedt="' . $ind['amount_editable'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
+                        echo '<tr><td><input type="checkbox" class="chkinvoiceM invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '"  ' . $cls . '  data-amtedt="' . $ind['amount_editable'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt . '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
                     }
                 }
             } else {
@@ -1223,6 +1235,11 @@ if (isset($_POST['type'])) {
                             $invdata[$k]['chkpayment'] = 'UnPaid';
                         }
                     }
+
+                    $sqlstaff = 'SELECT b.officialName , b.pupilsightPersonID FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID';
+                    $resultstaff = $connection2->query($sqlstaff);
+                    $staffData = $resultstaff->fetchAll();
+
                     echo "<div>";
 ?>
                     <table class="table" cellspacing="0" style="width: 100%;">
@@ -1233,6 +1250,9 @@ if (isset($_POST['type'])) {
                                 <th>Invoice Amount</th>
                                 <th>Discout Amount</th>
                                 <th>Select</th>
+                                <th class="waiveClass" style="display:none">Assigned By</th>
+                                <th class="waiveClass" style="display:none">Date</th>
+                                <th class="waiveClass" style="display:none">Remark</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -1253,7 +1273,19 @@ if (isset($_POST['type'])) {
                         <td  width="10%">' . $ind['stu_invoice_no'] . '</td>
                         <td  width="5%">' . $total . '</td>
                         <td  width="5%"><input type="number" name="discount_a[]" value="' . $special_dis['discount'] . '" readonly class="form-control inid_' . $ind['invoiceid'] . '" ></td>
-                        <td  width="10%"><input type="checkbox"  class="chkinvoice_discount invoice' . $ind['invoiceid'] . '" name="invoiceid[]" value="' . $ind['invoiceid'] . '" data-id="' . $ind['invoiceid'] . '" ></td>
+                        <td  width="1%"><input type="checkbox"  class="chkinvoice_discount invoice' . $ind['invoiceid'] . '" name="invoiceid[]" value="' . $ind['invoiceid'] . '" data-id="' . $ind['invoiceid'] . '" ></td>
+                        <td class="waiveClass" style="display:none" width="10%">
+                            <select name="assigned_by[]" class="form-control assn_' . $ind['invoiceid'] . '">
+                                <option value="">Select</option>';
+                                if(!empty($staffData)){
+                                    foreach($staffData as $std){
+                                        echo '<option value='.$std['pupilsightPersonID'].'>'.$std['officialName'].'</option>';
+                                    }
+                                }
+                            echo '</select>
+                        </td>
+                        <td class="waiveClass" style="display:none" width="5%"><input type="date" name="date[]" value=""  class="form-control dte_' . $ind['invoiceid'] . '" ></td>
+                        <td class="waiveClass" style="display:none" width="5%"><input type="text" name="remark[]" value=""  class="form-control rem_' . $ind['invoiceid'] . '" ><input type="hidden" name="invoice_no[]" value="' . $ind['stu_invoice_no'] . '"  class="form-control invno_' . $ind['invoiceid'] . '" ></td>
                         </tr>';
                                 }
                             } else {

@@ -569,7 +569,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         <a href='fullscreen.php?q=/modules/Finance/add_invoice_collections.php&width=1100&height=550' class='thickbox btn btn-primary addInvoiceLinkCollection' data-type='addInvoiceLink'>Add Invoice</a>
         <a  class=' btn btn-primary btn_cancel_invoice_collection' data-type='cancelInvoice'>Cancel Invoice</a>
         <a id='apply_discount_btn'  class=' apply_discount_btn btn btn-primary'>Apply discount</a>
-        <a  href='fullscreen.php?q=/modules/Finance/apply_discount.php&width=900px'  class='thickbox' id='apply_discount_popup' style='display:none'></a>
+        <a  href='fullscreen.php?q=/modules/Finance/apply_discount.php&width=900'  class='thickbox' id='apply_discount_popup' style='display:none'></a>
         <a  id='' data-type='student' class='chkinvoice btn btn-primary'>Proceed to next</a>
         </div><div class='float-none'></div></div>";
         echo "<div class ='row fee_hdr FeeInvoiceListManage feeitem' data-type='1'><div class='col-md-12'> Invoices <i class='mdi mdi-arrow-down-thick icon_1 icon_m '></i></div></div>";
@@ -588,6 +588,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         echo '</th>';
         echo '<th>';
         echo __('Amount');
+        echo '</th>';
+        echo '<th>';
+        echo __('Discount');
+        echo '</th>';
+        echo '<th>';
+        echo __('Amount With Discount');
         echo '</th>';
         echo "<th>";
         echo __('Pending Amount');
@@ -663,10 +669,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
             echo "<div class ='row fee_hdr feeitem' data-type='5'><div class='col-md-12'> Deposit Acount <i class='mdi mdi-arrow-right-thick  icon_5 icon_m'></i></div>       
             </div>";
 
-            echo "<div id='table-wrapper'><div id='table-scroll' style='display:none;width: 100%;  margin-top: 40px;' class='oCls_5 oClose table' id='FeeInvoiceListManage'>";
+            echo "<div id='table-wrapper'><div id='table-scroll' style='display:none;width: 100%;  margin-top: 40px;' class='oCls_5 oClose table' id=''>";
             
 
-        // DATA TABLE
+            // DATA TABLE
             $table = DataTable::createPaginated('DepositAccountManage', $criteria);
 
             $table->addColumn('serial_number', __('SI No'));
@@ -688,6 +694,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
                 });  
             echo $table->render($depositDetails);
 
+            echo "</div></div>";
+        }
+
+
+        $waiveoffDetails = $FeesGateway->getWaiveOffForStudent($criteria, $stuId);
+        // echo '<pre>';
+        // print_r($depositDetails);
+        // echo '</pre>';
+        if(!empty($waiveoffDetails->data)){
+            $wavieDate = $waiveoffDetails->data;
+            // echo '<pre>';
+            // print_r($waiveoffDetails->data);
+            //Deposit Account
+            echo "<div class ='row fee_hdr feeitem' data-type='6'><div class='col-md-12'> Waive Off <i class='mdi mdi-arrow-right-thick  icon_6 icon_m'></i></div>       
+            </div>";
+
+            echo "<div id='table-wrapper'><div id='table-scroll' style='display:none;width: 100%;  margin-top: 40px;' class='oCls_6 oClose table' id='waiveoffTable'>";
+
+            echo '
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Invoice No</th>
+                            <th>Discount</th>
+                            <th>Assigned By</th>
+                            <th>Date</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    if(!empty($wavieDate)){
+                        $i = 1;
+                        foreach($wavieDate as $wd){
+                            echo '<tr>
+                                    <td>'.$i.'</td>
+                                    <td>'.$wd['invoice_no'].'</td>
+                                    <td>'.$wd['discount_amount'].'</td>
+                                    <td>'.$wd['officialName'].'</td>
+                                    <td>'.$wd['waive_off_date'].'</td>
+                                    <td>'.$wd['remarks'].'</td>
+                                </tr>';
+                            $i++;
+                        }
+                    }
+                    echo '</tbody>
+                </table>';
             echo "</div></div>";
        
         }
@@ -754,6 +807,9 @@ echo " <style>
 </style>";
 ?>
 <script>
+    var table = $('#expore_tbl').DataTable();
+    table.destroy();
+
    function load(){
     var pstid=$(".p_stuId").val();
     var py=$(".pSyd").val();
@@ -1024,28 +1080,56 @@ echo " <style>
         var type = $(this).attr('data-type');
         var a_stuid = $("input[name=a_stuid]").val();
         if(type=="invoice_level_dataStore"){
-        var favorite = [];
-        var dicout_val=[];
-            $.each($(".chkinvoice_discount:checked"), function() {
-            var id=$(this).val();
-            var val =$('.inid_'+id).val();
-            favorite.push(id);
-            dicout_val.push(val);
-            });
-            if(favorite.length!=0){
-            $.ajax({
-                url: 'ajaxSwitch.php',
-                type: 'post',
-                data: { type:type,discountVal:dicout_val,invids:favorite,stuid:a_stuid},
-                async: true,
-                success: function(response) {
-                    alert("Discount is applied");
-                    $("#TB_closeWindowButton").click();
-                    loadInvoices();
+            var favorite = [];
+            var dicout_val=[];
+            var assgnBy = [];
+            var assgnDate=[];
+            var assnRem = [];
+            var invno = [];
+            var feeItemId = $("#fn_fee_item_id").val();
+            if(feeItemId){
+                $.each($(".chkinvoice_discount:checked"), function() {
+                    var id=$(this).val();
+                    var val =$('.inid_'+id).val();
+                    var assn =$('.assn_'+id).val();
+                    var dte =$('.dte_'+id).val();
+                    var rem =$('.rem_'+id).val();
+                    var inv = $('.invno_'+id).val();
+                    favorite.push(id);
+                    dicout_val.push(val);
+                    assgnBy.push(assn);
+                    assgnDate.push(dte);
+                    assnRem.push(rem);
+                    invno.push(inv);
+                });
+                if(favorite.length!=0){
+                    // $.ajax({
+                    //     url: 'ajaxSwitch.php',
+                    //     type: 'post',
+                    //     data: { type:type,discountVal:dicout_val,invids:favorite,stuid:a_stuid, feeItemId:feeItemId},
+                    //     async: true,
+                    //     success: function(response) {
+                    //         alert("Discount is applied");
+                    //         $("#TB_closeWindowButton").click();
+                    //         loadInvoices();
+                    //     }
+                    // });
+                    $.ajax({
+                        url: 'modules/Finance/invoice_discount.php',
+                        type: 'post',
+                        data: { discountVal:dicout_val,invids:favorite,stuid:a_stuid, feeItemId:feeItemId, assgnBy:assgnBy, assgnDate:assgnDate, assnRem:assnRem, invno:invno},
+                        async: true,
+                        success: function(response) {
+                            alert("Discount is applied");
+                            $("#TB_closeWindowButton").click();
+                            loadInvoices();
+                        }
+                    });
+                } else {
+                    alert('Atleast give one invoice discount');
                 }
-            });
             } else {
-            alert('atleast give one invoice discount');
+                alert('Please Select Fee Item!');
             }
         } else {
             var items = [];

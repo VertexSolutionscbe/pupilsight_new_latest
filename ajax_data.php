@@ -533,6 +533,15 @@ if ($type == 'invoiceFeeItem') {
         }
         $amtdiscount = $totalamount - $discountamt;
 
+        $discountItem = 0;
+        if (!empty($fI['discount'])) {
+            $discountItem = $fI['discount'] + $discountamt;
+        } else {
+            $discountItem = $discountamt;
+        }
+
+
+
         $data .= '<tr class="odd invrow' . $id . '" role="row">
                   
             <td>
@@ -564,7 +573,7 @@ if ($type == 'invoiceFeeItem') {
             </td>
              
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
-               ' . $discountamt . '
+               ' . $discountItem . '
             </td>
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
             ' . $amtdiscount . '   
