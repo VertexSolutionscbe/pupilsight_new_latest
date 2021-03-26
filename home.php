@@ -7,7 +7,7 @@ $data = $adminlib->getPupilSightData();
 //print_r($data);
 
 $section = $adminlib->getPupilSightSectionFrontendData();
-//print_r($section);
+//echo '<pre>';print_r($section['7']);
 //die();
 $campaign = $adminlib->getcampaign();
 session_start();
@@ -700,15 +700,22 @@ if (isset($data['logo_image'])) {
                                 if ($nws['time']) {
                                     $etitle .= " " . $nws['time'];
                                 }
+                                $edescription='';
+                                if($nws['short_description']){
+                                    $edescription=$nws['short_description'];
+                                }
                         ?>
 
                                 <div class="col-sm">
+                                <a href="#eventModal" class="eventData ablack"  data-toggle="modal" data-eimg="<?= $eimg; ?>" data-title="<?= $etitle; ?>" data-desc="<?= $edescription;?>">
                                     <div class="card">
                                         <img src="<?= $eimg; ?>" class="card-img-top" style='height:200px;background-size:contain;'>
                                         <div class="card-body">
                                             <h3 class="card-title"><?= $etitle; ?></h3>
+                                            <!-- <p><?= $edescription;?></p> -->
                                         </div>
                                     </div>
+                                </a>
                                 </div>
 
 
@@ -718,6 +725,43 @@ if (isset($data['logo_image'])) {
                     </section>
 
                 </div>
+
+
+                <!-- Modal Popop -->
+
+            <div class="container">
+                <div class="modal fade" id="eventModal" role="dialog">
+                    <div class="modal-dialog">
+                    
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h1></h1>
+                        <button type="button" class="clsbtn close" data-dismiss="modal">&times;</button>
+                        
+                        </div>
+                        <div class="modal-body">
+
+                                <div class="col-sm">
+                                        <div class="card">
+                                            <img id="eimg" src="" align="center" >
+                                            <div class="card-body">
+                                                <h3 id="etitle" class="card-title"></h3>
+                                                <p id="edesc"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                        
+                        
+                        </div>
+                         <div class="modal-footer">
+                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                        </div>
+                        </div>
+                    
+                            </div>
+                        </div>
+                    </div>
             <?php
             }
             if ($data["contact_status"] == 1) {
@@ -1406,6 +1450,20 @@ if (isset($data['logo_image'])) {
             $('#atitle').text(title);
             $('#adesc').text(desc);
             $('#aimg').attr("src",aimg);
+            
+
+        });
+
+        $(document).on("click", ".eventData", function () {
+            
+            var title = $(this).data('title');
+            var desc = $(this).data('desc');
+            var eimg = $(this).data('eimg');
+        
+        
+            $('#etitle').text(title);
+            $('#edesc').text(desc);
+            $('#eimg').attr("src",eimg);
             
 
         });
