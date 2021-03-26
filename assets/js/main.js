@@ -7150,8 +7150,8 @@ function CustomField() {
 
     this.createViewTab = function (tab_name, lastTab) {
         try {
-
-            if (!$(document.getElementById(lastTab)).length) {
+            //console.log("Is new Tab ", $(document.getElementById(lastTab)).length);
+            if ($(document.getElementById(tab_name)).length == 0) {
                 var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
                 var str = "<h4>" + tabTitle + "</h4>";
                 str += "<table id='" + tab_name + "' class='table'>";
@@ -7166,17 +7166,20 @@ function CustomField() {
     };
 
     this.createEditTab = function (tab_name, lastTab) {
-        var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
-        var str = "<div class='row mb-1' id='tbody_" + tab_name + "'>";
-        str += "<div id='" + tab_name + "' class='row mb-1 break'>";
-        str += "<div class='col-sm'>";
-        str += "<div><h3>" + tabTitle + "</h3></div>";
-        str += "</div>";
-        str += "</div>";
-        str += "</div>";
-        //console.log("tab_id", tab_name);
-        //console.log(str);
-        $("#tbody_" + lastTab).after(str);
+        //console.log("Is new Tab ", $(document.getElementById(tab_name)).length);
+        if ($(document.getElementById(tab_name)).length == 0) {
+            var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
+            var str = "<div class='row mb-1' id='tbody_" + tab_name + "'>";
+            str += "<div id='" + tab_name + "' class='row mb-1 break'>";
+            str += "<div class='col-sm'>";
+            str += "<div><h3>" + tabTitle + "</h3></div>";
+            str += "</div>";
+            str += "</div>";
+            str += "</div>";
+            //console.log("tab_id", tab_name);
+            //console.log(str);
+            $("#tbody_" + lastTab).after(str);
+        }
     };
 
     this.titleCase = function (str) {
@@ -7277,34 +7280,37 @@ function CustomField() {
             return;
         }
 
-        if (validElement) {
+        //console.log("element", obj.tab, obj);
 
+        if (validElement) {
             //console.log(obj.field_name, " : ", elementVal);
 
             var colCount = 0;
+            var currentRow = 0;
+            var currentCol = 0;
+
             if (document.getElementById(element).rows.length > 0) {
                 colCount = (document.getElementById(element).rows[0].cells.length) - 1;
+                currentRow = document.getElementById(element).rows.length - 1;
+                currentCol = (document.getElementById(element).rows[currentRow].cells.length) - 1;
             }
-            _this.activeElement = element;
-            //console.log(colCount);
-            var str = "";
-            if (!_this.isRowActive) {
-                str += "<tr>";
-                _this.isRowActive = true;
-            }
-            str += `<td id="` + fieldName + `" style="width: 34%; vertical-align: top">
+
+            var str = `<td id="` + fieldName + `" style="width: 34%; vertical-align: top">
                 <span class="form-label">` + fieldTitle + `</span>
                 <div>` + elementVal + `</div></td>`;
-
-            _this.colCurrent++;
-            _this.colActiveStr += str;
-            if (_this.colCurrent > colCount) {
-                str += "</tr>";
-                _this.isRowActive = false;
-                $("#" + _this.activeElement).append(_this.colActiveStr);
-                _this.colActiveStr = "";
-                str = "";
-                _this.colCurrent = 0;
+            //console.log(obj.field_name, currentRow, currentCol, colCount);
+            var isData = $('#' + element + ' tr:last td:last').text();
+            var isNotAdded = true;
+            if (isData == "") {
+                isNotAdded = false;
+                str = `<span class="form-label">` + fieldTitle + `</span>
+                <div>` + elementVal + `</div>`;
+                $('#' + element + ' tr:last td:last').html(str);
+            } else if (currentCol != 0 && currentCol == colCount) {
+                $("#" + element).append("<tr></tr>");
+            }
+            if (isNotAdded) {
+                $('#' + element + ' tr:last').append(str);
             }
 
         } else {
@@ -7315,7 +7321,6 @@ function CustomField() {
                 </tr></table>`;
             $("#" + element).append(str);
         }
-
     };
 
     this.createInput = function (obj) {

@@ -87,6 +87,7 @@ class CustomField extends QueryableGateway
             $db = new DBQuery();
             $sq = "update custom_field set ";
             $sq .= "field_type='" . $dt["field_type"] . "', ";
+            $sq .= "tab='" . $dt["edit_tab"] . "', ";
             $sq .= "options='" . $dt["options"] . "', ";
             $sq .= "field_title='" . $dt["field_title"] . "', ";
             $sq .= "field_description='" . $dt["field_description"] . "', ";
@@ -115,12 +116,14 @@ class CustomField extends QueryableGateway
         $flag = FALSE;
 
         if ($dt["table_name"]) {
+            unset($dt["customAction"]);
+            //customAction
             $dt['field_title'] = addslashes($dt['field_title']); //addslashes
             $flag = $db->insertArray('custom_field', $dt);
             if ($flag) {
                 $colType = "TEXT NULL ";
                 $default_value = "NULL ";
-                if ($dt["field_type"] == "tinytext" || $dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "number" || $dt["field_type"] == "image" || $dt["field_type"] == "file") {
+                if ($dt["field_type"] == "tinytext" || $dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "number" || $dt["field_type"] == "image" || $dt["field_type"] == "file" || $dt["field_type"] == "checkboxes" || $dt["field_type"] == "radioboxes") {
                     $colType = "TINYTEXT NULL ";
                 } else if ($dt["field_type"] == "mobile") {
                     $colType = "VARCHAR(12) NULL ";

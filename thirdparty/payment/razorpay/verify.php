@@ -7,20 +7,20 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 require('razorpay/Razorpay.php');
+
 use Razorpay\Api\Api;
 use Razorpay\Api\Errors\SignatureVerificationError;
-include $_SERVER['DOCUMENT_ROOT'].'/pupilsight.php';
+
+include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight.php';
 
 $success = true;
 
 $error = "Payment Failed";
 
-if (empty($_POST['razorpay_payment_id']) === false)
-{
+if (empty($_POST['razorpay_payment_id']) === false) {
     $api = new Api($keyId, $keySecret);
 
-    try
-    {
+    try {
         // Please note that the razorpay order ID must
         // come from a trusted source (session here, but
         // could be database or something else)
@@ -31,16 +31,13 @@ if (empty($_POST['razorpay_payment_id']) === false)
         );
 
         $api->utility->verifyPaymentSignature($attributes);
-    }
-    catch(SignatureVerificationError $e)
-    {
+    } catch (SignatureVerificationError $e) {
         $success = false;
         $error = 'Razorpay Error : ' . $e->getMessage();
     }
 }
 
-if ($success === true)
-{
+if ($success === true) {
     $html = "<p>Your payment was successful</p>
              <p>Payment ID: {$_POST['razorpay_payment_id']}</p>";
     //$parms = $_SESSION["paypost"];
@@ -48,98 +45,93 @@ if ($success === true)
     //$callback = $_SESSION["paypost"]["callbackurl"];
     $baseurl = "http://" . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
     $callback = "/thirdparty/phpword/receiptOnline.php";
-    include $_SERVER['DOCUMENT_ROOT'].'/db.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/db.php';
 
-    
+
 
     //$conn
-    try{
+    try {
         $dt = $_SESSION["paypost"];
 
         $data = array('gateway' => 'RAZORPAY', 'pupilsightPersonID' => $dt["stuid"], 'transaction_ref_no' => $_POST['razorpay_payment_id'], 'order_id' => $_SESSION['razorpay_order_id'], 'amount' => $dt["amount"], 'status' => 'S');
 
-		$sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
-		$result = $connection2->prepare($sql);
-		$result->execute($data);
-
-       
+        $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
 
         $fn_fees_receipt_series_id = $dt['receipt_number'];
-        if(!empty($fn_fees_receipt_series_id)){
-            $sqlrec = 'SELECT id, formatval FROM fn_fee_series WHERE id = "'.$fn_fees_receipt_series_id.'" ';
+        if (!empty($fn_fees_receipt_series_id)) {
+            $sqlrec = 'SELECT id, formatval FROM fn_fee_series WHERE id = "' . $fn_fees_receipt_series_id . '" ';
             $resultrec = $connection2->query($sqlrec);
             $recptser = $resultrec->fetch();
-    
-            $invformat = explode('$',$recptser['formatval']);
+
+            $invformat = explode('$', $recptser['formatval']);
             $iformat = '';
             $orderwise = 0;
-            foreach($invformat as $inv){
-                if($inv == '{AB}'){
-                    $datafort = array('fn_fee_series_id'=>$fn_fees_receipt_series_id,'order_wise' => $orderwise, 'type' => 'numberwise');
+            foreach ($invformat as $inv) {
+                if ($inv == '{AB}') {
+                    $datafort = array('fn_fee_series_id' => $fn_fees_receipt_series_id, 'order_wise' => $orderwise, 'type' => 'numberwise');
                     $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=:fn_fee_series_id AND order_wise=:order_wise AND type=:type';
                     $resultfort = $connection2->prepare($sqlfort);
                     $resultfort->execute($datafort);
                     $formatvalues = $resultfort->fetch();
-                    
+
                     $iformat .= $formatvalues['last_no'];
-                    
+
                     $str_length = $formatvalues['no_of_digit'];
-    
+
                     $lastnoadd = $formatvalues['last_no'] + 1;
-    
-                    $lastno = substr("0000000{$lastnoadd}", -$str_length); 
-    
-                    $datafort1 = array('fn_fee_series_id'=>$fn_fees_receipt_series_id,'order_wise' => $orderwise, 'type' => 'numberwise' , 'last_no' => $lastno);
+
+                    $lastno = substr("0000000{$lastnoadd}", -$str_length);
+
+                    $datafort1 = array('fn_fee_series_id' => $fn_fees_receipt_series_id, 'order_wise' => $orderwise, 'type' => 'numberwise', 'last_no' => $lastno);
                     $sqlfort1 = 'UPDATE fn_fee_series_number_format SET last_no=:last_no WHERE fn_fee_series_id=:fn_fee_series_id AND type=:type AND order_wise=:order_wise';
                     $resultfort1 = $connection2->prepare($sqlfort1);
                     $resultfort1->execute($datafort1);
-    
                 } else {
-                    
+
                     $iformat .= $inv;
                 }
                 $orderwise++;
             }
-            
-       
             $receipt_number = $iformat;
         } else {
             $receipt_number = '';
         }
-        
-        $rand = mt_rand(10,99);  
+
+        $rand = mt_rand(10, 99);
         $t = time();
-        $transactionId = $t.$rand;
+        $transactionId = $t . $rand;
 
         $section = "";
         $clss = "";
         $prog = "";
 
-        if(!empty($dt["pupilsightProgramID"])){
-            $sqcs = "select name from pupilsightProgram where pupilsightProgramID='".$dt["pupilsightProgramID"]."'";
+        if (!empty($dt["pupilsightProgramID"])) {
+            $sqcs = "select name from pupilsightProgram where pupilsightProgramID='" . $dt["pupilsightProgramID"] . "'";
             $result = $conn->query($sqcs);
             if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
+                while ($row = $result->fetch_assoc()) {
                     $prog = $row["name"];
                 }
             }
         }
 
-        if(!empty($dt["sectionid"])){
-            $sqcs = "select name from pupilsightRollGroup where pupilsightRollGroupID='".$dt["sectionid"]."'";
+        if (!empty($dt["sectionid"])) {
+            $sqcs = "select name from pupilsightRollGroup where pupilsightRollGroupID='" . $dt["sectionid"] . "'";
             $result = $conn->query($sqcs);
             if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
+                while ($row = $result->fetch_assoc()) {
                     $section = $row["name"];
                 }
             }
         }
 
-        if(!empty($dt["classid"])){
-            $sqcs = "select name from pupilsightYearGroup where pupilsightYearGroupID='".$dt["classid"]."'";
+        if (!empty($dt["classid"])) {
+            $sqcs = "select name from pupilsightYearGroup where pupilsightYearGroupID='" . $dt["classid"] . "'";
             $result = $conn->query($sqcs);
             if ($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
+                while ($row = $result->fetch_assoc()) {
                     $clss = $row["name"];
                 }
             }
@@ -152,7 +144,7 @@ if ($success === true)
         $father_name = '';
         $father_email = '';
         $father_phone = '';
-        if(!empty($valuefat)){
+        if (!empty($valuefat)) {
             $father_name = $valuefat['officialName'];
             $father_email = $valuefat['email'];
             $father_phone = $valuefat['phone1'];
@@ -165,7 +157,7 @@ if ($success === true)
         $mother_name = '';
         $mother_email = '';
         $mother_phone = '';
-        if(!empty($valuemot)){
+        if (!empty($valuemot)) {
             $mother_name = $valuemot['officialName'];
             $mother_email = $valuemot['email'];
             $mother_phone = $valuemot['phone1'];
@@ -187,7 +179,7 @@ if ($success === true)
         $resultst = $connection2->query($sqlst);
         $stData = $resultst->fetch();
 
-        $class_section = $clss ."".$section;
+        $class_section = $clss . "" . $section;
         $bank_name = '';
         $dts_receipt = array(
             "invoice_no" => $invNo,
@@ -214,59 +206,54 @@ if ($success === true)
         );
 
         $invoice_id = $dt["fn_fees_invoice_id"];
-        if(!empty($invoice_id)){
-           
-            $chksql = 'SELECT fn_fee_structure_id, display_fee_item, title as invoice_title FROM fn_fee_invoice WHERE id = '.$invoice_id.' ';
+        if (!empty($invoice_id)) {
+
+            $chksql = 'SELECT fn_fee_structure_id, display_fee_item, title as invoice_title FROM fn_fee_invoice WHERE id = ' . $invoice_id . ' ';
             $resultchk = $connection2->query($chksql);
             $valuechk = $resultchk->fetch();
-            if($valuechk['fn_fee_structure_id'] == ''){
+            if ($valuechk['fn_fee_structure_id'] == '') {
                 $valuech = $valuechk;
             } else {
-                $chsql = 'SELECT b.invoice_title, a.display_fee_item FROM fn_fee_invoice AS a LEFT JOIN fn_fee_structure AS b ON a.fn_fee_structure_id = b.id WHERE a.id= '.$invoice_id.' AND a.fn_fee_structure_id IS NOT NULL ';
+                $chsql = 'SELECT b.invoice_title, a.display_fee_item FROM fn_fee_invoice AS a LEFT JOIN fn_fee_structure AS b ON a.fn_fee_structure_id = b.id WHERE a.id= ' . $invoice_id . ' AND a.fn_fee_structure_id IS NOT NULL ';
                 $resultch = $connection2->query($chsql);
                 $valuech = $resultch->fetch();
             }
-            if($valuech['display_fee_item'] == '2'){
-                $sqcs = "select SUM(fi.total_amount) AS tamnt from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$dt["fn_fee_invoice_item_id"].")";
+            if ($valuech['display_fee_item'] == '2') {
+                $sqcs = "select SUM(fi.total_amount) AS tamnt from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(" . $dt["fn_fee_invoice_item_id"] . ")";
                 $resultfi = $connection2->query($sqcs);
                 $valuefi = $resultfi->fetchAll();
                 if (!empty($valuefi)) {
                     $cnt = 1;
-                    foreach($valuefi as $vfi){
+                    foreach ($valuefi as $vfi) {
                         $dts_receipt_feeitem[] = array(
-                            "serial.all"=>$cnt,
-                            "particulars.all"=>$valuech['invoice_title'],
-                            "amount.all"=>$vfi["tamnt"]
+                            "serial.all" => $cnt,
+                            "particulars.all" => $valuech['invoice_title'],
+                            "amount.all" => $vfi["tamnt"]
                         );
-                        $cnt ++;
+                        $cnt++;
                     }
                 }
-
             } else {
-                $sqcs = "select fi.total_amount, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$dt["fn_fee_invoice_item_id"].")";
+                $sqcs = "select fi.total_amount, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(" . $dt["fn_fee_invoice_item_id"] . ")";
                 $result = $conn->query($sqcs);
                 if ($result->num_rows > 0) {
                     $cnt = 1;
-                    while($row = $result->fetch_assoc()) {
+                    while ($row = $result->fetch_assoc()) {
                         $dts_receipt_feeitem[] = array(
-                            "serial.all"=>$cnt,
-                            "particulars.all"=>$row["name"],
-                            "amount.all"=>$row["total_amount"]
+                            "serial.all" => $cnt,
+                            "particulars.all" => $row["name"],
+                            "amount.all" => $row["total_amount"]
                         );
-                        $cnt ++;
+                        $cnt++;
                     }
                 }
             }
         }
-        
-       
 
         $_SESSION["dts_receipt_feeitem"] = $dts_receipt_feeitem;
         $_SESSION["dts_receipt"] = $dts_receipt;
-
-
         $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
-        
+
         //$receipt_number = mt_rand(10,99); //tmp fix need to write logic
         $dates = date('Y-m-d');
         $cdt = date('Y-m-d H:i:s');
@@ -274,73 +261,70 @@ if ($success === true)
         $sq = "INSERT INTO fn_fees_collection (fn_fees_invoice_id, transaction_id,pupilsightPersonID, pupilsightSchoolYearID,
          receipt_number, pay_gateway_id, payment_status, payment_date, fn_fees_head_id, fn_fees_receipt_series_id, 
          transcation_amount, total_amount_without_fine_discount, amount_paying, fine, discount, status, cdt, invoice_status) ";
-        $sq .=" values(
-                '".$dt["fn_fees_invoice_id"]."'
-                ,'".$transactionId."'
-                ,'".$dt["stuid"]."'
-                ,'".$dt["pupilsightSchoolYearID"]."'
-                ,'".$receipt_number."'
-                ,'".$_POST['razorpay_payment_id']."'
+        $sq .= " values(
+                '" . $dt["fn_fees_invoice_id"] . "'
+                ,'" . $transactionId . "'
+                ,'" . $dt["stuid"] . "'
+                ,'" . $dt["pupilsightSchoolYearID"] . "'
+                ,'" . $receipt_number . "'
+                ,'" . $_POST['razorpay_payment_id'] . "'
                 ,'Payment Received'
-                ,'".$dates."'
-                ,'".$dt["fn_fees_head_id"]."'
-                ,'".$dt["rec_fn_fee_series_id"]."'
-                ,'".$dt["amount"]."'
-                ,'".$dt["total_amount_without_fine_discount"]."'
-                ,'".$dt["amount"]."'
-                ,'".$dt["fine"]."'
-                ,'".$dt["discount"]."'
+                ,'" . $dates . "'
+                ,'" . $dt["fn_fees_head_id"] . "'
+                ,'" . $dt["rec_fn_fee_series_id"] . "'
+                ,'" . $dt["amount"] . "'
+                ,'" . $dt["total_amount_without_fine_discount"] . "'
+                ,'" . $dt["amount"] . "'
+                ,'" . $dt["fine"] . "'
+                ,'" . $dt["discount"] . "'
                 ,'1'
-                ,'".$cdt."'
+                ,'" . $cdt . "'
                 ,'Fully Paid'
                 ); ";
         //echo $sq;
 
         $tsq = "insert into fn_fees_student_collection (pupilsightPersonID, transaction_id, fn_fees_invoice_id, fn_fee_invoice_item_id, invoice_no) values ";
-        if(!empty($dt["fn_fee_invoice_item_id"])){
-            $dts = explode(",",$dt["fn_fee_invoice_item_id"]);
+        //echo $tsq;
+        if (!empty($dt["fn_fee_invoice_item_id"])) {
+            $dts = explode(",", $dt["fn_fee_invoice_item_id"]);
             $len = count($dts);
             $i = 0;
             $tsq1 = "";
-            while($i<$len){
+            while ($i < $len) {
                 $fn_fee_invoice_item_id = $dts[$i];
-                if(!empty($tsq1)){
-                    $tsq1 .=",";
+                if (!empty($tsq1)) {
+                    $tsq1 .= ",";
                 }
-                $tsq1 .="('".$dt["stuid"]."','".$transactionId."','".$dt["fn_fees_invoice_id"]."','".$fn_fee_invoice_item_id."','".$dt["payid"]."')";
+                $tsq1 .= "('" . $dt["stuid"] . "','" . $transactionId . "','" . $dt["fn_fees_invoice_id"] . "','" . $fn_fee_invoice_item_id . "','" . $dt["payid"] . "')";
                 $i++;
             }
-            $tsq .= $tsq1.";";
+            $tsq .= $tsq1 . ";";
         }
 
-        $dataiu = array('invoice_status' => 'Fully Paid',  'pupilsightPersonID' => $dt["stuid"],  'invoice_no' => $dt["payid"]);
-        $sqliu = 'UPDATE fn_fee_invoice_student_assign SET invoice_status=:invoice_status WHERE pupilsightPersonID=:pupilsightPersonID AND invoice_no=:invoice_no';
-        $resultiu = $connection2->prepare($sqliu);
-        $resultiu->execute($dataiu);
-                
-              
         if ($conn->query($sq) === TRUE) {
             $conn->query($tsq);
+            $dataiu = array('invoice_status' => 'Fully Paid',  'pupilsightPersonID' => $dt["stuid"],  'invoice_no' => $dt["payid"]);
+            $sqliu = 'UPDATE fn_fee_invoice_student_assign SET invoice_status=:invoice_status WHERE pupilsightPersonID=:pupilsightPersonID AND invoice_no=:invoice_no';
+            $resultiu = $connection2->prepare($sqliu);
+            $resultiu->execute($dataiu);
             echo "New record created successfully";
         } else {
             echo "Error: " . $sq . "<br>" . $conn->error;
         }
-        
+
         $conn->close();
-    }catch(Exception $ex){
+    } catch (Exception $ex) {
         print_r($ex);
     }
 
-    if(isset($callback)){
-        header('Location: '.$callback);
+    if (isset($callback)) {
+        header('Location: ' . $callback);
         exit;
-    }else{
+    } else {
         header('Location: index.php');
         exit;
     }
-}
-else
-{
+} else {
     $html = "<p>Your payment failed</p>
              <p>{$error}</p>";
 }

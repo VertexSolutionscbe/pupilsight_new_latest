@@ -56,7 +56,6 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 }
             } else if ($customAction == "edit") {
                 $flag = $customField->editCustomField($_POST);
-                //die();
             }
 
             if ($flag) {
@@ -378,10 +377,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <div class="row mt-2">
                     <div class="col-sm">Should this field required</div>
                     <div class="col-sm">
-                        <input type='radio' name='required' id='rdRYes' value='Y' checked>
+                        <input type='radio' name='required' id='rdRYes' value='Y'>
                         <label for='rdRYes' class='ml-2 mr-2'>Yes</label>
 
-                        <input type='radio' name='required' id='rdRNo' value='N'>
+                        <input type='radio' name='required' id='rdRNo' value='N' checked>
                         <label for='rdRNo' class='ml-2 mr-2'>No</label>
                     </div>
                 </div>

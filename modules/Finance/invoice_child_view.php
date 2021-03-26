@@ -67,14 +67,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
         $resultamt = $connection2->query($sqlamt);
         $dataamt = $resultamt->fetch();
 
-        $sql_dis = "SELECT discount FROM fn_invoice_level_discount WHERE pupilsightPersonID = " . $stuId . "  AND invoice_id=".$d['invoiceid']." ";
+        $sql_dis = "SELECT discount FROM fn_invoice_level_discount WHERE pupilsightPersonID = " . $stuId . "  AND invoice_id=" . $d['invoiceid'] . " ";
         $result_dis = $connection2->query($sql_dis);
         $special_dis = $result_dis->fetch();
 
         $sp_item_sql = "SELECT SUM(discount.discount) as sp_discount
         FROM fn_fee_invoice_item as fee_item
         LEFT JOIN fn_fee_item_level_discount as discount
-        ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id= ".$d['invoiceid']." AND pupilsightPersonID = ".$stuId."  ";
+        ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id= " . $d['invoiceid'] . " AND pupilsightPersonID = " . $stuId . "  ";
         $result_sp_item = $connection2->query($sp_item_sql);
         $sp_item_dis = $result_sp_item->fetch();
 
@@ -249,7 +249,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     // echo '</pre>';
     // die();
 
-    if($_GET['success'] == '1'){
+    if ($_GET['success'] == '1') {
         echo '<h3 style="color:light-green;color: green;border: 1px solid grey;text-align: center;padding: 5px 5px;">Payment Succesfully Done!</h3>';
     }
     echo "<div class ='row fee_hdr FeeInvoiceListManage'><div class='col-md-12'><h2>Invoices <a  id='payMultiple' style='float:right; color:white;font-size: 14px; margin: -6px 0 0 0px;
@@ -309,7 +309,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
             if ($ind['chkpayment'] == 'Paid') {
                 $cls = 'Paid';
-                // echo '<tr><td><input type="checkbox" class="" checked></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . date('d-m-Y', strtotime($ind['due_date'])) . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td><td>&nbsp;&nbsp;Paid</td>';
+                // echo '<tr><td><input type="checkbox" class="" checked></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . date('d-m-Y', strtotime($ind['due_date'])) . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-white customBtn">View Bill Details</button></a></td><td>&nbsp;&nbsp;Paid</td>';
                 // $lin = $baseurl . "public/receipts/" . $ind["transaction_id"] . ".docx";
                 // echo "<td><a href='" . $lin . "' download>Download</a></td></tr>";
             } else {
@@ -329,107 +329,108 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
                 $style = $curdate >= $duedate ? '#FAFD94' : '#fff';
                 // echo '<tr style="background:'.$style.'"><td><input type="checkbox" class="multiplePayFees" value="'.$ind['id'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
-                echo '<tr><td><input type="checkbox" class="multiplePayFees chkChild" data-amt="'.$totalamountnew.'" value="' . $ind['id'] . '"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
+                echo '<tr><td><input type="checkbox" class="multiplePayFees chkChild" data-amt="' . $totalamountnew . '" value="' . $ind['id'] . '"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="btn btn-white">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-white customBtn">View Bill Details</button></a></td>';
 
-                
+
 
 ?>
 
-            <?php if($gatewayData['name'] == 'RAZORPAY'){ ?>
-                <td>
-                    <form action="thirdparty/payment/razorpay/pay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
-                        <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
-                        <input type="hidden" name="pupilsightProgramID" value="<?= $ind['pupilsightProgramID'] ?>">
-                        <input type="hidden" name="classid" value="<?= $ind['classid'] ?>">
-                        <input type="hidden" name="sectionid" value="<?= $ind['sectionid'] ?>">
-                        <input type="hidden" name="fn_fees_invoice_id" value="<?= $ind['invoiceid'] ?>">
-                        <input type="hidden" name="fn_fees_head_id" value="<?= $ind['fn_fees_head_id'] ?>">
-                        <input type="hidden" name="rec_fn_fee_series_id" value="<?= $ind['rec_fn_fee_series_id'] ?>">
-                        <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $ind['fn_fee_invoice_item_id'] ?>">
+                <?php if ($gatewayData['name'] == 'RAZORPAY') { ?>
+                    <td>
+                        <form action="thirdparty/payment/razorpay/pay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
+                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
+                            <input type="hidden" name="pupilsightProgramID" value="<?= $ind['pupilsightProgramID'] ?>">
+                            <input type="hidden" name="classid" value="<?= $ind['classid'] ?>">
+                            <input type="hidden" name="sectionid" value="<?= $ind['sectionid'] ?>">
+                            <input type="hidden" name="fn_fees_invoice_id" value="<?= $ind['invoiceid'] ?>">
+                            <input type="hidden" name="fn_fees_head_id" value="<?= $ind['fn_fees_head_id'] ?>">
+                            <input type="hidden" name="rec_fn_fee_series_id" value="<?= $ind['rec_fn_fee_series_id'] ?>">
+                            <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $ind['fn_fee_invoice_item_id'] ?>">
 
-                        <input type="hidden" name="total_amount_without_fine_discount" value="<?= $ind['finalamount'] ?>">
-                        <input type="hidden" class="fee_amt" name="amount" value="<?= $totalamountnew ?>">
-                        <input type="hidden" name="fine" value="<?= $fineamount ?>">
-                        <input type="hidden" name="discount" value="0">
-                        <!-- Discount calculation pending--->
-                        <input type="hidden" name="receipt_number" value="<?= $ind['rec_fn_fee_series_id'] ?>">
-                        <input type="hidden" name="name" value="<?= $ind['officialName'] ?>">
-                        <input type="hidden" name="email" value="<?= $ind['email'] ?>">
-                        <input type="hidden" name="phone" value="<?= $ind['phone1'] ?>">
-                        <input type="hidden" name="payid" value="<?= $ind['stu_invoice_no'] ?>">
-                        <input type="hidden" name="stuid" value="<?= $stuId ?>">
-                        <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
-                        <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
-                        <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+                            <input type="hidden" name="total_amount_without_fine_discount" value="<?= $ind['finalamount'] ?>">
+                            <input type="hidden" class="fee_amt" name="amount" value="<?= $totalamountnew ?>">
+                            <input type="hidden" name="fine" value="<?= $fineamount ?>">
+                            <input type="hidden" name="discount" value="0">
+                            <!-- Discount calculation pending--->
+                            <input type="hidden" name="receipt_number" value="<?= $ind['rec_fn_fee_series_id'] ?>">
+                            <input type="hidden" name="name" value="<?= $ind['officialName'] ?>">
+                            <input type="hidden" name="email" value="<?= $ind['email'] ?>">
+                            <input type="hidden" name="phone" value="<?= $ind['phone1'] ?>">
+                            <input type="hidden" name="payid" value="<?= $ind['stu_invoice_no'] ?>">
+                            <input type="hidden" name="stuid" value="<?= $stuId ?>">
+                            <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
+                            <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                            <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
 
-                        <?php if(!empty($terms)){   ?>
-                            <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
-                            <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
-                        <?php } else { ?>
-                            <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>'  class="btn btn-primary ">Pay</button>
-                        <?php } ?>
-                        
-                        
-                    </form>
-                </td>
-            <?php } if($gatewayData['name'] == 'AIRPAY'){ 
+                            <?php if (!empty($terms)) {   ?>
+                                <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
+                                <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
+                            <?php } else { ?>
+                                <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' class="btn btn-primary ">Pay</button>
+                            <?php } ?>
+
+
+                        </form>
+                    </td>
+                <?php }
+                if ($gatewayData['name'] == 'AIRPAY') {
                     $random_number = mt_rand(1000, 9999);
                     $today = time();
                     $orderId = $today . $random_number;
 
                     $totalamountnewAirpay = number_format($totalamountnew, 2, '.', '');
-            ?>
-                <td>
-                    <form action="thirdparty/payment/airpay/sendtoairpay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
-                        <input type="hidden" value="<?= $orderId; ?>" id="OrderId" name="orderid">
-                        <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
-                        <input type="hidden" name="pupilsightProgramID" value="<?= $ind['pupilsightProgramID'] ?>">
-                        <input type="hidden" name="classid" value="<?= $ind['classid'] ?>">
-                        <input type="hidden" name="sectionid" value="<?= $ind['sectionid'] ?>">
-                        <input type="hidden" name="fn_fees_invoice_id" value="<?= $ind['invoiceid'] ?>">
-                        <input type="hidden" name="fn_fees_head_id" value="<?= $ind['fn_fees_head_id'] ?>">
-                        <input type="hidden" name="rec_fn_fee_series_id" value="<?= $ind['rec_fn_fee_series_id'] ?>">
-                        <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $ind['fn_fee_invoice_item_id'] ?>">
+                ?>
+                    <td>
+                        <form action="thirdparty/payment/airpay/sendtoairpay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
+                            <input type="hidden" value="<?= $orderId; ?>" id="OrderId" name="orderid">
+                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
+                            <input type="hidden" name="pupilsightProgramID" value="<?= $ind['pupilsightProgramID'] ?>">
+                            <input type="hidden" name="classid" value="<?= $ind['classid'] ?>">
+                            <input type="hidden" name="sectionid" value="<?= $ind['sectionid'] ?>">
+                            <input type="hidden" name="fn_fees_invoice_id" value="<?= $ind['invoiceid'] ?>">
+                            <input type="hidden" name="fn_fees_head_id" value="<?= $ind['fn_fees_head_id'] ?>">
+                            <input type="hidden" name="rec_fn_fee_series_id" value="<?= $ind['rec_fn_fee_series_id'] ?>">
+                            <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $ind['fn_fee_invoice_item_id'] ?>">
 
-                        <input type="hidden" name="total_amount_without_fine_discount" value="<?= $ind['finalamount'] ?>">
-                        <input type="hidden" class="fee_amt" name="amount" value="<?= $totalamountnewAirpay ?>">
-                        <input type="hidden" name="fine" value="<?= $fineamount ?>">
-                        <input type="hidden" name="discount" value="0">
-                        <!-- Discount calculation pending--->
-                        <input type="hidden" name="receipt_number" value="<?= $ind['rec_fn_fee_series_id'] ?>">
-                        <input type="hidden" name="name" value="<?= $ind['officialName'] ?>">
-                        <input type="hidden" name="email" value="<?= $parData['email'] ?>">
-                        <input type="hidden" name="phone" value="<?= $parData['phone1'] ?>">
-                        <input type="hidden" name="payid" value="<?= $ind['stu_invoice_no'] ?>">
-                        <input type="hidden" name="stuid" value="<?= $stuId ?>">
-                        <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
-                        <input type="hidden" name="buyerFirstName" value="<?= $ind['officialName'] ?>">
-                        <input type="hidden" name="buyerLastName" value="<?= $ind['officialName'] ?>">
-                        <input type="hidden" name="buyerEmail" value="<?= $parData['email'] ?>">
-                        <input type="hidden" name="buyerPhone" value="<?= $parData['phone1'] ?>">
-                        
-                        <input type="hidden" class="buyerAddress" name="buyerAddress" value="">
-                        <input type="hidden" class="buyerCity" name="buyerCity" value="">
-                        <input type="hidden" class="buyerState" name="buyerState" value="">
-                        <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
-                        <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
-                        <input type="hidden" class="ptype" name="ptype" value="fee_collection">
-                        <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
-                        <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+                            <input type="hidden" name="total_amount_without_fine_discount" value="<?= $ind['finalamount'] ?>">
+                            <input type="hidden" class="fee_amt" name="amount" value="<?= $totalamountnewAirpay ?>">
+                            <input type="hidden" name="fine" value="<?= $fineamount ?>">
+                            <input type="hidden" name="discount" value="0">
+                            <!-- Discount calculation pending--->
+                            <input type="hidden" name="receipt_number" value="<?= $ind['rec_fn_fee_series_id'] ?>">
+                            <input type="hidden" name="name" value="<?= $ind['officialName'] ?>">
+                            <input type="hidden" name="email" value="<?= $parData['email'] ?>">
+                            <input type="hidden" name="phone" value="<?= $parData['phone1'] ?>">
+                            <input type="hidden" name="payid" value="<?= $ind['stu_invoice_no'] ?>">
+                            <input type="hidden" name="stuid" value="<?= $stuId ?>">
+                            <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
+                            <input type="hidden" name="buyerFirstName" value="<?= $ind['officialName'] ?>">
+                            <input type="hidden" name="buyerLastName" value="<?= $ind['officialName'] ?>">
+                            <input type="hidden" name="buyerEmail" value="<?= $parData['email'] ?>">
+                            <input type="hidden" name="buyerPhone" value="<?= $parData['phone1'] ?>">
 
-                        <?php if(!empty($terms)){   ?>
-                            <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
-                            <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
-                        <?php } else { ?>
-                            <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>'  class="btn btn-primary ">Pay</button>
-                        <?php } ?>
-                        
-                        
-                    </form>
-                </td>
-            <?php } ?>
+                            <input type="hidden" class="buyerAddress" name="buyerAddress" value="">
+                            <input type="hidden" class="buyerCity" name="buyerCity" value="">
+                            <input type="hidden" class="buyerState" name="buyerState" value="">
+                            <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
+                            <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
+                            <input type="hidden" class="ptype" name="ptype" value="fee_collection">
+                            <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                            <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
 
-        <?php
+                            <?php if (!empty($terms)) {   ?>
+                                <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Pay</button></a>
+                                <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
+                            <?php } else { ?>
+                                <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' class="btn btn-primary ">Pay</button>
+                            <?php } ?>
+
+
+                        </form>
+                    </td>
+                <?php } ?>
+
+    <?php
                 // echo "<td>NA</td></tr>";
                 echo "</tr>";
             }
@@ -551,7 +552,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                 $receipt = '';
             }
 
-            echo '<td align=\'center\'><a href="'.$receipt.'"  download><i class="mdi mdi-download mdi-18px"></i></a></td></tr>';
+            echo '<td align=\'center\'><a href="' . $receipt . '"  download><i class="mdi mdi-download mdi-18px"></i></a></td></tr>';
         }
     }
     echo "</tbody>";
@@ -559,160 +560,160 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
     ?>
 
-<?php if($gatewayData['name'] == 'RAZORPAY'){ ?>
-    <form action='thirdparty/multiplepayment/razorpay/multiplepay.php' method='post'>
-<?php } else if($gatewayData['name'] == 'AIRPAY'){ 
-    $random_number = mt_rand(1000, 9999);
-    $today = time();
-    $orderId = $today . $random_number;    
-?> 
-    <form action='thirdparty/payment/airpay/sendtoairpay.php' method='post'>
-    <input type="hidden" value="<?= $orderId; ?>" id="OrderId" name="orderid">
-    <input type="hidden" name="buyerFirstName" value="<?= $students['officialName'] ?>">
-    <input type="hidden" name="buyerLastName" value="<?= $students['officialName'] ?>">
-    <input type="hidden" name="buyerEmail" value="<?= $parData['email'] ?>">
-    <input type="hidden" name="buyerPhone" value="<?= $parData['phone1'] ?>">
-    
-    <input type="hidden" class="buyerAddress" name="buyerAddress" value="">
-    <input type="hidden" class="buyerCity" name="buyerCity" value="">
-    <input type="hidden" class="buyerState" name="buyerState" value="">
-    <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
-    <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
-    <input type="hidden" class="amount" id="multiAmt" name="amount" value="10.00">
-    <input type="hidden" class="ptype" name="ptype" value="multiple_fee_collection">
-<?php } ?>
-        <input type='hidden' id='multiplepayData' name='formdata' value=''>
-        <button type='submit' id='clickMultiplePay' style='display:none'>Submit</button>
-    </form>
-    <style>
-        .customBtn {
-            font-size: 12px;
-        }
+    <?php if ($gatewayData['name'] == 'RAZORPAY') { ?>
+        <form action='thirdparty/multiplepayment/razorpay/multiplepay.php' method='post'>
+        <?php } else if ($gatewayData['name'] == 'AIRPAY') {
+        $random_number = mt_rand(1000, 9999);
+        $today = time();
+        $orderId = $today . $random_number;
+        ?>
+            <form action='thirdparty/payment/airpay/sendtoairpay.php' method='post'>
+                <input type="hidden" value="<?= $orderId; ?>" id="OrderId" name="orderid">
+                <input type="hidden" name="buyerFirstName" value="<?= $students['officialName'] ?>">
+                <input type="hidden" name="buyerLastName" value="<?= $students['officialName'] ?>">
+                <input type="hidden" name="buyerEmail" value="<?= $parData['email'] ?>">
+                <input type="hidden" name="buyerPhone" value="<?= $parData['phone1'] ?>">
 
-        .proceed_decline {
-            color: white;
-            height: 40px;
-            width: 82px;
-            font-weight: 600;
-            font-size: 12px;
-            border-radius: 6px;
-        }
-
-        .decline {
-            color: red;
-            border: 2px solid;
-        }
-
-        .modal-header_pay {
-            text-align: center;
-            padding: 1rem;
-            border-bottom: 1px solid #e9ecef;
-            border-top-left-radius: .3rem;
-            border-top-right-radius: .3rem;
-        }
-
-        .modal-title {
-            font-size: 20px;
-        }
-    </style>
-    <script>
-        function payNow() {
-            console.log("paynow");
-        }
-
-
-
-        $(document).on('click', '.clickPay', function() {
-            var id = $(this).attr('data-id');
-            $("#clickPayButton").attr('data-id', id);
-        });
-
-        $(document).on('click', '#clickPayButton', function() {
-            var id = $(this).attr('data-id');
-            $("#click_submit-" + id).click();
-        });
-
-        $(document).on('click', '#payMultiple', function() {
-            var val = '';
-            var multipleData = [];
-            var cheked = [];
-            var amt = 0;
-            var tamt = 0;
-            $.each($(".multiplePayFees:checked"), function() {
-                val = $(this).val();
-                var formData = $('#payform-' + val).serializeArray();
-                multipleData.push(formData);
-                cheked.push($(this).val());
-                amt = $(this).attr('data-amt');
-                tamt += parseInt(amt);
-            }); 
-            $("#multiAmt").val(Number(tamt).toFixed(2));
-            
-            var chkid = cheked.join(", ");
-            if (chkid) {
-                if (multipleData) {
-                    $.ajax({
-                        url: 'modules/Finance/invoice_multiple_pay_data.php',
-                        type: 'post',
-                        data: {
-                            multipleData: multipleData
-                        },
-                        async: true,
-                        success: function(response) {
-                            $("#multiplepayData").val(response);
-                            setTimeout(function() {
-                                $("#clickMultiplePay").click();
-                            }, 100);
-                        }
-                    });
+                <input type="hidden" class="buyerAddress" name="buyerAddress" value="">
+                <input type="hidden" class="buyerCity" name="buyerCity" value="">
+                <input type="hidden" class="buyerState" name="buyerState" value="">
+                <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
+                <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
+                <input type="hidden" class="amount" id="multiAmt" name="amount" value="10.00">
+                <input type="hidden" class="ptype" name="ptype" value="multiple_fee_collection">
+            <?php } ?>
+            <input type='hidden' id='multiplepayData' name='formdata' value=''>
+            <button type='submit' id='clickMultiplePay' style='display:none'>Submit</button>
+            </form>
+            <style>
+                .customBtn {
+                    font-size: 12px;
                 }
-            } else {
-                alert('You Have to Select Invoice!');
-            }
 
-        });
-    </script>
-<?php
+                .proceed_decline {
+                    color: white;
+                    height: 40px;
+                    width: 82px;
+                    font-weight: 600;
+                    font-size: 12px;
+                    border-radius: 6px;
+                }
 
-}
+                .decline {
+                    color: red;
+                    border: 2px solid;
+                }
+
+                .modal-header_pay {
+                    text-align: center;
+                    padding: 1rem;
+                    border-bottom: 1px solid #e9ecef;
+                    border-top-left-radius: .3rem;
+                    border-top-right-radius: .3rem;
+                }
+
+                .modal-title {
+                    font-size: 20px;
+                }
+            </style>
+            <script>
+                function payNow() {
+                    console.log("paynow");
+                }
 
 
-?>
-<!DOCTYPE html>
-<html lang="en">
 
-<body>
+                $(document).on('click', '.clickPay', function() {
+                    var id = $(this).attr('data-id');
+                    $("#clickPayButton").attr('data-id', id);
+                });
 
-    <div class="container">
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" role="dialog">
-            <div class="modal-dialog">
+                $(document).on('click', '#clickPayButton', function() {
+                    var id = $(this).attr('data-id');
+                    $("#click_submit-" + id).click();
+                });
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header_pay">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <span class="modal-title">Terms and Conditions </span>
-                    </div>
-                    <div class="modal-body">
-                        <?php echo $terms;?>
-                        <!-- <p>Help protect your website and its users with clear and fair website terms and conditions. These terms and conditions for a website set out key issues such as acceptable use, privacy, cookies, registration and passwords, intellectual property, links to other sites, termination and disclaimers of responsibility. Terms and conditions are used and necessary to protect a website owner from liability of a user relying on the information or the goods provided from the site then suffering a loss.</p>
+                $(document).on('click', '#payMultiple', function() {
+                    var val = '';
+                    var multipleData = [];
+                    var cheked = [];
+                    var amt = 0;
+                    var tamt = 0;
+                    $.each($(".multiplePayFees:checked"), function() {
+                        val = $(this).val();
+                        var formData = $('#payform-' + val).serializeArray();
+                        multipleData.push(formData);
+                        cheked.push($(this).val());
+                        amt = $(this).attr('data-amt');
+                        tamt += parseInt(amt);
+                    });
+                    $("#multiAmt").val(Number(tamt).toFixed(2));
+
+                    var chkid = cheked.join(", ");
+                    if (chkid) {
+                        if (multipleData) {
+                            $.ajax({
+                                url: 'modules/Finance/invoice_multiple_pay_data.php',
+                                type: 'post',
+                                data: {
+                                    multipleData: multipleData
+                                },
+                                async: true,
+                                success: function(response) {
+                                    $("#multiplepayData").val(response);
+                                    setTimeout(function() {
+                                        $("#clickMultiplePay").click();
+                                    }, 100);
+                                }
+                            });
+                        }
+                    } else {
+                        alert('You Have to Select Invoice!');
+                    }
+
+                });
+            </script>
+        <?php
+
+    }
+
+
+        ?>
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <body>
+
+            <div class="container">
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header_pay">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <span class="modal-title">Terms and Conditions </span>
+                            </div>
+                            <div class="modal-body">
+                                <?php echo $terms; ?>
+                                <!-- <p>Help protect your website and its users with clear and fair website terms and conditions. These terms and conditions for a website set out key issues such as acceptable use, privacy, cookies, registration and passwords, intellectual property, links to other sites, termination and disclaimers of responsibility. Terms and conditions are used and necessary to protect a website owner from liability of a user relying on the information or the goods provided from the site then suffering a loss.</p>
 
                         <p>Making your own terms and conditions for your website is hard, not impossible, to do. It can take a few hours to few days for a person with no legal background to make. But worry no more; we are here to help you out.</p>
 
                         <p>All you need to do is fill up the blank spaces and then you will receive an email with your personalized terms and conditions.</p> -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary proceed_decline" data-id="" id="clickPayButton" data-dismiss="modal">PROCEED</button>
-                        <button type="button" class="btn btn-default proceed_decline decline" data-dismiss="modal">DECLINE</button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary proceed_decline" data-id="" id="clickPayButton" data-dismiss="modal">PROCEED</button>
+                                <button type="button" class="btn btn-default proceed_decline decline" data-dismiss="modal">DECLINE</button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
             </div>
-        </div>
 
-    </div>
+        </body>
 
-</body>
-
-</html>
+        </html>
