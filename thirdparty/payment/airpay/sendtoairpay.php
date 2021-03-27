@@ -22,6 +22,9 @@ header( 'Pragma: no-cache' );
 	$buyerCountry = trim($_POST['buyerCountry']);
 	$orderid = trim($_POST['orderid']); //Your System Generated Order ID
 
+	$payment_gateway_id = $_POST["payment_gateway_id"];
+	$_SESSION["payment_gateway_id"] = $payment_gateway_id;
+
 	
 	$type = $_POST['ptype'];
 

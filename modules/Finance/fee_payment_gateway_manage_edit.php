@@ -14,8 +14,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Program'), 'program_manage.php')
-        ->add(__('Edit Program'));
+    ->add(__('Manage Fee Payment Gateway'), 'fee_payment_gateway_manage.php')
+    ->add(__('Edit Fee Payment Gateway'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

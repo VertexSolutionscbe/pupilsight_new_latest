@@ -83,9 +83,22 @@ if (!empty($camdata)) {
 						$today = time();
 						$OrderId = $today . $random_number;
 
-						$sqlchk = "SELECT name FROM fn_fee_payment_gateway";
-						$resultchk = database::doSelectOne($sqlchk);
-						$gateway = $resultchk['name'];
+						// $sqlchk = "SELECT name FROM fn_fee_payment_gateway";
+						// $resultchk = database::doSelectOne($sqlchk);
+						// $gateway = $resultchk['name'];
+
+						$sqlfh = "SELECT fn_fees_head_id FROM fn_fee_structure WHERE id =".$resultchk['fn_fee_structure_id']." ";
+						$resultfh = database::doSelectOne($sqlfh);
+						
+
+						$fn_fees_head_id = $resultfh['fn_fees_head_id'];
+
+						$sql = 'SELECT b.* FROM fn_fees_head AS a LEFT JOIN fn_fee_payment_gateway AS b ON a.payment_gateway_id = b.id WHERE a.id = '.$fn_fees_head_id.' ';
+						$gatewayData = database::doSelectOne($sqlfh);
+						
+						$terms = $gatewayData['terms_and_conditions'];
+						$gatewayID = $gatewayData['id'];
+						$gateway = $gatewayData['name'];
 
 						if (!empty($gateway)) {
 							if ($gateway == 'WORLDLINE') {
@@ -95,8 +108,8 @@ if (!empty($camdata)) {
 									<input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
 									<input type="hidden" value="INR" id="currencyName" name="currencyName">
 									<input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
-									<input type="hidden" name="mid" id="mid" value="WL0000000009424">
-									<input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+									<input type="hidden" name="mid" id="mid" value="<?php echo $gatewayData['mid']; ?>">
+									<input type="hidden" name="enckey" id="enckey" value="<?php echo $gatewayData['key_id']; ?>">
 									<input type="hidden" name="campaignid" value="<?php echo $cid; ?>">
 									<input type="hidden" name="sid" value="<?php echo $sid; ?>">
 									<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
@@ -111,6 +124,7 @@ if (!empty($camdata)) {
 							?>
 
 								<form id="admissionPay" action="<?php echo $base_url; ?>/thirdparty/paymentadm/razorpay/pay.php" method="post">
+									<input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
 									<input type="hidden" value="<?php echo $OrderId; ?>" id="OrderId" name="OrderId">
 									<input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
 									<input type="hidden" value="INR" id="currencyName" name="currencyName">
@@ -128,6 +142,7 @@ if (!empty($camdata)) {
 
 							<?php } elseif ($gateway == 'PAYU') { ?>
 								<form id="admissionPay" action="<?php echo $base_url; ?>/thirdparty/payment/payu/checkout.php" method="post">
+									<input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
 									<input type="hidden" value="<?php echo $OrderId; ?>" id="OrderId" name="OrderId">
 									<input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
 									<input type="hidden" value="INR" id="currencyName" name="currencyName">
