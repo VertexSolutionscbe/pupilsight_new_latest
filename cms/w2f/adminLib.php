@@ -75,7 +75,7 @@ class adminlib
 
 	function getPupilSightSectionDataByCategory($id)
 	{
-		$sql = "SELECT * FROM pupilsight_cms_sections WHERE type = '" . $id . "' AND status = '1' order by id DESC";
+		$sql = "SELECT * FROM pupilsight_cms_sections WHERE type = '$id' AND status = '1' order by id DESC";
 		$result = database::doSelect($sql);
 		return $result;
 	}
@@ -86,7 +86,7 @@ class adminlib
 		$result = database::doSelect($sql);
 		$arr = [];
 		foreach ($result as $k => $r) {
-			$sql1 = "SELECT * FROM pupilsight_cms_sections WHERE type = '" . $r['type'] . "' AND status = '1' ";
+			$sql1 = "SELECT * FROM pupilsight_cms_sections WHERE type = '" . $r['type'] . "' AND status = '1' order by sorting_order ASC ";
 			$result1 = database::doSelect($sql1);
 			$arr[$r['type']] = $result1;
 		}
@@ -138,6 +138,13 @@ class adminlib
 		}
 		$sql = rtrim($sql, ", ");
 		$sql .= " WHERE id ='$id'";
+
+		$result = database::doUpdate($sql);
+	}
+
+	function updateSectionSort($sort, $id)
+	{
+	    $sql = "UPDATE pupilsight_cms_sections SET sorting_order='$sort' where id='$id' ";
 
 		$result = database::doUpdate($sql);
 	}
