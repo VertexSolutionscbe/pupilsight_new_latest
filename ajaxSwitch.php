@@ -24,6 +24,12 @@ if (isset($_POST['type'])) {
                         unset($dts_receipt_feeitem);
                         unset($dts_receipt);
 
+                        $sqlpt = "SELECT transaction_id FROM fn_fees_collection WHERE id = ".$ts." ";
+                        $resultpt = $connection2->query($sqlpt);
+                        $valuept = $resultpt->fetch();
+                        $transId = $valuept['transaction_id'];
+
+                       
                         $data = array('remarks' => $remarks, 'fn_fees_collection_id' => $ts, 'canceled_by' => $cuid, 'cdt' => $cdt);
                         $sql = 'INSERT INTO fn_fees_cancel_collection SET remarks=:remarks, fn_fees_collection_id=:fn_fees_collection_id, canceled_by=:canceled_by, cdt=:cdt';
                         $result = $connection2->prepare($sql);
@@ -34,6 +40,30 @@ if (isset($_POST['type'])) {
                         $resultu = $connection2->prepare($sqlu);
                         $resultu->execute($datau);
 
+                        $sqlinv = "SELECT * FROM fn_fees_student_collection WHERE transaction_id = ".$transId." ";
+                        $resultinv = $connection2->query($sqlinv);
+                        $valueinvData = $resultinv->fetchAll();
+
+                        if(!empty($valueinvData)){
+                            foreach($valueinvData as $valueinv){
+                                $dataui = array('invoice_status' => 'Not Paid', 'invoice_no' => $valueinv['invoice_no']);
+                                $sqlui = 'UPDATE fn_fee_invoice_student_assign SET invoice_status=:invoice_status WHERE invoice_no=:invoice_no';
+                                $resultui = $connection2->prepare($sqlui);
+                                $resultui->execute($dataui);
+    
+                                $datai = array('pupilsightPersonID' => $valueinv['pupilsightPersonID'], 'transaction_id' => $valueinv['transaction_id'],  'fn_fees_invoice_id' => $valueinv['fn_fees_invoice_id'], 'fn_fee_invoice_item_id' => $valueinv['fn_fee_invoice_item_id'], 'invoice_no' => $valueinv['invoice_no'], 'total_amount' => $valueinv['total_amount'], 'discount' => $valueinv['discount'], 'total_amount_collection' => $valueinv['total_amount_collection'], 'status' => $valueinv['status']);
+                                $sqli = 'INSERT INTO fn_fees_student_cancel_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, discount=:discount,  total_amount_collection=:total_amount_collection, status=:status';
+                                $resulti = $connection2->prepare($sqli);
+                                $resulti->execute($datai);
+    
+                                // $data = array('id' => $valueinv['id']);
+                                // $sql = 'DELETE FROM fn_fees_student_collection WHERE id=:id';
+                                // $result = $connection2->prepare($sql);
+                                // $result->execute($data);
+                            }
+                        }
+
+                        
                         $collectionId = $ts;
 
                         //    $sqlstu = "SELECT e.*, a.officialName , a.admission_no,  b.name as class, c.name as section, GROUP_CONCAT(DISTINCT f.fn_fees_invoice_id) as invoice_id, GROUP_CONCAT(f.fn_fee_invoice_item_id) as invoice_item_id, fm.name as bank_name FROM fn_fees_collection AS e LEFT JOIN pupilsightPerson AS a ON e.pupilsightPersonID = a.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS d ON e.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID LEFT JOIN fn_fees_student_collection AS f ON e.transaction_id = f.transaction_id LEFT JOIN fn_masters AS fm ON e.bank_id = fm.id WHERE e.id = ".$collectionId." GROUP BY e.id ";
