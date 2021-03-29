@@ -48,7 +48,15 @@ if (isset($data['logo_image'])) {
     $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
 }
 
+$invalid='';        
+if(isset($_GET['invalid'])) 
+$invalid=$_GET['invalid'];
+           
 ?>
+
+<input type="hidden" name="inavlid" id="invalid" value="<?php echo $invalid;?>" />
+
+
 <!doctype html>
 <html class="no-js" lang="">
 
@@ -1037,6 +1045,13 @@ if (isset($data['logo_image'])) {
                     <img src="<?= $logo; ?>" height="36" alt="">
                 </div>
                 <h2 class="mb-3 text-center">Login to your account</h2>
+                <?php if($invalid=='true'){ ?>
+                <div class="alert alert-warning">Wrong Username or Password</div>
+
+                <?php } ?>
+
+                <div class="empty-warning"></div>
+                
                 <div class="mb-3">
                     <label class="form-label">Username</label>
                     <input type="text" id="username" value="<?php if(isset($_COOKIE["username"])) { echo $_COOKIE["username"]; } ?>" name="username" class="form-control" required="">
@@ -1280,7 +1295,9 @@ if (isset($data['logo_image'])) {
         var password = document.getElementById("password").value;
         if(username=='' || password=='')
         {
-            alert('Please enter Username and Password');
+            //alert('Please enter Username and Password');
+            $('.empty-warning').addClass('alert alert-warning');
+            $('.empty-warning ').html('Please enter Username and Password');
             return false;
         }
         else
@@ -1312,11 +1329,20 @@ if (isset($data['logo_image'])) {
     <script>
         document.body.style.display = "block";
         $(document).ready(function() {
-            $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
-            try {
-                $('.gmap_canvas a').remove();
-            } catch (ex) {
-                console.log(ex);
+
+            var invalid=$('#invalid').val();
+            if(invalid=='true')
+            {
+                loginPanel();
+            }
+            else
+            {
+                $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+                try {
+                    $('.gmap_canvas a').remove();
+                } catch (ex) {
+                    console.log(ex);
+                }
             }
         });
 
