@@ -354,9 +354,18 @@ if (isset($data['logo_image'])) {
                                     $today = time();
                                     $orderId = $today . $random_number;
 
-                                    $sqlchk = "SELECT name FROM fn_fee_payment_gateway";
-                                    $resultchk = database::doSelectOne($sqlchk);
-                                    $gateway = $resultchk['name'];
+                                    $sqlfh = "SELECT fn_fees_head_id FROM fn_fee_structure WHERE id =".$campaign_byid['fn_fee_structure_id']." ";
+                                    $resultfh = database::doSelectOne($sqlfh);
+                                   
+
+                                    $fn_fees_head_id = $resultfh['fn_fees_head_id'];
+
+                                    $sql = 'SELECT b.* FROM fn_fees_head AS a LEFT JOIN fn_fee_payment_gateway AS b ON a.payment_gateway_id = b.id WHERE a.id = '.$fn_fees_head_id.' ';
+                                    $gatewayData = database::doSelectOne($sqlfh);
+                                    
+                                    $terms = $gatewayData['terms_and_conditions'];
+                                    $gatewayID = $gatewayData['id'];
+                                    $gateway = $gatewayData['name'];
 
                                     if (!empty($gateway)) {
                                         if ($gateway == 'WORLDLINE') {
@@ -365,13 +374,13 @@ if (isset($data['logo_image'])) {
                                             $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
                                 ?>
                                             <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
-
+                                                <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                                 <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
                                                 <input type="hidden" value="INR" id="currencyName" name="currencyName">
                                                 <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
-                                                <input type="hidden" name="mid" id="mid" value="WL0000000009424">
-                                                <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+                                                <input type="hidden" name="mid" id="mid" value="<?php echo $gatewayData['mid']; ?>">
+                                                <input type="hidden" name="enckey" id="enckey" value="<?php echo $gatewayData['key_id']; ?>">
                                                 <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
                                                 <input type="hidden" name="sid" value="0">
                                                 <input type="hidden" class="applicantName" name="name" value="">
@@ -388,7 +397,7 @@ if (isset($data['logo_image'])) {
 
                                         ?>
                                             <form id="admissionPay" action="../thirdparty/paymentadm/razorpay/pay.php" method="post">
-
+                                                <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                                 <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
 
@@ -413,7 +422,7 @@ if (isset($data['logo_image'])) {
 
                                         ?>
                                             <form id="admissionPay" action="../thirdparty/payment/payu/checkout.php" method="post">
-
+                                                <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                                 <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
 
@@ -435,7 +444,7 @@ if (isset($data['logo_image'])) {
                                             $airpayamount = number_format($applicationAmount, 2, '.', '');
                                         ?>
                                             <form id="admissionPay" action="../thirdparty/payment/airpay/sendtoairpay.php" method="post">
-
+                                                <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="orderid">
                                                 <input type="hidden" name="amount" value="<?php echo $airpayamount; ?>">
 

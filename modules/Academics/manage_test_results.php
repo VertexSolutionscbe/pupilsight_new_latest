@@ -147,7 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
     echo "<a  id='result_show_pdf' data-type='test' class='btn btn-primary butt'>Show Pdf</a>&nbsp;&nbsp;";
     echo "<a  id='result_hide_pdf' data-type='test' class='btn btn-primary butt'>Hide Pdf</a>&nbsp;&nbsp;";
     echo "<a  id='result_show_html' data-type='test' class='btn btn-primary butt'>Show HTML</a>&nbsp;&nbsp;";
-    echo "<a  id='result_hide_html' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Hide HTML</a>&nbsp;&nbsp;";
+    echo "<a  id='result_hide_html'  data-type='test' class='btn btn-primary butt'>Hide HTML</a>&nbsp;&nbsp;";
     echo "<a  id='result_lock_tr' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Lock T.R</a>&nbsp;&nbsp;";
     echo "<a  id='result_unlock_tr' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Unlock T.R</a>&nbsp;&nbsp;";
     echo "<a  id='result_send_mark' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Send Mark</a>&nbsp;&nbsp;";
@@ -155,12 +155,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
     
     echo "<a  id='mass_student_tests_xl' style='margin-top: 10px;' title='' data-type='test' class='btn btn-primary butt'>Mass Download</a>&nbsp;&nbsp;";
     echo "<a  id='result_publish_history' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Publish History</a>&nbsp;&nbsp;";
-    echo "</div></div>";
+    echo "</div>";
     echo  "<div style='height:10px'></div>";
     $searchform = Form::create('searchForm', '');
     $searchform->setFactory(DatabaseFormFactory::create($pdo));
     $searchform->setClass('noIntBorder fullWidth');
     $searchform->addHiddenValue('studentId', '0');
+
     $row = $searchform->addRow();
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));

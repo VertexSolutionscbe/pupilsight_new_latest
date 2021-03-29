@@ -1,4 +1,13 @@
 <?php
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+unset($_SESSION['payment_gateway_id']);
+$payment_gateway_id = $_POST["payment_gateway_id"];
+$_SESSION["payment_gateway_id"] = $payment_gateway_id;
+
 require('config.php');
 require('razorpay/Razorpay.php');
 
