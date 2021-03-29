@@ -642,10 +642,7 @@ if (isset($data['logo_image'])) {
                                         </center>
                                     </div>
                                 </div>
-                            <?php
-                                $flag = false;
-                            }
-                            ?>
+                           
 
                             <div class="col-md-6 col-sm-12 m-auto">
                                 <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
@@ -668,6 +665,12 @@ if (isset($data['logo_image'])) {
                                     </div>
                                 </div>
                             </div>
+
+
+                            <?php
+                                $flag = false;
+                            }
+                            ?>
 
 
 
