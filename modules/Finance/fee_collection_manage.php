@@ -690,7 +690,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
             });  
             $table->addColumn('amount', __('Current Balance'))
                 ->format(function ($depositDetails) {
-                    return '<a title="Click Here For Details" href="fullScreen.php?q=/modules/Finance/deposit_account_details.php&id='.$depositDetails['id'].'&stid='.$depositDetails['pupilsightPersonID'].'&width=1100" class="thickbox">'.$depositDetails['amount'].'</a>';
+                    return '<a title="Click Here For Details" href="fullscreen.php?q=/modules/Finance/deposit_account_details.php&id='.$depositDetails['id'].'&stid='.$depositDetails['pupilsightPersonID'].'&width=1100" class="thickbox">'.$depositDetails['amount'].'</a>';
                 });  
             echo $table->render($depositDetails);
 

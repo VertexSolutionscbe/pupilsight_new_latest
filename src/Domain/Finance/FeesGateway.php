@@ -862,27 +862,60 @@ print_r($rs);
             if(!empty($data)){
                 foreach($data as $k=>$d){
                     $invid = $d['id'];
-                     $query2 = $this
+                    $chkstatus = $d['chkstatus'];
+                    
+                    $query2 = $this
                         ->newQuery()
                         ->from('fn_fees_student_collection')
                         ->cols([
-                            'SUM(fn_fees_student_collection.total_amount_collection) as paid_amount'
+                            'SUM(fn_fees_student_collection.total_amount_collection) as paid_amount', 'transaction_id'
                         ])
                         ->where('fn_fees_student_collection.fn_fees_invoice_id = "'.$invid.'" ')
                         ->where('fn_fees_student_collection.pupilsightPersonID = "'.$d['std_id'].'" ');
-                       
+                    
                         $newdata = $this->runQuery($query2, $criteria);
-                        if(!empty($newdata->data[0]['paid_amount'])){
-                            $data[$k]['chkinvstatus'] = 'paid';
-                            if(!empty($newdata->data[0]['paid_amount'])){
-                                $data[$k]['paid'] = $newdata->data[0]['paid_amount'];
+
+                        if(!empty($newdata->data[0]['transaction_id'])){
+                            $query7 = $this
+                                ->newQuery()
+                                ->from('fn_fees_collection')
+                                ->cols([
+                                    'invoice_status'
+                                ])
+                                ->where('fn_fees_collection.transaction_id = "'.$newdata->data[0]['transaction_id'].'" ')
+                                ->where('fn_fees_collection.transaction_status = "1" ');
+                            $newdata7 = $this->runQuery($query7, $criteria);
+                            if(!empty($newdata7->data[0]['invoice_status'])){
+                                if($newdata7->data[0]['invoice_status'] == 'Fully Paid'){
+                                    $data[$k]['chkinvstatus'] = 'paid';
+                                    $data[$k]['paid'] = '';
+                                } else {
+                                    if(!empty($newdata->data[0]['paid_amount'])){
+                                        $data[$k]['chkinvstatus'] = 'paid';
+                                        if(!empty($newdata->data[0]['paid_amount'])){
+                                            $data[$k]['paid'] = $newdata->data[0]['paid_amount'];
+                                        } else {
+                                            $data[$k]['paid'] = '';
+                                        }
+                                    } else {
+                                        $data[$k]['chkinvstatus'] = '';
+                                        $data[$k]['paid'] = '';
+                                    }
+                                }
                             } else {
-                                $data[$k]['paid'] = '';
+                                if(!empty($newdata->data[0]['paid_amount'])){
+                                    $data[$k]['chkinvstatus'] = 'paid';
+                                    if(!empty($newdata->data[0]['paid_amount'])){
+                                        $data[$k]['paid'] = $newdata->data[0]['paid_amount'];
+                                    } else {
+                                        $data[$k]['paid'] = '';
+                                    }
+                                } else {
+                                    $data[$k]['chkinvstatus'] = '';
+                                    $data[$k]['paid'] = '';
+                                }
                             }
-                        } else {
-                            $data[$k]['chkinvstatus'] = '';
-                            $data[$k]['paid'] = '';
-                        }
+                        } 
 
                     $query3 = $this
                     ->newQuery()

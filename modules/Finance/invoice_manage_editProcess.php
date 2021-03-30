@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                         // $resultu = $connection2->prepare($sqlu);
                         // $resultu->execute($datau);
 
-                        $sq = "UPDATE fn_fee_invoice_student_assign SET fn_fee_invoice_id = ".$invIdNew." WHERE pupilsightPersonID = ".$stid." AND fn_fee_invoice_id = ".$invid." ";
+                        $sq = "UPDATE fn_fee_invoice_student_assign SET fn_fee_invoice_id = ".$invIdNew." WHERE id = ".$invid." ";
                         $connection2->query($sq);
 
                         $dataca = array('fn_fee_invoice_id' => $invIdNew, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID);

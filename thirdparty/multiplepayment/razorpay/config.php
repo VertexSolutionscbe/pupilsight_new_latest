@@ -2,7 +2,13 @@
 
 include $_SERVER['DOCUMENT_ROOT'].'/pupilsight.php';
 
-$sql = 'SELECT * FROM fn_fee_payment_gateway WHERE name = "RAZORPAY" ';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+$payment_gateway_id = $_SESSION["payment_gateway_id"];
+
+$sql = 'SELECT * FROM fn_fee_payment_gateway WHERE name = "RAZORPAY" AND id = '.$payment_gateway_id.' ';
 $result = $connection2->query($sql);
 $value = $result->fetch();
 

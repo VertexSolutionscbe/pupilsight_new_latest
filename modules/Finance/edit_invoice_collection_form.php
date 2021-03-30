@@ -7,6 +7,7 @@ use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 $session = $container->get('session');
 $inv_id = $session->get('inovice_ids');
+$stuID = $session->get('can_stu_id');
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edit.php') == false) {
     //Acess denied
@@ -46,6 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            
 
             $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
             $resulta = $connection2->query($sqla);
@@ -153,6 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
             $form->addHiddenValue('pupilsightProgramID', $values['pupilsightProgramID']);
             $form->addHiddenValue('pupilsightYearGroupID', $values['pupilsightYearGroupID']);
             $form->addHiddenValue('pupilsightRollGroupID', $values['pupilsightRollGroupID']);
+            $form->addHiddenValue('pupilsightPersonID', $stuID);
 
             $row = $form->addRow();
                 $col = $row->addColumn()->setClass('newdes');
