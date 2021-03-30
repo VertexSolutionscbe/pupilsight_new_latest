@@ -260,6 +260,23 @@ if(isset($_POST['type'])){
               echo "Database Error";
             }
     break;
+    case "del_attendance_configSettings_staff":
+        $id=$_POST['id'];
+          try {
+          $data = array('id' => $id);
+          $sql = 'DELETE FROM attn_settings_staff WHERE id=:id';
+          $result = $connection2->prepare($sql);
+          $result->execute($data);
+
+          $data2 = array('attn_settings_id' => $id);
+          $sql2 = 'DELETE FROM attn_session_settings_staff WHERE attn_settings_id=:attn_settings_id';
+          $result2 = $connection2->prepare($sql2);
+          $result2->execute($data2);
+          echo "success";
+          } catch (PDOException $e) {
+            echo "Database Error";
+          }
+  break;
     default:
       echo "Invalid request";
     }

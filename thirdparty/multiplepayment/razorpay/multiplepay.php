@@ -1,16 +1,23 @@
 <?php
-require('config.php');
-require('razorpay/Razorpay.php');
-
-use Razorpay\Api\Api;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+unset($_SESSION['payment_gateway_id']);
+$payment_gateway_id = $_POST["payment_gateway_id"];
+$_SESSION["payment_gateway_id"] = $payment_gateway_id;
+
+
+require('config.php');
+require('razorpay/Razorpay.php');
+
+use Razorpay\Api\Api;
+
+
 $newpost = json_decode($_POST['formdata']);
 // echo '<pre>';
-// print_r($newpost);
+// print_r($_POST['formdata']);
 // echo '</pre>';
 // die();
 
