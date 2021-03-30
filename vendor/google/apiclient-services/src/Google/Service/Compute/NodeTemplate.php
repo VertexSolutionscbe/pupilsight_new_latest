@@ -15,10 +15,16 @@
  * the License.
  */
 
-class Google_Service_Compute_NodeTemplate extends Google_Model
+class Google_Service_Compute_NodeTemplate extends Google_Collection
 {
+  protected $collection_key = 'disks';
+  protected $acceleratorsType = 'Google_Service_Compute_AcceleratorConfig';
+  protected $acceleratorsDataType = 'array';
+  public $cpuOvercommitType;
   public $creationTimestamp;
   public $description;
+  protected $disksType = 'Google_Service_Compute_LocalDisk';
+  protected $disksDataType = 'array';
   public $id;
   public $kind;
   public $name;
@@ -28,9 +34,33 @@ class Google_Service_Compute_NodeTemplate extends Google_Model
   protected $nodeTypeFlexibilityDataType = '';
   public $region;
   public $selfLink;
+  protected $serverBindingType = 'Google_Service_Compute_ServerBinding';
+  protected $serverBindingDataType = '';
   public $status;
   public $statusMessage;
 
+  /**
+   * @param Google_Service_Compute_AcceleratorConfig[]
+   */
+  public function setAccelerators($accelerators)
+  {
+    $this->accelerators = $accelerators;
+  }
+  /**
+   * @return Google_Service_Compute_AcceleratorConfig[]
+   */
+  public function getAccelerators()
+  {
+    return $this->accelerators;
+  }
+  public function setCpuOvercommitType($cpuOvercommitType)
+  {
+    $this->cpuOvercommitType = $cpuOvercommitType;
+  }
+  public function getCpuOvercommitType()
+  {
+    return $this->cpuOvercommitType;
+  }
   public function setCreationTimestamp($creationTimestamp)
   {
     $this->creationTimestamp = $creationTimestamp;
@@ -46,6 +76,20 @@ class Google_Service_Compute_NodeTemplate extends Google_Model
   public function getDescription()
   {
     return $this->description;
+  }
+  /**
+   * @param Google_Service_Compute_LocalDisk[]
+   */
+  public function setDisks($disks)
+  {
+    $this->disks = $disks;
+  }
+  /**
+   * @return Google_Service_Compute_LocalDisk[]
+   */
+  public function getDisks()
+  {
+    return $this->disks;
   }
   public function setId($id)
   {
@@ -116,6 +160,20 @@ class Google_Service_Compute_NodeTemplate extends Google_Model
   public function getSelfLink()
   {
     return $this->selfLink;
+  }
+  /**
+   * @param Google_Service_Compute_ServerBinding
+   */
+  public function setServerBinding(Google_Service_Compute_ServerBinding $serverBinding)
+  {
+    $this->serverBinding = $serverBinding;
+  }
+  /**
+   * @return Google_Service_Compute_ServerBinding
+   */
+  public function getServerBinding()
+  {
+    return $this->serverBinding;
   }
   public function setStatus($status)
   {

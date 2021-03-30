@@ -32,7 +32,7 @@ class Google_Service_Testing_AndroidModel extends Google_Collection
   public $supportedAbis;
   public $supportedVersionIds;
   public $tags;
-  public $videoRecordingNotSupported;
+  public $thumbnailUrl;
 
   public function setBrand($brand)
   {
@@ -146,12 +146,12 @@ class Google_Service_Testing_AndroidModel extends Google_Collection
   {
     return $this->tags;
   }
-  public function setVideoRecordingNotSupported($videoRecordingNotSupported)
+  public function setThumbnailUrl($thumbnailUrl)
   {
-    $this->videoRecordingNotSupported = $videoRecordingNotSupported;
+    $this->thumbnailUrl = $thumbnailUrl;
   }
-  public function getVideoRecordingNotSupported()
+  public function getThumbnailUrl()
   {
-    return $this->videoRecordingNotSupported;
+    return $this->thumbnailUrl;
   }
 }
