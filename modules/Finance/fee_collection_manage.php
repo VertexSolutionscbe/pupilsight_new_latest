@@ -470,7 +470,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
                 $col->addTextField('overamount')->addClass('txtfield   numfield')->setValue($depAmount)->readonly();
         } else {
             $col = $row->addColumn()->setClass('newdes hiddencol');
-            $col->addContent("<input type='checkbox' id='overPayment' checked><input type='hidden' id='overamount' value='0'>");   
+            $col->addContent("<input type='checkbox' id='overPayment' checked><input type='hidden' id='overamount' name='overamount' value='0'>");   
         }
 
         $col = $row->addColumn()->setClass('newdes ');
@@ -678,7 +678,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
             $table->addColumn('serial_number', __('SI No'));
             $table->addColumn('fee_item', __('Fee Item'));
             $table->addColumn('ac_name', __('Account Name'));
-            $table->addColumn('ac_code', __('Account Code'));
+            //$table->addColumn('ac_code', __('Account Code'));
             $table->addColumn('overpayment_account', __('Account Type'))
                 ->format(function ($depositDetails) {
                     if ($depositDetails['overpayment_account'] == '1') {
@@ -1043,6 +1043,10 @@ echo " <style>
                             $("#closePayment").trigger('click');
                             loadInvoices();
                             load();
+                            window.setTimeout(function () {
+                                location.reload();
+                            }, 5000);
+                            
                         }
                     });
                 }, 2000);
@@ -1398,8 +1402,9 @@ echo " <style>
     $(document).on('change', '#overPayment', function(){
         var ap = $("#amount_paying").val();
         var oldap = $("#amount_paying_old").val();
-        var val = $(this).val();
+        
         if($(this).is(':checked')) {
+            var val = $('#overamount').val();
             $("#overamount").attr("readonly", false); 
             if(val != ''){
                 var newap = parseFloat(ap) - parseFloat(val);

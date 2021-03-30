@@ -176,6 +176,11 @@ if (isset($_POST['type'])) {
             }
             break;
         case "collectionForm_request":
+
+            echo '<pre>';
+            print_r($_POST);
+            echo '</pre>';
+            //die();
             $checkmode = $_POST['checkmode'];
             $counterid = $session->get('counterid');
             $invoice_id = $_POST['invoice_id'];
@@ -248,7 +253,7 @@ if (isset($_POST['type'])) {
             //$transcation_amount = $_POST['transcation_amount_old'];
             $amount_paying = $_POST['amount_paying'];
             $over_payment = $_POST['overamount'];
-            $deposit_account_id = $_POST['deposit_account_id'];
+            $deposit_fee_item_account_id = $_POST['deposit_account_id'];
             $total_amount_without_fine_discount = $_POST['total_amount_without_fine_discount'];
             if ($amount_paying > $transcation_amount) {
                 $deposit = $amount_paying - $transcation_amount;
@@ -478,9 +483,8 @@ if (isset($_POST['type'])) {
                         $resultd->execute($datad);
                     }
 
-                    if(!empty($deposit_account_id)){
-                        
-                        $datad = array('deposit_account_id' => $deposit_account_id,'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID,  'amount' => $amount_paying, 'transaction_id' => $transactionId, 'status' => 'Debit', 'cdt' => $cdt);
+                    if(!empty($deposit_fee_item_account_id)){
+                        $datad = array('deposit_account_id' => $deposit_fee_item_account_id,'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID,  'amount' => $amount_paying, 'transaction_id' => $transactionId, 'status' => 'Debit', 'cdt' => $cdt);
                         $sqld = 'INSERT INTO fn_fees_collection_deposit SET deposit_account_id=:deposit_account_id, pupilsightPersonID=:pupilsightPersonID, pupilsightSchoolYearID=:pupilsightSchoolYearID, amount=:amount, transaction_id=:transaction_id, status=:status, cdt=:cdt';
                         $resultd = $connection2->prepare($sqld);
                         $resultd->execute($datad);
