@@ -19,6 +19,8 @@ $_SESSION[$guid]['pupilsightSchoolYearSequenceNumberCurrent'] = $_SESSION[$guid]
 $_SESSION[$guid]['pageLoads'] = null;
 
 $URL = './index.php';
+$NEWURL='home.php?invalid=true';
+             
 
 // Sanitize the whole $_POST array
 $validator = new \Pupilsight\Data\Validator();
@@ -68,11 +70,11 @@ else {
         setLog($connection2, $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'], null, null, 'Login - Failed', array('username' => $username, 'reason' => 'Username does not exist'), $_SERVER['REMOTE_ADDR']);
         $URL .= '?loginReturn=fail1';
 
-        echo "<script type='text/javascript'>alert('Wrong Username or Password');
-        window.location.href='./index.php';
+        // echo "<script type='text/javascript'>alert('Wrong Username or Password');
+        // window.location.href='./index.php';
 
-        </script>";
-        // header("location:{$URL}");
+        // </script>";
+        header("location:{$NEWURL}");
 
 
         exit;
@@ -181,12 +183,13 @@ else {
 
                 setLog($connection2, $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'], null, $row['pupilsightPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Incorrect password'), $_SERVER['REMOTE_ADDR']);
                 $URL .= '?loginReturn=fail1';
-                echo "<script type='text/javascript'>alert('Wrong Username or Password');
-                window.location.href='./index.php';
 
-                </script>";
+                // echo "<script type='text/javascript'>alert('Wrong Username or Password');
+                // window.location.href='./index.php';
+
+                // </script>";
             
-                //header("Location: {$URL}");
+                header("Location: {$NEWURL}");
                 exit;
             } else {
                 if ($row['pupilsightRoleIDPrimary'] == '' or count(getRoleList($row['pupilsightRoleIDAll'], $connection2)) == 0) {

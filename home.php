@@ -48,7 +48,15 @@ if (isset($data['logo_image'])) {
     $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
 }
 
+$invalid = '';
+if (isset($_GET['invalid']))
+    $invalid = $_GET['invalid'];
+
 ?>
+
+<input type="hidden" name="inavlid" id="invalid" value="<?php echo $invalid; ?>" />
+
+
 <!doctype html>
 <html class="no-js" lang="">
 
@@ -642,29 +650,29 @@ if (isset($data['logo_image'])) {
                                         </center>
                                     </div>
                                 </div>
-                           
 
-                            <div class="col-md-6 col-sm-12 m-auto">
-                                <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
-                                <div class='my-3'>
-                                    <div class="carouselTitle">Chairman'S Message</div>
-                                    <div class='mt-3'>
-                                        <?php
-                                        if ($exp['title']) {
-                                            echo "<b>" . $exp['title'] . "</b>";
-                                        } else {
-                                            echo '<b>Learn at your own pace<b>';
-                                        }
 
-                                        if ($exp['short_description']) {
-                                            echo "<p class='bannerDes'>" . $exp['short_description'] . "</p>";
-                                        } else {
-                                            echo '<p>Programs are available in fall, spring, and summer semesters. Many fall and spring programs offer similar shorter programs in the summer, and some may be combined for a full academic year.</p>';
-                                        }
-                                        ?>
+                                <div class="col-md-6 col-sm-12 m-auto">
+                                    <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
+                                    <div class='my-3'>
+                                        <div class="carouselTitle">Chairman'S Message</div>
+                                        <div class='mt-3'>
+                                            <?php
+                                            if ($exp['title']) {
+                                                echo "<b>" . $exp['title'] . "</b>";
+                                            } else {
+                                                echo '<b>Learn at your own pace<b>';
+                                            }
+
+                                            if ($exp['short_description']) {
+                                                echo "<p class='bannerDes'>" . $exp['short_description'] . "</p>";
+                                            } else {
+                                                echo '<p>Programs are available in fall, spring, and summer semesters. Many fall and spring programs offer similar shorter programs in the summer, and some may be combined for a full academic year.</p>';
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
 
                             <?php
@@ -1041,6 +1049,13 @@ if (isset($data['logo_image'])) {
                     <img src="<?= $logo; ?>" height="36" alt="">
                 </div>
                 <h2 class="mb-3 text-center">Login to your account</h2>
+                <?php if ($invalid == 'true') { ?>
+                    <div class="alert alert-warning">Wrong Username or Password</div>
+
+                <?php } ?>
+
+                <div class="empty-warning"></div>
+
                 <div class="mb-3">
                     <label class="form-label">Username</label>
                     <input type="text" id="username" value="<?php if (isset($_COOKIE["username"])) {
@@ -1291,11 +1306,11 @@ if (isset($data['logo_image'])) {
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
             if (username == '' || password == '') {
-                alert('Please enter Username and Password');
+                //alert('Please enter Username and Password');
+                $('.empty-warning').addClass('alert alert-warning');
+                $('.empty-warning ').html('Please enter Username and Password');
                 return false;
-            } else
-                return true;
-        }
+            }
     </script>
 
     <script>
@@ -1322,11 +1337,17 @@ if (isset($data['logo_image'])) {
     <script>
         document.body.style.display = "block";
         $(document).ready(function() {
-            $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
-            try {
-                $('.gmap_canvas a').remove();
-            } catch (ex) {
-                console.log(ex);
+
+            var invalid = $('#invalid').val();
+            if (invalid == 'true') {
+                loginPanel();
+            } else {
+                $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+                try {
+                    $('.gmap_canvas a').remove();
+                } catch (ex) {
+                    console.log(ex);
+                }
             }
         });
 
