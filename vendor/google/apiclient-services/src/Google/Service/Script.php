@@ -30,13 +30,13 @@
  */
 class Google_Service_Script extends Google_Service
 {
-  /** Read, send, delete, and manage your email. */
+  /** Read, compose, send, and permanently delete all your email from Gmail. */
   const MAIL_GOOGLE_COM =
       "https://mail.google.com/";
-  /** Manage your calendars. */
+  /** See, edit, share, and permanently delete all the calendars you can access using Google Calendar. */
   const WWW_GOOGLE_COM_CALENDAR_FEEDS =
       "https://www.google.com/calendar/feeds";
-  /** Manage your contacts. */
+  /** See, edit, download, and permanently delete your contacts. */
   const WWW_GOOGLE_COM_M8_FEEDS =
       "https://www.google.com/m8/feeds";
   /** View and manage the provisioning of groups on your domain. */
@@ -45,10 +45,10 @@ class Google_Service_Script extends Google_Service
   /** View and manage the provisioning of users on your domain. */
   const ADMIN_DIRECTORY_USER =
       "https://www.googleapis.com/auth/admin.directory.user";
-  /** View and manage your Google Docs documents. */
+  /** See, create, and edit all Google Docs documents you have access to. */
   const DOCUMENTS =
       "https://www.googleapis.com/auth/documents";
-  /** View and manage the files in your Google Drive. */
+  /** See, edit, create, and delete all of your Google Drive files. */
   const DRIVE =
       "https://www.googleapis.com/auth/drive";
   /** View and manage your forms in Google Drive. */
@@ -60,7 +60,25 @@ class Google_Service_Script extends Google_Service
   /** View and manage your Google Groups. */
   const GROUPS =
       "https://www.googleapis.com/auth/groups";
-  /** View and manage your spreadsheets in Google Drive. */
+  /** Create and update Google Apps Script deployments. */
+  const SCRIPT_DEPLOYMENTS =
+      "https://www.googleapis.com/auth/script.deployments";
+  /** View Google Apps Script deployments. */
+  const SCRIPT_DEPLOYMENTS_READONLY =
+      "https://www.googleapis.com/auth/script.deployments.readonly";
+  /** View Google Apps Script project's metrics. */
+  const SCRIPT_METRICS =
+      "https://www.googleapis.com/auth/script.metrics";
+  /** View Google Apps Script processes. */
+  const SCRIPT_PROCESSES =
+      "https://www.googleapis.com/auth/script.processes";
+  /** Create and update Google Apps Script projects. */
+  const SCRIPT_PROJECTS =
+      "https://www.googleapis.com/auth/script.projects";
+  /** View Google Apps Script projects. */
+  const SCRIPT_PROJECTS_READONLY =
+      "https://www.googleapis.com/auth/script.projects.readonly";
+  /** See, edit, create, and delete your spreadsheets in Google Drive. */
   const SPREADSHEETS =
       "https://www.googleapis.com/auth/spreadsheets";
   /** View your email address. */
@@ -72,17 +90,19 @@ class Google_Service_Script extends Google_Service
   public $projects_deployments;
   public $projects_versions;
   public $scripts;
-  
+
   /**
    * Constructs the internal representation of the Script service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://script.googleapis.com/';
+    $this->rootUrl = $rootUrl ?: 'https://script.googleapis.com/';
     $this->servicePath = '';
+    $this->batchPath = 'batch';
     $this->version = 'v1';
     $this->serviceName = 'script';
 
@@ -96,11 +116,15 @@ class Google_Service_Script extends Google_Service
               'path' => 'v1/processes',
               'httpMethod' => 'GET',
               'parameters' => array(
-                'userProcessFilter.deploymentId' => array(
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'pageToken' => array(
+                'userProcessFilter.deploymentId' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -108,11 +132,7 @@ class Google_Service_Script extends Google_Service
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
-                'userProcessFilter.startTime' => array(
+                'userProcessFilter.functionName' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -120,25 +140,25 @@ class Google_Service_Script extends Google_Service
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'userProcessFilter.userAccessLevels' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                  'repeated' => true,
-                ),
-                'userProcessFilter.functionName' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'userProcessFilter.scriptId' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'userProcessFilter.startTime' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'userProcessFilter.statuses' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
                 ),
                 'userProcessFilter.types' => array(
                   'location' => 'query',
                   'type' => 'string',
                   'repeated' => true,
                 ),
-                'userProcessFilter.statuses' => array(
+                'userProcessFilter.userAccessLevels' => array(
                   'location' => 'query',
                   'type' => 'string',
                   'repeated' => true,
@@ -148,6 +168,26 @@ class Google_Service_Script extends Google_Service
               'path' => 'v1/processes:listScriptProcesses',
               'httpMethod' => 'GET',
               'parameters' => array(
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'scriptId' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'scriptProcessFilter.deploymentId' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'scriptProcessFilter.endTime' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
                 'scriptProcessFilter.functionName' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -156,37 +196,17 @@ class Google_Service_Script extends Google_Service
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'scriptProcessFilter.deploymentId' => array(
+                'scriptProcessFilter.statuses' => array(
                   'location' => 'query',
                   'type' => 'string',
-                ),
-                'scriptId' => array(
-                  'location' => 'query',
-                  'type' => 'string',
+                  'repeated' => true,
                 ),
                 'scriptProcessFilter.types' => array(
                   'location' => 'query',
                   'type' => 'string',
                   'repeated' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
-                'scriptProcessFilter.endTime' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'scriptProcessFilter.userAccessLevels' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                  'repeated' => true,
-                ),
-                'scriptProcessFilter.statuses' => array(
                   'location' => 'query',
                   'type' => 'string',
                   'repeated' => true,
@@ -317,13 +337,13 @@ class Google_Service_Script extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),'update' => array(
@@ -385,13 +405,13 @@ class Google_Service_Script extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),

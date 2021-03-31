@@ -23,6 +23,8 @@ class Google_Service_AndroidManagement_ApplicationReport extends Google_Collecti
   protected $eventsType = 'Google_Service_AndroidManagement_ApplicationEvent';
   protected $eventsDataType = 'array';
   public $installerPackageName;
+  protected $keyedAppStatesType = 'Google_Service_AndroidManagement_KeyedAppState';
+  protected $keyedAppStatesDataType = 'array';
   public $packageName;
   public $packageSha256Hash;
   public $signingKeyCertFingerprints;
@@ -47,14 +49,14 @@ class Google_Service_AndroidManagement_ApplicationReport extends Google_Collecti
     return $this->displayName;
   }
   /**
-   * @param Google_Service_AndroidManagement_ApplicationEvent
+   * @param Google_Service_AndroidManagement_ApplicationEvent[]
    */
   public function setEvents($events)
   {
     $this->events = $events;
   }
   /**
-   * @return Google_Service_AndroidManagement_ApplicationEvent
+   * @return Google_Service_AndroidManagement_ApplicationEvent[]
    */
   public function getEvents()
   {
@@ -67,6 +69,20 @@ class Google_Service_AndroidManagement_ApplicationReport extends Google_Collecti
   public function getInstallerPackageName()
   {
     return $this->installerPackageName;
+  }
+  /**
+   * @param Google_Service_AndroidManagement_KeyedAppState[]
+   */
+  public function setKeyedAppStates($keyedAppStates)
+  {
+    $this->keyedAppStates = $keyedAppStates;
+  }
+  /**
+   * @return Google_Service_AndroidManagement_KeyedAppState[]
+   */
+  public function getKeyedAppStates()
+  {
+    return $this->keyedAppStates;
   }
   public function setPackageName($packageName)
   {

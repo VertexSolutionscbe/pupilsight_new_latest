@@ -20,16 +20,20 @@
         ],
         "test:phpunit": [
             "cd tests && ../vendor/bin/phpunit --verbose --configuration phpunit.xml"
-        ],"post-install-cmd": ["PhantomInstaller\\Installer::installPhantomJS"],
-            "post-update-cmd": ["PhantomInstaller\\Installer::installPhantomJS"]
-        
+        ],
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
     },
     "scripts-descriptions": {
         "test:codeception": "Initialize CI environment and run acceptance tests with Codeception.",
         "test:phpunit": "Run unit tests with PHPUnit."
     },
     "require": {
-        "php" : "^7.0",
+        "php": "^7.0",
         "ext-curl": "*",
         "ext-mbstring": "*",
         "ext-gettext": "*",
@@ -44,10 +48,8 @@
         "matthewbdaly/sms-client": "^1.0",
         "symfony/yaml": "^3.2",
         "monolog/monolog": "^1.24",
-        "phpoffice/phpspreadsheet": "^1.6",
-        "phpoffice/phpexcel": "1.8.1",
         "phpoffice/phpword": "^0.17.0",
-        "gears/pdf": "*"
+        "mikehaertl/php-pdftk": "^0.10.0"
     },
     "require-dev": {
         "phpunit/phpunit": "6.5.14"
@@ -67,6 +69,11 @@
         }
     },
     "autoload": {
-        "psr-4": { "Pupilsight\\": ["src/", "src/Pupilsight"] }
+        "psr-4": {
+            "Pupilsight\\": [
+                "src/",
+                "src/Pupilsight"
+            ]
+        }
     }
 }

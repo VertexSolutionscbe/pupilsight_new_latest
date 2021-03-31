@@ -15,10 +15,13 @@
  * the License.
  */
 
-class Google_Service_CloudRedis_Instance extends Google_Model
+class Google_Service_CloudRedis_Instance extends Google_Collection
 {
+  protected $collection_key = 'serverCaCerts';
   public $alternativeLocationId;
+  public $authEnabled;
   public $authorizedNetwork;
+  public $connectMode;
   public $createTime;
   public $currentLocationId;
   public $displayName;
@@ -27,13 +30,17 @@ class Google_Service_CloudRedis_Instance extends Google_Model
   public $locationId;
   public $memorySizeGb;
   public $name;
+  public $persistenceIamIdentity;
   public $port;
   public $redisConfigs;
   public $redisVersion;
   public $reservedIpRange;
+  protected $serverCaCertsType = 'Google_Service_CloudRedis_TlsCertificate';
+  protected $serverCaCertsDataType = 'array';
   public $state;
   public $statusMessage;
   public $tier;
+  public $transitEncryptionMode;
 
   public function setAlternativeLocationId($alternativeLocationId)
   {
@@ -43,6 +50,14 @@ class Google_Service_CloudRedis_Instance extends Google_Model
   {
     return $this->alternativeLocationId;
   }
+  public function setAuthEnabled($authEnabled)
+  {
+    $this->authEnabled = $authEnabled;
+  }
+  public function getAuthEnabled()
+  {
+    return $this->authEnabled;
+  }
   public function setAuthorizedNetwork($authorizedNetwork)
   {
     $this->authorizedNetwork = $authorizedNetwork;
@@ -50,6 +65,14 @@ class Google_Service_CloudRedis_Instance extends Google_Model
   public function getAuthorizedNetwork()
   {
     return $this->authorizedNetwork;
+  }
+  public function setConnectMode($connectMode)
+  {
+    $this->connectMode = $connectMode;
+  }
+  public function getConnectMode()
+  {
+    return $this->connectMode;
   }
   public function setCreateTime($createTime)
   {
@@ -115,6 +138,14 @@ class Google_Service_CloudRedis_Instance extends Google_Model
   {
     return $this->name;
   }
+  public function setPersistenceIamIdentity($persistenceIamIdentity)
+  {
+    $this->persistenceIamIdentity = $persistenceIamIdentity;
+  }
+  public function getPersistenceIamIdentity()
+  {
+    return $this->persistenceIamIdentity;
+  }
   public function setPort($port)
   {
     $this->port = $port;
@@ -147,6 +178,20 @@ class Google_Service_CloudRedis_Instance extends Google_Model
   {
     return $this->reservedIpRange;
   }
+  /**
+   * @param Google_Service_CloudRedis_TlsCertificate[]
+   */
+  public function setServerCaCerts($serverCaCerts)
+  {
+    $this->serverCaCerts = $serverCaCerts;
+  }
+  /**
+   * @return Google_Service_CloudRedis_TlsCertificate[]
+   */
+  public function getServerCaCerts()
+  {
+    return $this->serverCaCerts;
+  }
   public function setState($state)
   {
     $this->state = $state;
@@ -170,5 +215,13 @@ class Google_Service_CloudRedis_Instance extends Google_Model
   public function getTier()
   {
     return $this->tier;
+  }
+  public function setTransitEncryptionMode($transitEncryptionMode)
+  {
+    $this->transitEncryptionMode = $transitEncryptionMode;
+  }
+  public function getTransitEncryptionMode()
+  {
+    return $this->transitEncryptionMode;
   }
 }

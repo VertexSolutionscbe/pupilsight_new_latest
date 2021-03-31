@@ -18,36 +18,20 @@
 class Google_Service_CloudIAP_Policy extends Google_Collection
 {
   protected $collection_key = 'bindings';
-  protected $auditConfigsType = 'Google_Service_CloudIAP_AuditConfig';
-  protected $auditConfigsDataType = 'array';
   protected $bindingsType = 'Google_Service_CloudIAP_Binding';
   protected $bindingsDataType = 'array';
   public $etag;
   public $version;
 
   /**
-   * @param Google_Service_CloudIAP_AuditConfig
-   */
-  public function setAuditConfigs($auditConfigs)
-  {
-    $this->auditConfigs = $auditConfigs;
-  }
-  /**
-   * @return Google_Service_CloudIAP_AuditConfig
-   */
-  public function getAuditConfigs()
-  {
-    return $this->auditConfigs;
-  }
-  /**
-   * @param Google_Service_CloudIAP_Binding
+   * @param Google_Service_CloudIAP_Binding[]
    */
   public function setBindings($bindings)
   {
     $this->bindings = $bindings;
   }
   /**
-   * @return Google_Service_CloudIAP_Binding
+   * @return Google_Service_CloudIAP_Binding[]
    */
   public function getBindings()
   {

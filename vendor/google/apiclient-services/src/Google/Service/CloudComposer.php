@@ -35,18 +35,21 @@ class Google_Service_CloudComposer extends Google_Service
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $projects_locations_environments;
+  public $projects_locations_imageVersions;
   public $projects_locations_operations;
-  
+
   /**
    * Constructs the internal representation of the CloudComposer service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://composer.googleapis.com/';
+    $this->rootUrl = $rootUrl ?: 'https://composer.googleapis.com/';
     $this->servicePath = '';
+    $this->batchPath = 'batch';
     $this->version = 'v1';
     $this->serviceName = 'composer';
 
@@ -95,13 +98,13 @@ class Google_Service_CloudComposer extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),'patch' => array(
@@ -114,6 +117,38 @@ class Google_Service_CloudComposer extends Google_Service
                   'required' => true,
                 ),
                 'updateMask' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_locations_imageVersions = new Google_Service_CloudComposer_Resource_ProjectsLocationsImageVersions(
+        $this,
+        $this->serviceName,
+        'imageVersions',
+        array(
+          'methods' => array(
+            'list' => array(
+              'path' => 'v1/{+parent}/imageVersions',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'includePastReleases' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -157,13 +192,13 @@ class Google_Service_CloudComposer extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
                 'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
                 ),
                 'pageToken' => array(
                   'location' => 'query',

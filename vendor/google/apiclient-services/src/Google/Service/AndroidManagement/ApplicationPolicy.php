@@ -18,6 +18,9 @@
 class Google_Service_AndroidManagement_ApplicationPolicy extends Google_Collection
 {
   protected $collection_key = 'permissionGrants';
+  public $accessibleTrackIds;
+  public $autoUpdateMode;
+  public $connectedWorkAndPersonalApp;
   public $defaultPermissionPolicy;
   public $delegatedScopes;
   public $disabled;
@@ -31,6 +34,30 @@ class Google_Service_AndroidManagement_ApplicationPolicy extends Google_Collecti
   protected $permissionGrantsType = 'Google_Service_AndroidManagement_PermissionGrant';
   protected $permissionGrantsDataType = 'array';
 
+  public function setAccessibleTrackIds($accessibleTrackIds)
+  {
+    $this->accessibleTrackIds = $accessibleTrackIds;
+  }
+  public function getAccessibleTrackIds()
+  {
+    return $this->accessibleTrackIds;
+  }
+  public function setAutoUpdateMode($autoUpdateMode)
+  {
+    $this->autoUpdateMode = $autoUpdateMode;
+  }
+  public function getAutoUpdateMode()
+  {
+    return $this->autoUpdateMode;
+  }
+  public function setConnectedWorkAndPersonalApp($connectedWorkAndPersonalApp)
+  {
+    $this->connectedWorkAndPersonalApp = $connectedWorkAndPersonalApp;
+  }
+  public function getConnectedWorkAndPersonalApp()
+  {
+    return $this->connectedWorkAndPersonalApp;
+  }
   public function setDefaultPermissionPolicy($defaultPermissionPolicy)
   {
     $this->defaultPermissionPolicy = $defaultPermissionPolicy;
@@ -110,14 +137,14 @@ class Google_Service_AndroidManagement_ApplicationPolicy extends Google_Collecti
     return $this->packageName;
   }
   /**
-   * @param Google_Service_AndroidManagement_PermissionGrant
+   * @param Google_Service_AndroidManagement_PermissionGrant[]
    */
   public function setPermissionGrants($permissionGrants)
   {
     $this->permissionGrants = $permissionGrants;
   }
   /**
-   * @return Google_Service_AndroidManagement_PermissionGrant
+   * @return Google_Service_AndroidManagement_PermissionGrant[]
    */
   public function getPermissionGrants()
   {

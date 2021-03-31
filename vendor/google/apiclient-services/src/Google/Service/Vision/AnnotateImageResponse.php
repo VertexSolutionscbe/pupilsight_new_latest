@@ -38,6 +38,8 @@ class Google_Service_Vision_AnnotateImageResponse extends Google_Collection
   protected $localizedObjectAnnotationsDataType = 'array';
   protected $logoAnnotationsType = 'Google_Service_Vision_EntityAnnotation';
   protected $logoAnnotationsDataType = 'array';
+  protected $productSearchResultsType = 'Google_Service_Vision_ProductSearchResults';
+  protected $productSearchResultsDataType = '';
   protected $safeSearchAnnotationType = 'Google_Service_Vision_SafeSearchAnnotation';
   protected $safeSearchAnnotationDataType = '';
   protected $textAnnotationsType = 'Google_Service_Vision_EntityAnnotation';
@@ -88,14 +90,14 @@ class Google_Service_Vision_AnnotateImageResponse extends Google_Collection
     return $this->error;
   }
   /**
-   * @param Google_Service_Vision_FaceAnnotation
+   * @param Google_Service_Vision_FaceAnnotation[]
    */
   public function setFaceAnnotations($faceAnnotations)
   {
     $this->faceAnnotations = $faceAnnotations;
   }
   /**
-   * @return Google_Service_Vision_FaceAnnotation
+   * @return Google_Service_Vision_FaceAnnotation[]
    */
   public function getFaceAnnotations()
   {
@@ -130,60 +132,74 @@ class Google_Service_Vision_AnnotateImageResponse extends Google_Collection
     return $this->imagePropertiesAnnotation;
   }
   /**
-   * @param Google_Service_Vision_EntityAnnotation
+   * @param Google_Service_Vision_EntityAnnotation[]
    */
   public function setLabelAnnotations($labelAnnotations)
   {
     $this->labelAnnotations = $labelAnnotations;
   }
   /**
-   * @return Google_Service_Vision_EntityAnnotation
+   * @return Google_Service_Vision_EntityAnnotation[]
    */
   public function getLabelAnnotations()
   {
     return $this->labelAnnotations;
   }
   /**
-   * @param Google_Service_Vision_EntityAnnotation
+   * @param Google_Service_Vision_EntityAnnotation[]
    */
   public function setLandmarkAnnotations($landmarkAnnotations)
   {
     $this->landmarkAnnotations = $landmarkAnnotations;
   }
   /**
-   * @return Google_Service_Vision_EntityAnnotation
+   * @return Google_Service_Vision_EntityAnnotation[]
    */
   public function getLandmarkAnnotations()
   {
     return $this->landmarkAnnotations;
   }
   /**
-   * @param Google_Service_Vision_LocalizedObjectAnnotation
+   * @param Google_Service_Vision_LocalizedObjectAnnotation[]
    */
   public function setLocalizedObjectAnnotations($localizedObjectAnnotations)
   {
     $this->localizedObjectAnnotations = $localizedObjectAnnotations;
   }
   /**
-   * @return Google_Service_Vision_LocalizedObjectAnnotation
+   * @return Google_Service_Vision_LocalizedObjectAnnotation[]
    */
   public function getLocalizedObjectAnnotations()
   {
     return $this->localizedObjectAnnotations;
   }
   /**
-   * @param Google_Service_Vision_EntityAnnotation
+   * @param Google_Service_Vision_EntityAnnotation[]
    */
   public function setLogoAnnotations($logoAnnotations)
   {
     $this->logoAnnotations = $logoAnnotations;
   }
   /**
-   * @return Google_Service_Vision_EntityAnnotation
+   * @return Google_Service_Vision_EntityAnnotation[]
    */
   public function getLogoAnnotations()
   {
     return $this->logoAnnotations;
+  }
+  /**
+   * @param Google_Service_Vision_ProductSearchResults
+   */
+  public function setProductSearchResults(Google_Service_Vision_ProductSearchResults $productSearchResults)
+  {
+    $this->productSearchResults = $productSearchResults;
+  }
+  /**
+   * @return Google_Service_Vision_ProductSearchResults
+   */
+  public function getProductSearchResults()
+  {
+    return $this->productSearchResults;
   }
   /**
    * @param Google_Service_Vision_SafeSearchAnnotation
@@ -200,14 +216,14 @@ class Google_Service_Vision_AnnotateImageResponse extends Google_Collection
     return $this->safeSearchAnnotation;
   }
   /**
-   * @param Google_Service_Vision_EntityAnnotation
+   * @param Google_Service_Vision_EntityAnnotation[]
    */
   public function setTextAnnotations($textAnnotations)
   {
     $this->textAnnotations = $textAnnotations;
   }
   /**
-   * @return Google_Service_Vision_EntityAnnotation
+   * @return Google_Service_Vision_EntityAnnotation[]
    */
   public function getTextAnnotations()
   {

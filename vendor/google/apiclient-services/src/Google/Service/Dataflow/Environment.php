@@ -20,15 +20,23 @@ class Google_Service_Dataflow_Environment extends Google_Collection
   protected $collection_key = 'workerPools';
   public $clusterManagerApiService;
   public $dataset;
+  protected $debugOptionsType = 'Google_Service_Dataflow_DebugOptions';
+  protected $debugOptionsDataType = '';
   public $experiments;
+  public $flexResourceSchedulingGoal;
   public $internalExperiments;
   public $sdkPipelineOptions;
   public $serviceAccountEmail;
+  public $serviceKmsKeyName;
+  public $serviceOptions;
+  public $shuffleMode;
   public $tempStoragePrefix;
   public $userAgent;
   public $version;
   protected $workerPoolsType = 'Google_Service_Dataflow_WorkerPool';
   protected $workerPoolsDataType = 'array';
+  public $workerRegion;
+  public $workerZone;
 
   public function setClusterManagerApiService($clusterManagerApiService)
   {
@@ -46,6 +54,20 @@ class Google_Service_Dataflow_Environment extends Google_Collection
   {
     return $this->dataset;
   }
+  /**
+   * @param Google_Service_Dataflow_DebugOptions
+   */
+  public function setDebugOptions(Google_Service_Dataflow_DebugOptions $debugOptions)
+  {
+    $this->debugOptions = $debugOptions;
+  }
+  /**
+   * @return Google_Service_Dataflow_DebugOptions
+   */
+  public function getDebugOptions()
+  {
+    return $this->debugOptions;
+  }
   public function setExperiments($experiments)
   {
     $this->experiments = $experiments;
@@ -53,6 +75,14 @@ class Google_Service_Dataflow_Environment extends Google_Collection
   public function getExperiments()
   {
     return $this->experiments;
+  }
+  public function setFlexResourceSchedulingGoal($flexResourceSchedulingGoal)
+  {
+    $this->flexResourceSchedulingGoal = $flexResourceSchedulingGoal;
+  }
+  public function getFlexResourceSchedulingGoal()
+  {
+    return $this->flexResourceSchedulingGoal;
   }
   public function setInternalExperiments($internalExperiments)
   {
@@ -77,6 +107,30 @@ class Google_Service_Dataflow_Environment extends Google_Collection
   public function getServiceAccountEmail()
   {
     return $this->serviceAccountEmail;
+  }
+  public function setServiceKmsKeyName($serviceKmsKeyName)
+  {
+    $this->serviceKmsKeyName = $serviceKmsKeyName;
+  }
+  public function getServiceKmsKeyName()
+  {
+    return $this->serviceKmsKeyName;
+  }
+  public function setServiceOptions($serviceOptions)
+  {
+    $this->serviceOptions = $serviceOptions;
+  }
+  public function getServiceOptions()
+  {
+    return $this->serviceOptions;
+  }
+  public function setShuffleMode($shuffleMode)
+  {
+    $this->shuffleMode = $shuffleMode;
+  }
+  public function getShuffleMode()
+  {
+    return $this->shuffleMode;
   }
   public function setTempStoragePrefix($tempStoragePrefix)
   {
@@ -103,17 +157,33 @@ class Google_Service_Dataflow_Environment extends Google_Collection
     return $this->version;
   }
   /**
-   * @param Google_Service_Dataflow_WorkerPool
+   * @param Google_Service_Dataflow_WorkerPool[]
    */
   public function setWorkerPools($workerPools)
   {
     $this->workerPools = $workerPools;
   }
   /**
-   * @return Google_Service_Dataflow_WorkerPool
+   * @return Google_Service_Dataflow_WorkerPool[]
    */
   public function getWorkerPools()
   {
     return $this->workerPools;
+  }
+  public function setWorkerRegion($workerRegion)
+  {
+    $this->workerRegion = $workerRegion;
+  }
+  public function getWorkerRegion()
+  {
+    return $this->workerRegion;
+  }
+  public function setWorkerZone($workerZone)
+  {
+    $this->workerZone = $workerZone;
+  }
+  public function getWorkerZone()
+  {
+    return $this->workerZone;
   }
 }

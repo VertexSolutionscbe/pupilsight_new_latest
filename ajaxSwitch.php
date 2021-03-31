@@ -176,6 +176,11 @@ if (isset($_POST['type'])) {
             }
             break;
         case "collectionForm_request":
+
+            echo '<pre>';
+            print_r($_POST);
+            echo '</pre>';
+            //die();
             $checkmode = $_POST['checkmode'];
             $counterid = $session->get('counterid');
             $invoice_id = $_POST['invoice_id'];
@@ -248,7 +253,7 @@ if (isset($_POST['type'])) {
             //$transcation_amount = $_POST['transcation_amount_old'];
             $amount_paying = $_POST['amount_paying'];
             $over_payment = $_POST['overamount'];
-            $deposit_account_id = $_POST['deposit_account_id'];
+            $deposit_fee_item_account_id = $_POST['deposit_account_id'];
             $total_amount_without_fine_discount = $_POST['total_amount_without_fine_discount'];
             if ($amount_paying > $transcation_amount) {
                 $deposit = $amount_paying - $transcation_amount;
@@ -478,9 +483,8 @@ if (isset($_POST['type'])) {
                         $resultd->execute($datad);
                     }
 
-                    if(!empty($deposit_account_id)){
-                        
-                        $datad = array('deposit_account_id' => $deposit_account_id,'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID,  'amount' => $amount_paying, 'transaction_id' => $transactionId, 'status' => 'Debit', 'cdt' => $cdt);
+                    if(!empty($deposit_fee_item_account_id)){
+                        $datad = array('deposit_account_id' => $deposit_fee_item_account_id,'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID,  'amount' => $amount_paying, 'transaction_id' => $transactionId, 'status' => 'Debit', 'cdt' => $cdt);
                         $sqld = 'INSERT INTO fn_fees_collection_deposit SET deposit_account_id=:deposit_account_id, pupilsightPersonID=:pupilsightPersonID, pupilsightSchoolYearID=:pupilsightSchoolYearID, amount=:amount, transaction_id=:transaction_id, status=:status, cdt=:cdt';
                         $resultd = $connection2->prepare($sqld);
                         $resultd->execute($datad);
@@ -1035,12 +1039,20 @@ if (isset($_POST['type'])) {
                     $totAmt = number_format($ind['finalamount'], 2, '.', '');
                     $totAmtdisAmt = number_format($ind['totamtdisamount'], 2, '.', '');
                     $totDisAmt = number_format($ind['disamount'], 2, '.', '');
+                    $sqlp = 'SELECT id FROM fn_fee_waive_off WHERE invoice_no = "'.$ind['stu_invoice_no'].'" ';
+                    $resultp = $connection2->query($sqlp);
+                    $wfdata = $resultp->fetch();
+                    $dsc = '';
+                    if(!empty($wfdata)){
+                        $dsc = '(WF)';
+                    }
+
                     if ($ind['chkpayment'] == 'Paid') {
                         //$cls = 'value="0" checked disabled';
-                        echo '<tr><td><input type="checkbox" class=" invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" value="0" checked disabled ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt . '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
+                        echo '<tr><td><input type="checkbox" class=" invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" value="0" checked disabled ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt .' '.$dsc. '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
                     } else {
                         $cls = 'value="' . $ind['invoiceid'] . '"';
-                        echo '<tr><td><input type="checkbox" class="chkinvoiceM invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '"  ' . $cls . '  data-amtedt="' . $ind['amount_editable'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt . '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
+                        echo '<tr><td><input type="checkbox" class="chkinvoiceM invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '"  ' . $cls . '  data-amtedt="' . $ind['amount_editable'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt .' '.$dsc.  '</td><td>' . $totAmt . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
                     }
                 }
             } else {
@@ -1104,36 +1116,91 @@ if (isset($_POST['type'])) {
                     $invdata = $resultinv->fetchAll();
                     $totalamount = 0;
                     foreach ($invdata as $k => $d) {
-                        $sqlamt = 'SELECT SUM(fn_fee_invoice_item.total_amount) as totalamount FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ' . $d['invoiceid'] . ' ';
+                        
+                        $sqlamt = 'SELECT SUM(fn_fee_invoice_item.amount) as tot_amount, SUM(fn_fee_invoice_item.total_amount) as totalamount, SUM(fn_fee_invoice_item.discount) as disamount FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ' . $d['invoiceid'] . ' ';
                         $resultamt = $connection2->query($sqlamt);
                         $dataamt = $resultamt->fetch();
+                        $sql_dis = "SELECT discount FROM fn_invoice_level_discount WHERE pupilsightPersonID = " . $stuId . "  AND invoice_id=" . $d['invoiceid'] . " ";
+                        $result_dis = $connection2->query($sql_dis);
+                        $special_dis = $result_dis->fetch();
 
-
+                        $sp_item_sql = "SELECT SUM(discount.discount) as sp_discount
+                        FROM fn_fee_invoice_item as fee_item
+                        LEFT JOIN fn_fee_item_level_discount as discount
+                        ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id= ".$d['invoiceid']." AND pupilsightPersonID = ".$stuId."  ";
+                        $result_sp_item = $connection2->query($sp_item_sql);
+                        $sp_item_dis = $result_sp_item->fetch();
                         //unset($invdata[$k]['finalamount']);
 
                         if (!empty($d['transport_schedule_id']) && $d['transport_schedule_id'] != '') {
                             $routes = explode(',', $d['routes']);
-                            foreach ($routes as $rt) {
-                                $sqlsc = 'SELECT * FROM trans_route_price WHERE schedule_id = ' . $d['transport_schedule_id'] . ' AND route_id = ' . $rt . ' ';
-                                $resultsc = $connection2->query($sqlsc);
-                                $datasc = $resultsc->fetch();
-                                if ($d['routetype'] == 'oneway') {
-                                    $price = $datasc['oneway_price'];
-                                    $tax = $datasc['tax'];
-                                    $amtperc = ($tax / 100) * $price;
-                                    $tranamount = $price + $amtperc;
-                                } else {
-                                    $price = $datasc['twoway_price'];
-                                    $tax = $datasc['tax'];
-                                    $amtperc = ($tax / 100) * $price;
-                                    $tranamount = $price + $amtperc;
+                            if(!empty($routes)){
+                                $tranamount = 0;
+                                foreach ($routes as $rt) {
+                                    if(!empty($rt)){
+                                        $sqlsc = 'SELECT * FROM trans_route_price WHERE schedule_id = ' . $d['transport_schedule_id'] . ' AND route_id = ' . $rt . ' ';
+                                        $resultsc = $connection2->query($sqlsc);
+                                        $datasc = $resultsc->fetch();
+                                        if ($d['routetype'] == 'oneway') {
+                                            $price = $datasc['oneway_price'];
+                                            $tax = $datasc['tax'];
+                                            $amtperc = ($tax / 100) * $price;
+                                            $tranamount = $price + $amtperc;
+                                        } else {
+                                            $price = $datasc['twoway_price'];
+                                            $tax = $datasc['tax'];
+                                            $amtperc = ($tax / 100) * $price;
+                                            $tranamount = $price + $amtperc;
+                                        }
+                                    }
                                 }
+                                $totalamount = $tranamount;
                             }
-                            $totalamount = $tranamount;
+                            
                         } else {
                             $totalamount = $dataamt['totalamount'];
                         }
-                        $invdata[$k]['finalamount'] = $totalamount;
+
+                        $invdata[$k]['tot_amount'] = $dataamt['tot_amount'];
+
+
+                        if (!empty($special_dis['discount']) || !empty($sp_item_dis['sp_discount'])) {
+                            $invdata[$k]['finalamount'] = $totalamount - $special_dis['discount'] - $sp_item_dis['sp_discount'];
+                            $totalamount = $totalamount - $special_dis['discount'] - $sp_item_dis['sp_discount'];
+                        } else {
+                            $invdata[$k]['finalamount'] = $totalamount;
+                        }
+                        
+                        // $sqlamt = 'SELECT SUM(fn_fee_invoice_item.total_amount) as totalamount FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ' . $d['invoiceid'] . ' ';
+                        // $resultamt = $connection2->query($sqlamt);
+                        // $dataamt = $resultamt->fetch();
+
+
+                        // //unset($invdata[$k]['finalamount']);
+
+                        // if (!empty($d['transport_schedule_id']) && $d['transport_schedule_id'] != '') {
+                        //     $routes = explode(',', $d['routes']);
+                        //     foreach ($routes as $rt) {
+                        //         $sqlsc = 'SELECT * FROM trans_route_price WHERE schedule_id = ' . $d['transport_schedule_id'] . ' AND route_id = ' . $rt . ' ';
+                        //         $resultsc = $connection2->query($sqlsc);
+                        //         $datasc = $resultsc->fetch();
+                        //         if ($d['routetype'] == 'oneway') {
+                        //             $price = $datasc['oneway_price'];
+                        //             $tax = $datasc['tax'];
+                        //             $amtperc = ($tax / 100) * $price;
+                        //             $tranamount = $price + $amtperc;
+                        //         } else {
+                        //             $price = $datasc['twoway_price'];
+                        //             $tax = $datasc['tax'];
+                        //             $amtperc = ($tax / 100) * $price;
+                        //             $tranamount = $price + $amtperc;
+                        //         }
+                        //     }
+                        //     $totalamount = $tranamount;
+                        // } else {
+                        //     $totalamount = $dataamt['totalamount'];
+                        // }
+                        // $invdata[$k]['finalamount'] = $totalamount;
 
                         $date = date('Y-m-d');
                         $curdate = strtotime($date);
@@ -1278,6 +1345,7 @@ if (isset($_POST['type'])) {
                                 <th>Sl.No</th>
                                 <th>Invoice No</th>
                                 <th>Invoice Amount</th>
+                                <th>Pending Amount</th>
                                 <th>Discout Amount</th>
                                 <th>Select</th>
                                 <th class="waiveClass" style="display:none">Assigned By</th>
@@ -1290,18 +1358,15 @@ if (isset($_POST['type'])) {
                             if (!empty($invdata)) {
                                 $i = 1;
                                 foreach ($invdata as $ind) {
-                                    $sql_dis = "SELECT discount FROM fn_invoice_level_discount WHERE pupilsightPersonID = " . $stuId . "  AND invoice_id='" . $ind['invoiceid'] . "' ";
-                                    $result_dis = $connection2->query($sql_dis);
-                                    $special_dis = $result_dis->fetch();
-                                    if (!empty($special_dis['discount'])) {
-                                        $total = $ind['finalamount'] - $special_dis['discount'];
-                                    } else {
-                                        $total = $ind['finalamount'];
-                                    }
+                                    
+                                    $total = $ind['tot_amount'];
+                                    $pending = $ind['finalamount'];
+                                    
                                     echo '<tr>
                         <td  width="5%">' . $i++ . '</td>
                         <td  width="10%">' . $ind['stu_invoice_no'] . '</td>
                         <td  width="5%">' . $total . '</td>
+                        <td  width="5%">' . $pending . '</td>
                         <td  width="5%"><input type="number" name="discount_a[]" value="' . $special_dis['discount'] . '" readonly class="form-control inid_' . $ind['invoiceid'] . '" ></td>
                         <td  width="1%"><input type="checkbox"  class="chkinvoice_discount invoice' . $ind['invoiceid'] . '" name="invoiceid[]" value="' . $ind['invoiceid'] . '" data-id="' . $ind['invoiceid'] . '" ></td>
                         <td class="waiveClass" style="display:none" width="10%">

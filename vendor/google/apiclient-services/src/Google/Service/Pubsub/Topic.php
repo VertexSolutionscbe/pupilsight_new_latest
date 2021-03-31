@@ -17,9 +17,23 @@
 
 class Google_Service_Pubsub_Topic extends Google_Model
 {
+  public $kmsKeyName;
   public $labels;
+  protected $messageStoragePolicyType = 'Google_Service_Pubsub_MessageStoragePolicy';
+  protected $messageStoragePolicyDataType = '';
   public $name;
+  public $satisfiesPzs;
+  protected $schemaSettingsType = 'Google_Service_Pubsub_SchemaSettings';
+  protected $schemaSettingsDataType = '';
 
+  public function setKmsKeyName($kmsKeyName)
+  {
+    $this->kmsKeyName = $kmsKeyName;
+  }
+  public function getKmsKeyName()
+  {
+    return $this->kmsKeyName;
+  }
   public function setLabels($labels)
   {
     $this->labels = $labels;
@@ -28,6 +42,20 @@ class Google_Service_Pubsub_Topic extends Google_Model
   {
     return $this->labels;
   }
+  /**
+   * @param Google_Service_Pubsub_MessageStoragePolicy
+   */
+  public function setMessageStoragePolicy(Google_Service_Pubsub_MessageStoragePolicy $messageStoragePolicy)
+  {
+    $this->messageStoragePolicy = $messageStoragePolicy;
+  }
+  /**
+   * @return Google_Service_Pubsub_MessageStoragePolicy
+   */
+  public function getMessageStoragePolicy()
+  {
+    return $this->messageStoragePolicy;
+  }
   public function setName($name)
   {
     $this->name = $name;
@@ -35,5 +63,27 @@ class Google_Service_Pubsub_Topic extends Google_Model
   public function getName()
   {
     return $this->name;
+  }
+  public function setSatisfiesPzs($satisfiesPzs)
+  {
+    $this->satisfiesPzs = $satisfiesPzs;
+  }
+  public function getSatisfiesPzs()
+  {
+    return $this->satisfiesPzs;
+  }
+  /**
+   * @param Google_Service_Pubsub_SchemaSettings
+   */
+  public function setSchemaSettings(Google_Service_Pubsub_SchemaSettings $schemaSettings)
+  {
+    $this->schemaSettings = $schemaSettings;
+  }
+  /**
+   * @return Google_Service_Pubsub_SchemaSettings
+   */
+  public function getSchemaSettings()
+  {
+    return $this->schemaSettings;
   }
 }

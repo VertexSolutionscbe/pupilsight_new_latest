@@ -83,6 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     $form->addHiddenValue('fn_fee_structure_id', $id);
 
+    echo '<input type="hidden" id="aid" value="'.$pupilsightSchoolYearID.'">';
+
     $row = $form->addRow();
             $row->addLabel('pupilsightProgramID', __('Program'));
             $row->addSelect('pupilsightProgramID')->setId('program_class')->fromArray($program)->required()->placeholder();

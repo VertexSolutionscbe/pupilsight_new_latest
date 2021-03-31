@@ -27,6 +27,11 @@ class Google_Service_Compute_AutoscalingPolicy extends Google_Collection
   protected $loadBalancingUtilizationDataType = '';
   public $maxNumReplicas;
   public $minNumReplicas;
+  public $mode;
+  protected $scaleInControlType = 'Google_Service_Compute_AutoscalingPolicyScaleInControl';
+  protected $scaleInControlDataType = '';
+  protected $scalingSchedulesType = 'Google_Service_Compute_AutoscalingPolicyScalingSchedule';
+  protected $scalingSchedulesDataType = 'map';
 
   public function setCoolDownPeriodSec($coolDownPeriodSec)
   {
@@ -51,14 +56,14 @@ class Google_Service_Compute_AutoscalingPolicy extends Google_Collection
     return $this->cpuUtilization;
   }
   /**
-   * @param Google_Service_Compute_AutoscalingPolicyCustomMetricUtilization
+   * @param Google_Service_Compute_AutoscalingPolicyCustomMetricUtilization[]
    */
   public function setCustomMetricUtilizations($customMetricUtilizations)
   {
     $this->customMetricUtilizations = $customMetricUtilizations;
   }
   /**
-   * @return Google_Service_Compute_AutoscalingPolicyCustomMetricUtilization
+   * @return Google_Service_Compute_AutoscalingPolicyCustomMetricUtilization[]
    */
   public function getCustomMetricUtilizations()
   {
@@ -93,5 +98,41 @@ class Google_Service_Compute_AutoscalingPolicy extends Google_Collection
   public function getMinNumReplicas()
   {
     return $this->minNumReplicas;
+  }
+  public function setMode($mode)
+  {
+    $this->mode = $mode;
+  }
+  public function getMode()
+  {
+    return $this->mode;
+  }
+  /**
+   * @param Google_Service_Compute_AutoscalingPolicyScaleInControl
+   */
+  public function setScaleInControl(Google_Service_Compute_AutoscalingPolicyScaleInControl $scaleInControl)
+  {
+    $this->scaleInControl = $scaleInControl;
+  }
+  /**
+   * @return Google_Service_Compute_AutoscalingPolicyScaleInControl
+   */
+  public function getScaleInControl()
+  {
+    return $this->scaleInControl;
+  }
+  /**
+   * @param Google_Service_Compute_AutoscalingPolicyScalingSchedule[]
+   */
+  public function setScalingSchedules($scalingSchedules)
+  {
+    $this->scalingSchedules = $scalingSchedules;
+  }
+  /**
+   * @return Google_Service_Compute_AutoscalingPolicyScalingSchedule[]
+   */
+  public function getScalingSchedules()
+  {
+    return $this->scalingSchedules;
   }
 }

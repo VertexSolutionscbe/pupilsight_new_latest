@@ -16,7 +16,7 @@
  */
 
 /**
- * Service definition for CloudIAP (v1beta1).
+ * Service definition for CloudIAP (v1).
  *
  * <p>
  * Controls access to cloud applications running on Google Cloud Platform.</p>
@@ -34,57 +34,56 @@ class Google_Service_CloudIAP extends Google_Service
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
-  public $projects_iap_tunnel;
-  public $projects_iap_tunnel_zones;
-  public $projects_iap_tunnel_zones_instances;
-  public $projects_iap_web;
-  public $projects_iap_web_services;
-  public $projects_iap_web_services_versions;
-  
+  public $projects_brands;
+  public $projects_brands_identityAwareProxyClients;
+  public $v1;
+
   /**
    * Constructs the internal representation of the CloudIAP service.
    *
-   * @param Google_Client $client
+   * @param Google_Client $client The client used to deliver requests.
+   * @param string $rootUrl The root URL used for requests to the service.
    */
-  public function __construct(Google_Client $client)
+  public function __construct(Google_Client $client, $rootUrl = null)
   {
     parent::__construct($client);
-    $this->rootUrl = 'https://iap.googleapis.com/';
+    $this->rootUrl = $rootUrl ?: 'https://iap.googleapis.com/';
     $this->servicePath = '';
-    $this->version = 'v1beta1';
+    $this->batchPath = 'batch';
+    $this->version = 'v1';
     $this->serviceName = 'iap';
 
-    $this->projects_iap_tunnel = new Google_Service_CloudIAP_Resource_ProjectsIapTunnel(
+    $this->projects_brands = new Google_Service_CloudIAP_Resource_ProjectsBrands(
         $this,
         $this->serviceName,
-        'iap_tunnel',
+        'brands',
         array(
           'methods' => array(
-            'getIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:getIamPolicy',
+            'create' => array(
+              'path' => 'v1/{+parent}/brands',
               'httpMethod' => 'POST',
               'parameters' => array(
-                'resource' => array(
+                'parent' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
                 ),
               ),
-            ),'setIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:setIamPolicy',
-              'httpMethod' => 'POST',
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
               'parameters' => array(
-                'resource' => array(
+                'name' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
                 ),
               ),
-            ),'testIamPermissions' => array(
-              'path' => 'v1beta1/{+resource}:testIamPermissions',
-              'httpMethod' => 'POST',
+            ),'list' => array(
+              'path' => 'v1/{+parent}/brands',
+              'httpMethod' => 'GET',
               'parameters' => array(
-                'resource' => array(
+                'parent' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
@@ -94,37 +93,65 @@ class Google_Service_CloudIAP extends Google_Service
           )
         )
     );
-    $this->projects_iap_tunnel_zones = new Google_Service_CloudIAP_Resource_ProjectsIapTunnelZones(
+    $this->projects_brands_identityAwareProxyClients = new Google_Service_CloudIAP_Resource_ProjectsBrandsIdentityAwareProxyClients(
         $this,
         $this->serviceName,
-        'zones',
+        'identityAwareProxyClients',
         array(
           'methods' => array(
-            'getIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:getIamPolicy',
+            'create' => array(
+              'path' => 'v1/{+parent}/identityAwareProxyClients',
               'httpMethod' => 'POST',
               'parameters' => array(
-                'resource' => array(
+                'parent' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
                 ),
               ),
-            ),'setIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:setIamPolicy',
-              'httpMethod' => 'POST',
+            ),'delete' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
               'parameters' => array(
-                'resource' => array(
+                'name' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
                 ),
               ),
-            ),'testIamPermissions' => array(
-              'path' => 'v1beta1/{+resource}:testIamPermissions',
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+parent}/identityAwareProxyClients',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'resetSecret' => array(
+              'path' => 'v1/{+name}:resetSecret',
               'httpMethod' => 'POST',
               'parameters' => array(
-                'resource' => array(
+                'name' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
@@ -134,14 +161,14 @@ class Google_Service_CloudIAP extends Google_Service
           )
         )
     );
-    $this->projects_iap_tunnel_zones_instances = new Google_Service_CloudIAP_Resource_ProjectsIapTunnelZonesInstances(
+    $this->v1 = new Google_Service_CloudIAP_Resource_V1(
         $this,
         $this->serviceName,
-        'instances',
+        'v1',
         array(
           'methods' => array(
             'getIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:getIamPolicy',
+              'path' => 'v1/{+resource}:getIamPolicy',
               'httpMethod' => 'POST',
               'parameters' => array(
                 'resource' => array(
@@ -150,8 +177,18 @@ class Google_Service_CloudIAP extends Google_Service
                   'required' => true,
                 ),
               ),
+            ),'getIapSettings' => array(
+              'path' => 'v1/{+name}:iapSettings',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
             ),'setIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:setIamPolicy',
+              'path' => 'v1/{+resource}:setIamPolicy',
               'httpMethod' => 'POST',
               'parameters' => array(
                 'resource' => array(
@@ -161,7 +198,7 @@ class Google_Service_CloudIAP extends Google_Service
                 ),
               ),
             ),'testIamPermissions' => array(
-              'path' => 'v1beta1/{+resource}:testIamPermissions',
+              'path' => 'v1/{+resource}:testIamPermissions',
               'httpMethod' => 'POST',
               'parameters' => array(
                 'resource' => array(
@@ -170,124 +207,18 @@ class Google_Service_CloudIAP extends Google_Service
                   'required' => true,
                 ),
               ),
-            ),
-          )
-        )
-    );
-    $this->projects_iap_web = new Google_Service_CloudIAP_Resource_ProjectsIapWeb(
-        $this,
-        $this->serviceName,
-        'iap_web',
-        array(
-          'methods' => array(
-            'getIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:getIamPolicy',
-              'httpMethod' => 'POST',
+            ),'updateIapSettings' => array(
+              'path' => 'v1/{+name}:iapSettings',
+              'httpMethod' => 'PATCH',
               'parameters' => array(
-                'resource' => array(
+                'name' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
                 ),
-              ),
-            ),'setIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:setIamPolicy',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'resource' => array(
-                  'location' => 'path',
+                'updateMask' => array(
+                  'location' => 'query',
                   'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'testIamPermissions' => array(
-              'path' => 'v1beta1/{+resource}:testIamPermissions',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'resource' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),
-          )
-        )
-    );
-    $this->projects_iap_web_services = new Google_Service_CloudIAP_Resource_ProjectsIapWebServices(
-        $this,
-        $this->serviceName,
-        'services',
-        array(
-          'methods' => array(
-            'getIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:getIamPolicy',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'resource' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'setIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:setIamPolicy',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'resource' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'testIamPermissions' => array(
-              'path' => 'v1beta1/{+resource}:testIamPermissions',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'resource' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),
-          )
-        )
-    );
-    $this->projects_iap_web_services_versions = new Google_Service_CloudIAP_Resource_ProjectsIapWebServicesVersions(
-        $this,
-        $this->serviceName,
-        'versions',
-        array(
-          'methods' => array(
-            'getIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:getIamPolicy',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'resource' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'setIamPolicy' => array(
-              'path' => 'v1beta1/{+resource}:setIamPolicy',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'resource' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'testIamPermissions' => array(
-              'path' => 'v1beta1/{+resource}:testIamPermissions',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'resource' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
                 ),
               ),
             ),
