@@ -57,7 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+                $row->addLabel('gateway_name', __('Name'))->description(__('Must be unique.'));
+                $row->addTextField('gateway_name')->setValue($values['gateway_name'])->required();
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Gateway Name'))->description(__('Must be unique.'));
                 $row->addSelect('name')->fromArray($gateway)->required()->selected($values['name']);
 
             $row = $form->addRow();

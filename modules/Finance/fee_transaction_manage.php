@@ -64,9 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $transaction = array(
         '' => __('Select Payment Status'),
         'Payment Received' => __('Payment Received')
-
     );
-
 
     $tran_status =  array(
         '' => __('Select Transaction Status'),
@@ -266,7 +264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     //     $col->addContent('<a id="refundTransaction"  class=" btn btn-primary" >Refund</a> <a style="display:none;" class="thickbox " id="refundTransactionSubmit" href="fullscreen.php?q=/modules/Finance/fee_transaction_refund.php&width=800" >RefundSubmit</a>');
 
     $col = $row->addColumn()->setClass('newdes');
-    $col->addContent('<a id="receipt_export" class=" btn btn-primary">Download Receipts <i class="fas fa-download" aria-hidden="true"></i></a><a id="downloadLink" data-hrf="index.php?q=/modules/Finance/ajaxfile.php&id=" href="index.php?q=/modules/Finance/ajaxfile.php" class="" style="display:none;">Download Receipts</a>&nbsp;&nbsp;<a style="color:#666;cursor:pointer;" id="export_com_transaction" class="btn btn-primary">Export</a>');
+    $col->addContent('<a id="receipt_export" class=" btn btn-primary">Download Receipts <i class="fas fa-download" aria-hidden="true"></i></a><a id="downloadLink" data-hrf="index.php?q=/modules/Finance/ajaxfile.php&id=" href="index.php?q=/modules/Finance/ajaxfile.php" class="" style="display:none;">Download Receipts</a>&nbsp;&nbsp;<a style="color:#666;cursor:pointer;" id="export_com_transaction" class="btn btn-primary">Export</a>&nbsp;&nbsp;<a style="color:#666;cursor:pointer;"  href="index.php?q=/modules/Finance/online_fee_details.php" class="btn btn-primary">Online Payment Details</a>');
 
     $row = $form->addRow()->addClass('tran_tbl');
     $col = $row->addColumn()->setClass('newdes');

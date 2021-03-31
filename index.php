@@ -8,9 +8,9 @@ Pupilsight, Flexible & Open School System
 //error_reporting(E_ERROR | E_PARSE);
 //error_reporting(0);
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
 
 use Pupilsight\Domain\System\ModuleGateway;
 use Pupilsight\Domain\DataUpdater\DataUpdaterGateway;

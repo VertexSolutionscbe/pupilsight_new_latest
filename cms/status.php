@@ -15,7 +15,7 @@ $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php
 
 
 $data_target = $status==1 ? "#Application" : "#Login-reg"; */
- $sid = $_SESSION["appsubmitionid"];
+$sid = $_SESSION["appsubmitionid"];
 
 if (empty($sid)) {
     $sid = 0;
@@ -50,7 +50,7 @@ if (isset($data['logo_image'])) {
 }
 ?>
 
-<?php 
+<?php
 // include("index_header.php"); 
 ?>
 
@@ -232,172 +232,173 @@ if (isset($data['logo_image'])) {
         </header>
         <div id="wrapper-container" class="content-pusher creative-right bg-type-color">
             <div id="main-content">
-            <div id="home-main-content" class="home-content home-page container" role="main">
+                <div id="home-main-content" class="home-content home-page container" role="main">
 
 
-                <div class="mobile-margin-0 wpb_column vc_column_container vc_col-sm-12 bp-background-size-auto">
-                    <div class="vc_column-inner vc_custom_1540537006055">
-                        <div class="container" style="margin-top: 50px;text-align:center;">
-                            <div class="bp-element bp-element-heading vc_custom_1542033515902  layout-1  mobile-center mobile-line-heading">
+                    <div class="mobile-margin-0 wpb_column vc_column_container vc_col-sm-12 bp-background-size-auto">
+                        <div class="vc_column-inner vc_custom_1540537006055">
+                            <div class="container" style="margin-top: 50px;text-align:center;">
+                                <div class="bp-element bp-element-heading vc_custom_1542033515902  layout-1  mobile-center mobile-line-heading">
 
-                            </div>
-                            <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
-                                <div class="wpb_wrapper">
+                                </div>
+                                <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
+                                    <div class="wpb_wrapper">
 
-                                    <div class="row" style="">
-                                        <div class="col-sm-12 col-lg-12">
-                                            <table id="app_lst_tbl" cellspacing='0' class='table'>
-                                                <thead>
-                                                    <tr class='head'>
-                                                        <th style="width:5%">
-                                                            SI No
-                                                        </th>
-                                                        <th style="width:20%">
-                                                            Applicant Name
-                                                        </th>
-                                                        <th style="width:20%">
-                                                            Campaign Name
-                                                        </th>
-                                                        <th style="width:20%">
-                                                            Submission Date
-                                                        </th>
+                                        <div class="row" style="">
+                                            <div class="col-sm-12 col-lg-12">
+                                                <table id="app_lst_tbl" cellspacing='0' class='table'>
+                                                    <thead>
+                                                        <tr class='head'>
+                                                            <th style="width:5%">
+                                                                SI No
+                                                            </th>
+                                                            <th style="width:20%">
+                                                                Applicant Name
+                                                            </th>
+                                                            <th style="width:20%">
+                                                                Campaign Name
+                                                            </th>
+                                                            <th style="width:20%">
+                                                                Submission Date
+                                                            </th>
 
-                                                        <th style="width:5%">
-                                                            Status
-                                                        </th>
+                                                            <th style="width:5%">
+                                                                Status
+                                                            </th>
 
-                                                        <th style="width:5%">
-                                                            Form
-                                                        </th>
-                                                        <th style="width:5%">
-                                                            Fee Receipt
-                                                        </th>
+                                                            <th style="width:5%">
+                                                                Form
+                                                            </th>
+                                                            <th style="width:5%">
+                                                                Fee Receipt
+                                                            </th>
 
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php if (!empty($chkstatus)) {
-                                                        $cnt = 1;
-                                                        foreach ($chkstatus as $row) {
-                                                            $statedata = $adminlib->getstatedata($row['id'], $row['form_id'], $row['submission_id']);
-                                                            echo "<tr>";
-                                                            echo '<td>';
-                                                            echo $cnt;
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            echo $row["username"];
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            echo $row["name"];
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            echo $row['created_at'];
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            echo $statedata;
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            if (!empty($row['application_no'])) {
-                                                                $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                                                $fname = trim(str_replace("/", "_", $row['application_no']));
-                                                                //$link = $base_url . '/public/applicationpdf/parent/' . $fname;
-                                                                $link = $base_url . '/cms/ajaxfile.php?cid=' . $row['id'] . "&submissionId=" . $row['submission_id'];
-                                                                echo '<a href="' . $link . '"><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php if (!empty($chkstatus)) {
+                                                            $cnt = 1;
+                                                            foreach ($chkstatus as $row) {
+                                                                $statedata = $adminlib->getstatedata($row['id'], $row['form_id'], $row['submission_id']);
+                                                                echo "<tr>";
+                                                                echo '<td>';
+                                                                echo $cnt;
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                echo $row["username"];
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                echo $row["name"];
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                echo $row['created_at'];
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                echo $statedata;
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                if (!empty($row['application_no'])) {
+                                                                    $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                                                    $fname = trim(str_replace("/", "_", $row['application_no']));
+                                                                    //$link = $base_url . '/public/applicationpdf/parent/' . $fname;
+                                                                    $link = $base_url . '/cms/ajaxfile.php?cid=' . $row['id'] . "&submissionId=" . $row['submission_id'];
+                                                                    echo '<a href="' . $link . '"><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+                                                                }
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                if (!empty($row['transaction_id'])) {
+                                                                    $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                                                    $link = $base_url . '/public/receipts/' . $row['transaction_id'];
+                                                                    echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+                                                                }
+                                                                echo '</td>';
+                                                                echo '</tr>';
                                                             }
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            if (!empty($row['transaction_id'])) {
-                                                                $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                                                $link = $base_url . '/public/receipts/' . $row['transaction_id'];
-                                                                echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
-                                                            }
-                                                            echo '</td>';
-                                                            echo '</tr>';
-                                                        }
-                                                    } ?>
-                                                </tbody>
-                                            </table>
+                                                        } ?>
+                                                    </tbody>
+                                                </table>
 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="wpb_column vc_column_container  bp-background-size-auto">
-                    <div class="vc_column-inner vc_custom_1539746106290">
-                        <div class="wpb_wrapper">
+                    <div class="wpb_column vc_column_container  bp-background-size-auto">
+                        <div class="vc_column-inner vc_custom_1539746106290">
+                            <div class="wpb_wrapper">
 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div><!-- #home-main-content -->
-    </div><!-- #main-content -->
-    <div id="myModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Subscribe our Newsletter</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Subscribe to our mailing list to get the latest updates straight in your inbox.</p>
-                    <form>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Name">
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" placeholder="Email Address">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Subscribe</button>
-                    </form>
+            </div><!-- #home-main-content -->
+        </div><!-- #main-content -->
+        <div id="myModal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Subscribe our Newsletter</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Subscribe to our mailing list to get the latest updates straight in your inbox.</p>
+                        <form>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Name">
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Email Address">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Subscribe</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="term_cndn" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 style="float:left" class="modal-title">Terms & Conditions</h4>
-                    <button type="button" class="close" onclick="window.history.back()">&times;</button>
-                    <input type="hidden" id="term_accepted" name="term_accepted" value="" />
-                </div>
-                <div class="modal-body">
-                    <p class="statusMsg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                </div>
-                <!-- Modal Footer -->
-                <div class="modal-footer">
+        <div id="term_cndn" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 style="float:left" class="modal-title">Terms & Conditions</h4>
+                        <button type="button" class="close" onclick="window.history.back()">&times;</button>
+                        <input type="hidden" id="term_accepted" name="term_accepted" value="" />
+                    </div>
+                    <div class="modal-body">
+                        <p class="statusMsg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
 
-                    <button type="button" class="btn btn_css btn-primary btn-default" onclick="window.history.back()">Reject</button>
-                    <button type="button" id="term_click" class="btn btn_css btn-primary btn-default" data-dismiss="modal">Accept</button>
+                        <button type="button" class="btn btn_css btn-primary btn-default" onclick="window.history.back()">Reject</button>
+                        <button type="button" id="term_click" class="btn btn_css btn-primary btn-default" data-dismiss="modal">Accept</button>
+                    </div>
                 </div>
+
             </div>
-
         </div>
-    </div>
 
-    <!-- online Payment By Bikash -->
-    <?php
-    $callbacklink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ?
-        "https" : "http") . "://" . $_SERVER['HTTP_HOST'] .
-        $_SERVER['REQUEST_URI'];
+        <!-- online Payment By Bikash -->
+        <?php
+        $callbacklink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ?
+            "https" : "http") . "://" . $_SERVER['HTTP_HOST'] .
+            $_SERVER['REQUEST_URI'];
 
-    ?>
+        ?>
 
-    <!-- online Payment By Bikash -->
+        <!-- online Payment By Bikash -->
 
-    <!-- #colophon -->
+        <!-- #colophon -->
     </div><!-- wrapper-container -->
     <div id="back-to-top" class="default">
-        <i data-fip-value="ion-ios-arrow-thin-up" class="ion-ios-arrow-thin-up"></i> </div>
+        <i data-fip-value="ion-ios-arrow-thin-up" class="ion-ios-arrow-thin-up"></i>
+    </div>
     <!-- Memberships powered by Paid Memberships Pro v2.0.7.
  -->
-</div>
+    </div>
 
     <div id="tp_chameleon_list_google_fonts"></div>
     <a id="downloadLink" href="ajaxfile.php?cid=<?php echo $url_id; ?>" class="" style="display:none;">Download Receipts</a>

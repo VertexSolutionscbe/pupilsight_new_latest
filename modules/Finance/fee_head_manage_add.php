@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_head_manage_ad
 
     $enablepymtgateway = array('N'=>'No','Y'=>'Yes');
 
-    $sqlg = 'SELECT id, name FROM fn_fee_payment_gateway ';
+    $sqlg = 'SELECT id, gateway_name FROM fn_fee_payment_gateway ';
     $resultg = $connection2->query($sqlg);
     $gateway = $resultg->fetchAll();
 
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_head_manage_ad
     $gatewayData2 = array();
     $gatewayData1 = array(''=>'Select Payment Gateway');
     foreach ($gateway as $dt) {
-        $gatewayData2[$dt['id']] = $dt['name'];
+        $gatewayData2[$dt['id']] = $dt['gateway_name'];
     }
     $gatewayData = $gatewayData1 + $gatewayData2;
 

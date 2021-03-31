@@ -45,7 +45,7 @@ $params = array("status"=>$status,"txnid"=>$txnid,"amount"=>$amount,"productinfo
 	//        echo "Transaction has been tampered. Please try again";
 	// 	   }
 
-$URL = $_SESSION[$guid]['absoluteURL'] . "/cms/index.php";
+$URL = $_SESSION[$guid]['absoluteURL'] . "/home.php";
 
 $returnArr = json_encode($_POST);
 

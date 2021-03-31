@@ -361,7 +361,7 @@ if (isset($data['logo_image'])) {
                                     $fn_fees_head_id = $resultfh['fn_fees_head_id'];
 
                                     $sql = 'SELECT b.* FROM fn_fees_head AS a LEFT JOIN fn_fee_payment_gateway AS b ON a.payment_gateway_id = b.id WHERE a.id = '.$fn_fees_head_id.' ';
-                                    $gatewayData = database::doSelectOne($sqlfh);
+                                    $gatewayData = database::doSelectOne($sql);
                                     
                                     $terms = $gatewayData['terms_and_conditions'];
                                     $gatewayID = $gatewayData['id'];
