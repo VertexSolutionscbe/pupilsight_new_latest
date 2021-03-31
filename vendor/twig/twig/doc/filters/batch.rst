@@ -5,7 +5,7 @@ The ``batch`` filter "batches" items by returning a list of lists with the
 given number of items. A second parameter can be provided and used to fill in
 missing items:
 
-.. code-block:: twig
+.. code-block:: jinja
 
     {% set items = ['a', 'b', 'c', 'd', 'e', 'f', 'g'] %}
 
@@ -21,7 +21,7 @@ missing items:
 
 The above example will be rendered as:
 
-.. code-block:: twig
+.. code-block:: jinja
 
     <table>
         <tr>
@@ -46,4 +46,3 @@ Arguments
 
 * ``size``: The size of the batch; fractional numbers will be rounded up
 * ``fill``: Used to fill in missing items
-* ``preserve_keys``: Whether to preserve keys or not

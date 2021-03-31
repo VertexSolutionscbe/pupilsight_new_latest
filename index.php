@@ -5,8 +5,12 @@ Pupilsight, Flexible & Open School System
 */
 
 //echo  "http://localhost/pupilsight/wp/wp-login.php?user=".urlencode('admin')."&pass=".urlencode('Admin@123456');
-error_reporting(E_ERROR | E_PARSE);
+//error_reporting(E_ERROR | E_PARSE);
 //error_reporting(0);
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 use Pupilsight\Domain\System\ModuleGateway;
 use Pupilsight\Domain\DataUpdater\DataUpdaterGateway;
@@ -557,14 +561,17 @@ if ($isLoggedIn) {
                     $vc_array_name[$nk] = $item['order_wise'];
                     $chk = '1';
                 }
+
                 $urlList = array_map('trim', explode(',', $item['URLList']));
                 $item['active'] = in_array($session->get('action'), $urlList);
                 $item['url'] = $session->get('absoluteURL') . '/index.php?q=/modules/'
                     . $item['moduleName'] . '/' . $item['entryURL'];
             }
+            //closed array_multisort because throw warning while doing later will resolve this
+            /*
             if ($chk == '1' && !empty($vc_array_name)) {
                 array_multisort($vc_array_name, SORT_ASC, $items);
-            }
+            }*/
         }
 
         $allmenu = $session->get('allmenu');

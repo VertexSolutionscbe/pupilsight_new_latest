@@ -9,6 +9,7 @@ use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Domain\User\UserGateway;
 
+
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == false) {
     //Acess denied
     echo "<div class='alert alert-danger'>";
@@ -59,102 +60,102 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $row->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
     echo $form->getOutput();
-    
+
     echo '<h2>';
     echo __('View');
     echo '</h2>';
 
     // QUERY
-    $dataSet = $userGateway->queryAllUsers($criteria);
 
-    // Join a set of family data per user
-    $people = $dataSet->getColumn('pupilsightPersonID');
-    $familyData = $userGateway->selectFamilyDetailsByPersonID($people)->fetchGrouped();
-    $dataSet->joinColumn('pupilsightPersonID', 'families', $familyData);
+    if (isset($_GET["search"])) {
+        $dataSet = $userGateway->queryAllUsers($criteria);
 
-    // DATA TABLE
-    $table = DataTable::createPaginated('userManage', $criteria);
+        // Join a set of family data per user
+        $people = $dataSet->getColumn('pupilsightPersonID');
+        $familyData = $userGateway->selectFamilyDetailsByPersonID($people)->fetchGrouped();
+        $dataSet->joinColumn('pupilsightPersonID', 'families', $familyData);
 
-    $table->addHeaderAction('add', __('Add'))
-        ->setURL('/modules/User Admin/user_manage_add.php')
-        ->addParam('search', $search)
-        ->displayLabel();
+        // DATA TABLE
+        $table = DataTable::createPaginated('userManage', $criteria);
 
-    $table->addMetaData('filterOptions', [
-        'role:student'    => __('Role').': '.__('Student'),
-        'role:parent'     => __('Role').': '.__('Parent'),
-        'role:staff'      => __('Role').': '.__('Staff'),
-        'status:full'     => __('Status').': '.__('Full'),
-        'status:left'     => __('Status').': '.__('Left'),
-        'status:expected' => __('Status').': '.__('Expected'),
-        'date:starting'   => __('Before Start Date'),
-        'date:ended'      => __('After End Date'),
-    ]);
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/User Admin/user_manage_add.php')
+            ->addParam('search', $search)
+            ->displayLabel();
 
-    // COLUMNS
-    $table->addColumn('image_240', __('Photo'))
-        ->context('primary')
-        ->width('10%')
-        ->notSortable()
-        ->format(Format::using('userPhoto', ['image_240', 'sm']));
+        $table->addMetaData('filterOptions', [
+            'role:student'    => __('Role') . ': ' . __('Student'),
+            'role:parent'     => __('Role') . ': ' . __('Parent'),
+            'role:staff'      => __('Role') . ': ' . __('Staff'),
+            'status:full'     => __('Status') . ': ' . __('Full'),
+            'status:left'     => __('Status') . ': ' . __('Left'),
+            'status:expected' => __('Status') . ': ' . __('Expected'),
+            'date:starting'   => __('Before Start Date'),
+            'date:ended'      => __('After End Date'),
+        ]);
 
-    $table->addColumn('fullName', __('Name'))
-        ->context('primary')
-        ->width('30%')
-        ->sortable(['surname', 'preferredName'])
-        ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
+        // COLUMNS
+        $table->addColumn('image_240', __('Photo'))
+            ->context('primary')
+            ->width('10%')
+            ->notSortable()
+            ->format(Format::using('userPhoto', ['image_240', 'sm']));
 
-    $table->addColumn('status', __('Status'))
-        ->width('10%')
-        ->translatable();
+        $table->addColumn('fullName', __('Name'))
+            ->context('primary')
+            ->width('30%')
+            ->sortable(['surname', 'preferredName'])
+            ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
 
-    $table->addColumn('primaryRole', __('Primary Role'))
-        ->context('secondary')
-        ->width('16%')
-        ->translatable();
+        $table->addColumn('status', __('Status'))
+            ->width('10%')
+            ->translatable();
 
-    $table->addColumn('family', __('Family'))
-        ->notSortable()
-        ->format(function($person) use ($guid) {
-            $output = '';
-            foreach ($person['families'] as $family) {
-                $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID='.$family['pupilsightPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
-            }
-            return $output;
-        });
+        $table->addColumn('primaryRole', __('Primary Role'))
+            ->context('secondary')
+            ->width('16%')
+            ->translatable();
 
-    $table->addColumn('username', __('Username'))->context('primary');
+        $table->addColumn('family', __('Family'))
+            ->notSortable()
+            ->format(function ($person) use ($guid) {
+                $output = '';
+                foreach ($person['families'] as $family) {
+                    $output .= '<a href="' . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID=' . $family['pupilsightPersonIDStudent'] . '&search=&allStudents=on&sort=surname, preferredName&subpage=Family">' . $family['name'] . '</a><br/>';
+                }
+                return $output;
+            });
 
-    // ACTIONS
-    $table->addActionColumn()
-        ->addParam('pupilsightPersonID')
-        ->addParam('search', $criteria->getSearchText(true))
-        ->format(function ($person, $actions) use ($connection2, $highestAction) {
-            $actions->addAction('edit', __('Edit'))
+        $table->addColumn('username', __('Username'))->context('primary');
+
+        // ACTIONS
+        $table->addActionColumn()
+            ->addParam('pupilsightPersonID')
+            ->addParam('search', $criteria->getSearchText(true))
+            ->format(function ($person, $actions) use ($connection2, $highestAction, $guid) {
+                $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/User Admin/user_manage_edit.php');
 
-            if ($highestAction == 'Manage Users_editDelete' && $person['pupilsightPersonID'] != $_SESSION[$guid]['pupilsightPersonID']) {
-                $sqlp = 'SELECT pupilsightPersonID2 FROM pupilsightFamilyRelationship WHERE pupilsightPersonID1 = '.$person['pupilsightPersonID'].' ';
-                $resultp = $connection2->query($sqlp);
-                $childData = $resultp->fetch();
-                if(!empty($childData)){
-                    $actions->addAction('deleteAlert', __('DeleteAlert'))
-                    ->setId('alertParentData');
-                } else {
-                    $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/User Admin/user_manage_delete.php');
+                if ($highestAction == 'Manage Users_editDelete' && $person['pupilsightPersonID'] != $_SESSION[$guid]['pupilsightPersonID']) {
+                    $sqlp = 'SELECT pupilsightPersonID2 FROM pupilsightFamilyRelationship WHERE pupilsightPersonID1 = ' . $person['pupilsightPersonID'] . ' ';
+                    $resultp = $connection2->query($sqlp);
+                    $childData = $resultp->fetch();
+                    if (!empty($childData)) {
+                        $actions->addAction('deleteAlert', __('DeleteAlert'))
+                            ->setId('alertParentData');
+                    } else {
+                        $actions->addAction('delete', __('Delete'))
+                            ->setURL('/modules/User Admin/user_manage_delete.php');
+                    }
                 }
 
-                
-            }
-
-            $actions->addAction('password', __('Change Password'))
+                $actions->addAction('password', __('Change Password'))
                     ->setURL('/modules/User Admin/user_manage_password.php')
                     ->setIcon('key');
-        });
+            });
 
-    echo $table->render($dataSet);
-    
+        echo $table->render($dataSet);
+    }
 }
 
 ?>

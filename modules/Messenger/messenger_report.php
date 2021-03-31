@@ -12,46 +12,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
     echo '</div>';
 } else {
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
-    $todate = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
-    $fromdate = isset($_REQUEST['fromdate'])? $_REQUEST['fromdate'] : date($dateFormat);
-    $msgtype = isset($_REQUEST['msgtype'])? $_REQUEST['msgtype'] : 'All';
+    $todate = isset($_REQUEST['date']) ? $_REQUEST['date'] : date($dateFormat);
+    $fromdate = isset($_REQUEST['fromdate']) ? $_REQUEST['fromdate'] : date($dateFormat);
+    $msgtype = isset($_REQUEST['msgtype']) ? $_REQUEST['msgtype'] : 'All';
 
     //echo $fromdate.'--'.$todate;
 
-    $page->breadcrumbs->add(($date === date($dateFormat)) ?
+    $page->breadcrumbs->add(($fromdate === date($dateFormat)) ?
         __('Messenger Report') :
-        __('Messenger Report').' ('.$fromdate.' to '.$todate.')');
+        __('Messenger Report') . ' (' . $fromdate . ' to ' . $todate . ')');
 
     if (isset($_GET['return'])) {
         $status = (!empty($_GET['status'])) ? $_GET['status'] : __('Unknown');
         $emailLink = getSettingByScope($connection2, 'System', 'emailLink');
         if (empty($emailLink)) {
             $suggest = sprintf(__('Why not read the messages below, or %1$scheck your email%2$s?'), '', '');
-        }
-        else {
+        } else {
             $suggest = sprintf(__('Why not read the messages below, or %1$scheck your email%2$s?'), "<a target='_blank' href='$emailLink'>", '</a>');
         }
-        $suggest = '<b>'.$suggest.'</b>';
-        returnProcess($guid, $_GET['return'], null, array('message0' => sprintf(__('Attendance has been taken for you today. Your current status is: %1$s.'), "<b>".$status."</b>").'<br/><br/>'.$suggest));
+        $suggest = '<b>' . $suggest . '</b>';
+        returnProcess($guid, $_GET['return'], null, array('message0' => sprintf(__('Attendance has been taken for you today. Your current status is: %1$s.'), "<b>" . $status . "</b>") . '<br/><br/>' . $suggest));
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messenger_report.php');
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/messenger_report.php');
     $form->setClass('blank fullWidth');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow()->addClass('flex flex-wrap');
 
-    $link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messenger_report.php';
+    $link = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/messenger_report.php';
     // $fromdate = DateTime::createFromFormat($dateFormat, $fromdate)->modify('-5 day')->format($dateFormat);
     $fromdate = DateTime::createFromFormat($dateFormat, $fromdate)->format($dateFormat);
 
 
 
     $displaymsgwalltype = array();
-    $displaymsgwalltype =  array('All'=>'All',
-        'sms' =>'SMS',
-        'email' =>'Email',
+    $displaymsgwalltype =  array(
+        'All' => 'All',
+        'sms' => 'SMS',
+        'email' => 'Email',
     );
 
 
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_report
             td6 = tr[i].getElementsByTagName("td")[6]; // for column seven
             /* ADD columns here that you want you to filter to be used on */
             if (td) {
-                if ( (td.innerHTML.toUpperCase().indexOf(filter) > -1) || (td1.innerHTML.toUpperCase().indexOf(filter) > -1) || (td2.innerHTML.toUpperCase().indexOf(filter) > -1) || (td3.innerHTML.toUpperCase().indexOf(filter) > -1) || (td4.innerHTML.toUpperCase().indexOf(filter) > -1) || (td5.innerHTML.toUpperCase().indexOf(filter) > -1) || (td6.innerHTML.toUpperCase().indexOf(filter) > -1) )  {
+                if ((td.innerHTML.toUpperCase().indexOf(filter) > -1) || (td1.innerHTML.toUpperCase().indexOf(filter) > -1) || (td2.innerHTML.toUpperCase().indexOf(filter) > -1) || (td3.innerHTML.toUpperCase().indexOf(filter) > -1) || (td4.innerHTML.toUpperCase().indexOf(filter) > -1) || (td5.innerHTML.toUpperCase().indexOf(filter) > -1) || (td6.innerHTML.toUpperCase().indexOf(filter) > -1)) {
                     tr[i].style.display = "";
                 } else {
                     tr[i].style.display = "none";

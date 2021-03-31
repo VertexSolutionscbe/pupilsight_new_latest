@@ -25,7 +25,7 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain().'/pupilsight';
+//$baseurl = getDomain().'/pupilsight_new';
 $baseurl = getDomain();
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
@@ -48,9 +48,9 @@ if (isset($data['logo_image'])) {
     $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
 }
 
-$invalid = '';
-if (isset($_GET['invalid']))
-    $invalid = $_GET['invalid'];
+// $invalid='';        
+// if(isset($_GET['invalid'])) 
+// $invalid=$_GET['invalid'];
 
 ?>
 
@@ -1049,10 +1049,10 @@ if (isset($_GET['invalid']))
                     <img src="<?= $logo; ?>" height="36" alt="">
                 </div>
                 <h2 class="mb-3 text-center">Login to your account</h2>
-                <?php if ($invalid == 'true') { ?>
-                    <div class="alert alert-warning">Wrong Username or Password</div>
+                <!-- <?php if ($invalid == 'true') { ?>
+                <div class="alert alert-warning">Wrong Username or Password</div>
 
-                <?php } ?>
+                <?php } ?> -->
 
                 <div class="empty-warning"></div>
 
@@ -1223,7 +1223,7 @@ if (isset($_GET['invalid']))
 
         .google-maps {
             position: relative;
-            padding-bottom: 1%; // This is the aspect ratio
+            padding-bottom: 1%;
             height: 0;
             overflow: hidden;
         }
@@ -1234,10 +1234,7 @@ if (isset($_GET['invalid']))
             left: 0;
             width: 100% !important;
             height: 100% !important;
-
         }
-
-
 
         #topBtn {
             display: none;
@@ -1256,22 +1253,6 @@ if (isset($_GET['invalid']))
         .btn-border {
             border-radius: 30px;
         }
-
-        /* #topBtn {
-            display: none;
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%; 
-            color: white;
-            text-align: right;
-            border: none;
-            outline: none;
-            padding: 15px;
-            border-radius: 4px;
-            background: none;
-        
-        } */
 
         #mapshow {
             padding: 0px !important;
@@ -1306,11 +1287,13 @@ if (isset($_GET['invalid']))
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
             if (username == '' || password == '') {
-                //alert('Please enter Username and Password');
-                $('.empty-warning').addClass('alert alert-warning');
-                $('.empty-warning ').html('Please enter Username and Password');
+                alert('Please enter Username and Password');
+                // $('.empty-warning').addClass('alert alert-warning');
+                // $('.empty-warning ').html('Please enter Username and Password');
                 return false;
-            }
+            } else
+                return true;
+        }
     </script>
 
     <script>
@@ -1338,17 +1321,20 @@ if (isset($_GET['invalid']))
         document.body.style.display = "block";
         $(document).ready(function() {
 
-            var invalid = $('#invalid').val();
-            if (invalid == 'true') {
-                loginPanel();
-            } else {
-                $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
-                try {
-                    $('.gmap_canvas a').remove();
-                } catch (ex) {
-                    console.log(ex);
-                }
+            // var invalid=$('#invalid').val();
+            // if(invalid=='true')
+            // {
+            //     loginPanel();
+            // }
+            // else
+            // {
+            $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+            try {
+                $('.gmap_canvas a').remove();
+            } catch (ex) {
+                console.log(ex);
             }
+            //}
         });
 
         function loginPanel() {
@@ -1483,6 +1469,7 @@ if (isset($_GET['invalid']))
             $('#adesc').text(desc);
             $('#aimg').attr("src", aimg);
 
+
         });
 
         $(document).on("click", ".eventData", function() {
@@ -1496,13 +1483,6 @@ if (isset($_GET['invalid']))
             $('#edesc').text(desc);
             $('#eimg').attr("src", eimg);
 
-
-        });
-        $(document).on("click", ".clsbtn", function() {
-
-            location.reload(true);
-
-            //$('.courseData').css('border', '0px'); 
 
         });
         $(document).on("click", ".clsbtn", function() {

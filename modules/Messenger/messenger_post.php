@@ -264,7 +264,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		//$form->toggleVisibilityByClass('sms3')->onRadio('sms')->when('N');
 		$row = $form->addRow()->addClass('sms3')->setID('categoryhide');
 		$row->addLabel('category', __('Category'));
-		$row->addSelect('category')->fromArray($display_fields)->selected($values['category']);
+		//$row->addSelect('category')->fromArray($display_fields)->selected($values['category']);
+		$row->addSelect('category')->fromArray($display_fields);
 
 		//echo "<span type='text' id='count'>Character Count</span>";
 
@@ -341,7 +342,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
 			$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
 
-			$data = array(pupilsightSchoolYearID => $_SESSION[$guid]["pupilsightSchoolYearID"]);
+			$data = array('pupilsightSchoolYearID' => $_SESSION[$guid]["pupilsightSchoolYearID"]);
 			//$sql = 'SELECT pupilsightYearGroupID AS value, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY sequenceNumber';
 			//$sql = 'SELECT a.pupilsightProgramID ,b.pupilsightYearGroupID as value, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYearGroupID';
 			$sql = "SELECT  a.pupilsightProgramID, b.pupilsightYearGroupID as value, b.name as name1, CONCAT(c.name,' ',b.name) as name FROM pupilsightProgramClassSectionMapping AS a 
@@ -702,7 +703,11 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 
 		$col = $row->addColumn()->setClass('newdes');
 		$col->addLabel('pupilsightPersonID', __('Students'))->addClass('dte');
-		$col->addSelect('pupilsightPersonID')->selected($pupilsightPersonID)->selectMultiple()->addClass("staticwidth");
+		if (isset($pupilsightPersonID)) {
+			$col->addSelect('pupilsightPersonID')->selected($pupilsightPersonID)->selectMultiple()->addClass("staticwidth");
+		} else {
+			$col->addSelect('pupilsightPersonID')->selectMultiple()->addClass("staticwidth");
+		}
 
 
 
