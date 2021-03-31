@@ -308,7 +308,7 @@ print_r($rs);
             ->newQuery()
             ->from('fn_fee_payment_gateway')
             ->cols([
-                'id','name'
+                'id','name','gateway_name'
             ]);
 
         return $this->runQuery($query, $criteria);
@@ -1961,6 +1961,20 @@ print_r($rs);
             ])
             ->leftJoin('pupilsightPerson', 'fn_fee_waive_off.assigned_by=pupilsightPerson.pupilsightPersonID')
             ->where('fn_fee_waive_off.pupilsightPersonID = "'.$pupilsightPersonID.'" ');
+
+        return $this->runQuery($query, $criteria, TRUE);
+    }
+
+    public function getAllPaymentDetails(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('fn_fee_payment_details')
+            ->cols([
+                'fn_fee_payment_details.*','pupilsightPerson.officialName'
+            ])
+            ->leftJoin('pupilsightPerson', 'fn_fee_payment_details.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+            ->orderBy(['fn_fee_payment_details.id DESC']);
 
         return $this->runQuery($query, $criteria, TRUE);
     }

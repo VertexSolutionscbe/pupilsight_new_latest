@@ -33,20 +33,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     $FeesGateway = $container->get(FeesGateway::class);
 
     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
-    $childs = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID2 = b.pupilsightPersonID WHERE a.pupilsightPersonID1 = ' . $cuid . ' GROUP BY a.pupilsightPersonID1 LIMIT 0,1';
-    $resulta = $connection2->query($childs);
-    $students = $resulta->fetch();
 
+    $sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyAdult WHERE pupilsightPersonID= ' . $cuid . ' ';
+    $resultf = $connection2->query($sqlf);
+    $fdata = $resultf->fetch();
+    $pupilsightFamilyID = $fdata['pupilsightFamilyID'];
+
+    // $childs = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID2 = b.pupilsightPersonID WHERE a.pupilsightPersonID1 = ' . $cuid . ' GROUP BY a.pupilsightPersonID1 LIMIT 0,1';
+
+    $childs = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' . $pupilsightFamilyID . ' AND a.pupilsightPersonID != "" ';
+    $resulta = $connection2->query($childs);
+    $stuData = $resulta->fetchAll();
+    //$students = $resulta->fetchAll();
+    // echo '<pre>';
+    // print_r($students);
+    // echo '</pre>';
+    // die();
     $parents = 'SELECT email, phone1 FROM pupilsightPerson WHERE pupilsightPersonID = ' . $cuid . ' ';
     $resultp = $connection2->query($parents);
     $parData = $resultp->fetch();
 
+
+    $students = $stuData[0];
     $stuId = $students['pupilsightPersonID'];
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
         ->sortBy(['id'])
         ->fromPOST();
+
+    if($_GET['success'] == '1'){
+        echo '<h3 style="color:light-green;color: green;border: 1px solid grey;text-align: center;padding: 5px 5px;">Payment Succesfully Done!</h3>';
+    }
+
+    $tab = '';
+    if(!empty($stuData) && count($stuData) > 1){
+        $tab = '<div style="display:inline-flex;width:25%"><span style="width:25%">Child : </span><select id="childSel" class="form-control" style="width:100%">';
+        foreach($stuData as $stu){
+            $tab .=  '<option value='.$stu['pupilsightPersonID'].'>'.$stu['officialName'].'</option>';
+        }
+        $tab .=  '</select></div>';
+    }
+    echo $tab;
+    // die();
 
     $feeheadsql = 'SELECT fn_fee_invoice.fn_fees_head_id, fn_fee_invoice_student_assign.invoice_no  FROM fn_fee_invoice_student_assign LEFT JOIN fn_fee_invoice ON fn_fee_invoice_student_assign.fn_fee_invoice_id = fn_fee_invoice.id WHERE fn_fee_invoice_student_assign.pupilsightPersonID = ' . $stuId . ' AND fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" GROUP BY fn_fee_invoice.fn_fees_head_id';
     $resultfh = $connection2->query($feeheadsql);
@@ -257,9 +286,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
             // echo '</pre>';
             // die();
 
-            if($_GET['success'] == '1'){
-                echo '<h3 style="color:light-green;color: green;border: 1px solid grey;text-align: center;padding: 5px 5px;">Payment Succesfully Done!</h3>';
-            }
+            
 
             
             echo "<div class ='row fee_hdr FeeInvoiceListManage'><div class='col-md-12'><h2>Invoices <a  id='payMultiple' data-id=".$fd['fn_fees_head_id']."  style='float:right; color:white;font-size: 14px; margin: -6px 0 0 0px;
@@ -719,6 +746,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
             } else {
                 $(".chkAllInvSel-"+id).prop("checked", false);
             }
+        });
+
+        
+        $(document).on('change', '#childSel', function () {
+            var id = $(this).val();
+            var hrf = 'index.php?q=/modules/Finance/invoice_child_view.php&cid='+id;
+            window.location.href = hrf;
         });
     </script>
 <?php
