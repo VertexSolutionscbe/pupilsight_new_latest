@@ -48,6 +48,7 @@ else
 }
 
 
+
 if (empty($username) or empty($password)) {
     $URL .= '?loginReturn=fail0b';
     header("Location: {$URL}");

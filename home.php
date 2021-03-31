@@ -1039,7 +1039,8 @@ $invalid=$_GET['invalid'];
         
             <div class="card-body">
                 <div class="closeX">
-                    <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
+                    <!-- <span class="mdi mdi-close-circle" onclick="home.php"></span> -->
+                    <a href="home.php" class="mdi mdi-close-circle"></a>
                 </div>
                 <div class="text-center my-3">
                     <img src="<?= $logo; ?>" height="36" alt="">
