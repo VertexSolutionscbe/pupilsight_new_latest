@@ -49,7 +49,9 @@
         "symfony/yaml": "^3.2",
         "monolog/monolog": "^1.24",
         "phpoffice/phpword": "^0.17.0",
-        "mikehaertl/php-pdftk": "^0.10.0"
+        "mikehaertl/php-pdftk": "^0.10.0",
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi": "^2.3"
     },
     "require-dev": {
         "phpunit/phpunit": "6.5.14"

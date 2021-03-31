@@ -2296,10 +2296,38 @@ if ($type == "getPaymentHistory") {
     // print_r($payhistory);die();
     if (!empty($payhistory)) {
         foreach ($payhistory as $ph) {
-            $sqli = "SELECT GROUP_CONCAT(DISTINCT invoice_no) AS invNo FROM fn_fees_student_collection where transaction_id = " . $ph['transaction_id'] . " OR partial_transaction_id = " . $ph['transaction_id'] . " LIMIT 0,1";
+            $sqli = "SELECT GROUP_CONCAT(DISTINCT invoice_no) AS invNo, GROUP_CONCAT(DISTINCT fn_fees_invoice_id) AS inviD FROM fn_fees_student_collection where transaction_id = " . $ph['transaction_id'] . " OR partial_transaction_id = " . $ph['transaction_id'] . " LIMIT 0,1";
             $resulti = $connection2->query($sqli);
             $invdata = $resulti->fetch();
             $invnno = $invdata['invNo'];
+            $invids = $invdata['inviD'];
+
+            $sqlamt = 'SELECT SUM(fn_fee_invoice_item.amount) as totalamount, SUM(fn_fee_invoice_item.discount) as disamount FROM fn_fee_invoice_item WHERE fn_fee_invoice_id IN ('.$invids.') ';
+            $resultamt = $connection2->query($sqlamt);
+            $dataamt = $resultamt->fetch();
+            $sql_dis = "SELECT discount FROM fn_invoice_level_discount WHERE pupilsightPersonID = " . $stuId . "  AND invoice_id IN (".$invids.") ";
+            $result_dis = $connection2->query($sql_dis);
+            $special_dis = $result_dis->fetch();
+
+            $sp_item_sql = "SELECT SUM(discount.discount) as sp_discount
+            FROM fn_fee_invoice_item as fee_item
+            LEFT JOIN fn_fee_item_level_discount as discount
+            ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id IN (".$invids.") AND pupilsightPersonID = ".$stuId."  ";
+            $result_sp_item = $connection2->query($sp_item_sql);
+            $sp_item_dis = $result_sp_item->fetch();
+
+            $totalamount = $dataamt['totalamount'];
+            $finalamount = $totalamount;
+            if (!empty($special_dis['discount']) || !empty($sp_item_dis['sp_discount'])) {
+                $dis_item_inv = $special_dis['discount'] + $sp_item_dis['sp_discount'];
+            } else {
+                $dis_item_inv = 0;
+            }
+
+            $dis = $ph['discount'];
+            $disamount = $dataamt['disamount'];
+            $dis_inv_item = $disamount + $dis_item_inv + $dis;
+
 
             $m_txt = '';
             $mode = strtoupper($ph['payMode']);
@@ -2346,7 +2374,7 @@ if ($type == "getPaymentHistory") {
             echo '<tr><td><input type="checkbox" name="paymentHistory[]" id="paymentHistory" value="' . $ph['id'] . '" class="selPayHistory payhistory' . $ph['transaction_id'] . '"></td>
                 <td><a title="View receipt" href="' . $receipt . '" download><i class="mdi mdi-receipt mdi-24px"></i></a></td>
                 <td>                
-                <a href="index.php?q=/modules/Finance/fee_payment_history.php&tid=' . $ph['transaction_id'] . '" target="_blank">' . $ph['transaction_id'] . '</a></td><td>' . $ph['receipt_number'] . '</td><td>' . $invnno . '</td><td>' . $ph['total_amount_without_fine_discount'] . '</td><td>' . $ph['fine'] . '</td><td>' . $ph['discount'] . '</td><td>' . $ph['amount_paying'] . '</td><td>' . date("d/m/Y", strtotime($ph['payment_date'])) . '</td><td>' . $ph['payMode'] . '</td>' . $paystatus . '</tr>';
+                <a href="index.php?q=/modules/Finance/fee_payment_history.php&tid=' . $ph['transaction_id'] . '" target="_blank">' . $ph['transaction_id'] . '</a></td><td>' . $ph['receipt_number'] . '</td><td>' . $invnno . '</td><td>' . $finalamount . '</td><td>' . $ph['fine'] . '</td><td>' . $dis_inv_item . '</td><td>' . $ph['amount_paying'] . '</td><td>' . date("d/m/Y", strtotime($ph['payment_date'])) . '</td><td>' . $ph['payMode'] . '</td>' . $paystatus . '</tr>';
         }
     } else {
         echo "<tr><td colspan='7'>No payment history found</td></tr>";

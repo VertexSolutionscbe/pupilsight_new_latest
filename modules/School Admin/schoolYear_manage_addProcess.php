@@ -20,7 +20,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
     $lastDay = dateConvert($guid, $_POST['lastDay']);
 
     if ($name == '' or $status == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false or $firstDay == '' or $lastDay == '') {
-        $URL .= '&return=error1';
+        $URL .= '&return=error8';
         header("Location: {$URL}");
     } else {
         //Check unique inputs for uniquness

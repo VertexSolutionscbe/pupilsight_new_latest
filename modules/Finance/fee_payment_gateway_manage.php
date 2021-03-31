@@ -44,8 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
     
     
     //$table->addColumn('sequenceNumber', __('sequenceNumber'));
-    $table->addColumn('name', __('Name'));
-    //$table->addColumn('nameShort', __('Short Name'));
+    $table->addColumn('gateway_name', __('Name'));
+    $table->addColumn('name', __('Gateway Name'));
    
         
     // ACTIONS

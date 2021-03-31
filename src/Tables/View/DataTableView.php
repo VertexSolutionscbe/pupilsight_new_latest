@@ -95,7 +95,7 @@ class DataTableView extends View implements RendererInterface
                 $headers[$i][$columnIndex] = $th;
             }
         }
-        
+
         return $headers;
     }
 
@@ -113,8 +113,8 @@ class DataTableView extends View implements RendererInterface
         foreach ($dataSet as $index => $data) {
             $row = $this->createTableRow($data, $table);
             if (!$row) continue; // Can be removed by rowLogic
-            
-            $row->addClass($index % 2 == 0? 'odd' : 'even');
+
+            $row->addClass($index % 2 == 0 ? 'odd' : 'even');
 
             $cells = [];
 
@@ -143,8 +143,8 @@ class DataTableView extends View implements RendererInterface
         $th = new TableCell($column->getLabel());
 
         $th->setTitle($column->getTitle())
-           ->setClass('column')
-           ->addData('description', $column->getDescription());
+            ->setClass('column')
+            ->addData('description', $column->getDescription());
 
         $this->applyContexts($column, $th);
 
@@ -184,7 +184,7 @@ class DataTableView extends View implements RendererInterface
         foreach ($column->getCellModifiers() as $callable) {
             $cell = $callable($data, $cell, $table->getColumnCount());
         }
-        
+
         return $cell;
     }
 

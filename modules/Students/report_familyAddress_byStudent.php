@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     echo __('This report attempts to print the family address(es) based on parents who are labelled as Contact Priority 1.');
     echo '</p>';
 
-    $choices = null;
+    $choices = array();
     if (isset($_POST['pupilsightPersonID'])) {
         $choices = $_POST['pupilsightPersonID'];
     }
@@ -34,18 +34,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     echo __('Choose Students');
     echo '</h2>';
 
-    $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_familyAddress_byStudent.php");
+    $form = Form::create('action',  $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/report_familyAddress_byStudent.php");
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
     $row = $form->addRow();
-        $row->addLabel('pupilsightPersonID', __('Students'));
-        $row->addSelectStudent('pupilsightPersonID', $_SESSION[$guid]['pupilsightSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selectMultiple()->selected($choices);
+    $row->addLabel('pupilsightPersonID', __('Students'));
+    $row->addSelectStudent('pupilsightPersonID', $_SESSION[$guid]['pupilsightSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selectMultiple()->selected($choices);
 
     $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($pupilsight->session);
+    $row->addFooter();
+    $row->addSearchSubmit($pupilsight->session);
 
     echo $form->getOutput();
 
@@ -61,15 +61,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
             $sqlWhere = '(';
             for ($i = 0; $i < count($choices); ++$i) {
                 $data[$choices[$i]] = $choices[$i];
-                $sqlWhere = $sqlWhere.'pupilsightFamilyChild.pupilsightPersonID=:'.$choices[$i].' OR ';
+                $sqlWhere = $sqlWhere . 'pupilsightFamilyChild.pupilsightPersonID=:' . $choices[$i] . ' OR ';
             }
             $sqlWhere = substr($sqlWhere, 0, -4);
-            $sqlWhere = $sqlWhere.')';
+            $sqlWhere = $sqlWhere . ')';
             $sql = "SELECT pupilsightFamily.pupilsightFamilyID, name, surname, preferredName, nameAddress, homeAddress, homeAddressDistrict, homeAddressCountry FROM pupilsightFamily JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) JOIN pupilsightPerson ON (pupilsightFamilyChild.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE $sqlWhere ORDER BY name, surname, preferredName";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+            echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
         }
         $array = array();
         $count = 0;
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                 $next = $array[($i + 1)]['pupilsightFamilyID'];
             }
             if ($current == $next) {
-                $students .= Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
+                $students .= Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student') . '<br/>';
             } else {
                 echo "<tr class=$rowNum>";
                 echo '<td>';
@@ -122,41 +122,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                 echo '</td>';
                 echo '<td>';
                 echo $students;
-                echo Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
+                echo Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student') . '<br/>';
                 echo '</td>';
                 echo '<td>';
-				//Print Name
-				if ($array[$i]['nameAddress'] != '') {
-					echo $array[$i]['nameAddress'].'<br/>';
-				} elseif ($array[$i]['name'] != '') {
-					echo $array[$i]['name'].'<br/>';
-				}
+                //Print Name
+                if ($array[$i]['nameAddress'] != '') {
+                    echo $array[$i]['nameAddress'] . '<br/>';
+                } elseif ($array[$i]['name'] != '') {
+                    echo $array[$i]['name'] . '<br/>';
+                }
 
-				//Print address
-				$addressBits = explode(',', trim($array[$i]['homeAddress']));
-				$addressBits = array_diff($addressBits, array(''));
-				$charsInLine = 0;
-				$buffer = '';
-				foreach ($addressBits as $addressBit) {
-					if ($buffer == '') {
-						$buffer = $addressBit;
-					} else {
-						if (strlen($buffer.', '.$addressBit) > 26) {
-							echo $buffer.'<br/>';
-							$buffer = $addressBit;
-						} else {
-							$buffer .= ', '.$addressBit;
-						}
-					}
-				}
-				echo $buffer.'<br/>';
+                //Print address
+                $addressBits = explode(',', trim($array[$i]['homeAddress']));
+                $addressBits = array_diff($addressBits, array(''));
+                $charsInLine = 0;
+                $buffer = '';
+                foreach ($addressBits as $addressBit) {
+                    if ($buffer == '') {
+                        $buffer = $addressBit;
+                    } else {
+                        if (strlen($buffer . ', ' . $addressBit) > 26) {
+                            echo $buffer . '<br/>';
+                            $buffer = $addressBit;
+                        } else {
+                            $buffer .= ', ' . $addressBit;
+                        }
+                    }
+                }
+                echo $buffer . '<br/>';
 
-				//Print district and country
-				if ($array[$i]['homeAddressDistrict'] != '') {
-					echo $array[$i]['homeAddressDistrict'].'<br/>';
-				}
+                //Print district and country
+                if ($array[$i]['homeAddressDistrict'] != '') {
+                    echo $array[$i]['homeAddressDistrict'] . '<br/>';
+                }
                 if ($array[$i]['homeAddressCountry'] != '') {
-                    echo $array[$i]['homeAddressCountry'].'<br/>';
+                    echo $array[$i]['homeAddressCountry'] . '<br/>';
                 }
                 echo '</td>';
                 echo '</tr>';

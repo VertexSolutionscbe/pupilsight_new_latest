@@ -24,21 +24,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
     } else {
         $page->breadcrumbs->add(__('View Behaviour Records'));
 
-        $search = isset($_GET['search'])? $_GET['search'] : '';
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
 
         if ($highestAction == 'View Behaviour Records_all') {
-            $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
             $form->setTitle(__('Search'));
             $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', '/modules/Behaviour/behaviour_view.php');
 
             $row = $form->addRow();
-                $row->addLabel('search',__('Search For'))->description('Preferred, surname, username.');
-                $row->addTextField('search')->setValue($search)->maxLength(30);
+            $row->addLabel('search', __('Search For'))->description('Preferred, surname, username.');
+            $row->addTextField('search')->setValue($search)->maxLength(30);
 
             $row = $form->addRow();
-                $row->addSearchSubmit($pupilsight->session, __('Clear Search'));
+            $row->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
             echo $form->getOutput();
         }
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
         // DATA TABLE
         if ($highestAction == 'View Behaviour Records_all') {
-            
+
             $criteria = $studentGateway->newQueryCriteria()
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
                 ->sortBy(['surname', 'preferredName'])
@@ -57,12 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
 
             $table = DataTable::createPaginated('behaviour', $criteria);
             $table->setTitle(__('Choose A Student'));
-
         } else if ($highestAction == 'View Behaviour Records_myChildren') {
             $students = $studentGateway->selectActiveStudentsByFamilyAdult($_SESSION[$guid]['pupilsightSchoolYearID'], $_SESSION[$guid]['pupilsightPersonID'])->toDataSet();
 
             $table = DataTable::create('behaviour');
-            $table->setTitle( __('My Children'));
+            $table->setTitle(__('My Children'));
         } else {
             return;
         }
@@ -71,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
             ->format(function ($person) use ($guid) {
-                $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&subpage=Behaviour&pupilsightPersonID='.$person['pupilsightPersonID'].'&search=&allStudents=&sort=surname,preferredName';
+                $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Students/student_view_details.php&subpage=Behaviour&pupilsightPersonID=' . $person['pupilsightPersonID'] . '&search=&allStudents=&sort=surname,preferredName';
                 return Format::link($url, Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true));
             });
         $table->addColumn('yearGroup', __('Year Group'));

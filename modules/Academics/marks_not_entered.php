@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
         $pupilsightSchoolYearName = $_SESSION[$guid]['pupilsightSchoolYearName'];
     }
 
-     $pupilsightSchoolYearID = '';
+    $pupilsightSchoolYearID = '';
     if (isset($_GET['pupilsightSchoolYearID'])) {
         $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
     }
@@ -45,36 +45,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
         $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         $pupilsightSchoolYearName = $_SESSION[$guid]['pupilsightSchoolYearName'];
     }
-    ?>
-<style type="text/css">
-    .text-xxs{
-        display: none;
-    }
-</style>
+?>
+    <style type="text/css">
+        .text-xxs {
+            display: none;
+        }
+    </style>
     <?php
     //print_r($_POST);
     $search = array();
     if ($_POST) {
-     $test_id=$_POST['test_id'];
-     $pupilsightYearGroupIDT=$_POST['pupilsightYearGroupIDT'];
-     $pupilsightYearGroupIDT_str=implode(',',$_POST['pupilsightYearGroupIDT']);
-     $pupilsightProgramIDBytest =  $_POST['pupilsightProgramIDBytest'];
-     $search['pupilsightProgramIDBytest']=$pupilsightProgramIDBytest;
-     $search["test_id"] = isset($_POST["test_id"])?$_POST["test_id"]:"";
-     $search["pupilsightDepartmentID"]=isset($_POST["pupilsightDepartmentID"])?$_POST["pupilsightDepartmentID"]:"";
-     $search["pupilsightRollGroupID"] = isset($_POST["pupilsightRollGroupID"])?$_POST["pupilsightRollGroupID"]:""; 
-     $search['pupilsightYearGroupIDT']=isset($_POST["pupilsightYearGroupIDT"])?$_POST["pupilsightYearGroupIDT"]:""; //test id
-    }
-    else
-    {
-    $pupilsightYearGroupIDT_str='';
-    $pupilsightProgramIDBytest =  $pupilsightProgramIDBytest;
-    $pupilsightYearGroupIDT = "";
-    $pupilsightDepartmentID = "";
-    $pupilsightRollGroupID = "";
-    
-    $skill_id = "";
-    $test_id = "";
+        $test_id = $_POST['test_id'];
+        $pupilsightYearGroupIDT = $_POST['pupilsightYearGroupIDT'];
+        $pupilsightYearGroupIDT_str = implode(',', $_POST['pupilsightYearGroupIDT']);
+        $pupilsightProgramIDBytest =  $_POST['pupilsightProgramIDBytest'];
+        $search['pupilsightProgramIDBytest'] = $pupilsightProgramIDBytest;
+        $search["test_id"] = isset($_POST["test_id"]) ? $_POST["test_id"] : "";
+        $search["pupilsightDepartmentID"] = isset($_POST["pupilsightDepartmentID"]) ? $_POST["pupilsightDepartmentID"] : "";
+        $search["pupilsightRollGroupID"] = isset($_POST["pupilsightRollGroupID"]) ? $_POST["pupilsightRollGroupID"] : "";
+        $search['pupilsightYearGroupIDT'] = isset($_POST["pupilsightYearGroupIDT"]) ? $_POST["pupilsightYearGroupIDT"] : ""; //test id
+    } else {
+        $pupilsightYearGroupIDT_str = '';
+        $pupilsightProgramIDBytest =  '';
+        $pupilsightYearGroupIDT = "";
+        $pupilsightDepartmentID = "";
+        $pupilsightRollGroupID = "";
+        $skill_id = "";
+        $test_id = "";
     }
     $curriculamGateway  = $container->get(CurriculamGateway::class);
     /*$sqld = 'SELECT pupilsightDepartmentID, name FROM pupilsightDepartment ';
@@ -86,73 +83,75 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
     foreach ($rowdatadept as $dt) {
         $subject2[$dt['pupilsightDepartmentID']] = $dt['name'];
     }
-    $subjects+=  $subject2; */ 
+    $subjects+=  $subject2; */
     //program load
     $psql = 'SELECT p.pupilsightProgramID,p.name
             FROM pupilsightProgram as p
             LEFT JOIN examinationTestAssignClass as examTAC 
             ON p.pupilsightProgramID = examTAC.pupilsightProgramID
-            WHERE examTAC.test_master_id = "'.$test_id.'" GROUP BY examTAC.pupilsightProgramID';
+            WHERE examTAC.test_master_id = "' . $test_id . '" GROUP BY examTAC.pupilsightProgramID';
     $psql = $connection2->query($psql);
     $pdata = $psql->fetchAll();
-    $program=array('' => __('Select'));    
-    $program1=array();  
+    $program = array('' => __('Select'));
+    $program1 = array();
     // $subject1=array(''=>'Select Subjects');
     foreach ($pdata as $dt) {
-    $program1[$dt['pupilsightProgramID']] = $dt['name'];
+        $program1[$dt['pupilsightProgramID']] = $dt['name'];
     }
-    $program+=  $program1;  
-   //ends here 
+    $program +=  $program1;
+    //ends here 
     //class data 
-        $clsql = 'SELECT g.pupilsightYearGroupID,g.name
+    $clsql = 'SELECT g.pupilsightYearGroupID,g.name
         FROM pupilsightYearGroup as g 
         LEFT JOIN examinationTestAssignClass as examTAC
         ON g.pupilsightYearGroupID = examTAC.pupilsightYearGroupID 
-        WHERE examTAC.test_master_id ="'.$test_id.'" AND examTAC.pupilsightProgramID="'.$pupilsightProgramIDBytest.'"  GROUP BY examTAC.pupilsightYearGroupID ORDER bY g.name ASC';
-        $class_res = $connection2->query($clsql);
-        $class_data = $class_res->fetchAll();
-        $class_option=array('' => __('Select class'));    
-        $class_option1=array();  
-        // $subject1=array(''=>'Select Subjects');
-        foreach ($class_data as $dt) {
+        WHERE examTAC.test_master_id ="' . $test_id . '" AND examTAC.pupilsightProgramID="' . $pupilsightProgramIDBytest . '"  GROUP BY examTAC.pupilsightYearGroupID ORDER bY g.name ASC';
+
+    $class_res = $connection2->query($clsql);
+    $class_data = $class_res->fetchAll();
+    $class_option = array('' => __('Select class'));
+    $class_option1 = array();
+    // $subject1=array(''=>'Select Subjects');
+    foreach ($class_data as $dt) {
         $class_option1[$dt['pupilsightYearGroupID']] = $dt['name'];
-        }
-        $class_option+=  $class_option1;  
+    }
+
+    $class_option +=  $class_option1;
     //ends class data
     //subject data
-   $subjects=array();
-   $subject1=array('' => __('Select subject'));  
-   if($pupilsightYearGroupIDT_str!="")  {
-        $s_sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightYearGroupID IN(".$pupilsightYearGroupIDT_str.")  GROUP BY subject_display_name order by subject_display_name ASC";
+    $subjects = array();
+    $subject1 = array('' => __('Select subject'));
+    if ($pupilsightYearGroupIDT_str != "") {
+        $s_sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightYearGroupID IN(" . $pupilsightYearGroupIDT_str . ")  GROUP BY subject_display_name order by subject_display_name ASC";
         $s_sq_res = $connection2->query($s_sq);
         $subjectD = $s_sq_res->fetchAll();
         foreach ($subjectD as $dt) {
-        $subject1[$dt['pupilsightDepartmentID']] = $dt['subject_display_name'];
-        }
-        }
-        $subjects+=  $subject1;  
-   //ends subject data
-    //section data
-        $sectionData=array();
-        $sectionData1=array('' => __('Select section')); 
-        if($pupilsightYearGroupIDT_str!=""){
-      $section_sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramIDBytest . '" AND a.pupilsightYearGroupID IN(' .$pupilsightYearGroupIDT_str.') GROUP BY a.pupilsightRollGroupID';
-        $section_res = $connection2->query($section_sql);
-        $section_data = $section_res->fetchAll();
-         foreach ($section_data as $dt) {
-        $sectionData1[$dt['pupilsightRollGroupID']] = $dt['name'];
+            $subject1[$dt['pupilsightDepartmentID']] = $dt['subject_display_name'];
         }
     }
-    $sectionData+=$sectionData1;
+    $subjects +=  $subject1;
+    //ends subject data
+    //section data
+    $sectionData = array();
+    $sectionData1 = array('' => __('Select section'));
+    if ($pupilsightYearGroupIDT_str != "") {
+        $section_sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramIDBytest . '" AND a.pupilsightYearGroupID IN(' . $pupilsightYearGroupIDT_str . ') GROUP BY a.pupilsightRollGroupID';
+        $section_res = $connection2->query($section_sql);
+        $section_data = $section_res->fetchAll();
+        foreach ($section_data as $dt) {
+            $sectionData1[$dt['pupilsightRollGroupID']] = $dt['name'];
+        }
+    }
+    $sectionData += $sectionData1;
     //section_data ends
-    $skills=array ('' => __('Select'));  
+    $skills = array('' => __('Select'));
     /*$skills2=array();  
 
     foreach ($skilldata as $sk) {
         $skills2[$sk['id']] = $sk['name'];
     }
-    $skills+=  $skills2; */ 
-  
+    $skills+=  $skills2; */
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -164,19 +163,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
     $form = Form::create('descriptiveIndicatorConfig', "");
     $form->setFactory(DatabaseFormFactory::create($pdo));
     if ($_POST) {
-    $marksNotEnterted = $curriculamGateway->getExamMarksNotEntered($search);
-    }else{
-    $marksNotEnterted = $curriculamGateway->getExamMarksNotEntered();
+        $marksNotEnterted = $curriculamGateway->getExamMarksNotEntered($search);
+    } else {
+        $marksNotEnterted = $curriculamGateway->getExamMarksNotEntered();
     }
-   
+
     $row = $form->addRow();
-    $test_sql = 'SELECT  examinationTestMaster.id,examinationTestMaster.name FROM `examinationTestMaster` LEFT JOIN `pupilsightSchoolYear` ON `examinationTestMaster`.`pupilsightSchoolYearID`=`pupilsightSchoolYear`.`pupilsightSchoolYearID` WHERE `examinationTestMaster`.`pupilsightSchoolYearID` = "'.$pupilsightSchoolYearID.'" ORDER BY examinationTestMaster.name ASC';
+    $test_sql = 'SELECT  examinationTestMaster.id,examinationTestMaster.name FROM `examinationTestMaster` LEFT JOIN `pupilsightSchoolYear` ON `examinationTestMaster`.`pupilsightSchoolYearID`=`pupilsightSchoolYear`.`pupilsightSchoolYearID` WHERE `examinationTestMaster`.`pupilsightSchoolYearID` = "' . $pupilsightSchoolYearID . '" ORDER BY examinationTestMaster.name ASC';
     $test_res = $connection2->query($test_sql);
     $tests = $test_res->fetchAll();
     $testList = array();
-    $testList = array(''=> ('Select Test'));
+    $testList = array('' => ('Select Test'));
     foreach ($tests as $val) {
-        $testList[$val['id']]=$val['name'];
+        $testList[$val['id']] = $val['name'];
     }
     /*$col=$row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
@@ -184,8 +183,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('test_id', __('Test Name'));
-    $col->addSelect('test_id')->fromArray($testList)->selected($search["test_id"])->required();
-   
+    if (isset($search["test_id"])) {
+        $col->addSelect('test_id')->fromArray($testList)->selected($search["test_id"])->required();
+    } else {
+        $col->addSelect('test_id')->fromArray($testList)->required();
+    }
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramIDBytest', __('Program'));
@@ -197,18 +199,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightRollGroupID', __('Section'));
-    
-    $col->addSelect('pupilsightRollGroupID')->fromArray($sectionData)->selected($search["pupilsightRollGroupID"])->placeholder('Select Section');
+    if (isset($search["pupilsightRollGroupID"])) {
+        $col->addSelect('pupilsightRollGroupID')->fromArray($sectionData)->selected($search["pupilsightRollGroupID"])->placeholder('Select Section');
+    } else {
+        $col->addSelect('pupilsightRollGroupID')->fromArray($sectionData)->placeholder('Select Section');
+    }
 
     $sub[""] = "";
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightDepartmentID', __('Subject'));
-    $col->addSelect('pupilsightDepartmentID')->fromArray($subjects)->selected($search["pupilsightDepartmentID"]);
-
-    
+    if (isset($search["pupilsightDepartmentID"])) {
+        $col->addSelect('pupilsightDepartmentID')->fromArray($subjects)->selected($search["pupilsightDepartmentID"]);
+    } else {
+        $col->addSelect('pupilsightDepartmentID')->fromArray($subjects);
+    }
 
     $skill[""] = "";
-   /* $col = $row->addColumn()->setClass('newdes');
+    /* $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('skill_id', __('Skill'));
     $col->addSelect('skill_id')->fromArray($skills)->selected($search["skill_id"]);*/
 
@@ -218,130 +225,144 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_not_entere
     $col->addSubmit();
     echo $form->getOutput();
 
-?>
-<script>
- $(document).on('change','#test_id',function(){
-   var test_id = $(this).val();
-   var type = "loadTestByProgram";
-        $.ajax({
-        url: 'ajaxSwitch.php',
-        type: 'post',
-        data: { test_id: test_id,type:type},
-        async: true,
-        success: function(response) {
-           $("#pupilsightProgramIDBytest").html(response);
-           $("#pupilsightYearGroupIDT").html('<option value="">Select class</option>');
-           $("#pupilsightRollGroupID").html('<option value="">Select section</option>');
-           $("#pupilsightDepartmentID").html('<option value="">Select subject</option>');
-        }
+    ?>
+    <script>
+        $(document).on('change', '#test_id', function() {
+            var test_id = $(this).val();
+            var type = "loadTestByProgram";
+            $.ajax({
+                url: 'ajaxSwitch.php',
+                type: 'post',
+                data: {
+                    test_id: test_id,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightProgramIDBytest").html(response);
+                    $("#pupilsightYearGroupIDT").html('<option value="">Select class</option>');
+                    $("#pupilsightRollGroupID").html('<option value="">Select section</option>');
+                    $("#pupilsightDepartmentID").html('<option value="">Select subject</option>');
+                }
+            });
         });
- });  
-/* $(document).on('change','#pupilsightSchoolYearID',function(){
-   var pupilsightSchoolYearID = $(this).val();
-   var type = "loadYearByTests";
-        $.ajax({
-        url: 'ajaxSwitch.php',
-        type: 'post',
-        data: { pupilsightSchoolYearID: pupilsightSchoolYearID,type:type},
-        async: true,
-        success: function(response) {
-           $("#test_id").html(response);
-        }
+        /* $(document).on('change','#pupilsightSchoolYearID',function(){
+           var pupilsightSchoolYearID = $(this).val();
+           var type = "loadYearByTests";
+                $.ajax({
+                url: 'ajaxSwitch.php',
+                type: 'post',
+                data: { pupilsightSchoolYearID: pupilsightSchoolYearID,type:type},
+                async: true,
+                success: function(response) {
+                   $("#test_id").html(response);
+                }
+                });
+         }); */
+        $(document).on('change', '#pupilsightProgramIDBytest', function() {
+            var pupilsightProgramID = $(this).val();
+            var test_id = $("#test_id").val();
+            $('#pupilsightYearGroupIDT').selectize()[0].selectize.destroy();
+            var type = "loadClassesByTest";
+            $.ajax({
+                url: 'ajaxSwitch.php',
+                type: 'post',
+                data: {
+                    test_id: test_id,
+                    pupilsightProgramID: pupilsightProgramID,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightYearGroupIDT").html(response);
+                    $("#pupilsightRollGroupID").html('<option value="">Select section</option>');
+                    $("#pupilsightDepartmentID").html('<option value="">Select subject</option>');
+                    $('#pupilsightYearGroupIDT').selectize({
+                        plugins: ['remove_button'],
+                    });
+                }
+            });
         });
- }); */  
- $(document).on('change','#pupilsightProgramIDBytest',function(){
-    var pupilsightProgramID=$(this).val();
-    var test_id = $("#test_id").val();
-    $('#pupilsightYearGroupIDT').selectize()[0].selectize.destroy();
-     var type = "loadClassesByTest";
-        $.ajax({
-        url: 'ajaxSwitch.php',
-        type: 'post',
-        data: { test_id:test_id,pupilsightProgramID: pupilsightProgramID,type:type},
-        async: true,
-        success: function(response) {
-            $("#pupilsightYearGroupIDT").html(response);
-            $("#pupilsightRollGroupID").html('<option value="">Select section</option>');
-            $("#pupilsightDepartmentID").html('<option value="">Select subject</option>');
-            $('#pupilsightYearGroupIDT').selectize({
-                plugins: ['remove_button'],
+        $(document).on('change', '#pupilsightYearGroupIDT', function() {
+            var pupilsightYearGroup = $(this).val();
+            var pupilsightProgramID = $("#pupilsightProgramIDBytest").val();
+            loadSubjects();
+            var type = "getSectionM";
+            $.ajax({
+                url: 'ajaxSwitch.php',
+                type: 'post',
+                data: {
+                    pupilsightYearGroup: pupilsightYearGroup,
+                    pupilsightProgramID: pupilsightProgramID,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightRollGroupID").html(response);
+                }
+            });
+        });
+
+        function loadSubjects() {
+            var pupilsightYearGroupID = $("#pupilsightYearGroupIDT").val();
+            var type = "getSubjectbasedonclassByM";
+            $.ajax({
+                url: 'ajaxSwitch.php',
+                type: 'post',
+                data: {
+                    pupilsightYearGroupID: pupilsightYearGroupID,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightDepartmentID").html(response);
+                }
             });
         }
-    });
- });   
- $(document).on('change','#pupilsightYearGroupIDT',function(){
-  var   pupilsightYearGroup=$(this).val();
-  var pupilsightProgramID =$("#pupilsightProgramIDBytest").val();
-  loadSubjects();
-   var type = "getSectionM";
-        $.ajax({
-        url: 'ajaxSwitch.php',
-        type: 'post',
-        data: { pupilsightYearGroup:pupilsightYearGroup,pupilsightProgramID:pupilsightProgramID,type:type},
-        async: true,
-        success: function(response) {
-           $("#pupilsightRollGroupID").html(response);
-        }
-        });
- });
-function loadSubjects() {
-        var pupilsightYearGroupID = $("#pupilsightYearGroupIDT").val();
-        var type = "getSubjectbasedonclassByM";
-        $.ajax({
-        url: 'ajaxSwitch.php',
-        type: 'post',
-        data: { pupilsightYearGroupID:pupilsightYearGroupID,type:type},
-        async: true,
-        success: function(response) {
-        $("#pupilsightDepartmentID").html(response);
-        }
-        });
-    }
-    $('td:last').addClass('red');
-</script>
+        $('td:last').addClass('red');
+    </script>
 <?php
-    echo "<div style='height:50px;'><div class='float-left mb-2 right_align'><a  id='export_not_marks_xl' data-type='student' class='btn btn-primary'>Export To Excel</a>&nbsp;&nbsp;</div></div>";
-  
+    echo "<div><div class='float-left mb-1 right_align'><a  id='export_not_marks_xl' data-type='student' class='btn btn-white mt-2'>Export To Excel</a></div><div class='float-none'></div></div>";
+
     $table = DataTable::create('marksNotEntered');
     $table->addColumn('pupilsightYearGroup', __('Class'));
     $table->addColumn('pupilsightRollGroup', __('Section'));
     $table->addColumn('name', __('Test'));
     $table->addColumn('pupilsightDepartment', __('Subject'));
     $table->addColumn('skill', __('Skill'));
-    
+
     $table->addColumn('marksEntered', __('Marks Entered'));
     $table->addColumn('totalStudents', __('Total Students'));
     $table->addColumn('staff', __('Staff'));
     $table->addColumn('marksStatus', __('Status'))
-    ->notSortable();
+        ->notSortable();
 
     echo "<br>" . $table->render($marksNotEnterted);
 
-echo "<div id='marksNotEntered_excel' class='downloadExcel' style='display:none'>";
-$table = DataTable::create('marksNotEnteredExcel');
-$table->addColumn('pupilsightYearGroup', __('Class'));
-$table->addColumn('pupilsightRollGroup', __('Section'));
-$table->addColumn('name', __('Test'));
-$table->addColumn('pupilsightDepartment', __('Subject'));
-$table->addColumn('skill', __('Skill'));
+    echo "<div id='marksNotEntered_excel' class='downloadExcel' style='display:none'>";
+    $table = DataTable::create('marksNotEnteredExcel');
+    $table->addColumn('pupilsightYearGroup', __('Class'));
+    $table->addColumn('pupilsightRollGroup', __('Section'));
+    $table->addColumn('name', __('Test'));
+    $table->addColumn('pupilsightDepartment', __('Subject'));
+    $table->addColumn('skill', __('Skill'));
 
-$table->addColumn('marksEntered', __('Marks Entered'));
-$table->addColumn('totalStudents', __('Total Students'));
-$table->addColumn('staff', __('Staff'));
+    $table->addColumn('marksEntered', __('Marks Entered'));
+    $table->addColumn('totalStudents', __('Total Students'));
+    $table->addColumn('staff', __('Staff'));
 
 
-echo "<br>" . $table->render($marksNotEnterted);
-echo "</div>";
-
+    echo "<br>" . $table->render($marksNotEnterted);
+    echo "</div>";
 }
 
 
 ?>
 
 <script>
-    $(document).ready(function () {
-      	$('#pupilsightYearGroupIDT').selectize({
-      		plugins: ['remove_button'],
-      	});
+    $(document).ready(function() {
+        $('#pupilsightYearGroupIDT').selectize({
+            plugins: ['remove_button'],
+        });
     });
 </script>

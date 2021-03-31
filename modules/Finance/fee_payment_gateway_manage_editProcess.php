@@ -35,6 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
         } else {
             //Validate Inputs
             $name = $_POST['name'];
+            $gateway_name = $_POST['gateway_name'];
             $username = $_POST['username'];
             $password = $_POST['password'];
             $mid = $_POST['mid'];
@@ -44,14 +45,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
             // $sequenceNumber = $_POST['sequenceNumber'];
             
 
-            if ($name == '') {
+            if ($name == '' && $gateway_name == '') {
                 $URL .= '&return=error3';
                 header("Location: {$URL}");
             } else {
                 //Check unique inputs for uniquness
                 try {
-                    $data = array('name' => $name, 'id' => $id);
-                    $sql = 'SELECT * FROM fn_fee_payment_gateway WHERE (name=:name) AND NOT id=:id';
+                    $data = array('gateway_name' => $gateway_name, 'id' => $id);
+                    $sql = 'SELECT * FROM fn_fee_payment_gateway WHERE (gateway_name=:gateway_name) AND NOT id=:id';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -66,8 +67,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
                 } else {
                     //Write to database
                     try {
-                        $data = array('name' => $name,'username' => $username,'password' => $password,'mid' => $mid,'key_id' => $key_id,'key_secret' => $key_secret, 'terms_and_conditions' => $terms_and_conditions, 'id' => $id);
-                        $sql = 'UPDATE fn_fee_payment_gateway SET name=:name, username=:username, password=:password, mid=:mid, key_id=:key_id, key_secret=:key_secret, terms_and_conditions=:terms_and_conditions WHERE id=:id';
+                        $data = array('name' => $name,'gateway_name' => $gateway_name,'username' => $username,'password' => $password,'mid' => $mid,'key_id' => $key_id,'key_secret' => $key_secret, 'terms_and_conditions' => $terms_and_conditions, 'id' => $id);
+                        $sql = 'UPDATE fn_fee_payment_gateway SET name=:name, gateway_name=:gateway_name, username=:username, password=:password, mid=:mid, key_id=:key_id, key_secret=:key_secret, terms_and_conditions=:terms_and_conditions WHERE id=:id';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

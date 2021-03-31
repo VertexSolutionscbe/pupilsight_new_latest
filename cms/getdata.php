@@ -49,7 +49,8 @@ if (!empty($camdata)) {
 
 			echo '</td>';
 			echo '<td>';
-			if (!empty($row['application_no']) || !empty($row['transaction_id'])) {
+			// if (!empty($row['application_no']) || !empty($row['transaction_id'])) {
+			if (!empty($row['transaction_id'])) {
 				$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 				$fname = trim(str_replace("/", "_", $row['application_no']));
 				//$link = $base_url . '/public/applicationpdf/parent/' . $fname;
@@ -87,15 +88,15 @@ if (!empty($camdata)) {
 						// $resultchk = database::doSelectOne($sqlchk);
 						// $gateway = $resultchk['name'];
 
-						$sqlfh = "SELECT fn_fees_head_id FROM fn_fee_structure WHERE id =".$resultchk['fn_fee_structure_id']." ";
+						$sqlfh = "SELECT fn_fees_head_id FROM fn_fee_structure WHERE id =" . $resultchk['fn_fee_structure_id'] . " ";
 						$resultfh = database::doSelectOne($sqlfh);
-						
+
 
 						$fn_fees_head_id = $resultfh['fn_fees_head_id'];
 
-						$sql = 'SELECT b.* FROM fn_fees_head AS a LEFT JOIN fn_fee_payment_gateway AS b ON a.payment_gateway_id = b.id WHERE a.id = '.$fn_fees_head_id.' ';
-						$gatewayData = database::doSelectOne($sqlfh);
-						
+						$sql = 'SELECT b.* FROM fn_fees_head AS a LEFT JOIN fn_fee_payment_gateway AS b ON a.payment_gateway_id = b.id WHERE a.id = ' . $fn_fees_head_id . ' ';
+						$gatewayData = database::doSelectOne($sql);
+
 						$terms = $gatewayData['terms_and_conditions'];
 						$gatewayID = $gatewayData['id'];
 						$gateway = $gatewayData['name'];
