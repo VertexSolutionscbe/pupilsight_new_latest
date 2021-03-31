@@ -39,33 +39,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
         if ($resultSelect->rowCount() == 1) {
             $rowSelect = $resultSelect->fetch();
             $pupilsightTTID = $rowSelect['pupilsightTTID'];
-            
         }
     }
-   
 
-    $form = Form::create('ttMaster', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+    $form = Form::create('ttMaster', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
 
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt_master.php');
+    $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/tt_master.php');
 
     $sql = "SELECT pupilsightSchoolYear.name as groupedBy, pupilsightTTID as value, pupilsightTT.name AS name FROM pupilsightTT JOIN pupilsightSchoolYear ON (pupilsightTT.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) ORDER BY pupilsightSchoolYear.sequenceNumber, pupilsightTT.name";
     $result = $pdo->executeQuery(array(), $sql);
 
     // Transform into an option list grouped by Year
-    $ttList = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
-    $ttList = array_reduce($ttList, function($list, $item) {
+    $ttList = ($result && $result->rowCount() > 0) ? $result->fetchAll() : array();
+    $ttList = array_reduce($ttList, function ($list, $item) {
         $list[$item['groupedBy']][$item['value']] = $item['name'];
         return $list;
     }, array());
 
     $row = $form->addRow();
-        $row->addLabel('pupilsightTTID', __('Timetable'));
-        $row->addSelect('pupilsightTTID')->fromArray($ttList)->required()->selected($pupilsightTTID);
+    $row->addLabel('pupilsightTTID', __('Timetable'));
+    $row->addSelect('pupilsightTTID')->fromArray($ttList)->required()->selected($pupilsightTTID);
 
     $row = $form->addRow();
-        $row->addSearchSubmit($pupilsight->session);
+    $row->addSearchSubmit($pupilsight->session);
 
 
     echo $form->getOutput();
@@ -74,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
 
         $timetableGateway = $container->get(TimetableGateway::class);
         $timetableDayGateway = $container->get(TimetableDayGateway::class);
-        
+
         $values = $timetableGateway->getTTByID($pupilsightTTID);
         $ttDays = $timetableDayGateway->selectTTDaysByID($pupilsightTTID)->fetchAll();
 
@@ -89,10 +88,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
                 echo '</h2>';
 
                 $ttDayRows = $timetableDayGateway->selectTTDayRowsByID($ttDay['pupilsightTTDayID'])->fetchAll();
-                
+
                 foreach ($ttDayRows as $ttDayRow) {
                     echo '<h5 style="margin-top: 25px">';
-                    echo __($ttDayRow['name']).'<span style=\'font-weight: normal\'> ('.Format::timeRange($ttDayRow['timeStart'], $ttDayRow['timeEnd']).')</span>';
+                    echo __($ttDayRow['name']) . '<span style=\'font-weight: normal\'> (' . Format::timeRange($ttDayRow['timeStart'], $ttDayRow['timeEnd']) . ')</span>';
                     echo '</h5>';
 
                     $ttDayRowClasses = $timetableDayGateway->selectTTDayRowClassesByID($ttDay['pupilsightTTDayID'], $ttDayRow['pupilsightTTColumnRowID']);
@@ -113,12 +112,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
                         $table->addColumn('className', __('Class'));
                         $table->addColumn('subname', __('Subject'));
                         $table->addColumn('location', __('Location'));
-                        $table->addColumn('teachers', __('Teachers'))->format(function($ttDayRowClasses) use ($timetableDayGateway) {
-                            $teachers = $timetableDayGateway->selectTTDayRowClassTeachersByIDNew($ttDayRowClasses['pupilsightStaffID'])->fetch();
-                            if(!empty($teachers)){
-                                $staffName = $teachers['staffName'];
-                            } else {
-                                $staffName = '';
+                        $table->addColumn('teachers', __('Teachers'))->format(function ($ttDayRowClasses) use ($timetableDayGateway) {
+                            $staffName = '';
+                            if (isset($ttDayRowClasses['pupilsightStaffID'])) {
+                                $teachers = $timetableDayGateway->selectTTDayRowClassTeachersByIDNew($ttDayRowClasses['pupilsightStaffID'])->fetch();
+                                if (!empty($teachers)) {
+                                    $staffName = $teachers['staffName'];
+                                }
                             }
                             return $staffName;
                             // print_r($teachers);
@@ -131,4 +131,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
         }
     }
 }
-

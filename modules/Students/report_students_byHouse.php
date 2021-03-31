@@ -10,10 +10,10 @@ use Pupilsight\Tables\Prefab\ReportTable;
 use Pupilsight\Domain\School\HouseGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byHouse.php') == false) {
-	//Acess denied
-	echo "<div class='alert alert-danger'>" ;
-		echo __('You do not have access to this action.');
-	echo "</div>" ;
+    //Acess denied
+    echo "<div class='alert alert-danger'>";
+    echo __('You do not have access to this action.');
+    echo "</div>";
 } else {
     //Proceed!
     $viewMode = $_REQUEST['format'] ?? '';
@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $yearGroupCounts = array_reduce($houseCounts->toArray(), function ($group, $item) use (&$houses) {
         $yearGroup = $item['pupilsightYearGroupID'];
         $house = $item['pupilsightHouseID'];
-        
+
         $group[$yearGroup]['yearGroupName'] = $item['yearGroupName'];
         $group[$yearGroup][$house] = [
             'totalFemale' => $item['totalFemale'],
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
                 $house = $houses[$pupilsightHouseID] ?? null;
                 if (is_null($house)) return '0';
 
-                $output = '<span title="'.$house['totalFemale'].' '.__('Female').'<br/>'.$house['totalMale'].' '.__('Male').'">';
+                $output = '<span title="' . $house['totalFemale'] . ' ' . __('Female') . '<br/>' . $house['totalMale'] . ' ' . __('Male') . '">';
                 $output .= $house['total'];
                 $output .= '</span>';
                 return $output;

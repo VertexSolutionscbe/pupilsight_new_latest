@@ -2,6 +2,7 @@
 /*
 Pupilsight, Flexible & Open School System
  */
+
 use Pupilsight\Domain\Curriculum\CurriculamGateway;
 use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Forms\Form;
@@ -55,8 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
             $academic[$dt['pupilsightSchoolYearID']] = $dt['name'];
         }
     }
-  
-   
+
+
     $HelperGateway = $container->get(HelperGateway::class);
     $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
 
@@ -67,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
         $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
         $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
         $searchbyPost = '';
-      
+
         //  $search =  $_POST['search'];
         $stuId = $_POST['studentId'];
 
@@ -80,7 +81,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
             $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
             $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
         }
-
     } else {
         $classes = array('' => 'Select Class');
         $sections = array('' => 'Select Section');
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
         $search = '';
         $stuId = '0';
 
-        if($_GET){
+        if (isset($_GET["pid"])) {
             $pupilsightProgramID =  $_GET['pid'];
             $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
             $pupilsightYearGroupID = $_GET['cid'];
@@ -105,18 +105,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
                 $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
             }
         }
-       
     }
-   
-     
-     echo "<a  id='Add_test_class_section_wise' data-type='test' href='index.php?q=/modules/Academics/test_create_with_section.php' class='btn btn-primary'>Add Test</a>&nbsp;&nbsp;";  
-      
+
+
+    echo "<a  id='Add_test_class_section_wise' data-type='test' href='index.php?q=/modules/Academics/test_create_with_section.php' class='btn btn-primary'>Add Test</a>&nbsp;&nbsp;";
+
     //  echo "<a style='display:none' id='clickmodify_test' href='fullscreen.php?q=/modules/Academics/modify_test_class_section_wise.php&width=800&class_name=$pupilsightYearGroupID&section_name=$pupilsightRollGroupID'  class='thickbox '></a>";   
     //  echo "<a  id='modify_test_btn' data-type='test' class='btn btn-primary'>Modify Test</a>&nbsp;&nbsp;";  
     //  echo "<a  id='delete_test' data-type='test' class='btn btn-primary'>Delete Test</a>&nbsp;&nbsp;";
-     echo "<a style='display:none' id='clickcopy_test_to_sections' href='fullscreen.php?q=/modules/Academics/copy_test_to_sections.php&width=800&class_name=$pupilsightYearGroupID&section_name=$pupilsightRollGroupID'  class='thickbox '></a>";   
-     echo "<a  id='copy_test_class_section_wise' data-type='test' class='btn btn-primary'>Copy Test</a>&nbsp;&nbsp;";    
-     echo  "<div style='height:10px'></div>";
+    echo "<a style='display:none' id='clickcopy_test_to_sections' href='fullscreen.php?q=/modules/Academics/copy_test_to_sections.php&width=800&class_name=$pupilsightYearGroupID&section_name=$pupilsightRollGroupID'  class='thickbox '></a>";
+    echo "<a  id='copy_test_class_section_wise' data-type='test' class='btn btn-primary'>Copy Test</a>&nbsp;&nbsp;";
+    echo  "<div style='height:10px'></div>";
 
 
     $searchform = Form::create('searchForm', '');
@@ -158,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
     // print_r($general_tests);
     // DATA TABLE
     $table = DataTable::createPaginated('managetestedit', $criteria);
-    
+
     //$table->addColumn('serial_number',__('Sl No'))
     //->notSortable();
     $table->addCheckBoxColumn('id', __(''));
@@ -168,18 +167,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_edit_test
     $table->addColumn('classname', __('Class'));
 
     $table->addActionColumn()
-    ->addParam('id')
-    ->format(function ($ac_remarks, $actions) {
-        // $actions->addAction('copynew', __('Copy'))
-        //         ->setURL('/modules/Finance/fee_structure_manage_copy.php');
+        ->addParam('id')
+        ->format(function ($ac_remarks, $actions) {
+            // $actions->addAction('copynew', __('Copy'))
+            //         ->setURL('/modules/Finance/fee_structure_manage_copy.php');
 
-        $actions->addAction('edit', __('Edit'))
+            $actions->addAction('edit', __('Edit'))
                 ->setURL('/modules/Academics/modify_test_class_section_wise.php');
 
-        $actions->addAction('delete', __('Delete'))
+            $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/Academics/test_exam_delete.php');
-    });
-    
-    echo $table->render($general_tests);
+        });
 
+    echo $table->render($general_tests);
 }

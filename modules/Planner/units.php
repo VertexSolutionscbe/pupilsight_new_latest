@@ -16,6 +16,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    $pupilsightCourseID = null;
+    $pupilsightProgramID = null;
+
     if ($highestAction == false) {
         echo "<div class='alert alert-danger'>";
         echo __('The highest grouped action cannot be determined.');
@@ -50,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
             }
 
             if ($result->rowCount() != 1) {
@@ -65,8 +68,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         }
 
         if ($pupilsightSchoolYearID != '') {
-            $pupilsightCourseID = null;
-            if (isset($_GET['pupilsightCourseID'])) {
+
+
+            if (isset($_GET['pupilsightProgramID'])) {
                 $pupilsightProgramID = $_GET['pupilsightProgramID'];
                 $pupilsightCourseID = $_GET['pupilsightCourseID'];
             }
@@ -82,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                    echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                 }
                 if ($result->rowCount() > 0) {
                     $row = $result->fetch();
@@ -96,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                    echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                 }
                 if ($result->rowCount() == 1) {
                     $row = $result->fetch();
@@ -140,18 +144,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
             echo '</h2>';
 
             echo "<div class='linkTop'>";
-                //Print year picker
-                if (getPreviousSchoolYearID($pupilsightSchoolYearID, $connection2) != false) {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&pupilsightSchoolYearID='.getPreviousSchoolYearID($pupilsightSchoolYearID, $connection2)."&pupilsightCourseID=$pupilsightCourseIDPrevious'>".__('Previous Year').'</a> ';
-                } else {
-                    echo __('Previous Year').' ';
-                }
-				echo ' | ';
-				if (getNextSchoolYearID($pupilsightSchoolYearID, $connection2) != false) {
-					echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&pupilsightSchoolYearID='.getNextSchoolYearID($pupilsightSchoolYearID, $connection2)."&pupilsightCourseID=$pupilsightCourseIDNext'>".__('Next Year').'</a> ';
-				} else {
-					echo __('Next Year').' ';
-				}
+            //Print year picker
+            if (getPreviousSchoolYearID($pupilsightSchoolYearID, $connection2) != false) {
+                echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/units.php&pupilsightSchoolYearID=' . getPreviousSchoolYearID($pupilsightSchoolYearID, $connection2) . "&pupilsightCourseID=$pupilsightCourseIDPrevious'>" . __('Previous Year') . '</a> ';
+            } else {
+                echo __('Previous Year') . ' ';
+            }
+            echo ' | ';
+            if (getNextSchoolYearID($pupilsightSchoolYearID, $connection2) != false) {
+                echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/units.php&pupilsightSchoolYearID=' . getNextSchoolYearID($pupilsightSchoolYearID, $connection2) . "&pupilsightCourseID=$pupilsightCourseIDNext'>" . __('Next Year') . '</a> ';
+            } else {
+                echo __('Next Year') . ' ';
+            }
             echo '</div>';
 
 
@@ -159,12 +163,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                 echo "<div class='alert alert-danger'>";
                 echo __('There are no records to display.');
                 echo '</div>';
-            }
-            else {
+            } else {
                 try {
                     // if ($highestAction == 'Unit Planner_all') {
-                        $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightCourseID);
-                        $sql = 'SELECT * FROM pupilsightProgramClassSectionMapping WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID';
+                    $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightCourseID);
+                    $sql = 'SELECT * FROM pupilsightProgramClassSectionMapping WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightProgramID=:pupilsightProgramID AND pupilsightYearGroupID=:pupilsightYearGroupID';
                     // } elseif ($highestAction == 'Unit Planner_learningAreas') {
                     //     $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightCourseID' => $pupilsightCourseID, 'pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
                     //     $sql = "SELECT pupilsightCourseID, pupilsightCourse.name, pupilsightCourse.nameShort FROM pupilsightCourse JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightCourseID=:pupilsightCourseID ORDER BY pupilsightCourse.nameShort";
@@ -172,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                    echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                 }
 
                 if ($result->rowCount() < 1) {
@@ -193,11 +196,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
-                        echo "<div class='alert alert-danger'>".$e->getMessage().'</div>';
+                        echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                     }
 
                     echo "<div class='linkTop'>";
-                    echo "<a class='btn btn-primary' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_add.php&pupilsightSchoolYearID=$pupilsightSchoolYearID&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID'>".__('Add')."</a>";
+                    echo "<a class='btn btn-primary' href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . "/units_add.php&pupilsightSchoolYearID=$pupilsightSchoolYearID&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID'>" . __('Add') . "</a>";
                     echo '</div>';
 
                     if ($result->rowCount() < 1) {
@@ -205,74 +208,77 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo __('There are no records to display.');
                         echo '</div>';
                     } else {
-                        echo "<form onsubmit='return confirm(\"".__('Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/unitsProcessBulk.php'>";
+                        echo "<form onsubmit='return confirm(\"" . __('Are you sure you wish to process this action? It cannot be undone.') . "\")' method='post' action='" . $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . "/unitsProcessBulk.php'>";
                         echo "<fieldset style='border: none'>";
                         echo "<div class='linkTop' style='height: 27px'>"; ?>
-        						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __('Go') ?>'>
+                        <input style='margin-top: 0px; float: right' type='submit' value='<?php echo __('Go') ?>'>
 
-                                <div id="courseClassRow" style="display: none;">
-                                    <select style="width: 182px" name="pupilsightCourseIDCopyTo" id="pupilsightCourseIDCopyTo">
-                                        <?php
-                                        print "<option value='Please select...'>" . __('Please select...') . "</option>" ;
+                        <div id="courseClassRow" style="display: none;">
+                            <select style="width: 182px" name="pupilsightCourseIDCopyTo" id="pupilsightCourseIDCopyTo">
+                                <?php
+                                print "<option value='Please select...'>" . __('Please select...') . "</option>";
 
-                                        try {
-                                            $dataSelect['pupilsightSchoolYearID'] = $pupilsightSchoolYearID;
-                                            $sqlWhere = '';
-                                            if ($pupilsightSchoolYearIDNext != false) {
-                                                $dataSelect['pupilsightSchoolYearIDNext'] = $pupilsightSchoolYearIDNext;
-                                                $sqlWhere = ' OR pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearIDNext';
-                                            }
-                                            if ($highestAction == 'Unit Planner_all') {
-                                                $sqlSelect="SELECT pupilsightCourse.pupilsightCourseID, pupilsightCourse.nameShort AS course, pupilsightSchoolYear.name AS year FROM pupilsightCourse JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightSchoolYear ON (pupilsightCourse.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) WHERE (pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID".$sqlWhere.") ORDER BY sequenceNumber, pupilsightCourse.nameShort" ;
-                                            }
-                                            else {
-                                                $dataSelect['pupilsightPersonID'] = $_SESSION[$guid]["pupilsightPersonID"];
-                                                $sqlSelect="SELECT pupilsightCourse.pupilsightCourseID, pupilsightCourse.nameShort AS course, pupilsightSchoolYear.name AS year FROM pupilsightCourse JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightSchoolYear ON (pupilsightCourse.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND (pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID".$sqlWhere.") ORDER BY sequenceNumber, pupilsightCourse.nameShort" ;
-                                            }
-                                            $resultSelect=$connection2->prepare($sqlSelect);
-                                            $resultSelect->execute($dataSelect);
-                                        }
-                                        catch(PDOException $e) {
-                                            print "<div class='alert alert-danger'>here" . $e->getMessage() . "</div>" ;
-                                        }
-                                        $yearCurrent = '';
-                                        $yearLast = '';
-                                        while ($rowSelect=$resultSelect->fetch()) {
-                                            $yearCurrent = $rowSelect['year'];
-                                            if ($yearCurrent != $yearLast) {
-                                                echo '<optgroup label=\'--'.$rowSelect['year'].'--\'/>';
-                                            }
-                                            print "<option value='" . $rowSelect["pupilsightCourseID"] . "'>" . htmlPrep($rowSelect["course"]) . "</option>" ;
-                                            $yearLast = $yearCurrent;
-                                        }
-                                        ?>
-                                    </select>
-                                    <script type="text/javascript">
-                                        var pupilsightCourseIDCopyTo=new LiveValidation('pupilsightCourseIDCopyTo');
-                                        pupilsightCourseIDCopyTo.add(Validate.Exclusion, { within: ['<?php echo __('Please select...') ?>'], failureMessage: "<?php echo __('Select something!') ?>"});
-                                    </script>
-                                </div>
+                                try {
+                                    $dataSelect['pupilsightSchoolYearID'] = $pupilsightSchoolYearID;
+                                    $sqlWhere = '';
+                                    if ($pupilsightSchoolYearIDNext != false) {
+                                        $dataSelect['pupilsightSchoolYearIDNext'] = $pupilsightSchoolYearIDNext;
+                                        $sqlWhere = ' OR pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearIDNext';
+                                    }
+                                    if ($highestAction == 'Unit Planner_all') {
+                                        $sqlSelect = "SELECT pupilsightCourse.pupilsightCourseID, pupilsightCourse.nameShort AS course, pupilsightSchoolYear.name AS year FROM pupilsightCourse JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightSchoolYear ON (pupilsightCourse.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) WHERE (pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID" . $sqlWhere . ") ORDER BY sequenceNumber, pupilsightCourse.nameShort";
+                                    } else {
+                                        $dataSelect['pupilsightPersonID'] = $_SESSION[$guid]["pupilsightPersonID"];
+                                        $sqlSelect = "SELECT pupilsightCourse.pupilsightCourseID, pupilsightCourse.nameShort AS course, pupilsightSchoolYear.name AS year FROM pupilsightCourse JOIN pupilsightDepartment ON (pupilsightCourse.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightDepartmentStaff ON (pupilsightDepartmentStaff.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID) JOIN pupilsightSchoolYear ON (pupilsightCourse.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) WHERE pupilsightDepartmentStaff.pupilsightPersonID=:pupilsightPersonID AND (role='Coordinator' OR role='Assistant Coordinator' OR role='Teacher (Curriculum)') AND (pupilsightCourse.pupilsightSchoolYearID=:pupilsightSchoolYearID" . $sqlWhere . ") ORDER BY sequenceNumber, pupilsightCourse.nameShort";
+                                    }
+                                    $resultSelect = $connection2->prepare($sqlSelect);
+                                    $resultSelect->execute($dataSelect);
+                                } catch (PDOException $e) {
+                                    print "<div class='alert alert-danger'>here" . $e->getMessage() . "</div>";
+                                }
+                                $yearCurrent = '';
+                                $yearLast = '';
+                                while ($rowSelect = $resultSelect->fetch()) {
+                                    $yearCurrent = $rowSelect['year'];
+                                    if ($yearCurrent != $yearLast) {
+                                        echo '<optgroup label=\'--' . $rowSelect['year'] . '--\'/>';
+                                    }
+                                    print "<option value='" . $rowSelect["pupilsightCourseID"] . "'>" . htmlPrep($rowSelect["course"]) . "</option>";
+                                    $yearLast = $yearCurrent;
+                                }
+                                ?>
+                            </select>
+                            <script type="text/javascript">
+                                var pupilsightCourseIDCopyTo = new LiveValidation('pupilsightCourseIDCopyTo');
+                                pupilsightCourseIDCopyTo.add(Validate.Exclusion, {
+                                    within: ['<?php echo __('Please select...') ?>'],
+                                    failureMessage: "<?php echo __('Select something!') ?>"
+                                });
+                            </script>
+                        </div>
 
-        						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-        							<option value="Select action"><?php echo __('Select action') ?></option>
-                                    <option value="Duplicate"><?php echo __('Duplicate') ?></option>
-        						</select>
-        						<script type="text/javascript">
-        							var action=new LiveValidation('action');
-        							action.add(Validate.Exclusion, { within: ['<?php echo __('Select action') ?>'], failureMessage: "<?php echo __('Select something!') ?>"});
+                        <select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+                            <option value="Select action"><?php echo __('Select action') ?></option>
+                            <option value="Duplicate"><?php echo __('Duplicate') ?></option>
+                        </select>
+                        <script type="text/javascript">
+                            var action = new LiveValidation('action');
+                            action.add(Validate.Exclusion, {
+                                within: ['<?php echo __('Select action') ?>'],
+                                failureMessage: "<?php echo __('Select something!') ?>"
+                            });
 
-                                    $(document).ready(function(){
-                                        $('#action').change(function () {
-                                            if ($(this).val() == 'Duplicate') {
-                                                $("#courseClassRow").slideDown("fast", $("#courseClassRow").css("display","block"));
-                                            } else {
-                                                $("#courseClassRow").css("display","none");
-                                            }
-                                        });
-                                    });
-
-                                </script>
-        						<?php
+                            $(document).ready(function() {
+                                $('#action').change(function() {
+                                    if ($(this).val() == 'Duplicate') {
+                                        $("#courseClassRow").slideDown("fast", $("#courseClassRow").css("display", "block"));
+                                    } else {
+                                        $("#courseClassRow").css("display", "none");
+                                    }
+                                });
+                            });
+                        </script>
+                        <?php
                         echo '</div>';
 
                         echo "<table cellspacing='0' style='width: 100%'>";
@@ -299,15 +305,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo __('Actions');
                         echo '</th>';
                         echo '<th style=\'text-align: center\'>'; ?>
-        				<script type="text/javascript">
-        					$(function () {
-        						$('.checkall').click(function () {
-        							$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-        						});
-        					});
-        				</script>
-        				<?php
-        				echo "<input type='checkbox' class='checkall'>";
+                        <script type="text/javascript">
+                            $(function() {
+                                $('.checkall').click(function() {
+                                    $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+                                });
+                            });
+                        </script>
+<?php
+                        echo "<input type='checkbox' class='checkall'>";
                         echo '</th>';
                         echo '</tr>';
 
@@ -345,13 +351,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                             echo ynExpander($guid, $row['active']);
                             echo '</td>';
                             echo '<td>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&pupilsightUnitID='.$row['pupilsightUnitID']."&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID'><i title='Edit' class='mdi mdi-pencil-box-outline mdi-24px'></i></a> ";
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_delete.php&pupilsightUnitID='.$row['pupilsightUnitID']."&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID&width=650&height=135'><i title='Delete' class='mdi mdi-trash-can-outline mdi-24px'></i></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=".$row['pupilsightUnitID']."&pupilsightSchoolYearID=$pupilsightSchoolYearID'><i title='Duplicate' class='mdi mdi-content-copy mdi-24px'></i></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=".$row['pupilsightUnitID']."&pupilsightSchoolYearID=$pupilsightSchoolYearID&sidebar=false'><i title='Export' class='mdi mdi-download-outline mdi-24px'></i></a>";
+                            echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/units_edit.php&pupilsightUnitID=' . $row['pupilsightUnitID'] . "&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID'><i title='Edit' class='mdi mdi-pencil-box-outline mdi-24px'></i></a> ";
+                            echo "<a class='thickbox' href='" . $_SESSION[$guid]['absoluteURL'] . '/fullscreen.php?q=/modules/' . $_SESSION[$guid]['module'] . '/units_delete.php&pupilsightUnitID=' . $row['pupilsightUnitID'] . "&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightSchoolYearID=$pupilsightSchoolYearID&width=650&height=135'><i title='Delete' class='mdi mdi-trash-can-outline mdi-24px'></i></a> ";
+                            echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . "/units_duplicate.php&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=" . $row['pupilsightUnitID'] . "&pupilsightSchoolYearID=$pupilsightSchoolYearID'><i title='Duplicate' class='mdi mdi-content-copy mdi-24px'></i></a> ";
+                            echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . "/units_dump.php&pupilsightProgramID=$pupilsightProgramID&pupilsightCourseID=$pupilsightCourseID&pupilsightUnitID=" . $row['pupilsightUnitID'] . "&pupilsightSchoolYearID=$pupilsightSchoolYearID&sidebar=false'><i title='Export' class='mdi mdi-download-outline mdi-24px'></i></a>";
                             echo '</td>';
                             echo '<td>';
-                            echo "<input name='pupilsightUnitID-$count' value='".$row['pupilsightUnitID']."' type='hidden'>";
+                            echo "<input name='pupilsightUnitID-$count' value='" . $row['pupilsightUnitID'] . "' type='hidden'>";
                             echo "<input type='checkbox' name='check-$count' id='check-$count'>";
                             echo '</td>';
                             echo '</tr>';
@@ -364,7 +370,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo "<input name='count' value='$count' type='hidden'>";
                         echo "<input name='pupilsightCourseID' value='$pupilsightCourseID' type='hidden'>";
                         echo "<input name='pupilsightSchoolYearID' value='$pupilsightSchoolYearID' type='hidden'>";
-                        echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
+                        echo "<input name='address' value='" . $_GET['q'] . "' type='hidden'>";
                         echo '</form>';
                     }
                 }

@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'cf0d0e2eba3102d160b11b6387d4c4fd51849688',
+    'reference' => '0b26fe9d4ff7af183d2e329b914bb616b36c3770',
     'name' => 'pupilsightedu/core',
   ),
   'versions' => 
@@ -453,7 +453,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'cf0d0e2eba3102d160b11b6387d4c4fd51849688',
+      'reference' => '0b26fe9d4ff7af183d2e329b914bb616b36c3770',
     ),
     'ralouphie/getallheaders' => 
     array (
@@ -562,6 +562,24 @@ private static $installed = array (
       array (
       ),
       'reference' => '99732be0ddb3361e16ad77b68ba41efc8e979019',
+    ),
+    'setasign/fpdf' => 
+    array (
+      'pretty_version' => '1.8.2',
+      'version' => '1.8.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd77904018090c17dc9f3ab6e944679a7a47e710a',
+    ),
+    'setasign/fpdi' => 
+    array (
+      'pretty_version' => 'v2.3.6',
+      'version' => '2.3.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '6231e315f73e4f62d72b73f3d6d78ff0eed93c31',
     ),
     'slim/slim' => 
     array (

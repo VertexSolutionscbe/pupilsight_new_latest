@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     }
     $program = $program1 + $program2;
 
-    if ($_POST['pupilsightSchoolYearID']) {
+    if (isset($_POST['pupilsightSchoolYearID'])) {
         $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
         $pupilsightProgramID =  $_POST['pupilsightProgramID'];
         $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
             if (!empty($yearGroups['officialName'])) {
                 return $yearGroups['officialName'];
             } else {
-                $data = '<a class="thickbox btn btn-primary" href="fullscreen.php/?q=/modules/School Admin/assign_class_teacher.php&mid='.$yearGroups['pupilsightMappingID'].'&aid='.$yearGroups['pupilsightSchoolYearID'].'&pid='.$yearGroups['pupilsightProgramID'].'&cid='.$yearGroups['pupilsightYearGroupID'].'&sid='.$yearGroups['pupilsightRollGroupID'].'">Assign</a>';
+                $data = '<a class="thickbox btn btn-white" href="fullscreen.php/?q=/modules/School Admin/assign_class_teacher.php&mid=' . $yearGroups['pupilsightMappingID'] . '&aid=' . $yearGroups['pupilsightSchoolYearID'] . '&pid=' . $yearGroups['pupilsightProgramID'] . '&cid=' . $yearGroups['pupilsightYearGroupID'] . '&sid=' . $yearGroups['pupilsightRollGroupID'] . '">Assign</a>';
                 return $data;
             }
             return $yearGroups['officialName'];
@@ -151,12 +151,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
             $actions->addAction('delete', __('Delete'))
                 ->setURL('/modules/School Admin/mapping_manage_delete.php');
 
-            if(!empty($yearGroups['officialName'])){
+            if (!empty($yearGroups['officialName'])) {
                 $actions->addAction('deletenew', __('DeleteNew'))
-                ->setURL('/modules/School Admin/mapping_manage_delete_class_teacher.php');
+                    ->setURL('/modules/School Admin/mapping_manage_delete_class_teacher.php');
             }
         });
 
     echo $table->render($yearGroups);
-    
 }

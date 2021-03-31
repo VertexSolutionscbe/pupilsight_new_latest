@@ -1394,7 +1394,7 @@ if (isset($data['logo_image'])) {
                     },
                     success: function(response) {
                         //$("#app_lst_tbl").removeClass("hide");
-                        console.log(response);
+                        //console.log(response);
                         if (response != '') {
                             //$(".chkdata").hide();
                             $('#app_lst_tbl_body').html(response);
