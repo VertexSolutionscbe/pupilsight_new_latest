@@ -115,9 +115,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         // ends subject check
         //close 
-        $progrm_id = "pupilsightProgramID";
-        $class_id = "pupilsightYearGroupID";
-        $section_id = "pupilsightRollGroupID";
+        $progrm_id = "pupilsightProgramIDAttn";
+        $class_id = "pupilsightYearGroupIDAttn";
+        $section_id = "pupilsightRollGroupIDAttn";
 
         if ($pupilsightRoleIDPrimary != '001') //for staff login
         {
@@ -171,8 +171,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             $pupilsightYearGroupID = isset($_GET['pupilsightYearGroupID']) ? $_GET['pupilsightYearGroupID'] : "";
         }
         if ($_GET) {
+            $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
             $classes =  $HelperGateway->getClassByProgram_Attconfig($connection2, $pupilsightProgramID);
-            $sections =  $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
         } else {
             $classes = array('');
             $sections = array('');
@@ -233,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         // $row = $form->addRow();
         $col = $row->addColumn()->setClass('newdes');
-
+        $col->addLabel('', __(''));
         $col->addSearchSubmit($pupilsight->session);
 
         echo $searchform->getOutput();
@@ -807,7 +808,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     }
 </style>
 <script type="text/javascript">
-    $(document).on('change', '#pupilsightProgramID', function() {
+    $(document).on('change', '#pupilsightProgramIDAttn', function() {
         var val = $(this).val();
         var type = "attendanceConfigCls";
         if (val != "") {
@@ -820,16 +821,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 },
                 async: true,
                 success: function(response) {
-                    $("#pupilsightYearGroupID").html();
-                    $("#pupilsightYearGroupID").html(response);
+                    $("#pupilsightYearGroupIDAttn").html();
+                    $("#pupilsightYearGroupIDAttn").html(response);
 
                 }
             })
         }
     });
-    $(document).on('change', '#pupilsightYearGroupID', function() {
+    $(document).on('change', '#pupilsightYearGroupIDAttn', function() {
         var id = $(this).val();
-        var pid = $('#pupilsightProgramID').val();
+        var pid = $('#pupilsightProgramIDAttn').val();
         var type = 'getSection';
         $.ajax({
             url: 'ajax_data.php',
@@ -841,8 +842,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             },
             async: true,
             success: function(response) {
-                $("#pupilsightRollGroupID").html();
-                $("#pupilsightRollGroupID").html(response);
+                $("#pupilsightRollGroupIDAttn").html();
+                $("#pupilsightRollGroupIDAttn").html(response);
             }
         })
     });
@@ -992,8 +993,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 
     $(document).on('change', '.load_configSession', function() {
-        var id = $('#pupilsightProgramID').val();
-        var pupilsightYearGroupID = $('#pupilsightYearGroupID').val();
+        var id = $('#pupilsightProgramIDAttn').val();
+        var pupilsightYearGroupID = $('#pupilsightYearGroupIDAttn').val();
         var type = 'getsessionConfigured';
         $.ajax({
             url: 'ajax_data.php',

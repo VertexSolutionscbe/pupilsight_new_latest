@@ -40,6 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         echo __('Filter');
         echo '</h3>';
 
+        $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
         $classes = array('' => 'Select Class');
         $sections = array('' => 'Select Section');
 
@@ -66,18 +68,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
             $uid = $_SESSION[$guid]['pupilsightPersonID'];
 
-            if($roleId == '2'){
+            if ($roleId == '2') {
                 $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
                 $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
             } else {
                 $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
-            }    
-            if(empty($pupilsightProgramID)){
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
+            }
+            if (empty($pupilsightProgramID)) {
                 unset($_SESSION['firstAid_search']);
             }
-
-            
         } else {
             $classes = array('' => 'Select Class');
             $sections = array('' => 'Select Section');
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
-        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/firstAidRecord.php");
+        $form->addHiddenValue('q', "/modules/" . $_SESSION[$guid]['module'] . "/firstAidRecord.php");
 
         // $row = $form->addRow();
         //     $row->addLabel('pupilsightPersonID', __('Student'));
@@ -133,8 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section');
 
         $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('search', __('Search By Name & Admission No'))
-            ->description($searchDescription);
+        $col->addLabel('search', __('Search By Name & Admission No'));
         $col->addTextField('search')->setValue($search);
 
         $col = $row->addColumn()->setClass('newdes');
@@ -174,24 +173,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             ->displayLabel();
 
         // COLUMNS
-        $table->addExpandableColumn('details')->format(function($person) {
+        $table->addExpandableColumn('details')->format(function ($person) {
             $output = '';
-            if ($person['description'] != '') $output .= '<b>'.__('Description').'</b><br/>'.nl2brr($person['description']).'<br/><br/>';
-            if ($person['actionTaken'] != '') $output .= '<b>'.__('Action Taken').'</b><br/>'.nl2brr($person['actionTaken']).'<br/><br/>';
-            if ($person['followUp'] != '') $output .= '<b>'.__('Follow Up').'</b><br/>'.nl2brr($person['followUp']);
+            if ($person['description'] != '') $output .= '<b>' . __('Description') . '</b><br/>' . nl2brr($person['description']) . '<br/><br/>';
+            if ($person['actionTaken'] != '') $output .= '<b>' . __('Action Taken') . '</b><br/>' . nl2brr($person['actionTaken']) . '<br/><br/>';
+            if ($person['followUp'] != '') $output .= '<b>' . __('Follow Up') . '</b><br/>' . nl2brr($person['followUp']);
             return $output;
         });
 
         $table->addColumn('patientName', __('Student'));
 
-            //->description(__('Roll Group'))
-            // ->sortable(['surnamePatient', 'preferredNamePatient'])
-            // ->format(function($person) use ($guid) {
-            //     $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID='.$person['pupilsightPersonIDPatient'].'&subpage=Medical&search=&allStudents=&sort=surname,preferredName';
-            //     // return Format::link($url, Format::name('', $person['preferredNamePatient'], $person['surnamePatient'], 'Student', true))
-            //     //       .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
-            //     return Format::link($url, Format::name('', $person['preferredNamePatient'], $person['surnamePatient'], 'Student', true));
-            // });
+        //->description(__('Roll Group'))
+        // ->sortable(['surnamePatient', 'preferredNamePatient'])
+        // ->format(function($person) use ($guid) {
+        //     $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&pupilsightPersonID='.$person['pupilsightPersonIDPatient'].'&subpage=Medical&search=&allStudents=&sort=surname,preferredName';
+        //     // return Format::link($url, Format::name('', $person['preferredNamePatient'], $person['surnamePatient'], 'Student', true))
+        //     //       .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
+        //     return Format::link($url, Format::name('', $person['preferredNamePatient'], $person['surnamePatient'], 'Student', true));
+        // });
 
         $table->addColumn('progName', __('Program'));
         $table->addColumn('clsName', __('Class'));
@@ -200,24 +199,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         $table->addColumn('firstAider', __('First Aider'))
             ->sortable(['surnameFirstAider', 'preferredNameFirstAider'])
             ->format(Format::using('name', ['', 'preferredNameFirstAider', 'surnameFirstAider', 'Staff', false, true]));
-        
+
 
         $table->addColumn('date', __('Date'))
             ->format(Format::using('date', ['date']));
 
         $table->addColumn('timeIn', __('Time'))
-            ->format(function($firstAidRecords) use ($guid) {
-                if(!empty($firstAidRecords['timeOut'])){
-                    return $firstAidRecords['timeIn'].' - '.$firstAidRecords['timeOut'];
+            ->format(function ($firstAidRecords) use ($guid) {
+                if (!empty($firstAidRecords['timeOut'])) {
+                    return $firstAidRecords['timeIn'] . ' - ' . $firstAidRecords['timeOut'];
                 } else {
                     return $firstAidRecords['timeIn'];
                 }
             });
-                
-      
+
+
 
         $table->addActionColumn()
-            ->addParam('pupilsightPersonID', $pupilsightPersonID)
+            // ->addParam('pupilsightPersonID', $pupilsightPersonID)
             ->addParam('pupilsightRollGroupID', $pupilsightRollGroupID)
             ->addParam('pupilsightYearGroupID', $pupilsightYearGroupID)
             ->addParam('pupilsightFirstAidID')
@@ -227,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
                 $actions->addAction('delete', __('Delete'))
                     ->setURL('/modules/Students/firstAidRecord_delete.php');
             });
-        
+
         echo $table->render($firstAidRecords);
     }
 }

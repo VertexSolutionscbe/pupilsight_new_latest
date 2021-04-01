@@ -1,13 +1,11 @@
 <?php
+include '../../pupilsight.php';
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
-session_start();
-// require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
-
-// $file = $_SERVER["DOCUMENT_ROOT"]."/thirdparty/phpword/templates/receipt_1.docx";
 require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
-
-$file = $_SERVER["DOCUMENT_ROOT"]."/thirdparty/phpword/templates/receipt_1.docx";
-
+require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
 
 $dtsmulti = $_SESSION["dts_receipt"];
@@ -21,10 +19,20 @@ $fee_items_multi = $_SESSION["dts_receipt_feeitem"];
 
 
 foreach($dtsmulti as $k => $dts){
+
+    $file = $dts['receiptTemplate'];
+
     $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
     $dts["total"]=$dts["transcation_amount"];
     foreach ($dts as $key => $value) {
-        $phpword->setValue($key, $value);
+        try {
+            if(!empty($value)){
+                $phpword->setValue($key, $value);
+            } else {
+                $phpword->setValue($key, '');
+            }
+        } catch (Exception $ex) {
+        }
     }
 
     if(!empty($dts["transcation_amount"])){
@@ -34,11 +42,37 @@ foreach($dtsmulti as $k => $dts){
 
     
     if(!empty($fee_items_multi[$k])){
-        $phpword->cloneRowAndSetValues('serial.all', $fee_items_multi[$k]);
+        try {
+            $phpword->cloneRowAndSetValues('serial.all', $fee_items_multi[$k]);
+        } catch (Exception $ex) {
+            //print_r($ex);
+        }
+        
     }
 
-    $savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
-    $phpword->saveAs($savedocsx);
+    try {
+        $stuName = str_replace(' ', '_', $dts["student_name"]);
+        $receiptfilename = $stuName.'_'.$dts["transactionId"];
+        $_SESSION['doc_receipt_id']=$receiptfilename;
+
+        $dataiu = array('filename' => $receiptfilename,  'transaction_id' => $dts["transactionId"]);
+        $sqliu = 'UPDATE fn_fees_collection SET filename=:filename WHERE transaction_id=:transaction_id';
+        $resultiu = $connection2->prepare($sqliu);
+        $resultiu->execute($dataiu);
+
+        // $fileName = $dts["transactionId"] . ".docx";
+        $fileName = $receiptfilename . ".docx";
+        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/receipts/";
+        $savedocsx = $inFilePath . $fileName;
+        //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
+        //echo $savedocsx;
+        $phpword->saveAs($savedocsx);
+
+        convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+    } catch (Exception $ex) {
+    }
+
+    
 }
 
 unset($_SESSION['dts_receipt']);
@@ -59,7 +93,7 @@ $admincallback = $_SESSION["admin_callback"];
 if(!empty($admincallback)){
     $callback = $admincallback;
 } else {
-    $callback = $callbackurl;
+    $callback = $callbackurl.'&success=1';
 }
 
 if(isset($callback)){

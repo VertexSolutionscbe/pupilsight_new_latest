@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
     echo 'Choose Students';
     echo '</h2>';
 
-    $choices = null;
+    $choices = array();
     if (isset($_POST['pupilsightPersonID'])) {
         $choices = $_POST['pupilsightPersonID'];
     }

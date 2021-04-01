@@ -7,7 +7,7 @@ class DBQuery
     private $conn;
     private function connect()
     {
-        include($_SERVER['DOCUMENT_ROOT'] . '/pupilsight_new/config.php');
+        include($_SERVER['DOCUMENT_ROOT'] . '/config.php');
         $this->conn = new \MySQLi($databaseServer, $databaseUsername, $databasePassword, $databaseName);
         if ($this->conn->connect_errno) {
             echo "Failed to connect to MySQL: " . $this->conn->connect_error;
@@ -76,17 +76,19 @@ class DBQuery
         $this->connect();
         //echo $sq.'<br>';
         $result = $this->conn->query($sq);
-        if ($result->num_rows > 0) {
-            $cnt = 1;
-            while ($row = $result->fetch_assoc()) {
-                if ($isSerialReq) {
-                    $row["serial_number"] = $cnt;
-                    $cnt++;
+        if ($result) {
+            if ($result->num_rows > 0) {
+                $cnt = 1;
+                while ($row = $result->fetch_assoc()) {
+                    if ($isSerialReq) {
+                        $row["serial_number"] = $cnt;
+                        $cnt++;
+                    }
+                    $dt[] = $row;
                 }
-                $dt[] = $row;
+                $this->conn->close();
+                return $dt;
             }
-            $this->conn->close();
-            return $dt;
         }
         $this->conn->close();
         return array();

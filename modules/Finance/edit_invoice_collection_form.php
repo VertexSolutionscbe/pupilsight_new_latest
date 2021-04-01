@@ -7,6 +7,7 @@ use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
 $session = $container->get('session');
 $inv_id = $session->get('inovice_ids');
+$stuID = $session->get('can_stu_id');
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edit.php') == false) {
     //Acess denied
@@ -46,6 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            
 
             $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
             $resulta = $connection2->query($sqla);
@@ -153,6 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
             $form->addHiddenValue('pupilsightProgramID', $values['pupilsightProgramID']);
             $form->addHiddenValue('pupilsightYearGroupID', $values['pupilsightYearGroupID']);
             $form->addHiddenValue('pupilsightRollGroupID', $values['pupilsightRollGroupID']);
+            $form->addHiddenValue('pupilsightPersonID', $stuID);
 
             $row = $form->addRow();
                 $col = $row->addColumn()->setClass('newdes');
@@ -277,15 +281,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                     if($i == '1'){
                         $col->addLabel('discount', __('Discount'))->addClass('dte lastlabel');
                     }     
-                        $col->addTextField('discount['.$cv['id'].']')->addClass('txtfield kountseat szewdt2 numfield')->setValue($cv['discount']);   
-                        $col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="far fa-times-circle delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>');  
+                        $col->addTextField('discount['.$cv['id'].']')->addClass('txtfield kountseat szewdt2 numfield')->setValue($cv['discount']); 
+                        
+                    if($i == '1'){
+                        $col->addContent('<div class="dte mb-1"  style="font-size: 25px; margin: -35px 50px 0px 0px; float:right; width: 30px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>');  
+                    } else {
+                        $col->addContent('<div class="dte mb-1"  style="font-size: 25px; margin: -35px -47px 0px 0px; float:right; width: 30px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>');  
+                    }
 
                     // $col = $row->addColumn()->setClass('newdes nobrdbtm remove_icon');
                     // if($i == '1'){
                     //     $col->addLabel('total_amount', __('Total Amount'))->addClass('dte');
                     // }    
                     //     $col->addTextField('total_amount['.$cv['id'].']')->addClass('txtfield kountseat szewdt2 numfield')->setValue($cv['total_amount']); 
-                    //     $col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="far fa-times-circle delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>'); 
+                         //$col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>'); 
                     $i++;       
                 }             
             } else {

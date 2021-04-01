@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
 
 
-            $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
+            $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightSchoolYearID = '.$values['academic_id'].' AND  a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
             $result = $connection2->query($sql);
             $classesdata = $result->fetchAll();
             $classes = array();
@@ -456,6 +456,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
 
   
     $(document).on('change', '#getMultiClassByProgCamp', function () {
+        var aid = $("#academic_id").val();
         var id = $(this).val();
         var type = 'getClassforCampaign';
         $('#showMultiClassByProg').selectize()[0].selectize.destroy();
@@ -463,7 +464,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit.php') == fal
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
-            data: { val: id, type: type },
+            data: { val: id, type: type, aid:aid },
             async: true,
             success: function (response) {
                 $("#showMultiClassByProg").html('');

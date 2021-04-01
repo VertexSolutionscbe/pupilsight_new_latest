@@ -38,7 +38,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
    //     ->displayLabel();
    
    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/Finance/fee_receipt_template_add.php' class='thickbox btn btn-primary'>Add</a>
-   <a href='thirdparty/phpword/templates/receipt_1.docx'  class='btn btn-primary' download>Deafult Template <i class='fas fa-download'></i></a></div><div class='float-none'></div></div>";  
+   <a href='thirdparty/phpword/templates/receipt_1.docx'  class='btn btn-primary' download>Deafult Template <i class='fas fa-download'></i></a>
+   <a href='index.php?q=/modules/Finance/form_template_fields.php' class=' btn btn-primary'>Template Fields</a>
+   </div><div class='float-none'></div></div>";  
 
    
    

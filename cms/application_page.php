@@ -10,7 +10,7 @@ function getDomain()
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
 $baseurl = getDomain();
-
+//$baseurl = getDomain().'/pupilsight';
 include_once 'w2f/adminLib.php';
 $adminlib = new adminlib();
 session_start();
@@ -354,9 +354,18 @@ if (isset($data['logo_image'])) {
                                     $today = time();
                                     $orderId = $today . $random_number;
 
-                                    $sqlchk = "SELECT name FROM fn_fee_payment_gateway";
-                                    $resultchk = database::doSelectOne($sqlchk);
-                                    $gateway = $resultchk['name'];
+                                    $sqlfh = "SELECT fn_fees_head_id FROM fn_fee_structure WHERE id =".$campaign_byid['fn_fee_structure_id']." ";
+                                    $resultfh = database::doSelectOne($sqlfh);
+                                   
+
+                                    $fn_fees_head_id = $resultfh['fn_fees_head_id'];
+
+                                    $sql = 'SELECT b.* FROM fn_fees_head AS a LEFT JOIN fn_fee_payment_gateway AS b ON a.payment_gateway_id = b.id WHERE a.id = '.$fn_fees_head_id.' ';
+                                    $gatewayData = database::doSelectOne($sql);
+                                    
+                                    $terms = $gatewayData['terms_and_conditions'];
+                                    $gatewayID = $gatewayData['id'];
+                                    $gateway = $gatewayData['name'];
 
                                     if (!empty($gateway)) {
                                         if ($gateway == 'WORLDLINE') {
@@ -365,13 +374,13 @@ if (isset($data['logo_image'])) {
                                             $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
                                 ?>
                                             <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
-
+                                                <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                                 <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
                                                 <input type="hidden" value="INR" id="currencyName" name="currencyName">
                                                 <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
-                                                <input type="hidden" name="mid" id="mid" value="WL0000000009424">
-                                                <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+                                                <input type="hidden" name="mid" id="mid" value="<?php echo $gatewayData['mid']; ?>">
+                                                <input type="hidden" name="enckey" id="enckey" value="<?php echo $gatewayData['key_id']; ?>">
                                                 <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
                                                 <input type="hidden" name="sid" value="0">
                                                 <input type="hidden" class="applicantName" name="name" value="">
@@ -388,7 +397,7 @@ if (isset($data['logo_image'])) {
 
                                         ?>
                                             <form id="admissionPay" action="../thirdparty/paymentadm/razorpay/pay.php" method="post">
-
+                                                <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                                 <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
 
@@ -413,7 +422,7 @@ if (isset($data['logo_image'])) {
 
                                         ?>
                                             <form id="admissionPay" action="../thirdparty/payment/payu/checkout.php" method="post">
-
+                                                <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                                 <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
 
@@ -422,6 +431,36 @@ if (isset($data['logo_image'])) {
                                                 <input type="hidden" class="applicantName" name="name" value="">
                                                 <input type="hidden" class="applicantEmail" name="email" value="">
                                                 <input type="hidden" class="applicantPhone" name="phone" value="">
+
+                                                <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+                                                <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                                                <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+
+                                                <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
+                                            </form>
+                                        <?php } elseif ($gateway == 'AIRPAY') {
+                                            $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                            $responseLink = $base_url . "/cms/index.php?return=1";
+                                            $airpayamount = number_format($applicationAmount, 2, '.', '');
+                                        ?>
+                                            <form id="admissionPay" action="../thirdparty/payment/airpay/sendtoairpay.php" method="post">
+                                                <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
+                                                <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="orderid">
+                                                <input type="hidden" name="amount" value="<?php echo $airpayamount; ?>">
+
+                                                <input type="hidden" name="campaignid" value="<?php echo $url_id; ?>">
+                                                <input type="hidden" name="sid" value="0">
+                                                <input type="hidden" class="applicantName" name="buyerFirstName" value="">
+                                                <input type="hidden" class="applicantName" name="buyerLastName" value="">
+                                                <input type="hidden" class="applicantEmail" name="buyerEmail" value="">
+                                                <input type="hidden" class="applicantAirPayPhone" name="buyerPhone" value="">
+
+                                                <input type="hidden" class="buyerAddress" name="buyerAddress" value="">
+                                                <input type="hidden" class="buyerCity" name="buyerCity" value="">
+                                                <input type="hidden" class="buyerState" name="buyerState" value="">
+                                                <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
+                                                <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
+                                                <input type="hidden" class="ptype" name="ptype" value="admission">
 
                                                 <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
                                                 <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
@@ -790,9 +829,12 @@ if (isset($data['logo_image'])) {
 
             iframe.find("input[name=father_mobile]").change(function() {
                 var val = '+91' + $(this).val();
+                var aval = $(this).val();
                 //alert(val);
                 if (val != '') {
                     $(".applicantPhone").val(val);
+                    $(".applicantAirPayPhone").val(aval);
+                    
                 }
             });
 

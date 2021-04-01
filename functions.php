@@ -961,7 +961,7 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
             $isInTerm = true;
         }
     }
-    
+
     //See if date's day of week is a school day
     if ($isInTerm == true) {
         try {
@@ -990,7 +990,7 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
             $isSchoolOpen = true;
         }
     }
-    
+
     return $isSchoolOpen;
 }
 
@@ -1326,9 +1326,9 @@ function getSettingByScope($connection2, $scope, $name, $returnRow = false)
 
     return false;
 }
-function getsmsBalance($connection2, $scope, $name, $returnRow = false )
+function getsmsBalance($connection2, $scope, $name, $returnRow = false)
 {
-    try{
+    try {
         $data = array('scope' => $scope, 'name' => $name);
         $karixsmscount = "SELECT * FROM pupilsightSetting WHERE scope=:scope AND description=:name";
         $karixsmscountresult = $connection2->prepare($karixsmscount);
@@ -1342,27 +1342,28 @@ function getsmsBalance($connection2, $scope, $name, $returnRow = false )
                 return $row['value'];
             }
         }
-    }catch (PDOException $e) {
+    } catch (PDOException $e) {
     }
 }
 
-function gettotalsmsBalance($connection2, $returnRow = false )
+function gettotalsmsBalance($connection2, $returnRow = false)
 {
-    try{
+    try {
         $data = array();
         $smscount = "SELECT * FROM smsCreditsHistory ";
         $smscountresult = $connection2->prepare($smscount);
         $smscountresult->execute($data);
-        $creditrowcount=$smscountresult->rowCount();
+        $creditrowcount = $smscountresult->rowCount();
         $i = 0;
-        $totalsms=0;
+        $totalsms = 0;
         while ($i < $creditrowcount) {
             $row = $smscountresult->fetch();
-            $totalsms=$totalsms + $row['credits'];
+            $totalsms = $totalsms + $row['credits'];
             $i++;
         }
         return $totalsms;
-    }catch (PDOException $e) {
+    } catch (PDOException $e) {
+        print_r($e);
     }
 }
 
@@ -2045,6 +2046,7 @@ function returnProcessGetAlert($return, $editLink = null, $customReturns = null)
         $returns['error11'] = __('Attendance has been taken at the following times for the specified date for this Subject with Same Time slot:.');
         $returns['error12'] = __('Template is Not Configured for Selected Class.');
         $returns['success1'] = __('Data Uploaded Successfully.');
+        $returns['error8'] = __('Your request failed because you did not enter all Reuired Fields.');
 
         if (isset($customReturns)) {
             if (is_array($customReturns)) {

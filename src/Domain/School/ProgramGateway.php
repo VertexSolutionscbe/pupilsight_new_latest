@@ -46,4 +46,17 @@ class ProgramGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function attendanceSettingsForStaff(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('attn_settings_staff')
+            ->cols([
+                'pupilsightProgram.name AS program_name', 'attn_settings_staff.*'
+            ])
+            ->leftJoin('pupilsightProgram', 'attn_settings_staff.pupilsightProgramID=pupilsightProgram.pupilsightProgramID');
+
+        return $this->runQuery($query, $criteria);
+    }
 }

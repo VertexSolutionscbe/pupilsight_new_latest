@@ -85,6 +85,17 @@
 
 
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/Sortable.js?v=1.0"></script>
+
+    <script src="{{ absoluteURL }}/assets/libs/trumbowyg/dist/trumbowyg.min.js"></script>
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/trumbowyg/dist/ui/trumbowyg.min.css" type="text/css"
+        media="all" />
+
+    <link rel="stylesheet"
+        href="{{ absoluteURL }}/assets/libs/trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.min.css" type="text/css"
+        media="all" />
+
+    <script src="{{ absoluteURL }}/assets/libs/trumbowyg/dist/plugins/colors/trumbowyg.colors.min.js"></script>
+
     <!-- <script src="{{ absoluteURL }}/assets/js/print.js"></script> -->
     <!--
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap.min.css?v=1.0" type="text/css" media="all" />
@@ -137,6 +148,18 @@
         .dataTables_wrapper .dataTables_filter {
             text-align: right;
             margin: 10px;
+        }
+
+        .ui-datepicker-title {
+            display: inline-flex;
+        }
+
+        .ui-datepicker-month {
+            margin: 0 5px 0 12px !important;
+        }
+
+        .ui-datepicker-year {
+            margin: 0 !important;
         }
     </style>
 </head>
@@ -319,6 +342,13 @@
 
 
                         </ul>
+                        <div style="width:0%; margin: 0px 0px 0px 10px;">
+                            <!--
+<span class='badge bg-red-lt'>Extra SMS USED TILL DATE {{ extrasmsused }} </span>
+<span class='badge bg-blue-lt'>TOTAL SMS USED TILL DATE {{ totalsmsused }} </span>
+                            -->
+                            <span class='badge bg-green-lt'>SMS Balance {{ totalsmsbalance }} </span>
+                        </div>
                         <!--
                         <div
                             class="ml-md-auto pl-md-4 py-2 py-md-0 mr-md-4 order-first order-md-last flex-grow-1 flex-md-grow-0">

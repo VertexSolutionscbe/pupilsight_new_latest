@@ -1,18 +1,25 @@
 <?php
-require('config.php');
-require('razorpay/Razorpay.php');
-
-use Razorpay\Api\Api;
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+unset($_SESSION['payment_gateway_id']);
+$payment_gateway_id = $_POST["payment_gateway_id"];
+$_SESSION["payment_gateway_id"] = $payment_gateway_id;
+
+
+require('config.php');
+require('razorpay/Razorpay.php');
+
+use Razorpay\Api\Api;
+
+
 $newpost = json_decode($_POST['formdata']);
 // echo '<pre>';
-// print_r($newpost);
+// print_r($_POST['formdata']);
 // echo '</pre>';
-//die();
+// die();
 
 
 $namount = 0;
@@ -104,3 +111,13 @@ $data = [
 $json = json_encode($data);
 
 require("checkout/{$checkout}.php");
+?>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+<script>
+    jQuery(".razorpay-payment-button").hide()
+    setTimeout(function() {
+        jQuery(".razorpay-payment-button").click();
+    }, 500);
+</script>

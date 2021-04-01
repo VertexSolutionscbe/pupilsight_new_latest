@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_assi
     // print_r($structurechk);
     // die();
      
-
+    echo '<input type="hidden" id="aid" value="'.$pupilsightSchoolYearID.'">';
     $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_structure_assignClass_manage_addProcess.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 

@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
         $startdate = $_POST['startdate'];
         $enddate =  $_POST['enddate'];
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
     } else {
         $input = ''; 
         $pupilsightProgramID = '';

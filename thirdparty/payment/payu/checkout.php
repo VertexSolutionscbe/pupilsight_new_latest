@@ -12,9 +12,17 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
-$sql = 'SELECT * FROM fn_fee_payment_gateway WHERE name = "PAYU" ';
+unset($_SESSION['payment_gateway_id']);
+$payment_gateway_id = $_POST["payment_gateway_id"];
+$_SESSION["payment_gateway_id"] = $payment_gateway_id;
+
+$sql = 'SELECT * FROM fn_fee_payment_gateway WHERE name = "PAYU" AND id = '.$payment_gateway_id.' ';
 $result = $connection2->query($sql);
 $value = $result->fetch();
+
+// $sql = 'SELECT * FROM fn_fee_payment_gateway WHERE name = "PAYU" ';
+// $result = $connection2->query($sql);
+// $value = $result->fetch();
 
 if(!empty($value)){
   $KEY = $value['key_id'];

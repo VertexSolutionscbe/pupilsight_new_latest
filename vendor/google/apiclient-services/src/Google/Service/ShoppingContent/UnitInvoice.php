@@ -20,64 +20,48 @@ class Google_Service_ShoppingContent_UnitInvoice extends Google_Collection
   protected $collection_key = 'unitPriceTaxes';
   protected $additionalChargesType = 'Google_Service_ShoppingContent_UnitInvoiceAdditionalCharge';
   protected $additionalChargesDataType = 'array';
-  protected $promotionsType = 'Google_Service_ShoppingContent_Promotion';
-  protected $promotionsDataType = 'array';
-  protected $unitPricePretaxType = 'Google_Service_ShoppingContent_Price';
-  protected $unitPricePretaxDataType = '';
+  protected $unitPriceType = 'Google_Service_ShoppingContent_Price';
+  protected $unitPriceDataType = '';
   protected $unitPriceTaxesType = 'Google_Service_ShoppingContent_UnitInvoiceTaxLine';
   protected $unitPriceTaxesDataType = 'array';
 
   /**
-   * @param Google_Service_ShoppingContent_UnitInvoiceAdditionalCharge
+   * @param Google_Service_ShoppingContent_UnitInvoiceAdditionalCharge[]
    */
   public function setAdditionalCharges($additionalCharges)
   {
     $this->additionalCharges = $additionalCharges;
   }
   /**
-   * @return Google_Service_ShoppingContent_UnitInvoiceAdditionalCharge
+   * @return Google_Service_ShoppingContent_UnitInvoiceAdditionalCharge[]
    */
   public function getAdditionalCharges()
   {
     return $this->additionalCharges;
   }
   /**
-   * @param Google_Service_ShoppingContent_Promotion
-   */
-  public function setPromotions($promotions)
-  {
-    $this->promotions = $promotions;
-  }
-  /**
-   * @return Google_Service_ShoppingContent_Promotion
-   */
-  public function getPromotions()
-  {
-    return $this->promotions;
-  }
-  /**
    * @param Google_Service_ShoppingContent_Price
    */
-  public function setUnitPricePretax(Google_Service_ShoppingContent_Price $unitPricePretax)
+  public function setUnitPrice(Google_Service_ShoppingContent_Price $unitPrice)
   {
-    $this->unitPricePretax = $unitPricePretax;
+    $this->unitPrice = $unitPrice;
   }
   /**
    * @return Google_Service_ShoppingContent_Price
    */
-  public function getUnitPricePretax()
+  public function getUnitPrice()
   {
-    return $this->unitPricePretax;
+    return $this->unitPrice;
   }
   /**
-   * @param Google_Service_ShoppingContent_UnitInvoiceTaxLine
+   * @param Google_Service_ShoppingContent_UnitInvoiceTaxLine[]
    */
   public function setUnitPriceTaxes($unitPriceTaxes)
   {
     $this->unitPriceTaxes = $unitPriceTaxes;
   }
   /**
-   * @return Google_Service_ShoppingContent_UnitInvoiceTaxLine
+   * @return Google_Service_ShoppingContent_UnitInvoiceTaxLine[]
    */
   public function getUnitPriceTaxes()
   {

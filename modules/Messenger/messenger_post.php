@@ -16,9 +16,10 @@ use Pupilsight\Tables\DataTable;
 	#individualList {
 		width: 500px;
 	}
-    .staticwidth{
-        width: 220px;
-    }
+
+	.staticwidth {
+		width: 220px;
+	}
 </style>
 <?php
 require_once __DIR__ . '/moduleFunctions.php';
@@ -247,23 +248,24 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		$row->addLabel('subject', __('Subject'));
 		$row->addTextField('subject')->maxLength(200)->required();
 
-        $display_fields = array();
-        $data = array("categorystatus" => 1);
-            $sql = "SELECT categoryname FROM messagewall_category_master WHERE status=:categorystatus";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-        if ($result->rowCount() > 0){
-            while ($rowEmail = $result->fetch()) {
-                $display_fields[$rowEmail['categoryname']] = $rowEmail['categoryname'];
-            }
-        }
-        $display_fields1 = array('' => 'Select Category');
-        $display_fields = $display_fields1 + $display_fields;
+		$display_fields = array();
+		$data = array("categorystatus" => 1);
+		$sql = "SELECT categoryname FROM messagewall_category_master WHERE status=:categorystatus";
+		$result = $connection2->prepare($sql);
+		$result->execute($data);
+		if ($result->rowCount() > 0) {
+			while ($rowEmail = $result->fetch()) {
+				$display_fields[$rowEmail['categoryname']] = $rowEmail['categoryname'];
+			}
+		}
+		$display_fields1 = array('' => 'Select Category');
+		$display_fields = $display_fields1 + $display_fields;
 
 		//$form->toggleVisibilityByClass('sms3')->onRadio('sms')->when('N');
 		$row = $form->addRow()->addClass('sms3')->setID('categoryhide');
 		$row->addLabel('category', __('Category'));
-		$row->addSelect('category')->fromArray($display_fields)->selected($values['category']);
+		//$row->addSelect('category')->fromArray($display_fields)->selected($values['category']);
+		$row->addSelect('category')->fromArray($display_fields);
 
 		//echo "<span type='text' id='count'>Character Count</span>";
 
@@ -340,7 +342,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 
 			$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
 
-			$data = array(pupilsightSchoolYearID => $_SESSION[$guid]["pupilsightSchoolYearID"]);
+			$data = array('pupilsightSchoolYearID' => $_SESSION[$guid]["pupilsightSchoolYearID"]);
 			//$sql = 'SELECT pupilsightYearGroupID AS value, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY sequenceNumber';
 			//$sql = 'SELECT a.pupilsightProgramID ,b.pupilsightYearGroupID as value, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYearGroupID';
 			$sql = "SELECT  a.pupilsightProgramID, b.pupilsightYearGroupID as value, b.name as name1, CONCAT(c.name,' ',b.name) as name FROM pupilsightProgramClassSectionMapping AS a 
@@ -661,47 +663,51 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 
 		//Advance Search for students
 
-            $row = $form->addRow();
-            $row->addLabel('AdvanceSearch', __('Advance Search'))->description(__('Advance Students Search.'));
-            $row->addYesNoRadio('advancestudents')->checked('N')->required();
+		$row = $form->addRow();
+		$row->addLabel('AdvanceSearch', __('Advance Search'))->description(__('Advance Students Search.'));
+		$row->addYesNoRadio('advancestudents')->checked('N')->required();
 
-            $form->toggleVisibilityByClass('messageAdvStudents')->onRadio('advancestudents')->when('Y');
-        $check_role = 'SELECT role.name FROM pupilsightPerson as p LEFT JOIN pupilsightRole as role ON p.pupilsightRoleIDAll = role.pupilsightRoleID 
+		$form->toggleVisibilityByClass('messageAdvStudents')->onRadio('advancestudents')->when('Y');
+		$check_role = 'SELECT role.name FROM pupilsightPerson as p LEFT JOIN pupilsightRole as role ON p.pupilsightRoleIDAll = role.pupilsightRoleID 
     WHERE p.pupilsightPersonID ="' . $_SESSION[$guid]['pupilsightPersonID'] . '" AND role.name="Administrator"';
-        $check_role = $connection2->query($check_role);
-        $role = $check_role->fetch();
-        $sqlq = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
-        $resultval = $connection2->query($sqlq);
-        $rowdata = $resultval->fetchAll();
-        $academic = array();
-        $ayear = '';
-        if (!empty($rowdata)) {
-            $ayear = $rowdata[0]['name'];
-            foreach ($rowdata as $dt) {
-                $academic[$dt['pupilsightSchoolYearID']] = $dt['name'];
-            }
-        }
-        $academic1 = array('' => 'Select Year');
-        $academic = $academic1 + $academic;
+		$check_role = $connection2->query($check_role);
+		$role = $check_role->fetch();
+		$sqlq = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
+		$resultval = $connection2->query($sqlq);
+		$rowdata = $resultval->fetchAll();
+		$academic = array();
+		$ayear = '';
+		if (!empty($rowdata)) {
+			$ayear = $rowdata[0]['name'];
+			foreach ($rowdata as $dt) {
+				$academic[$dt['pupilsightSchoolYearID']] = $dt['name'];
+			}
+		}
+		$academic1 = array('' => 'Select Year');
+		$academic = $academic1 + $academic;
 
-        $row = $form->addRow()->addClass('messageAdvStudents');;
-        $col = $row->addLabel('Class wise students', __('Class wise students'));
+		$row = $form->addRow()->addClass('messageAdvStudents');;
+		$col = $row->addLabel('Class wise students', __('Class wise students'));
 
-        $col = $row->addColumn()->setClass('newdes noEdit');
-        $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
-        $col->addSelect('pupilsightSchoolYearID')->fromArray($academic);
+		$col = $row->addColumn()->setClass('newdes noEdit');
+		$col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
+		$col->addSelect('pupilsightSchoolYearID')->fromArray($academic);
 
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('pupilsightProgramID', __('Program'));
-        $col->addSelect('pupilsightProgramID')->placeholder();
+		$col = $row->addColumn()->setClass('newdes');
+		$col->addLabel('pupilsightProgramID', __('Program'));
+		$col->addSelect('pupilsightProgramID')->setId("pupilsightProgramIDA")->placeholder();
 
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
-        $col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->addClass("pupilsightRollGroupIDP1 staticwidth")->selectMultiple();
+		$col = $row->addColumn()->setClass('newdes');
+		$col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
+		$col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->addClass("pupilsightRollGroupIDP1 staticwidth")->selectMultiple();
 
-        $col = $row->addColumn()->setClass('newdes');
-        $col->addLabel('pupilsightPersonID', __('Students'))->addClass('dte');
-        $col->addSelect('pupilsightPersonID')->selected($pupilsightPersonID)->selectMultiple()->addClass("staticwidth");
+		$col = $row->addColumn()->setClass('newdes');
+		$col->addLabel('pupilsightPersonID', __('Students'))->addClass('dte');
+		if (isset($pupilsightPersonID)) {
+			$col->addSelect('pupilsightPersonID')->selected($pupilsightPersonID)->selectMultiple()->addClass("staticwidth");
+		} else {
+			$col->addSelect('pupilsightPersonID')->selectMultiple()->addClass("staticwidth");
+		}
 
 
 
@@ -713,7 +719,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 			$row->addYesNoRadio('individuals')->checked('N')->required();
 
 			$form->toggleVisibilityByClass('individuals')->onRadio('individuals')->when('Y');
-            //$data= array();
+			//$data= array();
 			$sql = "SELECT pupilsightRole.category, pupilsightPersonID, preferredName, surname, username FROM pupilsightPerson JOIN pupilsightRole ON (pupilsightRole.pupilsightRoleID=pupilsightPerson.pupilsightRoleIDPrimary) WHERE status='Full' ORDER BY surname, preferredName";
 			//$sql = "SELECT ppr.category, pp2.pupilsightPersonID as value, pp2.preferredName,pp2.surname,pp2.username, psp.name as programname,pyg.name as classname, prg.name as sectionname, pp2.officialName,CONCAT(pp2.preferredName,' ',pyg.name,' ',prg.name) as name FROM pupilsightPerson as pp2 left join pupilsightStudentEnrolment as pse ON pp2.pupilsightPersonID=pse.pupilsightPersonID left join pupilsightProgram as psp ON pse.pupilsightProgramID=psp.pupilsightProgramID left join pupilsightYearGroup as pyg ON pse.pupilsightYearGroupID=pyg.pupilsightYearGroupID left join pupilsightRollGroup as prg ON pse.pupilsightRollGroupID=prg.pupilsightRollGroupID left join pupilsightRole as ppr ON ppr.pupilsightRoleID=pp2.pupilsightRoleIDPrimary WHERE status='Full'";
 			$result = $pdo->executeQuery(array(), $sql);
@@ -724,7 +730,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 				$group[$item['pupilsightPersonID']] = formatName("" . $item['preferredName'], $item['surname'], 'Student', true) . ' (' . $item['username'] . ', ' . __($item['category']) . ')';
 				return $group;
 			}, array());
-            /*$row = $form->addRow()->addClass('individuals hiddenReveal');
+			/*$row = $form->addRow()->addClass('individuals hiddenReveal');
             $row->addLabel('individualList[]', __('Select Individuals'));
             $row->addSelect('individualList[]')->fromQuery($pdo, $sql, $data)->setId('individualList')->selectMultiple()->required()->placeholder();*/
 
@@ -734,7 +740,6 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 
 			echo "<script>\nvar js_array = " . json_encode($individuals) . ";</script>";
 		}
-
 		$row = $form->addRow();
 		$row->addFooter();
 		$row->addSubmit();
@@ -758,136 +763,134 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 	});
 </script>
 <script>
-    $('input[type=radio][name=email]').change(function() {
-        if (this.value == 'Y') {
-            //alert("yes");
-            $("input[name=sms][value='N']").prop("checked",true);
-            $("input[name=messageWall][value='N']").prop("checked",true);
-            $("[id=publicationdate").hide();
-            $("[id=body1hide").hide();
-            $("[id=bodyhide").show();
-            $("[id=categoryhide").show();
-            $("[id=copysmshide").hide();
-        }
-        else if (this.value == 'N') {
-            //alert("no");
-        }
-    });
+	$('input[type=radio][name=email]').change(function() {
+		if (this.value == 'Y') {
+			//alert("yes");
+			$("input[name=sms][value='N']").prop("checked", true);
+			$("input[name=messageWall][value='N']").prop("checked", true);
+			$("[id=publicationdate").hide();
+			$("[id=body1hide").hide();
+			$("[id=bodyhide").show();
+			$("[id=categoryhide").show();
+			$("[id=copysmshide").hide();
+		} else if (this.value == 'N') {
+			//alert("no");
+		}
+	});
 </script>
 <script>
-    $('input[type=radio][name=sms]').change(function() {
-        if (this.value == 'Y') {
-            //alert("yes");
-            $("input[name=email][value='N']").prop("checked",true);
-            $("input[name=messageWall][value='N']").prop("checked",true);
+	$('input[type=radio][name=sms]').change(function() {
+		if (this.value == 'Y') {
+			//alert("yes");
+			$("input[name=email][value='N']").prop("checked", true);
+			$("input[name=messageWall][value='N']").prop("checked", true);
 
-            $("[id=replyemail").hide();
-            $("[id=bccemail").hide();
-            $("[id=publicationdate").hide();
-            $("[id=subjecthide").hide();
-            $("[id=bodyhide").hide();
-            $("[id=categoryhide").hide();
-        }
-        else if (this.value == 'N') {
-            //alert("no");
-        }
-    });
+			$("[id=replyemail").hide();
+			$("[id=bccemail").hide();
+			$("[id=publicationdate").hide();
+			$("[id=subjecthide").hide();
+			$("[id=bodyhide").hide();
+			$("[id=categoryhide").hide();
+		} else if (this.value == 'N') {
+			//alert("no");
+		}
+	});
 </script>
 <script>
-    $('input[type=radio][name=messageWall]').change(function() {
-        if (this.value == 'Y') {
-            //alert("yes");
-            $("input[name=sms][value='N']").prop("checked",true);
-            $("input[name=email][value='N']").prop("checked",true);
-            $("[id=replyemail").hide();
-            $("[id=bccemail").hide();
-            $("[id=body1hide").hide();
-            $("[id=copysmshide").hide();
-            $("[id=bodyhide").show();
-            $("[id=categoryhide").show();
-        }
-        else if (this.value == 'N') {
-            //alert("no");
-        }
-    });
+	$('input[type=radio][name=messageWall]').change(function() {
+		if (this.value == 'Y') {
+			//alert("yes");
+			$("input[name=sms][value='N']").prop("checked", true);
+			$("input[name=email][value='N']").prop("checked", true);
+			$("[id=replyemail").hide();
+			$("[id=bccemail").hide();
+			$("[id=body1hide").hide();
+			$("[id=copysmshide").hide();
+			$("[id=bodyhide").show();
+			$("[id=categoryhide").show();
+		} else if (this.value == 'N') {
+			//alert("no");
+		}
+	});
 </script>
 <script>
-    $(document).on('change', '#pupilsightSchoolYearID', function() {
-        var val = $(this).val();
-        var type = "getPrograms1";
-        if (val != "") {
-            $.ajax({
-                url: 'ajax_data.php',
-                type: 'post',
-                data: {
-                    val: val,
-                    type: type
-                },
-                async: true,
-                success: function(response) {
-                    $("#pupilsightProgramID").html();
-                    $("#pupilsightProgramID").html(response);
+	$(document).on('change', '#pupilsightSchoolYearID', function() {
+		var val = $(this).val();
+		var type = "getPrograms1";
+		if (val != "") {
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: val,
+					type: type
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightProgramIDA").html();
+					$("#pupilsightProgramIDA").html(response);
 
-                }
-            });
-        }
-    });
+				}
+			});
+		}
+	});
 </script>
 <script type="text/javascript">
-    $(document).on('change', '#pupilsightProgramID', function() {
-        var val = $(this).val();
-        var type = "getClass";
-        if (val != "") {
-            $.ajax({
-                url: 'ajax_data.php',
-                type: 'post',
-                data: {
-                    val: val,
-                    type: type
-                },
-                async: true,
-                success: function(response) {
-                    $("#pupilsightYearGroupIDA").html();
-                    $("#pupilsightYearGroupIDA").html(response);
+	$(document).on('change', '#pupilsightProgramIDA', function() {
+		var val = $(this).val();
+		var type = "getClass";
+		if (val != "") {
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: val,
+					type: type
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightYearGroupIDA").html();
+					$("#pupilsightYearGroupIDA").html(response);
 
-                }
-            });
-        }
-    });
+				}
+			});
+		}
+	});
 </script>
 <script type="text/javascript">
-    $(document).on('change', '.pupilsightRollGroupIDP1', function() {
-        var id = $("#pupilsightRollGroupID").val();
-        var yid = $('#pupilsightSchoolYearID').val();
-        var pid = $('#pupilsightProgramID').val();
-        var cid = $('#pupilsightYearGroupIDA').val();
-        var type = 'getStudentClassAndSection';
-        $.ajax({
-            url: 'ajax_data.php',
-            type: 'post',
-            data: {
-                val: id,
-                type: type,
-                yid: yid,
-                pid: pid,
-                cid: cid
-            },
-            async: true,
-            success: function(response) {
-                $("#pupilsightPersonID").html();
-                $("#pupilsightPersonID").append(response);
-            }
-        });
-    });
+	$(document).on('change', '#pupilsightYearGroupIDA', function() {
+		//var id = $("#pupilsightRollGroupID").val();
+		var yid = $('#pupilsightSchoolYearID').val();
+		var pid = $('#pupilsightProgramIDA').val();
+		var cid = $(this).val();
+		if (cid != "") {
+			var type = 'getStudentClassAndSection';
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: cid,
+					type: type,
+					yid: yid,
+					pid: pid
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightPersonID").html('');
+					$("#pupilsightPersonID").append(response);
+				}
+			});
+		}
+	});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#pupilsightYearGroupIDA').select2();
-    });
+	$(document).ready(function() {
+		$('#pupilsightYearGroupIDA').select2();
+	});
 </script>
 
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#pupilsightPersonID').select2();
-    });
+	$(document).ready(function() {
+		$('#pupilsightPersonID').select2();
+	});
 </script>

@@ -246,12 +246,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     </table>
     </form>
 <?php   
-} }
+    } }
 ?>
 
 <script>
     $(function(){
-        $("#historyTable").dataTable();
+        $("#historyTable").dataTable({
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+        });
     })
     $("#start_date").datepicker({
         //minDate: 0,

@@ -116,15 +116,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                         // $resultd = $connection2->prepare($sqld);
                         // $resultd->execute($datad);
 
-                        $invId = $connection2->lastInsertID();
+                        $invIdNew = $connection2->lastInsertID();
 
                         
-                        $datau = array('fn_fee_invoice_id' => $invId, 'id' => $invid);
-                        $sqlu = 'UPDATE fn_fee_invoice_student_assign SET fn_fee_invoice_id=:fn_fee_invoice_id WHERE id=:id';
-                        $resultu = $connection2->prepare($sqlu);
-                        $resultu->execute($datau);
+                        // $datau = array('fn_fee_invoice_id' => $invIdNew, 'id' => $invid, 'pupilsightPersonID' => $stid);
+                        // $sqlu = 'UPDATE fn_fee_invoice_student_assign SET fn_fee_invoice_id=:fn_fee_invoice_id WHERE id=:id AND pupilsightPersonID=:pupilsightPersonID';
+                        // $resultu = $connection2->prepare($sqlu);
+                        // $resultu->execute($datau);
 
-                        $dataca = array('fn_fee_invoice_id' => $invId, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID);
+                        $sq = "UPDATE fn_fee_invoice_student_assign SET fn_fee_invoice_id = ".$invIdNew." WHERE id = ".$invid." ";
+                        $connection2->query($sq);
+
+                        $dataca = array('fn_fee_invoice_id' => $invIdNew, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID);
                         $sqlca = "INSERT INTO fn_fee_invoice_class_assign SET fn_fee_invoice_id=:fn_fee_invoice_id, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID";
                         $resultca = $connection2->prepare($sqlca);
                         $resultca->execute($dataca);
@@ -150,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                                 
         
                                 if(!empty($feeitem) && !empty($amt) && !empty($taxdata)){
-                                    $data1 = array('fn_fee_invoice_id' => $invId, 'fn_fee_item_id' => $feeitem, 'description' => $desc, 'amount' => $amt, 'tax' => $taxdata, 'discount' => $disc, 'total_amount' => $total_amount);
+                                    $data1 = array('fn_fee_invoice_id' => $invIdNew, 'fn_fee_item_id' => $feeitem, 'description' => $desc, 'amount' => $amt, 'tax' => $taxdata, 'discount' => $disc, 'total_amount' => $total_amount);
                                     $sql1 = "INSERT INTO fn_fee_invoice_item SET fn_fee_invoice_id=:fn_fee_invoice_id, fn_fee_item_id=:fn_fee_item_id, description=:description, amount=:amount,  tax=:tax, discount=:discount, total_amount=:total_amount";
                                     $result1 = $connection2->prepare($sql1);
                                     $result1->execute($data1);

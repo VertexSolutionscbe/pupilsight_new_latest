@@ -37,22 +37,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
     //     ->setURL('/modules/Finance/program_manage_add.php')
     //     ->displayLabel();
 
-    if(count($yearGroups) < 1){
+   
     
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='fullscreen.php?q=/modules/Finance/fee_payment_gateway_manage_add.php' class='thickbox btn btn-primary'>Add</a></div><div class='float-none'></div></div>";  
-    }
+    echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=/modules/Finance/fee_payment_gateway_manage_add.php' class=' btn btn-primary'>Add</a></div><div class='float-none'></div></div>";  
+  
     
     
     //$table->addColumn('sequenceNumber', __('sequenceNumber'));
-    $table->addColumn('name', __('Name'));
-    //$table->addColumn('nameShort', __('Short Name'));
+    $table->addColumn('gateway_name', __('Name'));
+    $table->addColumn('name', __('Gateway Name'));
    
         
     // ACTIONS
     $table->addActionColumn()
         ->addParam('id')
         ->format(function ($facilities, $actions) use ($guid) {
-            $actions->addAction('editnew', __('Edit'))
+            $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Finance/fee_payment_gateway_manage_edit.php');
 
             $actions->addAction('delete', __('Delete'))

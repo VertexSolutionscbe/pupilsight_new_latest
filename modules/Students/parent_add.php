@@ -17,7 +17,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_add.php'
     //Proceed!
     $page->breadcrumbs
          ->add(__('Manage Students'), 'students.php')
-         ->add(__('Add Student'));
+         ->add(__('Add Parent'));
 
     $returns = array();
     $returns['error5'] = __('Your request failed because your passwords did not match.');

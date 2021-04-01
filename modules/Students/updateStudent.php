@@ -117,7 +117,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/updateStudent.php
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
-    $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+    if (isset($pupilsightProgramID)) {
+        $col->addSelect('pupilsightProgramID')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program')->required();
+    } else {
+        $col->addSelect('pupilsightProgramID')->fromArray($program)->placeholder('Select Program')->required();
+    }
+
 
     // $col = $row->addColumn()->setClass('newdes');
     // $col->addLabel('pupilsightYearGroupID', __('Class'));
@@ -126,19 +131,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/updateStudent.php
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('series_id', __('Series'));
-    $col->addSelect('series_id')->fromArray($series)->selected($series_id)->placeholder('Select Series')->required();
-
+    if (isset($series_id)) {
+        $col->addSelect('series_id')->fromArray($series)->selected($series_id)->placeholder('Select Series')->required();
+    } else {
+        $col->addSelect('series_id')->fromArray($series)->placeholder('Select Series')->required();
+    }
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('type', __('Type'))->addClass('dte');
-    $col->addSelect('type')->fromArray($types)->selected($type)->required();
-
+    if (isset($type)) {
+        $col->addSelect('type')->fromArray($types)->selected($type)->required();
+    } else {
+        $col->addSelect('type')->fromArray($types)->required();
+    }
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('', __(''));
     $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
-
-
 
     echo $form->getOutput();
     if ($_POST) {

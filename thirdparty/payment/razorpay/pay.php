@@ -1,19 +1,32 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+unset($_SESSION['payment_gateway_id']);
+$payment_gateway_id = $_POST["payment_gateway_id"];
+$_SESSION["payment_gateway_id"] = $payment_gateway_id;
+
+
 require('config.php');
 require('razorpay/Razorpay.php');
 
 use Razorpay\Api\Api;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 //session_start();
 
 // Create the Razorpay Order
 $api = new Api($keyId, $keySecret);
 
 $parms = array_merge($_POST, $_GET);
+
+
+
+
 $_SESSION["paypost"] = $parms;
+
+
 // echo '<pre>';
 // print_r($parms);
 // echo '</pre>';
@@ -87,6 +100,11 @@ $data = [
         "color"             => "#F37254"
     ],
     "order_id"          => $razorpayOrderId,
+    "notes"           => [
+        "student_name"      => $name,
+        "invoice_no"        => $parms['payid'],
+        "class_name"        => $parms['className'],
+    ],
 ];
 
 $json = json_encode($data);

@@ -38,8 +38,8 @@ class HelperGateway extends QueryableGateway
         return $classes;
     }
 
-    public function getSectionByProgram($connection2, $pupilsightYearGroupID, $pupilsightProgramID) {
-        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" GROUP BY a.pupilsightRollGroupID';
+    public function getSectionByProgram($connection2, $pupilsightYearGroupID, $pupilsightProgramID, $pupilsightSchoolYearID) {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
         $result = $connection2->query($sql);
         $sectionsdata = $result->fetchAll();
 
@@ -137,9 +137,9 @@ class HelperGateway extends QueryableGateway
         return $sections;
     }
 
-    public function getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID, $pupilsightProgramID) {
+    public function getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID, $pupilsightProgramID, $pupilsightSchoolYearID) {
        
-        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" GROUP BY a.pupilsightRollGroupID ';       
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" GROUP BY a.pupilsightRollGroupID ';       
 
        
         $result = $connection2->query($sql);
@@ -394,7 +394,7 @@ class HelperGateway extends QueryableGateway
         $sections2 = array();
         $sections1 = array('' => 'Select Invoice');
         foreach ($sectionsdata as $ct) {
-            $sections2[$ct['fn_fee_structure_id']] = $ct['title'];
+            $sections2[$ct['title']] = $ct['title'];
         }
         $invoices = $sections1 + $sections2;
         return $invoices;

@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         
         $row = $form->addRow();
             $row->addLabel('pupilsightSchoolYearID', __('Academic Year'));
-            $row->addSelect('pupilsightSchoolYearID')->fromArray($academicData)->required()->selected($pupilsightSchoolYearID);
+            $row->addSelect('pupilsightSchoolYearID')->setID('pupilsightSchoolYearIDSchool')->fromArray($academicData)->required()->selected($pupilsightSchoolYearID);
 
         $row = $form->addRow();
             $row->addLabel('pupilsightProgramID', __('Program'));

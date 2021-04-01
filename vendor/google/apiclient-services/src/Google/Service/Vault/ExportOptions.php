@@ -25,6 +25,9 @@ class Google_Service_Vault_ExportOptions extends Google_Model
   protected $hangoutsChatOptionsDataType = '';
   protected $mailOptionsType = 'Google_Service_Vault_MailExportOptions';
   protected $mailOptionsDataType = '';
+  public $region;
+  protected $voiceOptionsType = 'Google_Service_Vault_VoiceExportOptions';
+  protected $voiceOptionsDataType = '';
 
   /**
    * @param Google_Service_Vault_DriveExportOptions
@@ -81,5 +84,27 @@ class Google_Service_Vault_ExportOptions extends Google_Model
   public function getMailOptions()
   {
     return $this->mailOptions;
+  }
+  public function setRegion($region)
+  {
+    $this->region = $region;
+  }
+  public function getRegion()
+  {
+    return $this->region;
+  }
+  /**
+   * @param Google_Service_Vault_VoiceExportOptions
+   */
+  public function setVoiceOptions(Google_Service_Vault_VoiceExportOptions $voiceOptions)
+  {
+    $this->voiceOptions = $voiceOptions;
+  }
+  /**
+   * @return Google_Service_Vault_VoiceExportOptions
+   */
+  public function getVoiceOptions()
+  {
+    return $this->voiceOptions;
   }
 }

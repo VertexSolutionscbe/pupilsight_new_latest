@@ -14,8 +14,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Program'), 'program_manage.php')
-        ->add(__('Edit Program'));
+    ->add(__('Manage Fee Payment Gateway'), 'fee_payment_gateway_manage.php')
+    ->add(__('Edit Fee Payment Gateway'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
             echo __('Edit Fee Payment Gateway');
             echo '</h2>';
 
-            $gateway = array('' => 'Select Gateway', 'RAZORPAY' => 'RAZORPAY', 'WORLDLINE' => 'WORLDLINE', 'PAYU' => 'PAYU');
+            $gateway = array('' => 'Select Gateway', 'RAZORPAY' => 'RAZORPAY', 'WORLDLINE' => 'WORLDLINE', 'PAYU' => 'PAYU', 'AIRPAY' => 'AIRPAY');
 
             $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/fee_payment_gateway_manage_editProcess.php?id='.$id);
             $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -57,8 +57,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
-                $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+                $row->addLabel('gateway_name', __('Name'))->description(__('Must be unique.'));
+                $row->addTextField('gateway_name')->setValue($values['gateway_name'])->required();
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Gateway Name'))->description(__('Must be unique.'));
                 $row->addSelect('name')->fromArray($gateway)->required()->selected($values['name']);
+
+            $row = $form->addRow();
+                $row->addLabel('username', __('UserName'));
+                $row->addTextField('username')->setValue($values['username']);
+        
+            $row = $form->addRow();
+                $row->addLabel('password', __('Password'));
+                $row->addTextField('password')->setValue($values['password']);
 
             $row = $form->addRow();
                 $row->addLabel('mid', __('Merchant ID'))->description(__('Must be unique.'));
@@ -72,9 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
                 $row->addLabel('key_secret', __('key Secret'))->description(__('Must be unique.'));
                 $row->addTextField('key_secret')->setValue($values['key_secret']);    
 
-            // $row = $form->addRow();
-            //     $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-            //     $row->addTextField('nameShort')->required()->maxLength(4)->setValue($values['nameShort']);
+            $row = $form->addRow();
+                $row->addLabel('terms_and_conditions', __('Terms & Conditions'));
+                $row->addTextArea('terms_and_conditions')->setValue($values['terms_and_conditions']);
 
             // $row = $form->addRow();
             //     $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));

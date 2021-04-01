@@ -463,7 +463,7 @@ if ($type == 'invoiceFeeItem') {
         $amtpaid = 0;
         $amtpending = 0;
         $paystatus = '';
-        $sql_dis = "SELECT discount FROM fn_fee_item_level_discount WHERE pupilsightPersonID = " . $sid . "  AND item_id='" . $fI['itemid'] . "' ";
+        $sql_dis = "SELECT SUM(discount) AS discount FROM fn_fee_item_level_discount WHERE pupilsightPersonID = " . $sid . "  AND item_id='" . $fI['itemid'] . "' ";
         $result_dis = $connection2->query($sql_dis);
         $special_dis = $result_dis->fetch();
         if (!empty($fI['transport_schedule_id'])) {
@@ -533,6 +533,15 @@ if ($type == 'invoiceFeeItem') {
         }
         $amtdiscount = $totalamount - $discountamt;
 
+        $discountItem = 0;
+        if (!empty($fI['discount'])) {
+            $discountItem = $fI['discount'] + $discountamt;
+        } else {
+            $discountItem = $discountamt;
+        }
+
+
+
         $data .= '<tr class="odd invrow' . $id . '" role="row">
                   
             <td>
@@ -564,7 +573,7 @@ if ($type == 'invoiceFeeItem') {
             </td>
              
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
-               ' . $discountamt . '
+               ' . $discountItem . '
             </td>
             <td class="p-2 sm:p-3 hidden-1 md:table-cell">
             ' . $amtdiscount . '   
@@ -769,7 +778,8 @@ if ($type == 'getClass') {
 
 if ($type == 'getClass_new') {
     $pid = $val;
-    $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+    $aid = $_POST['aid'];
+    $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = '.$aid.' AND a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
     $result = $connection2->query($sql);
     $classes = $result->fetchAll();
     // echo '<pre>';
@@ -796,7 +806,7 @@ if ($type == 'getSection') {
     } else {
         $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
     }
-    echo $sql;
+    //echo $sql;
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
@@ -1322,10 +1332,11 @@ if ($type == 'getStudentClassAndSection') {
     $cid = $val;
     $pupilsightSchoolYearID = $_POST['yid'];
     $pupilsightProgramID = $_POST['pid'];
-    $pupilsightYearGroupIDs = $_POST['cid'];
-    //$data = '<option value="">Select Student</option>';
-    foreach ($pupilsightYearGroupIDs as $pupilsightYearGroupID) {
-        $sql = 'SELECT a.*, b.officialName,c.pupilsightRollGroupID as rollid, c.name as rollname, d.name as classname, d.pupilsightYearGroupID as yeargroup FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID JOIN pupilsightRollGroup as c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID JOIN pupilsightYearGroup as d ON a.pupilsightYearGroupID = d.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '"  AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
+    $pupilsightYearGroupID = implode(',', $val);
+
+    $data = '<option value="">Select Student</option>';
+    //foreach ($pupilsightYearGroupIDs as $pupilsightYearGroupID) {
+        $sql = 'SELECT a.*, b.officialName,c.pupilsightRollGroupID as rollid, c.name as rollname, d.name as classname, d.pupilsightYearGroupID as yeargroup FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID JOIN pupilsightRollGroup as c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID JOIN pupilsightYearGroup as d ON a.pupilsightYearGroupID = d.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID IN (' . $pupilsightYearGroupID . ')  AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
         $result = $connection2->query($sql);
         $sections = $result->fetchAll();
 
@@ -1334,7 +1345,7 @@ if ($type == 'getStudentClassAndSection') {
                 $data .= '<option value="' . $cl['pupilsightPersonID'] . '">' . $cl['officialName'] . ' - ' . $cl['classname'] . ' - ' . $cl['rollname'] . '</option>';
             }
         }
-    }
+    //}
     echo $data;
 }
 
@@ -1902,9 +1913,10 @@ if ($type == 'getsections_assignedtoStaff') {
 if ($type == 'addstudentid_toassign_section') {
     $session->forget(['student_ids']);
     $session->set('student_ids', $val);
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $sqlp = 'SELECT  pupilsightStudentEnrolment.pupilsightProgramID,pupilsightStudentEnrolment.pupilsightYearGroupID  FROM pupilsightPerson 
     JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) 
-    WHERE pupilsightPerson.pupilsightPersonID IN (' . $val . ') 
+    WHERE pupilsightStudentEnrolment.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightPerson.pupilsightPersonID IN (' . $val . ') 
         ';
     $resultp = $connection2->query($sqlp);
     $rowdata = $resultp->fetchAll();
@@ -1914,7 +1926,7 @@ if ($type == 'addstudentid_toassign_section') {
         $result_arr += $rdata;
         $result_arr1 = array_diff($result_arr, $rdata);
     }
-    echo   count($result_arr1);
+    echo count($result_arr1);
 }
 
 
@@ -2213,6 +2225,8 @@ if ($type == 'updateApplicantData') {
         $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'application_id' => $application_id, 'id' => $submissionId);
 
         $sql = 'UPDATE wp_fluentform_submissions SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightPersonID=:pupilsightPersonID, application_id=:application_id WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
     } else {
         $data = array('pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'id' => $submissionId);
         //print_r($data);
@@ -2282,10 +2296,38 @@ if ($type == "getPaymentHistory") {
     // print_r($payhistory);die();
     if (!empty($payhistory)) {
         foreach ($payhistory as $ph) {
-            $sqli = "SELECT GROUP_CONCAT(DISTINCT invoice_no) AS invNo FROM fn_fees_student_collection where transaction_id = " . $ph['transaction_id'] . " OR partial_transaction_id = " . $ph['transaction_id'] . " LIMIT 0,1";
+            $sqli = "SELECT GROUP_CONCAT(DISTINCT invoice_no) AS invNo, GROUP_CONCAT(DISTINCT fn_fees_invoice_id) AS inviD FROM fn_fees_student_collection where transaction_id = " . $ph['transaction_id'] . " OR partial_transaction_id = " . $ph['transaction_id'] . " LIMIT 0,1";
             $resulti = $connection2->query($sqli);
             $invdata = $resulti->fetch();
             $invnno = $invdata['invNo'];
+            $invids = $invdata['inviD'];
+
+            $sqlamt = 'SELECT SUM(fn_fee_invoice_item.amount) as totalamount, SUM(fn_fee_invoice_item.discount) as disamount FROM fn_fee_invoice_item WHERE fn_fee_invoice_id IN ('.$invids.') ';
+            $resultamt = $connection2->query($sqlamt);
+            $dataamt = $resultamt->fetch();
+            $sql_dis = "SELECT discount FROM fn_invoice_level_discount WHERE pupilsightPersonID = " . $stuId . "  AND invoice_id IN (".$invids.") ";
+            $result_dis = $connection2->query($sql_dis);
+            $special_dis = $result_dis->fetch();
+
+            $sp_item_sql = "SELECT SUM(discount.discount) as sp_discount
+            FROM fn_fee_invoice_item as fee_item
+            LEFT JOIN fn_fee_item_level_discount as discount
+            ON fee_item.id = discount.item_id WHERE fee_item.fn_fee_invoice_id IN (".$invids.") AND pupilsightPersonID = ".$stuId."  ";
+            $result_sp_item = $connection2->query($sp_item_sql);
+            $sp_item_dis = $result_sp_item->fetch();
+
+            $totalamount = $dataamt['totalamount'];
+            $finalamount = $totalamount;
+            if (!empty($special_dis['discount']) || !empty($sp_item_dis['sp_discount'])) {
+                $dis_item_inv = $special_dis['discount'] + $sp_item_dis['sp_discount'];
+            } else {
+                $dis_item_inv = 0;
+            }
+
+            $dis = $ph['discount'];
+            $disamount = $dataamt['disamount'];
+            $dis_inv_item = $disamount + $dis_item_inv + $dis;
+
 
             $m_txt = '';
             $mode = strtoupper($ph['payMode']);
@@ -2332,7 +2374,7 @@ if ($type == "getPaymentHistory") {
             echo '<tr><td><input type="checkbox" name="paymentHistory[]" id="paymentHistory" value="' . $ph['id'] . '" class="selPayHistory payhistory' . $ph['transaction_id'] . '"></td>
                 <td><a title="View receipt" href="' . $receipt . '" download><i class="mdi mdi-receipt mdi-24px"></i></a></td>
                 <td>                
-                <a href="index.php?q=/modules/Finance/fee_payment_history.php&tid=' . $ph['transaction_id'] . '" target="_blank">' . $ph['transaction_id'] . '</a></td><td>' . $ph['receipt_number'] . '</td><td>' . $invnno . '</td><td>' . $ph['total_amount_without_fine_discount'] . '</td><td>' . $ph['fine'] . '</td><td>' . $ph['discount'] . '</td><td>' . $ph['amount_paying'] . '</td><td>' . date("d/m/Y", strtotime($ph['payment_date'])) . '</td><td>' . $ph['payMode'] . '</td>' . $paystatus . '</tr>';
+                <a href="index.php?q=/modules/Finance/fee_payment_history.php&tid=' . $ph['transaction_id'] . '" target="_blank">' . $ph['transaction_id'] . '</a></td><td>' . $ph['receipt_number'] . '</td><td>' . $invnno . '</td><td>' . $finalamount . '</td><td>' . $ph['fine'] . '</td><td>' . $dis_inv_item . '</td><td>' . $ph['amount_paying'] . '</td><td>' . date("d/m/Y", strtotime($ph['payment_date'])) . '</td><td>' . $ph['payMode'] . '</td>' . $paystatus . '</tr>';
         }
     } else {
         echo "<tr><td colspan='7'>No payment history found</td></tr>";
@@ -2484,7 +2526,7 @@ if ($type == 'getSectionByClassProgForMapping') {
         $sqlId = '0';
     }
 
-    $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE  pupilsightSchoolYearID = "' . $aid . '" AND pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
+    echo $sql = 'SELECT pupilsightRollGroupID, name FROM pupilsightRollGroup  WHERE  pupilsightSchoolYearID = "' . $aid . '" AND pupilsightRollGroupID Not In (' . $sqlId . ')  GROUP BY pupilsightRollGroupID';
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = '<option value="">Select Section</option>';
@@ -3208,10 +3250,11 @@ if ($type == 'getAjaxCampSeats') {
 }
 
 if ($type == 'getClassforCampaign') {
+    $pupilsightSchoolYearID = $_POST['aid'];
 
     if (!empty($_POST['val'])) {
         $pid = implode(',', $val);
-        $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
+        $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
         $result = $connection2->query($sql);
         $classes = $result->fetchAll();
         // echo '<pre>';
@@ -3331,9 +3374,10 @@ if ($type == 'deleteBulkStudent') {
 
 if ($type == 'removeStudentEnrollment') {
     $ids = explode(',', $val);
+    $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
     foreach ($ids as $st) {
-        $data = array('pupilsightProgramID' => '', 'pupilsightYearGroupID' => '', 'pupilsightRollGroupID' => '', 'pupilsightPersonID' => $st);
-        $sql = 'UPDATE pupilsightStudentEnrolment SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID WHERE pupilsightPersonID=:pupilsightPersonID';
+        $data = array('pupilsightProgramID' => '', 'pupilsightYearGroupID' => '', 'pupilsightRollGroupID' => '', 'pupilsightPersonID' => $st, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID);
+        $sql = 'UPDATE pupilsightStudentEnrolment SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightSchoolYearID=:pupilsightSchoolYearID ';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     }
@@ -3628,7 +3672,7 @@ if ($type == 'getInvoice') {
     $data = '<option value="">Select Invoice</option>';
     if (!empty($sections)) {
         foreach ($sections as $k => $cl) {
-            $data .= '<option value="' . $cl['fn_fee_structure_id'] . '">' . $cl['title'] . '</option>';
+            $data .= '<option value="' . $cl['title'] . '">' . $cl['title'] . '</option>';
         }
     }
     echo $data;
@@ -3646,20 +3690,20 @@ if ($type == 'bulkItemDiscount') {
             $items = $_POST['items'];
             $count = sizeof($items);
             for ($i = 0; $i < $count; $i++) {
-                $sqlpt = "SELECT id FROM fn_fee_item_level_discount WHERE pupilsightPersonID = " . $stid . "  AND item_id=" . $items[$i] . " ";
-                $resultpt = $connection2->query($sqlpt);
-                $valuept = $resultpt->fetch();
-                if (empty($valuept['id'])) {
+                // $sqlpt = "SELECT id FROM fn_fee_item_level_discount WHERE pupilsightPersonID = " . $stid . "  AND item_id=" . $items[$i] . " ";
+                // $resultpt = $connection2->query($sqlpt);
+                // $valuept = $resultpt->fetch();
+                // if (empty($valuept['id'])) {
                     $datau = array('pupilsightPersonID' => $stid, 'fn_fee_invoice_id' => $invId, 'item_id' => $items[$i], 'discount' => $discountVal[$i]);
                     $sql = 'INSERT INTO fn_fee_item_level_discount SET pupilsightPersonID=:pupilsightPersonID, fn_fee_invoice_id=:fn_fee_invoice_id, item_id=:item_id, discount=:discount';
                     $result = $connection2->prepare($sql);
                     $result->execute($datau);
-                } else {
-                    $datau = array('pupilsightPersonID' => $stid, 'fn_fee_invoice_id' => $invId, 'discount' => $discountVal[$i], 'item_id' => $items[$i]);
-                    $sqlu = 'UPDATE fn_fee_item_level_discount SET pupilsightPersonID=:pupilsightPersonID, fn_fee_invoice_id=:fn_fee_invoice_id, discount=:discount WHERE item_id=:item_id';
-                    $resultu = $connection2->prepare($sqlu);
-                    $resultu->execute($datau);
-                }
+                // } else {
+                //     $datau = array('pupilsightPersonID' => $stid, 'fn_fee_invoice_id' => $invId, 'discount' => $discountVal[$i], 'item_id' => $items[$i]);
+                //     $sqlu = 'UPDATE fn_fee_item_level_discount SET pupilsightPersonID=:pupilsightPersonID, fn_fee_invoice_id=:fn_fee_invoice_id, discount=:discount WHERE item_id=:item_id AND pupilsightPersonID=:pupilsightPersonID';
+                //     $resultu = $connection2->prepare($sqlu);
+                //     $resultu->execute($datau);
+                // }
             }
         }
     }
@@ -3830,3 +3874,62 @@ if ($type == 'delSubjectSkills') {
         $result1->execute($data1);
     }
 }
+
+
+if ($type == 'deRegisterBulkStudent') {
+    $ids = explode(',', $val);
+    $cdt = date('Y-m-d H:i:s');
+    $cuid = $_SESSION[$guid]['pupilsightPersonID'];  
+    foreach ($ids as $st) {
+        
+        $data = array('pupilsightPersonID' => $st);
+        $sql = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID=:pupilsightPersonID ';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+        $prevdata=  $result->fetch();
+
+        $data1 = array('active' => '0', 'pupilsightPersonID' => $st);
+        $sql = 'UPDATE pupilsightPerson SET active=:active WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data1);
+
+        $sql = 'UPDATE pupilsightStudentEnrolment SET active=:active WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data1);
+
+        $data3 = array('pupilsightPersonID'=>$st,'pupilsightStudentEnrolmentID' => $prevdata['pupilsightStudentEnrolmentID'], 'updated_by' => $cuid, 'cdt' => $cdt);
+        $sql3 = 'INSERT INTO pupilsight_deregister_students SET pupilsightPersonID=:pupilsightPersonID, pupilsightStudentEnrolmentID=:pupilsightStudentEnrolmentID, updated_by=:updated_by, cdt=:cdt';
+        $result3 = $connection2->prepare($sql3);
+        $result3->execute($data3);
+    }
+}
+
+if ($type == 'chkCautionAmt') {
+    $id = $val;
+    $amount = $_POST['ap'];
+    $sqlo = 'SELECT SUM(amount) AS creditData FROM fn_fees_collection_deposit  WHERE deposit_account_id = '.$id.' AND status = "Credit"  ';
+    $resulto = $connection2->query($sqlo);
+    $overPayCreData = $resulto->fetch();
+
+    $sqld = 'SELECT SUM(amount) AS debitData FROM fn_fees_collection_deposit  WHERE deposit_account_id = '.$id.' AND status = "Debit"  ';
+    $resultd = $connection2->query($sqld);
+    $overPayDebData = $resultd->fetch();
+
+    $depAmount = '';
+    if(!empty($overPayCreData)){
+        $creditdata = $overPayCreData['creditData'];
+        if(!empty($overPayDebData)){
+            $debitdata = $overPayDebData['debitData'];
+            $depAmount = $creditdata - $debitdata;
+        } else {
+            $depAmount = $creditdata;
+        }
+    }
+
+    $data = 'fail';
+    if($depAmount > $amount){
+        $data = 'pass';
+    } 
+    echo $data;
+}
+

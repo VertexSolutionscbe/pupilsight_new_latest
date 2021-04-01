@@ -837,6 +837,7 @@ select[multiple] {
 .-ml-24 {
     margin-left: 0;
 }
+
 #preloader {
     background: #ffffff url('../img/preloader.gif') no-repeat scroll center center;
     height: 100%;
@@ -849,6 +850,10 @@ select[multiple] {
     opacity: 0.9;
 }
 
-#btnRight{
+#btnRight {
     float: right;
+}
+
+.font16 {
+    font-size: 16px !important;
 }

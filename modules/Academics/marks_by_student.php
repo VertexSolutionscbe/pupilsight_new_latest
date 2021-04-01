@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
             $testId  =  $_POST['test_id'];
     
             $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
             $test_type=$_POST['test_type'];
 
             $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'" AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
                 $testId  =  explode(',',$_GET['tid']);
                 
                 $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
                 //$test_type=$_POST['test_type'];
 
                 $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'" AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';

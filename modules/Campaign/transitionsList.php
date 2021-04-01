@@ -5,6 +5,7 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
+
 include($_SERVER['DOCUMENT_ROOT'] . '/config.php');
 
 if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionsList.php') == false) {
@@ -34,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionsList.p
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
 
-    $sqlq = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE  table_schema='".$databaseName."'";
+    $sqlq = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE  table_schema='" . $databaseName . "'";
     $resultval = $connection2->query($sqlq);
     $rowdata = $resultval->fetchAll();
 
@@ -101,10 +102,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionsList.p
                     if (!empty($f->attributes)) {
                         $fform[$f->attributes->name] = ucwords($f->attributes->name);
                     }
-                    if(!empty($f->columns)){
-                        foreach($f->columns as $cf){
-                            foreach($cf as $cff){
-                                foreach($cff as $ctf){
+                    if (!empty($f->columns)) {
+                        foreach ($f->columns as $cf) {
+                            foreach ($cf as $cff) {
+                                foreach ($cff as $ctf) {
                                     if (!empty($ctf->attributes)) {
                                         $fform[$ctf->attributes->name] = ucwords($ctf->attributes->name);
                                     }

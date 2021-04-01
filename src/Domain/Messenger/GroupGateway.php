@@ -171,5 +171,4 @@ class GroupGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-
 }

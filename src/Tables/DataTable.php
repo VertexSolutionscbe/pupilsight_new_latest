@@ -60,7 +60,7 @@ class DataTable implements OutputableInterface
         global $container;
 
         $renderer = !empty($renderer) ? $renderer : $container->get(DataTableView::class);
-        
+
         return (new static($renderer))->setID($id);
     }
 
@@ -213,7 +213,7 @@ class DataTable implements OutputableInterface
         return $this->columns['multiactions'];
     }
 
-    
+
     /**
      * Add a checkbox column to the table, used for bulk-action tables.
      *
@@ -262,9 +262,9 @@ class DataTable implements OutputableInterface
     {
         $depth = 0;
 
-        $getNestedColumns = function($columns, &$allColumns = array()) use (&$getNestedColumns, &$depth, &$maxDepth) {
+        $getNestedColumns = function ($columns, &$allColumns = array()) use (&$getNestedColumns, &$depth, &$maxDepth) {
             foreach ($columns as $column) {
-                if ($column->hasNestedColumns() && (is_null($maxDepth) || $column->getDepth() < $maxDepth) ) {
+                if ($column->hasNestedColumns() && (is_null($maxDepth) || $column->getDepth() < $maxDepth)) {
                     $getNestedColumns($column->getColumns(), $allColumns);
                 } else {
                     $allColumns[] = $column;
@@ -282,7 +282,7 @@ class DataTable implements OutputableInterface
         $keys = array_keys($this->columns);
         return $this->columns[$keys[$index] ?? ''] ?? null;
     }
-    
+
     /**
      * Calculate how many layers deep the columns are nested.
      *
@@ -363,7 +363,7 @@ class DataTable implements OutputableInterface
      */
     public function addMetaData($name, $value)
     {
-        $this->meta[$name] = isset($this->meta[$name])? array_replace($this->meta[$name], $value) : $value;
+        $this->meta[$name] = isset($this->meta[$name]) ? array_replace($this->meta[$name], $value) : $value;
 
         return $this;
     }
@@ -411,7 +411,7 @@ class DataTable implements OutputableInterface
      */
     public function render(DataSet $dataSet, RendererInterface $renderer = null)
     {
-        $renderer = isset($renderer)? $renderer : $this->renderer;
+        $renderer = isset($renderer) ? $renderer : $this->renderer;
 
         return $renderer->renderTable($this, $dataSet);
     }

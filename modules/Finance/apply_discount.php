@@ -30,7 +30,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/apply_discount.php
     echo '<h2>';
     echo __('Apply Discount');
     echo '</h2>';
-    $discount_array=array(" "=>'Choose discount', "2"=>'AT FEE ITEM LEVEL');
+
+
+    $discount_array=array(" "=>'Choose discount', "1"=>'INVOICE LEVEL', "2"=>'AT FEE ITEM LEVEL');
+
+    $sqlrc = 'SELECT a.id, a.name FROM fn_fee_items AS a LEFT JOIN fn_fee_item_type AS b ON a.fn_fee_item_type_id = b.id WHERE b.name = "Discount" ';
+    $resultrc = $connection2->query($sqlrc);
+    $rseries = $resultrc->fetchAll();
+
+    $feeItems = array();
+    $feeItems1 = array(''=>'Select Fee Item');
+    $feeItems2 = array();
+    foreach ($rseries as $fd) {
+        $feeItems2[$fd['id']] = $fd['name'];
+    }
+    $feeItems = $feeItems1 + $feeItems2; 
+
+
     $form = Form::create('apply_discount_form','');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -41,6 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/apply_discount.php
     $row = $form->addRow();
     $row->addLabel('discount_type_change', __('Apply Discount : (Mandatory)'));
     $row->addSelect('discount_type_change')->fromArray($discount_array);
+
+    $row = $form->addRow()->addClass('feeItem hiddencol');
+    $row->addLabel('fn_fee_item_id', __('Fee Item'));
+    $row->addSelect('fn_fee_item_id')->fromArray($feeItems);
+
     $row = $form->addRow();
     $row->addContent('<div class="discount_type_change_results" style="width: 124%;"></div>');
 
@@ -52,3 +73,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/apply_discount.php
 
 }
 ?>
+
+<script>
+    $(document).on('change', '#discount_type_change', function () {
+        var val = $(this).val();
+        if(val == 1){
+            $(".feeItem").removeClass('hiddencol');
+        } else {
+            $(".feeItem").addClass('hiddencol');
+        }
+    });
+
+    $(document).on('change', '#fn_fee_item_id', function () {
+        var val = $("#fn_fee_item_id option:selected").text();
+        if(val == 'Waive Off'){
+            $(".waiveClass").show();
+        } else {
+            $(".waiveClass").hide();
+        }
+    });
+    
+</script>

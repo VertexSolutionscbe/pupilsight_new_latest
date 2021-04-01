@@ -99,13 +99,13 @@ class FileUploader
         // Check the existence of the temp file to upload
         if (empty($sourcePath) || !file_exists($sourcePath)) {
             $this->errorCode = UPLOAD_ERR_NO_FILE;
-            return false;
+            //return false;
         }
 
         // Validate the file extensions
         if (empty($filename) || !$this->isFileTypeValid($filename)) {
             $this->errorCode = UPLOAD_ERR_EXTENSION;
-            return false;
+            //return false;
         }
 
         // Generate a default folder based on date if one isn't provided
@@ -126,7 +126,7 @@ class FileUploader
         // Determine the uploaded file name and path
         $destinationName = $this->getRandomizedFilename($filename, $destinationFolder);
         $destinationPath = $absolutePath.'/'.$destinationFolder.'/'.$destinationName;
-
+        
         // Perform the upload, return the relative uplaods path
         if (move_uploaded_file($sourcePath, $destinationPath)) {
             $this->errorCode = UPLOAD_ERR_OK;
@@ -167,7 +167,6 @@ class FileUploader
         if (!empty($filenameChange)) {
             $filename = $filenameChange.mb_strrchr($filename, '.');
         }
-
         return $this->upload($filename, $sourcePath);
     }
 

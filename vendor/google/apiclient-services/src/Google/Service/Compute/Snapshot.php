@@ -17,17 +17,22 @@
 
 class Google_Service_Compute_Snapshot extends Google_Collection
 {
-  protected $collection_key = 'licenses';
+  protected $collection_key = 'storageLocations';
+  public $autoCreated;
+  public $chainName;
   public $creationTimestamp;
   public $description;
   public $diskSizeGb;
+  public $downloadBytes;
   public $id;
   public $kind;
   public $labelFingerprint;
   public $labels;
   public $licenseCodes;
   public $licenses;
+  public $locationHint;
   public $name;
+  public $satisfiesPzs;
   public $selfLink;
   protected $snapshotEncryptionKeyType = 'Google_Service_Compute_CustomerEncryptionKey';
   protected $snapshotEncryptionKeyDataType = '';
@@ -38,7 +43,24 @@ class Google_Service_Compute_Snapshot extends Google_Collection
   public $status;
   public $storageBytes;
   public $storageBytesStatus;
+  public $storageLocations;
 
+  public function setAutoCreated($autoCreated)
+  {
+    $this->autoCreated = $autoCreated;
+  }
+  public function getAutoCreated()
+  {
+    return $this->autoCreated;
+  }
+  public function setChainName($chainName)
+  {
+    $this->chainName = $chainName;
+  }
+  public function getChainName()
+  {
+    return $this->chainName;
+  }
   public function setCreationTimestamp($creationTimestamp)
   {
     $this->creationTimestamp = $creationTimestamp;
@@ -62,6 +84,14 @@ class Google_Service_Compute_Snapshot extends Google_Collection
   public function getDiskSizeGb()
   {
     return $this->diskSizeGb;
+  }
+  public function setDownloadBytes($downloadBytes)
+  {
+    $this->downloadBytes = $downloadBytes;
+  }
+  public function getDownloadBytes()
+  {
+    return $this->downloadBytes;
   }
   public function setId($id)
   {
@@ -111,6 +141,14 @@ class Google_Service_Compute_Snapshot extends Google_Collection
   {
     return $this->licenses;
   }
+  public function setLocationHint($locationHint)
+  {
+    $this->locationHint = $locationHint;
+  }
+  public function getLocationHint()
+  {
+    return $this->locationHint;
+  }
   public function setName($name)
   {
     $this->name = $name;
@@ -118,6 +156,14 @@ class Google_Service_Compute_Snapshot extends Google_Collection
   public function getName()
   {
     return $this->name;
+  }
+  public function setSatisfiesPzs($satisfiesPzs)
+  {
+    $this->satisfiesPzs = $satisfiesPzs;
+  }
+  public function getSatisfiesPzs()
+  {
+    return $this->satisfiesPzs;
   }
   public function setSelfLink($selfLink)
   {
@@ -194,5 +240,13 @@ class Google_Service_Compute_Snapshot extends Google_Collection
   public function getStorageBytesStatus()
   {
     return $this->storageBytesStatus;
+  }
+  public function setStorageLocations($storageLocations)
+  {
+    $this->storageLocations = $storageLocations;
+  }
+  public function getStorageLocations()
+  {
+    return $this->storageLocations;
   }
 }

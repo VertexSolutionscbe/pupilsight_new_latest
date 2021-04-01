@@ -57,11 +57,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
     $resultval1 = $connection2->query($sql1);
     $submissionData = $resultval1->fetch();
     $sd = json_decode($submissionData['response'], TRUE);
+    //print_r($sd);
     $names = '';
     $email = '';
-    if(!empty($sd['student_name'])){
-        $names = implode(' ', $sd['student_name']);
-    }
+    // if(!empty($sd['student_name'])){
+    //     $names = implode(' ', $sd['student_name']);
+    // }
+
+    $names = $sd['student_name'];
+
     if(!empty($sd['father_email'])){
         $email = $sd['father_email'];
     }

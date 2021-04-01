@@ -14,20 +14,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
     //Proceed!
     //Validate Inputs
     $name = $_POST['name'];
+    $gateway_name = $_POST['gateway_name'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
     $mid = $_POST['mid'];
     $key_id = $_POST['key_id'];
     $key_secret = $_POST['key_secret'];
-    // $nameShort = $_POST['nameShort'];
+    $terms_and_conditions = $_POST['terms_and_conditions'];
     // $sequenceNumber = $_POST['sequenceNumber'];
     
-    if ($name == '') {
+    if ($name == '' && $gateway_name == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         //Check unique inputs for uniquness
         try {
-            $data = array('name' => $name);
-            $sql = 'SELECT * FROM fn_fee_payment_gateway WHERE name=:name';
+            $data = array('gateway_name' => $gateway_name);
+            $sql = 'SELECT * FROM fn_fee_payment_gateway WHERE gateway_name=:gateway_name';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -42,8 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_gatewa
         } else {
             //Write to database
             try {
-                $data = array('name' => $name,'mid' => $mid,'key_id' => $key_id,'key_secret' => $key_secret);
-                $sql = 'INSERT INTO fn_fee_payment_gateway SET name=:name, mid=:mid, key_id=:key_id, key_secret=:key_secret';
+                $data = array('name' => $name,'gateway_name' => $gateway_name,'username' => $username,'password' => $password,'mid' => $mid,'key_id' => $key_id,'key_secret' => $key_secret, 'terms_and_conditions' => $terms_and_conditions);
+                $sql = 'INSERT INTO fn_fee_payment_gateway SET name=:name, gateway_name=:gateway_name, username=:username, password=:password, mid=:mid, key_id=:key_id, key_secret=:key_secret, terms_and_conditions=:terms_and_conditions';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

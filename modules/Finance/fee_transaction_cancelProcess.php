@@ -141,10 +141,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
                             $resulti = $connection2->prepare($sqli);
                             $resulti->execute($datai);
 
-                            $data = array('id' => $valueinv['id']);
-                            $sql = 'DELETE FROM fn_fees_student_collection WHERE id=:id';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
+                            // $data = array('id' => $valueinv['id']);
+                            // $sql = 'DELETE FROM fn_fees_student_collection WHERE id=:id';
+                            // $result = $connection2->prepare($sql);
+                            // $result->execute($data);
                         }
                     }
                    

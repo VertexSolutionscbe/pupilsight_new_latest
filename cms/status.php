@@ -16,6 +16,7 @@ $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php
 
 $data_target = $status==1 ? "#Application" : "#Login-reg"; */
 $sid = $_SESSION["appsubmitionid"];
+
 if (empty($sid)) {
     $sid = 0;
 }
@@ -29,186 +30,375 @@ if (!empty($_REQUEST['id'])) {
 
 $chkstatus = $adminlib->getStatus($sid);
 
+function getDomain()
+{
+    if (isset($_SERVER['HTTPS'])) {
+        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+    } else {
+        $protocol = 'http';
+    }
+    //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    return $protocol . "://" . $_SERVER['HTTP_HOST'];
+}
 
+$baseurl = getDomain();
+//$baseurl = getDomain().'/pupilsight';
+
+$logo = $baseurl . "/cms/images/pupilpod_logo.png";
+if (isset($data['logo_image'])) {
+    $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
+}
 ?>
 
-<?php include("index_header.php"); ?>
+<?php
+// include("index_header.php"); 
+?>
+
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title><?= $title; ?></title>
+    <meta name="description" content="Pupilpod is India’s first cloud based School ERP Software. It is 100% customizable and evolves to meet each School or University’s needs.
+    Discover how with Pupilpod you can automate your entire Academic, Operational, and Management information systems" />
+    <meta name="keywords" content="Pupilpod,School ERP,erp,School ERP Software, School Management Solution">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <meta name="msapplication-TileColor" content="#206bc4" />
+    <meta name="theme-color" content="#206bc4" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+
+    <!-- CSS files -->
+    <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
+
+
+    <link rel="stylesheet" href="<?= $baseurl; ?>/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
+
+    <link href="<?= $baseurl; ?>/assets/css/tabler.css" rel="stylesheet" />
+    <link href="<?= $baseurl; ?>/assets/css/dev.css" rel="stylesheet" />
+
+    <!-- Libs JS -->
+    <script src="<?= $baseurl; ?>/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= $baseurl; ?>/assets/libs/jquery/dist/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/jquery/jquery-migrate.min.js?v=1.0"></script>
+
+
+    <script src="<?= $baseurl; ?>/assets/js/core.js"></script>
+
+    <script type="text/javascript">
+        var tb_pathToImage = "<?= $baseurl; ?>/assets/libs/thickbox/loadingAnimation.gif";
+    </script>
+
+    <script src="<?= $baseurl; ?>/assets/js/tabler.min.js"></script>
+    <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
+    <script type="text/javascript" src="<?= $baseurl; ?>/assets/js/jquery.form.js?v=1.0"></script>
+
+
+    <style>
+        .carouselTitle {
+            line-height: 42px;
+            font-size: 42px;
+            font-weight: 600;
+        }
+
+        .carouselSubTitle {
+            line-height: 36px;
+            font-size: 36px;
+            font-weight: 600;
+        }
+
+        .multiple_device {
+            left: 45%;
+            margin: 0 auto;
+            max-width: 115vw;
+            position: relative;
+            -ms-transform: translateX(-50%);
+            transform: translateX(-50%);
+            width: 115vw;
+        }
+
+        .mh375 {
+            min-height: 375px;
+        }
+
+        .gray {
+            background-color: #f8f9fa;
+        }
+
+        .main-img {
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media only screen and (min-width: 768px) {
+            .navDesktop {
+                /*position: fixed;
+                z-index: 1000;*/
+                width: 100%;
+                min-height: 70px;
+                font-size: 16px;
+            }
+        }
+
+        .closeX {
+            position: absolute;
+            right: 10px;
+            top: 0px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #6e7582;
+        }
+
+        .gmap_canvas,
+        .mapouter {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .hero {
+            border: 1px solid rgba(110, 117, 130, .2);
+            border-radius: 3px;
+            max-height: 400px;
+        }
+
+        .slick-slide {
+            margin: 0 10px;
+        }
+
+        /* the parent */
+        .slick-list {
+            margin: 0 -10px;
+        }
+
+        .chkemptycolor {
+            border: 1px red solid;
+        }
+
+        .btnPay {
+            display: inline-block;
+            font-weight: bold;
+            font-size: 20px;
+            width: 200px;
+            line-height: 1.4285714;
+            text-align: center;
+            vertical-align: middle;
+            cursor: pointer;
+            padding: 0.4375rem 1rem;
+            border-radius: 3px;
+            color: #ffffff !important;
+            background-color: #206bc4;
+            border-color: #206bc4;
+        }
+
+        .i-am-centered {
+            margin: 0 auto;
+            width: 50%;
+        }
+    </style>
+</head>
 
 
 <!-- status -->
 
-<body class="home page-template page-template-templates page-template-home-page page-template-templateshome-page-php page page-id-17 wp-embed-responsive theme-ivy-school pmpro-body-has-access woocommerce-no-js bg-type-color responsive auto-login left_courses wpb-js-composer js-comp-ver-6.0.5 vc_responsive">
+<body class='antialiased'>
+    <div id="homePanel" class="page">
+        <header class="navbar navbar-expand-md navbar-light navDesktop">
+            <div class="container-fluid">
+                <div style="width:100%;">
+                    <div class="float-left">
+                        <a href="<?= $baseurl; ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
+                            <img src="<?= $logo; ?>" alt="Pupilpod" class="navbar-brand-image">
+                        </a>
+                    </div>
+                    <div class="float-right">
+                        <a href="<?= $baseurl; ?>" class='btn btn-secondary'>Back</a>
+                    </div>
+                    <div class="float-none"></div>
+                </div>
+            </div>
+        </header>
+        <div id="wrapper-container" class="content-pusher creative-right bg-type-color">
+            <div id="main-content">
+                <div id="home-main-content" class="home-content home-page container" role="main">
 
-    <div id="wrapper-container" class="content-pusher creative-right bg-type-color">
 
+                    <div class="mobile-margin-0 wpb_column vc_column_container vc_col-sm-12 bp-background-size-auto">
+                        <div class="vc_column-inner vc_custom_1540537006055">
+                            <div class="container" style="margin-top: 50px;text-align:center;">
+                                <div class="bp-element bp-element-heading vc_custom_1542033515902  layout-1  mobile-center mobile-line-heading">
 
-        <div id="main-content">
-            <div id="home-main-content" class="home-content home-page container" role="main">
+                                </div>
+                                <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
+                                    <div class="wpb_wrapper">
 
+                                        <div class="row" style="">
+                                            <div class="col-sm-12 col-lg-12">
+                                                <table id="app_lst_tbl" cellspacing='0' class='table'>
+                                                    <thead>
+                                                        <tr class='head'>
+                                                            <th style="width:5%">
+                                                                SI No
+                                                            </th>
+                                                            <th style="width:20%">
+                                                                Applicant Name
+                                                            </th>
+                                                            <th style="width:20%">
+                                                                Campaign Name
+                                                            </th>
+                                                            <th style="width:20%">
+                                                                Submission Date
+                                                            </th>
 
-                <div class="mobile-margin-0 wpb_column vc_column_container vc_col-sm-12 bp-background-size-auto">
-                    <div class="vc_column-inner vc_custom_1540537006055">
-                        <div class="container" style="margin-top: -100px;text-align:center;">
-                            <div class="bp-element bp-element-heading vc_custom_1542033515902  layout-1  mobile-center mobile-line-heading">
+                                                            <th style="width:5%">
+                                                                Status
+                                                            </th>
 
-                            </div>
-                            <div class="wpb_text_column wpb_content_element  vc_custom_1541409660821 mobile-center">
-                                <div class="wpb_wrapper">
+                                                            <th style="width:5%">
+                                                                Form
+                                                            </th>
+                                                            <th style="width:5%">
+                                                                Fee Receipt
+                                                            </th>
 
-                                    <div class="row" style="">
-                                        <div class="col-sm-12 col-lg-12">
-                                            <table id="app_lst_tbl" cellspacing='0' class='table'>
-                                                <thead>
-                                                    <tr class='head'>
-                                                        <th style="width:5%">
-                                                            SI No
-                                                        </th>
-                                                        <th style="width:20%">
-                                                            Applicant Name
-                                                        </th>
-                                                        <th style="width:20%">
-                                                            Campaign Name
-                                                        </th>
-                                                        <th style="width:20%">
-                                                            Submission Date
-                                                        </th>
-
-                                                        <th style="width:5%">
-                                                            Status
-                                                        </th>
-
-                                                        <th style="width:5%">
-                                                            Form
-                                                        </th>
-                                                        <th style="width:5%">
-                                                            Fee Receipt
-                                                        </th>
-
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php if (!empty($chkstatus)) {
-                                                        $cnt = 1;
-                                                        foreach ($chkstatus as $row) {
-                                                            $statedata = $adminlib->getstatedata($row['id'], $row['form_id'], $row['submission_id']);
-                                                            echo "<tr>";
-                                                            echo '<td>';
-                                                            echo $cnt;
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            echo $row["username"];
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            echo $row["name"];
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            echo $row['created_at'];
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            echo $statedata;
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            if (!empty($row['application_no'])) {
-                                                                $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                                                $fname = trim(str_replace("/", "_", $row['application_no']));
-                                                                //$link = $base_url . '/public/applicationpdf/parent/' . $fname;
-                                                                $link = $base_url . '/cms/ajaxfile.php?cid=' . $row['id'] . "&submissionId=" . $row['submission_id'];
-                                                                echo '<a href="' . $link . '"><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php if (!empty($chkstatus)) {
+                                                            $cnt = 1;
+                                                            foreach ($chkstatus as $row) {
+                                                                $statedata = $adminlib->getstatedata($row['id'], $row['form_id'], $row['submission_id']);
+                                                                echo "<tr>";
+                                                                echo '<td>';
+                                                                echo $cnt;
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                echo $row["username"];
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                echo $row["name"];
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                echo $row['created_at'];
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                echo $statedata;
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                if (!empty($row['application_no'])) {
+                                                                    $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                                                    $fname = trim(str_replace("/", "_", $row['application_no']));
+                                                                    //$link = $base_url . '/public/applicationpdf/parent/' . $fname;
+                                                                    $link = $base_url . '/cms/ajaxfile.php?cid=' . $row['id'] . "&submissionId=" . $row['submission_id'];
+                                                                    echo '<a href="' . $link . '"><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+                                                                }
+                                                                echo '</td>';
+                                                                echo '<td>';
+                                                                if (!empty($row['transaction_id'])) {
+                                                                    $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                                                                    $link = $base_url . '/public/receipts/' . $row['transaction_id'];
+                                                                    echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
+                                                                }
+                                                                echo '</td>';
+                                                                echo '</tr>';
                                                             }
-                                                            echo '</td>';
-                                                            echo '<td>';
-                                                            if (!empty($row['transaction_id'])) {
-                                                                $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                                                $link = $base_url . '/public/receipts/' . $row['transaction_id'];
-                                                                echo '<a href="' . $link . '" download><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
-                                                            }
-                                                            echo '</td>';
-                                                            echo '</tr>';
-                                                        }
-                                                    } ?>
-                                                </tbody>
-                                            </table>
+                                                        } ?>
+                                                    </tbody>
+                                                </table>
 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="wpb_column vc_column_container  bp-background-size-auto">
-                    <div class="vc_column-inner vc_custom_1539746106290">
-                        <div class="wpb_wrapper">
+                    <div class="wpb_column vc_column_container  bp-background-size-auto">
+                        <div class="vc_column-inner vc_custom_1539746106290">
+                            <div class="wpb_wrapper">
 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div><!-- #home-main-content -->
-    </div><!-- #main-content -->
-    <div id="myModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Subscribe our Newsletter</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Subscribe to our mailing list to get the latest updates straight in your inbox.</p>
-                    <form>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Name">
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" placeholder="Email Address">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Subscribe</button>
-                    </form>
+            </div><!-- #home-main-content -->
+        </div><!-- #main-content -->
+        <div id="myModal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Subscribe our Newsletter</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Subscribe to our mailing list to get the latest updates straight in your inbox.</p>
+                        <form>
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Name">
+                            </div>
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Email Address">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Subscribe</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="term_cndn" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 style="float:left" class="modal-title">Terms & Conditions</h4>
-                    <button type="button" class="close" onclick="window.history.back()">&times;</button>
-                    <input type="hidden" id="term_accepted" name="term_accepted" value="" />
-                </div>
-                <div class="modal-body">
-                    <p class="statusMsg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-                </div>
-                <!-- Modal Footer -->
-                <div class="modal-footer">
+        <div id="term_cndn" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 style="float:left" class="modal-title">Terms & Conditions</h4>
+                        <button type="button" class="close" onclick="window.history.back()">&times;</button>
+                        <input type="hidden" id="term_accepted" name="term_accepted" value="" />
+                    </div>
+                    <div class="modal-body">
+                        <p class="statusMsg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
+                    </div>
+                    <!-- Modal Footer -->
+                    <div class="modal-footer">
 
-                    <button type="button" class="btn btn_css btn-primary btn-default" onclick="window.history.back()">Reject</button>
-                    <button type="button" id="term_click" class="btn btn_css btn-primary btn-default" data-dismiss="modal">Accept</button>
+                        <button type="button" class="btn btn_css btn-primary btn-default" onclick="window.history.back()">Reject</button>
+                        <button type="button" id="term_click" class="btn btn_css btn-primary btn-default" data-dismiss="modal">Accept</button>
+                    </div>
                 </div>
+
             </div>
-
         </div>
-    </div>
 
-    <!-- online Payment By Bikash -->
-    <?php
-    $callbacklink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ?
-        "https" : "http") . "://" . $_SERVER['HTTP_HOST'] .
-        $_SERVER['REQUEST_URI'];
+        <!-- online Payment By Bikash -->
+        <?php
+        $callbacklink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ?
+            "https" : "http") . "://" . $_SERVER['HTTP_HOST'] .
+            $_SERVER['REQUEST_URI'];
 
-    ?>
+        ?>
 
-    <!-- online Payment By Bikash -->
+        <!-- online Payment By Bikash -->
 
-    <!-- #colophon -->
+        <!-- #colophon -->
     </div><!-- wrapper-container -->
     <div id="back-to-top" class="default">
-        <i data-fip-value="ion-ios-arrow-thin-up" class="ion-ios-arrow-thin-up"></i> </div>
+        <i data-fip-value="ion-ios-arrow-thin-up" class="ion-ios-arrow-thin-up"></i>
+    </div>
     <!-- Memberships powered by Paid Memberships Pro v2.0.7.
  -->
-
+    </div>
 
     <div id="tp_chameleon_list_google_fonts"></div>
     <a id="downloadLink" href="ajaxfile.php?cid=<?php echo $url_id; ?>" class="" style="display:none;">Download Receipts</a>

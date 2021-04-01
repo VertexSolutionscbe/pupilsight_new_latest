@@ -18,13 +18,34 @@
 class Google_Service_Bigquery_TableFieldSchema extends Google_Collection
 {
   protected $collection_key = 'fields';
+  protected $categoriesType = 'Google_Service_Bigquery_TableFieldSchemaCategories';
+  protected $categoriesDataType = '';
   public $description;
   protected $fieldsType = 'Google_Service_Bigquery_TableFieldSchema';
   protected $fieldsDataType = 'array';
+  public $maxLength;
   public $mode;
   public $name;
+  protected $policyTagsType = 'Google_Service_Bigquery_TableFieldSchemaPolicyTags';
+  protected $policyTagsDataType = '';
+  public $precision;
+  public $scale;
   public $type;
 
+  /**
+   * @param Google_Service_Bigquery_TableFieldSchemaCategories
+   */
+  public function setCategories(Google_Service_Bigquery_TableFieldSchemaCategories $categories)
+  {
+    $this->categories = $categories;
+  }
+  /**
+   * @return Google_Service_Bigquery_TableFieldSchemaCategories
+   */
+  public function getCategories()
+  {
+    return $this->categories;
+  }
   public function setDescription($description)
   {
     $this->description = $description;
@@ -34,18 +55,26 @@ class Google_Service_Bigquery_TableFieldSchema extends Google_Collection
     return $this->description;
   }
   /**
-   * @param Google_Service_Bigquery_TableFieldSchema
+   * @param Google_Service_Bigquery_TableFieldSchema[]
    */
   public function setFields($fields)
   {
     $this->fields = $fields;
   }
   /**
-   * @return Google_Service_Bigquery_TableFieldSchema
+   * @return Google_Service_Bigquery_TableFieldSchema[]
    */
   public function getFields()
   {
     return $this->fields;
+  }
+  public function setMaxLength($maxLength)
+  {
+    $this->maxLength = $maxLength;
+  }
+  public function getMaxLength()
+  {
+    return $this->maxLength;
   }
   public function setMode($mode)
   {
@@ -62,6 +91,36 @@ class Google_Service_Bigquery_TableFieldSchema extends Google_Collection
   public function getName()
   {
     return $this->name;
+  }
+  /**
+   * @param Google_Service_Bigquery_TableFieldSchemaPolicyTags
+   */
+  public function setPolicyTags(Google_Service_Bigquery_TableFieldSchemaPolicyTags $policyTags)
+  {
+    $this->policyTags = $policyTags;
+  }
+  /**
+   * @return Google_Service_Bigquery_TableFieldSchemaPolicyTags
+   */
+  public function getPolicyTags()
+  {
+    return $this->policyTags;
+  }
+  public function setPrecision($precision)
+  {
+    $this->precision = $precision;
+  }
+  public function getPrecision()
+  {
+    return $this->precision;
+  }
+  public function setScale($scale)
+  {
+    $this->scale = $scale;
+  }
+  public function getScale()
+  {
+    return $this->scale;
   }
   public function setType($type)
   {

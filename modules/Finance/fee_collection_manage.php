@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         } 
         $stuId = $_POST['studentId'];
         $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
-        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+        $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
     } else {
         $pupilsightProgramID =  '';
         $pupilsightSchoolYearIDpost =  $pupilsightSchoolYearID;
@@ -256,6 +256,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $bank = $bank1 + $bank2;
         $paymentmode = $paymentmode1 + $paymentmode2;    
 
+        $sqlda = 'SELECT id, ac_name FROM fn_fees_deposit_account WHERE overpayment_account = "0" ';
+        $resultda = $connection2->query($sqlda);
+        $cauDataAcct = $resultda->fetchAll();
+
+        $cauData = array();
+        $cauData1 = array(''=>'Select');
+        $cauData2 = array();
+        foreach ($cauDataAcct as $fd) {
+            $cauData2[$fd['id']] = $fd['ac_name'];
+        }
+        $cauData = $cauData1 + $cauData2; 
+
         $sqlstu = 'SELECT a.pupilsightPersonID, a.officialName, a.admission_no,  d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID  LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID 
         WHERE a.pupilsightPersonID = "'.$stuId.'" ';
        
@@ -283,6 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $form->addHiddenValue('chkamount', '0');
         $form->addHiddenValue('invoice_status', 'Fully Paid');
         $form->addHiddenValue('fineold', '');
+        $form->addHiddenValue('invno', '0');
        
      
         $row = $form->addRow();
@@ -329,6 +342,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $col = $row->addColumn()->setClass('newdes hiddencol ddChequeRow');
         $col->addLabel('bank_id', __('Bank Name'));
         $col->addSelect('bank_id')->fromArray($bank)->addClass(' txtfield');
+
+
+        
+        $col = $row->addColumn()->setClass('newdes hiddencol ddDepositRow');
+            $col->addLabel('deposit_account_id', __('Deposit Acount'));
+            $col->addSelect('deposit_account_id')->fromArray($cauData)->addClass(' txtfield');
 
         $col = $row->addColumn()->setClass('newdes ddCashRow hiddencol');
             $col->addLabel('payment_status', __('Payment Status'))->addClass('dte');
@@ -419,6 +438,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $col = $row->addColumn()->setClass('newdes ');
             $col->addLabel('discount', __('Discount'))->addClass('dte');
             $col->addTextField('discount')->addClass('txtfield numfield')->readonly();
+
+
+        $sqlo = 'SELECT SUM(a.amount) AS creditData FROM fn_fees_collection_deposit AS a LEFT JOIN fn_fees_deposit_account AS b ON a.deposit_account_id = b.id WHERE a.pupilsightPersonID = '.$stuId.' AND a.status = "Credit" AND b.overpayment_account = "1"  ';
+        $resulto = $connection2->query($sqlo);
+        $overPayCreData = $resulto->fetch();
+
+        $sqld = 'SELECT SUM(a.amount) AS debitData FROM fn_fees_collection_deposit AS a LEFT JOIN fn_fees_deposit_account AS b ON a.deposit_account_id = b.id WHERE a.pupilsightPersonID = '.$stuId.' AND a.status = "Debit" AND b.overpayment_account = "1" ';
+        $resultd = $connection2->query($sqld);
+        $overPayDebData = $resultd->fetch();
+
+        $depAmount = '';
+        if(!empty($overPayCreData)){
+            $creditdata = $overPayCreData['creditData'];
+            if(!empty($overPayDebData)){
+                $debitdata = $overPayDebData['debitData'];
+                $depAmount = $creditdata - $debitdata;
+            } else {
+                $depAmount = $creditdata;
+            }
+        }
+
+        if(!empty($depAmount)){
+            $col = $row->addColumn()->setClass('newdes ');
+                $col->addLabel('', __(''))->addClass('dte');
+                $col->addCheckbox('overpayment', FALSE)->setId('overPayment')->description('Include Overpayment Amount')->addClass('dte')->setValue('1')->inline(TRUE);  
+                
+
+            $col = $row->addColumn()->setClass('newdes ');
+                $col->addLabel('', __(''))->addClass('dte');
+                $col->addTextField('overamount')->addClass('txtfield   numfield')->setValue($depAmount)->readonly();
+        } else {
+            $col = $row->addColumn()->setClass('newdes hiddencol');
+            $col->addContent("<input type='checkbox' id='overPayment' checked><input type='hidden' id='overamount' name='overamount' value='0'>");   
+        }
 
         $col = $row->addColumn()->setClass('newdes ');
             $col->addLabel('amount_paying', __(' Amount Paying'))->addClass('dte');
@@ -516,7 +569,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         <a href='fullscreen.php?q=/modules/Finance/add_invoice_collections.php&width=1100&height=550' class='thickbox btn btn-primary addInvoiceLinkCollection' data-type='addInvoiceLink'>Add Invoice</a>
         <a  class=' btn btn-primary btn_cancel_invoice_collection' data-type='cancelInvoice'>Cancel Invoice</a>
         <a id='apply_discount_btn'  class=' apply_discount_btn btn btn-primary'>Apply discount</a>
-        <a  href='fullscreen.php?q=/modules/Finance/apply_discount.php&width=900px'  class='thickbox' id='apply_discount_popup' style='display:none'></a>
+        <a  href='fullscreen.php?q=/modules/Finance/apply_discount.php&width=900'  class='thickbox' id='apply_discount_popup' style='display:none'></a>
         <a  id='' data-type='student' class='chkinvoice btn btn-primary'>Proceed to next</a>
         </div><div class='float-none'></div></div>";
         echo "<div class ='row fee_hdr FeeInvoiceListManage feeitem' data-type='1'><div class='col-md-12'> Invoices <i class='mdi mdi-arrow-down-thick icon_1 icon_m '></i></div></div>";
@@ -535,6 +588,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         echo '</th>';
         echo '<th>';
         echo __('Amount');
+        echo '</th>';
+        echo '<th>';
+        echo __('Discount');
+        echo '</th>';
+        echo '<th>';
+        echo __('Amount With Discount');
         echo '</th>';
         echo "<th>";
         echo __('Pending Amount');
@@ -596,6 +655,105 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         echo "<tbody id='getPaymentHistory'>";
         echo "</tbody>";
         echo '</table></div></div>';
+
+
+        
+
+        $depositDetails = $FeesGateway->getDepositAccountForStudent($criteria, $stuId);
+        // echo '<pre>';
+        // print_r($depositDetails);
+        // echo '</pre>';
+        if(!empty($depositDetails->data)){
+            $depDate = $depositDetails->data;
+            //Deposit Account
+            echo "<div class ='row fee_hdr feeitem' data-type='5'><div class='col-md-12'> Deposit Acount <i class='mdi mdi-arrow-right-thick  icon_5 icon_m'></i></div>       
+            </div>";
+
+            echo "<div id='table-wrapper'><div id='table-scroll' style='display:none;width: 100%;  margin-top: 40px;' class='oCls_5 oClose table' id=''>";
+
+            echo '
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Fee Item</th>
+                            <th>Account Name</th>
+                            <th>Account Type</th>
+                            <th>Current Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    if(!empty($depDate)){
+                        $k = 1;
+                        foreach($depDate as $dd){
+                            if ($dd['overpayment_account'] == '1') {
+                                $ret = 'Over Payment Account';
+                            } else {
+                                $ret = '';
+                            }
+                            echo '<tr>
+                                    <td>'.$k.'</td>
+                                    <td>'.$dd['fee_item'].'</td>
+                                    <td>'.$dd['ac_name'].'</td>
+                                    <td>'.$ret.'</td>
+                                    <td><a title="Click Here For Details" href="fullscreen.php?q=/modules/Finance/deposit_account_details.php&id='.$dd['id'].'&stid='.$dd['pupilsightPersonID'].'&width=1100" class="thickbox">'.$dd['amount'].'</a></td>
+                                </tr>';
+                            $k++;
+                        }
+                    }
+                    echo '</tbody>
+                </table>';
+            echo "</div></div>";
+            
+        }
+
+
+        $waiveoffDetails = $FeesGateway->getWaiveOffForStudent($criteria, $stuId);
+        // echo '<pre>';
+        // print_r($depositDetails);
+        // echo '</pre>';
+        if(!empty($waiveoffDetails->data)){
+            $wavieDate = $waiveoffDetails->data;
+            // echo '<pre>';
+            // print_r($waiveoffDetails->data);
+            //Deposit Account
+            echo "<div class ='row fee_hdr feeitem' data-type='6'><div class='col-md-12'> Waive Off <i class='mdi mdi-arrow-right-thick  icon_6 icon_m'></i></div>       
+            </div>";
+
+            echo "<div id='table-wrapper'><div id='table-scroll' style='display:none;width: 100%;  margin-top: 40px;' class='oCls_6 oClose table' id='waiveoffTable'>";
+
+            echo '
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Invoice No</th>
+                            <th>Discount</th>
+                            <th>Assigned By</th>
+                            <th>Date</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    if(!empty($wavieDate)){
+                        $i = 1;
+                        foreach($wavieDate as $wd){
+                            echo '<tr>
+                                    <td>'.$i.'</td>
+                                    <td>'.$wd['invoice_no'].'</td>
+                                    <td>'.$wd['discount_amount'].'</td>
+                                    <td>'.$wd['officialName'].'</td>
+                                    <td>'.$wd['waive_off_date'].'</td>
+                                    <td>'.$wd['remarks'].'</td>
+                                </tr>';
+                            $i++;
+                        }
+                    }
+                    echo '</tbody>
+                </table>';
+            echo "</div></div>";
+       
+        }
     }    
 }
 ?>
@@ -659,6 +817,9 @@ echo " <style>
 </style>";
 ?>
 <script>
+    var table = $('#expore_tbl').DataTable();
+    table.destroy();
+
    function load(){
     var pstid=$(".p_stuId").val();
     var py=$(".pSyd").val();
@@ -761,272 +922,334 @@ echo " <style>
     });
 
 
-   $(document).on('click','#collectionFormSubmit',function(){
-        var amtpay = $("#amount_paying").val();
-              
-        var formData = $("#collectionForm").serialize();
-        var err=0;
-        var chkValidation=0;
-        var paymentMode = $("#paymentMode").val();
+    $(document).on('click','#collectionFormSubmit',function(){
+            var amtoldpay = $("#amount_paying").val();
+            var overamt = $("#overamount").val();
+            var amtpay = 0;
+            if($("#overPayment").is(':checked')) {
+                amtpay = parseFloat(amtoldpay) + parseFloat(overamt);
+            } else {
+                amtpay = amtoldpay;
+            }
+                
+            var formData = $("#collectionForm").serialize();
+            var err=0;
+            var chkValidation=0;
+            var paymentMode = $("#paymentMode").val();
 
-        if(amtpay == ''){
-            alert('You cannot leave Amount Paying field blank!');
-            err++;
-        }
+            if(amtpay == ''){
+                alert('You cannot leave Amount Paying field blank!');
+                err++;
+            }
 
-        if(amtpay <= 1){
-            alert('Amount paying to be greater than 0 !');
-            err++;
-        } 
+            if(amtpay <= 1){
+                alert('Amount paying to be greater than 0 !');
+                err++;
+            } 
 
-        var tamtold = $("#transcation_amount_old").val();
-        var chkval = $("input[name=chkamount]").val();
-        if (amtpay != '') {
-            if (Number(amtpay) < Number(chkval)) {
-                if (confirm("Do you want to do partial payment")) {
-                    $("#amount_paying").val(amtpay);
-                    $("input[name='invoice_status'").val("Partial Paid");
-                    //return true;
-                } else {
-                    $("input[name='invoice_status'").val("Fully Paid");
-                    $("#amount_paying").val("");
-                    return false;
+            var tamtold = $("#transcation_amount_old").val();
+            var chkval = $("input[name=chkamount]").val();
+            if (amtpay != '') {
+                if (Number(amtpay) < Number(chkval)) {
+                    if (confirm("Do you want to do partial payment")) {
+                        $("#amount_paying").val(amtpay);
+                        $("input[name='invoice_status'").val("Partial Paid");
+                        //return true;
+                    } else {
+                        $("input[name='invoice_status'").val("Fully Paid");
+                        $("#amount_paying").val("");
+                        return false;
+                    }
+                } 
+                
+                if (Number(amtpay) > Number(chkval)) {
+                    if (confirm("Do you want to do Over payment")) {
+                        $("#amount_paying").val(amtpay);
+                        $("input[name='invoice_status'").val("Fully Paid");
+                        //return true;
+                    } else {
+                        $("input[name='invoice_status'").val("Fully Paid");
+                        $("#amount_paying").val("");
+                        return false;
+                    }
                 }
+
+                // if (Number(amtpay) < Number(tamtold)) {
+                //     $("input[name='invoice_status'").val("Partial Paid");
+                // }
+            }
+
+        
+
+
+            if(paymentMode==""){
+                err++;
+                $("#paymentMode").addClass('LV_invalid_field');
+                alert("Please Select Payment Mode");
+            } else {
+                var val = $("#paymentMode option:selected").text();
+                val = val.toUpperCase();
+                if (val == 'CHEQUE' || val == 'DD') {
+                    if($("#bank_id").val() == ''){
+                        $("#bank_id").addClass('erroralert');
+                        //alert('Please Select Bank Name!');
+                        err++;
+                        chkValidation++;
+                    } else {
+                        $("#bank_id").removeClass('erroralert');
+                    }
+                    if($("#dd_cheque_date").val() == ''){
+                        $("#dd_cheque_date").addClass('erroralert');
+                        //alert('Please Insert DD/Cheque Date!');
+                        err++;
+                        chkValidation++;
+                    } else {
+                        $("#dd_cheque_date").removeClass('erroralert');
+                    }
+                    if($("#dd_cheque_no").val() == ''){
+                        $("#dd_cheque_no").addClass('erroralert');
+                        //alert('Please Insert DD/Cheque No!');
+                        err++;
+                        chkValidation++;
+                    } else {
+                        $("#dd_cheque_no").removeClass('erroralert');
+                    }
+
+                    if($("#dd_cheque_amount").val() == ''){
+                        $("#dd_cheque_amount").addClass('erroralert');
+                        //alert('Please Insert DD/Cheque Amount!');
+                        err++;
+                        chkValidation++;
+                    } else {
+                        $("#dd_cheque_amount").removeClass('erroralert');
+                    }
+                } else if (val == 'DEPOSIT') {
+                    var cauDepId = $("#deposit_account_id").val();
+                    if(cauDepId==""){
+                        err++;
+                        alert("Please Select Deposit Acount");
+                    }
+                }
+                $("#paymentMode").removeClass('LV_invalid_field');
+            }
+            if(chkValidation != 0){
+                alert('Please Enter All Mandatory Fields!');
+                return false;
+            }
+            //alert(err);
+            if(err==0){
+                
+                $("#preloader").show();
+                setTimeout(function(){
+                    $.ajax({
+                        url: 'ajaxSwitch.php',
+                        type: 'post',
+                        data: formData,
+                        async: true,
+                        success: function(response) {
+                            $("#preloader").hide();
+                            
+                            $('#getRecerptPop').click();
+                            $("#closePayment").trigger('click');
+                            loadInvoices();
+                            load();
+                            window.setTimeout(function () {
+                                location.reload();
+                            }, 5000);
+                            
+                        }
+                    });
+                }, 2000);
+            }
+    });
+    $(document).on('click', '.feeitem', function() {
+        var id = $(this).attr('data-type');
+        // icon_0 icon_m
+        // $('.icon_m').removeClass('fa-arrow-down');
+        // $('.icon_m').addClass('fa-arrow-right');
+
+        if ($(".oCls_" + id).is(":visible")) {
+            $('.icon_' + id).removeClass('mdi mdi-arrow-down-thick');
+            $('.icon_' + id).addClass('mdi mdi-arrow-right-thick');
+            // $('.oClose').hide();
+            $(".oCls_" + id).hide();
+
+
+        } else {
+            if(id=="2"){
+            load();
+            }
+
+            if(id=="1"){
+                loadInvoices();
             } 
             
-            if (Number(amtpay) > Number(chkval)) {
-                if (confirm("Do you want to do Over payment")) {
-                    $("#amount_paying").val(amtpay);
-                    $("input[name='invoice_status'").val("Fully Paid");
-                    //return true;
-                } else {
-                    $("input[name='invoice_status'").val("Fully Paid");
-                    $("#amount_paying").val("");
-                    return false;
-                }
-            }
-
-            // if (Number(amtpay) < Number(tamtold)) {
-            //     $("input[name='invoice_status'").val("Partial Paid");
-            // }
-        }
-
-       
-
-
-        if(paymentMode==""){
-            err++;
-            $("#paymentMode").addClass('LV_invalid_field');
-            alert("Please Select Payment Mode");
-        } else {
-            var val = $("#paymentMode option:selected").text();
-            val = val.toUpperCase();
-            if (val == 'CHEQUE' || val == 'DD') {
-                if($("#bank_id").val() == ''){
-                    $("#bank_id").addClass('erroralert');
-                    //alert('Please Select Bank Name!');
-                    err++;
-                    chkValidation++;
-                } else {
-                    $("#bank_id").removeClass('erroralert');
-                }
-                if($("#dd_cheque_date").val() == ''){
-                    $("#dd_cheque_date").addClass('erroralert');
-                    //alert('Please Insert DD/Cheque Date!');
-                    err++;
-                    chkValidation++;
-                } else {
-                    $("#dd_cheque_date").removeClass('erroralert');
-                }
-                if($("#dd_cheque_no").val() == ''){
-                    $("#dd_cheque_no").addClass('erroralert');
-                    //alert('Please Insert DD/Cheque No!');
-                    err++;
-                    chkValidation++;
-                } else {
-                    $("#dd_cheque_no").removeClass('erroralert');
-                }
-
-                if($("#dd_cheque_amount").val() == ''){
-                    $("#dd_cheque_amount").addClass('erroralert');
-                    //alert('Please Insert DD/Cheque Amount!');
-                    err++;
-                    chkValidation++;
-                } else {
-                    $("#dd_cheque_amount").removeClass('erroralert');
-                }
-            }    
-            $("#paymentMode").removeClass('LV_invalid_field');
-        }
-        if(chkValidation != 0){
-            alert('Please Enter All Mandatory Fields!');
-            return false;
-        }
-        //alert(err);
-        if(err==0){
-            
-            $("#preloader").show();
-            setTimeout(function(){
-                $.ajax({
-                    url: 'ajaxSwitch.php',
-                    type: 'post',
-                    data: formData,
-                    async: true,
-                    success: function(response) {
-                        $("#preloader").hide();
-                        
-                        $('#getRecerptPop').click();
-                        $("#closePayment").trigger('click');
-                        loadInvoices();
-                        load();
-                    }
-                });
-            }, 2000);
-        }
-   });
-$(document).on('click', '.feeitem', function() {
-    var id = $(this).attr('data-type');
-    // icon_0 icon_m
-    // $('.icon_m').removeClass('fa-arrow-down');
-    // $('.icon_m').addClass('fa-arrow-right');
-
-    if ($(".oCls_" + id).is(":visible")) {
-        $('.icon_' + id).removeClass('mdi mdi-arrow-down-thick');
-        $('.icon_' + id).addClass('mdi mdi-arrow-right-thick');
-        // $('.oClose').hide();
-        $(".oCls_" + id).hide();
-
-
-    } else {
-        if(id=="2"){
-          load();
-        }
-
-        if(id=="1"){
-            loadInvoices();
-        } 
+            $(".oCls_" + id).show();
+            $('.icon_' + id).removeClass('mdi mdi-arrow-right-thick');
+            $('.icon_' + id).addClass('mdi mdi-arrow-down-thick');
         
-        $(".oCls_" + id).show();
-        $('.icon_' + id).removeClass('mdi mdi-arrow-right-thick');
-        $('.icon_' + id).addClass('mdi mdi-arrow-down-thick');
-      
-    }
-});
-$(document).on('click','#save_sp_discount',function(){
-  var type = $(this).attr('data-type');
-  var a_stuid = $("input[name=a_stuid]").val();
-  if(type=="invoice_level_dataStore"){
-    var favorite = [];
-    var dicout_val=[];
-        $.each($(".chkinvoice_discount:checked"), function() {
-        var id=$(this).val();
-        var val =$('.inid_'+id).val();
-        favorite.push(id);
-        dicout_val.push(val);
-        });
-        if(favorite.length!=0){
-        $.ajax({
-            url: 'ajaxSwitch.php',
-            type: 'post',
-            data: { type:type,discountVal:dicout_val,invids:favorite,stuid:a_stuid},
-            async: true,
-            success: function(response) {
-                alert("Discount is applied");
-                $("#TB_closeWindowButton").click();
-                loadInvoices();
-            }
-        });
-        } else {
-        alert('atleast give one invoice discount');
         }
-    } else {
-        var items = [];
-        var dicout_val=[];
-        $.each($(".a_selFeeItem:checked"), function() {
-        var id=$(this).val();
-        var val =$('.itid_'+id).val();
-        items.push(id);
-        dicout_val.push(val);
-        });
-        if(items.length!=0){
-        $.ajax({
-            url: 'ajaxSwitch.php',
-            type: 'post',
-            data: { type:type,discountVal:dicout_val,items:items,stuid:a_stuid},
-            async: true,
-            success: function(response) {
-                alert("Discount is applied");
-                $("#TB_closeWindowButton").click();
-                loadInvoices();
-            }
-        });
-        } else {
-        alert('atleast give one item discount');
-        }
-    }
-});
-$(document).on('click','#addInvoiceStnButton',function(){
-     var url = $('#add_invoice_collection_process_form'). attr('action');
-     var py=$(".pSyd").val();
-     var pstid=$(".p_stuId").val();
-     var formData = "pstid="+pstid+"&"+"yid="+py+"&"+$("#add_invoice_collection_process_form").serialize();
-     var err=0;
-     var title= $("#title").val();
-     if(title.trim()!=""){
-          $("#title").removeClass('LV_invalid_field');
-          $("#title").removeClass('erroralert');
-     } else {
-        err++;
-       $("#title").addClass('LV_invalid_field');
-       $("#title").addClass('erroralert');
-     }
-
-     if($("#feeStructureItemDisableId").val() == ''){
-        err++;
-        $("#feeStructureItemDisableId").addClass('erroralert');
-     } else {
-        $("#feeStructureItemDisableId").removeClass('erroralert');
-     }
-
-     if($("#invamt").val() == ''){
-        err++;
-        $("#invamt").addClass('erroralert');
-     } else {
-        $("#invamt").removeClass('erroralert');
-     }
-
-     if($("#fnFeesHeadId").val() == ''){
-        err++;
-        $("#fnFeesHeadId").addClass('erroralert');
-     } else {
-        $("#fnFeesHeadId").removeClass('erroralert');
-     }
-
-     if($("#inv_fn_fee_series_id").val() == ''){
-        err++;
-        $("#inv_fn_fee_series_id").addClass('erroralert');
-     } else {
-        $("#inv_fn_fee_series_id").removeClass('erroralert');
-     }
-
-     if($("#rec_fn_fee_series_id").val() == ''){
-        err++;
-        $("#rec_fn_fee_series_id").addClass('erroralert');
-     } else {
-        $("#rec_fn_fee_series_id").removeClass('erroralert');
-     }
-
-    
-     if(err==0){
-        var val = $("#fn_fees_fine_rule_id").val();
-        if(val != ''){
-            var ddate = $("#due_date").val();
-            if(ddate == ''){
-                $("#due_date").addClass('erroralert');
-                alert('You have to Add Due Date');
-                return false;
+    });
+    $(document).on('click','#save_sp_discount',function(){
+        var type = $(this).attr('data-type');
+        var a_stuid = $("input[name=a_stuid]").val();
+        if(type=="invoice_level_dataStore"){
+            var favorite = [];
+            var dicout_val=[];
+            var assgnBy = [];
+            var assgnDate=[];
+            var assnRem = [];
+            var invno = [];
+            var feeItemId = $("#fn_fee_item_id").val();
+            if(feeItemId){
+                $.each($(".chkinvoice_discount:checked"), function() {
+                    var id=$(this).val();
+                    var val =$('.inid_'+id).val();
+                    var assn =$('.assn_'+id).val();
+                    var dte =$('.dte_'+id).val();
+                    var rem =$('.rem_'+id).val();
+                    var inv = $('.invno_'+id).val();
+                    favorite.push(id);
+                    dicout_val.push(val);
+                    assgnBy.push(assn);
+                    assgnDate.push(dte);
+                    assnRem.push(rem);
+                    invno.push(inv);
+                });
+                if(favorite.length!=0){
+                    // $.ajax({
+                    //     url: 'ajaxSwitch.php',
+                    //     type: 'post',
+                    //     data: { type:type,discountVal:dicout_val,invids:favorite,stuid:a_stuid, feeItemId:feeItemId},
+                    //     async: true,
+                    //     success: function(response) {
+                    //         alert("Discount is applied");
+                    //         $("#TB_closeWindowButton").click();
+                    //         loadInvoices();
+                    //     }
+                    // });
+                    $.ajax({
+                        url: 'modules/Finance/invoice_discount.php',
+                        type: 'post',
+                        data: { discountVal:dicout_val,invids:favorite,stuid:a_stuid, feeItemId:feeItemId, assgnBy:assgnBy, assgnDate:assgnDate, assnRem:assnRem, invno:invno},
+                        async: true,
+                        success: function(response) {
+                            alert("Discount is applied");
+                            $("#TB_closeWindowButton").click();
+                            loadInvoices();
+                        }
+                    });
+                } else {
+                    alert('Atleast give one invoice discount');
+                }
             } else {
-                $("#due_date").removeClass('erroralert');
+                alert('Please Select Fee Item!');
+            }
+        } else {
+            var items = [];
+            var dicout_val=[];
+            $.each($(".a_selFeeItem:checked"), function() {
+            var id=$(this).val();
+            var val =$('.itid_'+id).val();
+            items.push(id);
+            dicout_val.push(val);
+            });
+            if(items.length!=0){
+            $.ajax({
+                url: 'ajaxSwitch.php',
+                type: 'post',
+                data: { type:type,discountVal:dicout_val,items:items,stuid:a_stuid},
+                async: true,
+                success: function(response) {
+                    alert("Discount is applied");
+                    $("#TB_closeWindowButton").click();
+                    loadInvoices();
+                }
+            });
+            } else {
+            alert('atleast give one item discount');
+            }
+        }
+    });
+    $(document).on('click','#addInvoiceStnButton',function(){
+        var url = $('#add_invoice_collection_process_form'). attr('action');
+        var py=$(".pSyd").val();
+        var pstid=$(".p_stuId").val();
+        var formData = "pstid="+pstid+"&"+"yid="+py+"&"+$("#add_invoice_collection_process_form").serialize();
+        var err=0;
+        var title= $("#title").val();
+        if(title.trim()!=""){
+            $("#title").removeClass('LV_invalid_field');
+            $("#title").removeClass('erroralert');
+        } else {
+            err++;
+        $("#title").addClass('LV_invalid_field');
+        $("#title").addClass('erroralert');
+        }
+
+        if($("#feeStructureItemDisableId").val() == ''){
+            err++;
+            $("#feeStructureItemDisableId").addClass('erroralert');
+        } else {
+            $("#feeStructureItemDisableId").removeClass('erroralert');
+        }
+
+        if($("#invamt").val() == ''){
+            err++;
+            $("#invamt").addClass('erroralert');
+        } else {
+            $("#invamt").removeClass('erroralert');
+        }
+
+        if($("#fnFeesHeadId").val() == ''){
+            err++;
+            $("#fnFeesHeadId").addClass('erroralert');
+        } else {
+            $("#fnFeesHeadId").removeClass('erroralert');
+        }
+
+        if($("#inv_fn_fee_series_id").val() == ''){
+            err++;
+            $("#inv_fn_fee_series_id").addClass('erroralert');
+        } else {
+            $("#inv_fn_fee_series_id").removeClass('erroralert');
+        }
+
+        if($("#rec_fn_fee_series_id").val() == ''){
+            err++;
+            $("#rec_fn_fee_series_id").addClass('erroralert');
+        } else {
+            $("#rec_fn_fee_series_id").removeClass('erroralert');
+        }
+
+        
+        if(err==0){
+            var val = $("#fn_fees_fine_rule_id").val();
+            if(val != ''){
+                var ddate = $("#due_date").val();
+                if(ddate == ''){
+                    $("#due_date").addClass('erroralert');
+                    alert('You have to Add Due Date');
+                    return false;
+                } else {
+                    $("#due_date").removeClass('erroralert');
+                    $.ajax({
+                        url: url,
+                        type: 'post',
+                        data: formData,
+                        async: true,
+                        success: function(response) {
+                        if(response=="success"){
+                            alert("Invoice added successfully");
+                            $("#TB_closeWindowButton").click();
+                            loadInvoices();
+                        } else {
+                            alert(response);
+                        }
+                        }
+                    });
+                }
+            } else {
                 $.ajax({
                     url: url,
                     type: 'post',
@@ -1043,72 +1266,72 @@ $(document).on('click','#addInvoiceStnButton',function(){
                     }
                 });
             }
+            
+        }
+    });
+    $(document).on('click','#updateInvoiceStnButton',function(){
+        var url = $('#edit_invoice_save_form'). attr('action');
+        var py=$(".pSyd").val();
+        var pstid=$(".p_stuId").val();
+        var formData = "pstid="+pstid+"&"+"yid="+py+"&"+$("#edit_invoice_save_form").serialize();
+        var err=0;
+        var title= $("#title").val();
+        if(title.trim()!=""){
+            $("#title").removeClass('LV_invalid_field');
         } else {
-            $.ajax({
-                url: url,
-                type: 'post',
-                data: formData,
-                async: true,
-                success: function(response) {
-                if(response=="success"){
-                    alert("Invoice added successfully");
-                    $("#TB_closeWindowButton").click();
-                    loadInvoices();
-                } else {
-                    alert(response);
-                }
-                }
-            });
+            err++;
+        $("#title").addClass('LV_invalid_field');
+        }
+
+        
+        if($("#fnFeesHeadId").val() == ''){
+            err++;
+            $("#fnFeesHeadId").addClass('erroralert');
+        } else {
+            $("#fnFeesHeadId").removeClass('erroralert');
+        }
+
+        if($("#inv_fn_fee_series_id").val() == ''){
+            err++;
+            $("#inv_fn_fee_series_id").addClass('erroralert');
+        } else {
+            $("#inv_fn_fee_series_id").removeClass('erroralert');
+        }
+
+        if($("#rec_fn_fee_series_id").val() == ''){
+            err++;
+            $("#rec_fn_fee_series_id").addClass('erroralert');
+        } else {
+            $("#rec_fn_fee_series_id").removeClass('erroralert');
         }
         
-     }
-});
-$(document).on('click','#updateInvoiceStnButton',function(){
-     var url = $('#edit_invoice_save_form'). attr('action');
-     var py=$(".pSyd").val();
-     var pstid=$(".p_stuId").val();
-     var formData = "pstid="+pstid+"&"+"yid="+py+"&"+$("#edit_invoice_save_form").serialize();
-     var err=0;
-     var title= $("#title").val();
-     if(title.trim()!=""){
-          $("#title").removeClass('LV_invalid_field');
-     } else {
-        err++;
-       $("#title").addClass('LV_invalid_field');
-     }
-
-     
-     if($("#fnFeesHeadId").val() == ''){
-        err++;
-        $("#fnFeesHeadId").addClass('erroralert');
-     } else {
-        $("#fnFeesHeadId").removeClass('erroralert');
-     }
-
-     if($("#inv_fn_fee_series_id").val() == ''){
-        err++;
-        $("#inv_fn_fee_series_id").addClass('erroralert');
-     } else {
-        $("#inv_fn_fee_series_id").removeClass('erroralert');
-     }
-
-     if($("#rec_fn_fee_series_id").val() == ''){
-        err++;
-        $("#rec_fn_fee_series_id").addClass('erroralert');
-     } else {
-        $("#rec_fn_fee_series_id").removeClass('erroralert');
-     }
-     
-     if(err==0){
-        var val = $("#fn_fees_fine_rule_id").val();
-        if(val != ''){
-            var ddate = $("#due_date").val();
-            if(ddate == ''){
-                $("#due_date").addClass('erroralert');
-                alert('You have to Add Due Date');
-                return false;
+        if(err==0){
+            var val = $("#fn_fees_fine_rule_id").val();
+            if(val != ''){
+                var ddate = $("#due_date").val();
+                if(ddate == ''){
+                    $("#due_date").addClass('erroralert');
+                    alert('You have to Add Due Date');
+                    return false;
+                } else {
+                    $("#due_date").removeClass('erroralert');
+                    $.ajax({
+                        url: url,
+                        type: 'post',
+                        data: formData,
+                        async: true,
+                        success: function(response) {
+                        if(response=="success"){
+                            alert("Invoice updated successfully");
+                            $("#TB_closeWindowButton").click();
+                            loadInvoices();
+                        } else {
+                            alert(response);
+                        }
+                        }
+                    });
+                }
             } else {
-                $("#due_date").removeClass('erroralert');
                 $.ajax({
                     url: url,
                     type: 'post',
@@ -1125,7 +1348,23 @@ $(document).on('click','#updateInvoiceStnButton',function(){
                     }
                 });
             }
+            
+        }
+    });
+    $(document).on('click','#cancel_invoice',function(){
+        var url = $('#delect_invoice_collection_form'). attr('action');
+        var py=$(".pSyd").val();
+        var pstid=$(".p_stuId").val();
+        var formData = "pstid="+pstid+"&"+"yid="+py+"&"+$("#delect_invoice_collection_form").serialize();
+        var err=0;
+        var reason_for_cancel= $("#reason_for_cancel").val();
+        if(reason_for_cancel.trim()!=""){
+            $("#reason_for_cancel").removeClass('LV_invalid_field');
         } else {
+            err++;
+        $("#reason_for_cancel").addClass('LV_invalid_field');
+        }
+        if(err==0){
             $.ajax({
                 url: url,
                 type: 'post',
@@ -1133,7 +1372,7 @@ $(document).on('click','#updateInvoiceStnButton',function(){
                 async: true,
                 success: function(response) {
                 if(response=="success"){
-                    alert("Invoice updated successfully");
+                    alert("Invoice cancelled successfully");
                     $("#TB_closeWindowButton").click();
                     loadInvoices();
                 } else {
@@ -1142,47 +1381,14 @@ $(document).on('click','#updateInvoiceStnButton',function(){
                 }
             });
         }
-         
-     }
-});
-$(document).on('click','#cancel_invoice',function(){
-     var url = $('#delect_invoice_collection_form'). attr('action');
-     var py=$(".pSyd").val();
-     var pstid=$(".p_stuId").val();
-     var formData = "pstid="+pstid+"&"+"yid="+py+"&"+$("#delect_invoice_collection_form").serialize();
-     var err=0;
-     var reason_for_cancel= $("#reason_for_cancel").val();
-     if(reason_for_cancel.trim()!=""){
-          $("#reason_for_cancel").removeClass('LV_invalid_field');
-     } else {
-        err++;
-       $("#reason_for_cancel").addClass('LV_invalid_field');
-     }
-     if(err==0){
-         $.ajax({
-            url: url,
-            type: 'post',
-            data: formData,
-            async: true,
-            success: function(response) {
-              if(response=="success"){
-                alert("Invoice cancelled successfully");
-                $("#TB_closeWindowButton").click();
-                 loadInvoices();
-              } else {
-                alert(response);
-              }
-            }
-        });
-     }
-});
+    });
 
-$(document).on('keydown', '#search', function (e) {
+    $(document).on('keydown', '#search', function (e) {
         if (e.keyCode == 13) {
             $("#searchInvoice")[0].click();
             return false;
         }
-    })
+    });
 
     
     
@@ -1202,4 +1408,51 @@ $(document).on('keydown', '#search', function (e) {
         //     $("#searchInvoice").click();
         // }
     })
+
+    $(document).on('change', '#overPayment', function(){
+        var ap = $("#amount_paying").val();
+        var oldap = $("#amount_paying_old").val();
+        
+        if($(this).is(':checked')) {
+            var val = $('#overamount').val();
+            $("#overamount").attr("readonly", false); 
+            if(val != ''){
+                var newap = parseFloat(ap) - parseFloat(val);
+                $("#amount_paying").val(newap);
+            } 
+        } else {
+            $("#amount_paying").val(oldap);
+            $("#overamount").attr("readonly", true); 
+        }
+    });
+
+    $(document).on('keyup', '#overamount', function(){
+        var ap = $("#amount_paying").val();
+        var oldap = $("#amount_paying_old").val();
+        var val = $(this).val();
+        if(val != ''){
+            var newap = parseFloat(oldap) - parseFloat(val);
+            $("#amount_paying").val(newap);
+        } 
+    });
+
+    
+    $(document).on('change', '#deposit_account_id', function(){
+        var ap = $("#amount_paying").val();
+        var oldap = $("#amount_paying_old").val();
+        var val = $(this).val();
+        var type = 'chkCautionAmt';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { type:type,ap:ap,val:val},
+            async: true,
+            success: function(response) {
+                if(response == 'fail'){
+                    alert('Amount Balance is Low, You cannot make Payment for Selected Amount!');
+                    $("#paymentMode").val('').change();
+                }
+            }
+        });
+    });
 </script>

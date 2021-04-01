@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 $search =  $_GET['search'];
                 $stuId = $_GET['studentId'];
                 $classes =  $HelperGateway->getClassByProgram_Attconfig($connection2, $pupilsightProgramID);
-                $sections =  $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
+                $sections =  $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
             } else {
                 $pupilsightProgramID =  '';
 

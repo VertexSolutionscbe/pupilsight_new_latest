@@ -60,10 +60,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 			$resultp = $connection2->prepare($sqlp);
 			$resultp->execute($data);
 
-			$data1 = array('pupilsightPersonID' => $childid);
-			$sqlf = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightPersonID2=:pupilsightPersonID';
-			$resultf = $connection2->prepare($sqlf);
-			$resultf->execute($data1);
+			// $data1 = array('pupilsightPersonID' => $childid);
+			// $sqlf = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightPersonID2=:pupilsightPersonID';
+			// $resultf = $connection2->prepare($sqlf);
+			// $resultf->execute($data1);
+
+			$sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= ' . $childid . ' ';
+			$resultfc = $connection2->query($sqlf);
+			$fdata = $resultfc->fetch();
+			$pupilsightFamilyID = $fdata['pupilsightFamilyID'];
+
+			
+			$data = array('pupilsightFamilyID' => $pupilsightFamilyID);
+			$sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightFamilyID=:pupilsightFamilyID';
+			$resultf = $connection2->prepare($sqlp);
+			$resultf->execute($data);
 		} catch (PDOException $e) {
 			echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
 		}
@@ -77,6 +88,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 			$values = $result->fetch();
 			$students = $resultp->fetchAll();
 			$parents = $resultf->fetchAll();
+			$kount = count($parents);
+
 			//Get categories
 			$staff = false;
 			$student = false;
@@ -106,11 +119,24 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_edit.php
 			//	foreach($students as $stu){
 			echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=" . $childid . "&search=' class='btn btn-primary '>Student</a>";
 			//	}
-			foreach ($parents as $par) {
-				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=" . $par['pupilsightPersonID1'] . "&child_id=" . $childid . "&relation=" . $par['relationship'] . "&search=' class='btn btn-primary'>" . $par['relationship'] . "</a>";
+
+			if(!empty($parents)){
+				foreach ($parents as $par) {
+					echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=" . $par['pupilsightPersonID1'] . "&child_id=" . $childid . "&relation=" . $par['relationship'] . "&search=' class='btn btn-primary'>" . $par['relationship'] . "</a>";
+				}
+				//	echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=".$pupilsightPersonID."&search=' class='btn btn-primary active'>Parent1</a>"; 
+				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=" . $parents[0]['pupilsightFamilyID'] . "&child_id=" . $childid . "' class='btn btn-primary'>Family</a>";
 			}
-			//	echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=".$pupilsightPersonID."&search=' class='btn btn-primary active'>Parent1</a>"; 
-			echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=" . $parents[0]['pupilsightFamilyID'] . "&child_id=" . $childid . "' class='btn btn-primary'>Family</a></div><div class='float-none'></div></div>";
+
+			if($kount == 0){
+				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent_add.php&studentid=" . $childid . " ' class='btn btn-primary'>Add Parent</a>";
+			}
+
+			if($kount == 1){
+				echo "&nbsp;&nbsp;<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/parent2_add.php&studentid=" . $childid . " ' class='btn btn-primary'>Add Parent</a>";
+			}
+
+			echo "</div><div class='float-none'></div></div>";
 
 			$form = Form::create('addUser', $_SESSION[$guid]['absoluteURL'] . '/modules/User Admin' . '/parent_editProcess.php?pupilsightPersonID=' . $pupilsightPersonID . '&child_id=' . $childid . '&search=' . $search);
 			$form->setFactory(DatabaseFormFactory::create($pdo));

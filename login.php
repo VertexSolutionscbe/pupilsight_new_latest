@@ -19,8 +19,8 @@ $_SESSION[$guid]['pupilsightSchoolYearSequenceNumberCurrent'] = $_SESSION[$guid]
 $_SESSION[$guid]['pageLoads'] = null;
 
 $URL = './index.php';
-$NEWURL='home.php?invalid=true';
-             
+$NEWURL = 'home.php?invalid=true';
+
 
 // Sanitize the whole $_POST array
 $validator = new \Pupilsight\Data\Validator();
@@ -30,21 +30,16 @@ $_POST = $validator->sanitize($_POST);
 $username = isset($_POST['username']) ? $_POST['username'] : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 
-if(isset($_POST["rememberme"])) {
-    
-	setcookie ("username",$_POST["username"],time()+ (86400 * 30));
-	setcookie ("password",$_POST["password"],time()+ (86400 * 30));
-	echo "Cookies Set Successfuly";
-}
-else
-{
-    if(isset($_COOKIE["username"])) {
-        setcookie ("username","");
-	    setcookie ("password","");
-	
-    }
-    
+if (isset($_POST["rememberme"])) {
 
+    setcookie("username", $_POST["username"], time() + (86400 * 30));
+    setcookie("password", $_POST["password"], time() + (86400 * 30));
+    echo "Cookies Set Successfuly";
+} else {
+    if (isset($_COOKIE["username"])) {
+        setcookie("username", "");
+        setcookie("password", "");
+    }
 }
 
 
@@ -189,7 +184,7 @@ else {
                 // window.location.href='./index.php';
 
                 // </script>";
-            
+
                 header("Location: {$NEWURL}");
                 exit;
             } else {
