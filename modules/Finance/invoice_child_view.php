@@ -41,9 +41,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
     // $childs = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID2 = b.pupilsightPersonID WHERE a.pupilsightPersonID1 = ' . $cuid . ' GROUP BY a.pupilsightPersonID1 LIMIT 0,1';
 
-    $childs = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' . $pupilsightFamilyID . ' AND a.pupilsightPersonID != "" ';
-    $resulta = $connection2->query($childs);
-    $stuData = $resulta->fetchAll();
+    if (!empty($_GET['cid'])) {
+        $chkchilds = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' . $pupilsightFamilyID . ' AND a.pupilsightPersonID = ' . $_GET['cid'] . ' ';
+        $resultachk = $connection2->query($chkchilds);
+        $chkstuData = $resultachk->fetch();
+
+        if (!empty($chkstuData)) {
+            $childs = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' . $pupilsightFamilyID . ' AND a.pupilsightPersonID != "" ';
+            $resulta = $connection2->query($childs);
+            $stuData = $resulta->fetchAll();
+
+            $students = $chkstuData;
+            $stuId = $_GET['cid'];
+        } else {
+            echo '<h1>No Child</h1>';
+        }
+    } else {
+        $childs = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' . $pupilsightFamilyID . ' AND a.pupilsightPersonID != "" ';
+        $resulta = $connection2->query($childs);
+        $stuData = $resulta->fetchAll();
+        $students = $stuData[0];
+        $stuId = $students['pupilsightPersonID'];
+    }
+
     //$students = $resulta->fetchAll();
     // echo '<pre>';
     // print_r($students);
@@ -54,8 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     $parData = $resultp->fetch();
 
 
-    $students = $stuData[0];
-    $stuId = $students['pupilsightPersonID'];
+
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
@@ -70,16 +89,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     if (!empty($stuData) && count($stuData) > 1) {
         $tab = '<div style="display:inline-flex;width:25%"><span style="width:25%">Child : </span><select id="childSel" class="form-control" style="width:100%">';
         foreach ($stuData as $stu) {
-            $tab .=  '<option value=' . $stu['pupilsightPersonID'] . '>' . $stu['officialName'] . '</option>';
+            $selected = '';
+            if (!empty($_GET['cid'])) {
+                if ($_GET['cid'] == $stu['pupilsightPersonID']) {
+                    $selected = 'selected';
+                }
+            }
+            $tab .=  '<option value=' . $stu['pupilsightPersonID'] . '  ' . $selected . '>' . $stu['officialName'] . '</option>';
         }
         $tab .=  '</select></div>';
     }
     echo $tab;
     // die();
 
-    $feeheadsql = 'SELECT fn_fee_invoice.fn_fees_head_id, fn_fee_invoice_student_assign.invoice_no  FROM fn_fee_invoice_student_assign LEFT JOIN fn_fee_invoice ON fn_fee_invoice_student_assign.fn_fee_invoice_id = fn_fee_invoice.id WHERE fn_fee_invoice_student_assign.pupilsightPersonID = ' . $stuId . ' AND fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" GROUP BY fn_fee_invoice.fn_fees_head_id';
-    $resultfh = $connection2->query($feeheadsql);
-    $feeHeadData = $resultfh->fetchAll();
+    if (!empty($stuId)) {
+        $feeheadsql = 'SELECT fn_fee_invoice.fn_fees_head_id, fn_fee_invoice_student_assign.invoice_no  FROM fn_fee_invoice_student_assign LEFT JOIN fn_fee_invoice ON fn_fee_invoice_student_assign.fn_fee_invoice_id = fn_fee_invoice.id WHERE fn_fee_invoice_student_assign.pupilsightPersonID = ' . $stuId . ' AND fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" GROUP BY fn_fee_invoice.fn_fees_head_id';
+        $resultfh = $connection2->query($feeheadsql);
+        $feeHeadData = $resultfh->fetchAll();
+    }
 
     // echo '<pre>';
     // print_r($feeHeadData);
@@ -534,6 +561,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     echo __('S.No');
     echo '</th>';
     echo '<th>';
+    echo __('Invoice No');
+    echo '</th>';
+    echo '<th>';
+    echo __('Invoice Title');
+    echo '</th>';
+    echo '<th>';
     echo __('Child Name');
     echo '</th>';
     echo '<th>';
@@ -582,11 +615,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
     if (!empty($payhistory)) {
         $i = 1;
         foreach ($payhistory as $ph) {
+
+
+            $sqlfi = "SELECT a.invoice_no, b.title FROM fn_fees_student_collection AS a LEFT JOIN fn_fee_invoice as b ON a.fn_fees_invoice_id = b.id where a.transaction_id = " . $ph['transaction_id'] . " ";
+            $resultfi = $connection2->query($sqlfi);
+            $fiData = $resultfi->fetch();
+
+
             $m_txt = '';
             $mode = strtoupper($ph['payMode']);
             if ($mode == "MULTIPLE") {
 
-                $sql = "SELECT f.name FROM fn_multi_payment_mode AS m                 LEFT JOIN fn_masters as f ON m.payment_mode_id = f.id
+                $sql = "SELECT f.name FROM fn_multi_payment_mode AS m LEFT JOIN fn_masters as f ON m.payment_mode_id = f.id
                 where m.transaction_id = '" . $ph['transaction_id'] . "'";
                 $re_m = $connection2->query($sql);
                 $pm = $re_m->fetchAll();
@@ -601,6 +641,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
             }
             echo '<tr>
                   <td>' . $i++ . '</td>
+                  <td>' . $fiData['invoice_no'] . '</td>
+                  <td>' . $fiData['title'] . '</td>
                   <td>' . $ph['StuName'] . '</td>
                   <td>' . $ph['transaction_id'] . '</td>
                   <td>' . $ph['receipt_number'] . '</td>
