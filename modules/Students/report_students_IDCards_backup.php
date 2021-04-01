@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
     $row = $form->addRow();
     $row->addLabel('file', __('Card Background'))->description('.png or .jpg file, 448 x 268px.');
     $row->addFileUpload('file')
-        ->accepts('.jpg,.jpeg,.png')->required();
+        ->accepts('.jpg,.jpeg,.png');
 
     $row = $form->addRow();
     $row->addFooter();
@@ -88,40 +88,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
                 $file = (isset($_FILES['file'])) ? $_FILES['file'] : null;
 
+                // Upload the file, return the /uploads relative path
+                $attachment = $fileUploader->uploadFromPost($file, 'Card_BG');
 
-
-                $filename = $_FILES["file"]["name"]; 
-                $tempname = $_FILES["file"]["tmp_name"];     
-                $folder = "uploads/".$filename; 
-                
-                      
-                // Now let's move the uploaded image into the folder: image 
-                if (move_uploaded_file($tempname, $folder))  { 
-                        $bg = 'background: url("'.$folder.'")';
-
-                    }else{ 
+                if (empty($attachment)) {
                     echo '<div class="alert alert-danger">';
                     echo __('Your request failed due to an attachment error.');
                     echo ' ' . $fileUploader->getLastError();
                     echo '</div>';
-                  } 
-
-                  
-                // Upload the file, return the /uploads relative path
-                // $attachment = $fileUploader->uploadFromPost($file, 'Card_BG');
-
-
-                // if (empty($attachment)) {
-                //     echo '<div class="alert alert-danger">';
-                //     echo __('Your request failed due to an attachment error.');
-                //     echo ' ' . $fileUploader->getLastError();
-                //     echo '</div>';
-                // } else {
-                //     $bg = 'background: url("' . $_SESSION[$guid]['absoluteURL'] . "/$attachment\") repeat left top #fff;";
-                // }
+                } else {
+                    $bg = 'background: url("' . $_SESSION[$guid]['absoluteURL'] . "/$attachment\") repeat left top #fff;";
+                }
             }
-            
-            //echo $bg;exit;
+
             echo "<table class='blank' cellspacing='0' style='width: 100%'>";
 
             $count = 0;
@@ -132,19 +111,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                     echo '<tr>';
                 }
                 echo "<td style='width:" . (100 / $columns) . "%; text-align: center; vertical-align: top'>";
-                echo "<div style='width: 600px; height: 1000px; border: 1px solid black; $bg'>";
+                echo "<div style='width: 488px; height: 308px; border: 1px solid black; $bg'>";
                 echo "<table class='blank' cellspacing='0' style='width 448px; max-width 448px; height: 268px; max-height: 268px; margin: 45px 10px 10px 10px'>";
                 echo '<tr>';
-                // echo "<td style='padding: 0px ; width: 150px; height: 200px; vertical-align: top' rowspan=5>";
-                // if ($row['image_240'] == '' or file_exists($_SESSION[$guid]['absolutePath'] . '/' . $row['image_240']) == false) {
-                //     echo "<img style='width: 150px; height: 200px' class='user' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/anonymous_240.jpg'/><br/>";
-                // } else {
-                //     echo "<img style='width: 150px; height: 200px' class='user' src='" . $_SESSION[$guid]['absoluteURL'] . '/' . $row['image_240'] . "'/><br/>";
-                // }
-                // echo '</td>';
+                echo "<td style='padding: 0px ; width: 150px; height: 200px; vertical-align: top' rowspan=5>";
+                if ($row['image_240'] == '' or file_exists($_SESSION[$guid]['absolutePath'] . '/' . $row['image_240']) == false) {
+                    echo "<img style='width: 150px; height: 200px' class='user' src='" . $_SESSION[$guid]['absoluteURL'] . '/themes/' . $_SESSION[$guid]['pupilsightThemeName'] . "/img/anonymous_240.jpg'/><br/>";
+                } else {
+                    echo "<img style='width: 150px; height: 200px' class='user' src='" . $_SESSION[$guid]['absoluteURL'] . '/' . $row['image_240'] . "'/><br/>";
+                }
+                echo '</td>';
                 echo "<td style='padding: 0px ; width: 18px'></td>";
                 echo "<td style='padding: 15px 0 0 0 ; text-align: left; width: 280px; vertical-align: top; font-size: 22px'>";
-                echo "<div style='margin-top:450px;padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>";
+                echo "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>";
                 $size = (strlen($row['officialName']) <= 28) ? 30 : 20;
                 echo "<div style='font-weight: bold; font-size: " . $size . "px'>" . $row['officialName'] . '</div><br/>';
                 echo '<b>' . __('DOB') . "</b>: <span style='float: right'><i>" . dateConvertBack($guid, $row['dob']) . '</span><br/>';
