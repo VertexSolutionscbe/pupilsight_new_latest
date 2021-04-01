@@ -48,9 +48,9 @@ if (isset($data['logo_image'])) {
     $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
 }
 
-// $invalid='';        
-// if(isset($_GET['invalid'])) 
-// $invalid=$_GET['invalid'];
+$invalid = '';
+if (isset($_GET['invalid']))
+    $invalid = $_GET['invalid'];
 
 ?>
 
@@ -255,7 +255,7 @@ if (isset($data['logo_image'])) {
                             $menu = array();
 
                             $menu[0]["title"] = "Home";
-                            $menu[0]["link"] = "$baseurl";
+                            $menu[0]["link"] = $baseurl;
                             $menu[0]["icon"] = "mdi-home-outline";
                             $menu[0]["iconActive"] = "mdi-home";
 
@@ -1050,10 +1050,10 @@ if (isset($data['logo_image'])) {
                     <img src="<?= $logo; ?>" height="36" alt="">
                 </div>
                 <h2 class="mb-3 text-center">Login to your account</h2>
-                <!-- <?php if ($invalid == 'true') { ?>
-                <div class="alert alert-warning">Wrong Username or Password</div>
+                <?php if ($invalid == 'true') { ?>
+                    <div class="alert alert-warning">Wrong Username or Password</div>
 
-                <?php } ?> -->
+                <?php } ?>
 
                 <div class="empty-warning"></div>
 
@@ -1224,7 +1224,7 @@ if (isset($data['logo_image'])) {
 
         .google-maps {
             position: relative;
-            padding-bottom: 1%;
+            padding-bottom: 1%; // This is the aspect ratio
             height: 0;
             overflow: hidden;
         }
@@ -1235,7 +1235,10 @@ if (isset($data['logo_image'])) {
             left: 0;
             width: 100% !important;
             height: 100% !important;
+
         }
+
+
 
         #topBtn {
             display: none;
@@ -1254,6 +1257,22 @@ if (isset($data['logo_image'])) {
         .btn-border {
             border-radius: 30px;
         }
+
+        /* #topBtn {
+            display: none;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%; 
+            color: white;
+            text-align: right;
+            border: none;
+            outline: none;
+            padding: 15px;
+            border-radius: 4px;
+            background: none;
+        
+        } */
 
         #mapshow {
             padding: 0px !important;
@@ -1288,9 +1307,9 @@ if (isset($data['logo_image'])) {
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
             if (username == '' || password == '') {
-                alert('Please enter Username and Password');
-                // $('.empty-warning').addClass('alert alert-warning');
-                // $('.empty-warning ').html('Please enter Username and Password');
+                //alert('Please enter Username and Password');
+                $('.empty-warning').addClass('alert alert-warning');
+                $('.empty-warning ').html('Please enter Username and Password');
                 return false;
             } else
                 return true;
@@ -1322,20 +1341,17 @@ if (isset($data['logo_image'])) {
         document.body.style.display = "block";
         $(document).ready(function() {
 
-            // var invalid=$('#invalid').val();
-            // if(invalid=='true')
-            // {
-            //     loginPanel();
-            // }
-            // else
-            // {
-            $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
-            try {
-                $('.gmap_canvas a').remove();
-            } catch (ex) {
-                console.log(ex);
+            var invalid = $('#invalid').val();
+            if (invalid == 'true') {
+                loginPanel();
+            } else {
+                $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+                try {
+                    $('.gmap_canvas a').remove();
+                } catch (ex) {
+                    console.log(ex);
+                }
             }
-            //}
         });
 
         function loginPanel() {
@@ -1395,7 +1411,7 @@ if (isset($data['logo_image'])) {
                     },
                     success: function(response) {
                         //$("#app_lst_tbl").removeClass("hide");
-                        //console.log(response);
+                        console.log(response);
                         if (response != '') {
                             //$(".chkdata").hide();
                             $('#app_lst_tbl_body').html(response);
