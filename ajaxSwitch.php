@@ -720,6 +720,16 @@ if (isset($_POST['type'])) {
             // die();
             $totalamount = 0;
             foreach ($invdata as $k => $d) {
+                $sqlsd = 'SELECT b.name FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_items AS b ON a.fn_fee_item_id = b.id WHERE a.fn_fee_invoice_id = ' . $d['invoiceid'] . ' AND b.name = "Staff Discount"  ';
+                $resultsd = $connection2->query($sqlsd);
+                $dataSD = $resultsd->fetch();
+                if(!empty($dataSD)){
+                    $invdata[$k]['sdDis'] = $dataSD['name'];
+                } else {
+                    $invdata[$k]['sdDis'] = '';
+                }
+                
+
                 $sqlamt = 'SELECT SUM(fn_fee_invoice_item.total_amount) as totalamount, SUM(fn_fee_invoice_item.discount) as disamount FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ' . $d['invoiceid'] . ' ';
                 $resultamt = $connection2->query($sqlamt);
                 $dataamt = $resultamt->fetch();
@@ -1052,6 +1062,14 @@ if (isset($_POST['type'])) {
                         $dsc = '(WF)';
                     }
 
+                    if(!empty($ind['sdDis'])){
+                        $dsc = '(SD)';
+                    }
+
+                    if(!empty($ind['sdDis']) && !empty($wfdata)){
+                        $dsc = '(SD,WF)';
+                    }
+
                     if ($ind['chkpayment'] == 'Paid') {
                         //$cls = 'value="0" checked disabled';
                         echo '<tr><td><input type="checkbox" class=" invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" value="0" checked disabled ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt .' '.$dsc. '</td><td>' . $totAmt_with_dis . '</td><td>' . $ind['pendingamount'] . '</td></tr>';
@@ -1299,42 +1317,55 @@ if (isset($_POST['type'])) {
 
                         $invid =  $d['invoiceid'];
                         $invno =  $d['stu_invoice_no'];
-                        $sqla = 'SELECT GROUP_CONCAT(a.fn_fee_invoice_item_id) AS invitemid FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "' . $invno . '" AND b.transaction_status = "1" ';
+                        $sqla = 'SELECT GROUP_CONCAT(a.fn_fee_invoice_item_id) AS invitemid, b.transaction_id FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "' . $invno . '" AND b.transaction_status = "1" ';
                         $resulta = $connection2->query($sqla);
                         $inv = $resulta->fetch();
 
 
-                        if (!empty($inv['invitemid'])) {
-                            if (!empty($d['transport_schedule_id'])) {
-                                $invdata[$k]['paidamount'] = $totalamount;
-                                $pendingamount = 0;
-                                $invdata[$k]['pendingamount'] = $pendingamount;
-                                $invdata[$k]['chkpayment'] = 'Paid';
-                            } else {
-                                $itemids = $inv['invitemid'];
-                                $sqlp = 'SELECT SUM(total_amount) as paidtotalamount FROM fn_fee_invoice_item WHERE id IN (' . $itemids . ') ';
-                                $resultp = $connection2->query($sqlp);
-                                $amt = $resultp->fetch();
-                                $totalpaidamt = $amt['paidtotalamount'];
-                                if (!empty($totalpaidamt)) {
-                                    $invdata[$k]['paidamount'] = $totalpaidamt;
-                                    $pendingamount = $totalamount - $totalpaidamt;
-                                    if ($pendingamount < 0) {
-                                        $pendingamount = abs($pendingamount) . "(Fine paid)";
-                                    }
+                        $sqlchkInv = 'SELECT count(b.id) as kount FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "' . $invno . '" AND b.invoice_status = "Fully Paid" AND b.transaction_status IN (1,3) ';
+                        $resultchkInv = $connection2->query($sqlchkInv);
+                        $invChk = $resultchkInv->fetch();
+        
+                        // if ($inv['invoice_status'] == 'Fully Paid') {
+                        if (!empty($invChk) && $invChk['kount'] >= 1) {
+                            $invdata[$k]['paidamount'] = $totalamount;
+                            $pendingamount = 0;
+                            $invdata[$k]['pendingamount'] = $pendingamount;
+                            $invdata[$k]['chkpayment'] = 'Paid';
+                        } else {
+                            $stTransId = $inv['transaction_id'];
+                            if (!empty($inv['invitemid'])) {
+                                if (!empty($d['transport_schedule_id'])) {
+                                    $invdata[$k]['paidamount'] = $totalamount;
+                                    $pendingamount = 0;
                                     $invdata[$k]['pendingamount'] = $pendingamount;
-                                    if ($pendingamount <= 0) {
-                                        $invdata[$k]['chkpayment'] = 'Paid';
-                                    } else {
-                                        $invdata[$k]['chkpayment'] = 'Half Paid';
+                                    $invdata[$k]['chkpayment'] = 'Paid';
+                                } else {
+                                    $itemids = $inv['invitemid'];
+                                    $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND transaction_id = ' . $stTransId . ' AND fn_fee_invoice_item_id IN (' . $itemids . ') ';
+                                    $resultp = $connection2->query($sqlp);
+                                    $amt = $resultp->fetch();
+                                    $totalpaidamt = $amt['paidtotalamount'];
+                                    if (!empty($totalpaidamt)) {
+                                        $invdata[$k]['paidamount'] = $totalpaidamt;
+                                        $pendingamount = $totalamount - $totalpaidamt;
+                                        if ($pendingamount < 0) {
+                                            $pendingamount = abs($pendingamount) . "(Fine paid)";
+                                        }
+                                        $invdata[$k]['pendingamount'] = $pendingamount;
+                                        if ($pendingamount <= 0) {
+                                            $invdata[$k]['chkpayment'] = 'Paid';
+                                        } else {
+                                            $invdata[$k]['chkpayment'] = 'Half Paid';
+                                        }
                                     }
                                 }
+                            } else {
+                                $invdata[$k]['paidamount'] = '0';
+                                $pendingamount = $totalamount;
+                                $invdata[$k]['pendingamount'] = $pendingamount;
+                                $invdata[$k]['chkpayment'] = 'UnPaid';
                             }
-                        } else {
-                            $invdata[$k]['paidamount'] = '0';
-                            $pendingamount = $totalamount;
-                            $invdata[$k]['pendingamount'] = $pendingamount;
-                            $invdata[$k]['chkpayment'] = 'UnPaid';
                         }
                     }
 
@@ -1365,14 +1396,14 @@ if (isset($_POST['type'])) {
                                 foreach ($invdata as $ind) {
                                     
                                     $total = $ind['tot_amount'];
-                                    $pending = $ind['finalamount'];
+                                    $pending = $ind['pendingamount'];
                                     
                                     echo '<tr>
                         <td  width="5%">' . $i++ . '</td>
                         <td  width="10%">' . $ind['stu_invoice_no'] . '</td>
                         <td  width="5%">' . $total . '</td>
                         <td  width="5%">' . $pending . '</td>
-                        <td  width="5%"><input type="number" name="discount_a[]" value="' . $special_dis['discount'] . '" readonly class="form-control inid_' . $ind['invoiceid'] . '" ></td>
+                        <td  width="5%"><input type="text" name="discount_a[]" value="' . $special_dis['discount'] . '" readonly class="form-control inid_' . $ind['invoiceid'] . '" ></td>
                         <td  width="1%"><input type="checkbox"  class="chkinvoice_discount invoice' . $ind['invoiceid'] . '" name="invoiceid[]" value="' . $ind['invoiceid'] . '" data-id="' . $ind['invoiceid'] . '" ></td>
                         <td class="waiveClass" style="display:none" width="10%">
                             <select name="assigned_by[]" class="form-control assn_' . $ind['invoiceid'] . '">

@@ -25,6 +25,8 @@ $parms = array_merge($_POST, $_GET);
 
 
 $_SESSION["paypost"] = $parms;
+
+
 // echo '<pre>';
 // print_r($parms);
 // echo '</pre>';
@@ -98,6 +100,11 @@ $data = [
         "color"             => "#F37254"
     ],
     "order_id"          => $razorpayOrderId,
+    "notes"           => [
+        "student_name"      => $name,
+        "invoice_no"        => $parms['payid'],
+        "class_name"        => $parms['className'],
+    ],
 ];
 
 $json = json_encode($data);

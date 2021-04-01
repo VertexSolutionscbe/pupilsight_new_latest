@@ -664,37 +664,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         // print_r($depositDetails);
         // echo '</pre>';
         if(!empty($depositDetails->data)){
-
+            $depDate = $depositDetails->data;
             //Deposit Account
             echo "<div class ='row fee_hdr feeitem' data-type='5'><div class='col-md-12'> Deposit Acount <i class='mdi mdi-arrow-right-thick  icon_5 icon_m'></i></div>       
             </div>";
 
             echo "<div id='table-wrapper'><div id='table-scroll' style='display:none;width: 100%;  margin-top: 40px;' class='oCls_5 oClose table' id=''>";
-            
 
-            // DATA TABLE
-            $table = DataTable::createPaginated('DepositAccountManage', $criteria);
-
-            $table->addColumn('serial_number', __('SI No'));
-            $table->addColumn('fee_item', __('Fee Item'));
-            $table->addColumn('ac_name', __('Account Name'));
-            //$table->addColumn('ac_code', __('Account Code'));
-            $table->addColumn('overpayment_account', __('Account Type'))
-                ->format(function ($depositDetails) {
-                    if ($depositDetails['overpayment_account'] == '1') {
-                        return 'Over Payment Account';
-                    } else {
-                        return ' ';
+            echo '
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Fee Item</th>
+                            <th>Account Name</th>
+                            <th>Account Type</th>
+                            <th>Current Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                    if(!empty($depDate)){
+                        $k = 1;
+                        foreach($depDate as $dd){
+                            if ($dd['overpayment_account'] == '1') {
+                                $ret = 'Over Payment Account';
+                            } else {
+                                $ret = '';
+                            }
+                            echo '<tr>
+                                    <td>'.$k.'</td>
+                                    <td>'.$dd['fee_item'].'</td>
+                                    <td>'.$dd['ac_name'].'</td>
+                                    <td>'.$ret.'</td>
+                                    <td><a title="Click Here For Details" href="fullscreen.php?q=/modules/Finance/deposit_account_details.php&id='.$dd['id'].'&stid='.$dd['pupilsightPersonID'].'&width=1100" class="thickbox">'.$dd['amount'].'</a></td>
+                                </tr>';
+                            $k++;
+                        }
                     }
-                    return $depositDetails['overpayment_account'];
-            });  
-            $table->addColumn('amount', __('Current Balance'))
-                ->format(function ($depositDetails) {
-                    return '<a title="Click Here For Details" href="fullscreen.php?q=/modules/Finance/deposit_account_details.php&id='.$depositDetails['id'].'&stid='.$depositDetails['pupilsightPersonID'].'&width=1100" class="thickbox">'.$depositDetails['amount'].'</a>';
-                });  
-            echo $table->render($depositDetails);
-
+                    echo '</tbody>
+                </table>';
             echo "</div></div>";
+            
         }
 
 

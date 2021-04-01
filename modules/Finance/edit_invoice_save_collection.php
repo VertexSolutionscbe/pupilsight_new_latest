@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                                 }
                                 
         
-                                if(!empty($feeitem) && !empty($amt) && !empty($taxdata)){
+                                if(!empty($feeitem)){
                                     $data1 = array('fn_fee_invoice_id' => $invIdNew, 'fn_fee_item_id' => $feeitem, 'description' => $desc, 'amount' => $amt, 'tax' => $taxdata, 'discount' => $disc, 'total_amount' => $total_amount);
                                     $sql1 = "INSERT INTO fn_fee_invoice_item SET fn_fee_invoice_id=:fn_fee_invoice_id, fn_fee_item_id=:fn_fee_item_id, description=:description, amount=:amount,  tax=:tax, discount=:discount, total_amount=:total_amount";
                                     $result1 = $connection2->prepare($sql1);
