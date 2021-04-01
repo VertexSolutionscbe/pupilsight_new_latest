@@ -255,7 +255,7 @@ if (isset($data['logo_image'])) {
                             $menu = array();
 
                             $menu[0]["title"] = "Home";
-                            $menu[0]["link"] = "<?=$baseurl;?>";
+                            $menu[0]["link"] = "$baseurl";
                             $menu[0]["icon"] = "mdi-home-outline";
                             $menu[0]["iconActive"] = "mdi-home";
 

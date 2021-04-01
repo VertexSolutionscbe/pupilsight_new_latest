@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '0b26fe9d4ff7af183d2e329b914bb616b36c3770',
+    'reference' => '1d4bfd6466ebdec5f8b1dadfe3188741aae13527',
     'name' => 'pupilsightedu/core',
   ),
   'versions' => 
@@ -429,7 +429,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '0b26fe9d4ff7af183d2e329b914bb616b36c3770',
+      'reference' => '1d4bfd6466ebdec5f8b1dadfe3188741aae13527',
     ),
     'ralouphie/getallheaders' => 
     array (

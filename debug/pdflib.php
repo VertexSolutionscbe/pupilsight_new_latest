@@ -13,7 +13,7 @@ $formData = [
 ];
 
 $imgData[0] = [
-    'pageno' => 1,
+    'pageno' => 2,
     'src' => $_SERVER['DOCUMENT_ROOT'] . "/debug/test1.jpg",
     'x' => 100,
     'y' => 200,
@@ -24,12 +24,12 @@ $imgData[0] = [
 $imgData[1] = [
     'pageno' => 1,
     'src' => $_SERVER['DOCUMENT_ROOT'] . "/debug/test2.jpg",
-    'x' => 130,
+    'x' => 100,
     'y' => 200,
     'width' => 20,
     'height' => 20
 ];
 
-$templateFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template.pdf';
-$outFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template_out.pdf';
-generate($templateFileName, $outFileName, $formData, $imgData);
+$templateFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template1_New.pdf';
+$outFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template_out1.pdf';
+generate($templateFileName, $outFileName, $formData, $imgData, TRUE, TRUE);
