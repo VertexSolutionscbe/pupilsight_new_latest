@@ -407,13 +407,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
                     ?>
 
-                    <?php if($gatewayData['name'] == 'RAZORPAY'){ ?>
+                    <?php if($gatewayData['name'] == 'RAZORPAY'){
+                        $clsql = 'SELECT name FROM pupilsightYearGroup WHERE pupilsightYearGroupID = '.$ind['classid'].' AND pupilsightSchoolYearID = '.$ind['pupilsightSchoolYearID'].' ';    
+                        $resultcl = $connection2->query($clsql);
+                        $clData = $resultcl->fetch();
+                        $className = $clData['name'];
+                    ?>
                         <td>
                             <form action="thirdparty/payment/razorpay/pay.php" method="post" id="payform-<?= $ind['invoiceid'] ?>">
                                 <input type="hidden" name="payment_gateway_id" value="<?= $gatewayID ?>">
                                 <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
                                 <input type="hidden" name="pupilsightProgramID" value="<?= $ind['pupilsightProgramID'] ?>">
                                 <input type="hidden" name="classid" value="<?= $ind['classid'] ?>">
+                                <input type="hidden" name="className" value="<?= $className ?>">
                                 <input type="hidden" name="sectionid" value="<?= $ind['sectionid'] ?>">
                                 <input type="hidden" name="fn_fees_invoice_id" value="<?= $ind['invoiceid'] ?>">
                                 <input type="hidden" name="fn_fees_head_id" value="<?= $ind['fn_fees_head_id'] ?>">
