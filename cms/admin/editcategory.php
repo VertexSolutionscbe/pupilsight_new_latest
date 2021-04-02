@@ -59,7 +59,7 @@ if($_POST){
          </div>
          <!-- panel content -->
          <div class="panel-body">
-				<form role="form" method="post" action="" enctype="multipart/form-data">
+				<form onsubmit="return validateCategory()" role="form" method="post" action="" enctype="multipart/form-data">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Category Type <span style="color:red;">*</span></label>
@@ -80,15 +80,15 @@ if($_POST){
                   </div>
 				   <div class="form-group">
                     <label for="exampleInputPassword1">Title <span style="color:red;">*</span></label>
-                    <input type="text" name="title" class="form-control" id="exampleInputPassword1" placeholder="Title" value="<?php echo $data['title'];?>">
+                    <input type="text" name="title" id="title" class="form-control" id="exampleInputPassword1" placeholder="Title" value="<?php echo $data['title'];?>">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Short Description <span style="color:red;">*</span></label>
-                    <textarea  name="short_description" class="form-control"  placeholder="Short Description"><?php echo $data['short_description'];?></textarea>
+                    <textarea  name="short_description" id="short_description" class="form-control"  placeholder="Short Description"><?php echo $data['short_description'];?></textarea>
                   </div>
 				  <div class="form-group desc" id="desc6" style="<?php if($data['type'] == '6') { ?> display:block; <?php } else  { ?>display:none; <?php } ?>">
                     <label for="exampleInputPassword1">Description <span style="color:red;">*</span></label>
-                    <textarea  name="description" class="form-control"  placeholder="Description"><?php echo $data['description'];?></textarea>
+                    <textarea  name="description" id="description" class="form-control"  placeholder="Description"><?php echo $data['description'];?></textarea>
                   </div>
 				    <div class="form-group imgc" style="<?php if($data['type'] == '8') { ?> display:none; <?php } else  { ?>display:block; <?php } ?>">
                     <label for="exampleInputFile">Image <span style="color:red;">*</span>
@@ -101,14 +101,17 @@ if($_POST){
 					</label>
                     <div class="input-group">
                       <div class="custom-file">
-                        <input type="file" class="custom-file-input"  name="image">
+                        <input type="file" id="image" class="custom-file-input"  name="image">
 						</div>
                       
                     </div>
                   </div>
+				  <input type="hidden" id="hidden_image" value="<?php if(!empty($data['image'])) { echo $data['image_path']; }?>" />
 				   <?php if(!empty($data['image'])) { ?>
 				   <div class="form-group">
                     <img src="<?php echo $data['image_path'];?>" style="width:15%">
+					
+					
 					<a id="deleteImg" data-id="<?php echo $data['id'];?>" data-col="image" style="font-size: 23px;color: red;margin: 0px 0px 0 0px;"><i class="fa fa-trash" aria-hidden="true" ></i></a>
                   </div>
 				   <?php } ?>
@@ -135,6 +138,7 @@ if($_POST){
 				  <?php if(!empty($data['person_image'])) { ?>
 				   <div class="form-group">
                     <img src="<?php echo $data['person_image_path'];?>" style="width:15%">
+
 					<a id="deleteImg" data-id="<?php echo $data['id'];?>" data-col="person_image" style="font-size: 23px;color: red;margin: 0px 0px 0 0px;"><i class="fa fa-trash" aria-hidden="true"></i></a>
                   </div>
 				  <?php } ?>
@@ -188,9 +192,29 @@ $(document).on('click', '#deleteImg', function(e){
 		  type: 'POST',
 		  data: {id:id,col:col},
 		  success: function(data){
+			$('#hidden_image').val();  
 			window.location='editcategory.php?id='+id;
 			alert('Image Deleted Successfully.')
 		  }
 		});
 });
+
+function validateCategory()
+{
+	var showType = document.getElementById("showType").value;
+	var title = document.getElementById("title").value;
+	var short_description = document.getElementById("short_description").value;
+	var image = document.getElementById("image").value;
+	var hidden_image = document.getElementById("hidden_image").value;
+
+
+
+	if(showType=='' || title=='' || short_description=='' || (image=='' && hidden_image==''))
+	{
+		alert('Please enter required fields');
+		return false;
+	}
+	else
+	return true;
+}
 </script>

@@ -62,11 +62,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
     $resultval = $connection2->query($sqlq);
     $rowdata = $resultval->fetchAll();
 
-    if(!empty($rowdata)){
+    if (!empty($rowdata)) {
         $types = array();
         $types2 = array();
         $types1 = array('' => 'Select Type');
-        foreach($rowdata as $rd){
+        foreach ($rowdata as $rd) {
             $types2[$rd['name']] = $rd['name'];
         }
         $types = $types1 + $types2;
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
         ->searchBy('name', $serchName)
         ->fromPOST();
 
-    if ($_SESSION['serchType']) {
+    if (isset($_SESSION['serchType'])) {
         $serchType = $_SESSION['serchType'];
     } else {
         $serchType = '';

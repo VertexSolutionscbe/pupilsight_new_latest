@@ -15,14 +15,49 @@
  * the License.
  */
 
-class Google_Service_Bigquery_IterationResult extends Google_Model
+class Google_Service_Bigquery_IterationResult extends Google_Collection
 {
+  protected $collection_key = 'principalComponentInfos';
+  protected $arimaResultType = 'Google_Service_Bigquery_ArimaResult';
+  protected $arimaResultDataType = '';
+  protected $clusterInfosType = 'Google_Service_Bigquery_ClusterInfo';
+  protected $clusterInfosDataType = 'array';
   public $durationMs;
   public $evalLoss;
   public $index;
   public $learnRate;
+  protected $principalComponentInfosType = 'Google_Service_Bigquery_PrincipalComponentInfo';
+  protected $principalComponentInfosDataType = 'array';
   public $trainingLoss;
 
+  /**
+   * @param Google_Service_Bigquery_ArimaResult
+   */
+  public function setArimaResult(Google_Service_Bigquery_ArimaResult $arimaResult)
+  {
+    $this->arimaResult = $arimaResult;
+  }
+  /**
+   * @return Google_Service_Bigquery_ArimaResult
+   */
+  public function getArimaResult()
+  {
+    return $this->arimaResult;
+  }
+  /**
+   * @param Google_Service_Bigquery_ClusterInfo[]
+   */
+  public function setClusterInfos($clusterInfos)
+  {
+    $this->clusterInfos = $clusterInfos;
+  }
+  /**
+   * @return Google_Service_Bigquery_ClusterInfo[]
+   */
+  public function getClusterInfos()
+  {
+    return $this->clusterInfos;
+  }
   public function setDurationMs($durationMs)
   {
     $this->durationMs = $durationMs;
@@ -54,6 +89,20 @@ class Google_Service_Bigquery_IterationResult extends Google_Model
   public function getLearnRate()
   {
     return $this->learnRate;
+  }
+  /**
+   * @param Google_Service_Bigquery_PrincipalComponentInfo[]
+   */
+  public function setPrincipalComponentInfos($principalComponentInfos)
+  {
+    $this->principalComponentInfos = $principalComponentInfos;
+  }
+  /**
+   * @return Google_Service_Bigquery_PrincipalComponentInfo[]
+   */
+  public function getPrincipalComponentInfos()
+  {
+    return $this->principalComponentInfos;
   }
   public function setTrainingLoss($trainingLoss)
   {

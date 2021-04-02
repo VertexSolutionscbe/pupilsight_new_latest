@@ -106,29 +106,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_tc_histor
     $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section');
 
     $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('search', __('Search For'))
-        ->description($searchDescription);
+    $col->addLabel('search', __('Search For'));
     $col->addTextField('search')->setValue($search);
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('', __(''));
     $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
-
-
     echo $form->getOutput();
 
 
     // DATA TABLE
-
-
     $table = DataTable::createPaginated('programManage', $criteria);
 
     // $table->addHeaderAction('add', __('Add'))
     //     ->setURL('/modules/School Admin/leaveReason_add.php')
     //     ->displayLabel();
 
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a id='revertTC' class='btn btn-primary'>Revert</a></div><div class='float-none'></div></div>";
+    echo "<div><div class='float-right my-2'><a id='revertTC' class='btn btn-white'>Revert</a></div><div class='float-none'></div></div>";
 
 
     $table->addCheckBoxColumn('pupilsightPersonID', __(''));

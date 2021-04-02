@@ -20,6 +20,8 @@ class Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1ConversationEvent ex
   public $conversation;
   protected $errorStatusType = 'Google_Service_Dialogflow_GoogleRpcStatus';
   protected $errorStatusDataType = '';
+  protected $newMessagePayloadType = 'Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1Message';
+  protected $newMessagePayloadDataType = '';
   public $type;
 
   public function setConversation($conversation)
@@ -43,6 +45,20 @@ class Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1ConversationEvent ex
   public function getErrorStatus()
   {
     return $this->errorStatus;
+  }
+  /**
+   * @param Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1Message
+   */
+  public function setNewMessagePayload(Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1Message $newMessagePayload)
+  {
+    $this->newMessagePayload = $newMessagePayload;
+  }
+  /**
+   * @return Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1Message
+   */
+  public function getNewMessagePayload()
+  {
+    return $this->newMessagePayload;
   }
   public function setType($type)
   {

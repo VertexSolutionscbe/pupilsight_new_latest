@@ -6891,7 +6891,7 @@ function CustomField() {
             var link = "ajax_custom_data.php";
             var val = _this.getPageNames();
             var relation = _this.getParameterByName("relation");
-            console.log("relation: ", relation);
+            //console.log("relation: ", relation);
             //var val = "user_manage_edit.php";
             if (val) {
                 var type = "getCustomControl";
@@ -6906,7 +6906,7 @@ function CustomField() {
                 }).done(function (msg) {
                     if (msg) {
                         var obj = jQuery.parseJSON(msg);
-                        console.log(obj);
+                        //console.log(obj);
                         _this.loadAction(obj);
                     }
                 });
@@ -6935,17 +6935,18 @@ function CustomField() {
 
     this.loadAction = function (obj) {
         try {
+            // console.log(obj["data"]);
+
             var len = obj["data"].length;
             var i = 0;
             var deactivateIds = "";
             //first create tab
             while (i < len) {
-                console.log(obj["data"][i].tab, ":", $("#" + obj["data"][i].tab).length);
-                if ($("#" + obj["data"][i].tab).length == 0) {
+                //console.log(obj["data"][i].tab, ":", $("#" + obj["data"][i].tab).length);
+                if (obj["data"][i].tab) {
                     var tabName = obj["data"][i].tab;
                     var lastTab = _this.getPreviousTab(tabName, obj);
                     if (obj.view) {
-                        //_this.createViewTab(tabName);
                         _this.createViewTab(tabName, lastTab);
                     } else {
                         //console.log("create Edit tab ", lastTab, " tabName ", tabName);
@@ -6954,6 +6955,7 @@ function CustomField() {
                 }
                 i++;
             }
+
 
             /*
             if (obj["data"][0].tabs) {
@@ -6982,6 +6984,7 @@ function CustomField() {
                             _this.createView(obj["data"][i]);
                         } else {
                             //create input
+                            //console.log(obj["data"][i]);
                             _this.createInput(obj["data"][i]);
                         }
                     } else {
@@ -7146,26 +7149,37 @@ function CustomField() {
     */
 
     this.createViewTab = function (tab_name, lastTab) {
-        var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
-        var str = "<h4>" + tabTitle + "</h4>";
-        str += "<table id='" + tab_name + "' class='table'>";
-        str += "<tbody></tbody>";
-        str += "</table>";
-        $("#" + lastTab).after(str);
+        try {
+            //console.log("Is new Tab ", $(document.getElementById(lastTab)).length);
+            if ($(document.getElementById(tab_name)).length == 0) {
+                var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
+                var str = "<h4>" + tabTitle + "</h4>";
+                str += "<table id='" + tab_name + "' class='table'>";
+                str += "<tbody></tbody>";
+                str += "</table>";
+                $(document.getElementById(lastTab)).after(str);
+            }
+        } catch (ex) {
+            console.log("Tab creation isssue tab_name ", tab_name, " lasttab ", lastTab);
+            console.log(ex);
+        }
     };
 
     this.createEditTab = function (tab_name, lastTab) {
-        var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
-        var str = "<div class='row mb-1' id='tbody_" + tab_name + "'>";
-        str += "<div id='" + tab_name + "' class='row mb-1 break'>";
-        str += "<div class='col-sm'>";
-        str += "<div><h3>" + tabTitle + "</h3></div>";
-        str += "</div>";
-        str += "</div>";
-        str += "</div>";
-        //console.log("tab_id", tab_name);
-        //console.log(str);
-        $("#tbody_" + lastTab).after(str);
+        //console.log("Is new Tab ", $(document.getElementById(tab_name)).length);
+        if ($(document.getElementById(tab_name)).length == 0) {
+            var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
+            var str = "<div class='row mb-1' id='tbody_" + tab_name + "'>";
+            str += "<div id='" + tab_name + "' class='row mb-1 break'>";
+            str += "<div class='col-sm'>";
+            str += "<div><h3>" + tabTitle + "</h3></div>";
+            str += "</div>";
+            str += "</div>";
+            str += "</div>";
+            //console.log("tab_id", tab_name);
+            //console.log(str);
+            $("#tbody_" + lastTab).after(str);
+        }
     };
 
     this.titleCase = function (str) {
@@ -7245,6 +7259,12 @@ function CustomField() {
                 } else if (obj.field_type == "image") {
                     elementVal = "<a href='" + pcdt.dt[obj.field_name] + "' download title='download image'><img src='" + pcdt.dt[obj.field_name] + "' class='img-thumbnail'/></a>";
                 }
+
+                if (obj.field_type == "checkboxes") {
+                    elementVal = _this.createCheckboxView(obj);
+                } else if (obj.field_type == "radioboxes") {
+                    elementVal = _this.createRadioView(obj);
+                }
             }
         } catch (ex) {
             console.log(ex);
@@ -7260,45 +7280,47 @@ function CustomField() {
             return;
         }
 
-        if (validElement) {
+        //console.log("element", obj.tab, obj);
 
+        if (validElement) {
             //console.log(obj.field_name, " : ", elementVal);
 
             var colCount = 0;
+            var currentRow = 0;
+            var currentCol = 0;
+
             if (document.getElementById(element).rows.length > 0) {
                 colCount = (document.getElementById(element).rows[0].cells.length) - 1;
+                currentRow = document.getElementById(element).rows.length - 1;
+                currentCol = (document.getElementById(element).rows[currentRow].cells.length) - 1;
             }
-            _this.activeElement = element;
-            //console.log(colCount);
-            var str = "";
-            if (!_this.isRowActive) {
-                str += "<tr>";
-                _this.isRowActive = true;
-            }
-            str += `<td id="` + fieldName + `" style="width: 34%; vertical-align: top">
-                <span class="form-label">` + fieldTitle + `</span>
-                <br>` + elementVal + `</td>`;
 
-            _this.colCurrent++;
-            _this.colActiveStr += str;
-            if (_this.colCurrent > colCount) {
-                str += "</tr>";
-                _this.isRowActive = false;
-                $("#" + _this.activeElement).append(_this.colActiveStr);
-                _this.colActiveStr = "";
-                str = "";
-                _this.colCurrent = 0;
+            var str = `<td id="` + fieldName + `" style="width: 34%; vertical-align: top">
+                <span class="form-label">` + fieldTitle + `</span>
+                <div>` + elementVal + `</div></td>`;
+            //console.log(obj.field_name, currentRow, currentCol, colCount);
+            var isData = $('#' + element + ' tr:last td:last').text();
+            var isNotAdded = true;
+            if (isData == "") {
+                isNotAdded = false;
+                str = `<span class="form-label">` + fieldTitle + `</span>
+                <div>` + elementVal + `</div>`;
+                $('#' + element + ' tr:last td:last').html(str);
+            } else if (currentCol != 0 && currentCol == colCount) {
+                $("#" + element).append("<tr></tr>");
+            }
+            if (isNotAdded) {
+                $('#' + element + ' tr:last').append(str);
             }
 
         } else {
             var str = `<table class="smallIntBorder" cellspacing="0" style="width: 100%"><tr>
                 <td id="` + fieldName + `" style="width: 34%; vertical-align: top" colspan="` + colCount + `">
                 <span class="form-label">` + fieldTitle + `</span>
-                <br>` + elementVal + `</td>
+                <div>` + elementVal + `</div></td>
                 </tr></table>`;
             $("#" + element).append(str);
         }
-
     };
 
     this.createInput = function (obj) {
@@ -7313,7 +7335,12 @@ function CustomField() {
                 _this.createDropDown(obj);
             } else if (obj.field_type == "number") {
                 _this.createNumberField(obj);
+            } else if (obj.field_type == "radioboxes") {
+                _this.createRadio(obj);
+            } else if (obj.field_type == "checkboxes") {
+                _this.createCheckbox(obj);
             }
+
             /*
             else if (obj.field_type == "date") {
                 _this.createDateField(obj);
@@ -7324,6 +7351,10 @@ function CustomField() {
 
     this.createName = function (obj) {
         return " name =\"custom[" + obj.table_name + "][" + obj.field_type + "][" + obj.field_name + "]\" ";
+    }
+
+    this.createOnlyName = function (obj) {
+        return "custom[" + obj.table_name + "][" + obj.field_type + "][" + obj.field_name + "]";
     }
 
     this.createTextField = function (obj) {
@@ -7622,34 +7653,233 @@ function CustomField() {
             </div>
         </div>`;
 
+        if (obj.tab) {
+            $("#tbody_" + obj.tab).append(str);
+        }
+    };
 
-        /*
-        var str = '<tr class="flex flex-col sm:flex-row justify-between content-center p-0">';
-        str += '<td class="flex flex-col flex-grow justify-center -mb-1 sm:mb-0  px-2 border-b-0 sm:border-b border-t-0 ">';
-        str += '<div class="input-group stylish-input-group">'
-        str += '<label for="' + obj.field_name + '" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">' + obj.field_title + requiredStr + '<br><span class="text-xxs text-gray-600 italic font-normal mt-1 sm:mt-0">' + description + '</span></label>';
-        str += '</div>';
-        str += '</td>';
-        str += '<td class="w-full max-w-full sm:max-w-xs flex justify-end items-center px-2 border-b-0 sm:border-b border-t-0 ">';
-        str += '<div class="input-group stylish-input-group">';
-        str += '<div class="flex-1 relative">';
-        //str +='<select id="'+obj.field_name+'" name="custom_'+obj.table_name+'_'+obj.field_name+'" class="w-full">';
-        str += '<select id="' + obj.field_name + '" name="custom[' + obj.table_name + '][' + obj.field_name + ']" class="w-full">';
+    this.createRadio = function (obj) {
+        var required = "";
+        var requiredStr = "";
+        if (obj.required == "Y") {
+            required = " required ";
+            requiredStr = " * ";
+        }
+
+        var tfVal = "";
+        if (pcdt) {
+            tfVal = pcdt.dt[obj.field_name];
+            if (_this.isEmpty(tfVal)) {
+                tfVal = "";
+            } else {
+                tfVal = $.trim(tfVal);
+            }
+        }
+
+        var opt = new Array();
+
+        if (obj.options) {
+            opt = (obj.options).split(",");
+        }
+
+        var len = opt.length;
+        var i = 0;
+
+        var description = "";
+        if (obj.field_description) {
+            description = obj.field_description;
+        }
+
+        var elementName = _this.createOnlyName(obj);
+        var selectStr = "";
+        var radioid = "";
+        var str = `<div class="row mb-1">                       
+            <div class="col-sm">
+                <div>
+                    <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `</label>
+                </div>
+            </div>                                          
+            <div class="col-sm  standardWidth">`
         while (i < len) {
-            str += '<option value="' + opt[i] + '">' + opt[i] + '</option>';
+            radioid = elementName + "_rd_" + i;
+            selectStr = "";
+            if (tfVal == $.trim(opt[i])) {
+                selectStr = " checked ";
+            }
+            str += `<input type='radio' name="` + elementName + `" id="` + radioid + `" value="` + opt[i] + `" ` + selectStr + `><label for="` + radioid + `" class='mx-2 font16'>` + opt[i] + `</label>`;
             i++;
         }
-        str += '</select>';
-        str += '</div>';
-        str += '</div>';
-        str += '</td>';
-        str += '</tr>';
-        */
+        `</div>
+        </div>`;
+        //console.log("radio str", str);
+        if (obj.tab) {
+            $("#tbody_" + obj.tab).append(str);
+        }
+    };
 
+    this.createRadioView = function (obj) {
+        var tfVal = "";
+        if (pcdt) {
+            tfVal = pcdt.dt[obj.field_name];
+            if (_this.isEmpty(tfVal)) {
+                tfVal = "";
+            } else {
+                tfVal = $.trim(tfVal);
+            }
+        }
+
+        var opt = new Array();
+
+        if (obj.options) {
+            opt = (obj.options).split(",");
+        }
+
+        var len = opt.length;
+        var i = 0;
+
+        var description = "";
+        if (obj.field_description) {
+            description = obj.field_description;
+        }
+
+        var strDisabled = " disabled";
+
+
+        var elementName = _this.createOnlyName(obj);
+        var selectStr = "";
+        var radioid = "";
+        var str = `<div class="row mb-1">                       
+            <div class="col-sm  standardWidth">`
+        while (i < len) {
+            radioid = elementName + "_rd_" + i;
+            selectStr = "";
+            if (tfVal == $.trim(opt[i])) {
+                selectStr = " checked ";
+            }
+            str += `<input type='radio' id="` + radioid + `" value="` + opt[i] + `" ` + selectStr + strDisabled + `><label for="` + radioid + `" class='mx-2 font16'>` + opt[i] + `</label>`;
+            i++;
+        }
+        `</div>
+        </div>`;
+        return str;
+    };
+
+    this.createCheckbox = function (obj) {
+
+        var required = "";
+        var requiredStr = "";
+        if (obj.required == "Y") {
+            required = " required ";
+            requiredStr = " * ";
+        }
+
+        var tfVal = "";
+        if (pcdt) {
+            tfVal = pcdt.dt[obj.field_name];
+            if (_this.isEmpty(tfVal)) {
+                tfVal = "";
+            } else {
+                tfVal = $.trim(tfVal);
+            }
+        }
+
+
+        var opt = new Array();
+
+        if (obj.options) {
+            opt = (obj.options).split(",");
+        }
+
+        var len = opt.length;
+        var i = 0;
+
+        var description = "";
+        if (obj.field_description) {
+            description = obj.field_description;
+        }
+
+        var elementName = _this.createOnlyName(obj);
+        var selectStr = "";
+        var radioid = "";
+
+        var str = `<div class="row mb-1">                       
+            <div class="col-sm">
+                <div>
+                    <label for="` + obj.field_name + `" class="inline-block sm:my-1 sm:max-w-xs font-bold text-sm sm:text-xs">` + obj.field_title + requiredStr + `</label>
+                    ` + description + `
+                </div>
+            </div>                                          
+            <div class="col-sm  standardWidth">`
+        while (i < len) {
+            radioid = elementName + "_ch_" + i;
+            selectStr = "";
+            var val = $.trim(opt[i]);
+            if (tfVal) {
+                if (tfVal.indexOf(val) !== -1) {
+                    selectStr = " checked ";
+                }
+            }
+            str += `<input type='checkbox' name="` + elementName + `[]" id="` + radioid + `" value="` + val + `" ` + selectStr + ` ><label for="` + radioid + `" class='mx-2 font16'>` + val + `</label>`;
+            i++;
+        }
+        `</div>
+        </div>`;
 
         if (obj.tab) {
             $("#tbody_" + obj.tab).append(str);
         }
+    };
+
+    this.createCheckboxView = function (obj) {
+
+        var tfVal = "";
+        if (pcdt) {
+            tfVal = pcdt.dt[obj.field_name];
+            if (_this.isEmpty(tfVal)) {
+                tfVal = "";
+            } else {
+                tfVal = $.trim(tfVal);
+            }
+        }
+
+
+        var opt = new Array();
+
+        if (obj.options) {
+            opt = (obj.options).split(",");
+        }
+
+        var len = opt.length;
+        var i = 0;
+
+        var description = "";
+        if (obj.field_description) {
+            description = obj.field_description;
+        }
+
+        var elementName = _this.createOnlyName(obj);
+        var selectStr = "";
+        var radioid = "";
+        var strDisabled = " disabled";
+
+        var str = `<div class="row mb-1">                       
+            <div class="col-sm  standardWidth">`
+        while (i < len) {
+            radioid = elementName + "_ch_" + i;
+            selectStr = "";
+            var val = $.trim(opt[i]);
+            if (tfVal) {
+                if (tfVal.indexOf(val) !== -1) {
+                    selectStr = " checked ";
+                }
+            }
+            str += `<input type='checkbox' id="` + radioid + `" value="` + val + `" ` + selectStr + strDisabled + ` ><label for="` + radioid + `" class='mx-2 font16'>` + val + `</label>`;
+            i++;
+        }
+        `</div>
+        </div>`;
+        return str;
+
     };
 }
 

@@ -373,7 +373,7 @@ if (isset($data['logo_image'])) {
                                             $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
                                             $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
                                 ?>
-                                            <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post">
+                                            <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post" style="text-align:center;">
                                                 <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                                 <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
@@ -396,7 +396,7 @@ if (isset($data['logo_image'])) {
                                             $responseLink = $base_url . "/cms/index.php?return=1";
 
                                         ?>
-                                            <form id="admissionPay" action="../thirdparty/paymentadm/razorpay/pay.php" method="post">
+                                            <form id="admissionPay" action="../thirdparty/paymentadm/razorpay/pay.php" method="post" style="text-align:center;">
                                                 <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                                 <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
@@ -421,7 +421,7 @@ if (isset($data['logo_image'])) {
                                             $responseLink = $base_url . "/cms/index.php?return=1";
 
                                         ?>
-                                            <form id="admissionPay" action="../thirdparty/payment/payu/checkout.php" method="post">
+                                            <form id="admissionPay" action="../thirdparty/payment/payu/checkout.php" method="post" style="text-align:center;">
                                                 <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
                                                 <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
@@ -443,7 +443,7 @@ if (isset($data['logo_image'])) {
                                             $responseLink = $base_url . "/cms/index.php?return=1";
                                             $airpayamount = number_format($applicationAmount, 2, '.', '');
                                         ?>
-                                            <form id="admissionPay" action="../thirdparty/payment/airpay/sendtoairpay.php" method="post">
+                                            <form id="admissionPay" action="../thirdparty/payment/airpay/sendtoairpay.php" method="post" style="text-align:center;">
                                                 <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="orderid">
                                                 <input type="hidden" name="amount" value="<?php echo $airpayamount; ?>">

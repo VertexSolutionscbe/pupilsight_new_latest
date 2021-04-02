@@ -1,4 +1,3 @@
-
 <?php
 include("template/header.php");
 
@@ -68,7 +67,8 @@ if($_POST){
          </div>
          <!-- panel content -->
          <div class="panel-body">
-				<form role="form" method="post" action="" enctype="multipart/form-data">
+				<form onsubmit="return validateCategory()" role="form" method="post" action="" enctype="multipart/form-data">
+				<div class="error-message"></div>
                 <div class="card-body">
                   <div class="form-group">
                     <label for="exampleInputEmail1">Category Type <span style="color:red;">*</span></label>
@@ -89,15 +89,15 @@ if($_POST){
                   </div>
 				   <div class="form-group ttle" id="ttle8">
                     <label for="exampleInputPassword1">Title <span style="color:red;">*</span></label>
-                    <input type="text" name="title" class="form-control" id="exampleInputPassword1" placeholder="Title" value="">
+                    <input type="text" name="title" class="form-control" id="title" placeholder="Title" value="">
                   </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Short Description <span style="color:red;">*</span></label>
-                    <textarea  name="short_description" class="form-control"  placeholder="Short Description"></textarea>
+                    <textarea  name="short_description" class="form-control" id="short_description"  placeholder="Short Description"></textarea>
                   </div>
 				  <div class="form-group desc" id="desc6" style="display:none;">
                     <label for="exampleInputPassword1">Description <span style="color:red;">*</span></label>
-                    <textarea  name="description" class="form-control"  placeholder="Description"></textarea>
+                    <textarea  name="description" id="description" class="form-control"  placeholder="Description"></textarea>
                   </div>
 				    <div class="form-group imgc">
                     <label for="exampleInputFile">Image <span style="color:red;">*</span>
@@ -111,7 +111,7 @@ if($_POST){
 					</label>
                     <div class="input-group">
                       <div class="custom-file">
-                        <input type="file" class="custom-file-input"  name="image">
+                        <input type="file" id="image" class="custom-file-input"  name="image">
 						</div>
                      
                     </div>
@@ -119,18 +119,18 @@ if($_POST){
 				  
 				   <div class="form-group usr8 cmnts" style="display:none;">
                     <label for="exampleInputPassword1">User Name </label>
-                    <input type="text" name="person_name" class="form-control" id="" placeholder="User Name" value="">
+                    <input type="text" name="person_name" id="person_name" class="form-control" id="" placeholder="User Name" value="">
                   </div>
 				  <div class="form-group usr8 cmnts" style="display:none;">
                     <label for="exampleInputPassword1">User Designation </label>
-                    <input type="text" name="person_designation" class="form-control" id="" placeholder="User Designation" value="">
+                    <input type="text" name="person_designation" id="person_designation" class="form-control" id="" placeholder="User Designation" value="">
                   </div>
 				  
 				   <div class="form-group usr8 cmnts" style="display:none;">
                     <label for="exampleInputFile">User Image (Width:150 / Height:150)</label>
                     <div class="input-group">
                       <div class="custom-file">
-                        <input type="file" class="custom-file-input"  name="person_image">
+                        <input type="file" class="custom-file-input" id="person_image"  name="person_image">
 						</div>
                       
                     </div>
@@ -177,4 +177,22 @@ $(document).on('change', '#showType', function(e){
 		$(".imgc").show();
 	}
 });
+
+
+	function validateCategory()
+    {
+        var showType = document.getElementById("showType").value;
+        var title = document.getElementById("title").value;
+		var short_description = document.getElementById("short_description").value;
+		var image = document.getElementById("image").value;
+
+        if(showType=='' || title=='' || short_description=='' || image=='')
+        {
+            alert('Please enter required fields');
+            return false;
+        }
+        else
+        return true;
+    }
+
 </script>

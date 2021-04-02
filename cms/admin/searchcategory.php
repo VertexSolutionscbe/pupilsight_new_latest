@@ -4,7 +4,36 @@
    $adminlib = new adminlib();
    $id = $_POST['id'];
    $section = $adminlib->getPupilSightSectionDataByCategory($id);
+
+
+   
+if(isset($_POST['submit'])){
+   //echo 's';exit;
+	$input = $_POST;
+
+   //echo '<pre>';print_r(count($input['sorting_order']));exit;
+	if(!empty($input) ){
+		
+      for($i=0;$i<count($input['sorting_order']);$i++)
+      {
+         //echo $input['sorting_order'][$i];exit;
+		   $adminlib->updateSectionSort($input['sorting_order'][$i],$input['id'][$i]);
+      }   
+
+      echo "<script>alert('Sorting order Updated Successfully');</script>";
+		echo "<script>window.location='category.php'</script>";
+		
+	}
+	 
+	else {
+		echo "<script>alert('Please Fill Required Fields.');</script>";
+	} 
+}
 ?>
+
+<form method="post" action="searchcategory.php">
+         <input type="submit" name="submit" class="btn btn-sm btn-success" style="float:right;" value="Update Sorting Order" />
+         
 
             <table class="table table-striped table-hover table-bordered" id="sample_editable_1">
                <thead>
@@ -13,9 +42,9 @@
                      <th>Title</th>
                      <th>Description</th>
                      <th>Image</th>
-					 <th>Sorting Order</th>
+					   <th>Sorting Order</th>
                      <th>Status</th>
-                     <th>Action</th>
+                     <th style="width:10%">Action</th>
                   </tr>
                </thead>
                <tbody>
@@ -45,7 +74,12 @@
                     <td>
 					<?php if(!empty($val['image'])) { ?> <img src="<?php echo $val['image_path']; ?>" style="width:15%"> <?php } ?>
 					</td>
-					<td><?php echo$val['sorting_order'];?></td>
+					<td>
+               <input type="number" min="1" max="10" name="sorting_order[]" value="<?php echo $val['sorting_order'];?>" />
+               <input type="hidden" name="id[]" value="<?php echo $val['id'];?>" />
+               
+               
+               </td>
                      <td><?php echo $st; ?></td>
 					 <td > 
 						<a class="btn btn-info btn-xs" href="editcategory.php?id=<?php echo $val['id']; ?>"><i class="fa fa-pencil-square-o"></i></a>
@@ -56,6 +90,9 @@
                      ?>
                </tbody>
             </table>
+
+
+<form>
         
 <script>
 $(document).on('change', '#seacrchByCategory', function(e){	

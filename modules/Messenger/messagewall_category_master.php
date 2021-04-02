@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Preetam
@@ -25,14 +26,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messagewall_cate
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-
-    if($_GET['return']=='errorcategoryname'){
-        echo "<div class='alert alert-danger'>This Category already exists. Category name must be unique.</div>";
-    }else{
-        returnProcess($guid, $_GET['return'], null, null);
+    if (isset($_GET['return'])) {
+        if ($_GET['return'] == 'errorcategoryname') {
+            echo "<div class='alert alert-danger'>This Category already exists. Category name must be unique.</div>";
+        } else {
+            returnProcess($guid, $_GET['return'], null, null);
+        }
     }
 
-    $categorystatus = array('1'=> 'Active','0'=> 'Inactive');
+    $categorystatus = array('1' => 'Active', '0' => 'Inactive');
 
     $form = Form::create('categories', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . "/messagewall_category_masterProcess.php");
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -79,4 +81,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messagewall_cate
 
     echo $table->render($messengercategory);
 }
-?>

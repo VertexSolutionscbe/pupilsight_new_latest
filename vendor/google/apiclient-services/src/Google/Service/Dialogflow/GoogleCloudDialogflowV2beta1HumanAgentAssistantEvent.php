@@ -15,10 +15,13 @@
  * the License.
  */
 
-class Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1HumanAgentAssistantEvent extends Google_Model
+class Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1HumanAgentAssistantEvent extends Google_Collection
 {
+  protected $collection_key = 'suggestionResults';
   public $conversation;
-  public $type;
+  public $participant;
+  protected $suggestionResultsType = 'Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1SuggestionResult';
+  protected $suggestionResultsDataType = 'array';
 
   public function setConversation($conversation)
   {
@@ -28,12 +31,26 @@ class Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1HumanAgentAssistantE
   {
     return $this->conversation;
   }
-  public function setType($type)
+  public function setParticipant($participant)
   {
-    $this->type = $type;
+    $this->participant = $participant;
   }
-  public function getType()
+  public function getParticipant()
   {
-    return $this->type;
+    return $this->participant;
+  }
+  /**
+   * @param Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1SuggestionResult[]
+   */
+  public function setSuggestionResults($suggestionResults)
+  {
+    $this->suggestionResults = $suggestionResults;
+  }
+  /**
+   * @return Google_Service_Dialogflow_GoogleCloudDialogflowV2beta1SuggestionResult[]
+   */
+  public function getSuggestionResults()
+  {
+    return $this->suggestionResults;
   }
 }

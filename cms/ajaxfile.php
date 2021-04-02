@@ -9,12 +9,14 @@ $cid = $_GET['cid'];
 $submissionId = $_GET['submissionId'];
 //$cid = 9;
 //$submissionId = 94;
-//error_reporting(E_ALL);
+error_reporting(E_ALL);
 $applicantId = explode(',', $submissionId);
 
 $sqlpt = "SELECT template_path, template_filename FROM campaign WHERE id = '" . $cid . "' ";
-
+//echo $sqlpt;
 $valuept = database::doSelectOne($sqlpt);
+
+//print_r($valuept);
 
 $file = $valuept['template_path'];
 
@@ -37,10 +39,10 @@ foreach ($field as $fe) {
         if (!empty($f->attributes)) {
             $arrHeader[] = $f->attributes->name;
         }
-        if(!empty($f->columns)){
-            foreach($f->columns as $cf){
-                foreach($cf as $cff){
-                    foreach($cff as $ctf){
+        if (!empty($f->columns)) {
+            foreach ($f->columns as $cf) {
+                foreach ($cf as $cff) {
+                    foreach ($cff as $ctf) {
                         if (!empty($ctf->attributes)) {
                             $arrHeader[] = $ctf->attributes->name;
                         }
@@ -115,6 +117,7 @@ if (!empty($file)) {
             $fname = trim(str_replace("/", "_", $fname));
 
             $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".docx";
+            echo "docx path : " . $savedocsx;
             $phpword->saveAs($savedocsx);
 
             $fileName = $fname . ".docx";
@@ -128,6 +131,7 @@ if (!empty($file)) {
             }
 
             $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/applicationpdf/parent/" . $fname . ".pdf";
+            echo "pdfFilename: " . $pdfFilename;
 
             header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
             readfile($pdfFilename);
@@ -135,4 +139,6 @@ if (!empty($file)) {
         } catch (Exception $ex) {
         }
     }
+} else {
+    echo "File Empty";
 }

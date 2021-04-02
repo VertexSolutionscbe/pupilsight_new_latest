@@ -6,9 +6,7 @@ Pupilsight, Flexible & Open School System
 namespace Pupilsight\Domain\System;
 
 use Exception;
-use phpDocumentor\Reflection\Types\Null_;
 use Pupilsight\Domain\Traits\TableAware;
-use Pupilsight\Domain\QueryCriteria;
 use Pupilsight\Domain\QueryableGateway;
 
 use Pupilsight\Domain\DBQuery;
@@ -83,18 +81,49 @@ class CustomField extends QueryableGateway
         return $flag;
     }
 
+    public function editCustomField($dt)
+    {
+        try {
+            $db = new DBQuery();
+            $sq = "update custom_field set ";
+            $sq .= "field_type='" . $dt["field_type"] . "', ";
+            $sq .= "tab='" . $dt["edit_tab"] . "', ";
+            $sq .= "options='" . $dt["options"] . "', ";
+            $sq .= "field_title='" . $dt["field_title"] . "', ";
+            $sq .= "field_description='" . $dt["field_description"] . "', ";
+            $sq .= "default_value='" . $dt["default_value"] . "', ";
+            $sq .= "isunique='" . $dt["edit_isunique"] . "', ";
+            $sq .= "required='" . $dt["edit_required"] . "', ";
+            $sq .= "active='" . $dt["edit_active"] . "', ";
+            $sq .= "visibility='" . $dt["edit_visibility"] . "', ";
+            $sq .= "editable='" . $dt["edit_editable"] . "', ";
+            $sq .= "parent_visible='" . $dt["edit_parent_visible"] . "', ";
+            $sq .= "parent_editable='" . $dt["edit_parent_editable"] . "' ";
+            $sq .= "where id='" . $dt["id"] . "'";
+            //echo $sq;
+            $db->query($sq);
+            $flag = TRUE;
+        } catch (Exception $e) {
+            echo 'CustomField->editCustomField(): exception: ',  $e->getMessage(), "\n";
+            $flag = FALSE;
+        }
+        return $flag;
+    }
+
     public function addCustomField($dt)
     {
         $db = new DBQuery();
         $flag = FALSE;
 
         if ($dt["table_name"]) {
+            unset($dt["customAction"]);
+            //customAction
             $dt['field_title'] = addslashes($dt['field_title']); //addslashes
             $flag = $db->insertArray('custom_field', $dt);
             if ($flag) {
                 $colType = "TEXT NULL ";
                 $default_value = "NULL ";
-                if ($dt["field_type"] == "tinytext" || $dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "number" || $dt["field_type"] == "image" || $dt["field_type"] == "file") {
+                if ($dt["field_type"] == "tinytext" || $dt["field_type"] == "varchar" || $dt["field_type"] == "email" || $dt["field_type"] == "number" || $dt["field_type"] == "image" || $dt["field_type"] == "file" || $dt["field_type"] == "checkboxes" || $dt["field_type"] == "radioboxes") {
                     $colType = "TINYTEXT NULL ";
                 } else if ($dt["field_type"] == "mobile") {
                     $colType = "VARCHAR(12) NULL ";
@@ -196,14 +225,18 @@ class CustomField extends QueryableGateway
                 //echo $data." - ".$val;
                 $tbl = $table;
                 foreach ($field_type as $ft => $fields) {
-                    //echo $tbl . "=>" . $ft;
-                    //print_r($fields);
-                    /*if ($ft == "image") {
-                        //handle image 
-                    } else {*/
+
+                    $isCheckBox = FALSE;
+                    if ($ft == "checkboxes") {
+                        //handle checkbox 
+                        $isCheckBox = TRUE;
+                    }
                     foreach ($fields as $key => $val) {
                         if ($squ) {
                             $squ .= ", ";
+                        }
+                        if ($isCheckBox) {
+                            $val = implode(' |$$| ', $val);
                         }
                         $squ .= $key . "='" . $val . "'";
                     }
@@ -385,7 +418,7 @@ class CustomField extends QueryableGateway
         $db = new DBQuery();
         $result = array();
         try {
-            $sq = "select c.id, c.field_name, c.field_title, c.field_type, c.modules, c.tab, c.active, c.table_name, cm.tabs, cm.table_tag, cm.page_view, cm.page_edit from custom_field as c left join custom_field_modal as cm on c.table_name = cm.table_name";
+            $sq = "select c.*, cm.tabs, cm.table_tag, cm.page_view, cm.page_edit from custom_field as c left join custom_field_modal as cm on c.table_name = cm.table_name";
             $result = $db->selectRaw($sq);
         } catch (Exception $ex) {
             echo 'CustomField->getCustomFieldList(): exception: ',  $ex->getMessage(), "\n";

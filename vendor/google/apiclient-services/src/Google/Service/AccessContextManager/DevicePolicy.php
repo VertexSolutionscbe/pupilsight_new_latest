@@ -22,6 +22,8 @@ class Google_Service_AccessContextManager_DevicePolicy extends Google_Collection
   public $allowedEncryptionStatuses;
   protected $osConstraintsType = 'Google_Service_AccessContextManager_OsConstraint';
   protected $osConstraintsDataType = 'array';
+  public $requireAdminApproval;
+  public $requireCorpOwned;
   public $requireScreenlock;
 
   public function setAllowedDeviceManagementLevels($allowedDeviceManagementLevels)
@@ -41,18 +43,34 @@ class Google_Service_AccessContextManager_DevicePolicy extends Google_Collection
     return $this->allowedEncryptionStatuses;
   }
   /**
-   * @param Google_Service_AccessContextManager_OsConstraint
+   * @param Google_Service_AccessContextManager_OsConstraint[]
    */
   public function setOsConstraints($osConstraints)
   {
     $this->osConstraints = $osConstraints;
   }
   /**
-   * @return Google_Service_AccessContextManager_OsConstraint
+   * @return Google_Service_AccessContextManager_OsConstraint[]
    */
   public function getOsConstraints()
   {
     return $this->osConstraints;
+  }
+  public function setRequireAdminApproval($requireAdminApproval)
+  {
+    $this->requireAdminApproval = $requireAdminApproval;
+  }
+  public function getRequireAdminApproval()
+  {
+    return $this->requireAdminApproval;
+  }
+  public function setRequireCorpOwned($requireCorpOwned)
+  {
+    $this->requireCorpOwned = $requireCorpOwned;
+  }
+  public function getRequireCorpOwned()
+  {
+    return $this->requireCorpOwned;
   }
   public function setRequireScreenlock($requireScreenlock)
   {

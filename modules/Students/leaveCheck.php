@@ -2,11 +2,13 @@
 /*
 Pupilsight, Flexible & Open School System
 */
+
 use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
 use Pupilsight\Domain\Students\StudentGateway;
 use Pupilsight\Domain\Helper\HelperGateway;
+
 if (isActionAccessible($guid, $connection2, '/modules/Students/leaveCheck.php') == false) {
     //Acess denied
     echo "<div class='alert alert-danger'>";
@@ -80,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/leaveCheck.php') 
     // if (!empty($pupilsightProgramID)) {
     //     $_SESSION['student_search'] = $input;
     // }
-    
+
     $leaveHistory = $studentGateway->getLeaveHistoryByAdmin($criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
 
     $form = Form::create('studentViewSearch', '');
@@ -104,8 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/leaveCheck.php') 
     $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section');
 
     $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('search', __('Search For'))
-        ->description($searchDescription);
+    $col->addLabel('search', __('Search For'));
     $col->addTextField('search')->setValue($search);
 
     $col = $row->addColumn()->setClass('newdes');
@@ -119,16 +120,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/leaveCheck.php') 
 
     // DATA TABLE
 
-    
+
     $table = DataTable::createPaginated('programManage', $criteria);
 
     // $table->addHeaderAction('add', __('Add'))
     //     ->setURL('/modules/School Admin/leaveReason_add.php')
     //     ->displayLabel();
-    
-    echo "<div style='height:50px;'><div class='float-right mb-2'><a id='approveLeave' class='btn btn-primary'>Approve</a>&nbsp;&nbsp;<a id='declineLeave' class='btn btn-primary'>Decline</a></div><div class='float-none'></div></div>";  
 
-    
+    echo "<div style='height:50px;'><div class='float-right mb-2'><a id='approveLeave' class='btn btn-success text-white'>Approve</a>&nbsp;&nbsp;<a id='declineLeave' class='btn btn-danger text-white'>Decline</a></div><div class='float-none'></div></div>";
+
+
     $table->addCheckBoxColumn('id', __(''));
     $table->addColumn('serial_number', __('Sl No'));
     $table->addColumn('program', __('Program'));
@@ -150,8 +151,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/leaveCheck.php') 
             }
             return $dataSet['status'];
         });
-   
-        
+
+
     // ACTIONS
     // $table->addActionColumn()
     //     ->addParam('id')
@@ -230,5 +231,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/leaveCheck.php') 
             alert('You Have to Select Leave.');
         }
     });
-
 </script>

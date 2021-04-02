@@ -4,10 +4,10 @@ Pupilsight, Flexible & Open School System
 */
 
 // Setup the composer autoloader
-$autoloader = require_once __DIR__.'/vendor/autoload.php';
+$autoloader = require_once __DIR__ . '/vendor/autoload.php';
 
 // Require the system-wide functions
-require_once __DIR__.'/functions.php';
+require_once __DIR__ . '/functions.php';
 
 // Core Services
 $container = new League\Container\Container();
@@ -15,10 +15,10 @@ $container->delegate(new League\Container\ReflectionContainer);
 $container->add('autoloader', $autoloader);
 
 $container->inflector(\League\Container\ContainerAwareInterface::class)
-          ->invokeMethod('setContainer', [$container]);
-          
+    ->invokeMethod('setContainer', [$container]);
+
 $container->inflector(\Pupilsight\Services\BackgroundProcess::class)
-          ->invokeMethod('setProcessor', [\Pupilsight\Services\BackgroundProcessor::class]);
+    ->invokeMethod('setProcessor', [\Pupilsight\Services\BackgroundProcessor::class]);
 
 $container->addServiceProvider(new Pupilsight\Services\CoreServiceProvider(__DIR__));
 $container->addServiceProvider(new Pupilsight\Services\ViewServiceProvider());
@@ -41,16 +41,16 @@ if (!$pupilsight->isInstalled() && !$pupilsight->isInstalling()) {
 // Autoload the current module namespace
 if (!empty($pupilsight->session->get('module'))) {
     $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $pupilsight->session->get('module'));
-    $autoloader->addPsr4('Pupilsight\\Module\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$pupilsight->session->get('module').'/src');
+    $autoloader->addPsr4('Pupilsight\\Module\\' . $moduleNamespace . '\\', realpath(__DIR__) . '/modules/' . $pupilsight->session->get('module') . '/src');
 
     // Temporary backwards-compatibility for external modules (Query Builder)
-    $autoloader->addPsr4('Pupilsight\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$pupilsight->session->get('module'));
+    $autoloader->addPsr4('Pupilsight\\' . $moduleNamespace . '\\', realpath(__DIR__) . '/modules/' . $pupilsight->session->get('module'));
     $autoloader->register(true);
 }
 
 // Initialize using the database connection
 if ($pupilsight->isInstalled() == true) {
-    
+
     $mysqlConnector = new Pupilsight\Database\MySqlConnector();
     if ($pdo = $mysqlConnector->connect($pupilsight->getConfig())) {
         $container->add('db', $pdo);

@@ -18,17 +18,30 @@
 class Google_Service_Compute_TargetHttpsProxy extends Google_Collection
 {
   protected $collection_key = 'sslCertificates';
+  public $authorizationPolicy;
   public $creationTimestamp;
   public $description;
+  public $fingerprint;
   public $id;
   public $kind;
   public $name;
+  public $proxyBind;
   public $quicOverride;
+  public $region;
   public $selfLink;
+  public $serverTlsPolicy;
   public $sslCertificates;
   public $sslPolicy;
   public $urlMap;
 
+  public function setAuthorizationPolicy($authorizationPolicy)
+  {
+    $this->authorizationPolicy = $authorizationPolicy;
+  }
+  public function getAuthorizationPolicy()
+  {
+    return $this->authorizationPolicy;
+  }
   public function setCreationTimestamp($creationTimestamp)
   {
     $this->creationTimestamp = $creationTimestamp;
@@ -44,6 +57,14 @@ class Google_Service_Compute_TargetHttpsProxy extends Google_Collection
   public function getDescription()
   {
     return $this->description;
+  }
+  public function setFingerprint($fingerprint)
+  {
+    $this->fingerprint = $fingerprint;
+  }
+  public function getFingerprint()
+  {
+    return $this->fingerprint;
   }
   public function setId($id)
   {
@@ -69,6 +90,14 @@ class Google_Service_Compute_TargetHttpsProxy extends Google_Collection
   {
     return $this->name;
   }
+  public function setProxyBind($proxyBind)
+  {
+    $this->proxyBind = $proxyBind;
+  }
+  public function getProxyBind()
+  {
+    return $this->proxyBind;
+  }
   public function setQuicOverride($quicOverride)
   {
     $this->quicOverride = $quicOverride;
@@ -77,6 +106,14 @@ class Google_Service_Compute_TargetHttpsProxy extends Google_Collection
   {
     return $this->quicOverride;
   }
+  public function setRegion($region)
+  {
+    $this->region = $region;
+  }
+  public function getRegion()
+  {
+    return $this->region;
+  }
   public function setSelfLink($selfLink)
   {
     $this->selfLink = $selfLink;
@@ -84,6 +121,14 @@ class Google_Service_Compute_TargetHttpsProxy extends Google_Collection
   public function getSelfLink()
   {
     return $this->selfLink;
+  }
+  public function setServerTlsPolicy($serverTlsPolicy)
+  {
+    $this->serverTlsPolicy = $serverTlsPolicy;
+  }
+  public function getServerTlsPolicy()
+  {
+    return $this->serverTlsPolicy;
   }
   public function setSslCertificates($sslCertificates)
   {

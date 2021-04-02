@@ -19,10 +19,13 @@ class Google_Service_ShoppingContent_ReturnShipment extends Google_Collection
 {
   protected $collection_key = 'shipmentTrackingInfos';
   public $creationDate;
+  public $deliveryDate;
   public $returnMethodType;
   public $shipmentId;
   protected $shipmentTrackingInfosType = 'Google_Service_ShoppingContent_ShipmentTrackingInfo';
   protected $shipmentTrackingInfosDataType = 'array';
+  public $shippingDate;
+  public $state;
 
   public function setCreationDate($creationDate)
   {
@@ -31,6 +34,14 @@ class Google_Service_ShoppingContent_ReturnShipment extends Google_Collection
   public function getCreationDate()
   {
     return $this->creationDate;
+  }
+  public function setDeliveryDate($deliveryDate)
+  {
+    $this->deliveryDate = $deliveryDate;
+  }
+  public function getDeliveryDate()
+  {
+    return $this->deliveryDate;
   }
   public function setReturnMethodType($returnMethodType)
   {
@@ -49,17 +60,33 @@ class Google_Service_ShoppingContent_ReturnShipment extends Google_Collection
     return $this->shipmentId;
   }
   /**
-   * @param Google_Service_ShoppingContent_ShipmentTrackingInfo
+   * @param Google_Service_ShoppingContent_ShipmentTrackingInfo[]
    */
   public function setShipmentTrackingInfos($shipmentTrackingInfos)
   {
     $this->shipmentTrackingInfos = $shipmentTrackingInfos;
   }
   /**
-   * @return Google_Service_ShoppingContent_ShipmentTrackingInfo
+   * @return Google_Service_ShoppingContent_ShipmentTrackingInfo[]
    */
   public function getShipmentTrackingInfos()
   {
     return $this->shipmentTrackingInfos;
+  }
+  public function setShippingDate($shippingDate)
+  {
+    $this->shippingDate = $shippingDate;
+  }
+  public function getShippingDate()
+  {
+    return $this->shippingDate;
+  }
+  public function setState($state)
+  {
+    $this->state = $state;
+  }
+  public function getState()
+  {
+    return $this->state;
   }
 }

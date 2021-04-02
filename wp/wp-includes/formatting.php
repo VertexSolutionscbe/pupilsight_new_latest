@@ -5763,9 +5763,13 @@ function print_emoji_styles()
 		background: none !important;
 		padding: 0 !important;
 		}
-		#wpadminbar, #footer-thankyou, #wpfooter, #wpdt-inline-logo, #screen-meta-links,.error_notice_ff_fluentform_pro_license{
-		display: none;
-		visibility: hidden;
+
+		#wpadminbar, #footer-thankyou, #wpfooter, #wpdt-inline-logo, #screen-meta-links,.error_notice_ff_fluentform_pro_license, .update-nag, .notice-warning,.wdt-rating-notice, .notice-success{
+		display: none !important;
+		visibility: hidden !important;
+		height:0 !important;
+		padding:0 !important;
+		margin:0 !important;
 		}
 
 		body {

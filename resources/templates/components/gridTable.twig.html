@@ -5,7 +5,8 @@ Pupilsight, Flexible & Open School System
 
 This is a Pupilsight template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
--->#} {% extends "components/dataTable.twig.html" %} {% block table %} {{ block("header") }} {% if dataSet.getResultCount == 0 %}
+-->#} {% extends "components/dataTable.twig.html" %} {% block table %} {{ block("header") }} {% if
+dataSet.getResultCount == 0 %}
 <div class="h-24 ">
     {{ block('blankslate') }}
 </div>

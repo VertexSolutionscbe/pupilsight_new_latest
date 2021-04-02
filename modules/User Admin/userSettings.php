@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     echo '</h3>';
 
     echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/userSettings_usernameFormat_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['pupilsightThemeName']."/img/page_new.png'/></a>";
+    echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . "/userSettings_usernameFormat_add.php'>" . __('Add') . "<img style='margin-left: 5px' title='" . __('Add') . "' src='./themes/" . $_SESSION[$guid]['pupilsightThemeName'] . "/img/page_new.png'/></a>";
     echo '</div>';
 
     $gateway = $container->get(UsernameFormatGateway::class);
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
                     ->setURL('/modules/User Admin/userSettings_usernameFormat_delete.php');
             }
         });
-    
+
     echo $table->render($usernameFormats->toDataSet());
 
     echo '<br/>';
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     echo __('Settings');
     echo '</h3>';
 
-    $form = Form::create('userSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/userSettingsProcess.php');
+    $form = Form::create('userSettings', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/userSettingsProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -65,78 +65,77 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
 
     $setting = getSettingByScope($connection2, 'User Admin', 'nationality', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'ethnicity', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'religions', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'residencyStatus', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'departureReasons', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('Privacy Options'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'privacy', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('privacy')->onSelect($setting['name'])->when('Y');
 
     $setting = getSettingByScope($connection2, 'User Admin', 'privacyBlurb', true);
     $row = $form->addRow()->addClass('privacy');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'privacyOptions', true);
     $row = $form->addRow()->addClass('privacy');
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow()->addHeading(__('User Data Options'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    $row->addYesNo($setting['name'])->selected($setting['value']);
 
     $row = $form->addRow()->addHeading(__('User Interface Options'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'personalBackground', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Day-Type Options'));
 
     $setting = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'User Admin', 'dayTypeText', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addTextArea($setting['name'])->setValue($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+    $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $row = $form->addRow();
-        $row->addFooter();
-        $row->addSubmit();
+    $row->addFooter();
+    $row->addSubmit();
 
     echo $form->getOutput();
 }
-?>
