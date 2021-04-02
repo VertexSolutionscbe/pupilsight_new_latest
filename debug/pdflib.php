@@ -6,9 +6,9 @@ $formData = [
     'student_name' => "test user",
     'student_dob' => ' test dob',
     'student_class' => 'test class',
-    'student_id' => ' test id',
+    'student_id' => 'test id',
     'student_mother_name' => 'test mother name',
-    'student_father_name' => ' test father',
+    'student_father_name' => 'test father',
     'student_address' => 'test address'
 ];
 
@@ -32,4 +32,5 @@ $imgData[1] = [
 
 $templateFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template1_New.pdf';
 $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template_out1.pdf';
+
 generate($templateFileName, $outFileName, $formData, $imgData, TRUE, TRUE);
