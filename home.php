@@ -7,7 +7,7 @@ $data = $adminlib->getPupilSightData();
 //print_r($data);
 
 $section = $adminlib->getPupilSightSectionFrontendData();
-//echo '<pre>';print_r($section['7']);
+//print_r($section);
 //die();
 $campaign = $adminlib->getcampaign();
 session_start();
@@ -25,7 +25,7 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain().'/pupilsight_new';
+//$baseurl = getDomain().'/pupilsight';
 $baseurl = getDomain();
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
@@ -48,15 +48,7 @@ if (isset($data['logo_image'])) {
     $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
 }
 
-$invalid = '';
-if (isset($_GET['invalid']))
-    $invalid = $_GET['invalid'];
-
 ?>
-
-<input type="hidden" name="inavlid" id="invalid" value="<?php echo $invalid; ?>" />
-
-
 <!doctype html>
 <html class="no-js" lang="">
 
@@ -255,7 +247,7 @@ if (isset($_GET['invalid']))
                             $menu = array();
 
                             $menu[0]["title"] = "Home";
-                            $menu[0]["link"] = $baseurl;
+                            $menu[0]["link"] = "<?=$baseurl;?>";
                             $menu[0]["icon"] = "mdi-home-outline";
                             $menu[0]["iconActive"] = "mdi-home";
 
@@ -458,7 +450,7 @@ if (isset($_GET['invalid']))
                         ?>
 
                                 <div class="col-sm">
-                                    <a href="#courseModal" class="courseData ablack" data-toggle="modal" data-cimg="<?= $cimg; ?>" data-title="<?= ucwords($sec['title']); ?>" data-desc="<?= $sec['short_description']; ?>">
+                                    <a href="#courseModal" class="courseData" data-toggle="modal" data-cimg="<?= $cimg; ?>" data-title="<?= ucwords($sec['title']); ?>" data-desc="<?= $sec['short_description']; ?>">
 
                                         <div class="card">
                                             <img src="<?= $cimg; ?>" class="card-img-top" style='height: 200px;background-size: contain;'>
@@ -569,7 +561,7 @@ if (isset($_GET['invalid']))
                             ?>
 
                                     <div class="col-sm">
-                                        <a href="#annModal" class="annData ablack" data-toggle="modal" data-aimg="<?= $aimg; ?>" data-title="<?= $crs['title']; ?>" data-desc="<?= $crs['short_description']; ?>">
+                                        <a href="#annModal" class="annData" data-toggle="modal" data-aimg="<?= $aimg; ?>" data-title="<?= $crs['title']; ?>" data-desc="<?= $crs['short_description']; ?>">
                                             <div class="card">
                                                 <img src="<?= $aimg; ?>" class="card-img-top" style='height: 200px;background-size: cover;'>
                                                 <div class="card-body wordwrap" title='<?= $crs['title']; ?>'>
@@ -650,35 +642,32 @@ if (isset($_GET['invalid']))
                                         </center>
                                     </div>
                                 </div>
-
-
-                                <div class="col-md-6 col-sm-12 m-auto">
-                                    <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
-                                    <div class='my-3'>
-                                        <div class="carouselTitle">Chairman'S Message</div>
-                                        <div class='mt-3'>
-                                            <?php
-                                            if ($exp['title']) {
-                                                echo "<b>" . $exp['title'] . "</b>";
-                                            } else {
-                                                echo '<b>Learn at your own pace<b>';
-                                            }
-
-                                            if ($exp['short_description']) {
-                                                echo "<p class='bannerDes'>" . $exp['short_description'] . "</p>";
-                                            } else {
-                                                echo '<p>Programs are available in fall, spring, and summer semesters. Many fall and spring programs offer similar shorter programs in the summer, and some may be combined for a full academic year.</p>';
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
-                                </div>
-
-
                             <?php
                                 $flag = false;
                             }
                             ?>
+
+                            <div class="col-md-6 col-sm-12 m-auto">
+                                <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
+                                <div class='my-3'>
+                                    <div class="carouselTitle">Chairman'S Message</div>
+                                    <div class='mt-3'>
+                                        <?php
+                                        if ($exp['title']) {
+                                            echo "<b>" . $exp['title'] . "</b>";
+                                        } else {
+                                            echo '<b>Learn at your own pace<b>';
+                                        }
+
+                                        if ($exp['short_description']) {
+                                            echo "<p class='bannerDes'>" . $exp['short_description'] . "</p>";
+                                        } else {
+                                            echo '<p>Programs are available in fall, spring, and summer semesters. Many fall and spring programs offer similar shorter programs in the summer, and some may be combined for a full academic year.</p>';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
 
 
 
@@ -711,22 +700,15 @@ if (isset($_GET['invalid']))
                                 if ($nws['time']) {
                                     $etitle .= " " . $nws['time'];
                                 }
-                                $edescription = '';
-                                if ($nws['short_description']) {
-                                    $edescription = $nws['short_description'];
-                                }
                         ?>
 
                                 <div class="col-sm">
-                                    <a href="#eventModal" class="eventData ablack" data-toggle="modal" data-eimg="<?= $eimg; ?>" data-title="<?= $etitle; ?>" data-desc="<?= $edescription; ?>">
-                                        <div class="card">
-                                            <img src="<?= $eimg; ?>" class="card-img-top" style='height:200px;background-size:contain;'>
-                                            <div class="card-body">
-                                                <h3 class="card-title"><?= $etitle; ?></h3>
-                                                <!-- <p><?= $edescription; ?></p> -->
-                                            </div>
+                                    <div class="card">
+                                        <img src="<?= $eimg; ?>" class="card-img-top" style='height:200px;background-size:contain;'>
+                                        <div class="card-body">
+                                            <h3 class="card-title"><?= $etitle; ?></h3>
                                         </div>
-                                    </a>
+                                    </div>
                                 </div>
 
 
@@ -735,43 +717,6 @@ if (isset($_GET['invalid']))
                         }  ?>
                     </section>
 
-                </div>
-
-
-                <!-- Modal Popop -->
-
-                <div class="container">
-                    <div class="modal fade" id="eventModal" role="dialog">
-                        <div class="modal-dialog">
-
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1></h1>
-                                    <button type="button" class="clsbtn close" data-dismiss="modal">&times;</button>
-
-                                </div>
-                                <div class="modal-body">
-
-                                    <div class="col-sm">
-                                        <div class="card">
-                                            <img id="eimg" src="" align="center">
-                                            <div class="card-body">
-                                                <h3 id="etitle" class="card-title"></h3>
-                                                <p id="edesc"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-                                <div class="modal-footer">
-                                    <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
                 </div>
             <?php
             }
@@ -1038,25 +983,17 @@ if (isset($_GET['invalid']))
 
     <div id="loginPanel" class="container-tight py-6 hide">
 
-        <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" onsubmit="return validateLogin()" novalidate="" method="post" autocomplete="off">
+        <form action="<?php echo $baseurl; ?>/login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off">
             <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
 
             <div class="card-body">
                 <div class="closeX">
-                    <!-- <span class="mdi mdi-close-circle" onclick="home.php"></span> -->
-                    <a href="home.php" class="mdi mdi-close-circle"></a>
+                    <span class="mdi mdi-close-circle" onclick="homePanel();"></span>
                 </div>
                 <div class="text-center my-3">
                     <img src="<?= $logo; ?>" height="36" alt="">
                 </div>
                 <h2 class="mb-3 text-center">Login to your account</h2>
-                <?php if ($invalid == 'true') { ?>
-                    <div class="alert alert-warning">Wrong Username or Password</div>
-
-                <?php } ?>
-
-                <div class="empty-warning"></div>
-
                 <div class="mb-3">
                     <label class="form-label">Username</label>
                     <input type="text" id="username" value="<?php if (isset($_COOKIE["username"])) {
@@ -1166,39 +1103,39 @@ if (isset($_GET['invalid']))
                 <!-- <div class="col-auto align-self-end"> -->
                 <div class="row">
 
-                    <div class="col-md-10 col-sm-12">
+                    <div class="col-md-10">
                         <a href="https://www.parentof.com/" target="_blank" class="link-secondary">Powered by ParentOf</a>
                     </div>
 
-                    <div class="col-md-2 col-sm-12">
+                    <div class="col-md-2">
 
-                        <!-- <div style="margin-left:50px"> -->
+                        <div style="margin-left:50px">
 
-                        <?php if (!empty($data['facebook_link'])) { ?>
+                            <?php if (!empty($data['facebook_link'])) { ?>
 
-                            <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
-                                <i class="social-icon fa fa-facebook" style="font-size:24px;color:#206bc4"></i>
-                            </a>&nbsp;&nbsp;
+                                <a target="_blank" href="<?php echo $data['facebook_link']; ?>">
+                                    <i class="social-icon fa fa-facebook" style="font-size:24px;color:#206bc4"></i>
+                                </a>&nbsp;&nbsp;
 
-                        <?php } ?>
-                        <?php if (!empty($data['twitter_link'])) { ?>
-                            <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
-                                <i class="social-icon fa fa-twitter" style="font-size:24px;color:#206bc4"></i>
-                            </a>&nbsp;&nbsp;
+                            <?php } ?>
+                            <?php if (!empty($data['twitter_link'])) { ?>
+                                <a target="_blank" href="<?php echo $data['twitter_link']; ?>">
+                                    <i class="social-icon fa fa-twitter" style="font-size:24px;color:#206bc4"></i>
+                                </a>&nbsp;&nbsp;
 
-                        <?php } ?>
-                        <?php if (!empty($data['pinterest_link'])) { ?>
-                            <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
-                                <i class="social-icon fa fa-pinterest-p" style="font-size:24px;color:#206bc4"></i>
-                            </a>&nbsp;&nbsp;
+                            <?php } ?>
+                            <?php if (!empty($data['pinterest_link'])) { ?>
+                                <a target="_blank" href="<?php echo $data['pinterest_link']; ?>">
+                                    <i class="social-icon fa fa-pinterest-p" style="font-size:24px;color:#206bc4"></i>
+                                </a>&nbsp;&nbsp;
 
-                        <?php } ?>
-                        <?php if (!empty($data['linkdlin_link'])) { ?>
-                            <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
-                                <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
-                            </a>
-                        <?php } ?>
-                        <!-- </div> -->
+                            <?php } ?>
+                            <?php if (!empty($data['linkdlin_link'])) { ?>
+                                <a target="_blank" href="<?php echo $data['linkdlin_link']; ?>">
+                                    <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
+                                </a>
+                            <?php } ?>
+                        </div>
 
                     </div>
 
@@ -1217,12 +1154,7 @@ if (isset($_GET['invalid']))
     </div>
 
     <style>
-        .ablack {
-            color: black;
-        }
-
-
-        .google-maps {
+        <<<<<<< HEAD=======.google-maps {
             position: relative;
             padding-bottom: 1%; // This is the aspect ratio
             height: 0;
@@ -1233,37 +1165,38 @@ if (isset($_GET['invalid']))
             position: absolute;
             top: 0;
             left: 0;
-            width: 100% !important;
+            width: 90% !important;
             height: 100% !important;
-
+            margin-left: 5%;
         }
 
 
 
-        #topBtn {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            right: 30px;
-            z-index: 99;
-            font-size: 18px;
-            border: none;
-            outline: none;
-            padding: 15px;
-            border-radius: 4px;
-            background: none;
-        }
+        >>>>>>>08140711c5e7e0055a4d95958116462bff01d1e4
+        /* #topBtn {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 30px;
+        z-index: 99;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        padding: 15px;
+        border-radius: 4px;
+        background: none;
+        } */
 
         .btn-border {
             border-radius: 30px;
         }
 
-        /* #topBtn {
+        #topBtn {
             display: none;
             position: fixed;
             left: 0;
             bottom: 0;
-            width: 100%; 
+            width: 100%;
             color: white;
             text-align: right;
             border: none;
@@ -1271,8 +1204,8 @@ if (isset($_GET['invalid']))
             padding: 15px;
             border-radius: 4px;
             background: none;
-        
-        } */
+
+        }
 
         #mapshow {
             padding: 0px !important;
@@ -1302,18 +1235,6 @@ if (isset($_GET['invalid']))
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
         }
-
-        function validateLogin() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            if (username == '' || password == '') {
-                //alert('Please enter Username and Password');
-                $('.empty-warning').addClass('alert alert-warning');
-                $('.empty-warning ').html('Please enter Username and Password');
-                return false;
-            } else
-                return true;
-        }
     </script>
 
     <script>
@@ -1340,17 +1261,11 @@ if (isset($_GET['invalid']))
     <script>
         document.body.style.display = "block";
         $(document).ready(function() {
-
-            var invalid = $('#invalid').val();
-            if (invalid == 'true') {
-                loginPanel();
-            } else {
-                $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
-                try {
-                    $('.gmap_canvas a').remove();
-                } catch (ex) {
-                    console.log(ex);
-                }
+            $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+            try {
+                $('.gmap_canvas a').remove();
+            } catch (ex) {
+                console.log(ex);
             }
         });
 
@@ -1485,20 +1400,6 @@ if (isset($_GET['invalid']))
             $('#atitle').text(title);
             $('#adesc').text(desc);
             $('#aimg').attr("src", aimg);
-
-
-        });
-
-        $(document).on("click", ".eventData", function() {
-
-            var title = $(this).data('title');
-            var desc = $(this).data('desc');
-            var eimg = $(this).data('eimg');
-
-
-            $('#etitle').text(title);
-            $('#edesc').text(desc);
-            $('#eimg').attr("src", eimg);
 
 
         });

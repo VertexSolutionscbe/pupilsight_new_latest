@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . '/vendor/autoload.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/pupilsight/vendor/autoload.php');
 
 use mikehaertl\pdftk\Pdf;
 use setasign\Fpdi\Fpdi;

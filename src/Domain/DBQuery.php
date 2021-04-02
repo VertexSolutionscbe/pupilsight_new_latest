@@ -76,19 +76,17 @@ class DBQuery
         $this->connect();
         //echo $sq.'<br>';
         $result = $this->conn->query($sq);
-        if ($result) {
-            if ($result->num_rows > 0) {
-                $cnt = 1;
-                while ($row = $result->fetch_assoc()) {
-                    if ($isSerialReq) {
-                        $row["serial_number"] = $cnt;
-                        $cnt++;
-                    }
-                    $dt[] = $row;
+        if ($result->num_rows > 0) {
+            $cnt = 1;
+            while ($row = $result->fetch_assoc()) {
+                if ($isSerialReq) {
+                    $row["serial_number"] = $cnt;
+                    $cnt++;
                 }
-                $this->conn->close();
-                return $dt;
+                $dt[] = $row;
             }
+            $this->conn->close();
+            return $dt;
         }
         $this->conn->close();
         return array();

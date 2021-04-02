@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
         ->sortBy(['id'])
         ->fromPOST();
 
-    if ($_GET['success'] == '1') {
+    if (!empty($_GET['success']) && $_GET['success'] == '1') {
         echo '<h3 style="color:light-green;color: green;border: 1px solid grey;text-align: center;padding: 5px 5px;">Payment Succesfully Done!</h3>';
     }
 

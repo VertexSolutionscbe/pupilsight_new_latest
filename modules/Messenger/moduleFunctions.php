@@ -1468,7 +1468,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         //My role categories
         try {
             $dataRoleCategory = array('pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
-            $sqlRoleCategory = "SELECT DISTINCT category as category2 FROM pupilsightRole JOIN pupilsightPerson ON (FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)) WHERE pupilsightPersonID=:pupilsightPersonID";
+            $sqlRoleCategory = "SELECT DISTINCT pupilsightRole.category as category2 FROM pupilsightRole JOIN pupilsightPerson ON (FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)) WHERE pupilsightPersonID=:pupilsightPersonID";
             $resultRoleCategory = $connection2->prepare($sqlRoleCategory);
             $resultRoleCategory->execute($dataRoleCategory);
         } catch (PDOException $e) {
@@ -2116,7 +2116,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
         //My role categories
         try {
             $dataRoleCategory = array('pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
-            $sqlRoleCategory = "SELECT DISTINCT category as category2 FROM pupilsightRole JOIN pupilsightPerson ON (FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)) WHERE pupilsightPersonID=:pupilsightPersonID";
+            $sqlRoleCategory = "SELECT DISTINCT pupilsightRole.category as category2 FROM pupilsightRole JOIN pupilsightPerson ON (FIND_IN_SET(pupilsightRole.pupilsightRoleID, pupilsightPerson.pupilsightRoleIDAll)) WHERE pupilsightPersonID=:pupilsightPersonID";
             $resultRoleCategory = $connection2->prepare($sqlRoleCategory);
             $resultRoleCategory->execute($dataRoleCategory);
         } catch (PDOException $e) {

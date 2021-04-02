@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 			if ($highestAction == "Manage Messages_all") {
 				if ($search == "" && $category == "") {
 					$data = array();
-					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) ORDER BY timestamp DESC";
+					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) ORDER BY timestamp DESC";
 				} else {
 					if(!empty($catseData)){
 						if($categorysearch == 'Email'){
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 						$data = array("search1" => "%$search%", "search2" => "%$search%");
 					}
 					//print_r($data);
-					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2)";
+					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (subject LIKE :search1 OR body LIKE :search2)";
 					if(!empty($catseSql)){
 						$sql .= 'AND '.$catseSql.' ';
 					}
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 			} else {
 				if ($search == "" && $category == "") {
 					$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"]);
-					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID ORDER BY timestamp DESC";
+					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID ORDER BY timestamp DESC";
 				} else {
 					if(!empty($catseData)){
 						if($categorysearch == 'Email'){
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 						$data = array("pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"], "search1" => "%$search%", "search2" => "%$search%");
 					}
 					
-					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID AND (subject LIKE :search1 OR body LIKE :search2)";
+					$sql = "SELECT pupilsightMessenger.*, title, officialName, surname, preferredName, pupilsightRole.category FROM pupilsightMessenger JOIN pupilsightPerson ON (pupilsightMessenger.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE pupilsightMessenger.pupilsightPersonID=:pupilsightPersonID AND (subject LIKE :search1 OR body LIKE :search2)";
 					if(!empty($catseSql)){
 						$sql .= 'AND '.$catseSql.' ';
 					}
