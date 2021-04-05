@@ -4,6 +4,17 @@ include("template/header.php");
    $adminlib = new adminlib();
    $section = $adminlib->getPupilSightSectionData();
 ?>
+
+<style>
+table {
+  table-layout: fixed; 
+  width: 100%
+}
+
+td {
+  word-wrap: break-word;
+}
+</style>
 <section id="middle">
    <div id="content" class="padding-20">
       <div id="panel-1" class="panel panel-default">
