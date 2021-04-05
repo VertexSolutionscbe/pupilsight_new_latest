@@ -542,6 +542,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                         } else {
                             $attrType = 'text';
                         }
+                        $key = str_replace(' ', '_', $key);
+
                         $sqlInsert .= '(' . $sketch_id . ',' . $sketch_generate_id . ',' . $k . ',"' . $key . '","' . $val . '","' . $attrType . '")';
                         $appendFlag = TRUE;
                     }
