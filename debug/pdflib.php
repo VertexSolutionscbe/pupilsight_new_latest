@@ -33,4 +33,13 @@ $imgData[1] = [
 $templateFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template1_New.pdf';
 $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template_out1.pdf';
 
+$outFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template_out' . $i . '.pdf';
+generate($templateFileName, $outFileName, $formData, $imgData, TRUE, TRUE);
+
+
+$outFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template_out2.pdf';
+generate($templateFileName, $outFileName, $formData, $imgData, TRUE, TRUE);
+
+
+$outFileName = $_SERVER['DOCUMENT_ROOT'] . '/debug/' . 'Test_Template_out3.pdf';
 generate($templateFileName, $outFileName, $formData, $imgData, TRUE, TRUE);
