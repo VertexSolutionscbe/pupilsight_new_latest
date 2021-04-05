@@ -9,8 +9,8 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain().'/pupilsight_new';
-$baseurl = getDomain();
+$baseurl = getDomain().'/pupilsight_new';
+//$baseurl = getDomain();
 
 ?>
 <html>
@@ -37,10 +37,28 @@ $baseurl = getDomain();
 
 <body>
 
+<?php
+    if(isset($_POST['submit']))
+    {
+        //echo 's';exit;
+        define('UPLOAD_DIR', 'img');
+
+        //echo '<pre>';print_r($_POST['porpin'][0]);exit;
+        $img_str=$_POST['porpin'][0];
+        $image_parts = explode(";base64,", $img_str);
+        //print_r($image_parts);exit;
+        $image_type_aux = explode("image/", $image_parts[0]);
+        $image_type = $image_type_aux[1];
+        $image_base64 = base64_decode($image_parts[1]);
+        $file = UPLOAD_DIR . uniqid() . '.jpg';
+        file_put_contents($file, $image_base64);
+    }
+?>    
+
     <form method="post">
         <?php
         $i   = 0;
-        $len = 5;
+        $len = 1;
         while ($i < $len) {
         ?>
 
@@ -63,11 +81,15 @@ $baseurl = getDomain();
             }
 
             //echo view('partials/croppie', $dt);
-            include $_SERVER['DOCUMENT_ROOT'] . '/debug/crop/croplib.php';
+            //include $_SERVER['DOCUMENT_ROOT'] . '/debug/crop/croplib.php';
+            include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight_new/debug/crop/croplib.php';
             $i++;
         }
 
+        
+
         ?>
+        <input type="submit" name="submit" value="submit" />
     </form>
 </body>
 

@@ -1,6 +1,6 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight_new/config.php';
 
 $conn = new mysqli($databaseServer, $databaseUsername, $databasePassword, $databaseName);
 // Check connection
