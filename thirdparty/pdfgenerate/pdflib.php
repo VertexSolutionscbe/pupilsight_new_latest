@@ -1,7 +1,9 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'].'/pupilsight.php';
-require_once($_SERVER['DOCUMENT_ROOT'] . '/pdflib.php');
+include $_SERVER['DOCUMENT_ROOT'].'/pupilsight/pupilsight.php';
+require_once($_SERVER['DOCUMENT_ROOT'] . '/pupilsight/pdflib.php');
+
+$pdflib = new PDFLib();
 
 $id = $_GET['id'];
 $skgid = $_GET['skgid'];
@@ -43,7 +45,7 @@ if(!empty($sketchGroupData)){
         $fileData = $resultf->fetch();
 
         if(!empty($fileData['template_filename'])){
-            $file = $_SERVER["DOCUMENT_ROOT"]."/public/sketch_template/".$fileData['template_filename'];
+            $file = $_SERVER["DOCUMENT_ROOT"]."/pupilsight/public/sketch_template/".$fileData['template_filename'];
 
             $studentName = $stuname['officialName'];
 
@@ -59,7 +61,7 @@ if(!empty($sketchGroupData)){
 
             $imgData[0] = [
                 'pageno' => 2,
-                'src' => $_SERVER['DOCUMENT_ROOT'] . "/debug/test1.jpg",
+                'src' => $_SERVER['DOCUMENT_ROOT'] . "/pupilsight/debug/test1.jpg",
                 'x' => 100,
                 'y' => 200,
                 'width' => 20,
@@ -68,7 +70,7 @@ if(!empty($sketchGroupData)){
             
             $imgData[1] = [
                 'pageno' => 1,
-                'src' => $_SERVER['DOCUMENT_ROOT'] . "/debug/test2.jpg",
+                'src' => $_SERVER['DOCUMENT_ROOT'] . "/pupilsight/debug/test2.jpg",
                 'x' => 100,
                 'y' => 200,
                 'width' => 20,
@@ -76,8 +78,8 @@ if(!empty($sketchGroupData)){
             ];
 
             $templateFileName = $file;
-            $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/thirdparty/pdfgenerate/'.$studentName.'.pdf';
-            generate($templateFileName, $outFileName, $formData, $imgData, TRUE, FALSE);
+            $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/pupilsight/thirdparty/pdfgenerate/'.$studentName.'.pdf';
+            $pdflib->generate($templateFileName, $outFileName, $formData, $imgData, TRUE);
              
         } 
     }

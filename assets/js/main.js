@@ -9485,3 +9485,41 @@ $(document).on('change', '#pupilsightYearGroupIDSchool', function () {
 });
 
 
+$(document).on('click', '#saveImgData', function (e) {
+    // $('#sendEmailSms_campaignForm').on('submit', (function (e) {
+    e.preventDefault();
+    var formData = new FormData(document.getElementById("imgForm"));
+
+    $.ajax({
+        url: "modules/Academics/sketch_report_template_configure_imageProcess.php",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        cache: false,
+        processData: false,
+        async: false,
+        success: function (data) {
+            alert('Parameter Saved Successfully!');
+            $("#TB_overlay").remove();
+            $("#TB_window").remove();
+        }
+    });
+});
+
+$(document).on('click', '#delImgData', function (e) {
+    e.preventDefault();
+    var skid = $(this).attr('data-sk');
+    var atrid = $(this).attr('data-atr');
+    var type = 'deleteImageTemplateConfig';
+    $.ajax({
+        url: "ajax_data.php",
+        type: "POST",
+        data: { type: type, val: skid, atrid: atrid },
+        async: true,
+        success: function (data) {
+            alert('Parameter Deleted Successfully!');
+            $("#TB_overlay").remove();
+            $("#TB_window").remove();
+        }
+    });
+});

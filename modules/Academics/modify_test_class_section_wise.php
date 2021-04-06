@@ -126,7 +126,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/modify_test_clas
        $grade = $grade1 + $grade2;
    }
 
-    $sqlrt = 'SELECT * FROM examinationReportTemplateMaster ';
+    // $sqlrt = 'SELECT * FROM examinationReportTemplateMaster ';
+    $sqlrt = 'SELECT * FROM examinationReportSketchTemplateMaster ';
     $resultrt = $connection2->query($sqlrt);
     $reportTempData = $resultrt->fetchAll();
 
