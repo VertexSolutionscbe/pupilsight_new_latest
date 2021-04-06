@@ -206,8 +206,8 @@ if($_POST){
 						}
 
 						//echo view('partials/croppie', $dt);
-						//include $_SERVER['DOCUMENT_ROOT'] . '/debug/crop/croplib.php';
-						include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight_new/debug/crop/croplib.php';
+						include $_SERVER['DOCUMENT_ROOT'] . '/debug/crop/croplib.php';
+						//include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight_new/debug/crop/croplib.php';
 						$i++;
 					}
 
