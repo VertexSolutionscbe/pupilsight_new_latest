@@ -83,15 +83,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             $maxMarksArray = array();
             $comMarksArray = array();
             $comMaxMarksArray = array();
+            //$docRoot = $_SERVER['DOCUMENT_ROOT'].'/pupilsight/';
+            $docRoot = $_SERVER['DOCUMENT_ROOT'].'/';
             try {
                 foreach ($sketchDataAttr as $sd) {
-                    
+                    // $dataarr[$k]['erta_id'] = $sd['erta_id'];
+                    // $dataarr[$k]['ertc_id'] = $sd['id'];
                     
                     if ($sd['attribute_type'] == 'Student' || $sd['attribute_type'] == 'Parent' || $sd['attribute_type'] == 'Class Teacher' || $sd['attribute_type'] == 'Principal') {
                         $studentDetails = getStudentDetails($connection2, $studentIds, $mappingData,  $sd['attribute_type']);
                         foreach($studentDetails as $k => $std){
                             if (($sd['attribute_type'] == 'Student' || $sd['attribute_type'] == 'Parent') && array_key_exists($sd['report_column_word'], $std)) {
-                                $dataarr[$k][$sd['attribute_name']] = $std[$sd['report_column_word']];
+                                if ($sd['report_column_word'] == 'student_photo' && !empty($std['student_photo'])) {
+                                    $dataarr[$k][$sd['attribute_name'] . '#photo'] = $docRoot.$std['student_photo'];
+                                } else {
+                                    $dataarr[$k][$sd['attribute_name']] = $std[$sd['report_column_word']];
+                                }
                             }
 
                             if($sd['attribute_type'] == 'Class Teacher'){
@@ -102,12 +109,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                     $dataarr[$k][$sd['attribute_name'] . '#signature'] = $std['clt_signature'];
                                 }
                                 if ($sd['report_column_word'] == 'class_teacher_photo' && !empty($std['clt_photo'])) {
-                                    $dataarr[$k][$sd['attribute_name'] . '#photo'] = $std['clt_photo'];
+                                    $dataarr[$k][$sd['attribute_name'] . '#photo'] = $docRoot.$std['clt_photo'];
                                 }
                             }
 
                             if ($sd['attribute_type'] == 'Principal') {
-
+                                
                                 if (!empty($prData)) {
                                     if ($sd['report_column_word'] == 'principle_name') {
                                         $dataarr[$k][$sd['attribute_name']] = $prData['officialName'];
@@ -116,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                         $dataarr[$k][$sd['attribute_name'] . '#signature'] = $prData['signature_path'];
                                     }
                                     if ($sd['report_column_word'] == 'principle_photo') {
-                                        $dataarr[$k][$sd['attribute_name'] . '#photo'] = $prData['image_240'];
+                                        $dataarr[$k][$sd['attribute_name'] . '#photo'] = $docRoot.$prData['image_240'];
                                     }
                                 }
                             }
@@ -149,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                                     $subTeacherArray[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']. '#signature'] = $sdata['signature_path'];
                                 }
                                 if ($sd['report_column_word'] == 'subject_teacher_photo') {
-                                    $subTeacherArray[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']. '#photo'] = $sdata['image_240'];
+                                    $subTeacherArray[$sd['attribute_name'] . '_' . $cnt . '_' . $sdata['subject_display_name']. '#photo'] = $docRoot.$sdata['image_240'];
                                 }
                                 $cnt++;
                             }
@@ -487,6 +494,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             // echo '<pre>';
             // print_r($dataarr);
             // echo '</pre>';
+            // die();
 
             
             if (!empty($dataarr)) {
@@ -639,7 +647,8 @@ function getStudentDetails($connection2, $studentIds, $mappingData, $attributeTy
         }
 
 
-
+        // $docRoot = $_SERVER['DOCUMENT_ROOT'].'/pupilsight/';
+        $docRoot = $_SERVER['DOCUMENT_ROOT'];
         $reportcolumn[$td['pupilsightPersonID']] = array(
             'student_id' => $td['pupilsightPersonID'],
             'student_name' => $td['officialName'],

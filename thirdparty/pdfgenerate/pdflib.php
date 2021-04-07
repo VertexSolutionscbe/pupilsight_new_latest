@@ -53,41 +53,63 @@ if(!empty($sketchGroupData)){
             $resultdata = $connection2->query($sqldata);
             $sketchStudentData = $resultdata->fetchAll();
 
+            $imgData = array();
+            $k = 0;
             foreach($sketchStudentData as $sd){
                 $attrValue = $sd['attribute_value'];
                 $attrName = $sd['attribute_name'];
                 $formData[$attrName] = $sd['attribute_value'];
+                if($sd['attribute_type'] == 'photo'){
+                    $attrName = str_replace('#photo', '', $attrName);
+                    $sql = 'SELECT b.* FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportSketchConfigureImage AS b ON a.id = b.attr_id WHERE a.attribute_name = "'.$attrName.'" AND a.sketch_id = '.$id.' AND b.sketch_id = '.$id.' ';
+                    $result = $connection2->query($sql);
+                    $imgStuData = $result->fetch();
+                    if(!empty($imgStuData)){
+                        $imgData[$k]['pageno'] = $imgStuData['page_no'];
+                        $imgData[$k]['src'] = $sd['attribute_value'];
+                        $imgData[$k]['x'] = $imgStuData['x'];
+                        $imgData[$k]['y'] = $imgStuData['y'];
+                        $imgData[$k]['width'] = $imgStuData['width'];
+                        $imgData[$k]['height'] = $imgStuData['height'];
+                    }
+                    $k++;
+                }
+
+                if($sd['attribute_type'] == 'signature'){
+                    $attrName = str_replace('#signature', '', $attrName);
+                    $sql = 'SELECT b.* FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportSketchConfigureImage AS b ON a.id = b.attr_id WHERE a.attribute_name = "'.$attrName.'" AND a.sketch_id = '.$id.' AND b.sketch_id = '.$id.' ';
+                    $result = $connection2->query($sql);
+                    $imgStuData = $result->fetch();
+                    if(!empty($imgStuData)){
+                        $imgData[$k]['pageno'] = $imgStuData['page_no'];
+                        $imgData[$k]['src'] = $sd['attribute_value'];
+                        $imgData[$k]['x'] = $imgStuData['x'];
+                        $imgData[$k]['y'] = $imgStuData['y'];
+                        $imgData[$k]['width'] = $imgStuData['width'];
+                        $imgData[$k]['height'] = $imgStuData['height'];
+                    }
+                    $k++;
+                }
             }
 
-            $imgData[0] = [
-                'pageno' => 2,
-                'src' => $_SERVER['DOCUMENT_ROOT'] . "/debug/test1.jpg",
-                'x' => 100,
-                'y' => 200,
-                'width' => 20,
-                'height' => 20
-            ];
-            
-            $imgData[1] = [
-                'pageno' => 1,
-                'src' => $_SERVER['DOCUMENT_ROOT'] . "/debug/test2.jpg",
-                'x' => 100,
-                'y' => 200,
-                'width' => 20,
-                'height' => 20
-            ];
+           
+            // echo '<pre>';
+            // print_r($imgData);
+            // echo '</pre>';
 
             $templateFileName = $file;
-            $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/thirdparty/pdfgenerate/'.$studentName.'.pdf';
+            $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/thirdparty/pdfgenerate/files/'.$studentName.'.pdf';
             $pdflib->generate($templateFileName, $outFileName, $formData, $imgData, TRUE);
-             
+            // $pdflib->download(); 
         } 
     }
+    $pdflib->createZipAndDownload("result.zip");
+    $pdflib->deleteSource();
 
     // echo '<pre>';
     // print_r($formData);
     // echo '</pre>';
-    //die();
+     //die();
 
     // $callback = $_SESSION[$guid]['absoluteURL']."/zipsketch.php?zipname=".$sketchName."";
 

@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     <tr>
                         <th><?= $i; ?></th>
                         <th><?= $imd['attribute_name']; ?></th>
-                        <th><a class="btn btn-primary thickbox" href="fullscreen.php?q=/modules/Academics/sketch_report_template_configure_image.php&id=<?= $imd['id']; ?>&skid=<?= $imd['sketch_id']; ?>">Set Parameter</a></th>
+                        <th><a class="btn btn-white thickbox" href="fullscreen.php?q=/modules/Academics/sketch_report_template_configure_image.php&id=<?= $imd['id']; ?>&skid=<?= $imd['sketch_id']; ?>">Set Parameter</a></th>
                     </tr>
                 <?php $i++; } ?>
             </tbody>
