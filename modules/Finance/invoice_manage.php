@@ -143,16 +143,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
         $_SESSION['invoice_search'] = $input;
     }
 
-
+/*
 ?>
     <input type="hidden" class="cl_sltid" value="<?php echo $pupilsightYearGroupID; ?>">
     <input type="hidden" class="sl_sltid" value="<?php echo $pupilsightRollGroupID; ?>">
 <?php
+*/
     $FeesGateway = $container->get(FeesGateway::class);
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
-        ->pageSize(10000)
+        //->pageSize(10000)
         ->sortBy(['id'])
         ->fromPOST();
 
@@ -162,11 +163,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
 
         $t_amount = 0;
-        foreach ($c_query as $am) {
-            // $t_amount += $am['tot_amount'];
-            $t_amount += $am['inv_amount'];
+        $kountTransaction = 0;
+        if(!empty($c_query)){
+            foreach ($c_query as $am) {
+                // $t_amount += $am['tot_amount'];
+                $t_amount += $am['inv_amount'];
+            }
+            $kountTransaction = count($c_query);
         }
-        $kountTransaction = count($c_query);
+        
     } else {
         $t_amount = 0;
         $kountTransaction = 0;

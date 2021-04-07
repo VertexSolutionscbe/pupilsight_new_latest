@@ -705,7 +705,8 @@ print_r($rs);
                         $data[$k]['inv_amount'] = '';
                     }
                 } else {
-                    $data[$k]['tot_amount'] = '';
+                    $data[$k]['tot_amount'] = '0';
+                    $data[$k]['inv_amount'] = '0';
                 }
             }
         }
@@ -902,6 +903,9 @@ print_r($rs);
                             $data[$k]['paid'] = '';
                         }
                     }
+                } else {
+                    $data[$k]['chkinvstatus'] = '';
+                    $data[$k]['paid'] = '';
                 }
 
                 $query3 = $this

@@ -15,15 +15,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     echo '</div>';
 } else {
     //Proceed!
+
+    $sketch_id = $_GET['id'];
+
     $page->breadcrumbs
-        ->add(__('Manage Sketch Template'), 'examination_report_template_manage.php')
+        ->add(__('Manage Sketch Template'), 'sketch_report_template_manage.php&id=' . $sketch_id . '')
         ->add(__('Add Sketch Template'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-        $sketch_id = $_GET['id'];
+        
 
         $sql = 'SELECT * FROM examinationReportTemplateSketch WHERE id = "' . $sketch_id . '" ';
         $result = $connection2->query($sql);
@@ -41,6 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             $class2[$dt['pupilsightYearGroupID']] = $dt['name'];
         }
         $class = $class1 + $class2;
+
+        $sqlimg = 'SELECT a.* FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportTemplateConfiguration AS b ON a.ertc_id = b.id WHERE a.sketch_id = '.$sketch_id.' AND b.type= "image" ';
+        $resultimg = $connection2->query($sqlimg);
+        $imgData = $resultimg->fetchAll();
+        //print_r($imgData);
    
         echo '<h2>';
         echo __('Add Sketch Template');
@@ -53,6 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         $form->addHiddenValue('sketch_id', $sketch_id);
         $form->addHiddenValue('pupilsightSchoolYearID', $sketchData['pupilsightSchoolYearID']);
         $form->addHiddenValue('pupilsightProgramID', $sketchData['pupilsightProgramID']);
+
+
+        $row = $form->addRow();
+        $row->addLabel('name', __('Name'));
+        $row->addTextField('name')->required();
 
         $row = $form->addRow();
         $row->addLabel('pupilsightYearGroupID', __('Class'));
@@ -68,6 +81,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         echo $form->getOutput();
 }
 ?>
+
+<?php if(!empty($imgData)) { ?>
+    <div style="margin-top:100px;">
+        <h3>Configure Image Fields</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sl No</th>
+                    <th>Attribute Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $i = 1; foreach($imgData as $imd) { ?>
+                    <tr>
+                        <th><?= $i; ?></th>
+                        <th><?= $imd['attribute_name']; ?></th>
+                        <th><a class="btn btn-white thickbox" href="fullscreen.php?q=/modules/Academics/sketch_report_template_configure_image.php&id=<?= $imd['id']; ?>&skid=<?= $imd['sketch_id']; ?>">Set Parameter</a></th>
+                    </tr>
+                <?php $i++; } ?>
+            </tbody>
+        </table>
+    </div>
+<?php } ?>
+
+
+
+
 <!-- <script type="text/javascript">
     $('#edit_template_form').on('submit',(function(e) {
     e.preventDefault();

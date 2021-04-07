@@ -176,7 +176,7 @@ class PDFLib
             header('Content-Length: ' . filesize($zipFileName));
             readfile($zipFileName);
 
-            //unlink($zipFileName);
+            unlink($zipFileName);
         } catch (Exception $ex) {
             print_r($ex);
         }

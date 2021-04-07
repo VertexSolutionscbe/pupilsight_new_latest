@@ -23,6 +23,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
     $pupilsightProgramID = $_POST['pupilsightProgramID'];
     $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
+    $name = $_POST['name'];
 
     
    
@@ -32,8 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     } else {
         //Check unique inputs for uniquness
         try {
-            $data = array('id' => $sketch_id);
-            $sql = 'SELECT * FROM examinationReportTemplateSketch WHERE id=:id';
+            $data = array('name' => $name);
+            $sql = 'SELECT * FROM examinationReportSketchTemplateMaster WHERE name=:name';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -42,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             exit();
         }
 
-        if ($result->rowCount() < 1) {
+        if ($result->rowCount() > 0) {
             $URL .= '&return=error3';
             header("Location: {$URL}");
         } else {
@@ -75,8 +76,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                         // echo "Error: " . $_FILES["file"]["error"];
                     }
     
-                    $data = array('sketch_id' => $sketch_id, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'template_path' => $fileTarget, 'template_filename' => $filename);
-                    $sql = "INSERT INTO examinationReportSketchTemplateMaster SET sketch_id=:sketch_id, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, template_path=:template_path, template_filename=:template_filename ";
+                    $data = array('sketch_id' => $sketch_id, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'name' => $name, 'template_path' => $fileTarget, 'template_filename' => $filename);
+                    $sql = "INSERT INTO examinationReportSketchTemplateMaster SET sketch_id=:sketch_id, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, name=:name, template_path=:template_path, template_filename=:template_filename ";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

@@ -34,6 +34,7 @@ try {
                     $sqcs = "select SUM(fi.total_amount) AS tamnt from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.fn_fee_invoice_id =  " . $invoiceId . " ";
                     $resultfi = $connection2->query($sqcs);
                     $valuefi = $resultfi->fetchAll();
+                    $total = 0;
                     if (!empty($valuefi)) {
                         $cnt = 1;
                         foreach ($valuefi as $vfi) {
@@ -52,6 +53,7 @@ try {
                     $resultfi = $connection2->query($sqcs);
                     $valuefi = $resultfi->fetchAll();
 
+                    $total = 0;
                     if (!empty($valuefi)) {
                         $cnt = 1;
                         foreach ($valuefi as $vfi) {
@@ -127,12 +129,14 @@ try {
                     $invoice_no = str_replace("/","-",$invoice_no);
                     
                     $fileName = $invoice_no . ".docx";
-                    $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/receipts/";
+                    $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/invoice_receipts/";
                     $savedocsx = $inFilePath . $fileName;
                     //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
                     $phpword->saveAs($savedocsx);
                     
                     convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+
+                    
 
                     // $contenttype = "application/force-download";
                     // header("Content-Type: " . $contenttype);
@@ -142,6 +146,10 @@ try {
                 }
             }
         }
+        $callback = $_SESSION[$guid]['absoluteURL']."/zipinvoice.php?zipname=invoices";
+
+        header('Location: '.$callback);
+        exit;
     }
 
 } catch (Exception $ex) {

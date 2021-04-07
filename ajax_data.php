@@ -3933,3 +3933,13 @@ if ($type == 'chkCautionAmt') {
     echo $data;
 }
 
+
+if ($type == 'deleteImageTemplateConfig') {
+    $sketch_id = $val;
+    $attr_id = $_POST['atrid'];
+    $data = array('sketch_id' => $sketch_id, 'attr_id' => $attr_id);
+    $sql = 'DELETE FROM examinationReportSketchConfigureImage WHERE sketch_id=:sketch_id AND attr_id=:attr_id';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+}
+

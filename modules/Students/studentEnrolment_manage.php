@@ -77,6 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         $criteria = $studentGateway->newQueryCriteria()
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['surname', 'preferredName'])
+            ->pageSize(5000)
             ->fromPOST();
 
         echo '<h3>';
