@@ -91,8 +91,9 @@ if($_POST){
 		// die(0);
 
 		$adminlib->updateSectionData($input,$id);
-		echo "<script>window.location='category.php'</script>";
 		echo "<script>alert('Category Updated Successfully');</script>";
+		echo "<script>window.location='category.php'</script>";
+		
 	}
 	 
 	else {
@@ -257,7 +258,7 @@ if($_POST){
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-blue">Submit</button>
                 </div>
               </form>		
 		</div>
