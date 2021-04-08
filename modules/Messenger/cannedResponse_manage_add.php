@@ -43,3 +43,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
 
 	echo $form->getOutput();
 }
+
+?>
+
+<script type='text/javascript'>
+	$(document).ready(function() {
+		$("#bodyedButtonPreview").trigger('click');
+	});
+</script>

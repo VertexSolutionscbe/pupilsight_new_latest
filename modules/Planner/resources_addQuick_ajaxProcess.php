@@ -29,7 +29,7 @@ if (empty($_POST) or empty($_FILES)) {
         //Check if multiple files
         $multiple = false;
         $multipleCount = 0;
-        for ($i = 1; $i < 5; ++$i) {
+        for ($i = 1; $i < 6; ++$i) {
             if (isset($_FILES[$id.'file'.$i])) {
                 ++$multipleCount;
             }
@@ -60,9 +60,9 @@ if (empty($_POST) or empty($_FILES)) {
                     $name = mb_substr(basename($file['name']), 0, mb_strpos(basename($file['name']), '.'));
 
                     if ((strcasecmp($extension, '.gif') == 0 or strcasecmp($extension, '.jpg') == 0 or strcasecmp($extension, '.jpeg') == 0 or strcasecmp($extension, '.png') == 0) and $imagesAsLinks == false) {
-                        $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'><img class='resource' style='max-width: 500px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'></a>";
+                        $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."' data-mce-href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'><img class='resource' style='max-width: 500px' src='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."' data-mce-src='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'></a>";
                     } else {
-                        $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'>".$name.'</a>';
+                        $html = "<a target='_blank' style='font-weight: bold' href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."' data-mce-href='".$_SESSION[$guid]['absoluteURL'].'/'.$attachment."'>".$name.'</a>';
                     }
                 }
             }
