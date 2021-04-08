@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                         $urls .="&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
                         //echo $urls;
                         $resms = file_get_contents($urls);*/
-                        $msgto=$smspupilsightPersonID;
+                        $msgto=$st;
                         $msgby=$_SESSION[$guid]["pupilsightPersonID"];
                         $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                         if ($res) {

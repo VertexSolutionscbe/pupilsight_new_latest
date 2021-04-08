@@ -1418,6 +1418,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
             }
         }
 
+        
         //If parent get a list of student IDs
         if ($parent) {
             $children = '(';
@@ -2065,6 +2066,11 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 $parent = true;
             }
         }
+
+        $roleCategory = 'Parent';
+        $parent = true;
+        
+
 
         //If parent get a list of student IDs
         if ($parent) {

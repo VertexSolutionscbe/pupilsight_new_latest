@@ -140,8 +140,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
     echo "<a style='display:none' id='modifyMarks' class='btn btn-primary butt'>test Mark Entry</a>"; 
     echo "<a id='modifyMarksEntry'  data-type='student' class='btn btn-primary butt'>Mark Entry</a>&nbsp;&nbsp;";
 
-    echo "<a  id='sendSMS'  href=''  data-toggle='modal' data-target='#large-modal-stud_test_result' data-noti='2'  class='sendButton_test_result btn btn-primary butt' >Send SMS</a>&nbsp;&nbsp;";
-    echo "<a  id='sendEmail'  href='' data-toggle='modal' data-noti='1' data-target='#large-modal-stud_test_result' class='sendButton_test_result btn btn-primary butt' >Send Email</a>&nbsp;&nbsp;";
+    echo "<a  id='sendSMS'  href=''  data-toggle='modal' data-target='#large-modal-new_stud' data-noti='2'  class='sendButton_stud btn btn-primary butt' >Send SMS</a>&nbsp;&nbsp;";
+    echo "<a  id='sendEmail'  href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_stud' class='sendButton_stud btn btn-primary butt' >Send Email</a>&nbsp;&nbsp;";
     // echo "<div style='margin-top: 10px;'>";
  
     echo "<a  id='result_show_pdf' data-type='test' class='btn btn-primary butt'>Show Pdf</a>&nbsp;&nbsp;";
@@ -250,7 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
                 ++$count;      
                 echo "<tr class=$rowNum>";
                 echo '<td class="check_boxes">';
-                echo  '<input type="checkbox"  data_tid="'.$row['id'].'" data_status="'.$row['status'].'" data_testid='.$row['test_id'].' name="student_id[]" id="student_id['. $row['pupilsightPersonID'].']" value="'.$row['pupilsightPersonID'].'" >';
+                echo  '<input type="checkbox"  data_tid="'.$row['id'].'" data_status="'.$row['status'].'" data_testid="'.$row['test_id'].'" name="student_id[]" id="student_id['. $row['pupilsightPersonID'].']" value="'.$row['pupilsightPersonID'].'" >';
                 echo '</td>';     
                 echo '<td >';
                 echo '<center>';
