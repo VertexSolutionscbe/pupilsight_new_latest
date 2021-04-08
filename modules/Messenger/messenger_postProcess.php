@@ -35,6 +35,12 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		$smsCount = NULL;
 		$smsBatchCount = NULL;
 
+		// echo '<pre>';
+		// print_r($_FILES);
+		// print_r($_POST);
+		// echo '</pre>';
+		// die();
+
 		//Validate Inputs
 		$email = $_POST["email"];
 		if ($email != "Y") {
@@ -55,14 +61,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			$messageWall = "N";
 		}
 		$date1 = NULL;
-		//if (isset($_POST["date1"])) {
-		if ($_POST["date1"] != "") {
-			$date1 = dateConvert($guid, $_POST["date1"]);
-		} else {
-			$dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
-			$date1 = date('Y-m-d');
+		if (isset($_POST["date1"])) {
+			if ($_POST["date1"] != "") {
+				$date1 = dateConvert($guid, $_POST["date1"]);
+			} else {
+				$dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
+				$date1 = date('Y-m-d');
+			}
 		}
-		//}
 		$date2 = NULL;
 		if (isset($_POST["date2"])) {
 			if ($_POST["date2"] != "") {
@@ -82,10 +88,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		if ($sms != "Y") {
 			$sms = "N";
 		}
-		$subject = $_POST["subject"];
-		if ($subject == '') {
-			$subject = 'NA';
+
+		$subject = 'NA';
+		if (isset($_POST["subject"])) {
+			$subject = $_POST["subject"];
 		}
+		// $subject = $_POST["subject"];
+		// if ($subject == '') {
+		// 	$subject = 'NA';
+		// }
 		$category = $_POST["category"];
 		if($category==''){
             $category='Other';
@@ -93,7 +104,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		$body = stripslashes($_POST["body"]);
 		$body1 = stripslashes($_POST["body1"]);
 		$emailReceipt = $_POST["emailReceipt"];
-		$emailbcc = $_POST["emailbcc"];
+		
+		$emailbcc = '';
+		if (isset($_POST["emailbcc"])) {
+			$emailbcc = $_POST["emailbcc"];
+		}
+
+
 		$copysms = $_POST["copysms"];
 		$emailReceiptText = null;
 		if (isset($_POST["emailReceiptText"]))

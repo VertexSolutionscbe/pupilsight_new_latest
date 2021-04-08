@@ -67,3 +67,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
         }
     }
 }
+
+?>
+
+<script type='text/javascript'>
+	$(document).ready(function() {
+		$("#bodyedButtonPreview").trigger('click');
+	});
+</script>

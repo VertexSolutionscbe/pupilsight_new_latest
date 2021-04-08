@@ -176,7 +176,8 @@ class SMS implements SMSInterface
     public function content(string $content)
     {
         $this->content = stripslashes(strip_tags($content));
-        $this->totalchars = length($this->content);
+        //$this->totalchars = length($this->content);
+        $this->totalchars = strlen($this->content);
         return $this;
     }
 
