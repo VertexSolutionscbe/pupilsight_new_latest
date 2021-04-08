@@ -206,8 +206,8 @@ if($_POST){
 						}
 
 						//echo view('partials/croppie', $dt);
-						//include $_SERVER['DOCUMENT_ROOT'] . '/debug/crop/croplib.php';
-						include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight_new/debug/crop/croplib.php';
+						include $_SERVER['DOCUMENT_ROOT'] . '/debug/crop/croplib.php';
+						//include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight_new/debug/crop/croplib.php';
 						$i++;
 					}
 
@@ -240,7 +240,7 @@ if($_POST){
                 <!-- /.card-body -->
 
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="submit" class="btn btn-blue">Submit</button>
                 </div>
               </form>		
 		</div>
