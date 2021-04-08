@@ -134,3 +134,107 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/view_members_in_
 
     echo $table->render($viewMember);
 }
+
+?>
+
+<script>
+    $(document).on('click', '.sendbtn', function () {
+        var stuids = [];
+        $.each($("input[name='stuid[]']:checked"), function () {
+            stuids.push($(this).val());
+        });
+        var stuid = stuids.join(",");
+        if (stuid) {
+            $(".sendbtn").removeClass('activestate');
+            $(this).addClass('activestate');
+            var noti = $(this).attr('data-noti');
+            $(".emailsmsFieldTitle").hide();
+            $(".emailFieldTitle").hide();
+            $(".emailField").hide();
+            $(".smsFieldTitle").hide();
+            $(".smsField").hide();
+            if (noti == '1') {
+                $(".emailFieldTitle").show();
+                $(".emailField").show();
+            } else if (noti == '2') {
+                $(".smsFieldTitle").show();
+                $(".smsField").show();
+            } else if (noti == '3') {
+                $(".emailsmsFieldTitle").show();
+                $(".emailField").show();
+                $(".smsField").show();
+            } else {
+                $(".emailsmsFieldTitle").show();
+                $(".emailField").show();
+                $(".smsField").show();
+            }
+        } else {
+            alert('You Have to Select User First');
+            window.setTimeout(function () {
+                $("#large-modal-new").removeClass('show');
+                $("#chkCounterSession").removeClass('modal-open');
+                $(".modal-backdrop").remove();
+            }, 10);
+        }
+
+    });
+
+
+    $(document).on('click', '#sendEmailSms_Transport', function (e) {
+        e.preventDefault();
+        $("#preloader").show();
+        window.setTimeout(function () {
+            var formData = new FormData(document.getElementById("sendEmailSms_Student"));
+
+            var emailquote = $("#emailQuote_stud").val();
+            var subjectquote = $("#emailSubjectQuote_stud").val();
+
+            var smsquote = $("#smsQuote_stud").val();
+            var favorite = [];
+            $.each($("input[name='stuid[]']:checked"), function () {
+                favorite.push($(this).val());
+            });
+            var stuid = favorite.join(", ");
+
+           
+
+            if (stuid) {
+                
+                    if (emailquote != '' || smsquote != '') {
+
+                        formData.append('stuid', stuid);
+                        formData.append('emailquote', emailquote);
+                        formData.append('smsquote', smsquote);
+                        formData.append('subjectquote', subjectquote);
+                        $.ajax({
+                            url: 'modules/Transport/send_stud_email_msg.php',
+                            type: 'post',
+                            //data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote, type: type, subjectquote: subjectquote },
+                            data: formData,
+                            contentType: false,
+                            cache: false,
+                            processData: false,
+                            async: false,
+                            success: function (response) {
+                                $("#preloader").hide();
+                                alert('Your Message Sent Successfully! click Ok to continue ');
+                                //location.reload();
+                                $("#sendEmailSms_Student")[0].reset();
+                                $("#closeSM").click();
+                            }
+                        });
+                    } else {
+                        $("#preloader").hide();
+                        alert('You Have to Enter Message.');
+                    }
+                
+            } else {
+                $("#preloader").hide();
+                alert('You Have to Select Applicants.');
+
+            }
+        }, 100);
+
+
+    });
+</script>

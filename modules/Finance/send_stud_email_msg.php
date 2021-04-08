@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/send_stud_email_ms
                         //echo $urls;
                         $resms = file_get_contents($urls);
                         */
-                        $msgto=$smspupilsightPersonID;
+                        $msgto=$st;
                         $msgby=$_SESSION[$guid]["pupilsightPersonID"];
                         $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                         if ($res) {

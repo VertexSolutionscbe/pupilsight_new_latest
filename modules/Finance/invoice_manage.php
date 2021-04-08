@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
     // QUERY
     $criteria = $FeesGateway->newQueryCriteria()
-        //->pageSize(10000)
+        ->pageSize(10000)
         ->sortBy(['id'])
         ->fromPOST();
 
