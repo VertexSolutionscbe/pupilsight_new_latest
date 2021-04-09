@@ -756,7 +756,12 @@ class StudentGateway extends QueryableGateway
         }
 
         if (!empty($search)) {
-            $query->where('pupilsightPerson.officialName LIKE "%' . $search . '%" ');
+            $query->where('pupilsightPerson.officialName LIKE "%' . $search . '%" ')
+            ->orwhere('pupilsightPerson.pupilsightPersonID = "' . $search . '" ')
+            ->orwhere('pupilsightPerson.admission_no = "' . $search . '" ')
+            ->orwhere('pupilsightPerson.username LIKE "%' . $search . '%" ')
+            ->orwhere('pupilsightPerson.email LIKE "%' . $search . '%" ')
+            ->orwhere('pupilsightPerson.phone1 LIKE "%' . $search . '%" ');
         }
 
 

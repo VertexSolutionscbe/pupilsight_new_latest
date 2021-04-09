@@ -148,7 +148,7 @@ class StaffGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
-    public function getassignedstaff(QueryCriteria $criteria)
+    public function getassignedstaff(QueryCriteria $criteria, $pupilsightSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -162,8 +162,9 @@ class StaffGateway extends QueryableGateway
             ->leftJoin('pupilsightYearGroup', 'pupilsightProgramClassSectionMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
             ->leftJoin('pupilsightRollGroup', 'pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
             ->leftJoin('pupilsightPerson', 'assignstaff_toclasssection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+            ->where('pupilsightProgramClassSectionMapping.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' ')
             ->groupBy(['pupilsightProgramClassSectionMapping.pupilsightMappingID']);
-
+        //echo $query;
         $res = $this->runQuery($query, $criteria);
         $data = $res->data;
 

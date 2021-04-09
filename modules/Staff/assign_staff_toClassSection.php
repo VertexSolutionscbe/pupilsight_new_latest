@@ -25,7 +25,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClass
         $pupilsightSchoolYearID = '';
         if (isset($_GET['pupilsightSchoolYearID'])) {
             $pupilsightSchoolYearID = $_GET['pupilsightSchoolYearID'];
+        } else {
+            $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         }
+
+        
+
+        //echo $pupilsightSchoolYearID;
         if ($_POST) {
             $pupilsightProgramID =  $_POST['pupilsightProgramID'];
             $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
@@ -78,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_staff_toClass
         ->pageSize(1000)
         ->fromPOST();
 
-    $staff = $StaffGateway->getassignedstaff($criteria);
+    $staff = $StaffGateway->getassignedstaff($criteria, $pupilsightSchoolYearID);
     /*
 echo "<pre>";
 print_r($staff);
