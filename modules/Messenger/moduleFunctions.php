@@ -2067,8 +2067,8 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
             }
         }
 
-        $roleCategory = 'Parent';
-        $parent = true;
+        // $roleCategory = 'Parent';
+        // $parent = true;
         
 
 

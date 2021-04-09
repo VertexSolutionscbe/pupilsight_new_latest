@@ -576,7 +576,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
 			$row = $form->addRow()->addClass('firstAid');
 			$row->addLabel('firstAidExpiry', __('First Aid Expiry'));
-			$row->addDate('firstAidExpiry')->setValue($stfdata['firstAidExpiry']);
+
+			if(!empty($stfdata['firstAidExpiry'])){
+				$fexdate = date('d/m/Y', strtotime($stfdata['firstAidExpiry']));
+			} else {
+				$fexdate = '';
+			}
+			$row->addDate('firstAidExpiry')->setValue($fexdate);
 
 			$form->addRow("biography")->addHeading(__('Biography'));
 

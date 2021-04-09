@@ -101,8 +101,19 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		if($category==''){
             $category='Other';
         }
-		$body = stripslashes($_POST["body"]);
-		$body1 = stripslashes($_POST["body1"]);
+
+		$body = '';
+		$body1 = '';
+		if (isset($_POST["body"])) {
+			$body = stripslashes($_POST["body"]);
+		}
+
+		if (isset($_POST["body1"])) {
+			$body1 = stripslashes($_POST["body1"]);
+		}
+
+		// $body = stripslashes($_POST["body"]);
+		// $body1 = stripslashes($_POST["body1"]);
 		$emailReceipt = $_POST["emailReceipt"];
 		
 		$emailbcc = '';

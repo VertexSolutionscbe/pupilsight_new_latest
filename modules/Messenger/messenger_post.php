@@ -273,13 +273,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		$row = $form->addRow()->addClass('sms1')->setID('bodyhide');
 		$col = $row->addColumn('body');
 		$col->addLabel('body', __('Body'));
-		$col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true)->setValue($signature);
+		$col->addEditor('body', $guid)->setRows(20)->showMedia(true)->setValue($signature)->required();
 
 		//$form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
 		$row = $form->addRow()->addClass('sms')->setID('body1hide');
 		$col = $row->addColumn('body');
 		$col->addLabel('body', __('Body'));
-		$col->addEditor('body1', $guid)->required()->setRows(20)->setValue($signature);
+		$col->addEditor('body1', $guid)->setRows(20)->setValue($signature)->required();
 
 		$row = $form->addRow()->addAlert(__('For SMS message 160 Characters per message '))->setClass('right')
 			->append('<span id="count" title="countchars"></span>');
@@ -768,6 +768,8 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 	$('input[type=radio][name=email]').change(function() {
 		if (this.value == 'Y') {
 			//alert("yes");
+			$('#body').prop('disabled',false);
+			$('#body1').prop('disabled',true);
 			$("input[name=sms][value='N']").prop("checked", true);
 			$("input[name=messageWall][value='N']").prop("checked", true);
 			$("[id=publicationdate").hide();
@@ -783,10 +785,12 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 <script>
 	$('input[type=radio][name=sms]').change(function() {
 		if (this.value == 'Y') {
+			$("#body1edButtonPreview").trigger('click');
 			//alert("yes");
 			$("input[name=email][value='N']").prop("checked", true);
 			$("input[name=messageWall][value='N']").prop("checked", true);
-
+			$('#body').prop('disabled',true);
+			$('#body1').prop('disabled',false);
 			$("[id=replyemail").hide();
 			$("[id=bccemail").hide();
 			$("[id=publicationdate").hide();
@@ -802,6 +806,8 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 	$('input[type=radio][name=messageWall]').change(function() {
 		if (this.value == 'Y') {
 			//alert("yes");
+			$('#body').prop('disabled',false);
+			$('#body1').prop('disabled',true);
 			$("input[name=sms][value='N']").prop("checked", true);
 			$("input[name=email][value='N']").prop("checked", true);
 			$("[id=replyemail").hide();
