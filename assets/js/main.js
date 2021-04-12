@@ -3013,11 +3013,11 @@
         var tamt = 0;
         $(".kountAmt").each(function () {
             if ($(this).val() != '') {
-                var amt = $(this).val();
+                var amt = parseFloat($(this).val());
             } else {
                 var amt = 0;
             }
-            tamt += parseInt(amt);
+            tamt += parseFloat(amt);
         });
         $("#totalAmount").html(tamt);
     });

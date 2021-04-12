@@ -229,12 +229,13 @@ if ($type == 'delDiscountRuleType') {
 }
 
 if ($type == 'getAjaxFeeStructureItem') {
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $aid = $val;
     $disid = $_POST['disid'];
     if ($disid != 'nodata') {
-        $sqli = 'SELECT id, name FROM fn_fee_items WHERE id NOT IN (' . $disid . ')';
+        $sqli = 'SELECT id, name FROM fn_fee_items WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND id NOT IN (' . $disid . ')';
     } else {
-        $sqli = 'SELECT id, name FROM fn_fee_items ';
+        $sqli = 'SELECT id, name FROM fn_fee_items WHERE pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'"';
     }
     $resulti = $connection2->query($sqli);
     $feeItem = $resulti->fetchAll();
@@ -652,8 +653,9 @@ if ($type == 'searchStudentInvoice') {
 if ($type == 'searchStudent') {
     $aid = $_POST['val'];
     $search = $_POST['search'];
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-    $sqli = 'SELECT a.pupilsightPersonID, a.admission_no, p.name,a.officialName,  d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON b.pupilsightProgramID = p.pupilsightProgramID  LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE a.pupilsightRoleIDPrimary = "003" AND a.officialName LIKE "%' . $search . '%" OR  a.pupilsightPersonID = "' . $search . '" OR  a.admission_no = "' . $search . '"';
+    $sqli = 'SELECT a.pupilsightPersonID, a.admission_no, p.name,a.officialName,  d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON b.pupilsightProgramID = p.pupilsightProgramID  LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE b.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightRoleIDPrimary = "003" AND a.officialName LIKE "%' . $search . '%" OR  a.pupilsightPersonID = "' . $search . '" OR  a.admission_no = "' . $search . '"';
     $resulti = $connection2->query($sqli);
     $students = $resulti->fetchAll();
     //print_r($students);

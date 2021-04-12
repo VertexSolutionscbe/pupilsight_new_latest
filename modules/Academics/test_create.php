@@ -68,7 +68,7 @@ if(!empty($_GET['tid'])){
     $allprogclass = $resultval->fetchAll();
     if(!empty($allprogclass)){
     foreach($allprogclass as $k=>$rd){
-        $sql = 'SELECT a.pupilsightMappingID, a.pupilsightProgramID, b.* FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = '.$rd['pupilsightProgramID'].' GROUP BY a.pupilsightYearGroupID ';
+        $sql = 'SELECT a.pupilsightMappingID, a.pupilsightProgramID, b.* FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = '.$testdata['academicId'].' AND a.pupilsightProgramID = '.$rd['pupilsightProgramID'].' GROUP BY a.pupilsightYearGroupID ';
         $result = $connection2->query($sql);
         $classes = $result->fetchAll();
         $n=0;

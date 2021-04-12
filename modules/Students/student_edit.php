@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 			// $resultp->execute($data);
 
 			$data = array('pupilsightFamilyID' => $pupilsightFamilyID);
-			$sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightFamilyID=:pupilsightFamilyID';
+			$sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightFamilyID=:pupilsightFamilyID GROUP BY pupilsightPersonID1';
 			$resultp = $connection2->prepare($sqlp);
 			$resultp->execute($data);
 		} catch (PDOException $e) {

@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
 			
 			$data = array('pupilsightFamilyID' => $pupilsightFamilyID);
-			$sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightFamilyID=:pupilsightFamilyID';
+			$sqlp = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightFamilyID=:pupilsightFamilyID GROUP BY pupilsightPersonID1';
 			$resultp = $connection2->prepare($sqlp);
 			$resultp->execute($data);
             
@@ -80,14 +80,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php&search=$search'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
-            echo "<div style='height:50px;'><div class='float-left mb-2'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=".$childid."&search=' class='btn btn-primary active'>Student</a>";  
+            echo "<div style='height:50px;'><div class='float-left mb-2'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=".$childid."&search=' class='btn btn-white '>Student</a>";  
 
 
             if(!empty($parents)){
                 foreach($parents as $par){
-                    echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=".$par['pupilsightPersonID1']."&child_id=".$childid."&search=' class='btn btn-primary'>".$par['relationship']."</a>"; 
+                    echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/parent_edit.php&pupilsightPersonID=".$par['pupilsightPersonID1']."&child_id=".$childid."&search=' class='btn btn-white'>".$par['relationship']."</a>"; 
                 }
-                echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=".$parents[0]['pupilsightFamilyID']."&child_id=".$childid."&search=' class='btn btn-primary'>Family</a>";
+                echo "&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/family_manage_edit.php&pupilsightFamilyID=".$parents[0]['pupilsightFamilyID']."&child_id=".$childid."&search=' class='btn btn-primary active'>Family</a>";
             }
 
             if($kount == 0){
