@@ -180,7 +180,7 @@ try {
             $savedocsx = $inFilePath . $fileName;
             $phpword->saveAs($savedocsx);
             
-            //convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+            convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
 
             $fileNameNew = $invoice_no . ".pdf";
             $savedocsx = $inFilePath . $fileNameNew;
