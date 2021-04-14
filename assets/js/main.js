@@ -3477,6 +3477,7 @@
                                 //location.reload();
                                 $("#sendEmailSms_Student")[0].reset();
                                 $("#closeSM").click();
+                                $(".closeSMPopUp").click();
                             }
                         });
                     } else {

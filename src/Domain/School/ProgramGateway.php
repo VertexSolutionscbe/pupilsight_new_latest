@@ -34,7 +34,7 @@ class ProgramGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function attendanceSettings(QueryCriteria $criteria)
+    public function attendanceSettings(QueryCriteria $criteria, $pupilsightSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -42,7 +42,8 @@ class ProgramGateway extends QueryableGateway
             ->cols([
                 'pupilsightProgram.name AS program_name', 'attn_settings.*'
             ])
-            ->leftJoin('pupilsightProgram', 'attn_settings.pupilsightProgramID=pupilsightProgram.pupilsightProgramID');
+            ->leftJoin('pupilsightProgram', 'attn_settings.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+            ->where('attn_settings.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
 
         return $this->runQuery($query, $criteria);
     }

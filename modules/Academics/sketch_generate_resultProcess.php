@@ -584,15 +584,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 function getStudentDetails($connection2, $studentIds, $mappingData, $attributeType)
 {
     if (!empty($studentIds)) {
-        $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, b.image_240, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID WHERE b.pupilsightPersonID IN (' . $studentIds . ') AND c.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' AND c.pupilsightRollGroupID = ' . $mappingData['pupilsightRollGroupID'] . ' GROUP BY b.pupilsightPersonID';
+        $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no,  b.image_240, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID WHERE b.pupilsightPersonID IN (' . $studentIds . ') AND c.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' AND c.pupilsightRollGroupID = ' . $mappingData['pupilsightRollGroupID'] . ' GROUP BY b.pupilsightPersonID';
     } else {
-        $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.cbse_reg_no, b.image_240, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID WHERE c.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' AND c.pupilsightRollGroupID = ' . $mappingData['pupilsightRollGroupID'] . '  GROUP BY b.pupilsightPersonID';
+        $sqls = 'SELECT fr.relationship, ft.officialName as parent_name, ft.email as parent_email, ft.phone1 as parent_phone, b.officialName, b.pupilsightPersonID, b.gender, b.dob, b.address1, b.admission_no, b.roll_no, b.image_240, d.name as classname, e.name as sectionname, e.pupilsightPersonIDTutor, c.pupilsightSchoolYearID, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID LEFT JOIN pupilsightFamilyRelationship AS fr ON b.pupilsightPersonID = fr.pupilsightPersonID2 LEFT JOIN pupilsightPerson AS ft ON fr.pupilsightPersonID1 = ft.pupilsightPersonID WHERE c.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND c.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND c.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' AND c.pupilsightRollGroupID = ' . $mappingData['pupilsightRollGroupID'] . '  GROUP BY b.pupilsightPersonID';
     }
 
 
-
+    
     $results = $connection2->query($sqls);
     $studentData = $results->fetchAll();
+    // echo '<pre>';
+    // print_r($studentData);
+    // echo '</pre>';
 
     $ctName = '';
     $ctSign = '';
@@ -658,7 +661,6 @@ function getStudentDetails($connection2, $studentIds, $mappingData, $attributeTy
             'student_address' => $td['address1'],
             'admission_no' => $td['admission_no'],
             'roll_no' => $td['roll_no'],
-            'cbse_reg_no' => $td['cbse_reg_no'],
             'father_name' => $father_name,
             'father_email' => $father_email,
             'father_phone' => $father_phone,

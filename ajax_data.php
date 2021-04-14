@@ -759,9 +759,9 @@ if ($type == 'getClass') {
     $uid = $_SESSION[$guid]['pupilsightPersonID'];
     $pid = $val;
     if ($roleId == '2') {
-        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightYearGroupID';
     } else {
-        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '"  GROUP BY a.pupilsightYearGroupID';
     }
 
     $result = $connection2->query($sql);
@@ -2684,13 +2684,13 @@ if ($type == 'subPeriodWise') {
     echo $data;
 }
 if ($type == "attendanceConfigCls") {
-
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $pid = $val;
     $att_type = "";
     if (isset($_POST['att_type'])) {
         $att_type = $_POST['att_type'];
     }
-    $sql = 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pid . '"  ';
+    $sql = 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '"  ';
     if ($att_type != "") {
         $sql .= ' AND a.attn_type="' . $att_type . '"';
     }
