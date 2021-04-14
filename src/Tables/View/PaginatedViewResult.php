@@ -6,12 +6,13 @@ Pupilsight, Flexible & Open School System
 namespace Pupilsight\Tables\View;
 
 use Pupilsight\Domain\DataSet;
-use Pupilsight\Tables\DataTable;
-use Pupilsight\Tables\Renderer\RendererInterface;
-use Pupilsight\Tables\View\DataTableView;
+
+
 use Pupilsight\Forms\FormFactory;
 use Pupilsight\Domain\QueryCriteria;
 use Pupilsight\Tables\Columns\Column;
+use Pupilsight\Tables\DataTableResult;
+use Pupilsight\Tables\Renderer\RendererInterfaceResult;
 
 /**
  * Paginated View
@@ -19,7 +20,7 @@ use Pupilsight\Tables\Columns\Column;
  * @version v18
  * @since   v18
  */
-class PaginatedView extends DataTableView implements RendererInterface
+class PaginatedViewResult extends DataTableViewResult implements RendererInterfaceResult
 {
     protected $criteria;
     protected $factory;
@@ -39,7 +40,7 @@ class PaginatedView extends DataTableView implements RendererInterface
      * @param DataSet $dataSet
      * @return string
      */
-    public function renderTable(DataTable $table, DataSet $dataSet)
+    public function renderTable(DataTableResult $table, DataSet $dataSet)
     {
         $this->addData('table', $table);
         $this->addData('blankSlate', $table->getMetaData('blankSlate'));
@@ -70,7 +71,7 @@ class PaginatedView extends DataTableView implements RendererInterface
             ? json_encode(array_replace($postData, $this->criteria->toArray()))
             : $this->criteria->toJson());
 
-        return $this->render('components/paginatedTable.twig.html');
+        return $this->render('components/paginatedTableResult.twig.html');
     }
 
     /**

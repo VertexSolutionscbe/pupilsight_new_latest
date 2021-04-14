@@ -23,9 +23,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Pupilsight\Services\Format;
 
 use Pupilsight\Forms\Form;
-use Pupilsight\Tables\DataTable;
+use Pupilsight\Tables\DataTableResult;
 use Pupilsight\Domain\Admission\AdmissionGateway;
+use Pupilsight\Domain\DataSet;
 
+
+include $_SERVER['DOCUMENT_ROOT'] . '/db.php';
 
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -42,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
+
 
     $id = "";
     $formId = '';
@@ -83,7 +87,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $criteria = $admissionGateway->newQueryCriteria()
         ->searchBy($admissionGateway->getSearchableColumns(), $search)
         ->sortBy(['id'])
-        ->pageSize(5000)
         ->fromPOST();
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
@@ -109,8 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     <a style='display:none; ' href='" . $_SESSION[$guid]['absoluteURL'] . "/fullscreen.php?q=/modules/Campaign/fee_make_payment.php&cid=" . $id . "' class='thickbox btn btn-primary' id='clickAdmissionFeePayment'>Fee Payment</a>
     <a style='display:none; margin-bottom:10px;'  class='btn btn-primary' id='admissionFeePayment'>Fee Payment</a>
     &nbsp;&nbsp;<a id='offlineClick' style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/offline_campaignFormList.php&id=" . $id . "'   class=' btn btn-primary' >Offline Submitted List</a>
-    &nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=" . $id . "'   class=' btn btn-primary' id='' >Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-primary' data-cid=" . $id . " data-fid=" . $formId . " id='sendSMS'>Send SMS</a>";
-    echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-primary' data-cid=" . $id . "  data-fid=" . $formId . " id='sendEmail'>Send Email</a>";
+    &nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=" . $id . "'   class='btn btn-white' id='' >Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-white' data-cid=" . $id . " data-fid=" . $formId . " id='sendSMS'>Send SMS</a>";
+    echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-white' data-cid=" . $id . "  data-fid=" . $formId . " id='sendEmail'>Send Email</a>";
     //echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="index.php?q=/modules/Campaign/ajaxfile.php&cid='.$id.'&id=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
     echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="cms/ajaxfile.php?cid=' . $id . '&submissionId=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
@@ -121,14 +124,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     // echo $butt = '<i id="expore_xl" title="Export Excel" class="far fa-file-excel download_icon"></i> <br>';
 
     $dataSet = $admissionGateway->getCampaignFormList($criteria, $formId);
-    $table = DataTable::createPaginated('userManage', $criteria)->setID('expore_tbls');;
+    /*
+    $subsql = "CALL campaignFormList(" . $formId . ");";
 
-    $sqlw = 'Select workflow_id  FROM workflow_map WHERE campaign_id = ' . $id . ' ';
+    $connPro1 = new mysqli($databaseServer, $databaseUsername, $databasePassword, $databaseName);
+    $testdatasub = mysqli_query($connPro1, $subsql);
+    while ($row = $testdatasub->fetch_assoc()) {
+        $row["serial_number"] = $cnt;
+        $dt[] = $row;
+    }
+    $dataSet = new DataSet($dt);
+    */
+    //$table = DataTable::createPaginated('userManage', $criteria)->setID('expore_tbls');
+    $table = DataTableResult::createPaginated('userManage', $criteria)->setID('expore_tbl');
+
+    $sqlw = "Select workflow_id  FROM workflow_map WHERE campaign_id = ' . $id . ' ";
     $resultvalw = $connection2->query($sqlw);
     $woid = $resultvalw->fetch();
     $wid = $woid['workflow_id'];
 
-    $sqlct = 'Select count(id) AS kount  FROM wp_fluentform_submissions WHERE form_id = ' . $formId . ' ';
+    $sqlct = "Select count(id) AS kount  FROM wp_fluentform_submissions WHERE form_id = ' . $formId . ' ";
     $resultct = $connection2->query($sqlct);
     $kountSubmission = $resultct->fetch();
 
@@ -187,11 +202,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                     if (strpos($f->attributes->name, 'terms-n-condition') !== false) {
                     } else {
                         $fields[] = $f->attributes->name;
-
+                        /*
                         $lbl = $f->attributes->placeholder;
                         if (empty($lbl)) {
                             $lbl = $f->attributes->name;
-                        }
+                        }*/
+                        $lbl = $f->attributes->name;
                         $lbl = str_replace("_", " ", $lbl);
                         $showfields .= '<option value="' . $f->attributes->name . '" >' . ucwords($lbl) . '</option>';
                     }
@@ -213,7 +229,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
          
         </div>
         <br/>
-        <span id="totalCount">&nbsp;Total Count : <span id="kountApplicant">' . $kountSubmission['kount'] . '</span></span>';
+        </span>';
+        //<span id="totalCount">&nbsp;Total Count : <span id="kountApplicant">' . $kountSubmission['kount'] . '</span>
     }
 
     // $sqlw = 'Select * FROM wp_fluentform_entry_details WHERE form_id = '.$formId.' ';
@@ -228,26 +245,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
 
     $arrHeader = array();
-    foreach ($field as $fe) {
-        foreach ($fe as $f) {
-            if (!empty($f->attributes) && $f->attributes->name == 'student_name') {
-                $arrHeader[] = $f->attributes->name;
-            }
-            if (!empty($f->settings) && !empty($f->settings->container_class)) {
-                if ($f->settings->container_class == 'show-in-grid') {
-                    $arrHeader[] = $f->attributes->name;
+    if (isset($field)) {
+        foreach ($field as $fe) {
+            foreach ($fe as $f) {
+                if (isset($f->attributes->name)) {
+                    if (!empty($f->attributes) && $f->attributes->name == 'student_name') {
+                        $arrHeader[] = $f->attributes->name;
+                    }
                 }
-            }
-            if(!empty($f->columns)){
-                foreach($f->columns as $cf){
-                    foreach($cf as $cff){
-                        foreach($cff as $ctf){
-                            if (!empty($ctf->attributes) && $ctf->attributes->name == 'student_name') {
-                                $arrHeader[] = $ctf->attributes->name;
-                            }
-                            if (!empty($ctf->settings) && !empty($ctf->settings->container_class)) {
-                                if ($ctf->settings->container_class == 'show-in-grid') {
+                if (!empty($f->settings) && !empty($f->settings->container_class)) {
+                    if ($f->settings->container_class == 'show-in-grid') {
+                        $arrHeader[] = $f->attributes->name;
+                    }
+                }
+                if (!empty($f->columns)) {
+                    foreach ($f->columns as $cf) {
+                        foreach ($cf as $cff) {
+                            foreach ($cff as $ctf) {
+                                if (!empty($ctf->attributes) && $ctf->attributes->name == 'student_name') {
                                     $arrHeader[] = $ctf->attributes->name;
+                                }
+                                if (!empty($ctf->settings) && !empty($ctf->settings->container_class)) {
+                                    if ($ctf->settings->container_class == 'show-in-grid') {
+                                        $arrHeader[] = $ctf->attributes->name;
+                                    }
                                 }
                             }
                         }
@@ -255,173 +276,176 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 }
             }
         }
-    }
-
-    // echo '<pre>';
-    // print_r($arrHeader);
-    // echo '</pre>';
 
 
-    if (!empty($formId)) {
-        $table->addCheckboxColumn('submission_id', __(''))
-            ->addClass('chkbox')
-            ->context('Select')
-            ->notSortable()
-            ->width('10%');
-
-        $table->addColumn('application_id', __('Application No'))
-            ->width('10%');
-
-        $table->addColumn('submission_no', __('Submission No'))
-            ->width('10%');
+        // echo '<pre>';
+        // print_r($arrHeader);
+        // echo '</pre>';
 
 
+        if (!empty($formId)) {
+            $table->addCheckboxColumn('submission_id', __(''))
+                ->addClass('chkbox')
+                ->context('Select')
+                ->notSortable()
+                ->width('10%');
 
-        $len = count($dataSet->data);
-        $i = 0;
-        $flag = TRUE;
-        while ($i < $len) {
-            $sid = $dataSet->data[$i]["submission_id"];
-            $sqlchk = 'Select ws.created_at, ws.pupilsightProgramID, ws.pupilsightYearGroupID FROM wp_fluentform_submissions AS ws WHERE ws.id = ' . $sid . ' AND  ws.form_id = ' . $formId . '';
-            $resultchk = $connection2->query($sqlchk);
-            $submited_formchk = $resultchk->fetch();
+            $table->addColumn('application_id', __('Application No'))
+                ->width('10%');
 
-            if (!empty($submited_formchk['pupilsightProgramID']) && !empty($submited_formchk['pupilsightYearGroupID'])) {
-                $sqlprog = 'Select name FROM pupilsightProgram WHERE pupilsightProgramID = ' . $submited_formchk['pupilsightProgramID'] . '  ';
-                $resultprog = $connection2->query($sqlprog);
-                $prog = $resultprog->fetch();
-                $progname = $prog['name'];
+            $table->addColumn('submission_no', __('Submission No'))
+                ->width('10%');
 
-                $sqlcls = 'Select name FROM pupilsightYearGroup WHERE pupilsightYearGroupID = ' . $submited_formchk['pupilsightYearGroupID'] . ' ';
-                $resultcls = $connection2->query($sqlcls);
-                $cls = $resultcls->fetch();
-                $clsname = $cls['name'];
 
-                $sqlname = 'Select GROUP_CONCAT(field_value) AS name FROM wp_fluentform_entry_details WHERE field_name = "student_name" AND submission_id = ' . $sid . ' ';
-                $resultname = $connection2->query($sqlname);
-                $aname = $resultname->fetch();
-                $usrname = str_replace(',', ' ', $aname['name']);
 
-                $pdfvalue = $progname . '-' . $clsname . '-' . $usrname;
-            } else {
-                $pdfvalue = $dataSet->data[$i]["submission_id"];
-            }
-            //$value = 
-            echo '<input type="hidden" id="' . $sid . '-subId" value="' . $pdfvalue . '" >';
+            $len = count($dataSet->data);
+            $i = 0;
+            $flag = TRUE;
+            while ($i < $len) {
+                $sid = $dataSet->data[$i]["submission_id"];
+                $sqlchk = 'Select ws.created_at, ws.pupilsightProgramID, ws.pupilsightYearGroupID FROM wp_fluentform_submissions AS ws WHERE ws.id = ' . $sid . ' AND  ws.form_id = ' . $formId . '';
+                $resultchk = $connection2->query($sqlchk);
+                $submited_formchk = $resultchk->fetch();
 
-            $field = explode(",", $dataSet->data[$i]["field_name"]);
-            $fieldval = explode("|$$|", $dataSet->data[$i]["field_value"]);
+                if (!empty($submited_formchk['pupilsightProgramID']) && !empty($submited_formchk['pupilsightYearGroupID'])) {
+                    $sqlprog = 'Select name FROM pupilsightProgram WHERE pupilsightProgramID = ' . $submited_formchk['pupilsightProgramID'] . '  ';
+                    $resultprog = $connection2->query($sqlprog);
+                    $prog = $resultprog->fetch();
+                    $progname = $prog['name'];
 
-            $jlen = count($field);
-            $j = 0;
-            if ($dataSet->data[$i]["status"] == '1') {
-                $dataSet->data[$i]["workflowstate"] = 'Admitted';
-            } else if ($dataSet->data[$i]["workflowstate"] == '') {
-                // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
-                // $resultvals = $connection2->query($sqls);
-                // $states = $resultvals->fetch();
-                // $statename = $states['name'];
-                if ($isFeeGenerate == '2') {
-                    $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $sid . "  ";
-                    $resulttr = $connection2->query($sql2);
-                    $stateChk = $resulttr->fetch();
-                    if (!empty($stateChk['transaction_id'])) {
-                        $dataSet->data[$i]["workflowstate"] = 'Submitted';
-                    } else {
-                        $dataSet->data[$i]["workflowstate"] = 'Created';
-                    }
+                    $sqlcls = 'Select name FROM pupilsightYearGroup WHERE pupilsightYearGroupID = ' . $submited_formchk['pupilsightYearGroupID'] . ' ';
+                    $resultcls = $connection2->query($sqlcls);
+                    $cls = $resultcls->fetch();
+                    $clsname = $cls['name'];
+
+                    $sqlname = 'Select GROUP_CONCAT(field_value) AS name FROM wp_fluentform_entry_details WHERE field_name = "student_name" AND submission_id = ' . $sid . ' ';
+                    $resultname = $connection2->query($sqlname);
+                    $aname = $resultname->fetch();
+                    $usrname = str_replace(',', ' ', $aname['name']);
+
+                    $pdfvalue = $progname . '-' . $clsname . '-' . $usrname;
                 } else {
-                    $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                    $pdfvalue = $dataSet->data[$i]["submission_id"];
                 }
+                //$value = 
+                echo '<input type="hidden" id="' . $sid . '-subId" value="' . $pdfvalue . '" >';
+
+                $field = explode(",", $dataSet->data[$i]["field_name"]);
+                $fieldval = explode("|$$|", $dataSet->data[$i]["field_value"]);
+
+                $jlen = count($field);
+                $j = 0;
+                if ($dataSet->data[$i]["status"] == '1') {
+                    $dataSet->data[$i]["workflowstate"] = 'Admitted';
+                } else if ($dataSet->data[$i]["workflowstate"] == '') {
+                    // $sqls = 'Select name FROM workflow_state WHERE workflowid = '.$wid.' AND order_wise = "1" ';
+                    // $resultvals = $connection2->query($sqls);
+                    // $states = $resultvals->fetch();
+                    // $statename = $states['name'];
+                    if ($isFeeGenerate == '2') {
+                        $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $sid . "  ";
+                        $resulttr = $connection2->query($sql2);
+                        $stateChk = $resulttr->fetch();
+                        if (!empty($stateChk['transaction_id'])) {
+                            $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                        } else {
+                            $dataSet->data[$i]["workflowstate"] = 'Created';
+                        }
+                    } else {
+                        $dataSet->data[$i]["workflowstate"] = 'Submitted';
+                    }
+                }
+                if (isset($dataSet->data[$i]["created_at"])) {
+                    echo $dataSet->data[$i]["created_at"];
+                }
+
+                if (isset($dataSet->data[$i]["created_at"])) {
+                    if (empty($dataSet->data[$i]["created_at"])) {
+                        $sqls1 = 'Select ws.created_at FROM wp_fluentform_submissions AS ws WHERE ws.id = ' . $dataSet->data[$i]["submission_id"] . ' AND  ws.form_id = ' . $formId . '';
+                        $resultvals1 = $connection2->query($sqls1);
+                        $submited_form = $resultvals1->fetch();
+                        //$created_at = date('d-m-Y H:i:s', datetotime($submited_form['created_at']));
+                        $dt = new DateTime($submited_form['created_at']);
+                        $created_at = $dt->format('d-m-Y H:i:s');
+                        $dataSet->data[$i]["created_at"] = $created_at;
+                    }
+                }
+
+
+                // echo  $dataSet->data[$i]["submission_id"];
+
+
+
+                //$dt = array();
+
+                $table->addColumn('workflowstate', __('Status'))
+                    ->width('10%')
+                    ->translatable();
+
+
+                while ($j < $jlen) {
+                    $dataSet->data[$i][$field[$j]] = $fieldval[$j];
+                    if ($flag) {
+                        foreach ($arrHeader as $ar) {
+                            $headcol = ucwords(str_replace("_", " ", $ar));
+                            if ($ar == 'file-upload') {
+                                $table->addColumn('' . $ar . '', __('' . $headcol . ''))
+                                    ->format(function ($dataSet) {
+                                        if ($dataSet['file-upload'] != '') {
+                                            return '<a href="' . $dataSet['file-upload'] . '" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                        }
+                                    });
+                            } elseif ($ar == 'image-upload') {
+                                $table->addColumn('' . $ar . '', __('' . $headcol . ''))
+                                    ->format(function ($dataSet) {
+                                        if ($dataSet['image-upload'] != '') {
+                                            return '<a href="' . $dataSet['image-upload'] . '" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
+                                        }
+                                    });
+                            } else {
+                                $table->addColumn('' . $ar . '', __('' . $headcol . ''))
+                                    ->width('10%')
+                                    ->notSortable()
+                                    ->translatable();
+                            }
+                        }
+                    }
+                    $j++;
+                }
+                $flag = FALSE;
+                unset($dataSet->data[$i]["field_name"], $dataSet->data[$i]["field_value"]);
+                $i++;
             }
 
-            echo $dataSet->data[$i]["created_at"];
-            if ($dataSet->data[$i]["created_at"] == '') {
-                $sqls1 = 'Select ws.created_at FROM wp_fluentform_submissions AS ws WHERE ws.id = ' . $dataSet->data[$i]["submission_id"] . ' AND  ws.form_id = ' . $formId . '';
-                $resultvals1 = $connection2->query($sqls1);
-                $submited_form = $resultvals1->fetch();
-                //$created_at = date('d-m-Y H:i:s', datetotime($submited_form['created_at']));
-                $dt = new DateTime($submited_form['created_at']);
-                $created_at = $dt->format('d-m-Y H:i:s');
-                $dataSet->data[$i]["created_at"] = $created_at;
-            }
 
-
-            // echo  $dataSet->data[$i]["submission_id"];
-
-
-
-            //$dt = array();
-
-            $table->addColumn('workflowstate', __('Status'))
+            $table->addColumn('created_at', __('Submitted Date and time'))
                 ->width('10%')
                 ->translatable();
 
+            $table->addActionColumn()
 
-            while ($j < $jlen) {
-                $dataSet->data[$i][$field[$j]] = $fieldval[$j];
-                if ($flag) {
-                    foreach ($arrHeader as $ar) {
-                        $headcol = ucwords(str_replace("_", " ", $ar));
-                        if ($ar == 'file-upload') {
-                            $table->addColumn('' . $ar . '', __('' . $headcol . ''))
-                                ->format(function ($dataSet) {
-                                    if ($dataSet['file-upload'] != '') {
-                                        return '<a href="' . $dataSet['file-upload'] . '" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
-                                    }
-                                });
-                        } elseif ($ar == 'image-upload') {
-                            $table->addColumn('' . $ar . '', __('' . $headcol . ''))
-                                ->format(function ($dataSet) {
-                                    if ($dataSet['image-upload'] != '') {
-                                        return '<a href="' . $dataSet['image-upload'] . '" download><i class="mdi mdi-download  mdi-24px download_icon"></i></a>';
-                                    }
-                                });
-                        } else {
-                            $table->addColumn('' . $ar . '', __('' . $headcol . ''))
-                                ->width('10%')
-                                ->notSortable()
-                                ->translatable();
-                        }
-                    }
-                }
-                $j++;
-            }
-            $flag = FALSE;
-            unset($dataSet->data[$i]["field_name"], $dataSet->data[$i]["field_value"]);
-            $i++;
+                ->addParam('submission_id')
+                ->format(function ($dataSet, $actions) use ($guid) {
+                    $actions->addAction('View', __('Show History'))
+                        ->setTitle('form')
+                        ->setIcon('eye')
+                        ->setId('showhistory-' . $dataSet["submission_id"])
+                        ->setURL('modules/Campaign/history.php')
+                        ->modalWindow(1100, 550);
+
+                    $actions->addAction('form', __('Form'))
+                        ->setId('showform-' . $dataSet["submission_id"])
+                        ->setURL('/modules/Campaign/form_open.php')
+                        ->modalWindow(1100, 550);
+                });
         }
 
 
-
-
-        $table->addColumn('created_at', __('Submitted Date and time'))
-            ->width('10%')
-            ->translatable();
-
-        $table->addActionColumn()
-
-            ->addParam('submission_id')
-            ->format(function ($dataSet, $actions) use ($guid) {
-                $actions->addAction('View', __('Show History'))
-                    ->setTitle('form')
-                    ->setIcon('eye')
-                    ->setId('showhistory-' . $dataSet["submission_id"])
-                    ->setURL('modules/Campaign/history.php')
-                    ->modalWindow(1100, 550);
-
-                $actions->addAction('form', __('Form'))
-                    ->setId('showform-' . $dataSet["submission_id"])
-                    ->setURL('/modules/Campaign/form_open.php')
-                    ->modalWindow(1100, 550);
-            });
+        // echo '<pre>';
+        // print_r($dataSet);
+        // echo '</pre>';
+        echo $table->render($dataSet);
     }
-
-
-    // echo '<pre>';
-    // print_r($dataSet);
-    // echo '</pre>';
-    echo $table->render($dataSet);
 }
 ?>
 

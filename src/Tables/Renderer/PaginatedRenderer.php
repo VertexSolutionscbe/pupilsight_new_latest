@@ -23,7 +23,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
     protected $path;
     protected $criteria;
     protected $factory;
-    
+
     /**
      * Creates a renderer that uses page info from the QueryCriteria to display a paginated data table.
      * Hooks into the DataTable functionality in core.js to load using AJAX.
@@ -49,8 +49,8 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
     {
         $output = '';
 
-        $output .= '<div id="'.$table->getID().'">';
-        $output .= '<div class="dataTable" data-results="'.$dataSet->getResultCount().'">';
+        $output .= '<div id="' . $table->getID() . '">';
+        $output .= '<div class="dataTable" data-results="' . $dataSet->getResultCount() . '">';
 
         $output .= parent::renderTable($table, $dataSet);
 
@@ -60,15 +60,15 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $output .= $this->renderBulkActions($table);
 
         $postData = $table->getMetaData('post');
-        $jsonData = !empty($postData) 
+        $jsonData = !empty($postData)
             ? json_encode(array_replace($postData, $this->criteria->toArray()))
             : $this->criteria->toJson();
-        
+
         // Initialize the jQuery Data Table functionality
-        $output .="
+        $output .= "
         <script>
         $(function(){
-            $('#".$table->getID()."').pupilsightDataTable('.".str_replace(' ', '%20', $this->path)."', ".$jsonData.", '".$this->criteria->getIdentifier()."');
+            $('#" . $table->getID() . "').pupilsightDataTable('." . str_replace(' ', '%20', $this->path) . "', " . $jsonData . ", '" . $this->criteria->getIdentifier() . "');
         });
         </script>";
 
@@ -82,21 +82,21 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
      * @param DataSet $dataSet
      * @return string
      */
-    protected function renderHeader(DataTable $table, DataSet $dataSet) 
+    protected function renderHeader(DataTable $table, DataSet $dataSet)
     {
         if ($table->getMetaData('hidePagination') == true) {
             return parent::renderHeader($table, $dataSet);
         }
-        
+
         $filterOptions = $table->getMetaData('filterOptions', []);
 
         $output = '<div class="flexRow">';
-            $output .= '<div>';
-                $output .= $this->renderPageCount($dataSet);
-                $output .= $this->renderPageFilters($dataSet, $filterOptions);
-            $output .= '</div>';
+        $output .= '<div>';
+        $output .= $this->renderPageCount($dataSet);
+        $output .= $this->renderPageFilters($dataSet, $filterOptions);
+        $output .= '</div>';
 
-            $output .= parent::renderHeader($table, $dataSet);
+        $output .= parent::renderHeader($table, $dataSet);
         $output .= '</div>';
 
         $output .= $this->renderFilterOptions($dataSet, $filterOptions);
@@ -137,13 +137,13 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $th = parent::createTableHeader($column);
 
         if ($sortBy = $column->getSortable()) {
-            $sortBy = !is_array($sortBy)? array($sortBy) : $sortBy;
+            $sortBy = !is_array($sortBy) ? array($sortBy) : $sortBy;
             $th->addClass('sortable');
             $th->addData('sort', implode(',', $sortBy));
 
             foreach ($sortBy as $sortColumn) {
                 if ($this->criteria->hasSort($sortColumn)) {
-                    $th->addClass('sorting sort'.$this->criteria->getSortBy($sortColumn));
+                    $th->addClass('sorting sort' . $this->criteria->getSortBy($sortColumn));
                 }
             }
         }
@@ -161,10 +161,10 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
     {
         $output = '<small style="margin-right: 10px;">';
 
-        $output .= $this->criteria->hasSearchText()? __('Search').' ' : '';
-        $output .= $dataSet->isSubset()? __('Results') : __('Records');
-        $output .= $dataSet->count() > 0? ' '.$dataSet->getPageFrom().'-'.$dataSet->getPageTo().' '.__('of').' ' : ': ';
-        $output .= $dataSet->isSubset()? $dataSet->getResultCount() : $dataSet->getTotalCount();
+        $output .= $this->criteria->hasSearchText() ? __('Search') . ' ' : '';
+        $output .= $dataSet->isSubset() ? __('Results') : __('Records');
+        $output .= $dataSet->count() > 0 ? ' ' . $dataSet->getPageFrom() . '-' . $dataSet->getPageTo() . ' ' . __('of') . ' ' : ': ';
+        $output .= $dataSet->isSubset() ? $dataSet->getResultCount() : $dataSet->getTotalCount();
 
         $output .= '</small>';
 
@@ -183,21 +183,21 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $output = '<small>';
 
         if ($this->criteria->hasFilter()) {
-            $output .= __('Filtered by').' ';
+            $output .= __('Filtered by') . ' ';
 
             $criteriaUsed = array();
             foreach ($this->criteria->getFilterBy() as $name => $value) {
-                $key = $name.':'.$value;
-                $criteriaUsed[$name] = isset($filters[$key]) 
-                    ? $filters[$key] 
-                    : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))) . ($name == 'in'? ': '.ucfirst($value) : ''); // camelCase => Title Case
+                $key = $name . ':' . $value;
+                $criteriaUsed[$name] = isset($filters[$key])
+                    ? $filters[$key]
+                    : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))) . ($name == 'in' ? ': ' . ucfirst($value) : ''); // camelCase => Title Case
             }
 
             foreach ($criteriaUsed as $name => $label) {
-                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$name.'"> ';
+                $output .= '<input type="button" class="filter" value="' . $label . '" data-filter="' . $name . '"> ';
             }
 
-            $output .= '<input type="button" class="filter clear btn btn-link" value="'.__('Clear').'">';
+            $output .= '<input type="button" class="filter clear btn btn-link" value="' . __('Clear') . '">';
         }
 
         $output .= '</small>';
@@ -215,7 +215,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
     protected function renderFilterOptions(DataSet $dataSet, array $filters)
     {
         if (empty($filters)) return '';
-        
+
         return $this->factory->createSelect('filter')
             ->fromArray($filters)
             ->setClass('filters floatNone')
@@ -238,7 +238,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
             ->fromArray(array($dataSet->getResultCount() => __('All')))
             ->setClass('limit floatNone')
             ->selected($dataSet->getPageSize())
-            ->append('<small style="line-height: 30px;margin-left:5px;">'.__('Per Page').'</small>')
+            ->append('<small style="line-height: 30px;margin-left:5px;">' . __('Per Page') . '</small>')
             ->getOutput();
     }
 
@@ -255,18 +255,18 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $pageNumber = $dataSet->getPage();
 
         $output = '<div class="pagination floatRight">';
-            $output .= '<input type="button" class="paginate" data-page="'.$dataSet->getPrevPageNumber().'" '.($dataSet->isFirstPage()? 'disabled' : '').' value="'.__('Prev').'">';
+        $output .= '<input type="button" class="paginate" data-page="' . $dataSet->getPrevPageNumber() . '" ' . ($dataSet->isFirstPage() ? 'disabled' : '') . ' value="' . __('Prev') . '">';
 
-            foreach ($dataSet->getPaginatedRange() as $page) {
-                if ($page === '...') {
-                    $output .= '<input type="button" disabled value="...">';
-                } else {
-                    $class = ($page == $pageNumber)? 'active paginate' : 'paginate';
-                    $output .= '<input type="button" class="'.$class.'" data-page="'.$page.'" value="'.$page.'">';
-                }
+        foreach ($dataSet->getPaginatedRange() as $page) {
+            if ($page === '...') {
+                $output .= '<input type="button" disabled value="...">';
+            } else {
+                $class = ($page == $pageNumber) ? 'active paginate' : 'paginate';
+                $output .= '<input type="button" class="' . $class . '" data-page="' . $page . '" value="' . $page . '">';
             }
+        }
 
-            $output .= '<input type="button" class="paginate" data-page="'.$dataSet->getNextPageNumber().'" '.($dataSet->isLastPage()? 'disabled' : '').' value="'.__('Next').'">';
+        $output .= '<input type="button" class="paginate" data-page="' . $dataSet->getNextPageNumber() . '" ' . ($dataSet->isLastPage() ? 'disabled' : '') . ' value="' . __('Next') . '">';
         $output .= '</div>';
 
         return $output;
@@ -285,7 +285,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         if (empty($bulkActions)) return '';
 
         $output = '<div class="bulkActionPanel hidden absolute top-0 right-0 w-full flex items-center justify-between px-1 pt-1 bg-purple-600 rounded-t">';
-        $output .= '<div class="bulkActionCount flex-grow text-white text-sm text-right pr-3"><span>0</span> '.__('Selected').'</div>';
+        $output .= '<div class="bulkActionCount flex-grow text-white text-sm text-right pr-3"><span>0</span> ' . __('Selected') . '</div>';
         $output .= $bulkActions->getOutput();
         $output .= '<script>';
         $output .= $bulkActions->getValidationOutput();

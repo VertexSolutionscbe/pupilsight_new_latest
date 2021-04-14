@@ -84,8 +84,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 <div class="pagination mb-2">
     <a href="javascript:void()"
         class="ml-1 padipag2  prv paginate rounded-l text-white bg-gray border-gray {{ not dataSet.isFirstPage ? 'hover:bg-gray'}} {{ buttonStyle }}"
-        data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ?
-        'disabled'}}>
+        data-page="{{ dataSet.getPrevPageNumber }}" {{ dataSet.isFirstPage ? 'disabled' }}>
         {{ __('Prev') }}
     </a> {%- for page in dataSet.getPaginatedRange -%} {%- if page == '...' -%}
     <a href="javascript:void()" class="ml-1 padipag2  prv {{ buttonStyle }}" disabled>...</a> {%- else -%}
@@ -95,7 +94,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <a href="javascript:void()"
         class="ml-1 padipag2  prv paginate rounded-r text-gray border-gray {{ not dataSet.isLastPage ? 'hover:bg-gray'}} {{ buttonStyle }}"
-        data-page="{{ dataSet.getNextPageNumber }}" {{ dataSet.isLastPage ? 'disabled'}}>
+        data-page="{{ dataSet.getNextPageNumber }}" {{ dataSet.isLastPage ? 'disabled' }}>
         {{ __('Next') }}
     </a>
 </div>

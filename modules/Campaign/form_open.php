@@ -40,10 +40,12 @@
  <script>
      $(document).on('click', '#closepopup', function() {
          // if (confirm("Are you sure want to close?")) {
-         window.location.href = "<?php echo $_SESSION[$guid]['absoluteURL']; ?>/index.php?q=/modules/Campaign/campaignFormList.php&id=<?php echo $campId; ?>";
+         //window.location.href = "<?php echo $_SESSION[$guid]['absoluteURL']; ?>/index.php?q=/modules/Campaign/campaignFormList.php&id=<?php echo $campId; ?>";
 
          // }
          // return false;
+         $("#TB_overlay").remove();
+         $("#TB_window").remove();
      });
 
      $('#wppage').load(function() {
@@ -64,15 +66,15 @@
 
          });
 
-        
-        iframe.find(".el-icon-edit").parent().click(function() {
-            $.each(iframe.find(".el-form-item__label"), function() {
-                var hidden = $(this).text();
-                if (hidden == 'input_hidden') {
-                    $(this).parent().hide();
-                }
-            });
-        });
+
+         iframe.find(".el-icon-edit").parent().click(function() {
+             $.each(iframe.find(".el-form-item__label"), function() {
+                 var hidden = $(this).text();
+                 if (hidden == 'input_hidden') {
+                     $(this).parent().hide();
+                 }
+             });
+         });
 
 
      });

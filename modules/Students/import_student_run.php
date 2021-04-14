@@ -395,254 +395,257 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
             //print_r($_FILES);
             //die();
 
-
-            if (!empty($_FILES['file']['name'])) {
-                $handle = fopen($_FILES['file']['tmp_name'], "r");
-                $headers = fgetcsv($handle, 10000, ",");
-                $hders = array();
-                // echo '<pre>';
-                // print_r($headers);
-                // echo '</pre>';
-                $chkHeaderKey = array();
-                foreach ($headers as $key => $hd) {
-                    if ($hd == 'Academic Year') {
-                        $headers[$key] = 'at_pupilsightSchoolYearID';
-                    } else if ($hd == 'Program') {
-                        $headers[$key] = 'at_pupilsightProgramID';
-                    } else if ($hd == 'Class') {
-                        $headers[$key] = 'at_pupilsightYearGroupID';
-                    } else if ($hd == 'Section') {
-                        $headers[$key] = 'at_pupilsightRollGroupID';
-                    } else if ($hd == 'Official Name') {
-                        $headers[$key] = '##_officialName';
-                    } else if ($hd == 'Gender') {
-                        $headers[$key] = '##_gender';
-                    } else if ($hd == 'Date of Birth') {
-                        $headers[$key] = '##_dob';
-                    } else if ($hd == 'Username') {
-                        $headers[$key] = '##_username';
-                    } else if ($hd == 'Can Login') {
-                        $headers[$key] = '##_canLogin';
-                    } else if ($hd == 'Email') {
-                        $headers[$key] = '##_email';
-                    } else if ($hd == 'Address') {
-                        $headers[$key] = '##_address1';
-                    } else if ($hd == 'District') {
-                        $headers[$key] = '##_address1District';
-                    } else if ($hd == 'Country') {
-                        $headers[$key] = '##_address1Country';
-                    } else if ($hd == 'First Language') {
-                        $headers[$key] = '##_languageFirst';
-                    } else if ($hd == 'Second Language') {
-                        $headers[$key] = '##_languageSecond';
-                    } else if ($hd == 'Third Language') {
-                        $headers[$key] = '##_languageThird';
-                    } else if ($hd == 'Country of Birth') {
-                        $headers[$key] = '##_countryOfBirth';
-                    } else if ($hd == 'Ethnicity') {
-                        $headers[$key] = '##_ethnicity';
-                    } else if ($hd == 'Religion') {
-                        $headers[$key] = '##_religion';
-                    } else if ($hd == 'National ID Card Number') {
-                        $headers[$key] = '##_nationalIDCardNumber';
-                    } else if ($hd == 'Fee Category') {
-                        $headers[$key] = '##_fee_category_id';
-                    } else if ($hd == 'Father Official Name') {
-                        $headers[$key] = '&&_officialName';
-                    } else if ($hd == 'Father Date of Birth') {
-                        $headers[$key] = '&&_dob';
-                    } else if ($hd == 'Father Username') {
-                        $headers[$key] = '&&_username';
-                    } else if ($hd == 'Father Can Login') {
-                        $headers[$key] = '&&_canLogin';
-                    } else if ($hd == 'Father Email') {
-                        $headers[$key] = '&&_email';
-                    } else if ($hd == 'Father Mobile (Country Code)') {
-                        $headers[$key] = '&&_phone1CountryCode';
-                    } else if ($hd == 'Father Mobile No') {
-                        $headers[$key] = '&&_phone1';
-                    } else if ($hd == 'Father LandLine (Country Code)') {
-                        $headers[$key] = '&&_phone2CountryCode';
-                    } else if ($hd == 'Father Landline No') {
-                        $headers[$key] = '&&_phone2';
-                    } else if ($hd == 'Mother Official Name') {
-                        $headers[$key] = '!!_officialName';
-                    } else if ($hd == 'Mother Date of Birth') {
-                        $headers[$key] = '!!_dob';
-                    } else if ($hd == 'Mother Username') {
-                        $headers[$key] = '!!_username';
-                    } else if ($hd == 'Mother Can Login') {
-                        $headers[$key] = '!!_canLogin';
-                    } else if ($hd == 'Mother Email') {
-                        $headers[$key] = '!!_email';
-                    } else if ($hd == 'Mother Mobile (Country Code)') {
-                        $headers[$key] = '!!_phone1CountryCode';
-                    } else if ($hd == 'Mother Mobile No') {
-                        $headers[$key] = '!!_phone1';
-                    } else if ($hd == 'Mother LandLine (Country Code)') {
-                        $headers[$key] = '!!_phone2CountryCode';
-                    } else if ($hd == 'Mother Landline No') {
-                        $headers[$key] = '!!_phone2';
-                    } else {
-
-                        //$sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
-                        $sqlchk = "SELECT field_name, modules FROM custom_field WHERE field_title = '" . $hd . "' and not  find_in_set('staff',modules)";
-                        $resultchk = $connection2->query($sqlchk);
-                        $cd = $resultchk->fetch();
-                        $modules = explode(',', $cd['modules']);
-
-                        //if(!in_array('##_'.$cd['field_name'], $chkHeaderKey)){
-                        if (in_array('student', $modules)) {
-                            $headers[$key] = '##_' . $cd['field_name'];
-                            $chkHeaderKey[] = '##_' . $cd['field_name'];
-                        }
-                        //}
-                        //else if(!in_array('&&_'.$cd['field_name'], $chkHeaderKey)){
-                        if (in_array('father', $modules)) {
-                            $headers[$key] = '&&_' . $cd['field_name'];
-                            $chkHeaderKey[] = '&&_' . $cd['field_name'];
-                        }
-                        //}
-                        //else if(!in_array('!!_'.$cd['field_name'], $chkHeaderKey)){
-                        if (in_array('mother', $modules)) {
-                            $headers[$key] = '!!_' . $cd['field_name'];
-                            $chkHeaderKey[] = '!!_' . $cd['field_name'];
-                        }
-                        //}
-                    }
-                }
-
-                $hders = $headers;
-
-                $all_rows = array();
-                while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
-                    $all_rows[] = array_combine($hders, $data);
-                }
-
-
-
-                if (!empty($all_rows)) {
-
-                    function getSaltNew()
-                    {
-                        $c = explode(' ', '. / a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9');
-                        $ks = array_rand($c, 22);
-                        $s = '';
-                        foreach ($ks as $k) {
-                            $s .= $c[$k];
-                        }
-                        return $s;
-                    }
-
-                    $salt = getSaltNew();
-                    $pass = 'Admin@123456';
-                    $password = hash('sha256', $salt . $pass);
-
+            try {
+                if (!empty($_FILES['file']['name'])) {
+                    $handle = fopen($_FILES['file']['tmp_name'], "r");
+                    $headers = fgetcsv($handle, 10000, ",");
+                    $hders = array();
                     // echo '<pre>';
-                    // print_r($all_rows);
+                    // print_r($headers);
                     // echo '</pre>';
-                    // die();
+                    $chkHeaderKey = array();
+                    foreach ($headers as $key => $hd) {
+                        if ($hd == 'Academic Year') {
+                            $headers[$key] = 'at_pupilsightSchoolYearID';
+                        } else if ($hd == 'Program') {
+                            $headers[$key] = 'at_pupilsightProgramID';
+                        } else if ($hd == 'Class') {
+                            $headers[$key] = 'at_pupilsightYearGroupID';
+                        } else if ($hd == 'Section') {
+                            $headers[$key] = 'at_pupilsightRollGroupID';
+                        } else if ($hd == 'Official Name') {
+                            $headers[$key] = '##_officialName';
+                        } else if ($hd == 'Gender') {
+                            $headers[$key] = '##_gender';
+                        } else if ($hd == 'Date of Birth') {
+                            $headers[$key] = '##_dob';
+                        } else if ($hd == 'Username') {
+                            $headers[$key] = '##_username';
+                        } else if ($hd == 'Can Login') {
+                            $headers[$key] = '##_canLogin';
+                        } else if ($hd == 'Email') {
+                            $headers[$key] = '##_email';
+                        } else if ($hd == 'Address') {
+                            $headers[$key] = '##_address1';
+                        } else if ($hd == 'District') {
+                            $headers[$key] = '##_address1District';
+                        } else if ($hd == 'Country') {
+                            $headers[$key] = '##_address1Country';
+                        } else if ($hd == 'First Language') {
+                            $headers[$key] = '##_languageFirst';
+                        } else if ($hd == 'Second Language') {
+                            $headers[$key] = '##_languageSecond';
+                        } else if ($hd == 'Third Language') {
+                            $headers[$key] = '##_languageThird';
+                        } else if ($hd == 'Country of Birth') {
+                            $headers[$key] = '##_countryOfBirth';
+                        } else if ($hd == 'Ethnicity') {
+                            $headers[$key] = '##_ethnicity';
+                        } else if ($hd == 'Religion') {
+                            $headers[$key] = '##_religion';
+                        } else if ($hd == 'National ID Card Number') {
+                            $headers[$key] = '##_nationalIDCardNumber';
+                        } else if ($hd == 'Fee Category') {
+                            $headers[$key] = '##_fee_category_id';
+                        } else if ($hd == 'Father Official Name') {
+                            $headers[$key] = '&&_officialName';
+                        } else if ($hd == 'Father Date of Birth') {
+                            $headers[$key] = '&&_dob';
+                        } else if ($hd == 'Father Username') {
+                            $headers[$key] = '&&_username';
+                        } else if ($hd == 'Father Can Login') {
+                            $headers[$key] = '&&_canLogin';
+                        } else if ($hd == 'Father Email') {
+                            $headers[$key] = '&&_email';
+                        } else if ($hd == 'Father Mobile (Country Code)') {
+                            $headers[$key] = '&&_phone1CountryCode';
+                        } else if ($hd == 'Father Mobile No') {
+                            $headers[$key] = '&&_phone1';
+                        } else if ($hd == 'Father LandLine (Country Code)') {
+                            $headers[$key] = '&&_phone2CountryCode';
+                        } else if ($hd == 'Father Landline No') {
+                            $headers[$key] = '&&_phone2';
+                        } else if ($hd == 'Mother Official Name') {
+                            $headers[$key] = '!!_officialName';
+                        } else if ($hd == 'Mother Date of Birth') {
+                            $headers[$key] = '!!_dob';
+                        } else if ($hd == 'Mother Username') {
+                            $headers[$key] = '!!_username';
+                        } else if ($hd == 'Mother Can Login') {
+                            $headers[$key] = '!!_canLogin';
+                        } else if ($hd == 'Mother Email') {
+                            $headers[$key] = '!!_email';
+                        } else if ($hd == 'Mother Mobile (Country Code)') {
+                            $headers[$key] = '!!_phone1CountryCode';
+                        } else if ($hd == 'Mother Mobile No') {
+                            $headers[$key] = '!!_phone1';
+                        } else if ($hd == 'Mother LandLine (Country Code)') {
+                            $headers[$key] = '!!_phone2CountryCode';
+                        } else if ($hd == 'Mother Landline No') {
+                            $headers[$key] = '!!_phone2';
+                        } else {
 
+                            //$sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
+                            $sqlchk = "SELECT field_name, modules FROM custom_field WHERE field_title = '" . addslashes($hd) . "' and not  find_in_set('staff',modules)";
+                            $resultchk = $connection2->query($sqlchk);
+                            $cd = $resultchk->fetch();
+                            $modules = explode(',', $cd['modules']);
 
-                    $tbl = '<hr/><form id="formValidSubmit" class="mt-3" action="' . $URL . '" method="post">';
-                    $tbl .= "<input type='hidden' name='validFormData' value='1'>";
-                    $tbl .= "<div class='table-responsive'>";
-                    $tbl .= "\n<table id='validate_tbl' class='table'>";
-                    //header
-                    $tbl .= "\n<thead>";
-                    foreach ($all_rows as  $alrow) {
-                        $tbl .= "\n<tr>";
-                        foreach ($alrow as $key => $ar) {
-                            if (strpos($key, 'at_') !== false) {
-                                $clname = substr($key, 3, strlen($key));
-                                $tbl .= "\n<th " . $colWidth . ">" . $clname . "</th>";
+                            //if(!in_array('##_'.$cd['field_name'], $chkHeaderKey)){
+                            if (in_array('student', $modules)) {
+                                $headers[$key] = '##_' . $cd['field_name'];
+                                $chkHeaderKey[] = '##_' . $cd['field_name'];
                             }
-                            if (strpos($key, '##_') !== false) {
-                                $clname = substr($key, 3, strlen($key));
-
-                                if ($clname == "phone1" || $clname == "email" || $clname == "username" || $clname == "dob") {
-                                    $clname .= " - validate";
-                                }
-                                $tbl .= "\n<th " . $colWidth . ">" . $clname . "</th>";
+                            //}
+                            //else if(!in_array('&&_'.$cd['field_name'], $chkHeaderKey)){
+                            if (in_array('father', $modules)) {
+                                $headers[$key] = '&&_' . $cd['field_name'];
+                                $chkHeaderKey[] = '&&_' . $cd['field_name'];
                             }
-
-                            if (strpos($key, '&&_') !== false) {
-                                $clname = substr($key, 3, strlen($key));
-
-                                if ($clname == "phone1" || $clname == "email" || $clname == "username" || $clname == "dob") {
-                                    $clname .= " - validate";
-                                }
-                                $tbl .= "\n<th " . $colWidth . "> Father " . $clname . "</th>";
+                            //}
+                            //else if(!in_array('!!_'.$cd['field_name'], $chkHeaderKey)){
+                            if (in_array('mother', $modules)) {
+                                $headers[$key] = '!!_' . $cd['field_name'];
+                                $chkHeaderKey[] = '!!_' . $cd['field_name'];
                             }
-
-                            if (strpos($key, '!!_') !== false) {
-                                $clname = substr($key, 3, strlen($key));
-
-                                if ($clname == "phone1" || $clname == "email" || $clname == "username" || $clname == "dob") {
-                                    $clname .= " - validate";
-                                }
-                                $tbl .= "\n<th " . $colWidth . "> Mother " . $clname . "</th>";
-                            }
+                            //}
                         }
-                        $tbl .= "\n</tr>";
-                        break;
                     }
-                    $tbl .= "\n</thead>";
 
-                    //data
-                    $tbl .= "\n<tbody>";
-                    $cnt = 1;
-                    $row = 0;
+                    $hders = $headers;
 
-                    foreach ($all_rows as  $alrow) {
-                        $tbl .= "\n<tr id='row_" . $row . "' class='dataRow'>";
-                        $js = 0;
-                        foreach ($alrow as $k => $value) {
-                            if ($k == "##_dob" && !empty($value)) {
-                                $value = date('Y-m-d', strtotime($value));
+                    $all_rows = array();
+                    while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
+                        $all_rows[] = array_combine($hders, $data);
+                    }
+
+
+
+                    if (!empty($all_rows)) {
+
+                        function getSaltNew()
+                        {
+                            $c = explode(' ', '. / a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9');
+                            $ks = array_rand($c, 22);
+                            $s = '';
+                            foreach ($ks as $k) {
+                                $s .= $c[$k];
                             }
-                            if (strpos($k, '##_') !== false && !empty($value)) {
-                                $value = str_replace('"', "", $value);
-                            }
+                            return $s;
+                        }
 
-                            $tfwidth = "";
-                            $tfValidate = "";
-                            if ($k == "##_phone1" || $k == "##_email" || $k == "##_username" || $k == "##_dob") {
-                                $tfwidth = " style='width:180px;'";
-                                $tfValidate = " validActive ";
-                            }
+                        $salt = getSaltNew();
+                        $pass = 'Admin@123456';
+                        $password = hash('sha256', $salt . $pass);
 
-                            if ($k == "&&_phone1" || $k == "&&_email" || $k == "&&_username" || $k == "&&_dob") {
-                                $tfwidth = " style='width:180px;'";
-                                $tfValidate = " validActive ";
-                            }
+                        // echo '<pre>';
+                        // print_r($all_rows);
+                        // echo '</pre>';
+                        // die();
 
-                            if ($k == "!!_phone1" || $k == "!!_email" || $k == "!!_username" || $k == "!!_dob") {
-                                $tfwidth = " style='width:180px;'";
-                                $tfValidate = " validActive ";
-                            }
 
-                            $tbl .= "\n<td><span class='hide'>" . $value . "</span><input type='text' id='" . $k . "_" . $cnt . "' data-type='" . $k . "' class='w-full " . $tfValidate . "' " . $tfwidth . " name=\"data[" . $row . "][" . $k . "]\" value='" . $value . "'></td>";
+                        $tbl = '<hr/><form id="formValidSubmit" class="mt-3" action="' . $URL . '" method="post">';
+                        $tbl .= "<input type='hidden' name='validFormData' value='1'>";
+                        $tbl .= "<div class='table-responsive'>";
+                        $tbl .= "\n<table id='validate_tbl' class='table'>";
+                        //header
+                        $tbl .= "\n<thead>";
+                        foreach ($all_rows as  $alrow) {
+                            $tbl .= "\n<tr>";
+                            foreach ($alrow as $key => $ar) {
+                                if (strpos($key, 'at_') !== false) {
+                                    $clname = substr($key, 3, strlen($key));
+                                    $tbl .= "\n<th " . $colWidth . ">" . $clname . "</th>";
+                                }
+                                if (strpos($key, '##_') !== false) {
+                                    $clname = substr($key, 3, strlen($key));
+
+                                    if ($clname == "phone1" || $clname == "email" || $clname == "username" || $clname == "dob") {
+                                        $clname .= " - validate";
+                                    }
+                                    $tbl .= "\n<th " . $colWidth . ">" . $clname . "</th>";
+                                }
+
+                                if (strpos($key, '&&_') !== false) {
+                                    $clname = substr($key, 3, strlen($key));
+
+                                    if ($clname == "phone1" || $clname == "email" || $clname == "username" || $clname == "dob") {
+                                        $clname .= " - validate";
+                                    }
+                                    $tbl .= "\n<th " . $colWidth . "> Father " . $clname . "</th>";
+                                }
+
+                                if (strpos($key, '!!_') !== false) {
+                                    $clname = substr($key, 3, strlen($key));
+
+                                    if ($clname == "phone1" || $clname == "email" || $clname == "username" || $clname == "dob") {
+                                        $clname .= " - validate";
+                                    }
+                                    $tbl .= "\n<th " . $colWidth . "> Mother " . $clname . "</th>";
+                                }
+                            }
+                            $tbl .= "\n</tr>";
+                            break;
+                        }
+                        $tbl .= "\n</thead>";
+
+                        //data
+                        $tbl .= "\n<tbody>";
+                        $cnt = 1;
+                        $row = 0;
+
+                        foreach ($all_rows as  $alrow) {
+                            $tbl .= "\n<tr id='row_" . $row . "' class='dataRow'>";
+                            $js = 0;
+                            foreach ($alrow as $k => $value) {
+                                if ($k == "##_dob" && !empty($value)) {
+                                    $value = date('Y-m-d', strtotime($value));
+                                }
+                                if (strpos($k, '##_') !== false && !empty($value)) {
+                                    $value = str_replace('"', "", $value);
+                                }
+
+                                $tfwidth = "";
+                                $tfValidate = "";
+                                if ($k == "##_phone1" || $k == "##_email" || $k == "##_username" || $k == "##_dob") {
+                                    $tfwidth = " style='width:180px;'";
+                                    $tfValidate = " validActive ";
+                                }
+
+                                if ($k == "&&_phone1" || $k == "&&_email" || $k == "&&_username" || $k == "&&_dob") {
+                                    $tfwidth = " style='width:180px;'";
+                                    $tfValidate = " validActive ";
+                                }
+
+                                if ($k == "!!_phone1" || $k == "!!_email" || $k == "!!_username" || $k == "!!_dob") {
+                                    $tfwidth = " style='width:180px;'";
+                                    $tfValidate = " validActive ";
+                                }
+
+                                $tbl .= "\n<td><span class='hide'>" . $value . "</span><input type='text' id='" . $k . "_" . $cnt . "' data-type='" . $k . "' class='w-full " . $tfValidate . "' " . $tfwidth . " name=\"data[" . $row . "][" . $k . "]\" value='" . $value . "'></td>";
+                                $cnt++;
+                                $js++;
+                            }
+                            $tbl .= "\n</tr>";
+                            $row++;
                             $cnt++;
-                            $js++;
                         }
-                        $tbl .= "\n</tr>";
-                        $row++;
-                        $cnt++;
+                        $tbl .= "\n</tbody></table></div>";
+                        $tbl .= "\n<button type='button' class='btn btn-secondary mt-3' onclick='validateOnly();'>Validate</button>";
+                        $tbl .= "\n<button type='button' class='btn btn-white mt-3 ml-2' onclick='resetTableRows();'>Reset</button>";
+                        $tbl .= "\n<button type='button' class='btn btn-primary mt-3 ml-4' onclick='validateImport();'>Validate & Submit</button>";
+                        $tbl .= "\n</form>";
+                        echo $tbl;
                     }
-                    $tbl .= "\n</tbody></table></div>";
-                    $tbl .= "\n<button type='button' class='btn btn-secondary mt-3' onclick='validateOnly();'>Validate</button>";
-                    $tbl .= "\n<button type='button' class='btn btn-white mt-3 ml-2' onclick='resetTableRows();'>Reset</button>";
-                    $tbl .= "\n<button type='button' class='btn btn-primary mt-3 ml-4' onclick='validateImport();'>Validate & Submit</button>";
-                    $tbl .= "\n</form>";
-                    echo $tbl;
+                    //die();
+                    fclose($handle);
+                } else {
+                    //die();
+                    $URL .= '&return=error0';
+                    header("Location: {$URL}");
                 }
-                //die();
-                fclose($handle);
-            } else {
-                //die();
-                $URL .= '&return=error0';
-                header("Location: {$URL}");
+            } catch (Exception $ex) {
+                print_r($ex);
             }
         }
     }
