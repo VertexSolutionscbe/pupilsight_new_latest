@@ -96,8 +96,6 @@ try {
             }
         }
 
-
-
         $class_section = $valuestu["class"] . " " . $valuestu["section"];
         $date = date('d-m-Y');
 
