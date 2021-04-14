@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         var id = $(this).attr('data-id');
         var checked = $(".getStudentInSketch:checked").length;
         if (checked >= 1) {
-            $("#preloader").show();
+            //$("#preloader").show();
             var clid = [];
             var secid = [];
             var pid = '';
@@ -257,8 +257,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                 success: function(response) {
                     console.log(response);
                     if (response == 'done') {
-                        alert('Sketch Result Generated Successfully');
-                        location.reload();
+                        // alert('Sketch Result Generated Successfully');
+                        // location.reload();
                     }
                 }
             });

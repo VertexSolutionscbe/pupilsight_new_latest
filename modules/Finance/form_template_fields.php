@@ -147,8 +147,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
         </tr>
         <tr>
             <td>23</td>
-            <td>Fee Item Amount</td>
+            <td>Fee Item Amount Without Tax and Discount</td>
+            <td>${inv_amt.all}</td>
+        </tr>
+        <tr>
+            <td>24</td>
+            <td>Fee Item Tax</td>
+            <td>${tax.all}</td>
+        </tr>
+        <tr>
+            <td>25</td>
+            <td>Fee Item Amount With Tax and Discount</td>
             <td>${amount.all}</td>
+        </tr>
+        <tr>
+            <td>26</td>
+            <td>Total Fee Item Amount Without Tax and Discount</td>
+            <td>${inv_total}</td>
+        </tr>
+        <tr>
+            <td>27</td>
+            <td>Total Tax</td>
+            <td>${total_tax}</td>
         </tr>
 
     </tbody>

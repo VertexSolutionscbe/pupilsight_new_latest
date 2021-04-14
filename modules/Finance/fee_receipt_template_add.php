@@ -25,6 +25,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
 
     $types = array('' => 'Select Type', 'Fee Receipt' => 'Fee Receipt', 'Cancel Receipt' => 'Cancel Receipt', 'Refund Receipt' => 'Refund Receipt' , 'Invoice Template' => 'Invoice Template');
 
+    $columns = array('serial_no' => 'Sl No', 'fee_item_name' => 'Fee Item Name');
+
    
         echo '<h2>';
         echo __('Add Fee Receipts Template');
@@ -46,6 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
         $row = $form->addRow();
         $row->addLabel('file', __('Template'));
         $row->addFileUpload('file')->accepts('.docx')->setMaxUpload(false)->required();
+
+        $row = $form->addRow();
+        $row->addLabel('column_start_by', __('Fee Item Column Start By'));
+        $row->addSelect('column_start_by')->fromArray($columns);
 
         $row = $form->addRow();
         $row->addFooter();

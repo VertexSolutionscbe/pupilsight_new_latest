@@ -184,12 +184,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/view_members_in_
         e.preventDefault();
         $("#preloader").show();
         window.setTimeout(function () {
-            var formData = new FormData(document.getElementById("sendEmailSms_Student"));
+            var formData = new FormData(document.getElementById("sendEmailSms_Transport"));
 
-            var emailquote = $("#emailQuote_stud").val();
-            var subjectquote = $("#emailSubjectQuote_stud").val();
+            var emailquote = $("#emailQuote_stud_Transport").val();
+            var subjectquote = $("#emailSubjectQuote_stud_Transport").val();
 
-            var smsquote = $("#smsQuote_stud").val();
+            var smsquote = $("#smsQuote_stud_Transport").val();
             var favorite = [];
             $.each($("input[name='stuid[]']:checked"), function () {
                 favorite.push($(this).val());
@@ -220,7 +220,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/view_members_in_
                                 alert('Your Message Sent Successfully! click Ok to continue ');
                                 //location.reload();
                                 $("#sendEmailSms_Student")[0].reset();
-                                $("#closeSM").click();
+                                $(".closeSMPopUp").click();
+                                
                             }
                         });
                     } else {

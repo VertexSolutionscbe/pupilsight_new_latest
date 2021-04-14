@@ -104,7 +104,12 @@ else {
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('dob', __('Date of Birth'))->addClass('dte');
-            $dob = date('d/m/Y', strtotime($rowdata['dob']));          
+            if(!empty($rowdata['dob'])){
+                $dob = date('d/m/Y', strtotime($rowdata['dob']));
+            } else {
+                $dob = '';
+            }
+                      
             $col->addDate('dob')->required()->setValue($dob)->setClass(' small_wdth ');
            
            

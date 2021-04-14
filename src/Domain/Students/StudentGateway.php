@@ -617,6 +617,7 @@ class StudentGateway extends QueryableGateway
         }
 
         $query->where('pupilsightPerson.active = "0" ')
+            ->where('pupilsightPerson.is_delete != "1" ')
             ->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
         //echo $query;
         $criteria->addFilterRules($this->getSharedUserFilterRules());

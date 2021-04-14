@@ -300,19 +300,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightPerson.status='Full'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
                     } else if ($highestAction == 'Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
-                        if ($allStudents != 'on') {
-                            $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $pupilsightPersonID, 'today' => date('Y-m-d'));
-                            $sql = "SELECT * FROM pupilsightPerson
-                                JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
-                                WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID
-                                AND pupilsightPerson.pupilsightPersonID=:pupilsightPersonID AND status='Full'
-                                AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ";
-                        } else {
+                        /* Closed By Bikash for Jira Ticket PODV-1404 */
+                        // if ($allStudents != 'on') {
+                        //     $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $pupilsightPersonID, 'today' => date('Y-m-d'));
+                        //     $sql = "SELECT * FROM pupilsightPerson
+                        //         JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
+                        //         WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID
+                        //         AND pupilsightPerson.pupilsightPersonID=:pupilsightPersonID AND status='Full'
+                        //         AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ";
+                        // } else {
                             $data = array('pupilsightPersonID' => $pupilsightPersonID);
                             $sql = "SELECT DISTINCT pupilsightPerson.* FROM pupilsightPerson
                                 LEFT JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
                                 WHERE pupilsightPerson.pupilsightPersonID=:pupilsightPersonID";
-                        }
+                        // }
                     } else {
                         //Acess denied
                         echo "<div class='alert alert-danger'>";

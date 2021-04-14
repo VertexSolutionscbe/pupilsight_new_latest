@@ -177,9 +177,9 @@ if (isset($_POST['type'])) {
             break;
         case "collectionForm_request":
 
-            echo '<pre>';
-            print_r($_POST);
-            echo '</pre>';
+            // echo '<pre>';
+            // print_r($_POST);
+            // echo '</pre>';
             //die();
             $checkmode = $_POST['checkmode'];
             $counterid = $session->get('counterid');

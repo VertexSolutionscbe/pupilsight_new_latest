@@ -30,6 +30,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
     $ProgramGateway = $container->get(ProgramGateway::class);
 
     // QUERY
@@ -37,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_conf
         ->sortBy(['sequenceNumber'])
         ->fromPOST();
 
-    $dataSet = $ProgramGateway->attendanceSettings($criteria);
+    $dataSet = $ProgramGateway->attendanceSettings($criteria, $pupilsightSchoolYearID);
     
     
     // DATA TABLE
