@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 'yearGroup' => __('Year Group'),
             );
 
-            echo '<input type="hidden" id="pupilsightSchoolYearID" value="'.$pupilsightSchoolYearID.'">';
+            echo '<input type="hidden" id="pupilsightSchoolYearID" value="' . $pupilsightSchoolYearID . '">';
 
             $form = Form::create('studentViewSearch', '');
 
@@ -218,58 +218,58 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             if ($roleId == '001') {
 
-                echo "<div style='height:50px; margin-top:10px; '><div class='float-right mb-2'><a style=' ' href=''  data-toggle='modal' data-target='#large-modal-new_stud' data-noti='2'  class='sendButton_stud btn btn-primary' id='sendSMS'>Send SMS</a>";
-                echo "&nbsp;&nbsp;<a style='' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_stud' class='sendButton_stud btn btn-primary' id='sendEmail'>Send Email</a>";
-                echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Students/message_history.php' class='btn btn-primary' id='sendEmail'>SMS - SENT ITEMS</a>";
-                //  echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='printIDCard'>Print ID Card</a>";
-                //  echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='visitorPass'>Visitor Pass</a>";
-                // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='visitorHistory'>Visitor History</a>";
+                echo "<div style='height:50px; margin-top:10px; '><div class='float-right mb-2'><a style=' ' href=''  data-toggle='modal' data-target='#large-modal-new_stud' data-noti='2'  class='sendButton_stud btn btn-white' id='sendSMS'>Send SMS</a>";
+                echo "&nbsp;&nbsp;<a style='' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_stud' class='sendButton_stud btn btn-white' id='sendEmail'>Send Email</a>";
+                echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Students/message_history.php' class='btn btn-white' id='sendEmail'>SMS - SENT ITEMS</a>";
+                //  echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-white' id='printIDCard'>Print ID Card</a>";
+                //  echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-white' id='visitorPass'>Visitor Pass</a>";
+                // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-white' id='visitorHistory'>Visitor History</a>";
 
 
                 echo "<a style='display:none' id='clickStudentsection' href='fullscreen.php?q=/modules/Students/assign_student_section.php&pupilsightYearGroupID=$pupilsightYearGroupID&pupilsightProgramID=$pupilsightProgramID&width=1000'  class='thickbox '>Assign Students to Section</a>";
-                echo "&nbsp;&nbsp;<a style=' ' data-type='student' class='btn btn-primary' href='#'  id='assignStuSec'>Assign Students to Section</a>";
+                echo "&nbsp;&nbsp;<a style=' ' data-type='student' class='btn btn-white' href='#'  id='assignStuSec'>Assign Students to Section</a>";
 
                 // echo "<a style='display:none' id='click_bulkStudentregister' href='fullscreen.php?q=/modules/Students/register_student_bulk.php&width=1000'  class='thickbox '>Register Students</a>";
-                // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-primary' href='#'  id='bulk_student_reg'>Register Students</a>";
+                // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-white' href='#'  id='bulk_student_reg'>Register Students</a>";
 
                 // echo "<a style='display:none' id='clickStudentsubject' href='fullscreen.php?q=/modules/Students/assign_student_subjects.php&width=1000'  class='thickbox '> Core Subjects Assigned to Students</a>";
-                // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-primary' href='#'  id='assignStusub'> Core Subjects Assigned to Students</a>";
+                // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-white' href='#'  id='assignStusub'> Core Subjects Assigned to Students</a>";
 
                 // echo "<a style='display:none' id='clickStudent_elect_subject' href='fullscreen.php?q=/modules/Students/assign_student_elective_subjects.php&width=1000'  class='thickbox '>Assign Elective Subjects to Students</a>";
-                // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-primary' href='#'  id='assignStu_elesub'>Assign Elective Subjects to Students</a>";
+                // echo "&nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' data-type='student' class='btn btn-white' href='#'  id='assignStu_elesub'>Assign Elective Subjects to Students</a>";
 
-                echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-primary'>Student Enrollment</a>&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-primary'>Remove Enrollment</a>&nbsp;&nbsp;<a   class='btn btn-primary' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>&nbsp;&nbsp;<a style='' id='deRegisterBulkStudent' class='btn btn-primary'>Bulk De-Register</a>";
+                echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-white'>Student Enrollment</a>&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-white'>Remove Enrollment</a>&nbsp;&nbsp;<a   class='btn btn-white' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-white'>Bulk Delete</a>&nbsp;&nbsp;<a style='' id='deRegisterBulkStudent' class='btn btn-white'>Bulk De-Register</a>";
 
                 // echo "&nbsp;&nbsp;<i style='cursor:pointer' id='expore_student_xl' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
 
-                echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' id='expore_student_xl' title='Export Excel'  >Export</a>";
+                echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-white' id='expore_student_xl' title='Export Excel'  >Export</a>";
 
-                // echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
+                // echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-white' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
 
-                // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='changeStuStatus'>Change Status</a>";
-                // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-primary' id='export'>Export</a>";
-
-
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/button_permission.php' class='btn btn-primary'>Button Permission</a>";
+                // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-white' id='changeStuStatus'>Change Status</a>";
+                // echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' class='btn btn-white' id='export'>Export</a>";
 
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_delete.php' class='btn btn-primary'>Deleted Student's</a>";
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/button_permission.php' class='btn btn-white'>Button Permission</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Registered Student's</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/student_letter.php&sid=' id='clickGenerateLetter' class='btn btn-primary'>Letter</a><a style='display:none;' href='' id='generateLetter'  class='thickbox'>Letter</a>";
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_delete.php' class='btn btn-white'>Deleted Student's</a>";
 
-                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-white'>De-Registered Student's</a>";
 
-                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/student_letter.php&sid=' id='clickGenerateLetter' class='btn btn-white'>Letter</a><a style='display:none;' href='' id='generateLetter'  class='thickbox'>Letter</a>";
 
-                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-white'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
 
-                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-white'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-white'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
 
-                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-white'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-white'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
+
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-white'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
 
 
                 echo "</div><div class='float-none'></div></div>";
@@ -277,76 +277,76 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 if (!empty($permissionChk)) {
                     echo "<div style='height:50px; margin-top:10px; '><div class='float-right mb-2'>";
                     if (in_array(20, $permissionChk)) {
-                        echo "<a style=' ' href=''  data-toggle='modal' data-target='#large-modal-new_stud' data-noti='2'  class='sendButton_stud btn btn-primary' id='sendSMS'>Send SMS</a>";
+                        echo "<a style=' ' href=''  data-toggle='modal' data-target='#large-modal-new_stud' data-noti='2'  class='sendButton_stud btn btn-white' id='sendSMS'>Send SMS</a>";
                     }
                     if (in_array(21, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_stud' class='sendButton_stud btn btn-primary' id='sendEmail'>Send Email</a>";
+                        echo "&nbsp;&nbsp;<a style='' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_stud' class='sendButton_stud btn btn-white' id='sendEmail'>Send Email</a>";
                     }
                     if (in_array(19, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Students/message_history.php' class='btn btn-primary' id='sendEmail'>SMS - SENT ITEMS</a>";
+                        echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Students/message_history.php' class='btn btn-white' id='sendEmail'>SMS - SENT ITEMS</a>";
                     }
                     if (in_array(22, $permissionChk)) {
                         echo "<a style='display:none' id='clickStudentsection' href='fullscreen.php?q=/modules/Students/assign_student_section.php&pupilsightYearGroupID=$pupilsightYearGroupID&pupilsightProgramID=$pupilsightProgramID&width=1000'  class='thickbox '>Assign Students to Section</a>";
-                        echo "&nbsp;&nbsp;<a style=' ' data-type='student' class='btn btn-primary' href='#'  id='assignStuSec'>Assign Students to Section</a>";
+                        echo "&nbsp;&nbsp;<a style=' ' data-type='student' class='btn btn-white' href='#'  id='assignStuSec'>Assign Students to Section</a>";
                     }
                     if (in_array(23, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-primary'>Student Enrollment</a>";
+                        echo "&nbsp;&nbsp;<a style='' id='addBulkStudentEnrolment' data-type='student' class='btn btn-white'>Student Enrollment</a>";
                     }
                     if (in_array(24, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-primary'>Remove Enrollment</a>";
+                        echo "&nbsp;&nbsp;<a style='' id='removeStudentEnrolment' data-type='student' class='btn btn-white'>Remove Enrollment</a>";
                     }
                     if (in_array(12, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a   class='btn btn-primary' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>";
+                        echo "&nbsp;&nbsp;<a   class='btn btn-white' href='index.php?q=/modules/Students/student_add.php&search=" . $criteria->getSearchText(true) . "'>Add</a>";
                     }
                     if (in_array(14, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-primary'>Bulk Delete</a>";
+                        echo "&nbsp;&nbsp;<a style='' id='deleteBulkStudent' class='btn btn-white'>Bulk Delete</a>";
                     }
 
                     if (in_array(36, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='' id='deRegisterBulkStudent' class='btn btn-primary'>Bulk De-Register</a>";
+                        echo "&nbsp;&nbsp;<a style='' id='deRegisterBulkStudent' class='btn btn-white'>Bulk De-Register</a>";
                     }
 
-                    
+
                     if (in_array(25, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-primary' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
+                        echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-white' href='index.php?q=/modules/Students/field_to_show.php'  >Field to Show</a>";
                     }
                     //if(in_array(8, $permissionChk)){   
                     echo "&nbsp;&nbsp;<i style='cursor:pointer' id='expore_student_xl' title='Export Excel' class='mdi mdi-file-excel mdi-24px download_icon'></i> ";
                     //}
                     if (in_array(26, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/button_permission.php' class='btn btn-primary'>Button Permission</a>";
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/button_permission.php' class='btn btn-white'>Button Permission</a>";
                     }
 
                     if (in_array(27, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_delete.php' class='btn btn-primary'>Deleted Student's</a>";
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_delete.php' class='btn btn-white'>Deleted Student's</a>";
                     }
 
                     if (in_array(28, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-primary'>De-Registered Student's</a>";
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' href='index.php?q=/modules/Students/student_view_deregister.php' class='btn btn-white'>De-Registered Student's</a>";
                     }
 
                     if (in_array(29, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/student_letter.php&sid=' id='clickGenerateLetter' class='btn btn-primary'>Letter</a><a style='display:none;' href='' id='generateLetter' class='thickbox'>Letter</a>";
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/student_letter.php&sid=' id='clickGenerateLetter' class='btn btn-white'>Letter</a><a style='display:none;' href='' id='generateLetter' class='thickbox'>Letter</a>";
                     }
 
                     // if (in_array(31, $permissionChk)) {
-                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-primary'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateStudy.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateStudy' class='btn btn-white'>Study Certificate</a><a style='display:none;' href='' id='generateStudy'>Study Certificate</a>";
                     // }
                     // if (in_array(30, $permissionChk)) {
-                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-primary'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateBonafide.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateBonafide' class='btn btn-white'>Bonafide Certificate</a><a style='display:none;' href='' id='generateBonafide'>Bonafide Certificate</a>";
                     // }
                     // if (in_array(32, $permissionChk)) {
-                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-primary'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generateConduct.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateConduct' class='btn btn-white'>Conduct Certificate</a><a style='display:none;' href='' id='generateConduct'>Conduct Certificate</a>";
                     // }
                     // if (in_array(33, $permissionChk)) {
-                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-primary'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
+                    //     echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='cms/generatefeeletter.php?aid=" . $pupilsightSchoolYearID . "&sid=' id='clickGenerateFee' class='btn btn-white'>Fee Letter</a><a style='display:none;' href='' id='generateFee'>Fee Letter</a>";
                     // }
 
                     if (in_array(34, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-primary'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/promote_student.php&sid=' id='clickPromoteStudent' class='btn btn-white'>Promote</a><a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
                     }
                     if (in_array(35, $permissionChk)) {
-                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
+                        echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-white'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
                     }
                     echo "</div><div class='float-none'></div></div>";
                 }
@@ -356,13 +356,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo '<div class="float-left"><h2>Choose A Student</h2></div>';
             }
 
-            
+
 
             // $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search, $customFieldNames);
 
             $students = $studentGateway->getAllStudentData($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
 
-           
+
 
             // DATA TABLE
             $table = DataTable::createPaginated('students', $criteria);
@@ -416,41 +416,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 });
 
 
-                $table->addColumn('student', __('Student'))
+            $table->addColumn('student', __('Student'))
 
-                    ->sortable(['surname', 'preferredName'])
-                    ->format(function ($person) {
-                        // if(!empty($person['surname'])){
-                        //     return Format::name('', $person['surname'], $person['officialName'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+                ->sortable(['surname', 'preferredName'])
+                ->format(function ($person) {
+                    // if(!empty($person['surname'])){
+                    //     return Format::name('', $person['surname'], $person['officialName'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
 
-                        // } else {
-                        if ($person['active_status'] == 'Active') {
-                            $status_icon = '<i class="fa fa-circle greenicon_sts" aria-hidden="true"></i>&nbsp;&nbsp;';
-                        } else {
-                            $status_icon = '<i class="fa fa-circle greyicon_sts " aria-hidden="true"></i>&nbsp;&nbsp;';
-                        }
-                        return  $status_icon . $person['officialName'];
-                        // }
+                    // } else {
+                    if ($person['active_status'] == 'Active') {
+                        $status_icon = '<i class="fa fa-circle greenicon_sts" aria-hidden="true"></i>&nbsp;&nbsp;';
+                    } else {
+                        $status_icon = '<i class="fa fa-circle greyicon_sts " aria-hidden="true"></i>&nbsp;&nbsp;';
+                    }
+                    return  $status_icon . $person['officialName'];
+                    // }
 
-                    });
-                $table->addColumn('pupilsightPersonID', __('Student Id'));
-                $table->addColumn('admission_no', __('Admission No'));
-                // $table->addColumn('pupilsightStudentEnrolmentID', __('Enrolment Id')); 
-                $table->addColumn('academic_year', __('Academic'));
-                $table->addColumn('program', __('Program'));
-                $table->addColumn('yearGroup', __('Class'))
-                    ->format(function ($person) {
+                });
+            $table->addColumn('pupilsightPersonID', __('Student Id'));
+            $table->addColumn('admission_no', __('Admission No'));
+            // $table->addColumn('pupilsightStudentEnrolmentID', __('Enrolment Id')); 
+            $table->addColumn('academic_year', __('Academic'));
+            $table->addColumn('program', __('Program'));
+            $table->addColumn('yearGroup', __('Class'))
+                ->format(function ($person) {
 
-                        return $person['yearGroup'];
-                    });
-                $table->addColumn('rollGroup', __('Section'));
-                $table->addColumn('dob', __('Date of Birth'));
-                $table->addColumn('gender', __('Gender'));
-                $table->addColumn('username', __('Username'));
-                $table->addColumn('phone1', __('Phone'));
-                $table->addColumn('email', __('Email'));
-                
-            
+                    return $person['yearGroup'];
+                });
+            $table->addColumn('rollGroup', __('Section'));
+            $table->addColumn('dob', __('Date of Birth'));
+            $table->addColumn('gender', __('Gender'));
+            $table->addColumn('username', __('Username'));
+            $table->addColumn('phone1', __('Phone'));
+            $table->addColumn('email', __('Email'));
+
+
 
 
             if ($roleId == '001') {
@@ -696,16 +696,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         //alert(subid);
         if (stuId) {
             //if (confirm("Do you want to Generated TC?")) {
-                if (favorite.length == 1) {
-                    var hrf = $(this).attr('data-hrf');
-                    var newhrf = hrf + stuId;
-                    $("#generateLetter").attr('href', newhrf);
-                    window.setTimeout(function() {
-                        $("#generateLetter")[0].click();
-                    }, 10);
-                } else {
-                    alert('You Have to Select One Student at a time.');
-                }
+            if (favorite.length == 1) {
+                var hrf = $(this).attr('data-hrf');
+                var newhrf = hrf + stuId;
+                $("#generateLetter").attr('href', newhrf);
+                window.setTimeout(function() {
+                    $("#generateLetter")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select One Student at a time.');
+            }
             //}
         } else {
             alert('You Have to Select Student.');
@@ -847,7 +847,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         }
     });
 
-    
+
     $(document).on('click', '#deRegisterBulkStudent', function() {
         var favorite = [];
         var chk = [];
@@ -856,7 +856,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             favorite.push($(this).val());
         });
         var stuId = favorite.join(",");
-        
+
         if (stuId) {
             var val = stuId;
             var type = 'deRegisterBulkStudent';

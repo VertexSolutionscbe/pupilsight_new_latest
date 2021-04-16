@@ -146,13 +146,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
     $table = DataTable::createPaginated('departmentManage', $criteria);
 
     $table->addHeaderAction('Assign Subjects to Class', __('Assign Subjects to class'))
-        ->setClass('btn btn-primary')
+        ->setClass('btn btn-white')
         ->setURL('/modules/Academics/assign_subjects_class_add.php')
         ->addParam('pupilsightSchoolYearID', $pupilsightSchoolYearID)
         ->addParam('search', $criteria->getSearchText(true))
         ->displayLabel();
 
     $table->addHeaderAction('add', __('Add'))
+        ->setClass('btn btn-white')
         ->setURL('/modules/Academics/department_manage_add.php')
         ->displayLabel();
 

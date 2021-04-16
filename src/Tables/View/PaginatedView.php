@@ -45,16 +45,16 @@ class PaginatedView extends DataTableView implements RendererInterface
         $this->addData('blankSlate', $table->getMetaData('blankSlate'));
 
         $this->preProcessTable($table);
-        
+
         $filters = $table->getMetaData('filterOptions', []);
-        
+
         $this->addData([
             'dataSet'    => $dataSet,
 
             'headers'    => $this->getTableHeaders($table),
             'columns'    => $table->getColumns(),
             'rows'       => $this->getTableRows($table, $dataSet),
-            'path'       => './fullscreen.php?'.http_build_query($_GET),
+            'path'       => './fullscreen.php?' . http_build_query($_GET),
             'identifier' => $this->criteria->getIdentifier(),
 
             'searchText'     => $this->criteria->getSearchText(),
@@ -83,20 +83,20 @@ class PaginatedView extends DataTableView implements RendererInterface
         $th = parent::createTableHeader($column);
 
         if ($sortBy = $column->getSortable()) {
-            $sortBy = !is_array($sortBy)? array($sortBy) : $sortBy;
+            $sortBy = !is_array($sortBy) ? array($sortBy) : $sortBy;
             $th->addClass('sortable relative pr-4 cursor-pointer');
             $th->addData('sort', implode(',', $sortBy));
 
             foreach ($sortBy as $sortColumn) {
                 if ($this->criteria->hasSort($sortColumn)) {
-                    $th->addClass('sorting sort'.$this->criteria->getSortBy($sortColumn));
+                    $th->addClass('sorting sort' . $this->criteria->getSortBy($sortColumn));
                 }
             }
         }
 
         return $th;
     }
-    
+
     /**
      * Get the currently active filters for this criteria.
      *
@@ -107,15 +107,15 @@ class PaginatedView extends DataTableView implements RendererInterface
     {
         $criteriaUsed = [];
         foreach ($this->criteria->getFilterBy() as $name => $value) {
-            $key = $name.':'.$value;
-            $criteriaUsed[$name] = isset($filters[$key]) 
-                ? $filters[$key] 
-                : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))) . ($name == 'in'? ': '.ucfirst($value) : ''); // camelCase => Title Case
+            $key = $name . ':' . $value;
+            $criteriaUsed[$name] = isset($filters[$key])
+                ? $filters[$key]
+                : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))) . ($name == 'in' ? ': ' . ucfirst($value) : ''); // camelCase => Title Case
         }
 
         return $criteriaUsed;
     }
-    
+
     /**
      * Render the available options for filtering the data set.
      *
@@ -126,7 +126,7 @@ class PaginatedView extends DataTableView implements RendererInterface
     protected function getSelectFilterOptions(DataSet $dataSet, array $filters)
     {
         if (empty($filters)) return '';
-        
+
         return $this->factory->createSelect('filter')
             ->fromArray($filters)
             ->setClass('filters float-none w-24 pl-2 border leading-loose h-full sm:h-8 ')

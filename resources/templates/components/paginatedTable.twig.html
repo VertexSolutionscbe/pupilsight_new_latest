@@ -20,8 +20,8 @@
     </div>
     {% endblock blankslate %}
 </div> -->
-<div class="table-responsive dataTables_wrapper ">
-    <table class="table" id="expore_tbls">
+<div class="table-responsive dataTables_wrapper my-2">
+    <table class="table" id="expore_tbl">
         <!--<div class="overflow-x-auto overflow-y-visible">
             <table class="{{ class }} w-full" cellspacing=0>-->
         <thead>
@@ -137,7 +137,7 @@
     }
 </style>
 {% endif %}
-<div class="table-responsive dataTables_wrapper">
+<div class="table-responsive dataTables_wrapper my-2">
     <table class="table" id="expore_tbl">
         <!--<div class="overflow-x-auto overflow-y-visible">
             <table class="{{ class }} w-full" cellspacing=0>-->
@@ -212,7 +212,7 @@
         $('#expore_tbl').DataTable({
             "pageLength": 25,
             "lengthMenu": [[10, 25, 50, 250, -1], [10, 25, 50, 250, "All"]],
-            "sDom": '<"top"lfpi>rt<"bottom"ifp><"clear">'
+            "sDom": '<"top"lfp>rt<"bottom"ifp><"clear">'
         });
         $(".dataTables_length").find("select").css("width", "90px");
         $(".dataTables_length").find("select").css("display", "inline-block");

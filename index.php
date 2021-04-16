@@ -613,6 +613,16 @@ try {
     if (isset($roleCategory) == FALSE) {
         $roleCategory = NULL;
     }
+    //$uname = $session->get('preferredName') . ' ' . $session->get('surname')
+    $uname = $session->get('preferredName');
+    if (empty($session->get('preferredName'))) {
+        $uname = $session->get('officialName');
+    }
+
+    $shortname = "";
+    if ($uname) {
+        $shortname = strtoupper($moduleGateway->get2Char($uname));
+    }
 
     $page->addData([
         'isLoggedIn'        => $isLoggedIn,
@@ -620,7 +630,8 @@ try {
         'pupilsightHouseIDLogo' => $session->get('pupilsightHouseIDLogo'),
         'organisationLogo'  => $session->get('organisationLogo'),
         'minorLinks'        => $header->getMinorLinks($cacheLoad),
-        'uname'                => $session->get('preferredName') . ' ' . $session->get('surname'),
+        'uname'             => $uname,
+        'shortname'         => $shortname,
         'notificationTray'  => $header->getNotificationTray($cacheLoad),
         'sidebar'           => $showSidebar,
         'roleCategory'      => $roleCategory,

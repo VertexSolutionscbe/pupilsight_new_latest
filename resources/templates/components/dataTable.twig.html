@@ -20,7 +20,7 @@
     </div>
     {% endblock blankslate %}
 </div> -->
-<div class="table-responsive dataTables_wrapper ">
+<div class="table-responsive dataTables_wrapper my-2">
     <table class="table" id="expore_tbl">
         <!--<div class="overflow-x-auto overflow-y-visible">
             <table class="{{ class }} w-full" cellspacing=0>-->
@@ -46,98 +46,8 @@
 </div>
 {% else %} {% block tableInner %}
 
-{% if headers|length > 0 %}
-<style>
-    @media only screen and (max-width: 760px),
-    (min-device-width: 768px) and (max-device-width: 1024px) {
 
-        /* Force table to not be like tables anymore */
-        table,
-        thead,
-        tbody,
-        th,
-        td,
-        tr {
-            display: block;
-        }
-
-        /* Hide table headers (but not display: none;, for accessibility) */
-        thead tr {
-            position: absolute !important;
-            top: -9999px !important;
-            left: -9999px !important;
-        }
-
-        tr {
-            border: 1px solid #ccc !important;
-        }
-
-        .p-2 {
-            padding: 0 !important;
-        }
-
-        .dataTables_wrapper .table tbody tr td,
-        td {
-            /* Behave  like a "row" */
-            border: none !important;
-            border-bottom: 1px solid #eee;
-            position: relative !important;
-            padding-left: 50% !important;
-        }
-
-        td:before {
-            /* Now like a table header */
-            position: absolute !important;
-            /* Top/left values mimic padding */
-            top: 6px !important;
-            left: 6px !important;
-            width: 45% !important;
-            padding-right: 10px !important;
-            white-space: nowrap !important;
-        }
-
-            {
-            % for headerRow in headers %
-        }
-
-            {
-            % for columnIndex,
-            column in columns %
-        }
-
-            {
-            % set th=headerRow[columnIndex] %
-        }
-
-            {
-            % if th %
-        }
-
-        td:nth-of-type( {
-                    {
-                    columnIndex+1
-                }
-            }
-
-        ):before {
-            content: "{{ th.getOutput|raw }}";
-        }
-
-            {
-            % endif %
-        }
-
-            {
-            % endfor %
-        }
-
-            {
-            % endfor %
-        }
-    }
-</style>
-{% endif %}
-<div class="table-responsive dataTables_wrapper">
+<div class="table-responsive dataTables_wrapper my-2">
     <table class="table" id="expore_tbl">
         <!--<div class="overflow-x-auto overflow-y-visible">
             <table class="{{ class }} w-full" cellspacing=0>-->

@@ -25,7 +25,7 @@ class UserGateway extends QueryableGateway
     private static $primaryKey = 'pupilsightPersonID';
 
     private static $searchableColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'pupilsightRole.name'];
-    
+
     /**
      * Queries the list of users for the Manage Users page.
      *
@@ -38,7 +38,7 @@ class UserGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.username', 
+                'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.username',
                 'pupilsightPerson.image_240', 'pupilsightPerson.status', 'pupilsightRole.name as primaryRole'
             ])
             ->leftJoin('pupilsightRole', 'pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID')
@@ -77,7 +77,7 @@ class UserGateway extends QueryableGateway
 
     public function selectUserNamesByStatus($status = 'Full')
     {
-        $data = array('statusList' => is_array($status) ? implode(',', $status) : $status );
+        $data = array('statusList' => is_array($status) ? implode(',', $status) : $status);
         $sql = "SELECT pupilsightPersonID, surname, preferredName, status, username, pupilsightRole.category as roleCategory
                 FROM pupilsightPerson 
                 JOIN pupilsightRole ON (pupilsightRole.pupilsightRoleID=pupilsightPerson.pupilsightRoleIDPrimary)
@@ -89,7 +89,7 @@ class UserGateway extends QueryableGateway
 
     public function selectNotificationDetailsByPerson($pupilsightPersonID)
     {
-        $pupilsightPersonIDList = is_array($pupilsightPersonID)? $pupilsightPersonID : [$pupilsightPersonID];
+        $pupilsightPersonIDList = is_array($pupilsightPersonID) ? $pupilsightPersonID : [$pupilsightPersonID];
 
         $data = ['pupilsightPersonIDList' => implode(',', $pupilsightPersonIDList)];
         $sql = "SELECT pupilsightPerson.pupilsightPersonID as groupBy, pupilsightPerson.pupilsightPersonID, title, surname, preferredName, pupilsightPerson.status, image_240, username, email, phone1, phone1CountryCode, phone1Type, pupilsightRole.category as roleCategory, pupilsightStaff.jobTitle, pupilsightStaff.type
@@ -108,16 +108,14 @@ class UserGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.username', 
+                'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.username',
                 'pupilsightPerson.image_240', 'pupilsightPerson.status', 'pupilsightRole.name as primaryRole'
             ])
             ->leftJoin('pupilsightRole', 'pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID')
-            ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
-            ;
+            ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003');
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
         return $this->runQuery($query, $criteria);
     }
-
 }

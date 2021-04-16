@@ -22,7 +22,7 @@ class ModuleGateway extends QueryableGateway
     private static $tableName = 'pupilsightModule';
 
     private static $searchableColumns = ['name'];
-    
+
     /**
      * Queries the list for the Manage Modules page.
      *
@@ -53,6 +53,28 @@ class ModuleGateway extends QueryableGateway
         ]);
 
         return $this->runQuery($query, $criteria);
+    }
+
+
+    public function get2Char($string)
+    {
+        //Example string.
+        //$string = "My milkshake brings all the boys to the yard";
+        $str = explode(' ', $string);
+        //Get the first character.
+        $firstCharacter = $str[0];
+
+        //Get the first character using substr.
+        $firstCharacter = substr($str[0], 0, 1);
+
+        //Get the first two characters using substr.
+        $firstTwoCharacters = substr($str[0], 0, 2);
+
+        if (count($str) > 1) {
+            //Get the first two characters using the "index" approach.
+            $firstTwoCharacters = $firstCharacter . substr($str[1], 0, 1);
+        }
+        return $firstTwoCharacters;
     }
 
     /**
