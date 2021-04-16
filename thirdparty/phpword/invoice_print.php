@@ -21,12 +21,12 @@ try {
     $invoice_no = $invData['invNo'];
 
     $inv_date = '';
-    if(!empty($invData['inv_date'])){
-        $inv_date = date('d/m/Y', strtotime($invData['inv_date']));
+    if(!empty($invData['cdt'])){
+        $inv_date = date('d/m/Y', strtotime($invData['cdt']));
     }
 
     $due_date = '';
-    if(!empty($invData['due_date'])){
+    if(!empty($invData['due_date']) && $invData['due_date'] != '1970-01-01'){
         $due_date = date('d/m/Y', strtotime($invData['due_date']));
     }
     
@@ -59,15 +59,29 @@ try {
             if (!empty($valuefi)) {
                 $cnt = 1;
                 foreach ($valuefi as $vfi) {
-                    $dts_receipt_feeitem[] = array(
-                        "serial.all" => $cnt,
-                        "particulars.all" => $invData['invoice_title'],
-                        "inv_amt.all" => $vfi["amnt"],
-                        "tax.all" => $vfi["ttax"],
-                        "amount.all" => $vfi["tamnt"]
-                    );
+                    $taxamt = 0;
+                    if(!empty($vfi["ttax"])){
+                        $taxamt = ($vfi["ttax"] / 100) * $vfi["amnt"];
+                        $taxamt = number_format($taxamt, 2, '.', '');
+                    }
+                    if($column_start_by == 'serial_no'){
+                        $dts_receipt_feeitem[] = array(
+                            "serial.all" => $cnt,
+                            "particulars.all" => htmlspecialchars(trim($invData['invoice_title'])),
+                            "inv_amt.all" => $vfi["amnt"],
+                            "tax.all" => $taxamt,
+                            "amount.all" => $vfi["tamnt"]
+                        );
+                    } else {
+                        $dts_receipt_feeitem[] = array(
+                            "particulars.all" => htmlspecialchars(trim($invData['invoice_title'])),
+                            "inv_amt.all" => $vfi["amnt"],
+                            "tax.all" => $taxamt,
+                            "amount.all" => $vfi["tamnt"]
+                        );
+                    }
                     $total += $vfi["tamnt"];
-                    $totalTax += $vfi["ttax"];
+                    $totalTax += $taxamt;
                     $totalamtWitoutTaxDis += $vfi["amnt"];
                     $cnt++;
                 }
@@ -81,19 +95,59 @@ try {
             if (!empty($valuefi)) {
                 $cnt = 1;
                 foreach ($valuefi as $vfi) {
-                    $dts_receipt_feeitem[] = array(
-                        "serial.all" => $cnt,
-                        "particulars.all" => $vfi["name"],
-                        "inv_amt.all" => $vfi["amount"],
-                        "tax.all" => $vfi["tax"],
-                        "amount.all" => $vfi["total_amount"]
-                    );
+                    $taxamt = '0';
+                    if(!empty($vfi["tax"])){
+                        $taxamt = ($vfi["tax"] / 100) * $vfi["amount"];
+                        $taxamt = number_format($taxamt, 2, '.', '');
+                    }
+                    if($column_start_by == 'serial_no'){
+                        $dts_receipt_feeitem[] = array(
+                            "serial.all" => $cnt,
+                            "particulars.all" => htmlspecialchars(trim($vfi["name"])),
+                            "inv_amt.all" => $vfi["amount"],
+                            "tax.all" => $taxamt,
+                            "amount.all" => $vfi["total_amount"]
+                        );
+                    } else {
+                        $dts_receipt_feeitem[] = array(
+                            "particulars.all" => htmlspecialchars(trim($vfi["name"])),
+                            "inv_amt.all" => $vfi["amount"],
+                            "tax.all" => $taxamt,
+                            "amount.all" => $vfi["total_amount"]
+                        );
+                    }
                     $total += $vfi["total_amount"];
-                    $totalTax += $vfi["tax"];
+                    $totalTax += $taxamt;
                     $totalamtWitoutTaxDis += $vfi["amount"];
                     $cnt++;
                 }
             }
+        }
+
+        $sqlfat = "SELECT b.officialName , b.phone1, b.email FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $pupilsightPersonID . " AND a.relationship = 'Father' ";
+        $resultfat = $connection2->query($sqlfat);
+        $valuefat = $resultfat->fetch();
+
+        $father_name = '';
+        $father_email = '';
+        $father_phone = '';
+        if(!empty($valuefat)){
+            $father_name = $valuefat['officialName'];
+            $father_email = $valuefat['email'];
+            $father_phone = $valuefat['phone1'];
+        }
+
+        $sqlmot = "SELECT b.officialName , b.phone1, b.email FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $pupilsightPersonID . " AND a.relationship = 'Mother' ";
+        $resultmot = $connection2->query($sqlmot);
+        $valuemot = $resultmot->fetch();
+
+        $mother_name = '';
+        $mother_email = '';
+        $mother_phone = '';
+        if(!empty($valuemot)){
+            $mother_name = $valuemot['officialName'];
+            $mother_email = $valuemot['email'];
+            $mother_phone = $valuemot['phone1'];
         }
 
         $class_section = $valuestu["class"] . " " . $valuestu["section"];
@@ -106,24 +160,28 @@ try {
         }
 
         $dts_receipt = array(
-            "inv_title" => $inv_title,
+            "inv_title" => htmlspecialchars($inv_title),
             "invoice_no" => $invoice_no,
             "date" => $date,
             "student_name" => $valuestu["officialName"],
-            "student_id" => $valuestu["admission_no"],
+            "student_id" => $pupilsightPersonID,
+            "admission_no" => $valuestu["admission_no"],
+            "father_name" => $father_name,
+            "mother_name" => $mother_name,
             "class_section" => $class_section,
-            "total_amount" => $total,
+            "total_amount" => number_format($total, 2, '.', ''),
             "inv_date" => $inv_date,
             "due_date" => $due_date,
-            "address" => $coreaddress,
-            "total_tax" => $totalTax,
-            "inv_total" => $totalamtWitoutTaxDis
+            "address" => htmlspecialchars($coreaddress),
+            "total_tax" => number_format($totalTax, 2, '.', ''),
+            "inv_total" => number_format($totalamtWitoutTaxDis, 2, '.', '')
         );
 
 
         $dts = $dts_receipt;
         $fee_items = $dts_receipt_feeitem;
         // echo '<pre>';
+        // print_r($dts_receipt);
         // print_r($fee_items);
         // echo '</pre>';
 
@@ -154,7 +212,7 @@ try {
                 /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
                 $total_in_words = $nf->format($dts["transcation_amount"]);*/
                 $total_in_words=convert_number_to_words($dts["total_amount"]);
-                $phpword->setValue('total_in_words', ucwords($total_in_words));
+                $phpWord->setValue('total_in_words', htmlspecialchars(ucwords($total_in_words)));
             }
 
             if(!empty($fee_items)){
@@ -164,6 +222,20 @@ try {
                     } else {
                         $phpword->cloneRowAndSetValues('particulars.all', $fee_items);
                     }
+
+                    /*
+                    $len = count($fee_items);
+                    $phpWord->cloneRow('serial.all', $len);
+                    $i = 0;
+                    $cnt = 1;
+                    while ($i < $len) {
+                        $fi = $fee_items[$i];
+                        foreach ($fi as $tag => $val) {
+                            $phpWord->setValue($tag . "#" . $cnt, $val);
+                        }
+                        $cnt++;
+                        $i++;
+                    }*/
                 } catch (Exception $ex) {
                     //print_r($ex);
                 }

@@ -20,10 +20,11 @@ $valuept = database::doSelectOne($sqlpt);
 
 $file = $valuept['template_path'];
 
-$sqlf = "Select b.form_fields FROM campaign AS a LEFT JOIN wp_fluentform_forms AS b ON a.form_id = b.id WHERE a.id = ' " . $cid . " ' ";
+$sqlf = "Select a.academic_id, b.form_fields FROM campaign AS a LEFT JOIN wp_fluentform_forms AS b ON a.form_id = b.id WHERE a.id = ' " . $cid . " ' ";
 
 $fluent = database::doSelectOne($sqlf);
 $string = $fluent['form_fields'];
+$academic_id = $fluent['academic_id'];
 try {
     $string = preg_replace("/[\r\n]+/", " ", $string);
     $json = utf8_encode($string);
@@ -62,9 +63,18 @@ if (!empty($file)) {
             chmod($file, 0777);
             $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
 
-            $sqla = "select application_id, created_at FROM wp_fluentform_submissions  where id = " . $aid . " ";
+            $sqla = "select application_id, created_at, pupilsightYearGroupID FROM wp_fluentform_submissions  where id = " . $aid . " ";
             $applicationData = database::doSelectOne($sqla);
 
+
+            $classID = $applicationData['pupilsightYearGroupID'];
+            $className = '';
+            if (!empty($classID)) {
+                $sqlc = "select name FROM pupilsightYearGroup  where pupilsightYearGroupID = '" . $classID . "' ";
+                $clsdata = database::doSelectOne($sqlc);
+                $className = $clsdata['name'];
+                //echo $sqlc;
+            }
 
             $sql = "select field_name, field_value FROM wp_fluentform_entry_details  where submission_id = " . $aid . " ";
             $rowdata = database::doSelect($sql);
@@ -88,7 +98,7 @@ if (!empty($file)) {
                         }
                     } else {
                         try {
-                            $pv = str_replace('&', ' and ', $arr[$ah]);
+                            $pv = htmlspecialchars($arr[$ah]);
                             $phpword->setValue($ah, $pv);
                         } catch (Exception $ex) {
                         }
@@ -99,6 +109,14 @@ if (!empty($file)) {
                     } catch (Exception $ex) {
                     }
                 }
+            }
+
+            try {
+                if (!empty($className)) {
+                    $phpword->setValue('class_section', htmlspecialchars($className));
+                }
+            } catch (Exception $ex) {
+                //print_r($ex);
             }
             // echo '<pre>';
             // print_r($newarr);
