@@ -71,9 +71,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                         $rtype = 'Other';
                     }
 
-                    $sqle = "SELECT b.pupilsightPersonID, b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $st . " AND a.relationship = '" . $rtype . "' ";
+                    $sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= ' . $st . ' ';
+                    $resultf = $connection2->query($sqlf);
+                    $fdata = $resultf->fetch();
+                    $pupilsightFamilyID = $fdata['pupilsightFamilyID'];
+
+                    //$sqle = "SELECT b.pupilsightPersonID, b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $st . " AND a.relationship = '" . $rtype . "' ";
+
+                    $sqle = "SELECT b.pupilsightPersonID, b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightFamilyID = " . $pupilsightFamilyID . " AND a.relationship = '" . $rtype . "' ";
                     $resulte = $connection2->query($sqle);
                     $rowdata = $resulte->fetch();
+                    //print_r($rowdata);
 
                     $to = $rowdata['email'];
                     $subject = nl2br($subjectquote);

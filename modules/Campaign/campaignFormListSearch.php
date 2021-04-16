@@ -4,7 +4,8 @@ Pupilsight, Flexible & Open School System
 */
 include '../../pupilsight.php';
 use Pupilsight\Forms\Form;
-use Pupilsight\Tables\DataTable;
+//use Pupilsight\Tables\DataTable;
+use Pupilsight\Tables\DataTableResult;
 use Pupilsight\Domain\Admission\AdmissionGateway;
 
 require_once __DIR__ . '/moduleFunctions.php';
@@ -57,7 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     $fields = array();
    
 
-    $table = DataTable::createPaginated('userManage', $criteria);
+    // $table = DataTable::createPaginated('userManage', $criteria)->setID('expore_tbl');
+    $table = DataTableResult::createPaginated('userManage', $criteria)->setID('expore_tbl');
 
     $sqlw = 'Select workflow_id  FROM workflow_map WHERE campaign_id = '.$cid.' ';
     $resultvalw = $connection2->query($sqlw);
@@ -107,8 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
     $arrHeader = array();
     foreach($field as $fe){
         foreach($fe as $f){
-            if (!empty($f->attributes) && $f->attributes->name == 'student_name') {
-                $arrHeader[] = $f->attributes->name;
+            if (isset($f->attributes->name)) {
+                if (!empty($f->attributes) && $f->attributes->name == 'student_name') {
+                    $arrHeader[] = $f->attributes->name;
+                }
             }
             if (!empty($f->settings) && !empty($f->settings->container_class)) {
                 if ($f->settings->container_class == 'show-in-grid') {
@@ -362,6 +366,9 @@ echo $table->render($dataSet);
 ?>
 
 <script>
+
+
+
 $(document).ready(function() {
 
     var kount = $("#kountApplicantSearch").val();

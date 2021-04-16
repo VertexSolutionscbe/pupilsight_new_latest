@@ -1,7 +1,7 @@
 <?php
 
 try {
-  $numbers = "8867776787";
+  $numbers = "9883928942";
   $msg = "test ing sdhdjs shdhshd kjsjd s";
 
   $senderid = "SJBHSB";

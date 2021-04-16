@@ -482,6 +482,8 @@ class SMS implements SMSInterface
             $url1 = "https://japi.instaalerts.zone/httpapi/QueryStringReceiver?ver=1.0&key=WVDLxrEydZYYMKZ8w6aJLQ==&encrpt=0&send=" . $senderid;
             $url1 .= "&text=" . urlencode($msg);
             $url1 .= "&dest=" . $numbers;
+            // echo $url1;
+            // die();
             $res = file_get_contents($url1);
             $res1 = explode('&', $res);
             $res2 = explode('=', $res1[1]);

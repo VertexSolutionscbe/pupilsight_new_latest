@@ -829,8 +829,8 @@
                 data: { field: field, searchby: searchby, search: search, range1: range1, range2: range2, cid: cid, fid: fid, aid: aid, stid: stid, aname: aname, clid: clid, pid: pid },
                 async: true,
                 success: function (response) {
-                    $("#expore_tbl_wrapper").html();
-                    $("#expore_tbl_wrapper").html(response);
+                    $("#expore_tbl").html();
+                    $("#expore_tbl").html(response);
                 }
             });
         }

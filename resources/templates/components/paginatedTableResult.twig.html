@@ -17,8 +17,14 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 <script>
     $(function () {
         $('#{{ table.getID }}').pupilsightDataTable('{{ path|raw }}', {{ jsonData| raw }}, '{{ identifier }}');
-    $("#limit").change();
-    $("th").removeAttr("data-sort");
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#limit").change();
+        setTimeout(function () {
+            $("th").removeAttr("data-sort");
+        }, 5000);
     });
 </script>
 {% endblock table %} {% block header %}

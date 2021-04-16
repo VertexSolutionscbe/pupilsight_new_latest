@@ -14,6 +14,7 @@ try {
 
 
     $file = $dts['receiptTemplate'];
+    $column_start_by = $dts['column_start_by'];
 
     $phpword = new \PhpOffice\PhpWord\TemplateProcessor($file);
 
@@ -43,12 +44,16 @@ try {
             /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
             $total_in_words = $nf->format($dts["transcation_amount"]);*/
             $total_in_words=convert_number_to_words($dts["transcation_amount"]);
-            $phpword->setValue('total_paid_in_words', ucwords($total_in_words));
+            $phpword->setValue('total_paid_in_words', htmlspecialchars(ucwords($total_in_words)));
         }
 
         if(!empty($fee_items)){
             try {
-                $phpword->cloneRowAndSetValues('serial.all', $fee_items);
+                if($column_start_by == 'serial_no'){
+                    $phpword->cloneRowAndSetValues('serial.all', $fee_items);
+                } else {
+                    $phpword->cloneRowAndSetValues('particulars.all', $fee_items);
+                }
             } catch (Exception $ex) {
                 //print_r($ex);
             }
