@@ -64,7 +64,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
             $userData = $result->fetch();
 
             if($userData['pupilsightRoleIDPrimary'] == '003'){
-                $sqle = "SELECT b.pupilsightPersonID, b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $st . " AND a.relationship = 'Father' ";
+                $sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= ' . $st . ' ';
+                $resultf = $connection2->query($sqlf);
+                $fdata = $resultf->fetch();
+                $pupilsightFamilyID = $fdata['pupilsightFamilyID'];
+
+                $sqle = "SELECT b.pupilsightPersonID, b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightFamilyID = " . $pupilsightFamilyID . " AND a.relationship = 'Father' ";
                 $resulte = $connection2->query($sqle);
                 $rowdata = $resulte->fetch();
 
@@ -76,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
                     $number = $rowdata['phone1'];
                     $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
                 } else {
-                    $sqle1 = "SELECT b.pupilsightPersonID, b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $st . " AND a.relationship = 'Mother' ";
+                    $sqle1 = "SELECT b.pupilsightPersonID, b.email, b.phone1, b.officialName FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightFamilyID = " . $pupilsightFamilyID . " AND a.relationship = 'Mother' ";
                     $resulte1 = $connection2->query($sqle1);
                     $rowdata1 = $resulte1->fetch();
 
