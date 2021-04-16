@@ -44,6 +44,13 @@ class PDFLib
     public $isCallBack = FALSE;
     public $files = array();
 
+    function reset()
+    {
+        $this->files = array();
+        $this->isCallBack = FALSE;
+        $this->pos = 0;
+    }
+
     function bulkinit($templateFileName, $outFileName, $formData, $imgData, $download, $deleteSource)
     {
         $this->_templateFileName = $templateFileName;
@@ -80,6 +87,8 @@ class PDFLib
             }
             chmod($outFileName, 0777);
         } catch (Exception $ex) {
+            echo "\n<br>Fill Form " . $ex->getMessage();
+            echo "\n<br>";
             print_r($ex);
         }
 
@@ -105,11 +114,11 @@ class PDFLib
 
                 $fpdi->Output($outFileName, "F");
             } catch (Exception $ex) {
+                echo "\n<br>Image Date " . $ex->getMessage();
+                echo "\n<br>";
                 print_r($ex);
             }
         }
-
-
 
         $this->files[] = $outFileName;
         $this->pos++;
@@ -122,17 +131,23 @@ class PDFLib
     function download($fileName = NULL)
     {
         if (empty($fileName)) {
-            $outFileName = $this->files[0];
+            $fileName = $this->files[0];
         }
-        $fileName = basename($outFileName);
-        header('Content-Description: File Transfer');
+
+        $onlyFileName = basename($fileName);
+        /*header('Content-Description: File Transfer');
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename=' . $fileName);
+        header('Content-Disposition: attachment; filename=' . $onlyFileName);
         header('Expires: 0');
         header('Cache-Control: must-revalidate');
         header('Pragma: public');
-        header('Content-Length: ' . filesize($outFileName));
-        readfile($outFileName);
+        header('Content-Length: ' . filesize($fileName));
+        readfile($fileName);*/
+
+
+        header('Content-type: application/pdf');
+        header('Content-Disposition: attachment; filename=' . $onlyFileName);
+        readfile($fileName);
     }
 
     function deleteSource()
@@ -153,6 +168,12 @@ class PDFLib
     {
         $files = $this->files;
         try {
+            unlink($zipFileName);
+        } catch (Exception $ex) {
+            print_r($ex);
+        }
+
+        try {
             // Create instance of ZipArchive. and open the zip folder.
             $zip = new ZipArchive();
             if ($zip->open($zipFileName, ZipArchive::CREATE) !== TRUE) {
@@ -160,25 +181,21 @@ class PDFLib
             }
 
             // Adding every attachments files into the ZIP.
+            //print_r($files);
             foreach ($files as $file) {
                 $fn = basename($file);
                 $zip->addFile($file, $fn);
             }
             $zip->close();
 
-            // Download the created zip file
-            header('Content-Description: application/zip');
-            header('Content-Type: application/pdf');
-            header('Content-Disposition: attachment; filename=' . $zipFileName);
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($zipFileName));
+            header("Content-type: application/zip");
+            header("Content-Disposition: attachment; filename = $zipFileName");
+            header("Pragma: no-cache");
+            header("Expires: 0");
             readfile($zipFileName);
-
-            unlink($zipFileName);
+            unlink($_SERVER['DOCUMENT_ROOT'] . "/" . $zipFileName);
         } catch (Exception $ex) {
-            print_r($ex);
+            print_r($ex->getMessage());
         }
     }
 }

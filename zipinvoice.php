@@ -21,21 +21,21 @@ function createZipAndDownload($files, $filesPath, $zipFileName)
     readfile("$zipFileName");
     unlink($zipFileName);
 
-    $folder_path = $filesPath; 
-    $files = glob($folder_path.'/*');  
-    foreach($files as $file) { 
-        if(is_file($file))  
-            unlink($file);  
-    } 
+    $folder_path = $filesPath;
+    $files = glob($folder_path . '/*');
+    foreach ($files as $file) {
+        if (is_file($file))
+            unlink($file);
+    }
     exit;
 }
 
-$filesPath = $_SERVER["DOCUMENT_ROOT"]."/public/invoice_receipts/";
+$filesPath = $_SERVER["DOCUMENT_ROOT"] . "/public/invoice_receipts/";
 $files = array_diff(scandir($filesPath), array('..', '.'));
 
 
 // Name of creating zip file
-$zipName = $_GET['zipname'].'.zip';
-if(!empty($files)){
-   echo createZipAndDownload($files, $filesPath, $zipName);
+$zipName = $_GET['zipname'] . '.zip';
+if (!empty($files)) {
+    echo createZipAndDownload($files, $filesPath, $zipName);
 }

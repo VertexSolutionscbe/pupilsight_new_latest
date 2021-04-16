@@ -13,39 +13,30 @@ function Zip($source, $destination)
         return false;
     }
 
-    foreach ($source_arr as $source)
-    {
+    foreach ($source_arr as $source) {
         if (!file_exists($source)) continue;
         $source = str_replace('\\', '/', realpath($source));
 
-        if (is_dir($source) === true)
-        {
+        if (is_dir($source) === true) {
             $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
 
-            foreach ($files as $file)
-            {
+            foreach ($files as $file) {
                 $file = str_replace('\\', '/', realpath($file));
 
-                if (is_dir($file) === true)
-                {
+                if (is_dir($file) === true) {
                     $zip->addEmptyDir(str_replace($source . '/', '', $file . '/'));
-                }
-                else if (is_file($file) === true)
-                {
+                } else if (is_file($file) === true) {
                     $zip->addFromString(str_replace($source . '/', '', $file), file_get_contents($file));
                 }
             }
-        }
-        else if (is_file($source) === true)
-        {
+        } else if (is_file($source) === true) {
             $zip->addFromString(basename($source), file_get_contents($source));
         }
-
     }
 
     $zip->close();
 
-    
+
 
     // Download the created zip file
     header("Content-type: application/zip");
@@ -58,39 +49,39 @@ function Zip($source, $destination)
     $objects = scandir($source);
     foreach ($objects as $object) {
         if ($object != "." && $object != "..") {
-                rrmdir($source.'/'.$object);
+            rrmdir($source . '/' . $object);
         }
     }
 
-   // exit;
+    // exit;
 
 }
 
-    function rrmdir($dir) {
-        if (is_dir($dir)) {
+function rrmdir($dir)
+{
+    if (is_dir($dir)) {
         $objects = scandir($dir);
         foreach ($objects as $object) {
             if ($object != "." && $object != "..") {
-                if (filetype($dir.$object) == "dir") {
-                    rrmdir($dir.$object);
+                if (filetype($dir . $object) == "dir") {
+                    rrmdir($dir . $object);
                 } else {
-                    unlink($dir.'/'.$object);
+                    unlink($dir . '/' . $object);
                 }
             }
         }
         reset($objects);
         rmdir($dir);
-        }
     }
+}
 
-    
 
-$filesPath = $_SERVER["DOCUMENT_ROOT"]."/public/report_template/report_card/";
+
+$filesPath = $_SERVER["DOCUMENT_ROOT"] . "/public/report_template/report_card/";
 //rrmdir($filesPath);
 
 
 
-$zipName = $_GET['zipname'].'.zip';
+$zipName = $_GET['zipname'] . '.zip';
 
 echo Zip($filesPath, $zipName);
-
