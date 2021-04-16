@@ -544,6 +544,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 </style>
 
 <script>
+
     $(document).ready(function() {
         $('#expore_tbl').find("input[name='submission_id[]']").each(function() {
             $(this).addClass('include_cell');

@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
             }
 
             // $sql = 'SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID=' . $pupilsightSchoolYearID . '  ';
-            $sql = 'SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup ';
+            $sql = 'SELECT pupilsightYearGroupID, name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' ';
             $result = $connection2->query($sql);
             $classes = $result->fetchAll();
         
