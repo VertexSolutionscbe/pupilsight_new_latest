@@ -130,7 +130,6 @@ $sections_arr = $sections1 + $sections2;
     
     $col->addSubmit(__('Remove Section'))->setClass(' submt new_margin remove_section ');
     $col = $row->addColumn()->setClass('hiddencol nobrdbtm');
-    
     $col->addTextField('');    
 
     echo $form->getOutput();
@@ -171,6 +170,7 @@ $sections_arr = $sections1 + $sections2;
    echo $table->render($students);
    */
 }
+//print_r($students);
 ?>
 
 <table class="table">

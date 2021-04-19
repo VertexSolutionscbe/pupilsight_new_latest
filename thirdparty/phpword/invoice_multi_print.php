@@ -69,7 +69,7 @@ try {
                             }
                             $dts_receipt_feeitem[] = array(
                                 "serial.all" => $cnt,
-                                "particulars.all" => $invData['invoice_title'],
+                                "particulars.all" => htmlspecialchars(trim($invData['invoice_title'])),
                                 "inv_amt.all" => $vfi["amnt"],
                                 "tax.all" => $taxamt,
                                 "amount.all" => $vfi["tamnt"]
@@ -97,7 +97,7 @@ try {
                             }
                             $dts_receipt_feeitem[] = array(
                                 "serial.all" => $cnt,
-                                "particulars.all" => $vfi["name"],
+                                "particulars.all" => htmlspecialchars(trim($vfi["name"])),
                                 "inv_amt.all" => $vfi["amount"],
                                 "tax.all" => $taxamt,
                                 "amount.all" => $vfi["total_amount"]
@@ -160,7 +160,7 @@ try {
                     "total_amount" => number_format($total, 2, '.', ''),
                     "inv_date" => $inv_date,
                     "due_date" => $due_date,
-                    "address" => $coreaddress,
+                    "address" => htmlspecialchars($coreaddress),
                     "total_tax" => number_format($totalTax, 2, '.', ''),
                     "inv_total" => number_format($totalamtWitoutTaxDis, 2, '.', '')
                 );
@@ -189,7 +189,7 @@ try {
                         }
                         
                     } catch (Exception $ex) {
-                        print_r($ex);
+                        //print_r($ex);
                     }
                 }
 
@@ -197,7 +197,7 @@ try {
                     /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
                     $total_in_words = $nf->format($dts["transcation_amount"]);*/
                     $total_in_words=convert_number_to_words($dts["total_amount"]);
-                    $phpword->setValue('total_in_words', ucwords($total_in_words));
+                    $phpword->setValue('total_in_words', htmlspecialchars(ucwords($total_in_words)));
                 }
 
                 if(!empty($fee_items)){
@@ -222,7 +222,7 @@ try {
                     //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
                     $phpword->saveAs($savedocsx);
                     
-                    convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+                    convert($fileName, $inFilePath, $inFilePath, TRUE, TRUE);
 
                     
 

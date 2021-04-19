@@ -583,7 +583,7 @@ class SMS implements SMSInterface
         $date3 = date('Y-m-d');*/
         $todaydatetime = date("Y-m-d H:i:s");
 
-        $sql = "INSERT INTO pupilsightMessenger SET  messageWall_date1='$date1', sms='$sms', subject='NA', body='$msg',  pupilsightPersonID='$msgby', messengercategory='Other'";
+        $sql = 'INSERT INTO pupilsightMessenger SET  messageWall_date1="'.$date1.'", sms="'.$sms.'", subject="NA", body="'.$msg.'",  pupilsightPersonID="'.$msgby.'", messengercategory="Other" ';
         $result = new DBQuery();
         $result->query($sql);
 

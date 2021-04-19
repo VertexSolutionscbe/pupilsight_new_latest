@@ -11,7 +11,7 @@ use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
 use Pupilsight\Domain\Students\StudentGateway;
 
-$REDIRECTURL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view.php';
+$REDIRECTURL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_detail_view.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php') == false) {
     //Acess denied
@@ -21,7 +21,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Students'), 'student_view.php')
+        ->add(__('Students'), 'student_detail_view.php')
         ->add(__('Field to Show'));
 
 
