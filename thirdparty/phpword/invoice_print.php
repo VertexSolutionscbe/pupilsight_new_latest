@@ -212,7 +212,7 @@ try {
                 /*$nf = new NumberFormatter("en", NumberFormatter::SPELLOUT);
                 $total_in_words = $nf->format($dts["transcation_amount"]);*/
                 $total_in_words=convert_number_to_words($dts["total_amount"]);
-                $phpWord->setValue('total_in_words', htmlspecialchars(ucwords($total_in_words)));
+                $phpword->setValue('total_in_words', htmlspecialchars(ucwords($total_in_words)));
             }
 
             if(!empty($fee_items)){
@@ -250,7 +250,7 @@ try {
             $savedocsx = $inFilePath . $fileName;
             $phpword->saveAs($savedocsx);
             
-            convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+            convert($fileName, $inFilePath, $inFilePath, TRUE, TRUE);
 
             $fileNameNew = $invoice_no . ".pdf";
             $savedocsx = $inFilePath . $fileNameNew;
@@ -259,6 +259,8 @@ try {
             header("Content-Type: " . $contenttype);
             header("Content-Disposition: attachment; filename=\"" . basename($fileNameNew) . "\";");
             readfile($savedocsx);
+
+            unlink($savedocsx);
         } catch (Exception $ex) {
         }
     }

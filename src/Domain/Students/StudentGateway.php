@@ -160,9 +160,10 @@ class StudentGateway extends QueryableGateway
         } else {
             $query->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
                 ->where("pupilsightPerson.status = 'Full'")
-                ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
-                ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
-                ->bindValue('today', date('Y-m-d'))
+                // close by bikash
+                // ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
+                // ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
+                // ->bindValue('today', date('Y-m-d'))
                 ->where('pupilsightPerson.pupilsightPersonID IN( ' . $studentids . ')');
         }
 

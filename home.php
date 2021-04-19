@@ -52,6 +52,8 @@ $invalid = '';
 if (isset($_GET['invalid']))
     $invalid = $_GET['invalid'];
 
+
+    
 ?>
 
 <input type="hidden" name="inavlid" id="invalid" value="<?php echo $invalid; ?>" />
@@ -238,6 +240,14 @@ if (isset($_GET['invalid']))
     <!-- Preloader End Here -->
 
     <div id="homePanel" class="page">
+    <?php 
+        if (isset($_GET['loginReturn'])){
+            $loginReturn = $_GET['loginReturn'];
+            if($loginReturn == 'fail'){
+                echo '<h2 style="text-align:center;color:red">Your Account is Locked! Please Contact School Administrator</h2>';
+            }
+        }
+    ?>   
         <header class="navbar navbar-expand-md navbar-light navDesktop">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">

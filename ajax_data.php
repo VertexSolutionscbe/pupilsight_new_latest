@@ -3256,7 +3256,7 @@ if ($type == 'getClassforCampaign') {
 
     if (!empty($_POST['val'])) {
         $pid = implode(',', $val);
-        $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
+        $sql = 'SELECT a.*, b.name, c.name as progname, c.pupilsightProgramID FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID IN (' . $pid . ') AND b.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
         $result = $connection2->query($sql);
         $classes = $result->fetchAll();
         // echo '<pre>';
@@ -3376,9 +3376,10 @@ if ($type == 'deleteBulkStudent') {
 
 if ($type == 'removeStudentEnrollment') {
     $ids = explode(',', $val);
-    $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
+    $pupilsightSchoolYearID = $_POST['aid'];
     foreach ($ids as $st) {
         $data = array('pupilsightProgramID' => '', 'pupilsightYearGroupID' => '', 'pupilsightRollGroupID' => '', 'pupilsightPersonID' => $st, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID);
+        print_r($data);
         $sql = 'UPDATE pupilsightStudentEnrolment SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightSchoolYearID=:pupilsightSchoolYearID ';
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -3945,3 +3946,23 @@ if ($type == 'deleteImageTemplateConfig') {
     $result->execute($data);
 }
 
+
+if ($type == 'enableUserLoginAccount') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('canLogin' => 'Y', 'pupilsightPersonID' => $st);
+        $sql = 'UPDATE pupilsightPerson SET canLogin=:canLogin WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}
+
+if ($type == 'disableUserLoginAccount') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('canLogin' => 'N', 'pupilsightPersonID' => $st);
+        $sql = 'UPDATE pupilsightPerson SET canLogin=:canLogin WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}

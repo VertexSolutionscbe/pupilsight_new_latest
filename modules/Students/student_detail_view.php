@@ -180,6 +180,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 'yearGroup' => __('Year Group'),
             );
 
+            echo '<input type="hidden" id="pupilsightSchoolYearID" value="' . $pupilsightSchoolYearID . '">';
+
             $form = Form::create('studentViewSearch', '');
 
             $form->setClass('noIntBorder fullWidth');
@@ -775,17 +777,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             if (stuid) {
                 var val = stuid;
                 var type = 'removeStudentEnrollment';
+                var aid = $("#pupilsightSchoolYearID").val();
                 if (val != '') {
                     $.ajax({
                         url: 'ajax_data.php',
                         type: 'post',
                         data: {
                             val: val,
-                            type: type
+                            type: type,
+                            aid: aid
                         },
                         async: true,
                         success: function(response) {
-                            alert('Student Enrollment Removed Successfuliy!.');
+                            alert('Student Enrollment Removed Successfully!.');
                             location.reload();
                         }
                     });

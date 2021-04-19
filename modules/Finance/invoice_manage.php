@@ -503,7 +503,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
                                 alert('Your Message Sent Successfully! click Ok to continue ');
                                 //location.reload();
                                 $("#sendEmailSms_Student_inv")[0].reset();
-                                $("#closeSM").click();
+                                $(".closeSMPopUp").click();
                             }
                         });
                     } else {

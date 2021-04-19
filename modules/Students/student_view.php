@@ -671,7 +671,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                         },
                         async: true,
                         success: function(response) {
-                            alert('Student Enrollment Removed Successfuliy!.');
+                            alert('Student Enrollment Removed Successfully!.');
                             location.reload();
                         }
                     });

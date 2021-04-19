@@ -3644,32 +3644,35 @@
         var stuid = favorite.join(",");
 
         //  alert(stuid);
-        if (stuid) {
-            var val = stuid;
-            var type = 'addstudentid_toassign_section';
-            if (val != '') {
-
-                $.ajax({
-                    url: 'ajax_data.php',
-                    type: 'post',
-                    data: { val: val, type: type },
-                    async: true,
-                    success: function (response) {
-
-                        if (response == 0) {
-                            $("#clickStudentsection").click();
-                        } else {
-                            alert('You Have to Select Students with Same class.');
-                        }
-
-                    }
-                });
-            }
+        var checked = $(".stuid:checked").length;
+        if (checked >= 1) {
+            alert('You Have to Select Enrolled Students.');
+            return false;
         } else {
+            if (stuid) {
+                var val = stuid;
+                var type = 'addstudentid_toassign_section';
+                if (val != '') {
 
-            alert('You Have to Select Students.');
+                    $.ajax({
+                        url: 'ajax_data.php',
+                        type: 'post',
+                        data: { val: val, type: type },
+                        async: true,
+                        success: function (response) {
 
+                            if (response == 0) {
+                                $("#clickStudentsection").click();
+                            } else {
+                                alert('You Have to Select Students with Same class.');
+                            }
 
+                        }
+                    });
+                }
+            } else {
+                alert('You Have to Select Students.');
+            }
         }
     });
 

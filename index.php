@@ -837,8 +837,15 @@ if (!$session->has('address')) {
         }
 
         $page->writeFromTemplate('welcome.twig.html', $templateData);
+        $loginReturn = $_GET['loginReturn'];
+        if($loginReturn == 'fail2'){
+            $uhome = 'home.php?loginReturn=fail';
+        } else {
+            $uhome = 'home.php';
+        }
+        
         //header("Location: cms/index.php");
-        header("Location: home.php");
+        header("Location: ".$uhome." ");
         die();
     } else {
         // Custom content loader

@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/send_stud_email_ms
                         $msgby=$_SESSION[$guid]["pupilsightPersonID"];
                         $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                         if ($res) {
-                            $sq = "INSERT INTO user_email_sms_sent_details SET type='1', sent_to = '1', pupilsightPersonID = " . $st . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
+                            $sq = 'INSERT INTO user_email_sms_sent_details SET type="1", sent_to = "1", pupilsightPersonID = ' . $st . ', phone=' . $number . ', description="' . stripslashes($msg) . '", uid=' . $cuid . ' ';
                             $connection2->query($sq);
                         }
                     }

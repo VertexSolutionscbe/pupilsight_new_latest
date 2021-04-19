@@ -49,40 +49,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
     $endDate = '';
     $stDate = '';
     $enDate = '';
+    $sdate = '';
     if($_POST){
         if(!empty($_POST['start_date'])){
             $sdate = str_replace('/', '-', $_POST['start_date']);
             $start_date = date('Y-m-d', strtotime($sdate)).'  00:00:01';
             $startDate = date('Y-m-d', strtotime($sdate));
             $stDate = $_POST['start_date'];
-
-            $edate = str_replace('/', '-', $_POST['end_date']);
-            
-            if(!empty($_POST['end_date'])){
-                $end_date = date('Y-m-d', strtotime($edate)).'  23:59:59';
-                $endDate = date('Y-m-d', strtotime($edate));
-                $enDate = $_POST['end_date'];
-            } else {
-                $end_date = date('Y-m-d', strtotime($sdate)).'  23:59:59';
-                $endDate = '';
-            }
-
-            $type = $_POST['type'];
-
-            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE  a.sent_to = "1" AND a.cdt >= "'.$start_date.'" AND a.cdt <= "'.$end_date.'" ';
-            if(!empty($type)){
-                $sqle .= 'AND a.type = '.$type.'';
-            }
-            $sqle .= ' ORDER BY a.id DESC ';
-            // echo $sqle;
-            // die();
-            $resulte = $connection2->query($sqle);
-            $mailsmsdata = $resulte->fetchAll();
         } else {
-            $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.sent_to = "1" ORDER BY a.id DESC';
-            $resulte = $connection2->query($sqle);
-            $mailsmsdata = $resulte->fetchAll();
+            $start_date = date('2019-01-01', strtotime($sdate)).'  00:00:01';
+            $stDate = '';
         }
+            
+            
+        if(!empty($_POST['end_date'])){
+            $edate = str_replace('/', '-', $_POST['end_date']);
+            $end_date = date('Y-m-d', strtotime($edate)).'  23:59:59';
+            $endDate = date('Y-m-d', strtotime($edate));
+            $enDate = $_POST['end_date'];
+        } else {
+            if(!empty($sdate)){
+                $end_date = date('Y-m-d', strtotime($sdate)).'  23:59:59';
+            } else {
+                $end_date = date('Y-m-d').'  23:59:59';
+            }
+            $enDate = '';
+        }
+
+        $type = $_POST['type'];
+
+        $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE  a.sent_to = "1" AND a.cdt >= "'.$start_date.'" AND a.cdt <= "'.$end_date.'" ';
+        if(!empty($type)){
+            $sqle .= 'AND a.type = '.$type.'';
+        }
+        $sqle .= ' ORDER BY a.id DESC ';
+        //echo $sqle;
+        // die();
+        $resulte = $connection2->query($sqle);
+        $mailsmsdata = $resulte->fetchAll();
+        // } else {
+        //     $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.sent_to = "1" ORDER BY a.id DESC';
+        //     $resulte = $connection2->query($sqle);
+        //     $mailsmsdata = $resulte->fetchAll();
+        // }
         
     } else {
         $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.sent_to = "1" ORDER BY a.id DESC';
@@ -122,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('start_date', __('From Date'))->addClass('dte');
-            $col->addDate('start_date')->setValue($stDate)->required();
+            $col->addDate('start_date')->setValue($stDate);
 
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('end_date', __('To Date'))->addClass('dte');
@@ -146,6 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
     <table class="table" id="historyTable">
         <thead>
             <tr>
+                <th>Sl No</th>
                 <th>Name</th>
                 <th>Sent Via</th>
                 <th>Sent To</th>
@@ -158,6 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         <tbody>
             <?php
             if(!empty($mailsmsdata)) { 
+                $i = 1;
                 foreach($mailsmsdata as $estd){ 
                     $stype = '';
                     $sto = '';
@@ -170,6 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
                 ?>
                 <tr>
+                    <th><?php echo $i; ?></th>
                     <th><?php echo $estd['officialName']; ?></th>
                     <th><?php echo $stype; ?></th>
                     <th><?php echo $sto; ?></th>
@@ -178,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     <th><?php echo $estd['uname']; ?></th>
                     <th><?php echo date('d/m/Y h:i:s', strtotime($estd['cdt'])); ?></th>
                 </tr>
-            <?php  } } else { ?> 
+            <?php  $i++; } } else { ?> 
                 <tr>
                     <th colspan="7">No Message History</th>
                 </tr>
