@@ -112,7 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     $page->breadcrumbs
                         ->add(__('View Student Profiles'), 'student_view.php')
-                        ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
+                        ->add(__($row['officialName']));
+                        //->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
                     echo "<table class='table'>";
                     echo '<tr>';
@@ -218,9 +219,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
 
                                 while ($rowMember = $resultMember->fetch()) {
-                                    echo '<h4>';
+                                    echo '<h2>';
                                     echo __('Adult') . ' ' . $count;
-                                    echo '</h4>';
+                                    echo '</h2>';
                                     echo "<table class='table'>";
                                     echo '<tr>';
                                     echo "<td style='width: 33%; vertical-align: top'>";
@@ -339,7 +340,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     $page->breadcrumbs
                         ->add(__('View Student Profiles'), 'student_view.php')
-                        ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
+                        ->add(__($row['officialName']));
+                        //->add(Format::name('', $row['officialName'], $row['officialName'], 'Student'));
 
 
                     $subpage = null;
@@ -439,7 +441,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         echo "<td id='preferredName' style='width: 33%; vertical-align: top'>";
                         echo "<span class='form-label'>" . __('Preferred Name') . '</span>';
-                        echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
+                        echo $row['preferredName'];
+                        //echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
                         echo '</td>';
 
                         echo "<td id='nameInCharacters' style='width: 34%; vertical-align: top'>";
@@ -493,6 +496,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                         echo '</td>';
+                        echo '<td></td>';
+                        /* closed by bikash for Jira Ticket PODV-1428
                         echo "<td id='pupilsightPersonIDTutor' style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span class='form-label'>" . __('Tutors') . '</span>';
                         if (isset($rowDetail['pupilsightPersonIDTutor'])) {
@@ -517,6 +522,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                         echo '</td>';
+                        */
                         echo '</tr>';
                         echo '<tr>';
                         echo "<td id='username' style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -650,9 +656,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         //Get and display a list of student's teachers
 
-                        echo '<h4>';
+                        echo '<h2>';
                         echo __("Student's Teachers");
-                        echo '</h4>';
+                        echo '</h2>';
                         try {
                             $dataDetail = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightYearGroupID' => $row['pupilsightYearGroupID']);
                             $sqlDetail = "
@@ -705,9 +711,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                         }
                         if ($resultDetail->rowCount() > 0) {
-                            echo '<h4>';
+                            echo '<h2>';
                             echo __("Student's Educational Assistants");
-                            echo '</h4>';
+                            echo '</h2>';
 
                             echo '<ul>';
                             while ($rowDetail = $resultDetail->fetch()) {
@@ -726,9 +732,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == true) {
                             echo "<div class='row'>";
                             echo "<div class='col-md-6 col-sm-12'>";
-                            echo '<h4>';
+                            echo '<h2>';
                             echo __('Timetable');
-                            echo '</h4>';
+                            echo '</h2>';
                             echo "</div>";
                             echo "<div class='col-md-6 col-sm-12 text-right'>";
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
@@ -754,9 +760,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo '</div>';
                             }
                         } else {
-                            echo '<h4>';
+                            echo '<h2>';
                             echo __('Class List');
-                            echo '</h4>';
+                            echo '</h2>';
                             try {
                                 $dataDetail = array('pupilsightPersonID' => $pupilsightPersonID);
                                 $sqlDetail = "SELECT DISTINCT pupilsightCourse.name AS courseFull, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class
@@ -791,6 +797,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</div>';
                         }
 
+                        echo '<h2>';
+                        echo __('Basic Information');
+                        echo '</h2>';
 
                         echo "<table id='basic_information' class='table'>";
                         echo '<tr>';
@@ -819,7 +828,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         echo "<td id='preferredName' style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span class='form-label'>" . __('Preferred Name') . '</span>';
-                        echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
+                        echo $row['preferredName'];
+                        //echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
                         echo '</td>';
 
                         echo '</tr>';
@@ -843,9 +853,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</tr>';
                         echo '</table>';
 
-                        echo '<h4>';
+                        echo '<h2>';
                         echo __('Contacts');
-                        echo '</h4>';
+                        echo '</h2>';
 
                         echo "<table id='contact_information' class='table'>";
                         $numberCount = 0;
@@ -916,9 +926,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</table>';
 
-                        echo '<h4>';
+                        echo '<h2>';
                         echo __('School Information');
-                        echo '</h4>';
+                        echo '</h2>';
 
                         echo "<table id='school_information' class='table'>";
                         echo '<tr>';
@@ -982,9 +992,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</table>';
 
-                        echo '<h4>';
+                        echo '<h2>';
                         echo __('Background');
-                        echo '</h4>';
+                        echo '</h2>';
 
                         echo "<table id='background_information' class='table'>";
                         echo '<tr>';
@@ -1073,9 +1083,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</tr>';
                         echo '</table>';
 
-                        echo '<h4>';
+                        echo '<h2>';
                         echo 'School Data';
-                        echo '</h4>';
+                        echo '</h2>';
                         echo "<table id='school_information' class='table'>";
                         echo '<tr>';
                         echo "<td id='pupilsightYearGroupID' style='width: 33%; vertical-align: top'>";
@@ -1118,6 +1128,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                         echo '</td>';
+                        echo '<td></td>';
+                        /* closed by bikash for Jira Ticket PODV-1428
                         echo "<td id='pupilsightPersonIDTutor' style='width: 34%; vertical-align: top'>";
                         echo "<span class='form-label'>" . __('Tutors') . '</span>';
                         if (isset($rowDetail['pupilsightPersonIDTutor'])) {
@@ -1142,6 +1154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
                         echo '</td>';
+                        */
                         echo '<tr>';
                         echo "<td id='name' style='padding-top: 15px ; vertical-align: top'>";
                         echo "<span class='form-label'>" . __('House') . '</span>';
@@ -1185,9 +1198,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</tr>';
                         echo '</table>';
 
-                        echo '<h4>';
+                        echo '<h2>';
                         echo __('System Data');
-                        echo '</h4>';
+                        echo '</h2>';
 
                         echo "<table id='system_access' class='table'>";
                         echo '<tr>';
@@ -1206,9 +1219,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</tr>';
                         echo '</table>';
 
-                        echo '<h4>';
+                        echo '<h2>';
                         echo __('Miscellaneous');
-                        echo '</h4>';
+                        echo '</h2>';
 
                         echo "<table id='miscellaneous' class='table'>";
                         echo '<tr>';
@@ -1263,9 +1276,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $fields = unserialize($row['fields']);
                         $resultFields = getCustomFields($connection2, $guid, true);
                         if ($resultFields->rowCount() > 0) {
-                            echo '<h4>';
+                            echo '<h2>';
                             echo __('Custom Fields');
-                            echo '</h4>';
+                            echo '</h2>';
 
                             echo "<table class='table'>";
                             $count = 0;
@@ -1390,9 +1403,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     if ($rowMember['status'] != 'Full') {
                                         $class = "class='error'";
                                     }
-                                    echo '<h4>';
+                                    echo '<h2>';
                                     echo __('Adult') . ' ' . $count;
-                                    echo '</h4>';
+                                    echo '</h2>';
                                     echo "<table class='table'>";
                                     echo '<tr>';
                                     echo "<td id='image_240' $class style='width: 33%; vertical-align: top' rowspan=2>";
@@ -1540,9 +1553,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
 
                                 if ($resultMember->rowCount() > 0) {
-                                    echo '<h4>';
+                                    echo '<h2>';
                                     echo __('Siblings');
-                                    echo '</h4>';
+                                    echo '</h2>';
 
                                     echo "<table class='table'>";
                                     $count = 0;
@@ -1598,9 +1611,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo __('In an emergency, please try and contact the adult family members listed below first. If these cannot be reached, then try the emergency contacts below.');
                         echo '</p>';
 
-                        echo '<h4>';
+                        echo '<h2>';
                         echo __('Adult Family Members');
-                        echo '</h4>';
+                        echo '</h2>';
 
                         try {
                             $dataFamily = array('pupilsightPersonID' => $pupilsightPersonID);
@@ -1673,9 +1686,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                         }
 
-                        echo '<h4>';
+                        echo '<h2>';
                         echo __('Emergency Contacts');
-                        echo '</h4>';
+                        echo '</h2>';
                         echo "<table class='table'>";
                         echo '<tr>';
                         echo "<td id='emergency1Relationship' style='width: 33%; vertical-align: top'>";
@@ -1815,12 +1828,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</table>';
 
                             while ($rowCondition = $resultCondition->fetch()) {
-                                echo '<h4>';
+                                echo '<h2>';
                                 $alert = getAlert($guid, $connection2, $rowCondition['pupilsightAlertLevelID']);
                                 if ($alert != false) {
                                     echo __($rowCondition['name']) . " <span style='color: #" . $alert['color'] . "'>(" . __($alert['name']) . ' ' . __('Risk') . ')</span>';
                                 }
-                                echo '</h4>';
+                                echo '</h2>';
 
                                 echo "<table class='table'>";
                                 echo '<tr>';
@@ -2235,7 +2248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         }
 
                                         if ($resultEntry->rowCount() > 0) {
-                                            echo "<a name='" . $rowList['pupilsightCourseClassID'] . "'></a><h4>" . $rowList['course'] . '.' . $rowList['class'] . " <span style='font-size:85%; font-style: italic'>(" . $rowList['name'] . ')</span></h4>';
+                                            echo "<a name='" . $rowList['pupilsightCourseClassID'] . "'></a><h2>" . $rowList['course'] . '.' . $rowList['class'] . " <span style='font-size:85%; font-style: italic'>(" . $rowList['name'] . ')</span></h2>';
 
                                             try {
                                                 $dataTeachers = array('pupilsightCourseClassID' => $rowList['pupilsightCourseClassID']);
@@ -2866,9 +2879,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            echo '<h4>';
+                            echo '<h2>';
                             echo __('Upcoming Deadlines');
-                            echo '</h4>';
+                            echo '</h2>';
 
                             try {
                                 $dataDeadlines = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID']);
@@ -2907,9 +2920,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             $style = '';
 
-                            echo '<h4>';
+                            echo '<h2>';
                             echo __('Homework History');
-                            echo '</h4>';
+                            echo '</h2>';
 
                             $pupilsightCourseClassIDFilter = null;
                             $filter = null;
@@ -3384,7 +3397,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     //PERSONAL DATA MENU ITEMS
                     $_SESSION[$guid]['sidebarExtra'] .= '<div class="column-no-break">';
-                    $_SESSION[$guid]['sidebarExtra'] .= '<h4>' . __('Personal') . '</h4>';
+                    $_SESSION[$guid]['sidebarExtra'] .= '<h2>' . __('Personal') . '</h2>';
                     $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
                     $style = '';
                     if ($subpage == 'Overview') {
@@ -3603,7 +3616,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
 
                             if ($countEntries > 0) {
-                                $_SESSION[$guid]['sidebarExtra'] .= '<h4>' . __($order) . '</h4>';
+                                $_SESSION[$guid]['sidebarExtra'] .= '<h2>' . __($order) . '</h2>';
                                 $_SESSION[$guid]['sidebarExtra'] .= "<ul class='moduleMenu'>";
                                 for ($i = 0; $i < count($studentMenuCategory); ++$i) {
                                     if ($studentMenuCategory[$i] == $order)

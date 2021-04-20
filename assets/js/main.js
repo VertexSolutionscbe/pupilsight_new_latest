@@ -3685,32 +3685,34 @@
         var url = $(this).attr('data-href');
         var section = $('#pupilsightRollGroupID_sel').val();
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function () {
+        $.each($("input[name='stu_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");
-        //  alert(section);
-        if (stuid) {
-            if (confirm("Are you sure want to Assign Section")) {
-                var val = stuid;
-                //deleteStudentRoutes
-                var type = 'assign_section';
-                if (val != '') {
-                    $.ajax({
-                        url: 'ajax_data.php',
-                        type: 'post',
-                        data: { val: val, type: type, section: section },
-                        async: true,
-                        success: function (response) {
-                            location.reload();
-                        }
-                    });
+        if (section != '') {
+            if (stuid) {
+                if (confirm("Are you sure want to Assign Section")) {
+                    var val = stuid;
+                    //deleteStudentRoutes
+                    var type = 'assign_section';
+                    if (val != '') {
+                        $.ajax({
+                            url: 'ajax_data.php',
+                            type: 'post',
+                            data: { val: val, type: type, section: section },
+                            async: true,
+                            success: function (response) {
+                                alert('Section Assigned Successfully');
+                                location.reload();
+                            }
+                        });
+                    }
                 }
+            } else {
+                alert('You Have to Select Students.');
             }
         } else {
-
-            alert('You Have to Select Students.');
-
+            alert('You Have to Select Section.');
         }
     });
 
@@ -3724,7 +3726,7 @@
         var url = $(this).attr('data-href');
         // var section = $('select[name="pupilsightRollGroupID"] option:selected').val();
         var favorite = [];
-        $.each($("input[name='student_id[]']:checked"), function () {
+        $.each($("input[name='stu_id[]']:checked"), function () {
             favorite.push($(this).val());
         });
         var stuid = favorite.join(",");

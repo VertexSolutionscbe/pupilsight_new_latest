@@ -85,24 +85,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
         
         if(!empty($pupilsightProgramID) && !empty($pupilsightYearGroupID)){ 
             $classIds = implode(',', $pupilsightYearGroupID);
-        $sqle = "SELECT a.officialName, a.pupilsightPersonID, a.admission_no, a.username as stuUsername, a.passwordStrong as stuPassword, a.canLogin, d.name AS class,c.name as program ,f.name as academic, d.pupilsightYearGroupID,c.pupilsightProgramID ,f.pupilsightSchoolYearID,f.pupilsightSchoolYearID, parent1.pupilsightPersonID as fatherId, parent1.officialName as fatherName, parent1.username as fatherUsername, parent1.passwordStrong as fatherPassword, parent1.canLogin as fatherCanLogin, parent2.pupilsightPersonID as motherId, parent2.officialName as motherName, parent2.username as motherUsername, parent2.passwordStrong as motherPassword , parent2.canLogin as motherCanLogin FROM pupilsightPerson AS a 
-        LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID=b.pupilsightPersonID 
-        LEFT JOIN pupilsightProgram AS c ON b.pupilsightProgramID=c.pupilsightProgramID 
-        LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID=d.pupilsightYearGroupID 
-        LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID=e.pupilsightRollGroupID 
-        LEFT JOIN pupilsightSchoolYear AS f ON b.pupilsightSchoolYearID=f.pupilsightSchoolYearID
+            $sqle = "SELECT a.officialName, a.pupilsightPersonID, a.admission_no, a.username as stuUsername, a.passwordStrong as stuPassword, a.canLogin, d.name AS class,c.name as program ,f.name as academic, d.pupilsightYearGroupID,c.pupilsightProgramID ,f.pupilsightSchoolYearID,f.pupilsightSchoolYearID, parent1.pupilsightPersonID as fatherId, parent1.officialName as fatherName, parent1.username as fatherUsername, parent1.passwordStrong as fatherPassword, parent1.canLogin as fatherCanLogin, parent2.pupilsightPersonID as motherId, parent2.officialName as motherName, parent2.username as motherUsername, parent2.passwordStrong as motherPassword , parent2.canLogin as motherCanLogin FROM pupilsightPerson AS a 
+            LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID=b.pupilsightPersonID 
+            LEFT JOIN pupilsightProgram AS c ON b.pupilsightProgramID=c.pupilsightProgramID 
+            LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID=d.pupilsightYearGroupID 
+            LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID=e.pupilsightRollGroupID 
+            LEFT JOIN pupilsightSchoolYear AS f ON b.pupilsightSchoolYearID=f.pupilsightSchoolYearID
 
-        LEFT JOIN pupilsightFamilyChild AS child ON child.pupilsightPersonID=a.pupilsightPersonID 
-        LEFT JOIN pupilsightFamilyAdult AS adult1 ON adult1.pupilsightFamilyID=child.pupilsightFamilyID AND adult1.contactPriority=1 
-        LEFT JOIN pupilsightPerson as parent1 ON parent1.pupilsightPersonID=adult1.pupilsightPersonID AND parent1.status='Full' 
-        LEFT JOIN pupilsightFamilyAdult as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2 
-        LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full' 
-        
-        WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID IN (" . $classIds . ") GROUP BY a.pupilsightPersonID ORDER BY a.pupilsightPersonID DESC ";
-         //echo $sqle;
-        // die();
-        $resulte = $connection2->query($sqle);
-        $studentData = $resulte->fetchAll();
+            LEFT JOIN pupilsightFamilyChild AS child ON child.pupilsightPersonID=a.pupilsightPersonID 
+            LEFT JOIN pupilsightFamilyRelationship AS adult1 ON adult1.pupilsightFamilyID=child.pupilsightFamilyID AND adult1.relationship= 'Father'
+            LEFT JOIN pupilsightPerson as parent1 ON parent1.pupilsightPersonID=adult1.pupilsightPersonID1 AND parent1.status='Full' 
+            LEFT JOIN pupilsightFamilyRelationship as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.relationship= 'Mother'
+            LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID1 AND parent2.status='Full' 
+
+            
+            -- LEFT JOIN pupilsightFamilyAdult AS adult1 ON adult1.pupilsightFamilyID=child.pupilsightFamilyID AND adult1.contactPriority=1 
+            -- LEFT JOIN pupilsightPerson as parent1 ON parent1.pupilsightPersonID=adult1.pupilsightPersonID AND parent1.status='Full' 
+            -- LEFT JOIN pupilsightFamilyAdult as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2 
+            -- LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full' 
+            
+            WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID IN (" . $classIds . ") GROUP BY a.pupilsightPersonID ORDER BY a.pupilsightPersonID DESC ";
+            //echo $sqle;
+            // die();
+            $resulte = $connection2->query($sqle);
+            $studentData = $resulte->fetchAll();
         }
        
     } 
@@ -205,18 +211,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                 foreach($studentData as $estd){ 
                     if(!empty($estd['stuPassword'])  && $estd['canLogin'] == 'Y'){
                         $chkclsStu = 'greenicon';
+                    } else if (!empty($estd['stuPassword']) && $estd['canLogin'] == 'N') {
+                        $chkclsStu = 'orangeicon';
                     } else {
                         $chkclsStu = 'greyicon';
                     }
 
+                   
                     if(!empty($estd['fatherPassword'])  && $estd['fatherCanLogin'] == 'Y'){
                         $chkclsFat = 'greenicon';
+                    } else if (!empty($estd['fatherPassword']) && $estd['fatherCanLogin'] == 'N') {
+                        $chkclsStu = 'orangeicon';
                     } else {
                         $chkclsFat = 'greyicon';
                     }
 
                     if(!empty($estd['motherPassword'])  && $estd['motherCanLogin'] == 'Y'){
                         $chkclsMot = 'greenicon';
+                    } else if (!empty($estd['motherPassword']) && $estd['motherCanLogin'] == 'N') {
+                        $chkclsStu = 'orangeicon';
                     } else {
                         $chkclsMot = 'greyicon';
                     }
@@ -253,6 +266,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 <?php   
     } }
 ?>
+
+<style>
+.orangeicon {
+    color: orange;
+    font-size: 25px;
+}
+</style>
 
 <script>
     $(function(){

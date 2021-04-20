@@ -163,10 +163,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
                         foreach ($staff as $estd) {
                             if (!empty($estd['stfPassword']) && $estd['canLogin'] == 'Y') {
                                 $chkclsStu = 'greenicon';
+                            } else if (!empty($estd['stfPassword']) && $estd['canLogin'] == 'N') {
+                                $chkclsStu = 'orangeicon';
                             } else {
                                 $chkclsStu = 'greyicon';
                             }
-
 
                     ?>
 
@@ -192,7 +193,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
 <?php
 }
 ?>
-
+<style>
+.orangeicon {
+    color: orange;
+    font-size: 25px;
+}
+</style>
 <script>
     $(function() {
         $('#historyTable').DataTable({
