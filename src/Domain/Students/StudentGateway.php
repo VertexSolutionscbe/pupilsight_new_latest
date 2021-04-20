@@ -56,13 +56,14 @@ class StudentGateway extends QueryableGateway
 */
 
         //$pupilsightSchoolYearID = "025";
+        //echo $customFieldNames.'</br>';
 
         $query = $this
             ->newQuery()
             ->distinct()
             ->from('pupilsightPerson')
             ->cols([
-                "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END as active_status", 'pupilsightPerson.pupilsightPersonID as student_id', 'pupilsightStudentEnrolmentID', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', "'Student' as roleCategory", 'pupilsightSchoolYear.name as academic_year', 'pupilsightProgram.name as program', 'parent1.officialName as fatherName', 'parent1.email as fatherEmail', 'parent1.phone1 as fatherPhone', 'parent2.officialName as motherName', 'parent2.email as motherEmail', 'parent2.phone1 as motherPhone', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.admission_no',
+                "CASE WHEN (pupilsightPerson.active='1') THEN 'Active' ELSE 'Inactive'  END AS active_status", 'pupilsightPerson.pupilsightPersonID AS student_id', 'pupilsightStudentEnrolmentID', 'pupilsightYearGroup.name AS yearGroup', 'pupilsightRollGroup.nameShort AS rollGroup', 'pupilsightStudentEnrolment.rollOrder', "'Student' AS roleCategory", 'pupilsightSchoolYear.name AS academic_year', 'pupilsightProgram.name AS program', 'parent1.officialName AS fatherName', 'parent1.email AS fatherEmail', 'parent1.phone1 AS fatherPhone', 'parent2.officialName AS motherName', 'parent2.email AS motherEmail', 'parent2.phone1 AS motherPhone', 'pupilsightPerson.pupilsightPersonID', 'pupilsightPerson.admission_no',
                 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'pupilsightPerson.officialName', 'pupilsightPerson.dob', 'pupilsightPerson.gender', 'pupilsightPerson.username', 'pupilsightPerson.phone1', 'pupilsightPerson.email', 'pupilsightPerson.address1', 'pupilsightPerson.address1District', 'pupilsightPerson.address1Country',
                 'pupilsightPerson.languageFirst', 'pupilsightPerson.languageSecond', 'pupilsightPerson.languageThird', 'pupilsightPerson.religion', 'pupilsightPerson.active', $customFieldNames
             ])
@@ -130,6 +131,8 @@ class StudentGateway extends QueryableGateway
             ->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
+        // echo $query;
+        // die();
 
         return $this->runQuery($query, $criteria, TRUE);
     }
@@ -160,7 +163,7 @@ class StudentGateway extends QueryableGateway
         } else {
             $query->where("pupilsightStudentEnrolment.pupilsightStudentEnrolmentID IS NOT NULL")
                 ->where("pupilsightPerson.status = 'Full'")
-                // close by bikash
+                // close by bikash 
                 // ->where('(pupilsightPerson.dateStart IS NULL OR pupilsightPerson.dateStart <= :today)')
                 // ->where('(pupilsightPerson.dateEnd IS NULL OR pupilsightPerson.dateEnd >= :today)')
                 // ->bindValue('today', date('Y-m-d'))

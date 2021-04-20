@@ -188,7 +188,7 @@ $sections_arr = $sections1 + $sections2;
             foreach($students as $st){     
         ?>
         <tr>
-            <td><input type="checkbox" class="chkChild" name="student_id[]" value="<?php echo $st['pupilsightPersonID'];?>"></td>
+            <td><input type="checkbox" class="chkChild" name="stu_id[]" value="<?php echo $st['pupilsightPersonID'];?>"></td>
             <td><?php echo $st['pupilsightPersonID'];?></td>
             <td><?php echo $st['studentName'];?></td>
             <td><?php echo $st['classname'];?></td>

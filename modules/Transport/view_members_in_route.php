@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/view_members_in_
         e.preventDefault();
         $("#preloader").show();
         window.setTimeout(function () {
-            var formData = new FormData(document.getElementById("sendEmailSms_Transport"));
+            var formData = new FormData(document.getElementById("sendEmailSms_Student_Transport"));
 
             var emailquote = $("#emailQuote_stud_Transport").val();
             var subjectquote = $("#emailSubjectQuote_stud_Transport").val();
