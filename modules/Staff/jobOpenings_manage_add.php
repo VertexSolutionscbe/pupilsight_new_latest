@@ -28,10 +28,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
+    //$types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
     $sql = "SELECT pupilsightRoleID as value, name FROM pupilsightRole WHERE category='Staff' ORDER BY name";
     $result = $pdo->executeQuery(array(), $sql);
-    $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+    // $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+    $types = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
         $row->addSelect('type')->fromArray($types)->placeholder()->required();
@@ -60,3 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 
     echo $form->getOutput();
 }
+?>
+<script type='text/javascript'>
+	$(document).ready(function() {
+		$("#descriptionedButtonPreview").trigger('click');
+	});
+</script>

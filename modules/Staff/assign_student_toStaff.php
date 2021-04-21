@@ -175,8 +175,11 @@ $table = DataTable::createPaginated('FeeStructureManage', $criteria);
 
 // $table->addColumn('serial_number', __('SL No'));
 $table->addCheckboxColumn('stuid',__(''))
-->setClass('chkbox')
-->notSortable();
+    ->setClass('chkbox')
+    ->notSortable()
+    ->format(function ($students) {
+        return "<input id='stuid' name='stuid[]' type='checkbox' value='" . $students['stuid'] . "'  data-stfid='" . $students['staff_ids'] . "'>";
+    });
 
 $table->addColumn('student_name', __('Name'));
 $table->addColumn('staff_name', __('Staff Name'));

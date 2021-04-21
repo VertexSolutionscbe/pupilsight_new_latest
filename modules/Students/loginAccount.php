@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                     if(!empty($estd['fatherPassword'])  && $estd['fatherCanLogin'] == 'Y'){
                         $chkclsFat = 'greenicon';
                     } else if (!empty($estd['fatherPassword']) && $estd['fatherCanLogin'] == 'N') {
-                        $chkclsStu = 'orangeicon';
+                        $chkclsFat = 'orangeicon';
                     } else {
                         $chkclsFat = 'greyicon';
                     }
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                     if(!empty($estd['motherPassword'])  && $estd['motherCanLogin'] == 'Y'){
                         $chkclsMot = 'greenicon';
                     } else if (!empty($estd['motherPassword']) && $estd['motherCanLogin'] == 'N') {
-                        $chkclsStu = 'orangeicon';
+                        $chkclsMot = 'orangeicon';
                     } else {
                         $chkclsMot = 'greyicon';
                     }

@@ -47,7 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
     ]);
 
     // COLUMNS
-    $table->addColumn('name', __('Type'));
+    $table->addColumn('serial_number', __('Sl No'));
+    $table->addColumn('typeName', __('Type'));
     $table->addColumn('jobTitle', __('Job Title'));
     $table->addColumn('dateOpen', __('Opening Date'))
         ->format(Format::using('date', 'dateOpen'));

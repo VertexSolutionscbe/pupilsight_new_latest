@@ -4280,29 +4280,36 @@
     $(document).on('click', '#unassignStudentstaff', function () {
 
         var favorite = [];
+        var stff = [];
         $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
+            stff.push($(this).attr('data-stfid'));
         });
         var stuid = favorite.join(",");
+        var stfid = stff.join(",");
         //alert(stuid);
-        if (stuid) {
-            if (confirm("Are you sure want to remove staff")) {
-                var val = stuid;
-                var type = 'deletsStaffAssigned';
-                if (val != '') {
-                    $.ajax({
-                        url: 'ajax_data.php',
-                        type: 'post',
-                        data: { val: val, type: type },
-                        async: true,
-                        success: function (response) {
-                            location.reload();
-                        }
-                    });
+        if (stfid) {
+            if (stuid) {
+                if (confirm("Are you sure want to remove staff")) {
+                    var val = stuid;
+                    var type = 'deletsStaffAssigned';
+                    if (val != '') {
+                        $.ajax({
+                            url: 'ajax_data.php',
+                            type: 'post',
+                            data: { val: val, type: type },
+                            async: true,
+                            success: function (response) {
+                                location.reload();
+                            }
+                        });
+                    }
                 }
+            } else {
+                alert('You Have to Select Students.');
             }
         } else {
-            alert('You Have to Select Students.');
+            alert('You Have No Staff Assigned.');
         }
     });
 
