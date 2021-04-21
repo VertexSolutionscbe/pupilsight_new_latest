@@ -313,8 +313,10 @@ class StaffGateway extends QueryableGateway
                 } else {
                     $data[$k]['staff_name'] = '';
                 }
+                $data[$k]['staff_ids'] = $sd['staffIds'];
             } else {
                 $data[$k]['staff_name'] = '';
+                $data[$k]['staff_ids'] = '';
             }
         }
 

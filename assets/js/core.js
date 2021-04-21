@@ -102,9 +102,14 @@ jQuery(function ($) {
             else if (i == 3) { text += chars.charAt(Math.floor(Math.random() * 19) + 62); }
             else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
         }
-        $('input[name="' + $(this).data("source") + '"]').val(text).blur();
-        $('input[name="' + $(this).data("confirm") + '"]').val(text).blur();
-        prompt($(this).data("alert"), text);
+        if (prompt($(this).data("alert"), text)) {
+            $('input[name="' + $(this).data("source") + '"]').val(text).blur();
+            $('input[name="' + $(this).data("confirm") + '"]').val(text).blur();
+        } else {
+            $('input[name="' + $(this).data("source") + '"]').val('').blur();
+            $('input[name="' + $(this).data("confirm") + '"]').val('').blur();
+        }
+        //prompt($(this).data("alert"), text);
     });
 
     /**

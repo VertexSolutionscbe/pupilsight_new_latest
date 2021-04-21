@@ -33,8 +33,10 @@ class StaffJobOpeningGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightStaffJobOpeningID', 'type', 'jobTitle', 'dateOpen', 'active', 'description'
-            ]);
+                'pupilsightStaffJobOpening.pupilsightStaffJobOpeningID', 'pupilsightStaffJobOpening.type', 'pupilsightStaffJobOpening.jobTitle', 'pupilsightStaffJobOpening.dateOpen', 'pupilsightStaffJobOpening.active', 'pupilsightStaffJobOpening.description','pupilsightRole.name as typeName'
+            ])
+            ->leftJoin('pupilsightRole', 'pupilsightStaffJobOpening.type=pupilsightRole.pupilsightRoleID')
+            ->orderBy(['pupilsightStaffJobOpening.pupilsightStaffJobOpeningID DESC']);;
 
         $criteria->addFilterRules([
             'active' => function ($query, $active) {
@@ -44,6 +46,6 @@ class StaffJobOpeningGateway extends QueryableGateway
             },
         ]);
 
-        return $this->runQuery($query, $criteria);
+        return $this->runQuery($query, $criteria, true);
     }
 }

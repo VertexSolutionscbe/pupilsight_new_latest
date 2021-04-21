@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addSelect('ownershipType')->fromArray(array(''=>__('Please Select'),'School' => __('School'), 'Individual' => __('Individual')))->placeholder();
 
 
-    $sql = 'SELECT a.type, b.pupilsightPersonID, b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" ';
+    $sql = 'SELECT a.type, b.pupilsightPersonID, b.officialName FROM pupilsightStaff AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" AND b.pupilsightRoleIDPrimary NOT IN (003,004) ';
     $result = $connection2->query($sql);
     $staffs = $result->fetchAll();
     $owner1 = array('' => 'Please Select ');

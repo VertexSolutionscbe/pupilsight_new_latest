@@ -1599,7 +1599,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             }
                         }
-                    } elseif ($subpage == 'Emergency Contacts') {
+                    // } elseif ($subpage == 'Emergency Contacts') {
+                    } elseif ($subpage == 'Emergency') {
 
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
                             echo "<div class='text-right'>";
@@ -3415,7 +3416,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
                     $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Family'>" . __('Family') . '</a></li>';
                     $style = '';
-                    if ($subpage == 'Emergency Contacts') {
+                    // if ($subpage == 'Emergency Contacts') {
+                    //     $style = "style='font-weight: bold'";
+                    // }
+                    if ($subpage == 'Emergency') {
                         $style = "style='font-weight: bold'";
                     }
                     $_SESSION[$guid]['sidebarExtra'] .= "<li style='display:inline !important;'><a $style href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=' . $_GET['q'] . "&pupilsightPersonID=$pupilsightPersonID&search=" . $search . "&search=$search&allStudents=$allStudents&subpage=Emergency Contacts'>" . __('Emergency Contacts') . '</a></li>';

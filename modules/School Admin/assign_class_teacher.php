@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/mapping_manag
     echo '</h2>';
 
 
-    $sqlp = 'SELECT b.pupilsightPersonID, b.officialName, b.email FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" ';
+    $sqlp = 'SELECT b.pupilsightPersonID, b.officialName, b.email FROM pupilsightStaff AS a INNER JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.officialName != "" AND b.pupilsightRoleIDPrimary NOT IN (003,004) ';
     $resultp = $connection2->query($sqlp);
     $getstaff= $resultp->fetchAll();
 

@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/remove_assigned_staf
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
     echo '<h2>';
-    echo __('Remove Staff');
+    echo __('Unassign Staff To Subjects');
     echo '</h2>';
     if ($id == '') {
         echo "<div class='alert alert-danger'>";
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/remove_assigned_staf
     $col = $row->addColumn()->setClass('newdes');
     $col->addCheckbox('select')->setId('checkall')->setClass('chkAll'); 
     $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('Name', __('Subject Name'))->addClass('dte');
+    $col->addLabel('Name', __('Subject Name'))->addClass('dte subName');
 
 
 foreach($getdep as $dep){
@@ -72,6 +72,12 @@ $row->addSubmit();
 
 
 ?>
+
+<style>
+    .subName {
+        font-size : 20px !important;
+    }
+</style>
 
 <script>
     $(document).on('change', '.chkAll', function () {
