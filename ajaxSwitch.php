@@ -552,9 +552,11 @@ if (isset($_POST['type'])) {
                         $fieldName = '';
                     }
 
-                    $sqlstu = "SELECT a.officialName , a.admission_no, a.roll_no, p.name as progname, b.name as class, c.name as section ".$fieldName." FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON d.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " ";
+                    $sqlstu = "SELECT a.officialName , a.admission_no, a.roll_no, sc.name as academic_year, p.name as progname, b.name as class, c.name as section ".$fieldName." FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightSchoolYear AS sc ON d.pupilsightSchoolYearID = sc.pupilsightSchoolYearID LEFT JOIN pupilsightProgram AS p ON d.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " ";
                     $resultstu = $connection2->query($sqlstu);
                     $valuestu = $resultstu->fetch();
+
+                    $academic_year = $valuestu['academic_year'];
 
                     $sqlfat = "SELECT b.officialName , b.phone1, b.email FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $pupilsightPersonID . " AND a.relationship = 'Father' ";
                     $resultfat = $connection2->query($sqlfat);
@@ -709,6 +711,7 @@ if (isset($_POST['type'])) {
                     }
 
                     $dts_receipt = array(
+                        "academic_year" => $academic_year,
                         "invoice_no" => $invNo,
                         "receipt_no" => $receipt_number,
                         "date" => $payment_receipt_date,

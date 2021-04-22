@@ -128,7 +128,8 @@ class StudentGateway extends QueryableGateway
 
         $query->where('pupilsightPerson.is_delete = "0" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
-            ->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
+            ->orderBy(['pupilsightPerson.officialName ASC']);
+            //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
         // echo $query;
@@ -773,7 +774,9 @@ class StudentGateway extends QueryableGateway
 
         $query->where('pupilsightPerson.is_delete = "0" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
-            ->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
+            ->orderBy(['pupilsightPerson.officialName ASC']);
+            //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
+
         //echo $query;
         //die();
         $criteria->addFilterRules($this->getSharedUserFilterRules());

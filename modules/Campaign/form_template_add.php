@@ -15,15 +15,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     echo '</div>';
 } else {
     //Proceed!
+    $id = $_GET['id'];
     $page->breadcrumbs
-        ->add(__('Manage Application Form Template'), 'form_template_manage.php')
+        ->add(__('Manage Application Form Template'), 'form_template_manage.php&id='.$id.'')
         ->add(__('Add Application Form Template'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $id = $_GET['id'];
+    
 
     
 
@@ -31,11 +32,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     $resultsub = $connection2->query($chksub);
     $chkCamp = $resultsub->fetch();
     if(!empty($chkCamp['template_name']) && empty($chkCamp['offline_template_name'])){
-        $type = array(''=>'Select Type', 'Offline' => 'Offline');
+        $type = array(''=>'Select Type','Offline' => 'Offline');
     }
 
     if(!empty($chkCamp['offline_template_name']) && empty($chkCamp['template_name'])){
-        $type = array(''=>'Select Type', 'Online' => 'Online');
+        $type = array(''=>'Select Type','Online' => 'Online');
     }
 
     if(!empty($chkCamp['offline_template_name']) && !empty($chkCamp['template_name'])){
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     }
 
     if(empty($chkCamp['offline_template_name']) && empty($chkCamp['template_name'])){
-        $type = array(''=>'Select Type', 'Online' => 'Online', 'Offline' => 'Offline');
+        $type = array(''=>'Select Type','Online' => 'Online', 'Offline' => 'Offline');
     }
 
 
@@ -78,25 +79,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
         echo $form->getOutput();
 }
 ?>
-<!-- <script type="text/javascript">
-    $('#edit_template_form').on('submit',(function(e) {
-    e.preventDefault();
-    var formData = new FormData(this);
-    $.ajax({
-        url:"ajaxSwitch.php", 
-        type: "POST",             
-        data: formData, 
-        contentType: false,      
-        cache: false,             
-        processData:false, 
-        async: false,       
-        success: function(data)  
-        {
-           
-            alert(data);
-            window.location.reload()
+
+    <div style="margin-top:100px;">
+        <h3>Configure Image Fields</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sl No</th>
+                    <th>Attribute Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>1</th>
+                    <th>student_photo</th>
+                    <th><a class="btn btn-white  setParam" data-hrf="fullscreen.php?q=/modules/Campaign/campaign_template_configure_image.php&id=student_photo&cid=<?= $id; ?>" >Set Parameter</a></th>
+                </tr>
+                <tr>
+                    <th>2</th>
+                    <th>father_photo</th>
+                    <th><a class="btn btn-white  setParam" data-hrf="fullscreen.php?q=/modules/Campaign/campaign_template_configure_image.php&id=father_photo&cid=<?= $id; ?>" >Set Parameter</a></th>
+                </tr>
+                <tr>
+                    <th>3</th>
+                    <th>mother_photo</th>
+                    <th><a class="btn btn-white  setParam" data-hrf="fullscreen.php?q=/modules/Campaign/campaign_template_configure_image.php&id=mother_photo&cid=<?= $id; ?>" >Set Parameter</a></th>
+                </tr>
+                <tr>
+                    <th>4</th>
+                    <th>guardian_photo</th>
+                    <th><a class="btn btn-white  setParam" data-hrf="fullscreen.php?q=/modules/Campaign/campaign_template_configure_image.php&id=guardian_photo&cid=<?= $id; ?>" >Set Parameter</a></th>
+                </tr>
+            </tbody>
+        </table>
+        <a id="clickImgConfg" style="display:none" class="thickbox" href="">click</a>
+    </div>
+
+<script type="text/javascript">
+    $(document).on('click', '.setParam', function (e) {
+        e.preventDefault();
+        var hrf = $(this).attr('data-hrf');
+        var type = $("#type").val();
+        var newhrf = hrf+'&type='+type;
+        if(type){
+            $("#clickImgConfg").attr('href', newhrf);
+            $("#clickImgConfg")[0].click();
+        } else {
+            alert('Please Select Template Type');
         }
     });
-
-    }));
-</script> -->
+</script> 

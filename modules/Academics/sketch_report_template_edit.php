@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
         //print_r($imgData);
    
         echo '<h2>';
-        echo __('Add Sketch Template');
+        echo __('Edit Sketch Template');
         echo '</h2>';
 
         $form = Form::create('reportTemplate', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/sketch_report_template_editProcess.php?address='.$_SESSION[$guid]['address']);

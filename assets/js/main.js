@@ -4280,15 +4280,18 @@
     $(document).on('click', '#unassignStudentstaff', function () {
 
         var favorite = [];
-        var stff = [];
+        //var stff = [];
+        var k = 0;
         $.each($("input[name='stuid[]']:checked"), function () {
             favorite.push($(this).val());
-            stff.push($(this).attr('data-stfid'));
+            //stff.push($(this).attr('data-stfid'));
+            if ($(this).attr('data-stfid') != '') {
+                k++;
+            }
         });
         var stuid = favorite.join(",");
-        var stfid = stff.join(",");
-        //alert(stuid);
-        if (stfid) {
+        //var stfid = stff.join(",");
+        if (k >= 1) {
             if (stuid) {
                 if (confirm("Are you sure want to remove staff")) {
                     var val = stuid;
@@ -9528,6 +9531,46 @@ $(document).on('click', '#delImgData', function (e) {
         url: "ajax_data.php",
         type: "POST",
         data: { type: type, val: skid, atrid: atrid },
+        async: true,
+        success: function (data) {
+            alert('Parameter Deleted Successfully!');
+            $("#TB_overlay").remove();
+            $("#TB_window").remove();
+        }
+    });
+});
+
+$(document).on('click', '#saveCampImgData', function (e) {
+    // $('#sendEmailSms_campaignForm').on('submit', (function (e) {
+    e.preventDefault();
+    var formData = new FormData(document.getElementById("imgForm"));
+
+    $.ajax({
+        url: "modules/Campaign/campaign_template_configure_imageProcess.php",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        cache: false,
+        processData: false,
+        async: false,
+        success: function (data) {
+            alert('Parameter Saved Successfully!');
+            $("#TB_overlay").remove();
+            $("#TB_window").remove();
+        }
+    });
+});
+
+$(document).on('click', '#delCamImgData', function (e) {
+    e.preventDefault();
+    var cid = $(this).attr('data-cid');
+    var fname = $(this).attr('data-fname');
+    var typ = $(this).attr('data-type');
+    var type = 'deleteCampaignImageTemplateConfig';
+    $.ajax({
+        url: "ajax_data.php",
+        type: "POST",
+        data: { type: type, val: cid, fname: fname, typ: typ },
         async: true,
         success: function (data) {
             alert('Parameter Deleted Successfully!');
