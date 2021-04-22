@@ -170,6 +170,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
             <td>Total Tax</td>
             <td>${total_tax}</td>
         </tr>
+        <tr>
+            <td>28</td>
+            <td>Academic Year</td>
+            <td>${academic_year}</td>
+        </tr>
 
     </tbody>
 

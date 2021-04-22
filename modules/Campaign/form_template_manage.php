@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
    
     echo "<div style='height:50px;'><div class='float-right mb-2'>";
     //if(empty($templates->data)){
-        echo "<a href='fullscreen.php?q=/modules/Campaign/form_template_add.php&id=".$id."' class='thickbox btn btn-primary'>Add</a>&nbsp;&nbsp;";
+        echo "<a href='index.php?q=/modules/Campaign/form_template_add.php&id=".$id."' class='btn btn-primary'>Add</a>&nbsp;&nbsp;";
     //}
     echo "<a href='index.php?q=/modules/Campaign/form_template_fields.php&id=".$id."'  class='btn btn-primary'>Template Fields</a></div><div class='float-none'></div></div>";  
 
@@ -99,7 +99,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
                 <td>Online</td>
                 <td><?php echo $chkCampOnData['template_name'];?></td>
                 <td><a href="<?php echo $_SESSION[$guid]['absoluteURL'].'/public/application_template/'.$chkCampOnData['template_filename'];?>" download><i class="mdi mdi-download mdi-24px"></i></a></td>
-                <td><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/form_template_delete.php&id=<?php echo $id;?>&type=1&amp;width=650&amp;height=135"> <i title="Delete" class="mdi mdi-trash-can-outline mdi-24px"></i></a></td>
+                <td>
+                <a class="" href="index.php?q=/modules/Campaign/form_template_edit.php&id=<?php echo $id;?>&type=1&amp;width=650&amp;height=135"> <i title="Edit" class="mdi mdi-pencil-box-outline mdi-24px"></i></a>
+                <a class="thickbox " href="fullscreen.php?q=/modules/Campaign/form_template_delete.php&id=<?php echo $id;?>&type=1&amp;width=650&amp;height=135"> <i title="Delete" class="mdi mdi-trash-can-outline mdi-24px"></i></a>
+                </td>
             </tr>
         <?php } ?>
         <?php if(!empty($chkCampOnData['offline_template_name'])){ ?>
@@ -107,7 +110,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
                 <td>Offline</td>
                 <td><?php echo $chkCampOnData['offline_template_name'];?></td>
                 <td><a href="<?php echo $_SESSION[$guid]['absoluteURL'].'/public/application_template/'.$chkCampOnData['offline_template_filename'];?>" download><i class="mdi mdi-download mdi-24px"></i></a></td>
-                <td><a class="thickbox " href="fullscreen.php?q=/modules/Campaign/form_template_delete.php&id=<?php echo $id;?>&type=2&amp;width=650&amp;height=135"> <i title="Delete" class="mdi mdi-trash-can-outline mdi-24px"></i></a></td>
+                <td>
+                <a class="" href="index.php?q=/modules/Campaign/form_template_edit.php&id=<?php echo $id;?>&type=2&amp;width=650&amp;height=135"> <i title="Edit" class="mdi mdi-pencil-box-outline mdi-24px"></i></a>
+                <a class="thickbox " href="fullscreen.php?q=/modules/Campaign/form_template_delete.php&id=<?php echo $id;?>&type=2&amp;width=650&amp;height=135"> <i title="Delete" class="mdi mdi-trash-can-outline mdi-24px"></i></a>
+                </td>
             </tr>
         <?php } ?>
         </tbody>

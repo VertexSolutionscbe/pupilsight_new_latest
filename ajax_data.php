@@ -3966,3 +3966,14 @@ if ($type == 'disableUserLoginAccount') {
         $result->execute($data);
     }
 }
+
+
+if ($type == 'deleteCampaignImageTemplateConfig') {
+    $campaign_id = $val;
+    $field_name = $_POST['fname'];
+    $template_type = $_POST['typ'];
+    $data = array('campaign_id' => $campaign_id, 'field_name' => $field_name, 'template_type' => $template_type);
+    $sql = 'DELETE FROM campaign_configure_image_template WHERE campaign_id=:campaign_id AND field_name=:field_name AND template_type=:template_type';
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+}

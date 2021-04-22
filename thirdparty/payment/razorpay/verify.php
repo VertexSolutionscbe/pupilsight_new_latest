@@ -179,9 +179,16 @@ if ($success === true) {
         $resultst = $connection2->query($sqlst);
         $stData = $resultst->fetch();
 
+        $sqlay = 'SELECT name FROM pupilsightSchoolYear WHERE pupilsightSchoolYearID = ' . $dt['pupilsightSchoolYearID'] . ' ';
+        $resultay = $connection2->query($sqlay);
+        $ayData = $resultay->fetch();
+
+        $academic_year = $ayData["name"];
+
         $class_section = $clss . "" . $section;
         $bank_name = '';
         $dts_receipt = array(
+            "academic_year" => $academic_year,
             "invoice_no" => $invNo,
             "receipt_no" => $receipt_number,
             "date" => date("d-M-Y"),
