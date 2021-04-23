@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
 
         $row = $form->addRow();
         $row->addLabel('file', __('Template'));
-        $row->addFileUpload('file')->accepts('.docx')->setMaxUpload(false)->required();
+        $row->addFileUpload('file')->accepts('.pdf')->setMaxUpload(false)->required();
 
         $row = $form->addRow();
         $row->addFooter();

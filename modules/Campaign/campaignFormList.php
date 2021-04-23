@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     &nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=" . $id . "'   class='btn btn-white' id='' >Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-white' data-cid=" . $id . " data-fid=" . $formId . " id='sendSMS'>Send SMS</a>";
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-white' data-cid=" . $id . "  data-fid=" . $formId . " id='sendEmail'>Send Email</a>";
     //echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="index.php?q=/modules/Campaign/ajaxfile.php&cid='.$id.'&id=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
-    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="cms/ajaxfile.php?cid=' . $id . '&submissionId=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
+    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $id . '&submissionId=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
 
     //  print_r($criteria);
     //  die();
@@ -546,28 +546,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 <script>
 
     $(document).ready(function() {
-        $('#expore_tbl').find("input[name='submission_id[]']").each(function() {
-            $(this).addClass('include_cell');
-            $(this).closest('tr').addClass('rm_cell');
-            var val = $(this).val();
-            // alert(val);
-            var type = 'chkInvoice';
-            var thiscls = $(this);
-            $.ajax({
-                url: 'ajax_data.php',
-                type: 'post',
-                data: {
-                    val: val,
-                    type: type
-                },
-                async: true,
-                success: function(response) {
-                    if (response == 'yes') {
-                        thiscls.addClass('invoicemade');
+        window.setTimeout(function () {
+            $('#expore_tbl').find("input[name='submission_id[]']").each(function() {
+                $(this).addClass('include_cell');
+                $(this).closest('tr').addClass('rm_cell');
+                var val = $(this).val();
+                var type = 'chkInvoice';
+                var thiscls = $(this);
+                $(this).addClass('invoicemade');
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: {
+                        val: val,
+                        type: type
+                    },
+                    async: true,
+                    success: function(response) {
+                        if (response == 'yes') {
+                            thiscls.addClass('invoicemade');
+                        }
                     }
-                }
+                });
             });
-        });
+        }, 1000);
+        
 
 
         $(document).on('change', '.include_cell', function() {
@@ -586,7 +589,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             }
         });
 
-        $(document).on('click', '#admissionFeePayment', function() {
+        $(document).on('click', '#admissionFeePayment', function(e) {
+            e.preventDefault();
             var checked = $("input[name='submission_id[]']:checked").length;
             if (checked > 1) {
                 alert('You Have to Select only One Applicant.');
@@ -598,9 +602,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                     favorite.push($(this).val());
                 });
                 var id = favorite.join(",");
-                var newhrf = hrf + '&sid=' + id + '&width=1100&height=500';
+                var newhrf = hrf + '&sid=' + id + '&width=1200&height=500';
                 $("#clickAdmissionFeePayment").attr('href', newhrf);
-                $("#clickAdmissionFeePayment").click();
+                $("#clickAdmissionFeePayment")[0].click();
             }
         });
 

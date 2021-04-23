@@ -229,13 +229,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
         // print_r($invdata);
         // echo '</pre>';
         // die();
-        echo "<div class ='row fee_hdr FeeInvoiceListManage'><div class='col-md-12'> Invoices</div></div>";
+        echo "<div class ='row fee_hdr FeeInvoiceListManage'><div class='col-md-12'> Invoices <span style='float:right;margin: -8px 0px 0px 0px;'><button class='btn btn-primary' id='editInvoice'>Edit Invoice</button>&nbsp;&nbsp;<button class='btn btn-primary' id='makeAdmissionPayment'>Make Payment</button><span></div></div>";
 
         echo "<table class='table' id='FeeInvoiceListManage'>";
         echo "<thead>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __('<input type="checkbox" name="invoiceid" id="chkAllInvoiceApplicant" >');
+        // echo __('<input type="checkbox" name="invoiceid" id="chkAllInvoiceApplicant" >');
+        echo __('Select');
         echo '</th>';
         echo '<th>';
         echo __('Invoice No');
@@ -526,6 +527,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
 }
 ?>
 
+<div id="invoiceEdit">
+    
+</div>
+
 <style>
 .pagination ,.dataTable header
 {
@@ -557,3 +562,99 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
     display : none;
 }
 </style>
+
+
+<script>
+    
+    
+
+    $(document).on('click', '#makeAdmissionPayment', function () {
+        $("#collectionForm")[0].reset();
+        $(".ddChequeRow").addClass('hiddencol');
+        var favorite = [];
+        var account_heads = [];
+        var series = [];
+        var aedt = [];
+        var ife = [];
+        $.each($(".chkinvoiceApplicant:checked"), function () {
+            favorite.push($(this).val());
+            account_heads.push($(this).attr("data-h"));
+            series.push($(this).attr("data-se"));
+            aedt.push($(this).attr("data-amtedt"));
+            ife.push($(this).attr("data-ife"));
+        });
+        var newData = removeDuplicates(account_heads);
+        var length1 = newData.length;
+        var chkStatus = false;
+        if (favorite.length != 0) {
+            var sid = $("input[name=submission_id]").val();
+            if (length1 == "1") {
+                chkStatus = true;
+            } else {
+                var r = confirm("Selected invoice receipt series are different.\n Do you want to make payment?");
+                if (r == true) {
+                    chkStatus = true;
+                } else {
+                    chkStatus = false;
+                }
+            }
+
+            //ajax request
+            if (chkStatus == true) {
+                var invids = favorite.join(", ");
+                var type = 'applicantInvoiceFeeItem';
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: invids, type: type, sid: sid },
+                    async: true,
+                    success: function (response) {
+                        $(".btn_invoice_link_collection").hide();
+                        $(".addInvoiceLinkCollection").hide();
+                        $(".btn_cancel_invoice_collection").hide();
+                        $(".chkinvoice").hide();
+                        $(".apply_discount_btn").hide();
+                        $("#getInvoiceFeeItem").html('');
+                        $("#getInvoiceFeeItem").append(response);
+                        $("input[name=invoice_id]").val(invids);
+                        $("#collectionForm").show();
+                        $("#FeeItemManage").show();
+                        $(".hideFeeItemContent").show();
+                        $('#fn_fees_head_id').val(account_heads[0]);
+                        $('#recptSerId').val(series[0]);
+                        $(".oCls_0").hide();
+                        $('.icon_0').removeClass('fa-arrow-down');
+                        $('.icon_0').addClass('fa-arrow-right');
+                        $(".oCls_1").hide();
+                        $('.icon_1').removeClass('fa-arrow-down');
+                        $('.icon_1').addClass('fa-arrow-right');
+
+                        if (aedt[0] == '1') {
+                            $("#amount_paying").attr("readonly", false);
+                        } else {
+                            $("#amount_paying").attr("readonly", true);
+                        }
+
+                        if (ife[0] == '1') {
+                            $("#fine").attr("readonly", false);
+                        } else {
+                            $("#fine").attr("readonly", true);
+                        }
+
+                        setTimeout(function () {
+                            $("#chkAllFeeItem").prop("checked", true).trigger("change");
+                        }, 1000);
+
+                    }
+                });
+            }
+            //ends request
+        } else {
+            alert('Please select atleast one invoice');
+            $("#chkAllInvoice").prop('checked', false);
+            $(".invrow" + invid).remove();
+            addInvoiceFeeAmt();
+            $("input[name=invoice_id]").val(invids);
+        }
+    });
+</script>
