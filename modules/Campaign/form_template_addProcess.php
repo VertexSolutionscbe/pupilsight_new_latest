@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
             $attachment = '';
             //Move attached image  file, if there is one
             if (isset($_FILES["file"]) && $_FILES["file"]["error"] == 0) {
-                $allowed = array("docx" => "docx");
+                $allowed = array("pdf" => "pdf");
                 $filename = $_FILES["file"]["name"];
                 $filetype = $_FILES["file"]["type"];
                 $filesize = $_FILES["file"]["size"];

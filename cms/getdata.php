@@ -54,7 +54,7 @@ if (!empty($camdata)) {
 				$base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
 				$fname = trim(str_replace("/", "_", $row['application_no']));
 				//$link = $base_url . '/public/applicationpdf/parent/' . $fname;
-				$link = $base_url . '/cms/ajaxfile.php?cid=' . $row['id'] . "&submissionId=" . $row['submission_id'];
+				$link = $base_url . '/thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $row['id'] . "&submissionId=" . $row['submission_id'];
 				echo '<a href="' . $link . '"><img title="Download" src="' . $base_url . '/cms/assets/css/img/download-box.png"></img></a>';
 			} else {
 				echo "NA";

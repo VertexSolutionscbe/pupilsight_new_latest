@@ -742,9 +742,10 @@ print_r($rs);
 
                 ->leftJoin('pupilsightYearGroup', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
 
-                ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
-                ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+                // ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
+                // ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
                 ->leftJoin('pupilsightStudentEnrolment', 'fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                ->leftJoin('pupilsightRollGroup', ' pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
                 ->leftJoin('fn_fee_series', 'fn_fee_invoice.inv_fn_fee_series_id=fn_fee_series.id')
                 ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id');
 
@@ -829,8 +830,10 @@ print_r($rs);
 
                 ->leftJoin('pupilsightYearGroup', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
 
-                ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
-                ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+                // ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
+                // ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+                ->leftJoin('pupilsightStudentEnrolment', 'fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                ->leftJoin('pupilsightRollGroup', ' pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
                 ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id')
                 ->where('fn_fee_invoice.pupilsightSchoolYearID  = "' . $pupilsightSchoolYearID . '" AND fn_fee_invoice.status="1" ')
                 //->where('fn_fee_invoice_student_assign.status = 1 ')
