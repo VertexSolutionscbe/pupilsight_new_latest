@@ -585,12 +585,12 @@ if (isset($_POST['type'])) {
                     }
 
 
-                    $sqlinv = 'SELECT GROUP_CONCAT(DISTINCT b.invoice_no) AS invNo, b.* FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_student_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id LEFT JOIN fn_fee_invoice AS c ON a.fn_fee_invoice_id = c.id WHERE a.id IN (' . $invoice_item_id . ') AND b.pupilsightPersonID = ' . $pupilsightPersonID . '  ORDER BY b.id ASC';
+                    $sqlinv = 'SELECT GROUP_CONCAT(DISTINCT b.invoice_no) AS invNo, b.*, GROUP_CONCAT(c.title) AS invtitle FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_student_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id LEFT JOIN fn_fee_invoice AS c ON a.fn_fee_invoice_id = c.id WHERE a.id IN (' . $invoice_item_id . ') AND b.pupilsightPersonID = ' . $pupilsightPersonID . '  ORDER BY b.id ASC';
                     $resultinv = $connection2->query($sqlinv);
                     $valueinv = $resultinv->fetch();
 
                     $invNo = $valueinv['invNo'];
-                    $inv_title = $valueinv['title'];
+                    $inv_title = $valueinv['invtitle'];
                     $inv_date = '';
                     if(!empty($valueinv['cdt'])){
                         $inv_date = date('d/m/Y', strtotime($valueinv['cdt']));
@@ -633,6 +633,20 @@ if (isset($_POST['type'])) {
                     $totalamtWitoutTaxDis = 0;
                     if (!empty($invoice_id)) {
                         $invid = explode(',', $invoice_id);
+                        $invKount = count($invid);
+                        $first = reset($invid);
+                        $last = end($invid);
+                        if($invKount > 1){
+                            $idsInv = $first.','.$last;
+                        } else {
+                            $idsInv = $first;
+                        }
+
+                        $sqlconInv = 'SELECT GROUP_CONCAT(title SEPARATOR " - ") AS invtitle FROM fn_fee_invoice WHERE id IN ('.$idsInv.')';
+                        $resultConInv = $connection2->query($sqlconInv);
+                        $valueConInv = $resultConInv->fetch();
+                        $concatInvoiceTitle = $valueConInv['invtitle'];
+
                         foreach ($invid as $iid) {
                             $datau = array('invoice_status' => $invoice_status, 'fn_fees_invoice_id' => $iid,  'pupilsightPersonID' => $pupilsightPersonID);
                             $sqlu = 'UPDATE fn_fees_collection SET invoice_status=:invoice_status WHERE fn_fees_invoice_id=:fn_fees_invoice_id AND pupilsightPersonID=:pupilsightPersonID';
@@ -739,9 +753,14 @@ if (isset($_POST['type'])) {
                         "inv_date" => $inv_date,
                         "due_date" => $due_date,
                         "total_tax" => number_format($totalTax, 2, '.', ''),
-                        "inv_total" => number_format($totalamtWitoutTaxDis, 2, '.', '')
+                        "inv_total" => number_format($totalamtWitoutTaxDis, 2, '.', ''),
+                        "concat_invoice_title" => htmlspecialchars($concatInvoiceTitle)
                     );
 
+                    // echo '<pre>';
+                    // print_r($dts_receipt);
+                    // echo '</pre>';
+                    // die();
 
                     if (!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)) {
                         $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/phpword/receiptNew.php';

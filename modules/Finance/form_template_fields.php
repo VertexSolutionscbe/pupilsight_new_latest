@@ -175,6 +175,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
             <td>Academic Year</td>
             <td>${academic_year}</td>
         </tr>
+        <tr>
+            <td>29</td>
+            <td>Invoice Title Concat</td>
+            <td>${concat_invoice_title}</td>
+        </tr>
 
     </tbody>
 

@@ -1049,19 +1049,20 @@ echo " <style>
                         success: function(response) {
                             $("#preloader").hide();
                             
-                            $('#getRecerptPop').click();
+                            $('#getRecerptPop').trigger('click');
                             $("#closePayment").trigger('click');
                             loadInvoices();
                             load();
-                            window.setTimeout(function () {
-                                location.reload();
-                            }, 5000);
+                            // window.setTimeout(function () {
+                            //     location.reload();
+                            // }, 10000);
                             
                         }
                     });
                 }, 2000);
             }
     });
+    
     $(document).on('click', '.feeitem', function() {
         var id = $(this).attr('data-type');
         // icon_0 icon_m
@@ -1090,6 +1091,7 @@ echo " <style>
         
         }
     });
+    
     $(document).on('click','#save_sp_discount',function(){
         var type = $(this).attr('data-type');
         var a_stuid = $("input[name=a_stuid]").val();
@@ -1171,6 +1173,7 @@ echo " <style>
             }
         }
     });
+    
     $(document).on('click','#addInvoiceStnButton',function(){
         var url = $('#add_invoice_collection_process_form'). attr('action');
         var py=$(".pSyd").val();
@@ -1269,6 +1272,7 @@ echo " <style>
             
         }
     });
+    
     $(document).on('click','#updateInvoiceStnButton',function(){
         var url = $('#edit_invoice_save_form'). attr('action');
         var py=$(".pSyd").val();
@@ -1351,6 +1355,7 @@ echo " <style>
             
         }
     });
+    
     $(document).on('click','#cancel_invoice',function(){
         var url = $('#delect_invoice_collection_form'). attr('action');
         var py=$(".pSyd").val();
