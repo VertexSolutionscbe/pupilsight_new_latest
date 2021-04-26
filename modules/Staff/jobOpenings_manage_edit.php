@@ -87,8 +87,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 ?>
 <script type='text/javascript'>
 	$(document).ready(function() {
-        $("#descriptionedButtonHTML").hide();
-        $("#descriptionedButtonPreview").hide();
+        // $("#descriptionedButtonHTML").hide();
+        // $("#descriptionedButtonPreview").hide();
 		$("#descriptionedButtonPreview").trigger('click');
 	});
 </script>

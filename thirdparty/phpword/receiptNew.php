@@ -4,8 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
-require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
+require_once $_SERVER["DOCUMENT_ROOT"].'/pupilsight/vendor/phpoffice/phpword/bootstrap.php';
+//require_once $_SERVER["DOCUMENT_ROOT"] . '/pdf_convert.php';
 
 
 try {
@@ -68,13 +68,13 @@ try {
 
         // $fileName = $dts["transactionId"] . ".docx";
         $fileName = $receiptfilename . ".docx";
-        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/public/receipts/";
+        $inFilePath = $_SERVER["DOCUMENT_ROOT"] . "/pupilsight/public/receipts/";
         $savedocsx = $inFilePath . $fileName;
         //$savedocsx = $_SERVER["DOCUMENT_ROOT"]."/public/receipts/".$dts["transactionId"].".docx";
         //echo $savedocsx;
         $phpword->saveAs($savedocsx);
 
-        convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
+        //convert($fileName, $inFilePath, $inFilePath, FALSE, TRUE);
     } catch (Exception $ex) {
     }
 
