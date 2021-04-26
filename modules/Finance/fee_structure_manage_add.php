@@ -196,7 +196,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('display_fee_item', __(''));
-        $col->addCheckbox('display_fee_item')->description(__('<b>Do Not display Fee item</b>'))->setValue('2');          
+        $col->addCheckbox('display_fee_item')->description(__('<b>Do Not display Fee item</b>'))->setValue('2');    
+        
+        $col = $row->addColumn()->setClass('newdes');
+        $col->addLabel('is_concat_invoice', __(''));
+        $col->addCheckbox('is_concat_invoice')->description(__('<b>Concat Invoice</b>'))->setValue('1');    
 
         $col = $row->addColumn()->setClass('hiddencol');
             $col->addLabel('', __(''));

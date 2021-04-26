@@ -223,9 +223,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
             $col->addLabel('amount_editable', __(''));
             $col->addCheckbox('amount_editable')->description(__('<b>Transaction Amount editable</b>'))->setValue('1')->checked($values['amount_editable']);   
 
-                $col = $row->addColumn()->setClass('newdes');
-                    $col->addLabel('display_fee_item', __(''));
-                    $col->addCheckbox('display_fee_item')->description(__('<b>Do Not display Fee item</b>'))->setValue('2')->checked($values['display_fee_item']);          
+            $col = $row->addColumn()->setClass('newdes');
+                $col->addLabel('display_fee_item', __(''));
+                $col->addCheckbox('display_fee_item')->description(__('<b>Do Not display Fee item</b>'))->setValue('2')->checked($values['display_fee_item']);      
+                
+            $col = $row->addColumn()->setClass('newdes');
+                $col->addLabel('is_concat_invoice', __(''));
+                $col->addCheckbox('is_concat_invoice')->description(__('<b>Concat Invoice</b>'))->setValue('1')->checked($values['is_concat_invoice']); ; 
             
             $col = $row->addColumn()->setClass('hiddencol');
             $col->addLabel('', __(''));
