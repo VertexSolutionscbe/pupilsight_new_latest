@@ -17,18 +17,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
 
     $title = $_POST['title'];
     $pupilsightPersonID=$_POST['pstid'];
-     $pupilsightSchoolYearID = $_POST['yid'];
-     if(isset($_POST['amount_editable'])){
-        $amount_editable="1";
-     } else {
-       $amount_editable="0";
-     }
+    $pupilsightSchoolYearID = $_POST['yid'];
+    if(isset($_POST['amount_editable'])){
+    $amount_editable="1";
+    } else {
+    $amount_editable="0";
+    }
 
-     if(isset($_POST['display_fee_item'])){
-        $display_fee_item=2;
-     } else {
-       $display_fee_item=1;
-     }
+    if(isset($_POST['display_fee_item'])){
+    $display_fee_item=2;
+    } else {
+    $display_fee_item=1;
+    }
+
+    if(!empty($_POST['is_concat_invoice'])){
+        $is_concat_invoice = "1";
+    } else {
+        $is_concat_invoice = '0';
+    }
     // $invoice_title_id = $_POST['invoice_title_id'];
     // $pupilsightSchoolFinanceYearID = $_POST['pupilsightSchoolFinanceYearID'];
     $inv_fn_fee_series_id = $_POST['inv_fn_fee_series_id'];
@@ -103,8 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
             $invoiceno =  $iformat;
             //ends here
             try {
-                $data = array('title' => $title, 'inv_fn_fee_series_id' => $inv_fn_fee_series_id, 'rec_fn_fee_series_id' => $rec_fn_fee_series_id, 'fn_fees_head_id' => $fn_fees_head_id, 'fn_fees_fine_rule_id' => $fn_fees_fine_rule_id, 'fn_fees_discount_id' => $fn_fees_discount_id, 'due_date' => $due_date, 'cdt' => $cdt,'pupilsightSchoolYearID'=>$pupilsightSchoolYearID,'amount_editable'=>$amount_editable,'display_fee_item'=>$display_fee_item);
-                $sql = 'INSERT INTO fn_fee_invoice SET title=:title, inv_fn_fee_series_id=:inv_fn_fee_series_id, rec_fn_fee_series_id=:rec_fn_fee_series_id, fn_fees_head_id=:fn_fees_head_id, fn_fees_fine_rule_id=:fn_fees_fine_rule_id, fn_fees_discount_id=:fn_fees_discount_id, due_date=:due_date, cdt=:cdt,pupilsightSchoolYearID=:pupilsightSchoolYearID,amount_editable=:amount_editable,display_fee_item=:display_fee_item';
+                $data = array('title' => $title, 'inv_fn_fee_series_id' => $inv_fn_fee_series_id, 'rec_fn_fee_series_id' => $rec_fn_fee_series_id, 'fn_fees_head_id' => $fn_fees_head_id, 'fn_fees_fine_rule_id' => $fn_fees_fine_rule_id, 'fn_fees_discount_id' => $fn_fees_discount_id, 'due_date' => $due_date, 'cdt' => $cdt,'pupilsightSchoolYearID'=>$pupilsightSchoolYearID,'amount_editable'=>$amount_editable,'display_fee_item'=>$display_fee_item,'is_concat_invoice' => $is_concat_invoice);
+                $sql = 'INSERT INTO fn_fee_invoice SET title=:title, inv_fn_fee_series_id=:inv_fn_fee_series_id, rec_fn_fee_series_id=:rec_fn_fee_series_id, fn_fees_head_id=:fn_fees_head_id, fn_fees_fine_rule_id=:fn_fees_fine_rule_id, fn_fees_discount_id=:fn_fees_discount_id, due_date=:due_date, cdt=:cdt,pupilsightSchoolYearID=:pupilsightSchoolYearID,amount_editable=:amount_editable,display_fee_item=:display_fee_item, is_concat_invoice=:is_concat_invoice';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
                 

@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_add
         $col = $row->addColumn()->setClass('newdes');
             /*$col->addLabel('transaction_editable', __('Transaction editable'));
             $col->addCheckbox('transaction_editable'); */   
-            $col->addContent('<br/><label><input type="checkbox" name="amount_editable"> Transaction editable </label> <label>&nbsp;&nbsp;<input type="checkbox" name="display_fee_item"> Do Not display Fee item </label>');
+            $col->addContent('<br/><label><input type="checkbox" name="amount_editable"> Transaction editable </label> <label>&nbsp;&nbsp;<input type="checkbox" name="display_fee_item"> Do Not display Fee item </label>&nbsp;&nbsp;<label> <input type="checkbox" name="is_concat_invoice"> Concat Invoice </label>');
         $col = $row->addColumn()->setClass('hiddencol');
             $col->addLabel('', __(''));
             $col->addTextField('');   

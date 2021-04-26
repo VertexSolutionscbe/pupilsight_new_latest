@@ -647,6 +647,7 @@ if (isset($_POST['type'])) {
                         $valueConInv = $resultConInv->fetch();
                         $concatInvoiceTitle = $valueConInv['invtitle'];
 
+                        $concatInvId = array();
                         foreach ($invid as $iid) {
                             $datau = array('invoice_status' => $invoice_status, 'fn_fees_invoice_id' => $iid,  'pupilsightPersonID' => $pupilsightPersonID);
                             $sqlu = 'UPDATE fn_fees_collection SET invoice_status=:invoice_status WHERE fn_fees_invoice_id=:fn_fees_invoice_id AND pupilsightPersonID=:pupilsightPersonID';
@@ -658,70 +659,120 @@ if (isset($_POST['type'])) {
                             $resultiu = $connection2->prepare($sqliu);
                             $resultiu->execute($dataiu);
 
-                            $chksql = 'SELECT fn_fee_structure_id, display_fee_item, title as invoice_title FROM fn_fee_invoice WHERE id = ' . $iid . ' ';
+                            $chksql = 'SELECT fn_fee_structure_id, display_fee_item, title as invoice_title, is_concat_invoice FROM fn_fee_invoice WHERE id = ' . $iid . ' ';
                             $resultchk = $connection2->query($chksql);
                             $valuechk = $resultchk->fetch();
-                            if ($valuechk['fn_fee_structure_id'] == '') {
-                                $valuech = $valuechk;
-                            } else {
-                                $chsql = 'SELECT b.invoice_title, a.display_fee_item FROM fn_fee_invoice AS a LEFT JOIN fn_fee_structure AS b ON a.fn_fee_structure_id = b.id WHERE a.id= ' . $iid . ' AND a.fn_fee_structure_id IS NOT NULL ';
-                                $resultch = $connection2->query($chsql);
-                                $valuech = $resultch->fetch();
-                            }
+                            $is_concat_invoice = $valuechk['is_concat_invoice'];
 
-                            if ($valuech['display_fee_item'] == '2') {
-                                $sqcs = "select SUM(fi.total_amount) AS tamnt, SUM(fi.amount) AS amnt, SUM(fi.tax) AS ttax from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.fn_fee_invoice_id =  " . $iid . " ";
-                                $resultfi = $connection2->query($sqcs);
-                                $valuefi = $resultfi->fetchAll();
-                                if (!empty($valuefi)) {
-                                    $cnt = 1;
-                                    foreach ($valuefi as $vfi) {
-                                        $taxamt = 0;
-                                        if(!empty($vfi["ttax"])){
-                                            $taxamt = ($vfi["ttax"] / 100) * $vfi["amnt"];
-                                            $taxamt = number_format($taxamt, 2, '.', '');
-                                        }
-                                        $dts_receipt_feeitem[] = array(
-                                            "serial.all" => $cnt,
-                                            "particulars.all" => htmlspecialchars(trim($valuech['invoice_title'])),
-                                            "inv_amt.all" => $vfi["amnt"],
-                                            "tax.all" => $taxamt,
-                                            "amount.all" => $vfi["tamnt"]
-                                        );
-                                        $total += $vfi["tamnt"];
-                                        $totalTax += $taxamt;
-                                        $totalamtWitoutTaxDis += $vfi["amnt"];
-                                        $cnt++;
-                                    }
+                            if($is_concat_invoice == '1'){
+                                $concatInvId[] = $iid;
+                            } else {
+                                if ($valuechk['fn_fee_structure_id'] == '') {
+                                    $valuech = $valuechk;
+                                } else {
+                                    $chsql = 'SELECT b.invoice_title, a.display_fee_item FROM fn_fee_invoice AS a LEFT JOIN fn_fee_structure AS b ON a.fn_fee_structure_id = b.id WHERE a.id= ' . $iid . ' AND a.fn_fee_structure_id IS NOT NULL ';
+                                    $resultch = $connection2->query($chsql);
+                                    $valuech = $resultch->fetch();
                                 }
-                            } else {
-                                $sqcs = "select fi.total_amount, fi.amount, fi.tax, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(" . $invoice_item_id . ")";
-                                $resultfi = $connection2->query($sqcs);
-                                $valuefi = $resultfi->fetchAll();
 
-                                if (!empty($valuefi)) {
-                                    $cnt = 1;
-                                    foreach ($valuefi as $vfi) {
-                                        $taxamt = '0';
-                                        if(!empty($vfi["tax"])){
-                                            $taxamt = ($vfi["tax"] / 100) * $vfi["amount"];
-                                            $taxamt = number_format($taxamt, 2, '.', '');
+                                if ($valuech['display_fee_item'] == '2') {
+                                    $sqcs = "select SUM(fi.total_amount) AS tamnt, SUM(fi.amount) AS amnt, SUM(fi.tax) AS ttax from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.fn_fee_invoice_id =  " . $iid . " ";
+                                    $resultfi = $connection2->query($sqcs);
+                                    $valuefi = $resultfi->fetchAll();
+                                    if (!empty($valuefi)) {
+                                        $cnt = 1;
+                                        foreach ($valuefi as $vfi) {
+                                            $taxamt = 0;
+                                            if(!empty($vfi["ttax"])){
+                                                $taxamt = ($vfi["ttax"] / 100) * $vfi["amnt"];
+                                                $taxamt = number_format($taxamt, 2, '.', '');
+                                            }
+                                            $dts_receipt_feeitem[] = array(
+                                                "serial.all" => $cnt,
+                                                "particulars.all" => htmlspecialchars(trim($valuech['invoice_title'])),
+                                                "inv_amt.all" => $vfi["amnt"],
+                                                "tax.all" => $taxamt,
+                                                "amount.all" => $vfi["tamnt"]
+                                            );
+                                            $total += $vfi["tamnt"];
+                                            $totalTax += $taxamt;
+                                            $totalamtWitoutTaxDis += $vfi["amnt"];
+                                            $cnt++;
                                         }
-                                        $dts_receipt_feeitem[] = array(
-                                            "serial.all" => $cnt,
-                                            "particulars.all" => htmlspecialchars(trim($vfi["name"])),
-                                            "inv_amt.all" => $vfi["amount"],
-                                            "tax.all" => $taxamt,
-                                            "amount.all" => $vfi["total_amount"]
-                                        );
-                                        $total += $vfi["total_amount"];
-                                        $totalTax += $taxamt;
-                                        $totalamtWitoutTaxDis += $vfi["amount"];
-                                        $cnt++;
+                                    }
+                                } else {
+                                    $sqcs = "select fi.total_amount, fi.amount, fi.tax, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(" . $invoice_item_id . ")";
+                                    $resultfi = $connection2->query($sqcs);
+                                    $valuefi = $resultfi->fetchAll();
+
+                                    if (!empty($valuefi)) {
+                                        $cnt = 1;
+                                        foreach ($valuefi as $vfi) {
+                                            $taxamt = '0';
+                                            if(!empty($vfi["tax"])){
+                                                $taxamt = ($vfi["tax"] / 100) * $vfi["amount"];
+                                                $taxamt = number_format($taxamt, 2, '.', '');
+                                            }
+                                            $dts_receipt_feeitem[] = array(
+                                                "serial.all" => $cnt,
+                                                "particulars.all" => htmlspecialchars(trim($vfi["name"])),
+                                                "inv_amt.all" => $vfi["amount"],
+                                                "tax.all" => $taxamt,
+                                                "amount.all" => $vfi["total_amount"]
+                                            );
+                                            $total += $vfi["total_amount"];
+                                            $totalTax += $taxamt;
+                                            $totalamtWitoutTaxDis += $vfi["amount"];
+                                            $cnt++;
+                                        }
                                     }
                                 }
                             }
                         }
+                    }
+
+                    if(!empty($concatInvId)){
+                        
+                        $invKountCon = count($concatInvId);
+                        $firstInv = reset($concatInvId);
+                        $lastInv = end($concatInvId);
+                        if($invKountCon > 1){
+                            $idsInvCon = $firstInv.','.$lastInv;
+                        } else {
+                            $idsInvCon = $firstInv;
+                        }
+
+                        $sqlconInvNew = 'SELECT GROUP_CONCAT(title SEPARATOR " - ") AS invtitle FROM fn_fee_invoice WHERE id IN ('.$idsInvCon.')';
+                        $resultConInvNew = $connection2->query($sqlconInvNew);
+                        $valueConInvNew = $resultConInvNew->fetch();
+                        $concatInvTitle = $valueConInvNew['invtitle'];
+
+                        $invconids = implode(',', $concatInvId);
+                        $sqcs = "select SUM(fi.total_amount) AS tamnt, SUM(fi.amount) AS amnt, SUM(fi.tax) AS ttax from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.fn_fee_invoice_id IN  (" . $invconids . ") ";
+                        $resultfi = $connection2->query($sqcs);
+                        $valuefi = $resultfi->fetch();
+
+                        $taxamt = 0;
+                        if(!empty($valuefi["ttax"])){
+                            $taxamt = ($valuefi["ttax"] / 100) * $valuefi["amnt"];
+                            $taxamt = number_format($taxamt, 2, '.', '');
+                        }
+
+                        $kountRow = count($dts_receipt_feeitem);
+
+                        $dts_receipt_feeitem1 = array(
+                            "serial.all" => $kountRow + 1,
+                            "particulars.all" => htmlspecialchars(trim($concatInvTitle)),
+                            "inv_amt.all" => $valuefi["amnt"],
+                            "tax.all" => $taxamt,
+                            "amount.all" => $valuefi["tamnt"]
+                        );
+                        $total = $total + $valuefi["tamnt"];
+                        $totalTax = $totalTax + $taxamt;
+                        $totalamtWitoutTaxDis = $totalamtWitoutTaxDis + $valuefi["amnt"];
+
+                        array_push($dts_receipt_feeitem, $dts_receipt_feeitem1);
+
                     }
 
                     $dts_receipt = array(
@@ -757,8 +808,11 @@ if (isset($_POST['type'])) {
                         "concat_invoice_title" => htmlspecialchars($concatInvoiceTitle)
                     );
 
+                    
+
                     // echo '<pre>';
-                    // print_r($dts_receipt);
+                    // print_r($concatInvId);
+                    // print_r($dts_receipt_feeitem);
                     // echo '</pre>';
                     // die();
 

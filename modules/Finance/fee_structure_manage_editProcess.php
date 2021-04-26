@@ -61,6 +61,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
             } else {
                 $display_fee_item = '1';
             }
+
+            if(!empty($_POST['is_concat_invoice'])){
+                $is_concat_invoice = $_POST['is_concat_invoice'];
+            } else {
+                $is_concat_invoice = '0';
+            }
             
             
             $fn_fee_item_id = $_POST['fn_fee_item_id'];
@@ -116,10 +122,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
                             $recp_fee_series_id = '';
                         }
 
-                        $data = array('name' => $name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'invoice_title' => $invoice_title, 'pupilsightSchoolFinanceYearID' => $pupilsightSchoolFinanceYearID, 'fn_fees_head_id' => $fn_fees_head_id, 'inv_fee_series_id' => $inv_fee_series_id, 'recp_fee_series_id' => $recp_fee_series_id, 'fn_fees_fine_rule_id' => $fn_fees_fine_rule_id, 'fn_fees_discount_id' => $fn_fees_discount_id,'seq_installment_NO'=>$seq_installment_NO, 'due_date' => $due_date,'amount_editable' => $amount_editable, 'display_fee_item' => $display_fee_item, 'udt' => $udt, 'id' => $id);
+                        $data = array('name' => $name, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'invoice_title' => $invoice_title, 'pupilsightSchoolFinanceYearID' => $pupilsightSchoolFinanceYearID, 'fn_fees_head_id' => $fn_fees_head_id, 'inv_fee_series_id' => $inv_fee_series_id, 'recp_fee_series_id' => $recp_fee_series_id, 'fn_fees_fine_rule_id' => $fn_fees_fine_rule_id, 'fn_fees_discount_id' => $fn_fees_discount_id,'seq_installment_NO'=>$seq_installment_NO, 'due_date' => $due_date,'amount_editable' => $amount_editable, 'display_fee_item' => $display_fee_item, 'is_concat_invoice' => $is_concat_invoice, 'udt' => $udt, 'id' => $id);
                         $sql = 'UPDATE fn_fee_structure SET name=:name, pupilsightSchoolYearID=:pupilsightSchoolYearID, invoice_title=:invoice_title, pupilsightSchoolFinanceYearID=:pupilsightSchoolFinanceYearID, fn_fees_head_id=:fn_fees_head_id, inv_fee_series_id=:inv_fee_series_id, recp_fee_series_id=:recp_fee_series_id, fn_fees_fine_rule_id=:fn_fees_fine_rule_id, 
                         seq_installment_NO=:seq_installment_NO,
-                        fn_fees_discount_id=:fn_fees_discount_id, due_date=:due_date, amount_editable=:amount_editable, display_fee_item=:display_fee_item, udt=:udt WHERE id=:id';
+                        fn_fees_discount_id=:fn_fees_discount_id, due_date=:due_date, amount_editable=:amount_editable, display_fee_item=:display_fee_item,is_concat_invoice=:is_concat_invoice, udt=:udt WHERE id=:id';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
 

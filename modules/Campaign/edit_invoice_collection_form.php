@@ -5,8 +5,13 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 use Pupilsight\Forms\DatabaseFormFactory;
+$session = $container->get('session');
+// $inv_id = $session->get('inovice_ids');
+// $stuID = $session->get('can_stu_id');
 
-if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edit.php') == false) {
+$inv_id = $_GET['inv_id'];
+$stuID = $_GET['sid'];
+if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __('You do not have access to this action.');
@@ -22,15 +27,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
     }
 
     //Check if school year specified
-    $id = $_GET['invid'];
+    $id = $inv_id;
     if ($id == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
-            $data = array('id' => $id);
-            $sql = 'SELECT b.*, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM fn_fee_invoice_student_assign AS a LEFT JOIN fn_fee_invoice AS b ON a.fn_fee_invoice_id = b.id LEFT JOIN fn_fee_invoice_class_assign AS c ON a.fn_fee_invoice_id = c.fn_fee_invoice_id WHERE a.id=:id';
+            $data = array('fn_fee_invoice_id' => $id);
+            $sql = 'SELECT b.*, c.pupilsightProgramID, c.pupilsightYearGroupID, c.pupilsightRollGroupID FROM fn_fee_invoice_applicant_assign AS a LEFT JOIN fn_fee_invoice AS b ON a.fn_fee_invoice_id = b.id LEFT JOIN fn_fee_invoice_class_assign AS c ON a.fn_fee_invoice_id = c.fn_fee_invoice_id WHERE a.fn_fee_invoice_id=:fn_fee_invoice_id';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -44,6 +49,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            
 
             $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
             $resulta = $connection2->query($sqla);
@@ -137,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
             echo '</h2>';
 
            
-            $form = Form::create('program', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/invoice_manage_editProcess.php?id='.$values['id']);
+            $form = Form::create('edit_invoice_save_form', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/edit_invoice_save_collection.php?id='.$values['id']);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -151,30 +158,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
             $form->addHiddenValue('pupilsightProgramID', $values['pupilsightProgramID']);
             $form->addHiddenValue('pupilsightYearGroupID', $values['pupilsightYearGroupID']);
             $form->addHiddenValue('pupilsightRollGroupID', $values['pupilsightRollGroupID']);
+            $form->addHiddenValue('pupilsightPersonID', $stuID);
 
             $row = $form->addRow();
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('title', __('Invoice Title'));
                     $col->addTextField('title')->addClass('txtfield')->required()->setValue($values['title']);
 
-            if(!empty($values['amount_editable'])){
-                $cl="checked";
-                } else {
-                    $cl='';
-                }
-                if($values['display_fee_item']=="2"){
-                $cl1="checked";
-                } else {
-                    $cl1='';
-                }
 
-                if($values['is_concat_invoice']=="1"){
-                    $cl2="checked";
-                } else {
-                    $cl2='';
-                }
-                $col = $row->addColumn()->setClass('newdes');
-                $col->addContent('<br/><label><input type="checkbox" name="amount_editable" '.$cl.' > Transaction editable </label>&nbsp;&nbsp;<label> <input type="checkbox" name="display_fee_item" '.$cl1.' > Do Not display Fee item </label>&nbsp;&nbsp;<label> <input type="checkbox" name="is_concat_invoice" '.$cl2.' > Concat Invoice </label>');        
+                    if(!empty($values['amount_editable'])){
+                        $cl="checked";
+                     } else {
+                         $cl='';
+                     }
+                     if($values['display_fee_item']=="2"){
+                        $cl1="checked";
+                     } else {
+                         $cl1='';
+                     }
+
+                    if($values['is_concat_invoice']=="1"){
+                        $cl2="checked";
+                    } else {
+                        $cl2='';
+                    }
+                     $col = $row->addColumn()->setClass('newdes');
+                     $col->addContent('<br/><label><input type="checkbox" name="amount_editable" '.$cl.' > Transaction editable </label>&nbsp;&nbsp;<label> <input type="checkbox" name="display_fee_item" '.$cl1.' > Do Not display Fee item </label>&nbsp;&nbsp;<label> <input type="checkbox" name="is_concat_invoice" '.$cl2.' > Concat Invoice </label>');
 
                 // $col = $row->addColumn()->setClass('newdes');
                 //     $col->addLabel('invoice_title_id', __('Title of Invoice'));
@@ -202,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
             
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('fn_fees_head_id', __('Account Head'));
-                    $col->addSelect('fn_fees_head_id')->fromArray($feeHeadData)->required()->selected($values['fn_fees_head_id']);    
+                    $col->addSelect('fn_fees_head_id')->setId('fnFeesHeadId')->fromArray($feeHeadData)->required()->selected($values['fn_fees_head_id']);    
 
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('due_date', __('Due Date'))->addClass('dte');
@@ -243,7 +252,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                     $col->addTextField('');     
                 
                 $col = $row->addColumn()->setClass('newdes nobrdbtm catbutt');
-                    $col->addButton(__('Add'))->setID('addInvoiceItem')->addData('cid', $lastId)->addData('disid', $feeItemIds)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+                    //$col->addButton(__('Add'))->setID('addInvoiceItem')->addData('cid', $lastId)->addData('disid', $feeItemIds)->addClass('bttnsubmt bg-dodger-blue fsize lftbutt');
+                    $col->addContent('<a style="cursor:pointer;margin-bottom: 15px;" data-cid="'.$lastId.'" data-disid="'.$feeItemIds.'" id="addInvoiceItem" class="btn btn-primary lftbutt">Add</a>');
 
             
             if(!empty($childvalues)){
@@ -279,15 +289,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                     if($i == '1'){
                         $col->addLabel('discount', __('Discount'))->addClass('dte lastlabel');
                     }     
-                        $col->addTextField('discount['.$cv['id'].']')->addClass('txtfield kountseat szewdt2 numfield')->setValue($cv['discount']);  
-                        $col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="far fa-times-circle delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>');   
+                        $col->addTextField('discount['.$cv['id'].']')->addClass('txtfield kountseat szewdt2 numfield')->setValue($cv['discount']); 
+                        
+                    if($i == '1'){
+                        $col->addContent('<div class="dte mb-1"  style="font-size: 25px; margin: -35px 50px 0px 0px; float:right; width: 30px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>');  
+                    } else {
+                        $col->addContent('<div class="dte mb-1"  style="font-size: 25px; margin: -35px -47px 0px 0px; float:right; width: 30px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>');  
+                    }
 
                     // $col = $row->addColumn()->setClass('newdes nobrdbtm remove_icon');
                     // if($i == '1'){
                     //     $col->addLabel('total_amount', __('Total Amount'))->addClass('dte');
                     // }    
                     //     $col->addTextField('total_amount['.$cv['id'].']')->addClass('txtfield kountseat szewdt2 numfield')->setValue($cv['total_amount']); 
-                    //     $col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="far fa-times-circle delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>'); 
+                         //$col->addContent('<div class="dte mb-1"  style="font-size: 25px; padding:  0px 0 0px 4px; width: 30px"><i style="cursor:pointer" class="mdi mdi-close-circle mdi-24px delFeeStructureItem " data-id="'.$cv['id'].'" ></i></div>'); 
                     $i++;       
                 }             
             } else {
@@ -322,16 +337,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
             }       
                 $row = $form->addRow()->setID('lastseatdiv');
                 $row->addFooter();
-                $row->addSubmit();
+                $row->addContent('<a id="updateAdmissionInvoiceStnButton" class=" btn btn-primary" style="float:right;">Submit</a>');
 
             echo $form->getOutput();
         }
     }
 }
+
 ?>
 
 <style>
     .lastlabel {
-        width :100px;
+        width :200px;
     }
 </style>
