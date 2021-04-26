@@ -77,6 +77,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                 $display_fee_item=1;
             }
 
+            if(!empty($_POST['is_concat_invoice'])){
+                $is_concat_invoice = "1";
+            } else {
+                $is_concat_invoice = '0';
+            }
+
             $pupilsightProgramID = $_POST['pupilsightProgramID'];
             $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
             $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
@@ -106,8 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage_edi
                 // } else {
                     //Write to database
                     try {
-                        $data = array('title' => $title, 'inv_fn_fee_series_id' => $inv_fn_fee_series_id, 'rec_fn_fee_series_id' => $rec_fn_fee_series_id, 'fn_fees_head_id' => $fn_fees_head_id, 'fn_fees_fine_rule_id' => $fn_fees_fine_rule_id, 'fn_fees_discount_id' => $fn_fees_discount_id, 'due_date' => $due_date, 'udt' => $udt, 'fn_fee_structure_id' => $fn_fee_structure_id,'transport_schedule_id' => $transport_schedule_id, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightSchoolFinanceYearID' => $pupilsightSchoolFinanceYearID, 'amount_editable' => $amount_editable, 'display_fee_item' => $display_fee_item);
-                        $sql = 'INSERT INTO fn_fee_invoice SET title=:title, inv_fn_fee_series_id=:inv_fn_fee_series_id, rec_fn_fee_series_id=:rec_fn_fee_series_id, fn_fees_head_id=:fn_fees_head_id, fn_fees_fine_rule_id=:fn_fees_fine_rule_id, fn_fees_discount_id=:fn_fees_discount_id, due_date=:due_date, udt=:udt,fn_fee_structure_id=:fn_fee_structure_id, transport_schedule_id=:transport_schedule_id, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightSchoolFinanceYearID=:pupilsightSchoolFinanceYearID, amount_editable=:amount_editable, display_fee_item=:display_fee_item';
+                        $data = array('title' => $title, 'inv_fn_fee_series_id' => $inv_fn_fee_series_id, 'rec_fn_fee_series_id' => $rec_fn_fee_series_id, 'fn_fees_head_id' => $fn_fees_head_id, 'fn_fees_fine_rule_id' => $fn_fees_fine_rule_id, 'fn_fees_discount_id' => $fn_fees_discount_id, 'due_date' => $due_date, 'udt' => $udt, 'fn_fee_structure_id' => $fn_fee_structure_id,'transport_schedule_id' => $transport_schedule_id, 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightSchoolFinanceYearID' => $pupilsightSchoolFinanceYearID, 'amount_editable' => $amount_editable, 'display_fee_item' => $display_fee_item,'is_concat_invoice' => $is_concat_invoice);
+                        $sql = 'INSERT INTO fn_fee_invoice SET title=:title, inv_fn_fee_series_id=:inv_fn_fee_series_id, rec_fn_fee_series_id=:rec_fn_fee_series_id, fn_fees_head_id=:fn_fees_head_id, fn_fees_fine_rule_id=:fn_fees_fine_rule_id, fn_fees_discount_id=:fn_fees_discount_id, due_date=:due_date, udt=:udt,fn_fee_structure_id=:fn_fee_structure_id, transport_schedule_id=:transport_schedule_id, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightSchoolFinanceYearID=:pupilsightSchoolFinanceYearID, amount_editable=:amount_editable, display_fee_item=:display_fee_item, is_concat_invoice=:is_concat_invoice';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
 

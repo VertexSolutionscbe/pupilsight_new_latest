@@ -176,8 +176,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                      } else {
                          $cl1='';
                      }
+
+                    if($values['is_concat_invoice']=="1"){
+                        $cl2="checked";
+                    } else {
+                        $cl2='';
+                    }
                      $col = $row->addColumn()->setClass('newdes');
-                     $col->addContent('<br/><label><input type="checkbox" name="amount_editable" '.$cl.' > Transaction editable </label>&nbsp;&nbsp;<label> <input type="checkbox" name="display_fee_item" '.$cl1.' > Do Not display Fee item </label>');
+                     $col->addContent('<br/><label><input type="checkbox" name="amount_editable" '.$cl.' > Transaction editable </label>&nbsp;&nbsp;<label> <input type="checkbox" name="display_fee_item" '.$cl1.' > Do Not display Fee item </label>&nbsp;&nbsp;<label> <input type="checkbox" name="is_concat_invoice" '.$cl2.' > Concat Invoice </label>');
 
                 // $col = $row->addColumn()->setClass('newdes');
                 //     $col->addLabel('invoice_title_id', __('Title of Invoice'));
