@@ -1005,6 +1005,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <tr>
                     <th class='column'>Table</th>
                     <th class='column'>Field Name</th>
+                    <th class='column'>Field ID</th>
                     <th class='column'>Field Type</th>
                     <th class='column'>Modules</th>
                     <th class='column'>Tab / Section</th>
@@ -1036,6 +1037,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     $str .= "\n<tr id='custom_row_" . $id . "' >";
                     $str .= "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
                     $str .= "<td>" . $fieldTitle . "</td>";
+                    $str .= "<td>" . $fieldName . "</td>";
                     $str .= "<td>" . $customField->getInputTag($customFieldList[$i]["field_type"]) . "</td>";
                     $mod = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["modules"]) . "</div>";
                     $str .= "<td>" . $mod . "</td>";
