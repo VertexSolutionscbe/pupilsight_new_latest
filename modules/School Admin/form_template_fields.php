@@ -22,7 +22,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_m
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    
+    $sqlcust = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
+    $result = $connection2->query($sqlcust);
+    $customFields = $result->fetchAll();
 }
 ?>
 
@@ -110,6 +112,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/tc_template_m
             <td>Mother Name</td>
             <td>${mother_phone}</td>
         </tr>
+        <?php if(!empty($customFields)) {
+            $k = 15; 
+            foreach($customFields as $cus) {    
+        ?>
+        <tr>
+            <td><?php echo $k;?></td>
+            <td><?php echo $cus['field_title'];?></td>
+            <td>${<?php echo $cus['field_name'];?>}</td>
+        </tr>
+        <?php $k++; } } ?>
        
 
         <?php /* $i++; } } else { */ ?>

@@ -2,7 +2,7 @@
 
 $from="messages@pupilpod.in";
 $frm_name="Pupilsight";
-$to="aseenacreace@gmail.com"; 
+$to="bikash@thoughtnet.in"; 
 $subject ="Test Sub";
 $msg ="test msg";
 

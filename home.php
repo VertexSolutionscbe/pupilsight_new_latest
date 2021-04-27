@@ -1143,13 +1143,13 @@ if (isset($_GET['invalid']))
                 <h4>(Please enter your username or email address. You will receive a link to create a new password via email)</h4>
                 <div class="mb-3">
                     <label class="form-label">Username or Email</label>
-                    <input type="text" id="email" name="email" class="form-control" required="">
+                    <input type="text" id="resetEmail" name="email" class="form-control" required="">
                     <div class="invalid-feedback">Invalid User Email Addresss</div>
                 </div>
 
                 <div class="form-footer mb-3">
                     <div class="row">
-                        <div class='col-12'><button type="submit" class="btn btn-primary btn-block btn-square">Reset Password</button></div>
+                        <div class='col-12'><button type="button" class="btn btn-primary btn-block btn-square" id="resetPassword">Reset Password</button></div>
                     </div>
                 </div>
 
@@ -1227,6 +1227,10 @@ if (isset($_GET['invalid']))
     </div>
 
     <style>
+        .errAlert {
+            border: 1px solid red !important;
+        }
+
         .ablack {
             color: black;
         }
@@ -1518,6 +1522,53 @@ if (isset($_GET['invalid']))
 
             //$('.courseData').css('border', '0px'); 
 
+        });
+    </script>
+
+    <script>
+        $(document).on('click', '#resetPassword', function () {
+            $("#preloader").show();
+            var remail = $("#resetEmail").val();
+            var type = 'chkUserEmail';
+            if (remail) {
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: remail, type: type },
+                    async: true,
+                    success: function (response) {
+                        if(response == 'Found'){
+                            $("#resetEmail").removeClass('errAlert');
+                            //alert('Found');
+                            $.ajax({
+                                url: 'reset_password_mail.php',
+                                type: 'post',
+                                data: { val: remail },
+                                async: true,
+                                success: function (response) {
+                                    if(response == 'sent'){
+                                        $("#preloader").hide();
+                                        alert('Your Request Submitted Successfully , Please Check Your Mail');
+                                        location.reload();
+                                    } else {
+                                        $("#preloader").hide();
+                                        alert('You Request Not Submitted, Please Try Again after Sometime!');
+                                    }
+                                }
+                            });
+                        } else {
+                            $("#preloader").hide();
+                            $("#resetEmail").addClass('errAlert');
+                            alert('You Enter a Wrong Details');
+                        }
+                        
+                    }
+                });
+            } else {
+                $("#preloader").hide();
+                $("#resetEmail").addClass('errAlert');
+                alert('Please Enter Your Username or Email Id!');
+            }
         });
     </script>
 
