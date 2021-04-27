@@ -62,6 +62,9 @@ if (!empty($file)) {
 
             $date = date('d-m-Y', strtotime($applicationData['created_at']));
 
+            $sqlcust = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
+            $customFields = database::doSelect($sqlcust);
+
             // $sql = "SELECT id, formatval FROM fn_fee_series WHERE pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . " AND pupilsightProgramID = ".$applicationData['pupilsightProgramID']." ";
             // $result = database::doSelectOne($sql);
 
@@ -161,6 +164,18 @@ if (!empty($file)) {
 
                 try {
                     $phpword->setValue('mother_phone', $applicationData['motherPhone']);
+                } catch (Exception $ex) {
+                }
+
+                try {
+                    if(!empty($customFields)){
+                        foreach($customFields as $cf){
+                            try {
+                                $phpword->setValue($cf['field_name'], $applicationData[$cf['field_name']]);
+                            } catch (Exception $ex) {
+                            }
+                        }
+                    }
                 } catch (Exception $ex) {
                 }
 

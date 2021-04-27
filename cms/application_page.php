@@ -91,6 +91,8 @@ $logo = $baseurl . "/cms/images/pupilpod_logo.png";
 if (isset($data['logo_image'])) {
     $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
 }
+
+$title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
 ?>
 <!doctype html>
 <html class="no-js" lang="">

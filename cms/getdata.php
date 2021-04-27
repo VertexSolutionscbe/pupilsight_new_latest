@@ -135,6 +135,7 @@ if (!empty($camdata)) {
 									<input type="hidden" name="campaignid" value="<?php echo $cid; ?>">
 									<input type="hidden" name="sid" value="<?php echo $sid; ?>">
 									<input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
+									<input type="hidden" name="callbackurl" id="responseUrl" value="<?php echo $responseLink; ?>" />
 
 									<input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
 									<input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">

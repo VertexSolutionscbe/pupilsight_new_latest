@@ -3977,3 +3977,39 @@ if ($type == 'deleteCampaignImageTemplateConfig') {
     $result = $connection2->prepare($sql);
     $result->execute($data);
 }
+
+if ($type == 'chkUserEmail') {
+    $sqlp = 'SELECT username, email FROM pupilsightPerson WHERE username = "'.$val.'" OR email = "'.$val.'" ';
+    $resultp = $connection2->query($sqlp);
+    $rowdataprog = $resultp->fetch();
+    if(!empty($rowdataprog)){
+        echo 'Found';
+    } else {
+        echo 'Not Found';
+    }
+}
+
+
+if ($type == 'resetpassword') {
+    $password = $val;
+    $password_reset_key = $_POST['pid'];
+
+    $sqlp = 'SELECT pupilsightPersonID FROM pupilsightPerson WHERE password_reset_key = "'.$password_reset_key.'" ';
+    $resultp = $connection2->query($sqlp);
+    $rowdataprog = $resultp->fetch();
+
+    if(!empty($rowdataprog)){
+        $pupilsightPersonID = $rowdataprog['pupilsightPersonID'];
+        $salt = getSalt();
+        $passwordStrong = hash('sha256', $salt . $password);
+
+        $datafort12 = array('passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'canLogin' => 'Y', 'password_reset_key' => '', 'pupilsightPersonID' => $pupilsightPersonID);
+        $sqlfort12 = 'UPDATE pupilsightPerson SET passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, canLogin=:canLogin, password_reset_key=:password_reset_key WHERE pupilsightPersonID=:pupilsightPersonID';
+        $resultfort12 = $connection2->prepare($sqlfort12);
+        $resultfort12->execute($datafort12);
+        echo 'success';
+    } else {
+        echo 'notfound';
+    }
+    
+}

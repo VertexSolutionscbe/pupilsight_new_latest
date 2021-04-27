@@ -346,7 +346,7 @@ if (isset($_POST['type'])) {
                     $resultu = $connection2->prepare($sqlu);
                     $resultu->execute($datau);
 
-
+                    //$paidInv = array();
                     if(!empty($over_payment)){
                         $amtPaid = $amount_paying + $over_payment;
                     } else {
@@ -367,6 +367,7 @@ if (isset($_POST['type'])) {
                                 $itemamount = $itmid['total_amount'];
                                 $itid = $itmid['id'];
                                 if ($itemamount < $chkamount) {
+                                    //$paidInv[] = $fn_fee_invoice_id;
                                     $status = '1';
                                     $paidamount = $itemamount;
                                     $chkamount = $chkamount - $itemamount;

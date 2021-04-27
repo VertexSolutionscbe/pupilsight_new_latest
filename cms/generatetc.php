@@ -73,6 +73,9 @@ if (!empty($file)) {
             $sql = "SELECT id, formatval FROM fn_fee_series WHERE pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . " AND pupilsightProgramID = " . $applicationData['pupilsightProgramID'] . " AND FIND_IN_SET('" . $applicationData['pupilsightYearGroupID'] . "', classIds) ";
             $result = database::doSelectOne($sql);
 
+            $sqlcust = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
+            $customFields = database::doSelect($sqlcust);
+
             if (!empty($result['formatval'])) {
                 $seriesId = $result['id'];
                 $invformat = explode('$', $result['formatval']);
@@ -181,8 +184,18 @@ if (!empty($file)) {
                 } catch (Exception $ex) {
                 }
 
-                
-            
+                try {
+                    if(!empty($customFields)){
+                        foreach($customFields as $cf){
+                            try {
+                                $phpword->setValue($cf['field_name'], $applicationData[$cf['field_name']]);
+                            } catch (Exception $ex) {
+                            }
+                        }
+                    }
+                } catch (Exception $ex) {
+                }
+
 
                 $fname = trim(str_replace("/", "_", $fname));
                 $fname = trim(str_replace(" ", "_", $fname)) . "_" . time();
