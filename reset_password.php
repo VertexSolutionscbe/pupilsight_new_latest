@@ -409,27 +409,31 @@ if(!empty($rowdataprog)){
                         var conpass = $("#confirmPassword").val();
                         var type = 'resetpassword';
                         var pid = $("#pid").val();
-                        if(pass == conpass){
-                            $.ajax({
-                                url: 'ajax_data.php',
-                                type: 'post',
-                                data: {
-                                    val: pass,
-                                    type: type,
-                                    pid: pid
-                                },
-                                async: true,
-                                success: function(response) {
-                                    if(response == 'success'){
-                                        alert('Password Reset Successfully, Please Login!');
-                                        location.href = 'home.php';
-                                    } else {
-                                        alert('Password Reset Key did not Matched!');
+                        if(pass != '' && conpass != ''){
+                            if(pass == conpass){
+                                $.ajax({
+                                    url: 'ajax_data.php',
+                                    type: 'post',
+                                    data: {
+                                        val: pass,
+                                        type: type,
+                                        pid: pid
+                                    },
+                                    async: true,
+                                    success: function(response) {
+                                        if(response == 'success'){
+                                            alert('Password Reset Successfully, Please Login!');
+                                            location.href = 'home.php';
+                                        } else {
+                                            alert('Password Reset Key did not Matched!');
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            } else {
+                                alert('Password did not Match with Confirm Password!');
+                            }
                         } else {
-                            alert('Password did not Match with Confirm Password!');
+                            alert('Please Enter The Password!');
                         }
                     });
                 </script>

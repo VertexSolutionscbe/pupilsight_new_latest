@@ -3979,11 +3979,15 @@ if ($type == 'deleteCampaignImageTemplateConfig') {
 }
 
 if ($type == 'chkUserEmail') {
-    $sqlp = 'SELECT username, email FROM pupilsightPerson WHERE username = "'.$val.'" OR email = "'.$val.'" ';
+    $sqlp = 'SELECT username, email, canLogin FROM pupilsightPerson WHERE  username = "'.$val.'" OR email = "'.$val.'"  ';
     $resultp = $connection2->query($sqlp);
     $rowdataprog = $resultp->fetch();
     if(!empty($rowdataprog)){
-        echo 'Found';
+        if($rowdataprog['canLogin'] == 'N'){
+            echo 'Disable';
+        } else {
+            echo 'Found';
+        }
     } else {
         echo 'Not Found';
     }
