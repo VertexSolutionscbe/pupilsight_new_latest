@@ -39,12 +39,12 @@ if (!empty($file)) {
             LEFT JOIN pupilsightSchoolYear AS f ON b.pupilsightSchoolYearID=f.pupilsightSchoolYearID 
             
             LEFT JOIN pupilsightFamilyChild AS child ON child.pupilsightPersonID=a.pupilsightPersonID 
-            LEFT JOIN pupilsightFamilyAdult AS adult1 ON adult1.pupilsightFamilyID=child.pupilsightFamilyID AND adult1.contactPriority=1 
-            LEFT JOIN pupilsightPerson as parent1 ON parent1.pupilsightPersonID=adult1.pupilsightPersonID AND parent1.status='Full' 
-            LEFT JOIN pupilsightFamilyAdult as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2 
-            LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full' 
+            LEFT JOIN pupilsightFamilyRelationship AS adult1 ON adult1.pupilsightFamilyID=child.pupilsightFamilyID AND adult1.relationship= 'Father'
+            LEFT JOIN pupilsightPerson as parent1 ON parent1.pupilsightPersonID=adult1.pupilsightPersonID1 AND parent1.status='Full' 
+            LEFT JOIN pupilsightFamilyRelationship as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.relationship= 'Mother'
+            LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID1 AND parent2.status='Full' 
             
-            WHERE a.pupilsightPersonID = " . $aid . " ";
+            WHERE a.pupilsightPersonID = " . $aid . " GROUP BY a.pupilsightPersonID ";
             $applicationData = database::doSelectOne($sqla);
             // echo '<pre>';
             // print_r($applicationData);
@@ -72,7 +72,7 @@ if (!empty($file)) {
                 // }
 
                 try {
-                    $date = date('d-m-Y');
+                    $date = date('d/m/Y');
                     $phpword->setValue('date', $date);
                 } catch (Exception $ex) {
                 }
@@ -101,10 +101,15 @@ if (!empty($file)) {
                     $phpword->setValue('academic', $applicationData['academic']);
                 } catch (Exception $ex) {
                 }
+
                 try {
-                    $phpword->setValue('dob', $applicationData['dob']);
+                    if(!empty($applicationData['dob'])){
+                        $dobDate = date('d/m/Y', strtotime($applicationData['dob']));
+                    }
+                    $phpword->setValue('dob', $dobDate);
                 } catch (Exception $ex) {
                 }
+
                 try {
                     $phpword->setValue('father_name', $applicationData['fatherName']);
                 } catch (Exception $ex) {

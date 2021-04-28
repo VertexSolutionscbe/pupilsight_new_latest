@@ -177,8 +177,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_receipts_manag
         </tr>
         <tr>
             <td>29</td>
-            <td>Invoice Title Concat</td>
-            <td>${concat_invoice_title}</td>
+            <td>Fee Item Wise Paid Amount</td>
+            <td>${inv_amt_paid.all}</td>
+        </tr>
+        <tr>
+            <td>30</td>
+            <td>Fee Item Wise Pending Amount</td>
+            <td>${inv_amt_pending.all}</td>
+        </tr>
+        <tr>
+            <td>31</td>
+            <td>Fee Item Wise Discount Amount</td>
+            <td>${inv_amt_discount.all}</td>
+        </tr>
+        <tr>
+            <td>32</td>
+            <td>Total Amount Pending</td>
+            <td>${total_amount_pending}</td>
+        </tr>
+        <tr>
+            <td>33</td>
+            <td>Total Amount Discount</td>
+            <td>${total_amount_discount}</td>
         </tr>
 
     </tbody>
