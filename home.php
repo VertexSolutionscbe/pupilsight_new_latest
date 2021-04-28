@@ -1556,6 +1556,10 @@ if (isset($_GET['invalid']))
                                     }
                                 }
                             });
+                        } else if(response == 'Disable'){
+                            $("#preloader").hide();
+                            $("#resetEmail").addClass('errAlert');
+                            alert('You Account is Disabled, Please Contact to Administrator!');
                         } else {
                             $("#preloader").hide();
                             $("#resetEmail").addClass('errAlert');

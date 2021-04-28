@@ -48,7 +48,8 @@ if(!empty($email)){
     $subject = 'Password Reset Mail';
 
     $reslink = $link.'/reset_password.php?key='.$randstring;
-    $body = 'Dear Sir, Your Password Reset Link : <a target="_blank" href="'.$reslink.'">'.$reslink.'</a>';
+
+    $body = 'Dear User, <br><br> Thank you for registering with Pupilpod. <br><br> Don’t remember your password? Worry not! Simply reset your password by clicking on the below link: <br><br> <a target="_blank" href="'.$reslink.'">'.$reslink.'</a> <br><br> Please use updated password to login to your account on pupilpod. <br><br> Regards, <br><br> Pupilpod <br><br> If you are not the intended recipient of this mail or have not initiated this registration request on pupilod, please drop us an email on support@pupilpod.in';
 
     $sql = "SELECT value FROM pupilsightSetting WHERE name = 'organisationName' ";
     $result = $connection2->query($sql);

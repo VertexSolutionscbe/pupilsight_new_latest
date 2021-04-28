@@ -15,8 +15,8 @@ function getDomain()
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $protocol . "://" . $_SERVER['HTTP_HOST'];
 }
-//$baseurl = getDomain();
-$baseurl = getDomain().'/pupilsight';
+$baseurl = getDomain();
+//$baseurl = getDomain().'/pupilsight';
 
 $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
 
@@ -230,7 +230,7 @@ if(!empty($rowdataprog)){
                                         <div class="container" style="width:50%;padding: 50px 50px;border: 1px solid gainsboro;margin-top: 20px;border-radius: 25px;">
                                             <div class="i-am-centered" style="">
 
-                                                    <h2 style="text-align:center;margin-bottom: 20px;background: #6e7582;color: white;">Reset Password</h2>
+                                                    <h2 style="text-align:center;margin-bottom: 20px;">Reset Password</h2>
                                                     <div id="progClassDiv" class="row mt-12">
                                                         <div class="col-md-6 col-sm-12">
                                                             <span>Password : </span>
@@ -409,27 +409,31 @@ if(!empty($rowdataprog)){
                         var conpass = $("#confirmPassword").val();
                         var type = 'resetpassword';
                         var pid = $("#pid").val();
-                        if(pass == conpass){
-                            $.ajax({
-                                url: 'ajax_data.php',
-                                type: 'post',
-                                data: {
-                                    val: pass,
-                                    type: type,
-                                    pid: pid
-                                },
-                                async: true,
-                                success: function(response) {
-                                    if(response == 'success'){
-                                        alert('Password Reset Successfully, Please Login!');
-                                        location.reload();
-                                    } else {
-                                        alert('Password Reset Key did not Matched!');
+                        if(pass != '' && conpass != ''){
+                            if(pass == conpass){
+                                $.ajax({
+                                    url: 'ajax_data.php',
+                                    type: 'post',
+                                    data: {
+                                        val: pass,
+                                        type: type,
+                                        pid: pid
+                                    },
+                                    async: true,
+                                    success: function(response) {
+                                        if(response == 'success'){
+                                            alert('Password Reset Successfully, Please Login!');
+                                            location.href = 'home.php';
+                                        } else {
+                                            alert('Password Reset Key did not Matched!');
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            } else {
+                                alert('Password did not Match with Confirm Password!');
+                            }
                         } else {
-                            alert('Password did not Match with Confirm Password!');
+                            alert('Please Enter The Password!');
                         }
                     });
                 </script>
@@ -437,11 +441,23 @@ if(!empty($rowdataprog)){
         </html>
 <?php
     } else {
-        header("Location: home.php");
+    ?>
+        <script>
+            alert('Invalid Token or Token Expired!');
+            location.href = 'home.php';
+        </script>
+    <?php 
+        // header("Location: home.php");
         exit;
     }
 } else {
-    header("Location: home.php");
+    ?>
+        <script>
+            alert('Invalid Token or Token Expired!');
+            location.href = 'home.php';
+        </script>
+    <?php 
+    //header("Location: home.php");
     exit;
 }
 

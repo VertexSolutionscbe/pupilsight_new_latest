@@ -632,6 +632,8 @@ if (isset($_POST['type'])) {
                     $total = 0;
                     $totalTax = 0;
                     $totalamtWitoutTaxDis = 0;
+                    $totalPending = 0;
+                    $totalDiscount = 0;
                     if (!empty($invoice_id)) {
                         $invid = explode(',', $invoice_id);
                         $invKount = count($invid);
@@ -649,6 +651,8 @@ if (isset($_POST['type'])) {
                         $concatInvoiceTitle = $valueConInv['invtitle'];
 
                         $concatInvId = array();
+
+                        $cnt = 1;
                         foreach ($invid as $iid) {
                             $datau = array('invoice_status' => $invoice_status, 'fn_fees_invoice_id' => $iid,  'pupilsightPersonID' => $pupilsightPersonID);
                             $sqlu = 'UPDATE fn_fees_collection SET invoice_status=:invoice_status WHERE fn_fees_invoice_id=:fn_fees_invoice_id AND pupilsightPersonID=:pupilsightPersonID';
@@ -681,8 +685,35 @@ if (isset($_POST['type'])) {
                                     $resultfi = $connection2->query($sqcs);
                                     $valuefi = $resultfi->fetchAll();
                                     if (!empty($valuefi)) {
-                                        $cnt = 1;
+                                        //$cnt = 1;
                                         foreach ($valuefi as $vfi) {
+                                            $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." )  ";
+                                            $resultcol = $connection2->query($sqcol);
+                                            $valuecol = $resultcol->fetch();
+                                            $itemAmt    = $valuecol["tamntCol"];
+                                            $itemAmtCol = $valuecol["ttamtCol"];
+
+                                            $sqitid = "SELECT GROUP_CONCAT(id) AS itmIds FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ".$iid." ";
+                                            $resultitid = $connection2->query($sqitid);
+                                            $valueitid = $resultitid->fetch();
+                                            $itmIDS = $valueitid['itmIds'];
+
+                                            $sqdis = "SELECT SUM(discount) AS dis FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id IN (".$itmIDS.") ";
+                                            $resultdis = $connection2->query($sqdis);
+                                            $valuedis = $resultdis->fetch();
+                                            $disItemAmt = 0;
+                                            if(!empty($valuedis)){
+                                                $disItemAmt = $valuedis['dis'];
+                                                $newItemAmtCol = $itemAmtCol + $disItemAmt;
+                                                $itemAmtPen = $itemAmt - $newItemAmtCol;
+                                            } else {
+                                                $disItemAmt = 0;
+                                                $itemAmtPen = $itemAmt - $itemAmtCol;
+                                            }
+
+
+                                            $itemAmtPen = $itemAmt - $itemAmtCol;
+
                                             $taxamt = 0;
                                             if(!empty($vfi["ttax"])){
                                                 $taxamt = ($vfi["ttax"] / 100) * $vfi["amnt"];
@@ -693,7 +724,9 @@ if (isset($_POST['type'])) {
                                                 "particulars.all" => htmlspecialchars(trim($valuech['invoice_title'])),
                                                 "inv_amt.all" => $vfi["amnt"],
                                                 "tax.all" => $taxamt,
-                                                "amount.all" => $vfi["tamnt"]
+                                                "amount.all" => $vfi["tamnt"],
+                                                "inv_amt_paid.all" => $itemAmtCol,
+                                                "inv_amt_pending.all" => $itemAmtPen
                                             );
                                             $total += $vfi["tamnt"];
                                             $totalTax += $taxamt;
@@ -702,13 +735,33 @@ if (isset($_POST['type'])) {
                                         }
                                     }
                                 } else {
-                                    $sqcs = "select fi.total_amount, fi.amount, fi.tax, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(" . $invoice_item_id . ")";
+                                    $sqcs = "select fi.total_amount, fi.amount, fi.tax, fi.id, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.fn_fee_invoice_id =  " . $iid . " and fi.id in(" . $invoice_item_id . ")  ";
                                     $resultfi = $connection2->query($sqcs);
                                     $valuefi = $resultfi->fetchAll();
-
+                                    
                                     if (!empty($valuefi)) {
-                                        $cnt = 1;
+                                        //$cnt = 1;
                                         foreach ($valuefi as $vfi) {
+                                            $sqcol = "SELECT * FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND fn_fee_invoice_item_id =  " . $vfi["id"] . " AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." )  ";
+                                            $resultcol = $connection2->query($sqcol);
+                                            $valuecol = $resultcol->fetch();
+                                            $itemAmt    = $valuecol["total_amount"];
+                                            $itemAmtCol = $valuecol["total_amount_collection"];
+
+                                            $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $vfi["id"] . " ";
+                                            $resultdis = $connection2->query($sqdis);
+                                            $valuedis = $resultdis->fetch();
+                                            $disItemAmt = 0;
+                                            if(!empty($valuedis)){
+                                                $disItemAmt = $valuedis['discount'];
+                                                $newItemAmtCol = $itemAmtCol + $disItemAmt;
+                                                $itemAmtPen = $itemAmt - $newItemAmtCol;
+                                            } else {
+                                                $disItemAmt = 0;
+                                                $itemAmtPen = $itemAmt - $itemAmtCol;
+                                            }
+
+                                            
                                             $taxamt = '0';
                                             if(!empty($vfi["tax"])){
                                                 $taxamt = ($vfi["tax"] / 100) * $vfi["amount"];
@@ -719,11 +772,16 @@ if (isset($_POST['type'])) {
                                                 "particulars.all" => htmlspecialchars(trim($vfi["name"])),
                                                 "inv_amt.all" => $vfi["amount"],
                                                 "tax.all" => $taxamt,
-                                                "amount.all" => $vfi["total_amount"]
+                                                "amount.all" => $vfi["total_amount"],
+                                                "inv_amt_paid.all" => $itemAmtCol,
+                                                "inv_amt_pending.all" => $itemAmtPen,
+                                                "inv_amt_discount.all" => $disItemAmt
                                             );
                                             $total += $vfi["total_amount"];
                                             $totalTax += $taxamt;
                                             $totalamtWitoutTaxDis += $vfi["amount"];
+                                            $totalPending += $itemAmtPen;
+                                            $totalDiscount += $disItemAmt;
                                             $cnt++;
                                         }
                                     }
@@ -732,6 +790,7 @@ if (isset($_POST['type'])) {
                         }
                     }
 
+                    
                     if(!empty($concatInvId)){
                         
                         $invKountCon = count($concatInvId);
@@ -766,7 +825,10 @@ if (isset($_POST['type'])) {
                             "particulars.all" => htmlspecialchars(trim($concatInvTitle)),
                             "inv_amt.all" => $valuefi["amnt"],
                             "tax.all" => $taxamt,
-                            "amount.all" => $valuefi["tamnt"]
+                            "amount.all" => $valuefi["tamnt"],
+                            "inv_amt_paid.all" => 0,
+                            "inv_amt_pending.all" => 0,
+                            "inv_amt_discount.all" => 0
                         );
                         $total = $total + $valuefi["tamnt"];
                         $totalTax = $totalTax + $taxamt;
@@ -806,13 +868,15 @@ if (isset($_POST['type'])) {
                         "due_date" => $due_date,
                         "total_tax" => number_format($totalTax, 2, '.', ''),
                         "inv_total" => number_format($totalamtWitoutTaxDis, 2, '.', ''),
-                        "concat_invoice_title" => htmlspecialchars($concatInvoiceTitle)
+                        "concat_invoice_title" => htmlspecialchars($concatInvoiceTitle),
+                        "total_amount_discount" => number_format($discount, 2, '.', ''),
+                        "total_amount_pending" => number_format($totalPending, 2, '.', '')
                     );
 
                     
 
                     // echo '<pre>';
-                    // print_r($concatInvId);
+                    // print_r($dts_receipt);
                     // print_r($dts_receipt_feeitem);
                     // echo '</pre>';
                     // die();
@@ -838,6 +902,7 @@ if (isset($_POST['type'])) {
                     }
                     echo 1;
                 } catch (PDOException $e) {
+                    echo $e;
                     echo "Internal server error";
                     //$URL .= '&return=error9';
                     //header("Location: {$URL}");
