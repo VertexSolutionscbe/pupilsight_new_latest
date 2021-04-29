@@ -74,8 +74,8 @@ class HelperGateway extends QueryableGateway
         $classes = $classes1 + $classes2;
         return $classes;
     }
-    public function getClassByProgram_Attconfig($connection2, $pupilsightProgramID) {
-      $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
+    public function getClassByProgram_Attconfig($connection2, $pupilsightProgramID, $pupilsightSchoolYearID) {
+      $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE  a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND  b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
       //  echo  $sql;
         $result = $connection2->query($sql);
         $classesdata = $result->fetchAll();

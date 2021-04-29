@@ -369,8 +369,16 @@ if (isset($_POST['type'])) {
                                 if ($itemamount < $chkamount) {
                                     //$paidInv[] = $fn_fee_invoice_id;
                                     $status = '1';
-                                    $paidamount = $itemamount;
-                                    $chkamount = $chkamount - $itemamount;
+                                    $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $itid . " ";
+                                    $resultdis = $connection2->query($sqdis);
+                                    $valuedis = $resultdis->fetch();
+                                    if(!empty($valuedis)){
+                                        $paidamount = $itemamount - $valuedis['discount'];
+                                        $chkamount = $chkamount - $paidamount;
+                                    } else {
+                                        $paidamount = $itemamount;
+                                        $chkamount = $chkamount - $itemamount;
+                                    }
                                 } else {
                                     $status = '2';
                                     if ($chkamount > 0) {
@@ -385,6 +393,7 @@ if (isset($_POST['type'])) {
                                 // $balanceAmt = $leftAmt;
 
                                 $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => $status);
+                                //print_r($datai);
                                 $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
                                 $resulti = $connection2->prepare($sqli);
                                 $resulti->execute($datai);
@@ -431,13 +440,25 @@ if (isset($_POST['type'])) {
                                 $resultcp = $connection2->query($chkpayitem);
                                 $valuecp = $resultcp->fetch();
 
+                                
+
                                 if (!empty($valuecp)) {
                                     $datai = array('partial_transaction_id' => $transactionId, 'total_amount_collection' => $itemamount, 'status' => '1', 'id' => $valuecp['id']);
                                     $sqli = 'UPDATE fn_fees_student_collection SET partial_transaction_id=:partial_transaction_id, total_amount_collection=:total_amount_collection, status=:status WHERE id=:id';
                                     $resulti = $connection2->prepare($sqli);
                                     $resulti->execute($datai);
                                 } else {
-                                    $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $itemamount, 'status' => '1');
+
+                                    $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $itid . " ";
+                                    $resultdis = $connection2->query($sqdis);
+                                    $valuedis = $resultdis->fetch();
+                                    if(!empty($valuedis)){
+                                        $paidamount = $itemamount - $valuedis['discount'];
+                                    } else {
+                                        $paidamount = $itemamount;
+                                    }
+                                    
+                                    $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => '1');
                                     $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
                                     $resulti = $connection2->prepare($sqli);
                                     $resulti->execute($datai);
