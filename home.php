@@ -53,7 +53,7 @@ if (isset($_GET['invalid']))
     $invalid = $_GET['invalid'];
 
 
-    
+
 ?>
 
 <input type="hidden" name="inavlid" id="invalid" value="<?php echo $invalid; ?>" />
@@ -240,14 +240,14 @@ if (isset($_GET['invalid']))
     <!-- Preloader End Here -->
 
     <div id="homePanel" class="page">
-    <?php 
-        if (isset($_GET['loginReturn'])){
+        <?php
+        if (isset($_GET['loginReturn'])) {
             $loginReturn = $_GET['loginReturn'];
-            if($loginReturn == 'fail'){
+            if ($loginReturn == 'fail') {
                 echo '<h2 style="text-align:center;color:red">Your Account is Locked! Please Contact School Administrator</h2>';
             }
         }
-    ?>   
+        ?>
         <header class="navbar navbar-expand-md navbar-light navDesktop">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
@@ -1057,7 +1057,7 @@ if (isset($_GET['invalid']))
                     <a href="home.php" class="mdi mdi-close-circle"></a>
                 </div>
                 <div class="text-center my-3">
-                    <img src="<?= $logo; ?>" height="36" alt="">
+                    <img src="<?= $logo; ?>" height="50" alt="">
                 </div>
                 <h2 class="mb-3 text-center">Login to your account</h2>
                 <?php if ($invalid == 'true') { ?>
@@ -1526,7 +1526,7 @@ if (isset($_GET['invalid']))
     </script>
 
     <script>
-        $(document).on('click', '#resetPassword', function () {
+        $(document).on('click', '#resetPassword', function() {
             $("#preloader").show();
             var remail = $("#resetEmail").val();
             var type = 'chkUserEmail';
@@ -1534,19 +1534,24 @@ if (isset($_GET['invalid']))
                 $.ajax({
                     url: 'ajax_data.php',
                     type: 'post',
-                    data: { val: remail, type: type },
+                    data: {
+                        val: remail,
+                        type: type
+                    },
                     async: true,
-                    success: function (response) {
-                        if(response == 'Found'){
+                    success: function(response) {
+                        if (response == 'Found') {
                             $("#resetEmail").removeClass('errAlert');
                             //alert('Found');
                             $.ajax({
                                 url: 'reset_password_mail.php',
                                 type: 'post',
-                                data: { val: remail },
+                                data: {
+                                    val: remail
+                                },
                                 async: true,
-                                success: function (response) {
-                                    if(response == 'sent'){
+                                success: function(response) {
+                                    if (response == 'sent') {
                                         $("#preloader").hide();
                                         alert('Your Request Submitted Successfully , Please Check Your Mail');
                                         location.reload();
@@ -1556,7 +1561,7 @@ if (isset($_GET['invalid']))
                                     }
                                 }
                             });
-                        } else if(response == 'Disable'){
+                        } else if (response == 'Disable') {
                             $("#preloader").hide();
                             $("#resetEmail").addClass('errAlert');
                             alert('You Account is Disabled, Please Contact to Administrator!');
@@ -1565,7 +1570,7 @@ if (isset($_GET['invalid']))
                             $("#resetEmail").addClass('errAlert');
                             alert('You Enter a Wrong Details');
                         }
-                        
+
                     }
                 });
             } else {
