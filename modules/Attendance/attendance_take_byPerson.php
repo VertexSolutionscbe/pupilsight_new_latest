@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         $searchbyPost =  '';
         $search =  $_GET['search'];
         $stuId = $_GET['studentId'];
-        $classes =  $HelperGateway->getClassByProgram_Attconfig($connection2, $pupilsightProgramID);
+        $classes =  $HelperGateway->getClassByProgram_Attconfig($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
         $sections =  $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
     } else {
 

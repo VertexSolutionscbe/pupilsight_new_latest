@@ -111,7 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
         $searchbyPost =  '';
         $search =  $_GET['search'];
         $stuId = $_GET['studentId'];
-        $classes =  $HelperGateway->getClassByProgram_Attconfig($connection2, $pupilsightProgramID);
+        $classes =  $HelperGateway->getClassByProgram_Attconfig($connection2, $pupilsightProgramID, $pupilsightSchoolYearIDpost);
         $sections =  $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
     } else {
         $pupilsightProgramID =  '';
