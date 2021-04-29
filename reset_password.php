@@ -237,7 +237,9 @@ if(!empty($rowdataprog)){
                                                         </div>
                                                         <div class="col-md-6 col-sm-12">
                                                             <input type="password" id="password">
+                                                            <span id="result" ></span>
                                                         </div>
+                                                        
                                                     </div>
                                                     <div id="progClassDiv" class="row mt-4">
                                                         <div class="col-md-6 col-sm-12">
@@ -401,39 +403,110 @@ if(!empty($rowdataprog)){
                     .iheight {
                         height: 300px !important;
                     }
+
+                     .short{ color:#FF0000; } .weak{ color:#E66C2C; } .good{ color:#2D98F3; } .strong{ color:#006400; }
+
                 </style>
                 <script type='text/javascript'>
+
+                    $(document).ready(function() { 
+                        $('#password').keyup(function(){ 
+                            $('#result').html(checkStrength($('#password').val())) 
+                        }) 
+                        
+                        function checkStrength(password){ 
+                            //initial strength 
+                            
+                            var strength = 0 
+                            
+                            //if the password length is less than 6, return message. 
+                            if (password.length < 8) { 
+                                $('#result').removeClass() 
+                                $('#result').addClass('short') 
+                                $("#password").addClass('week');
+                                return 'Too short' 
+                            } 
+                            
+                            //length is ok, lets continue. //if length is 8 characters or more, increase strength value 
+                            
+                            if (password.length > 7) 
+                                strength += 1 
+                            
+                            //if password contains both lower and uppercase characters, increase strength value 
+                            
+                            if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/)) 
+                                strength += 1 
+                            
+                            //if it has numbers and characters, increase strength value 
+                            
+                            if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/)) 
+                                strength += 1 
+                            
+                            //if it has one special character, increase strength value 
+                            
+                            if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/)) 
+                                strength += 1 
+                            
+                            //if it has two special characters, increase strength value 
+                            
+                            if (password.match(/(.*[!,%,&,@,#,$,^,*,?,_,~].*[!,",%,&,@,#,$,^,*,?,_,~])/))      strength += 1 
+                            
+                            //now we have calculated strength value, we can return messages //if value is less than 2 
+                            
+                            if (strength < 2 ) { 
+                                $('#result').removeClass() 
+                                $('#result').addClass('weak') 
+                                $("#password").addClass('week');
+                                return 'Weak' 
+                            } else if (strength == 3 ) { 
+                                $('#result').removeClass() 
+                                $('#result').addClass('good') 
+                                $("#password").removeClass('week');
+                                return 'Good' 
+                            } else if (strength == 4 ) { 
+                                $('#result').removeClass() 
+                                $('#result').addClass('strong') 
+                                $("#password").removeClass('week');
+                                return 'Strong' 
+                            } 
+                        } 
+                    });
+
                     
                     $(document).on('click', '#resetPassword', function() {
                         var pass = $("#password").val();
                         var conpass = $("#confirmPassword").val();
                         var type = 'resetpassword';
                         var pid = $("#pid").val();
-                        if(pass != '' && conpass != ''){
-                            if(pass == conpass){
-                                $.ajax({
-                                    url: 'ajax_data.php',
-                                    type: 'post',
-                                    data: {
-                                        val: pass,
-                                        type: type,
-                                        pid: pid
-                                    },
-                                    async: true,
-                                    success: function(response) {
-                                        if(response == 'success'){
-                                            alert('Password Reset Successfully, Please Login!');
-                                            location.href = 'home.php';
-                                        } else {
-                                            alert('Password Reset Key did not Matched!');
-                                        }
-                                    }
-                                });
-                            } else {
-                                alert('Password did not Match with Confirm Password!');
-                            }
+                        if($("#password").hasClass('week')){
+                            alert('Your Password is Week!');
                         } else {
-                            alert('Please Enter The Password!');
+                            if(pass != '' && conpass != ''){
+                                if(pass == conpass){
+                                    $.ajax({
+                                        url: 'ajax_data.php',
+                                        type: 'post',
+                                        data: {
+                                            val: pass,
+                                            type: type,
+                                            pid: pid
+                                        },
+                                        async: true,
+                                        success: function(response) {
+                                            if(response == 'success'){
+                                                alert('Password Reset Successfully, Please Login!');
+                                                location.href = 'home.php';
+                                            } else {
+                                                alert('Password Reset Key did not Matched!');
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    alert('Password did not Match with Confirm Password!');
+                                }
+                            } else {
+                                alert('Please Enter The Password!');
+                            }
                         }
                     });
                 </script>
