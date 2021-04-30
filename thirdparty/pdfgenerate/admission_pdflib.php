@@ -98,7 +98,7 @@ if (!empty($file)) {
                         $imgStuData = $result->fetch();
                         if(!empty($imgStuData)){
                             $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $sd['attribute_value'];
+                            $imgData[$k]['src'] = $value['field_value'];
                             $imgData[$k]['x'] = $imgStuData['x'];
                             $imgData[$k]['y'] = $imgStuData['y'];
                             $imgData[$k]['width'] = $imgStuData['width'];
@@ -111,7 +111,7 @@ if (!empty($file)) {
                         $imgStuData = $result->fetch();
                         if(!empty($imgStuData)){
                             $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $sd['attribute_value'];
+                            $imgData[$k]['src'] = $value['field_value'];
                             $imgData[$k]['x'] = $imgStuData['x'];
                             $imgData[$k]['y'] = $imgStuData['y'];
                             $imgData[$k]['width'] = $imgStuData['width'];
@@ -125,7 +125,7 @@ if (!empty($file)) {
                         $imgStuData = $result->fetch();
                         if(!empty($imgStuData)){
                             $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $sd['attribute_value'];
+                            $imgData[$k]['src'] = $value['field_value'];
                             $imgData[$k]['x'] = $imgStuData['x'];
                             $imgData[$k]['y'] = $imgStuData['y'];
                             $imgData[$k]['width'] = $imgStuData['width'];
@@ -138,7 +138,7 @@ if (!empty($file)) {
                         $imgStuData = $result->fetch();
                         if(!empty($imgStuData)){
                             $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $sd['attribute_value'];
+                            $imgData[$k]['src'] = $value['field_value'];
                             $imgData[$k]['x'] = $imgStuData['x'];
                             $imgData[$k]['y'] = $imgStuData['y'];
                             $imgData[$k]['width'] = $imgStuData['width'];

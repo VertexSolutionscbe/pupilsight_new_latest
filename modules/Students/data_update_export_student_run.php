@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
         $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];  
         
         if(!empty($pupilsightProgramID)){
-        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
         $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
         }
         
@@ -294,12 +294,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
 
         </tbody>
     </table>
-<?php /*?>
+
+
     <h1>Father Details Field</h1>
     <table class="table">
         <thead>
             <tr>
-                <th><input type="checkbox" id="chkAllFatherField" > Select All</th>
+                <th><input type="checkbox" id="chkAllExpFatherField" > Select All</th>
                 <th>Column Name</th>
                 
             </tr>
@@ -307,55 +308,55 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
         <tbody>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="Father Official Name">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="Father Official Name">
                 </td>
                 <td>Official Name</td>
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="Father Date of Birth">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="Father Date of Birth">
                 </td>
                 <td>Date of Birth</td>
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="Father Username">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="Father Username">
                 </td>
                 <td>Username</td>
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="Father Can Login">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="Father Can Login">
                 </td>
                 <td>Can Login</td>
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="Father Email">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="Father Email">
                 </td>
                 <td>Email</td>
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="Father Mobile (Country Code)">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="Father Mobile (Country Code)">
                 </td>
                 <td>Mobile (Country Code)</td>
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="Father Mobile No">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="Father Mobile No">
                 </td>
                 <td>Mobile No</td>
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="Father LandLine (Country Code)">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="Father LandLine (Country Code)">
                 </td>
                 <td>LandLine (Country Code)</td>
             </tr>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="Father Landline No">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="Father Landline No">
                 </td>
                 <td>Landline No</td>
             </tr>
@@ -365,7 +366,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
             ?>
             <tr>
                 <td>
-                    <input type="checkbox" class="fatherField" name="student_column[]" value="<?php echo $fc['field_title'];?>">
+                    <input type="checkbox" class="fatherExpField" name="student_column[]" value="<?php echo $fc['field_title'];?>">
                 </td>
                 <td><?php echo $fc['field_title'];?>  (Custom Field)</td>
             </tr>
@@ -450,7 +451,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
             <?php } }?>
         </tbody>
     </table>
-<?php */?>    
+   
    </form> 
 
    <style>
@@ -520,6 +521,24 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
                 //$(".chkChild"+id).prop("checked", true);
             } else {
                 $("#chkAllFatherField").prop("checked", false);
+            }
+        });
+
+        
+
+        $(document).on('change', '#chkAllExpFatherField', function() {
+            if ($(this).is(':checked')) {
+                $(".fatherExpField").prop("checked", true);
+            } else {
+                $(".fatherExpField").prop("checked", false);
+            }
+        });
+
+        $(document).on('change', '.fatherExpField', function() {
+            if ($(this).is(':checked')) {
+                //$(".chkChild"+id).prop("checked", true);
+            } else {
+                $("#chkAllExpFatherField").prop("checked", false);
             }
         });
 

@@ -23,6 +23,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/descriptive_indi
     // print_r($_POST);
     // echo '</pre>';
     //pupilsightYearGroupID] => 003 [pupilsightDepartmentID] => 30 [skill_id] => 3
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+    
     $pupilsightYearGroupID = "";
     $pupilsightDepartmentID = "";
     $pupilsightProgramID = "";
@@ -80,7 +82,7 @@ $department = $department1+$department2;
         }
 
         $helperGateway  = $container->get(HelperGateway::class);
-        $classes = $helperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+        $classes = $helperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
 
         $rids = isset($_POST["remarkid"]) ? $_POST["remarkid"] : NULL;
 

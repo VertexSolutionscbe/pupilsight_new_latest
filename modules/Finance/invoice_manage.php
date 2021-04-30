@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
 
 
         if (!empty($pupilsightProgramID)) {
-            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
             if (!empty($pupilsightYearGroupID)) {
                 $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
             }

@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/updateStudent.php
         //$pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
         $type = $_POST['type'];
 
-        //$classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+        //$classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
 
         if (!empty($pupilsightProgramID) && !empty($type)) {
             $sqle = "SELECT a.officialName, a.pupilsightPersonID, a.admission_no, d.name AS class,c.name as program ,f.name as academic, d.pupilsightYearGroupID,c.pupilsightProgramID ,f.pupilsightSchoolYearID FROM pupilsightPerson AS a 

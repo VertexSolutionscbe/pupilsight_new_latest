@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_discount_m
         $fn_fee_invoice_id = $_POST['fn_fee_invoice_id'];
 
         if (!empty($pupilsightProgramID)) {
-            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
             if (!empty($pupilsightYearGroupID)) {
                 $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
                 $invoiceData =  $HelperGateway->getInvoice($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);

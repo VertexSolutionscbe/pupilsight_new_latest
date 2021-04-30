@@ -21,7 +21,7 @@ class StudentGateway extends QueryableGateway
 
     private static $tableName = 'pupilsightStudentEnrolment';
 
-    private static $searchableColumns = ['pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightPerson.username', 'pupilsightPerson.email', 'pupilsightPerson.emailAlternate', 'pupilsightPerson.studentID', 'pupilsightPerson.phone1', 'pupilsightPerson.vehicleRegistration'];
+    private static $searchableColumns = ['pupilsightPerson.officialName','pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightPerson.username', 'pupilsightPerson.email', 'pupilsightPerson.emailAlternate', 'pupilsightPerson.studentID', 'pupilsightPerson.phone1', 'pupilsightPerson.vehicleRegistration'];
 
     /**
      * @param QueryCriteria $criteria
@@ -311,7 +311,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentsByFamilyAdult($pupilsightSchoolYearID, $pupilsightPersonID)
     {
         $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightPersonID' => $pupilsightPersonID, 'today' => date('Y-m-d'));
-        $sql = "SELECT pupilsightPerson.pupilsightPersonID,pupilsightPerson.active, title, surname, preferredName, image_240, pupilsightYearGroup.nameShort AS yearGroup, pupilsightRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
+        $sql = "SELECT pupilsightPerson.pupilsightPersonID,pupilsightPerson.active, title, surname, preferredName, pupilsightPerson.officialName, image_240, pupilsightYearGroup.nameShort AS yearGroup, pupilsightRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
                 FROM pupilsightFamilyAdult
                 JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamilyAdult.pupilsightFamilyID)
                 JOIN pupilsightPerson ON (pupilsightFamilyChild.pupilsightPersonID=pupilsightPerson.pupilsightPersonID)
@@ -333,7 +333,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentByPerson($pupilsightSchoolYearID, $pupilsightPersonID)
     {
         $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightPersonID' => $pupilsightPersonID, 'today' => date('Y-m-d'));
-        $sql = "SELECT pupilsightPerson.pupilsightPersonID,pupilsightPerson.active, title, surname, preferredName, image_240, pupilsightYearGroup.pupilsightYearGroupID, pupilsightYearGroup.nameShort AS yearGroup, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
+        $sql = "SELECT pupilsightPerson.pupilsightPersonID,pupilsightPerson.active, title, officialName, surname, preferredName, image_240, pupilsightYearGroup.pupilsightYearGroupID, pupilsightYearGroup.nameShort AS yearGroup, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
                 FROM pupilsightPerson
                 JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
                 JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)

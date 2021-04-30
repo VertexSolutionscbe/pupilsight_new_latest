@@ -61,11 +61,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             } else {
                 $table = DataTable::create('students');
 
-                $table->addColumn('student', __('Student'))
-                    ->sortable(['surname', 'preferredName'])
-                    ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
-                $table->addColumn('yearGroup', __('Year Group'));
-                $table->addColumn('rollGroup', __('Roll Group'));
+                // $table->addColumn('student', __('Student'))
+                //     ->sortable(['surname', 'preferredName'])
+                //     ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+                $table->addColumn('officialName', __('Student'));
+                $table->addColumn('yearGroup', __('Class'));
+                $table->addColumn('rollGroup', __('Section'));
 
                 $table->addActionColumn()
                     ->addParam('pupilsightPersonID')
@@ -175,9 +176,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $sortOptions = array(
                 'surname,preferredName' => __('Surname'),
-                'preferredName' => __('Given Name'),
-                'rollGroup' => __('Roll Group'),
-                'yearGroup' => __('Year Group'),
+                'officialName' => __('Given Name'),
+                'rollGroup' => __('Section'),
+                'yearGroup' => __('Class'),
             );
 
             echo '<input type="hidden" id="pupilsightSchoolYearID" value="' . $pupilsightSchoolYearID . '">';

@@ -40,7 +40,7 @@
        LEFT JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)  
        LEFT JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) 
         
-       WHERE pupilsightPerson.pupilsightPersonID="'.$std_id.'  " 
+       WHERE pupilsightPerson.pupilsightPersonID="'.$std_id.'" AND pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'"
        	';
        $resultp = $connection2->query($sqlp);
        $rowdataprog = $resultp->fetch();
@@ -65,7 +65,7 @@
        JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)  
        JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) 
        
-       WHERE pupilsightPerson.pupilsightPersonID < "'.$std_id.'" AND pupilsightStudentEnrolment.pupilsightProgramID="'.$pupilsightProgramID.'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$pupilsightYearGroupID.'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$pupilsightRollGroupID.'"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
+       WHERE pupilsightPerson.pupilsightPersonID < "'.$std_id.'" AND pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND pupilsightStudentEnrolment.pupilsightProgramID="'.$pupilsightProgramID.'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$pupilsightYearGroupID.'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$pupilsightRollGroupID.'"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
            ';
        $resultp1 = $connection2->query($sqlp1);
        $previous1 = $resultp1->fetch();
@@ -84,7 +84,7 @@
        JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)  
        JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) 
        
-       WHERE pupilsightPerson.pupilsightPersonID > "'.$std_id.'"  AND pupilsightStudentEnrolment.pupilsightProgramID="'.$pupilsightProgramID.'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$pupilsightYearGroupID.'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$pupilsightRollGroupID.'"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
+       WHERE pupilsightPerson.pupilsightPersonID > "'.$std_id.'" AND pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND pupilsightStudentEnrolment.pupilsightProgramID="'.$pupilsightProgramID.'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$pupilsightYearGroupID.'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$pupilsightRollGroupID.'"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
            ';
        $resultn = $connection2->query($sqln);
        $next = $resultn->fetch();
