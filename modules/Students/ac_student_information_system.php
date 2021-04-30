@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/ac_student_inform
         $pupilsightPersonID = $_POST['pupilsightPersonID'];
         $searchbyPost = '';
 
-        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
         $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
 
         $students =  $HelperGateway->getStudentByAll($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID, $pupilsightRollGroupID);

@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/blocked_attenda
             }
             
             //End Extra code to check date
-            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
             
             if($pupilsightYearGroupID!='' && $pupilsightProgramID!='')
             $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);

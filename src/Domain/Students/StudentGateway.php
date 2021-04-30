@@ -21,7 +21,7 @@ class StudentGateway extends QueryableGateway
 
     private static $tableName = 'pupilsightStudentEnrolment';
 
-    private static $searchableColumns = ['pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightPerson.username', 'pupilsightPerson.email', 'pupilsightPerson.emailAlternate', 'pupilsightPerson.studentID', 'pupilsightPerson.phone1', 'pupilsightPerson.vehicleRegistration'];
+    private static $searchableColumns = ['pupilsightPerson.officialName', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightPerson.username', 'pupilsightPerson.email', 'pupilsightPerson.emailAlternate', 'pupilsightPerson.studentID', 'pupilsightPerson.phone1', 'pupilsightPerson.vehicleRegistration'];
 
     /**
      * @param QueryCriteria $criteria
@@ -326,13 +326,14 @@ class StudentGateway extends QueryableGateway
                 AND (dateEnd IS NULL  OR dateEnd>=:today)
                 GROUP BY pupilsightPerson.pupilsightPersonID
                 ORDER BY surname, preferredName";
+
         return $this->db()->select($sql, $data);
     }
 
     public function selectActiveStudentByPerson($pupilsightSchoolYearID, $pupilsightPersonID)
     {
         $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightPersonID' => $pupilsightPersonID, 'today' => date('Y-m-d'));
-        $sql = "SELECT pupilsightPerson.pupilsightPersonID,pupilsightPerson.active, title, surname, preferredName, image_240, pupilsightYearGroup.pupilsightYearGroupID, pupilsightYearGroup.nameShort AS yearGroup, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
+        $sql = "SELECT pupilsightPerson.pupilsightPersonID,pupilsightPerson.active, title, officialName, surname, preferredName, image_240, pupilsightYearGroup.pupilsightYearGroupID, pupilsightYearGroup.nameShort AS yearGroup, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
                 FROM pupilsightPerson
                 JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
                 JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)

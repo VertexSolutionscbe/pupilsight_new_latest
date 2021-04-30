@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
             $test_id  =  $_POST['test_id'];
             $testId  =  $_POST['test_id'];
     
-            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
             $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
             $test_type=$_POST['test_type'];
 
@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
                 $test_id  =  explode(',',$_GET['tid']);
                 $testId  =  explode(',',$_GET['tid']);
                 
-                $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+                $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
                 $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
                 //$test_type=$_POST['test_type'];
 

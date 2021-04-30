@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
                 $classes =  $HelperGateway->getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid);
                 $sections =  $HelperGateway->getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
             } else {
-                $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+                $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearIDpost);
                 $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
             }
 

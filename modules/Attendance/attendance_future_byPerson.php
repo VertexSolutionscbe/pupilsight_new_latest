@@ -46,10 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     }
 
     if($_POST){         
+        $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         $pupilsightProgramID =  isset($_POST['pupilsightProgramID'])? $_POST['pupilsightProgramID'] : '';
         $pupilsightYearGroupID = isset($_POST['pupilsightYearGroupID'])? $_POST['pupilsightYearGroupID'] : '';
         $pupilsightRollGroupID = isset($_POST['pupilsightRollGroupID'])? $_POST['pupilsightRollGroupID'] : '';
-        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
         $sections =  $HelperGateway->getMultipleSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID);
     } else {
         $pupilsightProgramID =  '';

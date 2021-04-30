@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/assign_route.php
             $searchbyPost =  '';
             $search =  $_POST['search'];
             $stuId = $_POST['studentId'];
-            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearIDpost);
             $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
         }
         

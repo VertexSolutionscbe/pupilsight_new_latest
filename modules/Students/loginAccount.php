@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
         $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
         //$type = $_POST['type'];
 
-        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID);
+        $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
         
         if(!empty($pupilsightProgramID) && !empty($pupilsightYearGroupID)){ 
             $classIds = implode(',', $pupilsightYearGroupID);
