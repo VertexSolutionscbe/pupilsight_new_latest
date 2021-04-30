@@ -43,10 +43,26 @@ if (isset($data["cms_banner_image_path"]) && file_exists($data["cms_banner_image
     $hero_image = $data["cms_banner_image_path"];
 }
 
+$logoStyle = "logo_4_1";
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
 if (isset($data['logo_image'])) {
     $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
+    $logoloc = $_SERVER['DOCUMENT_ROOT'] . '/cms/images/logo/' . $data['logo_image'];
+    list($width, $height) = getimagesize($logoloc);
+    if ($width && $height) {
+        $owh = round(($width / $height), 0);
+        if ($owh == 1) {
+            $logoStyle = "logo_1_1"; //square eg. 200px/200px
+        } else if ($owh == 2) {
+            $logoStyle = "logo_2_1"; //img is 2 is to 1 eg. 200px/100px
+        } else if ($owh == 3) {
+            $logoStyle = "logo_3_1"; //img is 3 is to 1 eg. 150px/50px
+        } else {
+            $logoStyle = "logo_4_1"; //image width 4 and 1 eg. 200px/50px
+        }
+    }
 }
+
 
 $invalid = '';
 if (isset($_GET['invalid']))
@@ -230,6 +246,75 @@ if (isset($_GET['invalid']))
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+
+        /* Logo Square */
+        .logo_1_1 {
+            padding: 10px 10px 10px 10px;
+            background-color: #fff;
+            position: absolute;
+            top: 0px;
+            left: 20px;
+            box-shadow: inset 0 -1px 0 0 rgb(110 117 130 / 20%);
+        }
+
+        .logo_1_1_image {
+            width: 120px;
+            height: 120px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        /* Logo 4_1 */
+        .logo_4_1 {
+            /*background: url(https://sjbhs.pupilpod.net/cms/images/logo/1617521494_Logo.png) center center no-repeat;*/
+            width: 200px;
+            height: 50px;
+            background-size: contain !important;
+            box-sizing: border-box;
+        }
+
+        .logo_3_1 {
+            width: 150px;
+            height: 50px;
+            background-size: contain !important;
+            box-sizing: border-box;
+        }
+
+        .logo_2_1 {
+            width: 100px;
+            height: 50px;
+            background-size: contain !important;
+            box-sizing: border-box;
+        }
+
+
+        .heroImage {
+            min-height: 315px;
+            border: 1px solid rgba(110, 117, 130, .2);
+            border-radius: 3px;
+            max-height: 400px;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .logo_1_1 {
+                padding: 3px;
+                background-color: #fff;
+                position: absolute;
+                top: 0px;
+                left: 20px;
+                box-shadow: inset 0 -1px 0 0 rgb(110 117 130 / 20%);
+            }
+
+            .logo_1_1_image {
+                width: 50px;
+                height: 50px;
+                background-size: contain;
+                background-repeat: no-repeat;
+            }
+
+        }
     </style>
 </head>
 
@@ -254,8 +339,25 @@ if (isset($_GET['invalid']))
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <a href="<?= $baseurl; ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
-                    <!-- <img src="<?= $logo; ?>" class="navbar-brand-image" title="<?= $data["logo_title"]; ?>"> -->
-                    <img src="<?= $logo; ?>" width="160" height="50" title="<?= $data["logo_title"]; ?>">
+                    <!-- 
+                    <img src="<?= $logo; ?>" class="navbar-brand-image" title="<?= $data["logo_title"]; ?>"> 
+                    -->
+                    <?php
+                    if ($logoStyle == "logo_1_1") {
+                        $stlog = "<div class='logo_1_1'>";
+                        $stlog .= "<div class='logo_1_1_image' style='background-image: url(\"" . $logo . "\");'></div>";
+                        $stlog .= "</div>";
+                        echo $stlog;
+                    } else if ($logoStyle == "logo_2_1") {
+                        echo "<div class='logo_2_1' style='background: url(\"" . $logo . "\" ) center center no-repeat;'></div>";
+                    } else if ($logoStyle == "logo_3_1") {
+                        echo "<div class='logo_3_1' style='background: url(\"" . $logo . "\" ) center center no-repeat;'></div>";
+                    } else if ($logoStyle == "logo_4_1") {
+                        echo "<div class='logo_4_1' style='background: url(\"" . $logo . "\" ) center center no-repeat;'></div>";
+                    } else {
+                        echo "<img src=" . $logo . " height='50'>";
+                    }
+                    ?>
                 </a>
 
                 <div class="navbar-collapse collapse" id="navbar-menu" style='flex: inherit !important;'>
@@ -382,19 +484,19 @@ if (isset($_GET['invalid']))
                     </div>
                 </div>
                 <div class="col-md-4 col-sm-12 m-auto">
-                    <div style="min-height:315px;" class="mx-2 my-4">
-                        <?php
-                        $herocss = "";
-                        if ($data['cms_banner_image']) {
-                            $imgpath = $_SERVER["DOCUMENT_ROOT"] . '/cms/images/banner/' . $data['cms_banner_image'];
-                            if (file_exists($imgpath)) {
-                                $hero_image = 'cms/images/banner/' . $data['cms_banner_image'];
-                                $herocss = "hero";
-                            }
+                    <?php
+                    if ($data['cms_banner_image']) {
+                        $imgpath = $_SERVER["DOCUMENT_ROOT"] . '/cms/images/banner/' . $data['cms_banner_image'];
+                        if (file_exists($imgpath)) {
+                            $hero_image = 'cms/images/banner/' . $data['cms_banner_image'];
+                            echo "<div class='heroImage mx-2 my-4' style='background-image: url(\"" . $hero_image . "\");'></div>";
+                        } else {
+                            echo "<div style='min-height:315px;' class='mx-2 my-4'>";
+                            echo "<img src='" . $hero_image . "' class='img-fluid'>";
+                            echo "</div>";
                         }
-                        ?>
-                        <img src="<?= $hero_image; ?>" class="img-fluid <?= $herocss; ?>" />
-                    </div>
+                    }
+                    ?>
                 </div>
             </div>
 

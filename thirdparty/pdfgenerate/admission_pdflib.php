@@ -1,6 +1,6 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'].'/pupilsight.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight.php';
 require_once($_SERVER['DOCUMENT_ROOT'] . '/pdflib.php');
 
 $pdflib = new PDFLib();
@@ -68,11 +68,11 @@ if (!empty($file)) {
         try {
             //print_r($file);
             chmod($file, 0777);
-            
+
             $sqla = "select application_id, created_at, pupilsightYearGroupID FROM wp_fluentform_submissions  where id = " . $aid . " ";
             $resulta = $connection2->query($sqla);
             $applicationData = $resulta->fetch();
-            
+
 
             $classID = $applicationData['pupilsightYearGroupID'];
             $className = '';
@@ -80,7 +80,7 @@ if (!empty($file)) {
                 $sqlc = "select name FROM pupilsightYearGroup  where pupilsightYearGroupID = '" . $classID . "' ";
                 $resultc = $connection2->query($sqlc);
                 $clsdata = $resultc->fetch();
-                
+
                 $className = $clsdata['name'];
                 //echo $sqlc;
             }
@@ -92,53 +92,52 @@ if (!empty($file)) {
             $imgData = array();
             foreach ($rowdata as $key => $value) {
                 try {
-                    if($value['field_name'] == 'student_photo'){
-                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "'.$cid.'" AND field_name = "student_photo" AND template_type = "Online" ';
+                    if ($value['field_name'] == 'student_photo') {
+                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' . $cid . '" AND field_name = "student_photo" AND template_type = "Online" ';
                         $result = $connection2->query($sql);
                         $imgStuData = $result->fetch();
-                        if(!empty($imgStuData)){
+                        if (!empty($imgStuData)) {
                             $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $sd['attribute_value'];
+                            $imgData[$k]['src'] = $value['field_value'];
                             $imgData[$k]['x'] = $imgStuData['x'];
                             $imgData[$k]['y'] = $imgStuData['y'];
                             $imgData[$k]['width'] = $imgStuData['width'];
                             $imgData[$k]['height'] = $imgStuData['height'];
                         }
                         $k++;
-                    } else if($value['field_name'] == 'father_photo'){
-                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "'.$cid.'" AND field_name = "father_photo" AND template_type = "Online" ';
+                    } else if ($value['field_name'] == 'father_photo') {
+                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' . $cid . '" AND field_name = "father_photo" AND template_type = "Online" ';
                         $result = $connection2->query($sql);
                         $imgStuData = $result->fetch();
-                        if(!empty($imgStuData)){
+                        if (!empty($imgStuData)) {
                             $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $sd['attribute_value'];
+                            $imgData[$k]['src'] = $value['field_value'];
                             $imgData[$k]['x'] = $imgStuData['x'];
                             $imgData[$k]['y'] = $imgStuData['y'];
                             $imgData[$k]['width'] = $imgStuData['width'];
                             $imgData[$k]['height'] = $imgStuData['height'];
                         }
                         $k++;
-
-                    } else if($value['field_name'] == 'mother_photo'){
-                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "'.$cid.'" AND field_name = "mother_photo" AND template_type = "Online" ';
+                    } else if ($value['field_name'] == 'mother_photo') {
+                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' . $cid . '" AND field_name = "mother_photo" AND template_type = "Online" ';
                         $result = $connection2->query($sql);
                         $imgStuData = $result->fetch();
-                        if(!empty($imgStuData)){
+                        if (!empty($imgStuData)) {
                             $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $sd['attribute_value'];
+                            $imgData[$k]['src'] = $value['field_value'];
                             $imgData[$k]['x'] = $imgStuData['x'];
                             $imgData[$k]['y'] = $imgStuData['y'];
                             $imgData[$k]['width'] = $imgStuData['width'];
                             $imgData[$k]['height'] = $imgStuData['height'];
                         }
                         $k++;
-                    } else if($value['field_name'] == 'guardian_photo'){
-                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "'.$cid.'" AND field_name = "guardian_photo" AND template_type = "Online" ';
+                    } else if ($value['field_name'] == 'guardian_photo') {
+                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' . $cid . '" AND field_name = "guardian_photo" AND template_type = "Online" ';
                         $result = $connection2->query($sql);
                         $imgStuData = $result->fetch();
-                        if(!empty($imgStuData)){
+                        if (!empty($imgStuData)) {
                             $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $sd['attribute_value'];
+                            $imgData[$k]['src'] = $value['field_value'];
                             $imgData[$k]['x'] = $imgStuData['x'];
                             $imgData[$k]['y'] = $imgStuData['y'];
                             $imgData[$k]['width'] = $imgStuData['width'];
@@ -168,9 +167,9 @@ if (!empty($file)) {
             $fname = trim(str_replace("/", "_", $fname));
 
             $templateFileName = $file;
-            $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/thirdparty/pdfgenerate/files/'.$fname.'.pdf';
+            $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/thirdparty/pdfgenerate/files/' . $fname . '.pdf';
             $pdflib->generate($templateFileName, $outFileName, $formData, $imgData, TRUE);
-            $pdflib->download(); 
+            $pdflib->download();
 
             // echo '<pre>';
             // print_r($imgData);

@@ -129,7 +129,7 @@ class StudentGateway extends QueryableGateway
         $query->where('pupilsightPerson.is_delete = "0" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.officialName ASC']);
-            //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
+        //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
         // echo $query;
@@ -311,7 +311,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentsByFamilyAdult($pupilsightSchoolYearID, $pupilsightPersonID)
     {
         $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightPersonID' => $pupilsightPersonID, 'today' => date('Y-m-d'));
-        $sql = "SELECT pupilsightPerson.pupilsightPersonID,pupilsightPerson.active, title, surname, preferredName, image_240, pupilsightYearGroup.nameShort AS yearGroup, pupilsightRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
+        $sql = "SELECT pupilsightPerson.pupilsightPersonID,pupilsightPerson.active, title, surname, preferredName, pupilsightPerson.officialName, image_240, pupilsightYearGroup.nameShort AS yearGroup, pupilsightRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
                 FROM pupilsightFamilyAdult
                 JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamilyAdult.pupilsightFamilyID)
                 JOIN pupilsightPerson ON (pupilsightFamilyChild.pupilsightPersonID=pupilsightPerson.pupilsightPersonID)
@@ -326,7 +326,6 @@ class StudentGateway extends QueryableGateway
                 AND (dateEnd IS NULL  OR dateEnd>=:today)
                 GROUP BY pupilsightPerson.pupilsightPersonID
                 ORDER BY surname, preferredName";
-
         return $this->db()->select($sql, $data);
     }
 
@@ -763,11 +762,11 @@ class StudentGateway extends QueryableGateway
 
         if (!empty($search)) {
             $query->where('( pupilsightPerson.officialName LIKE "%' . $search . '%" ')
-            ->orwhere('pupilsightPerson.pupilsightPersonID = "' . $search . '" ')
-            ->orwhere('pupilsightPerson.admission_no = "' . $search . '" ')
-            ->orwhere('pupilsightPerson.username LIKE "%' . $search . '%" ')
-            ->orwhere('pupilsightPerson.email LIKE "%' . $search . '%" ')
-            ->orwhere('pupilsightPerson.phone1 LIKE "%' . $search . '%" )');
+                ->orwhere('pupilsightPerson.pupilsightPersonID = "' . $search . '" ')
+                ->orwhere('pupilsightPerson.admission_no = "' . $search . '" ')
+                ->orwhere('pupilsightPerson.username LIKE "%' . $search . '%" ')
+                ->orwhere('pupilsightPerson.email LIKE "%' . $search . '%" ')
+                ->orwhere('pupilsightPerson.phone1 LIKE "%' . $search . '%" )');
         }
 
 
@@ -775,7 +774,7 @@ class StudentGateway extends QueryableGateway
         $query->where('pupilsightPerson.is_delete = "0" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.officialName ASC']);
-            //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
+        //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
 
         //echo $query;
         // die();

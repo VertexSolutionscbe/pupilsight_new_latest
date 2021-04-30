@@ -61,9 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             } else {
                 $table = DataTable::create('students');
 
-                $table->addColumn('student', __('Student'))
-                    ->sortable(['surname', 'preferredName'])
-                    ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+                // $table->addColumn('student', __('Student'))
+                //     ->sortable(['surname', 'preferredName'])
+                //     ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+                $table->addColumn('officialName', __('Student'));
                 $table->addColumn('yearGroup', __('Year Group'));
                 $table->addColumn('rollGroup', __('Roll Group'));
 

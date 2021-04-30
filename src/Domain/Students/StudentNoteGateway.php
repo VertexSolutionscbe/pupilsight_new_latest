@@ -21,7 +21,7 @@ class StudentNoteGateway extends QueryableGateway
     private static $primaryKey = 'pupilsightStudentNoteID';
 
     private static $searchableColumns = ['name'];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
