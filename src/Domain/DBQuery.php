@@ -1,6 +1,6 @@
 <?php
 
-namespace\Domain;
+namespace Pupilsight\Domain;
 
 class DBQuery
 {

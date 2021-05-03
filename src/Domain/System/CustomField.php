@@ -339,7 +339,7 @@ class CustomField extends QueryableGateway
         return $sq;
     }
 
-    public function getPostData($tableName, $primaryCol, $primaryColVal, $modules = NULL)
+    public function getPostData($tableName, $primaryCol, $primaryColVal=NULL, $modules = NULL)
     {
         try {
             //$sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' ";
@@ -348,9 +348,10 @@ class CustomField extends QueryableGateway
             if ($modules) {
                 $sq .= "and modules like '%" . $modules . "%'";
             }
-            //echo "\n<br>" . $sq;
+            
             $db = new DBQuery();
             $res = $db->selectRaw($sq);
+            
             //print_r($res);
             if ($res) {
                 $len = count($res);
