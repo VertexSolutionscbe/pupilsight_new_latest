@@ -4,6 +4,23 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight.php';
+$sqlo = "SELECT * FROM pupilsight_cms  WHERE title != '' ";
+$resulto = $connection2->query($sqlo);
+$orgData = $resulto->fetch();
+
+$orgName = $orgData['title'];
+$orgLogo = $orgData['logo_image'];
+
+if (!empty($orgLogo)) {
+    $logo = '/cms/images/logo/' . $orgLogo;
+} else {
+    $logo = '';
+}
+
+// print_r($orgData);
+// die();
+
 unset($_SESSION['payment_gateway_id']);
 $payment_gateway_id = $_POST["payment_gateway_id"];
 $_SESSION["payment_gateway_id"] = $payment_gateway_id;
@@ -94,9 +111,9 @@ if (isset($_GET['checkout']) and in_array($_GET['checkout'], ['automatic', 'manu
 $data = [
     "key"               => $keyId,
     "amount"            => $amount,
-    "name"              => "Parentof Solutions Pvt. Ltd.",
+    "name"              => $orgName,
     "description"       => "Fees Payment",
-    "image"             => "http://pupilsight.pupiltalk.com/themes/Default/img/logo.png",
+    "image"             => $logo,
     "prefill"           => [
         "name"              => $name,
         "email"             => $email,
