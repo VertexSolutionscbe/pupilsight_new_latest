@@ -277,6 +277,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromQuery($pdo, $sql)->selected($setting['value']);
 
+
+    $setting = getSettingByScope($connection2, 'Finance', 'due_date_payment_validation', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']));
+        $row->addCheckbox($setting['name'])->setValue('1')->checked($setting['value']);;
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

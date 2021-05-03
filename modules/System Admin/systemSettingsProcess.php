@@ -53,6 +53,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $pupilsighteduComOrganisationName = $_POST['pupilsighteduComOrganisationName'];
     $pupilsighteduComOrganisationKey = $_POST['pupilsighteduComOrganisationKey'];
 
+    if(!empty($_POST['due_date_payment_validation'])){
+        $due_date_payment_validation = "1";
+    } else {
+        $due_date_payment_validation = '0';
+    }
+
     //Validate Inputs
     if ($absoluteURL == '' or $systemName == '' or $organisationLogo == '' or $indexText == '' or $organisationName == '' or $organisationNameShort == '' or $organisationEmail == '' or $organisationAdministrator == '' or $organisationDBA == '' or $organisationHR == '' or $organisationAdmissions == '' or $pagination == '' or (!(is_numeric($pagination))) or $timezone == '' or $installType == '' or $statsCollection == '' or $passwordPolicyMinLength == '' or $passwordPolicyAlpha == '' or $passwordPolicyNumeric == '' or $passwordPolicyNonAlphaNumeric == '' or $firstDayOfTheWeek == '' or ($firstDayOfTheWeek != 'Monday' and $firstDayOfTheWeek != 'Sunday') or $currency == '') {
         $URL .= '&return=error3';
@@ -453,6 +459,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         try {
             $data = array('sessionDuration' => $sessionDuration);
             $sql = "UPDATE pupilsightSetting SET value=:sessionDuration WHERE scope='System' AND name='sessionDuration'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('due_date_payment_validation' => $due_date_payment_validation);
+            $sql = "UPDATE pupilsightSetting SET value=:due_date_payment_validation WHERE scope='Finance' AND name='due_date_payment_validation'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
