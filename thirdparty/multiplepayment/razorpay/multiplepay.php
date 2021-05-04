@@ -47,9 +47,10 @@ foreach($newpost as $np){
     $payid = $np->payid;
     $callbackurl = $np->callbackurl;
     $namount += $np->amount;
+    $className = $np->className;
 }
 
-//echo $name.'----'.$namount;
+// echo $name.'----'.$payid.'----'.$className;
 // echo '<pre>';
 // print_r($newpost);
 // echo '</pre>';
@@ -114,6 +115,9 @@ $data = [
     "name"              => $orgName,
     "description"       => "Fees Payment",
     "image"             => $logo,
+    "student_name"      => $name,
+    "invoice_no"        => $payid,
+    "class_name"        => $className,
     "prefill"           => [
         "name"              => $name,
         "email"             => $email,
