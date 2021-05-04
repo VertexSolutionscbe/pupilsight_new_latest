@@ -371,8 +371,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                     if ($iddate['due_date'] == '1970-01-01') {
                         $dddate = '';
                     } else {
-                        $dt = date('d/m/Y', strtotime($iddate['due_date']));
-                        $ddDate[] = $dt;
+                        //$dt = date('d/m/Y', strtotime($iddate['due_date']));
+                        $ddDate[] = $iddate['due_date'];
                     }
                 }
                 if(!empty($ddDate)){
@@ -421,9 +421,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                             $ddate = $dt;
                         }
 
+                        $dueDateForMatch = $ind['due_date'];
+
                         $style = $curdate >= $duedate ? '#FAFD94' : '#fff';
                         // echo '<tr style="background:'.$style.'"><td><input type="checkbox" class="multiplePayFees" value="'.$ind['id'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
-                        echo '<tr><td><input type="checkbox" class="multiplePayFees-' . $fd['fn_fees_head_id'] . ' chkChildInv chkChildInvSel-' . $fd['fn_fees_head_id'] . '" data-fid="' . $fd['fn_fees_head_id'] . '" data-amt="' . $totalamountnew . '" value="' . $ind['id'] . '"   data-duedate="'.$ddate.'" data-minduedate="'.$minDueDate.'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
+                        echo '<tr><td><input type="checkbox" class="multiplePayFees-' . $fd['fn_fees_head_id'] . ' chkChildInv chkChildInvSel-' . $fd['fn_fees_head_id'] . '" data-fid="' . $fd['fn_fees_head_id'] . '" data-amt="' . $totalamountnew . '" value="' . $ind['id'] . '"   data-duedate="'.$dueDateForMatch.'" data-minduedate="'.$minDueDate.'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
 
 
 
@@ -464,7 +466,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                                     <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
 
                                     <?php if($ddVld == '1') { ?>
-                                        <?php if($minDueDate == $ddate) { ?>
+                                        <?php if($minDueDate == $dueDateForMatch) { ?>
                                             <?php if (!empty($terms)) {   ?>
                                                 <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal-<?php echo $gatewayID; ?>">Pay</button></a>
                                                 <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
@@ -532,7 +534,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                                     <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
 
                                     <?php if($ddVld == '1') { ?>
-                                        <?php if($minDueDate == $ddate) { ?>
+                                        <?php if($minDueDate == $dueDateForMatch) { ?>
                                             <?php if (!empty($terms)) {   ?>
                                                 <a class="terms_condition"><button data-id="<?= $ind['invoiceid'] ?>" class="btn btn-primary customBtn clickPay" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal-<?php echo $gatewayID; ?>">Pay</button></a>
                                                 <button type="submit" id='click_submit-<?= $ind['invoiceid'] ?>' style="display:none" class="btn btn-primary ">Pay</button>
@@ -572,11 +574,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
             if ($gatewayData['name'] == 'RAZORPAY') { ?>
                 <form action='thirdparty/multiplepayment/razorpay/multiplepay.php' method='post' id="razorPayment" class="multipayment-<?= $fd['fn_fees_head_id'] ?>">
                     <input type="hidden" name="payment_gateway_id" value="<?= $gatewayIDAll ?>">
-                <?php } else if ($gatewayData['name'] == 'AIRPAY') {
+            <?php } else if ($gatewayData['name'] == 'AIRPAY') {
                 $random_number = mt_rand(1000, 9999);
                 $today = time();
                 $orderId = $today . $random_number;
-                ?>
+            ?>
                     <form action='thirdparty/payment/airpay/sendtoairpay.php' method='post' id="airpayPayment" class="multipayment-<?= $fd['fn_fees_head_id'] ?>">
                         <input type="hidden" name="payment_gateway_id" value="<?= $gatewayIDAll ?>">
                         <input type="hidden" value="<?= $orderId; ?>" id="OrderId" name="orderid">
@@ -592,7 +594,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
                         <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
                         <input type="hidden" class="amount" id="multiAmt" name="amount" value="10.00">
                         <input type="hidden" class="ptype" name="ptype" value="multiple_fee_collection">
-                    <?php } ?>
+            <?php } ?>
                     <input type='hidden' id='multiplepayData-<?= $fd['fn_fees_head_id'] ?>' name='formdata' value=''>
                     <button type='submit' id='clickMultiplePay-<?= $fd['fn_fees_head_id'] ?>' style='display:none'>Submit</button>
                     </form>

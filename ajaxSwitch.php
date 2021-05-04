@@ -834,7 +834,7 @@ if (isset($_POST["type"])) {
                     }
 
                     $sqlinv =
-                        "SELECT GROUP_CONCAT(DISTINCT b.invoice_no) AS invNo, b.*, GROUP_CONCAT(c.title) AS invtitle FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_student_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id LEFT JOIN fn_fee_invoice AS c ON a.fn_fee_invoice_id = c.id WHERE a.id IN (" .
+                        "SELECT GROUP_CONCAT(DISTINCT b.invoice_no) AS invNo, b.*, GROUP_CONCAT(c.title) AS invtitle, c.cdt, c.due_date FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_student_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id LEFT JOIN fn_fee_invoice AS c ON a.fn_fee_invoice_id = c.id WHERE a.id IN (" .
                         $invoice_item_id .
                         ") AND b.pupilsightPersonID = " .
                         $pupilsightPersonID .
@@ -1044,13 +1044,24 @@ if (isset($_POST["type"])) {
                                                 "inv_amt.all" => $vfi["amnt"],
                                                 "tax.all" => $taxamt,
                                                 "amount.all" => $vfi["tamnt"],
-                                                "inv_amt_paid.all" => $itemAmtCol,
-                                                "inv_amt_pending.all" => $itemAmtPen,
+                                                "inv_amt_paid.all" => number_format(
+                                                    $itemAmtCol,
+                                                    2
+                                                ),
+                                                "inv_amt_pending.all" => number_format(
+                                                    $itemAmtPen,
+                                                    2
+                                                ),
+                                                "inv_amt_discount.all" => number_format(
+                                                    $disItemAmt,
+                                                    2
+                                                ),
                                             ];
                                             $total += $vfi["tamnt"];
                                             $totalTax += $taxamt;
                                             $totalamtWitoutTaxDis +=
                                                 $vfi["amnt"];
+                                            $totalDiscount += $disItemAmt;
                                             $cnt++;
                                         }
                                     }
@@ -1133,9 +1144,18 @@ if (isset($_POST["type"])) {
                                                 "tax.all" => $taxamt,
                                                 "amount.all" =>
                                                     $vfi["total_amount"],
-                                                "inv_amt_paid.all" => $itemAmtCol,
-                                                "inv_amt_pending.all" => $itemAmtPen,
-                                                "inv_amt_discount.all" => $disItemAmt,
+                                                "inv_amt_paid.all" => number_format(
+                                                    $itemAmtCol,
+                                                    2
+                                                ),
+                                                "inv_amt_pending.all" => number_format(
+                                                    $itemAmtPen,
+                                                    2
+                                                ),
+                                                "inv_amt_discount.all" => number_format(
+                                                    $disItemAmt,
+                                                    2
+                                                ),
                                             ];
                                             $total += $vfi["total_amount"];
                                             $totalTax += $taxamt;
