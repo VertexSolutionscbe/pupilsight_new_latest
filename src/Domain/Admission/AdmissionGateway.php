@@ -68,7 +68,7 @@ class AdmissionGateway extends QueryableGateway
             ->newQuery()
             ->from('wp_fluentform_entry_details as we')
             ->cols([
-                'cs.id', 'cs.campaign_id', 'cm.form_id', 'cs.submission_id', 'cs.state', 'cs.state_id', 'cs.status', 'cm.name', 'ws.created_at', 'ws.id as subid', 'ws.pupilsightProgramID', 'ws.pupilsightYearGroupID', 'ws.pupilsightPersonID', 'we.field_name', 'we.sub_field_name', 'we.field_value', 'pupilsightPerson.email', 'pupilsightPerson.phone1'
+                'cs.id', 'cm.id as campaign_id', 'cm.form_id', 'cs.submission_id', 'cs.state', 'cs.state_id', 'cs.status', 'cm.name', 'ws.created_at', 'ws.id as subid', 'ws.pupilsightProgramID', 'ws.pupilsightYearGroupID', 'ws.pupilsightPersonID', 'we.field_name', 'we.sub_field_name', 'we.field_value', 'pupilsightPerson.email', 'pupilsightPerson.phone1'
             ])
             ->leftJoin('wp_fluentform_submissions AS ws', 'we.submission_id=ws.id')
             ->leftJoin('campaign AS cm', 'we.form_id=cm.form_id')

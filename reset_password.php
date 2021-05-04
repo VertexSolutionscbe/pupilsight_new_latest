@@ -1,44 +1,46 @@
 <?php
 
 //include 'pupilsight.php';
-include_once 'cms/w2f/adminLib.php';
+include_once "cms/w2f/adminLib.php";
 $adminlib = new adminlib();
 $data = $adminlib->getPupilSightData();
 
 function getDomain()
 {
-    if (isset($_SERVER['HTTPS'])) {
-        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+    if (isset($_SERVER["HTTPS"])) {
+        $protocol =
+            $_SERVER["HTTPS"] && $_SERVER["HTTPS"] != "off" ? "https" : "http";
     } else {
-        $protocol = 'http';
+        $protocol = "http";
     }
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    return $protocol . "://" . $_SERVER['HTTP_HOST'];
+    return $protocol . "://" . $_SERVER["HTTP_HOST"];
 }
 $baseurl = getDomain();
 //$baseurl = getDomain().'/pupilsight';
 
 $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
 
-
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
-if (isset($data['logo_image'])) {
-    $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
+if (isset($data["logo_image"])) {
+    $logo = $baseurl . "/cms/images/logo/" . $data["logo_image"];
 }
 
-$key = $_GET['key'];
+$key = $_GET["key"];
 
-$sqlp = 'SELECT username, email, pupilsightPersonID FROM pupilsightPerson WHERE password_reset_key = "' . $key . '" ';
+$sqlp =
+    'SELECT username, email, pupilsightPersonID FROM pupilsightPerson WHERE password_reset_key = "' .
+    $key .
+    '" ';
 $rowdataprog = database::doSelectOne($sqlp);
 // $resultp = $connection2->query($sqlp);
 // $rowdataprog = $resultp->fetch();
 
 if (!empty($rowdataprog)) {
-    $email = $rowdataprog['email'];
-    $pupilsightPersonID = $rowdataprog['pupilsightPersonID'];
+    $email = $rowdataprog["email"];
+    $pupilsightPersonID = $rowdataprog["pupilsightPersonID"];
 
-    if (!empty($email)) {
-?>
+    if (!empty($email)) { ?>
         <!doctype html>
         <html class="no-js" lang="">
 
@@ -46,7 +48,7 @@ if (!empty($rowdataprog)) {
             <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
             <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-            <title><?= $title; ?> | Reset Password</title>
+            <title><?= $title ?> | Reset Password</title>
             <meta name="description" content="Pupilpod is India’s first cloud based School ERP Software. It is 100% customizable and evolves to meet each School or University’s needs.
                 Discover how with Pupilpod you can automate your entire Academic, Operational, and Management information systems" />
             <meta name="keywords" content="Pupilpod,School ERP,erp,School ERP Software, School Management Solution">
@@ -67,26 +69,26 @@ if (!empty($rowdataprog)) {
             <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
 
 
-            <link rel="stylesheet" href="<?= $baseurl; ?>/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
+            <link rel="stylesheet" href="<?= $baseurl ?>/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
 
-            <link href="<?= $baseurl; ?>/assets/css/tabler.css" rel="stylesheet" />
-            <link href="<?= $baseurl; ?>/assets/css/dev.css" rel="stylesheet" />
+            <link href="<?= $baseurl ?>/assets/css/tabler.css" rel="stylesheet" />
+            <link href="<?= $baseurl ?>/assets/css/dev.css" rel="stylesheet" />
 
             <!-- Libs JS -->
-            <script src="<?= $baseurl; ?>/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-            <script src="<?= $baseurl; ?>/assets/libs/jquery/dist/jquery-3.5.1.min.js"></script>
-            <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/jquery/jquery-migrate.min.js?v=1.0"></script>
+            <script src="<?= $baseurl ?>/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="<?= $baseurl ?>/assets/libs/jquery/dist/jquery-3.5.1.min.js"></script>
+            <script type="text/javascript" src="<?= $baseurl ?>/assets/libs/jquery/jquery-migrate.min.js?v=1.0"></script>
 
 
-            <script src="<?= $baseurl; ?>/assets/js/core.js"></script>
+            <script src="<?= $baseurl ?>/assets/js/core.js"></script>
 
             <script type="text/javascript">
-                var tb_pathToImage = "<?= $baseurl; ?>/assets/libs/thickbox/loadingAnimation.gif";
+                var tb_pathToImage = "<?= $baseurl ?>/assets/libs/thickbox/loadingAnimation.gif";
             </script>
 
-            <script src="<?= $baseurl; ?>/assets/js/tabler.min.js"></script>
-            <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
-            <script type="text/javascript" src="<?= $baseurl; ?>/assets/js/jquery.form.js?v=1.0"></script>
+            <script src="<?= $baseurl ?>/assets/js/tabler.min.js"></script>
+            <script type="text/javascript" src="<?= $baseurl ?>/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
+            <script type="text/javascript" src="<?= $baseurl ?>/assets/js/jquery.form.js?v=1.0"></script>
 
 
         </head>
@@ -99,7 +101,7 @@ if (!empty($rowdataprog)) {
                             <div class="row">
                                 <div class="col-12">
                                     <div class="text-center my-3" style='cursor:pointer;' onclick="homepage();">
-                                        <img src="<?= $logo; ?>" height="50" alt="">
+                                        <img src="<?= $logo ?>" height="50" alt="">
                                     </div>
                                 </div>
                                 <div class="col-12 text-center">
@@ -249,26 +251,21 @@ if (!empty($rowdataprog)) {
         </body>
 
         </html>
-    <?php
-    } else {
-    ?>
+    <?php } else { ?>
         <script>
             alert('Invalid Token or Token Expired!');
             location.href = 'home.php';
         </script>
-    <?php
-        // header("Location: home.php");
-        exit;
-    }
+    <?php // header("Location: home.php");
+    exit();}
 } else {
-    ?>
+     ?>
     <script>
         alert('Invalid Token or Token Expired!');
         location.href = 'home.php';
     </script>
-<?php
-    //header("Location: home.php");
-    exit;
+<?php //header("Location: home.php");
+exit();
 }
 
 ?>

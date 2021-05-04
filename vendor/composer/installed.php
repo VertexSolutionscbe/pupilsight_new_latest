@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '1d4bfd6466ebdec5f8b1dadfe3188741aae13527',
+    'reference' => 'fd465924607c1d398fd8d49b8f54c1c00094356f',
     'name' => 'pupilsightedu/core',
   ),
   'versions' => 
@@ -116,6 +116,24 @@
       array (
       ),
       'reference' => '8438dc47a0674e3378bcce893a0a04d79a2c22b3',
+    ),
+    'markbaker/complex' => 
+    array (
+      'pretty_version' => '1.5.0',
+      'version' => '1.5.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'c3131244e29c08d44fefb49e0dd35021e9e39dd2',
+    ),
+    'markbaker/matrix' => 
+    array (
+      'pretty_version' => '1.2.3',
+      'version' => '1.2.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '44bb1ab01811116f01fe216ab37d921dccc6c10d',
     ),
     'matthewbdaly/sms-client' => 
     array (
@@ -267,6 +285,15 @@
       array (
       ),
       'reference' => 'edb5d32b1e3400a35a5c91e2539ed6f6ce925e4d',
+    ),
+    'phpoffice/phpspreadsheet' => 
+    array (
+      'pretty_version' => '1.8.2',
+      'version' => '1.8.2.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '0c1346a1956347590b7db09533966307d20cb7cc',
     ),
     'phpoffice/phpword' => 
     array (
@@ -422,6 +449,15 @@
         0 => '1.0.0',
       ),
     ),
+    'psr/simple-cache' => 
+    array (
+      'pretty_version' => '1.0.1',
+      'version' => '1.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '408d5eafb83c57f6365a3ca330ff23aa4a5fa39b',
+    ),
     'pupilsightedu/core' => 
     array (
       'pretty_version' => 'dev-master',
@@ -429,7 +465,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '1d4bfd6466ebdec5f8b1dadfe3188741aae13527',
+      'reference' => 'fd465924607c1d398fd8d49b8f54c1c00094356f',
     ),
     'ralouphie/getallheaders' => 
     array (

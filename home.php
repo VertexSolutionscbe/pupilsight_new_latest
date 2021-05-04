@@ -48,17 +48,19 @@ $logo = $baseurl . "/cms/images/pupilpod_logo.png";
 if (isset($data['logo_image'])) {
     $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
     $logoloc = $_SERVER['DOCUMENT_ROOT'] . '/cms/images/logo/' . $data['logo_image'];
-    list($width, $height) = getimagesize($logoloc);
-    if ($width && $height) {
-        $owh = round(($width / $height), 0);
-        if ($owh == 1) {
-            $logoStyle = "logo_1_1"; //square eg. 200px/200px
-        } else if ($owh == 2) {
-            $logoStyle = "logo_2_1"; //img is 2 is to 1 eg. 200px/100px
-        } else if ($owh == 3) {
-            $logoStyle = "logo_3_1"; //img is 3 is to 1 eg. 150px/50px
-        } else {
-            $logoStyle = "logo_4_1"; //image width 4 and 1 eg. 200px/50px
+    if(file_exists($logoloc)){
+        list($width, $height) = getimagesize($logoloc);
+        if ($width && $height) {
+            $owh = round(($width / $height), 0);
+            if ($owh == 1) {
+                $logoStyle = "logo_1_1"; //square eg. 200px/200px
+            } else if ($owh == 2) {
+                $logoStyle = "logo_2_1"; //img is 2 is to 1 eg. 200px/100px
+            } else if ($owh == 3) {
+                $logoStyle = "logo_3_1"; //img is 3 is to 1 eg. 150px/50px
+            } else {
+                $logoStyle = "logo_4_1"; //image width 4 and 1 eg. 200px/50px
+            }
         }
     }
 }
