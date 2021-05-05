@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $page->addError(__('You do not have access to this action.'));
 } else {
     $role = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
-    
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
     $page->breadcrumbs
     ->add('Transaction', 'fee_transaction_manage.php')
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     //echo '</h2>';
     //  print_r($criteria);
     //  die();
-    $dataSet = $feesGateway->getAllPaymentDetails($criteria);
+    $dataSet = $feesGateway->getAllPaymentDetails($criteria, $pupilsightSchoolYearID);
 
     
     $table = DataTable::createPaginated('userManage', $criteria);
@@ -89,6 +89,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $table->addColumn('officialName', __('Student Name'))
         ->width('10%')
         ->translatable();
+    
+    $table->addColumn('class', __('Class'))
+    ->width('10%')
+    ->translatable();
+
+    $table->addColumn('section', __('Section'))
+    ->width('10%')
+    ->translatable();
 
     $table->addColumn('order_id', __('Order Id'))
         ->width('10%')

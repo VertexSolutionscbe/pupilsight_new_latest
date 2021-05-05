@@ -4,36 +4,77 @@ include "pupilsight.php";
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 try {
-    //$fileDownloadType = "html";
-    $fileDownloadType = "xlsx"; // for excel keep blank
-    $sq =
-        "select pupilsightPersonID, officialName from pupilsightPerson order by officialName asc";
+    $fileDownloadType = "html";
+    if (isset($_GET["fd"])) {
+        $fileDownloadType = $_GET["fd"];
+    }
+    $isTotal = true;
+    $totColumns = "amount_paying";
+    //$fileDownloadType = "xlsx"; // for excel keep blank
 
+    //p.admission_no
+    $today = date("Y-m-d");
+    $sq =
+        "select p.pupilsightPersonID, p.officialName, CONCAT(cl.name, '-',sec.name) as grade, fn.receipt_number,
+        IFNULL(fm.name,'online') as payment_mode, fn.dd_cheque_date, fn.dd_cheque_no, 
+          bnk.name as bank_name, fn.payment_date, fn.amount_paying
+          from pupilsightPerson as p
+          left join pupilsightStudentEnrolment as e on p.pupilsightPersonID = e.pupilsightPersonID
+          left join pupilsightYearGroup as cl on e.pupilsightYearGroupID = cl.pupilsightYearGroupID
+          left join pupilsightRollGroup as sec on e.pupilsightRollGroupID = sec.pupilsightRollGroupID
+          left join fn_fees_collection as fn on p.pupilsightPersonID = fn.pupilsightPersonID
+          left join fn_masters as fm on fn.payment_mode_id = fm.id
+          left join fn_masters as bnk on fn.bank_id = bnk.id
+          where fn.amount_paying is not null and fn.payment_date ='" .
+        $today .
+        "' and e.pupilsightSchoolYearID='3'
+          order by p.officialName asc";
+
+    //echo $sq;
+    //pupilsightPersonID,
     $query = $connection2->query($sq);
     $result = $query->fetchAll();
 
-    function html_table($data = [], $header = [], $addSerialNo = true)
-    {
+    function html_table(
+        $data = [],
+        $header = [],
+        $total = null,
+        $addSerialNo = true
+    ) {
         $rows = [];
         $cnt = 1;
+        $colLen = 1;
         foreach ($data as $row) {
             $cells = [];
             if ($addSerialNo) {
                 $cells[] = "<td>{$cnt}</td>";
                 $cnt++;
             }
+            $colLen = 1;
             foreach ($row as $cell) {
                 $cells[] = "<td>{$cell}</td>";
+                $colLen++;
             }
             $rows[] = "<tr>" . implode("", $cells) . "</tr>";
         }
 
         //for table header
+        if ($total) {
+            if ($colLen) {
+                $rows[] =
+                    "<tr><td style='text-align:right' colspan='" .
+                    $colLen .
+                    "'><h3>Total : " .
+                    $total .
+                    "</h3></td></tr>";
+            }
+        }
+
         if ($header) {
             $cells = [];
-            if ($addSerialNo) {
+            /*if ($addSerialNo) {
                 $cells[] = "<th>Serial No</th>";
-            }
+            }*/
             foreach ($header as $cell) {
                 $cells[] = "<th>{$cell}</th>";
             }
@@ -46,8 +87,34 @@ try {
         return "<table class='table'>" . implode("", $rows) . "</table>";
     }
 
-    $header = ["ID", "Name"];
-    $htmlString = html_table($result, $header);
+    $header = [
+        "SINo",
+        "Student Id",
+        "Student Name",
+        "Grade",
+        "Receipt No.",
+        "Payment Mode",
+        "DD Date",
+        "DD Number",
+        "Bank Details",
+        "Payment Date",
+        "Amount Paid",
+    ];
+
+    if ($isTotal) {
+        $len = count($result);
+        $i = 0;
+        $totalValue = 0;
+
+        if ($result[$i][$totColumns]) {
+            while ($i < $len) {
+                $totalValue += $result[$i][$totColumns];
+                $i++;
+            }
+        }
+    }
+
+    $htmlString = html_table($result, $header, $totalValue);
 
     $html = "<html>";
     $html .= "<style>.table {
@@ -72,8 +139,7 @@ try {
         }</style>";
 
     $html .= "<body>";
-    $html .=
-        "<br/><center><h2>Report Header for Some School</h2></center><br/>";
+    $html .= "<br/><center><h2>Daily Collection Report</h2></center><br/>";
     $html .= $htmlString;
     $html .= "</body>";
     $html .= "</html>";
@@ -112,7 +178,8 @@ try {
         foreach ($cellIterator as $cell) {
             $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
         }
-        $sheet->getActiveSheet()->mergeCells("A1:E1");
+
+        //$sheet->getActiveSheet()->mergeCells("A1:E1");
 
         $writer = new Xlsx($spreadsheet);
         $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/hello_world.xlsx";

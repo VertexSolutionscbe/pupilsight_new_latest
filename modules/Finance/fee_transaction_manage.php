@@ -294,6 +294,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $table->addColumn('receipt_number', __('Receipt No'));
     $table->addColumn('invoice_no', __('Invoice No'));
     $table->addColumn('student_name', __('Name'));
+    $table->addColumn('class', __('Class'));
+    $table->addColumn('section', __('Section'));
     $table->addColumn('admission_no', __('Admission No'));
     $table->addColumn('transaction_id', __('Transaction Id'));
     $table->addColumn('paymentmode', __('payment Mode'));
