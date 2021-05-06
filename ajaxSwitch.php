@@ -1204,7 +1204,11 @@ if (isset($_POST["type"])) {
                             $taxamt = number_format($taxamt, 2, ".", "");
                         }
 
-                        $kountRow = count($dts_receipt_feeitem);
+                        if (!empty($dts_receipt_feeitem)) {
+                            $kountRow = count($dts_receipt_feeitem);
+                        } else {
+                            $kountRow = 0;
+                        }
 
                         $dts_receipt_feeitem1 = [
                             "serial.all" => $kountRow + 1,
@@ -1223,7 +1227,14 @@ if (isset($_POST["type"])) {
                         $totalamtWitoutTaxDis =
                             $totalamtWitoutTaxDis + $valuefi["amnt"];
 
-                        array_push($dts_receipt_feeitem, $dts_receipt_feeitem1);
+                        if (!empty($dts_receipt_feeitem)) {
+                            array_push(
+                                $dts_receipt_feeitem,
+                                $dts_receipt_feeitem1
+                            );
+                        } else {
+                            $dts_receipt_feeitem[] = $dts_receipt_feeitem1;
+                        }
                     }
 
                     $dts_receipt = [
@@ -1287,7 +1298,7 @@ if (isset($_POST["type"])) {
                     // print_r($dts_receipt);
                     // print_r($dts_receipt_feeitem);
                     // echo '</pre>';
-                    // die();
+                    //die();
 
                     if (
                         !empty($dts_receipt) &&

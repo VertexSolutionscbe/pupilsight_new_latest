@@ -62,13 +62,20 @@ if ($_POST) {
 		window.history.go(-1);</script>";
         exit();
     } else {
-        $insert = $adminlib->createCampaignRegistration(
-            $input,
-            $_POST["campaign_id"]
-        );
+        if ($campaign_id) {
+            $insert = $adminlib->createCampaignRegistration(
+                $input,
+                $_POST["campaign_id"]
+            );
+        }
         //  $URL = 'application_page.php?url_id='.$campaign_id.'&status=not';
-        $URL = "register.php?url_id=" . $campaign_id . "&reg_status=1";
-        header("Location: {$URL}");
+        //$URL = "register.php?url_id=" . $campaign_id . "&reg_status=1";
+        echo "<script type='text/javascript'>
+        alert('Thank you for Registration. Please login and apply for admission.');
+        location.href='home.php';
+		</script>";
+        die();
+        //header("Location: {$URL}");
     }
 }
 
@@ -146,8 +153,18 @@ if (isset($data["logo_image"])) {
 
         <body id='chkCounterSession' class='antialiased'>
             <div id="homePanel" class="page">
+
+                <div id="applicationList" class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 text-right mt-2">
+                            <button class="btn btn-secondary" onclick="homepage();">Back</button>
+                        </div>
+                    </div>
+                </div>
+            
                 <form class="needs-validation" novalidate method="post" action="">
-                    <div class="container-tight py-6">
+
+                    <div class="container-tight py-4">
                         <div class="card card-md">
                             <div class="card-body">
                                 <div class="row">
