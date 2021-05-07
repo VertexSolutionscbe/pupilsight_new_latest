@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $page->addError(__('You do not have access to this action.'));
 } else {
     $role = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
-    
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
     $page->breadcrumbs
     ->add('Transaction', 'fee_transaction_manage.php')
@@ -70,7 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     //echo '</h2>';
     //  print_r($criteria);
     //  die();
-    $dataSet = $feesGateway->getAllPaymentDetails($criteria);
+
+    echo "&nbsp;&nbsp;<a style='float:right;' class=' btn btn-white' id='export_payment_details' title='Export Excel'  >Export</a>";
+    $dataSet = $feesGateway->getAllPaymentDetails($criteria, $pupilsightSchoolYearID);
 
     
     $table = DataTable::createPaginated('userManage', $criteria);
@@ -89,6 +91,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $table->addColumn('officialName', __('Student Name'))
         ->width('10%')
         ->translatable();
+    
+    $table->addColumn('class', __('Class'))
+    ->width('10%')
+    ->translatable();
+
+    $table->addColumn('section', __('Section'))
+    ->width('10%')
+    ->translatable();
 
     $table->addColumn('order_id', __('Order Id'))
         ->width('10%')
@@ -111,3 +121,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
 }
 
 ?>
+
+<script>
+    $(document).on('click', '#export_payment_details', function () {
+        $("#expore_tbl").table2excel({
+            name: "Worksheet Name",
+            filename: "Online_Payment_Details.xls",
+            fileext: ".xls",
+            exclude: ".checkall",
+            exclude: ".rm_cell",
+            exclude_inputs: true,
+            columns: [0, 1, 2, 3, 4, 5]
+
+        });
+    });
+</script>

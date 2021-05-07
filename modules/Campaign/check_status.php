@@ -347,15 +347,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                     $lin = $baseurl . "public/receipts/" . $inv["filename"] . ".pdf";
                     echo "<td><a href='" . $lin . "' download><i title='Fee Receipt Download' class='mdi mdi-file-pdf mdi-24px download_icon'></i></a></td></tr>";
                 } else {
+
+                    if ($campstatus['is_fee_generate'] == '2') {
+                        $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $campstatus['subid'] . "  ";
+                        $resulttr = $connection2->query($sql2);
+                        $stateChk = $resulttr->fetch();
+                        if (!empty($stateChk['transaction_id'])) {
+                            $statusCamp = 'Submitted';
+                        } else {
+                            $statusCamp = 'Created';
+                        }
+                    } else {
+                        $statusCamp = 'Submitted';
+                    }
                     
-                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td>';
+                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $statusCamp . '</td><td>' . $totalamountnew . '</td>';
 
                     $sqlstu = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = "'.$campstatus['subid'].'" AND (sub_field_name = "first_name" OR field_name = "student_name") ';
                     $resultstu = $connection2->query($sqlstu);
                     $studetails = $resultstu->fetch();
 
-                    $fn_fees_head_id = $ind['fn_fees_head_id'];
+                    $fn_fees_head_id = $invdata['fn_fees_head_id'];
                     $sql = 'SELECT b.* FROM fn_fees_head AS a LEFT JOIN fn_fee_payment_gateway AS b ON a.payment_gateway_id = b.id WHERE a.id = '.$fn_fees_head_id.' ';
+                   // die();
                     $result = $connection2->query($sql);
                     $gatewayData = $result->fetch();
                     $terms = $gatewayData['terms_and_conditions'];
@@ -368,7 +382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                     <td>
                         <form action="thirdparty/applicantpayment/razorpay/pay.php" method="post">
                             <input type="hidden" name="payment_gateway_id" value="<?= $gatewayID ?>">
-                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
+                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $invdata['pupilsightSchoolYearID'] ?>">
                             <input type="hidden" name="classid" value="<?=$campstatus['pupilsightYearGroupID'] ?>">
                             <input type="hidden" name="sectionid" value="">
                             <input type="hidden" name="fn_fees_invoice_id" value="<?= $invoiceId ?>">
@@ -395,7 +409,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                     <td>
                         <form action="thirdparty/payment/payu/checkout_parent.php" method="post">
                             <input type="hidden" name="payment_gateway_id" value="<?= $gatewayID ?>">
-                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
+                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $invdata['pupilsightSchoolYearID'] ?>">
                             <input type="hidden" name="classid" value="<?=$campstatus['pupilsightYearGroupID'] ?>">
                             <input type="hidden" name="sectionid" value="">
                             <input type="hidden" name="fn_fees_invoice_id" value="<?= $invoiceId ?>">
@@ -430,7 +444,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                         <form action="thirdparty/payment/airpay/sendtoairpay.php" method="post">
                             <input type="hidden" name="payment_gateway_id" value="<?= $gatewayID ?>">
                             <input type="hidden" value="<?= $orderId; ?>" id="OrderId" name="orderid">
-                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $ind['pupilsightSchoolYearID'] ?>">
+                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $invdata['pupilsightSchoolYearID'] ?>">
                             <input type="hidden" name="classid" value="<?=$campstatus['pupilsightYearGroupID'] ?>">
                             <input type="hidden" name="sectionid" value="">
                             <input type="hidden" name="fn_fees_invoice_id" value="<?= $invoiceId ?>">

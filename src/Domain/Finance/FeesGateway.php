@@ -1183,10 +1183,12 @@ print_r($rs);
                 ->newQuery()
                 ->from('fn_fees_collection')
                 ->cols([
-                    'fn_fees_collection.*', 'pupilsightPerson.officialName as student_name', 'pupilsightPerson.email', 'pupilsightPerson.phone1', 'pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id', 'GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname', 'pupilsightStudentEnrolment.pupilsightYearGroupID as classid', 'pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid', 'pupilsightPerson.admission_no'
+                    'fn_fees_collection.*', 'pupilsightPerson.officialName as student_name', 'pupilsightPerson.email', 'pupilsightPerson.phone1', 'pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id', 'GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname', 'pupilsightStudentEnrolment.pupilsightYearGroupID as classid', 'pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid', 'pupilsightPerson.admission_no', 'pupilsightYearGroup.name as class', 'pupilsightRollGroup.name as section'
                 ])
                 ->leftJoin('pupilsightPerson', 'fn_fees_collection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
                 ->leftJoin('pupilsightStudentEnrolment', 'fn_fees_collection.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+                ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
                 ->leftJoin('fn_fees_student_collection', 'fn_fees_collection.transaction_id=fn_fees_student_collection.transaction_id')
                 //->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
                 ->leftJoin('fn_masters', 'fn_fees_collection.payment_mode_id=fn_masters.id')
@@ -1243,6 +1245,7 @@ print_r($rs);
             }
             $query->where('fn_fees_collection.transaction_status = "1" ')
                 ->where('fn_fees_collection.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+                ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
                 ->groupBy(['fn_fees_collection.id'])
                 ->orderBy(['fn_fees_collection.id DESC']);
             //echo $query;
@@ -1251,17 +1254,20 @@ print_r($rs);
                 ->newQuery()
                 ->from('fn_fees_collection')
                 ->cols([
-                    'fn_fees_collection.*', 'pupilsightPerson.officialName as student_name', 'pupilsightPerson.email', 'pupilsightPerson.phone1', 'pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id', 'GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname', 'pupilsightStudentEnrolment.pupilsightYearGroupID as classid', 'pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid'
+                    'fn_fees_collection.*', 'pupilsightPerson.officialName as student_name', 'pupilsightPerson.email', 'pupilsightPerson.phone1', 'pupilsightPerson.pupilsightPersonID as stu_id', 'fn_fees_collection.id as collection_id', 'GROUP_CONCAT(DISTINCT fn_fees_student_collection.invoice_no) as invoice_no', 'fn_masters.name as paymentmode', 'bnk.name as bankname', 'pupilsightStudentEnrolment.pupilsightYearGroupID as classid', 'pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid', 'pupilsightYearGroup.name as class', 'pupilsightRollGroup.name as section'
                 ])
 
                 ->leftJoin('pupilsightPerson', 'fn_fees_collection.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
                 ->leftJoin('fn_fees_student_collection', 'fn_fees_collection.transaction_id=fn_fees_student_collection.transaction_id')
                 ->leftJoin('pupilsightStudentEnrolment', 'fn_fees_collection.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+                ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
                 //->leftJoin('fn_fee_invoice_student_assign', 'fn_fees_student_collection.invoice_no=fn_fee_invoice_student_assign.invoice_no')
                 ->leftJoin('fn_masters', 'fn_fees_collection.payment_mode_id=fn_masters.id')
                 ->leftJoin('fn_masters as bnk', 'fn_fees_collection.bank_id=bnk.id')
                 ->where('fn_fees_collection.transaction_status = "1" ')
                 ->where('fn_fees_collection.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+                ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
                 ->groupBy(['fn_fees_collection.id'])
                 ->orderBy(['fn_fees_collection.id DESC']);
         }
@@ -1949,15 +1955,19 @@ print_r($rs);
         return $this->runQuery($query, $criteria, TRUE);
     }
 
-    public function getAllPaymentDetails(QueryCriteria $criteria)
+    public function getAllPaymentDetails(QueryCriteria $criteria, $pupilsightSchoolYearID)
     {
         $query = $this
             ->newQuery()
             ->from('fn_fee_payment_details')
             ->cols([
-                'fn_fee_payment_details.*', 'pupilsightPerson.officialName'
+                'fn_fee_payment_details.*', 'pupilsightPerson.officialName', 'pupilsightYearGroup.name as class', 'pupilsightRollGroup.name as section'
             ])
             ->leftJoin('pupilsightPerson', 'fn_fee_payment_details.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+            ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+            ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+            ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+            ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
             ->orderBy(['fn_fee_payment_details.id DESC']);
 
         return $this->runQuery($query, $criteria, TRUE);

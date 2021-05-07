@@ -69,11 +69,12 @@ if (!empty($file)) {
             //print_r($file);
             chmod($file, 0777);
             
-            $sqla = "select application_id, created_at, pupilsightYearGroupID FROM wp_fluentform_submissions  where id = " . $aid . " ";
+            $sqla = "select application_id, created_at, pupilsightYearGroupID, pupilsightProgramID FROM wp_fluentform_submissions  where id = " . $aid . " ";
             $resulta = $connection2->query($sqla);
             $applicationData = $resulta->fetch();
             
 
+            $pupilsightProgramID = $applicationData['pupilsightProgramID'];
             $classID = $applicationData['pupilsightYearGroupID'];
             $className = '';
             if (!empty($classID)) {
@@ -82,6 +83,16 @@ if (!empty($file)) {
                 $clsdata = $resultc->fetch();
                 
                 $className = $clsdata['name'];
+                //echo $sqlc;
+            }
+
+            $progName = '';
+            if (!empty($pupilsightProgramID)) {
+                $sqlp = "select name FROM pupilsightProgram  where pupilsightProgramID = '" . $pupilsightProgramID . "' ";
+                $resultp = $connection2->query($sqlp);
+                $progdata = $resultp->fetch();
+                
+                $progName = $progdata['name'];
                 //echo $sqlc;
             }
 
@@ -164,6 +175,9 @@ if (!empty($file)) {
             $date = date('d-m-Y', strtotime($applicationData['created_at']));
             $formData['application_no'] = $fname;
             $formData['application_date'] = $date;
+
+            $formData['program_name'] = $progName;
+            $formData['class_name'] = $className;
 
             $fname = trim(str_replace("/", "_", $fname));
 

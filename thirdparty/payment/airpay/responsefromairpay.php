@@ -128,7 +128,9 @@ if(!empty($sid) && !empty($cid) && !empty($txnid)){
         $result = $connection2->prepare($sql);
         $result->execute($data);
 
-        $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/fee_collection_success.php?sid=' . $sid.'&amt='.$amount;
+        $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/fee_update.php?payid=' . $txnid;
+
+        // $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/fee_collection_success.php?sid=' . $sid.'&amt='.$amount;
         header('Location: '.$callback);
     } else if($ptype == 'multiple_fee_collection'){
         $data = array('gateway' => 'AIRPAY', 'pupilsightPersonID' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
