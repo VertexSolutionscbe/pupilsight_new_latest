@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_elective_
         $pupilsightProgramID =  $_POST['pupilsightProgramID'];
         $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
 
-        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" GROUP BY a.pupilsightYearGroupID';
         $result = $connection2->query($sql);
         $classesdata = $result->fetchAll();
 
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_elective_
         }
         if(!empty($_GET['pid'])){
             $pupilsightProgramID = $_GET['pid'];
-            $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
+            $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" GROUP BY a.pupilsightYearGroupID';
             $result = $connection2->query($sql);
             $classesdata = $result->fetchAll();
 

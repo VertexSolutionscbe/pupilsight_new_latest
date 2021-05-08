@@ -60,12 +60,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_elective_gr
 
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightProgramID', __('Program'));
-        $col->addSelect('pupilsightProgramID')->fromArray($program)->required()->placeholder();
+        $col->addSelect('pupilsightProgramID')->setID('pupilsightProgramIDElective')->fromArray($program)->required()->placeholder();
         
       
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('pupilsightYearGroupID', __('Class'));
-        $col->addSelectYearGroup('pupilsightYearGroupID')->placeholder('Select Class');
+        $col->addSelect('pupilsightYearGroupID')->setID('pupilsightYearGroupIDElective')->placeholder('Select Class');
         
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('', __(''))->addClass('dte');
@@ -74,3 +74,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/copy_elective_gr
         echo $form->getOutput();
   
 }
+?>
+<script>
+    $(document).on('change', '#pupilsightProgramIDElective', function () {
+        var id = $(this).val();
+        var type = 'getClass';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type },
+            async: true,
+            success: function (response) {
+
+                $("#pupilsightYearGroupIDElective").html('');
+                //$("#pupilsightRollGroupID").html('');
+                $("#pupilsightYearGroupIDElective").html(response);
+            }
+        });
+    });
+</script>

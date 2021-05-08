@@ -2939,27 +2939,54 @@ if ($type == "attendanceConfigCls") {
     if (isset($_POST['att_type'])) {
         $att_type = $_POST['att_type'];
     }
-    $sql = 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '"  ';
+    $sq = 'SELECT pupilsightYearGroupID FROM attn_settings WHERE pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND pupilsightProgramID = "' . $pid . '" ';
     if ($att_type != "") {
-        $sql .= ' AND a.attn_type="' . $att_type . '"';
+        $sq .= ' AND a.attn_type="' . $att_type . '"';
     }
-    $sql .= ' GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID ASC';
-    $result = $connection2->query($sql);
-    $classes = $result->fetchAll();
+    $results = $connection2->query($sq);
+    $classData = $results->fetch();
+    $clsIDS = $classData['pupilsightYearGroupID'];
 
-    $data = '<option value="">Select Class</option>';
-    if (!empty($classes)) {
-        foreach ($classes as  $cl) {
-
-            $class = explode(',', $cl['name']);
-            $cid = explode(',', $cl['clid']);
-            $count = count($class);
-            for ($i = 0; $i < $count; $i++) {
-                $data .= '<option value="' . $cid[$i] . '">' . $class[$i] . '</option>';
+    if(!empty($clsIDS)){
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightYearGroupID IN (' . $clsIDS . ')  GROUP BY a.pupilsightYearGroupID';
+        $result = $connection2->query($sql);
+        $classes = $result->fetchAll();
+        // echo '<pre>';
+        // print_r($classes);
+        // echo '</pre>';
+        $data = '<option value="">Select Class</option>';
+        if (!empty($classes)) {
+            foreach ($classes as $k => $cl) {
+                $data .= '<option value="' . $cl['pupilsightYearGroupID'] . '">' . $cl['name'] . '</option>';
             }
         }
+        echo $data;
     }
-    echo $data;
+    // $sql = 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '"  ';
+    // if ($att_type != "") {
+    //     $sql .= ' AND a.attn_type="' . $att_type . '"';
+    // }
+    // $sql .= ' GROUP BY a.pupilsightYearGroupID ';
+    // $result = $connection2->query($sql);
+    // $classes = $result->fetchAll();
+    
+
+    // $data = '<option value="">Select Class</option>';
+    // if (!empty($classes)) {
+    //     foreach ($classes as  $cl) {
+
+    //         $class = explode(',', $cl['name']);
+    //         $cid = explode(',', $cl['clid']);
+    //         asort($cid);
+    //         //asort($class);
+    //         print_r($class);
+    //         $count = count($class);
+    //         for ($i = 0; $i < $count; $i++) {
+    //             $data .= '<option value="' . $cid[$i] . '">' . $class[$i] . '</option>';
+    //         }
+    //     }
+    // }
+    // echo $data;
 }
 
 
