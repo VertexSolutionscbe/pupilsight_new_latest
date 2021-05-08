@@ -32,31 +32,78 @@ if (
 } else {
      ?>
 	 	<!---Chat Post Widget---->
-		<div class="row" id='chatPostWidget'>
-			<div class="col-12 my-3">
-			<textarea class="form-control" id="chat_message" name="chat_message" rows="6" placeholder="Write Message Here" ></textarea>
-			<input type='hidden' id='chat_parent_id' value=''>
-			</div>
-			<div class="col-12 my-3" >
-			<div class="mb-3">
-				<div class="form-label">Message Type</div>
-				<div>
-					<label class="form-check form-check-inline">
-					<input class="form-check-input" id="msg_type2" name="msg_type" type="radio" checked value="2">
-					<span class="form-check-label">Two Way</span>
-					</label>
+		 <div class="card" id='chatPostWidget'>
+			 <div class="card-body">
+				<div class="row" >
+					<div class='col-md-2 col-sm-12'>
+						<div class="form-label">Bulk or Individual Type</div>
+						<select id='delivery_type' name='delivery_type' class='form-control' onchange="changeDeliveryType();">
+							<option value='individual'>Individual</option>
+							<option value='all'>All</option>
+							<option value='all_students'>All Students</option>
+							<option value='all_parents'>All Parents</option>
+							<option value='all_staff'>All Staff</option>
+						</select>
+					</div>
+					<div class="col-md-10 col-sm-12" id='individualList'>
+						<div class="row">
+					<div class='col-md-3 col-sm-12'>
+						<div class="form-label">Select User Type</div>
+						<select id='userType' name='userType' class='form-control' onchange="changeUserType();">
+							<option value='all'>All</option>
+							<option value='003'>Students</option>
+							<option value='004'>Parent</option>
+							<option value='staff'>Staff</option>
+						</select>
+					</div>
+					<div class='col-md-9 col-sm-12'>
+						<div class="form-label">Select User</div>
+						<select id='studentList' name='people[]' class='form-control' multiple></select>
+					</div>
+					</div>
+					</div>
+					<div class="col-12 my-3">
+					<textarea class="form-control" id="chat_message" name="chat_message" rows="6" placeholder="Write Message Here" ></textarea>
+					</div>
+					<div class="col-12 my-3" >
+					<div class="mb-3">
+						<div class="form-label">Message Type</div>
+						<div>
+							<label class="form-check form-check-inline">
+							<input class="form-check-input" id="msg_type2" name="msg_type" type="radio" checked value="2">
+							<span class="form-check-label">Two Way</span>
+							</label>
 
-					<label class="form-check form-check-inline">
-					<input class="form-check-input" id="msg_type1" name='msg_type' type="radio" value="1">
-					<span class="form-check-label">One Way</span>
-					</label>
+							<label class="form-check form-check-inline">
+							<input class="form-check-input" id="msg_type1" name='msg_type' type="radio" value="1">
+							<span class="form-check-label">One Way</span>
+							</label>
+						</div>
+						</div>
+					</div>
+					<div class="col-12">
+						<button type="button" class="btn btn-primary" onclick="postMessage();">Post Message</button>
+						<button type="button" class="btn btn-secondary ml-2" onclick="closeChatBox();">Cancel</button>
+					</div>
 				</div>
-				</div>
-			</div>
-			<div class="col-12">
-				<button type="button" class="btn btn-primary" onclick="postMessage();">Post Message</button>
 			</div>
 		</div>
+
+		<div class="card" id='chatReplyWidget'>
+			 <div class="card-body">
+				<div class="row" >
+					<div class="col-12 my-3">
+					<textarea class="form-control" id="reply_message" name="chat_message" rows="6" placeholder="Write Message Here" ></textarea>
+					<input type='hidden' id='chat_parent_id' value="">
+					</div>
+					<div class="col-12">
+						<button type="button" class="btn btn-primary" onclick="replyMessage();">Reply Message</button>
+						<button type="button" class="btn btn-secondary ml-2" onclick="closeReplyBox();">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<!--Chat Area Details--->
 		<div class="card my-4">
 
@@ -101,19 +148,86 @@ if (
 	<?php
 }
 ?>
-
 <script>
-	loadMessage();
+function changeDeliveryType(){
+	var val = $("#delivery_type").val();
+	if(val=="individual"){
+		$("#individualList").show();
+	}else{
+		$("#individualList").hide();
+	}
+}  
+
+function changeUserType(){
+	var userType = $("#userType").val();
+	if(userType){
+		loadPeople(userType);
+	}
+}	
+
+function loadPeople(userType){
+	try{
+		
+		$.ajax({
+		url: 'ajax_chat.php',
+		type: 'post',
+		data: {
+			type: "people",
+			userType: userType
+		},
+		success: function(response) {
+			//console.log(response);
+			var obj = jQuery.parseJSON(response);
+			var len = obj.length;
+			console.log(len);
+			var i =0;
+			var str = "";
+			while(i<len){
+				str +="<option value='"+obj[i]['pupilsightPersonID']+"'>"+obj[i]['officialName']+"</option>";
+				i++;
+			}
+			if(str){
+				$('#studentList').html("");
+				$('#studentList').html(str);
+				$('#studentList').selectize({plugins: ['remove_button'],});
+			}
+			console.log(obj);
+		}
+	});
+	}catch(ex){
+		console.log(ex);
+	}
+}
+</script>
+<script>
+
+	
 	var interval;
 	$(function() {
-		interval = setInterval(() => {
+		loadPeople('all');
+		loadMessage();
+		/*interval = setInterval(() => {
 			loadMessage();
-		}, 10000);
-		$("#chatPostWidget").hide();
+		}, 10000);*/
+		$("#chatPostWidget, #chatReplyWidget").hide();
 	});
 
 	var transcation = 400;
+
+	function openReplyBox(){
+		closeChatBox();
+		$("#chatReplyWidget").show(transcation);
+		$("#reply_message").focus("");
+		$("#reply_message").val("");
+	}
+
+	function closeReplyBox(){
+		$("#chatReplyWidget").hide(transcation);
+		$("#reply_message").val("");
+	}
+
 	function openChatBox(){
+		closeReplyBox();
 		$("#chatPostWidget").show(transcation);
 		$("#chat_message").focus("");
 	}
@@ -125,15 +239,23 @@ if (
 	}
 
 	function replyPost(chat_parent_id){
+		openReplyBox();
 		$("#chat_parent_id").val(chat_parent_id);
-		$("#chat_message").val("");
-		openChatBox();
 	}
 
 function postMessage(){
 	var msg = $("#chat_message").val();
 	var msg_type = $('input[name="msg_type"]:checked').val();
-	var chat_parent_id = $("#chat_parent_id").val();
+	var people = $("#studentList").val();
+	var delivery_type = $("#delivery_type").val();
+
+	if(delivery_type=="individual"){
+		if(people==""){
+			alert("You have not selected any user");
+			return;
+		}
+	}
+
 	if(msg){
 	$.ajax({
 		url: 'ajax_chat.php',
@@ -141,6 +263,36 @@ function postMessage(){
 		data: {
 			type: "postMessage",
 			msg_type: msg_type,
+			people: people,
+			delivery_type: delivery_type,
+			msg: msg
+		},
+		success: function(response) {
+			//console.log(response);
+			var obj = jQuery.parseJSON(response);
+			loadMessage();
+			if(obj.status=="1"){
+				closeChatBox();
+			}
+			alert(obj.msg);
+		}
+	});
+	}else{
+		alert("Message is empty.");
+	}
+}
+
+function replyMessage(){
+	var msg = $("#reply_message").val();
+	var chat_parent_id = $("#chat_parent_id").val();
+	
+
+	if(msg){
+	$.ajax({
+		url: 'ajax_chat.php',
+		type: 'post',
+		data: {
+			type: "replyMessage",
 			chat_parent_id: chat_parent_id,
 			msg: msg
 		},
@@ -150,6 +302,7 @@ function postMessage(){
 			loadMessage();
 			if(obj.status=="1"){
 				closeChatBox();
+				closeReplyBox();
 			}
 			alert(obj.msg);
 		}

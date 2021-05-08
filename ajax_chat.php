@@ -9,11 +9,63 @@ $session = $container->get("session");
 $type = "";
 if (isset($_POST["type"])) {
     $type = $_POST["type"];
-    /*if (!isset($_SESSION[$guid]["pupilsightPersonID"])) {
+    if (!isset($_SESSION[$guid]["pupilsightPersonID"])) {
         $result = ["status" => 2, "msg" => "Session Expired"];
         echo json_encode($result);
         die();
-    }*/
+    }
+}
+
+$mem = [];
+
+function validate_new_key($id)
+{
+    $flag = false;
+    while ($flag == false) {
+        $key = array_search($id, $mem); // $key = 2;
+        if (empty($key)) {
+            $flag = true;
+        } else {
+            $id = createComplexKey();
+        }
+    }
+    return $id;
+}
+
+function resetSuperKey()
+{
+    unset($mem);
+}
+
+function createSuperKey()
+{
+    $id = createComplexKey();
+    if (!empty($mem)) {
+        $id = validate_new_key($id);
+        array_push($mem, $id);
+    } else {
+        $mem = [$id];
+    }
+    return $id;
+}
+
+function createComplexKey()
+{
+    $oldID = -1;
+    $id = -1;
+    try {
+        $random_number = mt_rand(1000, 9999);
+        $today = time();
+        $id = $today . $random_number;
+        if ($id == $oldID) {
+            createComplexKey();
+        } else {
+            $oldID = $id;
+        }
+    } catch (Exception $ex) {
+        echo "common.createKey(): " . $ex->getMessage();
+    }
+    return $id;
 }
 
 function createId()
@@ -48,16 +100,39 @@ function get2Char($string)
 if ($type == "postMessage") {
     try {
         $result = [];
-        $msg = $_POST["msg"];
-        if ($msg) {
+
+        $msg = null;
+        $people = null;
+        $delivery_type = null;
+        $flag = true;
+
+        if (isset($_POST["msg"])) {
+            $msg = $_POST["msg"];
+        } else {
+            $flag = false;
+        }
+
+        if (isset($_POST["people"])) {
+            $people = $_POST["people"];
+        }
+
+        if (isset($_POST["delivery_type"])) {
+            $delivery_type = $_POST["delivery_type"];
+        } else {
+            $flag = false;
+        }
+
+        if ($delivery_type == "individual") {
+            if (empty($people)) {
+                $flag = false;
+            }
+        }
+
+        if ($flag) {
             try {
                 $id = createId();
                 //chat_parent_id = N
                 $cuid = $_SESSION[$guid]["pupilsightPersonID"];
-                $chat_parent_id = null;
-                if (isset($_POST["chat_parent_id"])) {
-                    $chat_parent_id = $_POST["chat_parent_id"];
-                }
 
                 $pupilsightSchoolYearID =
                     $_SESSION[$guid]["pupilsightSchoolYearID"];
@@ -68,7 +143,117 @@ if ($type == "postMessage") {
                 }
                 //attachment
                 $cdt = date("Y-m-d H:i:s");
+                $timestamp = time();
+                //$sq ="insert into chat_message(id, chat_parent_id, cuid, pupilsightSchoolYearID, msg_type, attachment, msg, cdt, timestamp)";
+                $sq =
+                    "insert into chat_message(id, cuid, pupilsightSchoolYearID, msg_type, delivery_type, msg, cdt, udt, timestamp)";
+                $sq .=
+                    "values('" .
+                    $id .
+                    "','" .
+                    $cuid .
+                    "','" .
+                    $pupilsightSchoolYearID .
+                    "','" .
+                    $msg_type .
+                    "','" .
+                    $delivery_type .
+                    "','" .
+                    nl2br(addslashes(htmlspecialchars($msg))) .
+                    "','" .
+                    $cdt .
+                    "','" .
+                    $cdt .
+                    "','" .
+                    $timestamp .
+                    "')";
+                //echo $sq;
+                $connection2->query($sq);
+                //INSERT INTO tbl_name (a,b,c) VALUES(1,2,3),(4,5,6),(7,8,9);
+                if ($delivery_type == "individual") {
+                    $sqi =
+                        "insert into chat_share (id, chat_msg_id, uid, isread, cdt, udt, timestamp) values ";
+                    $len = count($people);
+                    $i = 0;
+                    $sqi .= "";
+                    while ($i < $len) {
+                        $cid = createSuperKey();
 
+                        if ($i > 0) {
+                            $sqi .= ",";
+                        }
+                        $sqi .=
+                            "('" .
+                            $cid .
+                            "','" .
+                            $id .
+                            "','" .
+                            $people[$i] .
+                            "','1','" .
+                            $cdt .
+                            "','" .
+                            $cdt .
+                            "','" .
+                            $timestamp .
+                            "')";
+                        $i++;
+                    }
+                    //echo $sqi;
+                    $connection2->query($sqi);
+                    resetSuperKey();
+                }
+                $result["status"] = 1;
+                $result["msg"] = "Message Posted Successfully.";
+            } catch (Exception $ex) {
+                $result["status"] = 2;
+                $result["msg"] = "Exception: " . $ex->getMessage();
+            }
+        } else {
+            $result["status"] = 2;
+            $result["msg"] = "Invalid Message Parameter.";
+        }
+
+        //echo $squ;
+    } catch (Exception $ex) {
+        $res["status"] = 2;
+        $res["message"] = $ex->getMessage();
+    }
+    if ($result) {
+        echo json_encode($result);
+    }
+} elseif ($type == "replyMessage") {
+    try {
+        $result = [];
+
+        $msg = null;
+
+        $flag = true;
+
+        if (isset($_POST["msg"])) {
+            $msg = $_POST["msg"];
+        } else {
+            $flag = false;
+        }
+
+        $chat_parent_id = null;
+        if (isset($_POST["chat_parent_id"])) {
+            $chat_parent_id = $_POST["chat_parent_id"];
+        } else {
+            $flag = false;
+        }
+
+        if ($flag) {
+            try {
+                $id = createId();
+                //chat_parent_id = N
+                $cuid = $_SESSION[$guid]["pupilsightPersonID"];
+
+                $pupilsightSchoolYearID =
+                    $_SESSION[$guid]["pupilsightSchoolYearID"];
+
+                //attachment
+                $cdt = date("Y-m-d H:i:s");
+                $timestamp = time();
                 //$sq ="insert into chat_message(id, chat_parent_id, cuid, pupilsightSchoolYearID, msg_type, attachment, msg, cdt, timestamp)";
                 $sq =
                     "insert into chat_message(id, chat_parent_id, cuid, pupilsightSchoolYearID, msg_type, msg, cdt, udt, timestamp)";
@@ -81,16 +266,14 @@ if ($type == "postMessage") {
                     $cuid .
                     "','" .
                     $pupilsightSchoolYearID .
-                    "','" .
-                    $msg_type .
-                    "','" .
+                    "','2','" .
                     nl2br(addslashes(htmlspecialchars($msg))) .
                     "','" .
                     $cdt .
                     "','" .
                     $cdt .
                     "','" .
-                    time() .
+                    $timestamp .
                     "')";
                 //echo $sq;
                 $connection2->query($sq);
@@ -165,6 +348,32 @@ if ($type == "postMessage") {
                 $i--;
             }
         }
+    } catch (Exception $ex) {
+        $result["status"] = 2;
+        $result["msg"] = "Exception: " . $ex->getMessage();
+    }
+    if ($result) {
+        echo json_encode($result);
+    }
+} elseif ($type = "people") {
+    $result = [];
+    try {
+        $roleid = "003";
+        if ($_POST["userType"]) {
+            $userType = $_POST["userType"];
+        }
+        $sq = "select pupilsightPersonID, officialName from pupilsightPerson ";
+        if ($userType == "staff") {
+            $sq .= "where pupilsightRoleIDPrimary not in(003,004) ";
+        } elseif ($userType == "003") {
+            $sq .= "where pupilsightRoleIDPrimary='003' ";
+        } elseif ($userType == "004") {
+            $sq .= "where pupilsightRoleIDPrimary='004' ";
+        }
+        $sq .= "order by officialName asc";
+        //echo $sq;
+        $query = $connection2->query($sq);
+        $result = $query->fetchAll();
     } catch (Exception $ex) {
         $result["status"] = 2;
         $result["msg"] = "Exception: " . $ex->getMessage();
