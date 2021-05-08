@@ -948,15 +948,15 @@ if (isset($_POST["type"])) {
                             if ($is_concat_invoice == "1") {
                                 $concatInvId[] = $iid;
                             } else {
-                                if ($valuechk["fn_fee_structure_id"] == "") {
-                                    $valuech = $valuechk;
-                                } else {
+                                if (!empty($valuechk["fn_fee_structure_id"])) {
                                     $chsql =
                                         "SELECT b.invoice_title, a.display_fee_item FROM fn_fee_invoice AS a LEFT JOIN fn_fee_structure AS b ON a.fn_fee_structure_id = b.id WHERE a.id= " .
                                         $iid .
                                         " AND a.fn_fee_structure_id IS NOT NULL ";
                                     $resultch = $connection2->query($chsql);
                                     $valuech = $resultch->fetch();
+                                } else {
+                                    $valuech = $valuechk;
                                 }
 
                                 if ($valuech["display_fee_item"] == "2") {

@@ -395,7 +395,8 @@ $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
                                             </form>
                                         <?php } elseif ($gateway == 'RAZORPAY') {
                                             $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                            $responseLink = $base_url . "/cms/index.php?return=1";
+                                            // $responseLink = $base_url . "/cms/index.php?return=1";
+                                            $responseLink = $base_url . "/home.php";
 
                                         ?>
                                             <form id="admissionPay" action="../thirdparty/paymentadm/razorpay/pay.php" method="post" style="text-align:center;">
@@ -420,8 +421,8 @@ $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
 
                                         <?php } elseif ($gateway == 'PAYU') {
                                             $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                            $responseLink = $base_url . "/cms/index.php?return=1";
-
+                                            //$responseLink = $base_url . "/cms/index.php?return=1";
+                                            $responseLink = $base_url . "/home.php";
                                         ?>
                                             <form id="admissionPay" action="../thirdparty/payment/payu/checkout.php" method="post" style="text-align:center;">
                                                 <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
@@ -442,7 +443,8 @@ $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
                                             </form>
                                         <?php } elseif ($gateway == 'AIRPAY') {
                                             $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-                                            $responseLink = $base_url . "/cms/index.php?return=1";
+                                            //$responseLink = $base_url . "/cms/index.php?return=1";
+                                            $responseLink = $base_url . "/home.php";
                                             $airpayamount = number_format($applicationAmount, 2, '.', '');
                                         ?>
                                             <form id="admissionPay" action="../thirdparty/payment/airpay/sendtoairpay.php" method="post" style="text-align:center;">

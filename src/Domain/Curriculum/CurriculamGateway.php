@@ -73,7 +73,7 @@ class CurriculamGateway extends QueryableGateway
 
             $query->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ')
                 ->groupBy(['pupilsightPerson.pupilsightPersonID'])
-                ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
+                ->orderBy(['pupilsightPerson.officialName ASC']);
             //  echo $query;    
             $res = $this->runQuery($query, $criteria);
             $data = $res->data;

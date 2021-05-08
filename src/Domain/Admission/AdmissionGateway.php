@@ -85,6 +85,7 @@ class AdmissionGateway extends QueryableGateway
                 "we.field_value",
                 "pupilsightPerson.email",
                 "pupilsightPerson.phone1",
+                "cm.is_fee_generate",
             ])
             ->leftJoin(
                 "wp_fluentform_submissions AS ws",

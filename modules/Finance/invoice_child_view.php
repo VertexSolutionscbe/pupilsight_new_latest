@@ -425,7 +425,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
 
                         $style = $curdate >= $duedate ? '#FAFD94' : '#fff';
                         // echo '<tr style="background:'.$style.'"><td><input type="checkbox" class="multiplePayFees" value="'.$ind['id'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="'.$stuId.'"id = "'.$ind['id'].'"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
-                        echo '<tr><td><input type="checkbox" class="multiplePayFees-' . $fd['fn_fees_head_id'] . ' chkChildInv chkChildInvSel-' . $fd['fn_fees_head_id'] . '" data-fid="' . $fd['fn_fees_head_id'] . '" data-amt="' . $totalamountnew . '" value="' . $ind['id'] . '"   data-duedate="'.$dueDateForMatch.'" data-minduedate="'.$minDueDate.'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
+                        echo '<tr><td><input type="checkbox" class="multiplePayFees-' . $fd['fn_fees_head_id'] . ' chkChildInv chkChildInvSel-' . $fd['fn_fees_head_id'] . '" data-fid="' . $fd['fn_fees_head_id'] . '" data-amt="' . $totalamountnew . '" value="' . $ind['id'] . '"   data-duedate="'.$dueDateForMatch.'" data-minduedate="'.$minDueDate.'" data-invid="'.$ind['invoiceid'].'" data-itemId="'.$ind['fn_fee_invoice_item_id'].'" data-invNo="'.$ind['stu_invoice_no'].'"></td><td>' . $ind['officialName'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totalamountnew . '</td><td>' . $ddate . '</td><td>' . $ind['amtper'] . '</td><td><a  href="fullscreen.php?q=/modules/Finance/invoice_child_feePopup.php&width=1000"  class="thickbox" id="chk_feeID" style="display:none"><button class="">View Bill Details</button></a><a class="chkinvoice_parent" name="' . $stuId . '"id = "' . $ind['id'] . '"><button class="btn btn-primary customBtn">View Bill Details</button></a></td>';
 
 
 
@@ -671,7 +671,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
         foreach ($payhistory as $ph) {
 
 
-            $sqlfi = "SELECT a.invoice_no, b.title FROM fn_fees_student_collection AS a LEFT JOIN fn_fee_invoice as b ON a.fn_fees_invoice_id = b.id where a.transaction_id = " . $ph['transaction_id'] . " ";
+            $sqlfi = "SELECT GROUP_CONCAT(a.invoice_no) as inv_nos, GROUP_CONCAT(b.title) as inv_titles FROM fn_fees_student_collection AS a LEFT JOIN fn_fee_invoice as b ON a.fn_fees_invoice_id = b.id where a.transaction_id = " . $ph['transaction_id'] . " ";
             $resultfi = $connection2->query($sqlfi);
             $fiData = $resultfi->fetch();
 
@@ -695,8 +695,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_child_view
             }
             echo '<tr>
                   <td>' . $i++ . '</td>
-                  <td>' . $fiData['invoice_no'] . '</td>
-                  <td>' . $fiData['title'] . '</td>
+                  <td>' . $fiData['inv_nos'] . '</td>
+                  <td>' . $fiData['inv_titles'] . '</td>
                   <td>' . $ph['StuName'] . '</td>
                   <td>' . $ph['transaction_id'] . '</td>
                   <td>' . $ph['receipt_number'] . '</td>

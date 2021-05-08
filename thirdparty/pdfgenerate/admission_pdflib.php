@@ -1,32 +1,38 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/pupilsight.php';
-require_once($_SERVER['DOCUMENT_ROOT'] . '/pdflib.php');
+include $_SERVER["DOCUMENT_ROOT"] . "/pupilsight.php";
+require_once $_SERVER["DOCUMENT_ROOT"] . "/pdflib.php";
 
 $pdflib = new PDFLib();
 
-$cid = $_GET['cid'];
-$submissionId = $_GET['submissionId'];
+$cid = $_GET["cid"];
+$submissionId = $_GET["submissionId"];
 //$cid = 9;
 //$submissionId = 94;
 error_reporting(E_ALL);
-$applicantId = explode(',', $submissionId);
+$applicantId = explode(",", $submissionId);
 
-$sqlpt = "SELECT template_path, template_filename FROM campaign WHERE id = '" . $cid . "' ";
+$sqlpt =
+    "SELECT template_path, template_filename FROM campaign WHERE id = '" .
+    $cid .
+    "' ";
 //echo $sqlpt;
 $result = $connection2->query($sqlpt);
 $valuept = $result->fetch();
 
 //print_r($valuept);
 
-$file = $valuept['template_path'];
+$file = $valuept["template_path"];
 
-$sqlf = "Select a.academic_id, b.form_fields FROM campaign AS a LEFT JOIN wp_fluentform_forms AS b ON a.form_id = b.id WHERE a.id = ' " . $cid . " ' ";
+$sqlf =
+    "Select a.academic_id, b.form_fields FROM campaign AS a LEFT JOIN wp_fluentform_forms AS b ON a.form_id = b.id WHERE a.id = ' " .
+    $cid .
+    " ' ";
 $resultf = $connection2->query($sqlf);
 $fluent = $resultf->fetch();
 
-$string = $fluent['form_fields'];
-$academic_id = $fluent['academic_id'];
+$string = $fluent["form_fields"];
+$academic_id = $fluent["academic_id"];
 try {
     $string = preg_replace("/[\r\n]+/", " ", $string);
     $json = utf8_encode($string);
@@ -35,8 +41,8 @@ try {
     print_r($ex);
 }
 
-$fields = array();
-$arrHeader = array();
+$fields = [];
+$arrHeader = [];
 foreach ($field as $fe) {
     foreach ($fe as $f) {
         if (!empty($f->attributes)) {
@@ -62,91 +68,126 @@ foreach ($field as $fe) {
 // die();
 
 if (!empty($file)) {
-    $formData = array();
-    $files = array();
+    $formData = [];
+    $files = [];
     foreach ($applicantId as $aid) {
         try {
             //print_r($file);
             chmod($file, 0777);
 
-            $sqla = "select application_id, created_at, pupilsightYearGroupID FROM wp_fluentform_submissions  where id = " . $aid . " ";
+            $sqla =
+                "select application_id, created_at, pupilsightYearGroupID, pupilsightProgramID FROM wp_fluentform_submissions  where id = " .
+                $aid .
+                " ";
             $resulta = $connection2->query($sqla);
             $applicationData = $resulta->fetch();
 
-
-            $classID = $applicationData['pupilsightYearGroupID'];
-            $className = '';
+            $pupilsightProgramID = $applicationData["pupilsightProgramID"];
+            $classID = $applicationData["pupilsightYearGroupID"];
+            $className = "";
             if (!empty($classID)) {
-                $sqlc = "select name FROM pupilsightYearGroup  where pupilsightYearGroupID = '" . $classID . "' ";
+                $sqlc =
+                    "select name FROM pupilsightYearGroup  where pupilsightYearGroupID = '" .
+                    $classID .
+                    "' ";
                 $resultc = $connection2->query($sqlc);
                 $clsdata = $resultc->fetch();
 
-                $className = $clsdata['name'];
+                $className = $clsdata["name"];
                 //echo $sqlc;
             }
 
-            $sql = "select field_name, field_value FROM wp_fluentform_entry_details  where submission_id = " . $aid . " ";
+            $progName = "";
+            if (!empty($pupilsightProgramID)) {
+                $sqlp =
+                    "select name FROM pupilsightProgram  where pupilsightProgramID = '" .
+                    $pupilsightProgramID .
+                    "' ";
+                $resultp = $connection2->query($sqlp);
+                $progdata = $resultp->fetch();
+
+                $progName = $progdata["name"];
+                //echo $sqlc;
+            }
+
+            $sql =
+                "select field_name, field_value FROM wp_fluentform_entry_details  where submission_id = " .
+                $aid .
+                " ";
             $results = $connection2->query($sql);
             $rowdata = $results->fetchAll();
             $k = 0;
-            $imgData = array();
+            $imgData = [];
             foreach ($rowdata as $key => $value) {
                 try {
-                    if ($value['field_name'] == 'student_photo') {
-                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' . $cid . '" AND field_name = "student_photo" AND template_type = "Online" ';
+                    if ($value["field_name"] == "student_photo") {
+                        $sql =
+                            'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' .
+                            $cid .
+                            '" AND field_name = "student_photo" AND template_type = "Online" ';
                         $result = $connection2->query($sql);
                         $imgStuData = $result->fetch();
                         if (!empty($imgStuData)) {
-                            $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $value['field_value'];
-                            $imgData[$k]['x'] = $imgStuData['x'];
-                            $imgData[$k]['y'] = $imgStuData['y'];
-                            $imgData[$k]['width'] = $imgStuData['width'];
-                            $imgData[$k]['height'] = $imgStuData['height'];
+                            $imgData[$k]["pageno"] = $imgStuData["page_no"];
+                            $imgData[$k]["src"] = $value["field_value"];
+                            $imgData[$k]["x"] = $imgStuData["x"];
+                            $imgData[$k]["y"] = $imgStuData["y"];
+                            $imgData[$k]["width"] = $imgStuData["width"];
+                            $imgData[$k]["height"] = $imgStuData["height"];
                         }
                         $k++;
-                    } else if ($value['field_name'] == 'father_photo') {
-                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' . $cid . '" AND field_name = "father_photo" AND template_type = "Online" ';
+                    } elseif ($value["field_name"] == "father_photo") {
+                        $sql =
+                            'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' .
+                            $cid .
+                            '" AND field_name = "father_photo" AND template_type = "Online" ';
                         $result = $connection2->query($sql);
                         $imgStuData = $result->fetch();
                         if (!empty($imgStuData)) {
-                            $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $value['field_value'];
-                            $imgData[$k]['x'] = $imgStuData['x'];
-                            $imgData[$k]['y'] = $imgStuData['y'];
-                            $imgData[$k]['width'] = $imgStuData['width'];
-                            $imgData[$k]['height'] = $imgStuData['height'];
+                            $imgData[$k]["pageno"] = $imgStuData["page_no"];
+                            $imgData[$k]["src"] = $value["field_value"];
+                            $imgData[$k]["x"] = $imgStuData["x"];
+                            $imgData[$k]["y"] = $imgStuData["y"];
+                            $imgData[$k]["width"] = $imgStuData["width"];
+                            $imgData[$k]["height"] = $imgStuData["height"];
                         }
                         $k++;
-                    } else if ($value['field_name'] == 'mother_photo') {
-                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' . $cid . '" AND field_name = "mother_photo" AND template_type = "Online" ';
+                    } elseif ($value["field_name"] == "mother_photo") {
+                        $sql =
+                            'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' .
+                            $cid .
+                            '" AND field_name = "mother_photo" AND template_type = "Online" ';
                         $result = $connection2->query($sql);
                         $imgStuData = $result->fetch();
                         if (!empty($imgStuData)) {
-                            $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $value['field_value'];
-                            $imgData[$k]['x'] = $imgStuData['x'];
-                            $imgData[$k]['y'] = $imgStuData['y'];
-                            $imgData[$k]['width'] = $imgStuData['width'];
-                            $imgData[$k]['height'] = $imgStuData['height'];
+                            $imgData[$k]["pageno"] = $imgStuData["page_no"];
+                            $imgData[$k]["src"] = $value["field_value"];
+                            $imgData[$k]["x"] = $imgStuData["x"];
+                            $imgData[$k]["y"] = $imgStuData["y"];
+                            $imgData[$k]["width"] = $imgStuData["width"];
+                            $imgData[$k]["height"] = $imgStuData["height"];
                         }
                         $k++;
-                    } else if ($value['field_name'] == 'guardian_photo') {
-                        $sql = 'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' . $cid . '" AND field_name = "guardian_photo" AND template_type = "Online" ';
+                    } elseif ($value["field_name"] == "guardian_photo") {
+                        $sql =
+                            'SELECT * FROM campaign_configure_image_template WHERE campaign_id = "' .
+                            $cid .
+                            '" AND field_name = "guardian_photo" AND template_type = "Online" ';
                         $result = $connection2->query($sql);
                         $imgStuData = $result->fetch();
                         if (!empty($imgStuData)) {
-                            $imgData[$k]['pageno'] = $imgStuData['page_no'];
-                            $imgData[$k]['src'] = $value['field_value'];
-                            $imgData[$k]['x'] = $imgStuData['x'];
-                            $imgData[$k]['y'] = $imgStuData['y'];
-                            $imgData[$k]['width'] = $imgStuData['width'];
-                            $imgData[$k]['height'] = $imgStuData['height'];
+                            $imgData[$k]["pageno"] = $imgStuData["page_no"];
+                            $imgData[$k]["src"] = $value["field_value"];
+                            $imgData[$k]["x"] = $imgStuData["x"];
+                            $imgData[$k]["y"] = $imgStuData["y"];
+                            $imgData[$k]["width"] = $imgStuData["width"];
+                            $imgData[$k]["height"] = $imgStuData["height"];
                         }
                         $k++;
                     } else {
                         try {
-                            $formData[$value['field_name']] = $value['field_value'];
+                            $formData[$value["field_name"]] =
+                                $value["field_value"];
                         } catch (Exception $ex) {
                         }
                     }
@@ -154,28 +195,40 @@ if (!empty($file)) {
                 }
             }
 
-            if (!empty($applicationData['application_id'])) {
-                $fname = $applicationData['application_id'];
+            if (!empty($applicationData["application_id"])) {
+                $fname = $applicationData["application_id"];
             } else {
                 $fname = $aid;
             }
 
-            $date = date('d-m-Y', strtotime($applicationData['created_at']));
-            $formData['application_no'] = $fname;
-            $formData['application_date'] = $date;
+            $date = date("d-m-Y", strtotime($applicationData["created_at"]));
+            $formData["application_no"] = $fname;
+            $formData["application_date"] = $date;
+
+            $formData["program_name"] = $progName;
+            $formData["class_name"] = $className;
 
             $fname = trim(str_replace("/", "_", $fname));
 
             $templateFileName = $file;
-            $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/thirdparty/pdfgenerate/files/' . $fname . '.pdf';
-            $pdflib->generate($templateFileName, $outFileName, $formData, $imgData, TRUE);
+            $outFileName =
+                $_SERVER["DOCUMENT_ROOT"] .
+                "/thirdparty/pdfgenerate/files/" .
+                $fname .
+                ".pdf";
+            $pdflib->generate(
+                $templateFileName,
+                $outFileName,
+                $formData,
+                $imgData,
+                true
+            );
             $pdflib->download();
 
             // echo '<pre>';
             // print_r($imgData);
             // echo '</pre>';
             // die();
-
         } catch (Exception $ex) {
         }
     }
