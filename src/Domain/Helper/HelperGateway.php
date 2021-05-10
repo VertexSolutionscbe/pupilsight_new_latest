@@ -75,26 +75,53 @@ class HelperGateway extends QueryableGateway
         return $classes;
     }
     public function getClassByProgram_Attconfig($connection2, $pupilsightProgramID, $pupilsightSchoolYearID) {
-      $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE  a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND  b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
-      //  echo  $sql;
-        $result = $connection2->query($sql);
-        $classesdata = $result->fetchAll();
-
-        $classes = array();
-        $classes2 = array();
-        $classes1 = array('' => 'Select Class');
-         if (!empty($classesdata)) {
-            foreach ($classesdata as  $cl) {
-               
-                $class = explode(',' , $cl['name']);
-                $cid = explode(',' , $cl['clid']);            
-                $count=count($class);
-                for($i=0;$i<$count;$i++){                     
-                $classes2[$cid[$i]]=  $class[$i];
-            }
-                             
-            }
+        $sq = 'SELECT pupilsightYearGroupID FROM attn_settings WHERE pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND pupilsightProgramID = "' . $pupilsightProgramID . '" ';
+        if ($att_type != "") {
+            $sq .= ' AND a.attn_type="' . $att_type . '"';
         }
+        $results = $connection2->query($sq);
+        $classData = $results->fetch();
+        $clsIDS = $classData['pupilsightYearGroupID'];
+
+        if(!empty($clsIDS)){
+            $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightYearGroupID IN (' . $clsIDS . ')  GROUP BY a.pupilsightYearGroupID';
+            $result = $connection2->query($sql);
+            $classesdata = $result->fetchAll();
+            // echo '<pre>';
+            // print_r($classes);
+            // echo '</pre>';
+            $classes = array();
+            $classes2 = array();
+            $classes1 = array('' => 'Select Class');
+            if (!empty($classesdata)) {
+                foreach ($classesdata as $k => $cl) {
+                    $classes2[$cl['pupilsightYearGroupID']]=  $cl['name'];
+                }
+            }
+            $classes = $classes1 + $classes2;
+            return $classes;
+        }
+
+    //   $sql= 'SELECT a.*,GROUP_CONCAT(b.pupilsightYearGroupID SEPARATOR ",") as clid,GROUP_CONCAT(b.name SEPARATOR ", ") as name  FROM attn_settings AS a LEFT JOIN pupilsightYearGroup as b ON (FIND_IN_SET(b.pupilsightYearGroupID, a.pupilsightYearGroupID)) WHERE  a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND  b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightYearGroupID   ORDER BY b.pupilsightYearGroupID';       
+    //   //  echo  $sql;
+    //     $result = $connection2->query($sql);
+    //     $classesdata = $result->fetchAll();
+
+    //     $classes = array();
+    //     $classes2 = array();
+    //     $classes1 = array('' => 'Select Class');
+    //      if (!empty($classesdata)) {
+    //         foreach ($classesdata as  $cl) {
+               
+    //             $class = explode(',' , $cl['name']);
+    //             $cid = explode(',' , $cl['clid']);            
+    //             $count=count($class);
+    //             for($i=0;$i<$count;$i++){                     
+    //             $classes2[$cid[$i]]=  $class[$i];
+    //         }
+                             
+    //         }
+    //     }
        /* if (!empty($classes)) {
             foreach ($classes as  $cl) {
                
@@ -111,8 +138,8 @@ class HelperGateway extends QueryableGateway
         /*foreach ($classesdata as $ct) {
             $classes2[$ct['pupilsightYearGroupID']] = $ct['name'];
         }*/
-        $classes = $classes1 + $classes2;
-        return $classes;
+        // $classes = $classes1 + $classes2;
+        // return $classes;
     }
     public function getSectionByProgram_staff($connection2, $pupilsightYearGroupID, $pupilsightProgramID,$pupilsightPersonID=Null) {
        
