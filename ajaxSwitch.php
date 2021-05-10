@@ -847,15 +847,42 @@ if (isset($_POST['type'])) {
                             $kountRow = 0;
                         }
 
+                        $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id IN  (" . $invconids . ") AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." )  ";
+                        $resultcol = $connection2->query($sqcol);
+                        $valuecol = $resultcol->fetch();
+                        $itemAmt    = $valuecol["tamntCol"];
+                        $itemAmtCol = $valuecol["ttamtCol"];
+
+                        $sqitid = "SELECT GROUP_CONCAT(id) AS itmIds FROM fn_fee_invoice_item WHERE fn_fee_invoice_id IN  (" . $invconids . ") ";
+                        $resultitid = $connection2->query($sqitid);
+                        $valueitid = $resultitid->fetch();
+                        $itmIDS = $valueitid['itmIds'];
+
+                        $sqdis = "SELECT SUM(discount) AS dis FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id IN (".$itmIDS.") ";
+                        $resultdis = $connection2->query($sqdis);
+                        $valuedis = $resultdis->fetch();
+                        $disItemAmt = 0;
+                        if(!empty($valuedis)){
+                            $disItemAmt = $valuedis['dis'];
+                            $newItemAmtCol = $itemAmtCol + $disItemAmt;
+                            $itemAmtPen = $itemAmt - $newItemAmtCol;
+                        } else {
+                            $disItemAmt = 0;
+                            $itemAmtPen = $itemAmt - $itemAmtCol;
+                        }
+
+
+                        $itemAmtPen = $itemAmt - $itemAmtCol;
+
                         $dts_receipt_feeitem1 = array(
                             "serial.all" => $kountRow + 1,
                             "particulars.all" => htmlspecialchars(trim($concatInvTitle)),
                             "inv_amt.all" => $valuefi["amnt"],
                             "tax.all" => $taxamt,
                             "amount.all" => $valuefi["tamnt"],
-                            "inv_amt_paid.all" => 0,
-                            "inv_amt_pending.all" => 0,
-                            "inv_amt_discount.all" => 0
+                            "inv_amt_paid.all" => number_format($itemAmtCol,2),
+                            "inv_amt_pending.all" => number_format($itemAmtPen,2),
+                            "inv_amt_discount.all" => number_format($disItemAmt,2)
                         );
                         $total = $total + $valuefi["tamnt"];
                         $totalTax = $totalTax + $taxamt;

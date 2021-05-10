@@ -808,6 +808,7 @@ print_r($rs);
             }
             // echo $query;
             $query->where('fn_fee_invoice.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+                ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
                 ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
                 //->where('fn_fee_invoice_student_assign.status = 1 ')
                 ->groupby(['fn_fee_invoice_student_assign.id'])
@@ -836,6 +837,7 @@ print_r($rs);
                 ->leftJoin('pupilsightRollGroup', ' pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
                 ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id')
                 ->where('fn_fee_invoice.pupilsightSchoolYearID  = "' . $pupilsightSchoolYearID . '" AND fn_fee_invoice.status="1" ')
+                ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
                 //->where('fn_fee_invoice_student_assign.status = 1 ')
                 ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
                 ->groupby(['fn_fee_invoice_student_assign.id'])
