@@ -1,5 +1,5 @@
 <?php
-include_once 'cms/w2f/adminLib.php';
+include_once "cms/w2f/adminLib.php";
 $adminlib = new adminlib();
 $data = $adminlib->getPupilSightData();
 
@@ -11,19 +11,20 @@ $section = $adminlib->getPupilSightSectionFrontendData();
 //die();
 $campaign = $adminlib->getcampaign();
 session_start();
-if (isset($_SESSION["loginstatus"])) {
-    header("Location: index.php");
-}
+//if (isset($_SESSION["loginstatus"])) {
+//    header("Location: index.php");
+//}
 
 function getDomain()
 {
-    if (isset($_SERVER['HTTPS'])) {
-        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+    if (isset($_SERVER["HTTPS"])) {
+        $protocol =
+            $_SERVER["HTTPS"] && $_SERVER["HTTPS"] != "off" ? "https" : "http";
     } else {
-        $protocol = 'http';
+        $protocol = "http";
     }
     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    return $protocol . "://" . $_SERVER['HTTP_HOST'];
+    return $protocol . "://" . $_SERVER["HTTP_HOST"];
 }
 //$baseurl = getDomain().'/pupilsight';
 $baseurl = getDomain();
@@ -37,23 +38,28 @@ $events = $baseurl . "/cms/images/events.png";
 $courses = $baseurl . "/cms/images/courses.png";
 
 $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
-$cms_banner_title = isset($data["cms_banner_title"]) ? $data["cms_banner_title"] : "Over a decade’s legacy";
-$cms_banner_short_description = isset($data["cms_banner_short_description"]) ? $data["cms_banner_short_description"] : "of bringing cutting edge technology to education.";
-if (isset($data["cms_banner_image_path"]) && file_exists($data["cms_banner_image_path"])) {
+$cms_banner_title = isset($data["cms_banner_title"])
+    ? $data["cms_banner_title"]
+    : "Over a decade’s legacy";
+$cms_banner_short_description = isset($data["cms_banner_short_description"])
+    ? $data["cms_banner_short_description"]
+    : "of bringing cutting edge technology to education.";
+if (
+    isset($data["cms_banner_image_path"]) &&
+    file_exists($data["cms_banner_image_path"])
+) {
     $hero_image = $data["cms_banner_image_path"];
 }
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
-if (isset($data['logo_image'])) {
-    $logo = $baseurl . '/cms/images/logo/' . $data['logo_image'];
+if (isset($data["logo_image"])) {
+    $logo = $baseurl . "/cms/images/logo/" . $data["logo_image"];
 }
 
-$invalid = '';
-if (isset($_GET['invalid']))
-    $invalid = $_GET['invalid'];
-
-
-
+$invalid = "";
+if (isset($_GET["invalid"])) {
+    $invalid = $_GET["invalid"];
+}
 ?>
 
 <input type="hidden" name="inavlid" id="invalid" value="<?php echo $invalid; ?>" />
@@ -88,21 +94,21 @@ if (isset($_GET['invalid']))
     <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
 
 
-    <link rel="stylesheet" href="<?= $baseurl; ?>/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
+    <link rel="stylesheet" href="<?= $baseurl ?>/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
 
-    <link href="<?= $baseurl; ?>/assets/css/tabler.css" rel="stylesheet" />
-    <link href="<?= $baseurl; ?>/assets/css/dev.css" rel="stylesheet" />
+    <link href="<?= $baseurl ?>/assets/css/tabler.css" rel="stylesheet" />
+    <link href="<?= $baseurl ?>/assets/css/dev.css" rel="stylesheet" />
 
     <!-- Libs JS -->
-    <script src="<?= $baseurl; ?>/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="<?= $baseurl; ?>/assets/libs/jquery/dist/jquery-3.5.1.min.js"></script>
-    <script type="text/javascript" src="<?= $baseurl; ?>/assets/libs/jquery/jquery-migrate.min.js?v=1.0"></script>
+    <script src="<?= $baseurl ?>/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= $baseurl ?>/assets/libs/jquery/dist/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="<?= $baseurl ?>/assets/libs/jquery/jquery-migrate.min.js?v=1.0"></script>
 
 
-    <script src="<?= $baseurl; ?>/assets/js/core.js"></script>
+    <script src="<?= $baseurl ?>/assets/js/core.js"></script>
 
-    <script src="<?= $baseurl; ?>/assets/js/tabler.min.js"></script>
-    <script type="text/javascript" src="<?= $baseurl; ?>/assets/js/jquery.form.js?v=1.0"></script>
+    <script src="<?= $baseurl ?>/assets/js/tabler.min.js"></script>
+    <script type="text/javascript" src="<?= $baseurl ?>/assets/js/jquery.form.js?v=1.0"></script>
 
 
     <style>
@@ -1137,6 +1143,7 @@ if (isset($_GET['invalid']))
                                 <p>Date: 26/1/2021</p>
                             </div>
                         </div>
+                        <!--
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
                                 <input type="file" class="form-control" name="student_sign" id="student_sign">
@@ -1147,6 +1154,7 @@ if (isset($_GET['invalid']))
                                 <div class=''>SIGNED by the Student’s parent or legal guardian (if the student is under eighteen (18) years of age</div>
                             </div>
                         </div>
+                        -->
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
                                 <input type="file" class="form-control" name="dependant_pass" id="dependant_pass">
@@ -1294,6 +1302,7 @@ if (isset($_GET['invalid']))
                                                 certify that the information provided in this declaration is true and complete.
                                             </div>
                                         </div>
+                                        <!--
                                         <div class="row">
                                             <div class="col-auto my-3">Signed by (Parent/ Guardian)</div>
                                             <div class="col my-3">
@@ -1306,6 +1315,7 @@ if (isset($_GET['invalid']))
                                                 <input type="date" class="form-control" name="cparent_sign_date" id="cparent_sign_date">
                                             </div>
                                         </div>
+                                        -->
                             </div>
                             <br /><br />
                             </li>
@@ -1349,7 +1359,8 @@ if (isset($_GET['invalid']))
                                 </p>
                             </div>
                         </div>
-
+                    
+                        <!--
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
                                 <input type="file" class="form-control" name="bstudent_sign" id="bstudent_sign">
@@ -1361,6 +1372,8 @@ if (isset($_GET['invalid']))
                                 <div class='text-center font-italic'>(If student is under eighteen (18) years of age)</div>
                             </div>
                         </div>
+                        --->
+
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
                                 <input type="text" class="form-control" name="dstudent_name" id="dstudent_name">

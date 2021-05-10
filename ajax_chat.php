@@ -7,12 +7,17 @@ $session = $container->get("session");
 
 //Proceed
 $type = "";
+$roleid = "";
+$cuid = "";
 if (isset($_POST["type"])) {
     $type = $_POST["type"];
     if (!isset($_SESSION[$guid]["pupilsightPersonID"])) {
         $result = ["status" => 2, "msg" => "Session Expired"];
         echo json_encode($result);
         die();
+    } else {
+        $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
+        $cuid = $_SESSION[$guid]["pupilsightPersonID"];
     }
 }
 
@@ -96,6 +101,35 @@ function get2Char($string)
     return $firstTwoCharacters;
 }
 
+function chatAttachment()
+{
+    $attachment = null;
+    if (isset($_FILES["attachment"]) && $_FILES["attachment"]["error"] == 0) {
+        try {
+            $filename = $_FILES["attachment"]["name"];
+            $filetype = $_FILES["attachment"]["type"];
+            $filesize = $_FILES["attachment"]["size"];
+
+            // Verify file extension
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+            //$filename = time() . "_" . $_FILES["attachment"]["name"];
+            $fn =
+                time() .
+                "_" .
+                preg_replace("/[^a-z0-9\_\-\.]/i", "", basename($filename));
+            $fileTarget = $_SERVER["DOCUMENT_ROOT"] . "/public/chat/" . $fn;
+            $attachment = "/public/chat/" . $fn;
+
+            move_uploaded_file($_FILES["attachment"]["tmp_name"], $fileTarget);
+        } catch (Exception $ex) {
+            $result["status"] = 2;
+            $result["msg"] = "Exception: " . $ex->getMessage();
+        }
+    }
+    return $attachment;
+}
+
 /* open Description Indicator */
 if ($type == "postMessage") {
     try {
@@ -130,9 +164,10 @@ if ($type == "postMessage") {
 
         if ($flag) {
             try {
+                $attachment = chatAttachment();
+
                 $id = createId();
                 //chat_parent_id = N
-                $cuid = $_SESSION[$guid]["pupilsightPersonID"];
 
                 $pupilsightSchoolYearID =
                     $_SESSION[$guid]["pupilsightSchoolYearID"];
@@ -146,7 +181,7 @@ if ($type == "postMessage") {
                 $timestamp = time();
                 //$sq ="insert into chat_message(id, chat_parent_id, cuid, pupilsightSchoolYearID, msg_type, attachment, msg, cdt, timestamp)";
                 $sq =
-                    "insert into chat_message(id, cuid, pupilsightSchoolYearID, msg_type, delivery_type, msg, cdt, udt, timestamp)";
+                    "insert into chat_message(id, cuid, pupilsightSchoolYearID, msg_type, attachment, delivery_type, msg, cdt, udt, timestamp)";
                 $sq .=
                     "values('" .
                     $id .
@@ -156,6 +191,8 @@ if ($type == "postMessage") {
                     $pupilsightSchoolYearID .
                     "','" .
                     $msg_type .
+                    "','" .
+                    $attachment .
                     "','" .
                     $delivery_type .
                     "','" .
@@ -229,8 +266,15 @@ if ($type == "postMessage") {
 
         $flag = true;
 
+        $attachment = chatAttachment();
+
         if (isset($_POST["msg"])) {
             $msg = $_POST["msg"];
+        } else {
+            $flag = false;
+        }
+        if (isset($_POST["delivery_type"])) {
+            $delivery_type = $_POST["delivery_type"];
         } else {
             $flag = false;
         }
@@ -246,7 +290,6 @@ if ($type == "postMessage") {
             try {
                 $id = createId();
                 //chat_parent_id = N
-                $cuid = $_SESSION[$guid]["pupilsightPersonID"];
 
                 $pupilsightSchoolYearID =
                     $_SESSION[$guid]["pupilsightSchoolYearID"];
@@ -256,7 +299,7 @@ if ($type == "postMessage") {
                 $timestamp = time();
                 //$sq ="insert into chat_message(id, chat_parent_id, cuid, pupilsightSchoolYearID, msg_type, attachment, msg, cdt, timestamp)";
                 $sq =
-                    "insert into chat_message(id, chat_parent_id, cuid, pupilsightSchoolYearID, msg_type, msg, cdt, udt, timestamp)";
+                    "insert into chat_message(id, chat_parent_id, cuid, pupilsightSchoolYearID, msg_type, attachment, delivery_type, msg, cdt, udt, timestamp)";
                 $sq .=
                     "values('" .
                     $id .
@@ -267,6 +310,10 @@ if ($type == "postMessage") {
                     "','" .
                     $pupilsightSchoolYearID .
                     "','2','" .
+                    $attachment .
+                    "','" .
+                    $delivery_type .
+                    "','" .
                     nl2br(addslashes(htmlspecialchars($msg))) .
                     "','" .
                     $cdt .
@@ -277,6 +324,51 @@ if ($type == "postMessage") {
                     "')";
                 //echo $sq;
                 $connection2->query($sq);
+
+                if ($delivery_type == "individual") {
+                    $sqi = "insert into chat_share ";
+                    $sqi .=
+                        "(id, chat_msg_id, uid, isread, cdt, udt, timestamp) values ";
+
+                    $sqshare =
+                        "select uid from chat_share where chat_msg_id='" .
+                        $chat_parent_id .
+                        "' ";
+                    $query = $connection2->query($sqshare);
+                    $res = $query->fetchAll();
+                    if ($res) {
+                        $len = count($res);
+                        $i = 0;
+                        $sqi .= "";
+                        while ($i < $len) {
+                            $cid = createSuperKey();
+
+                            if ($i > 0) {
+                                $sqi .= ",";
+                            }
+                            $sqi .=
+                                "('" .
+                                $cid .
+                                "','" .
+                                $id .
+                                "','" .
+                                $res[$i]["uid"] .
+                                "','1','" .
+                                $cdt .
+                                "','" .
+                                $cdt .
+                                "','" .
+                                $timestamp .
+                                "')";
+                            $i++;
+                        }
+                    }
+                    //echo $sqi;
+                    if ($sqi) {
+                        $connection2->query($sqi);
+                        resetSuperKey();
+                    }
+                }
 
                 $result["status"] = 1;
                 $result["msg"] = "Message Posted Successfully.";
@@ -304,13 +396,31 @@ if ($type == "postMessage") {
         if (isset($_POST["lts"])) {
             $lts = $_POST["lts"];
         }
+        $isWhereAdded = false;
 
         $sq = "select cm.*, p.officialName from chat_message as cm ";
         $sq .=
             "left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ";
+
+        if ($roleid == "003" || $roleid == "004") {
+            $sq .= " left join chat_share as cs on cm.id=cs.chat_msg_id ";
+        }
+
         if ($lts) {
             $sq .= " where cm.timestamp > " . $lts . " ";
+            $isWhereAdded = true;
         }
+
+        if ($roleid == "003" || $roleid == "004") {
+            if (!$isWhereAdded) {
+                $sq .= " where ";
+            } else {
+                $sq .= " and ";
+            }
+            $sq .= " (cm.delivery_type in('all_students','all') ";
+            $sq .= " or cs.uid='" . $cuid . "') ";
+        }
+
         $sq .= " order by cm.cdt desc limit 0, 10000 ";
         //echo $sq;
         $query = $connection2->query($sq);
@@ -325,6 +435,9 @@ if ($type == "postMessage") {
                 );
                 $res[$i]["ts"] = advDateOut($res[$i]["cdt"]);
                 $res[$i]["shortName"] = get2Char($res[$i]["officialName"]);
+                if ($res[$i]["attachment"]) {
+                    $res[$i]["attach_file"] = basename($res[$i]["attachment"]);
+                }
 
                 $parentid = $res[$i]["chat_parent_id"];
                 if ($parentid) {
