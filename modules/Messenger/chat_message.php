@@ -255,7 +255,7 @@ function loadPeople(userType) {
                 }
                 if (str) {
                     $('#studentList').html("");
-                    $('#studentList').selectize()[0].selectize.destroy();
+                    //$('#studentList').selectize()[0].selectize.destroy();
                     $('#studentList').html(str);
                     $('#studentList').selectize({
                         plugins: ['remove_button'],
@@ -306,9 +306,9 @@ function closeChatBox() {
     $("#chat_message").val("");
     $("#chat_parent_id").val("");
     $("#post_attachment").val("");
-    var $select = $('#studentList').selectize();
-    var control = $select[0].selectize;
-    control.clear();
+    //var $select = $('#studentList').selectize();
+    //var control = $select[0].selectize;
+    //control.clear();
 }
 
 function replyPost(chat_parent_id, deliveryType) {

@@ -206,12 +206,17 @@ if (!empty($file)) {
 
                 $fname = trim(str_replace("/", "_", $fname));
 
-                //$templateFileName = $file;
+                $templateFileName = $file;
                 //echo "Template File Name : " . $templateFileName;
 
                 $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/thirdparty/pdfgenerate/bulk/' . $fname . '.pdf';
                 $pdflib->generate($templateFileName, $outFileName, $formData, $imgData, TRUE);
                 //$pdflib->download();
+                echo "\n<br>Template File Name : ".$templateFileName;
+                echo "\n<br>outFileName : ".$outFileName;
+                echo "\n<br>attachFilePath: ".$attachFilePath;
+
+                
                 $zip->addFile($outFileName, $fname . '.pdf');
                 if ($attachFilePath) {
                     $afp = getPhyLink($attachFilePath, $baseurl);
