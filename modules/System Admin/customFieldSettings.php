@@ -7,26 +7,35 @@ use Pupilsight\Forms\Form;
 use Pupilsight\Domain\System\CustomField;
 
 //$URL = '/modules/System Admin/customFieldSettings.php';
-$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/System Admin/customFieldSettings.php';
+$URL =
+    $_SESSION[$guid]["absoluteURL"] .
+    "/index.php?q=/modules/System Admin/customFieldSettings.php";
 
-if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSettings.php") == false) {
+if (
+    isActionAccessible(
+        $guid,
+        $connection2,
+        "/modules/System Admin/customFieldSettings.php"
+    ) == false
+) {
     //Acess denied
     echo "<div class='alert alert-danger'>";
-    echo __('You do not have access to this action.');
-    echo '</div>';
+    echo __("You do not have access to this action.");
+    echo "</div>";
 } else {
-    //Proceed!
-    $page->breadcrumbs->add(__('Custom Field Settings'));
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
+    //Proceed!
+    $page->breadcrumbs->add(__("Custom Field Settings"));
+
+    if (isset($_GET["return"])) {
+        returnProcess($guid, $_GET["return"], null, null);
     }
 
-    $customField  = $container->get(CustomField::class);
+    $customField = $container->get(CustomField::class);
     $tables = $customField->getModelTables();
     $len = count($tables);
     $i = 0;
-    $dt = array();
+    $dt = [];
     while ($i < $len) {
         $dt[$tables[$i]["table_name"]] = $tables[$i]["table_tag"];
         $i++;
@@ -35,11 +44,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     //custom field data added
 
     if (isset($_POST["table_name"])) {
-        $newPostFlag = TRUE;
+        $newPostFlag = true;
         $customFieldKey = md5(json_encode($_POST));
         if (isset($_SESSION["customFieldKey"])) {
             if ($customFieldKey == $_SESSION["customFieldKey"]) {
-                $newPostFlag = FALSE;
+                $newPostFlag = false;
             }
         }
 
@@ -47,25 +56,24 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             $_SESSION["customFieldKey"] = $customFieldKey;
             $customAction = $_POST["customAction"];
             if ($customAction == "add") {
-
                 $_POST["modules"] = implode(",", $_POST["modules"]);
                 if ($_POST["field_type"] == "tab") {
                     $flag = $customField->addCustomTab($_POST);
                 } else {
                     $flag = $customField->addCustomField($_POST);
                 }
-            } else if ($customAction == "edit") {
+            } elseif ($customAction == "edit") {
                 $flag = $customField->editCustomField($_POST);
             }
 
             if ($flag) {
-                $_SESSION[$guid]['pageLoads'] = null;
-                $URL .= '&return=success0';
+                $_SESSION[$guid]["pageLoads"] = null;
+                $URL .= "&return=success0";
                 header("Location: {$URL}");
                 die();
             } else {
                 getSystemSettings($guid, $connection2);
-                $URL .= '&return=error2';
+                $URL .= "&return=error2";
                 header("Location: {$URL}");
                 die();
             }
@@ -74,7 +82,6 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
 
     //INSERT INTO table_name (column1, column2, column3, ...)
     //VALUES (value1, value2, value3, ...);
-
 
     /*
     print_r($tables);
@@ -92,51 +99,63 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
         $i++;
     }*/
 
-
     $tableID = "pupilsightPerson";
     if (isset($_POST["tableID"])) {
-        $tableID = isset($_POST["tableID"]) ? $_POST["tableID"] : "pupilsightPerson";
+        $tableID = isset($_POST["tableID"])
+            ? $_POST["tableID"]
+            : "pupilsightPerson";
     }
 
     //if ($_POST["dbColumn"] && $_POST["dbTable"]) {
     //isset($_SESSION["dbTable"])
     //}
 
-    $form = Form::create('customFieldSearchForm', "");
+    $form = Form::create("customFieldSearchForm", "");
 
     $row = $form->addRow();
 
-    $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('tableID', __('Select Table'));
-    $col->addSelect('tableID')->fromArray($dt)->selected($tableID)->required();
+    $col = $row->addColumn()->setClass("newdes");
+    $col->addLabel("tableID", __("Select Table"));
+    $col->addSelect("tableID")
+        ->fromArray($dt)
+        ->selected($tableID)
+        ->required();
 
-    $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('submitInvoice', __(''));
-    $col->addContent('<button type=\'submit\' id="submitInvoice"  class=" btn btn-white">Go</button>');
+    $col = $row->addColumn()->setClass("newdes");
+    $col->addLabel("submitInvoice", __(""));
+    $col->addContent(
+        '<button type=\'submit\' id="submitInvoice"  class=" btn btn-white">Go</button>'
+    );
 
-    $col = $row->addColumn()->setClass('newdes text-right');
-    $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' id="addCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldModal();\'><i class="mdi mdi-plus-thick mr-2"></i>Custom Field</button>');
+    $col = $row->addColumn()->setClass("newdes text-right");
+    $col->addLabel("addCustomField", __(""));
+    $col->addContent(
+        '<button type=\'button\' id="addCustomField"  class=" btn btn-primary" onclick=\'loadCustomFieldModal();\'><i class="mdi mdi-plus-thick mr-2"></i>Custom Field</button>'
+    );
 
     $row = $form->addRow();
-
 
     //$col = $row->addColumn()->setClass('newdes');
     //$col->addLabel('sortableBtn', __(''));
     //$col->addContent('<button type=\'button\' class="btn btn-primary" onclick=\'tabSortPanel(true);\'>Sort Tile / Tab</button>');
 
-    $col = $row->addColumn()->setClass('newdes customHandleCol');
-    $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' class="btn btn-white" onclick=\'deactivateField();\'>Hide Field</button>');
+    $col = $row->addColumn()->setClass("newdes customHandleCol");
+    $col->addLabel("addCustomField", __(""));
+    $col->addContent(
+        '<button type=\'button\' class="btn btn-white" onclick=\'deactivateField();\'>Hide Field</button>'
+    );
 
-    $col = $row->addColumn()->setClass('newdes customHandleCol');
-    $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' class="btn btn-white" onclick=\'activateField();\'>Show Field</button>');
+    $col = $row->addColumn()->setClass("newdes customHandleCol");
+    $col->addLabel("addCustomField", __(""));
+    $col->addContent(
+        '<button type=\'button\' class="btn btn-white" onclick=\'activateField();\'>Show Field</button>'
+    );
 
-    $col = $row->addColumn()->setClass('newdes customHandleCol');
-    $col->addLabel('addCustomField', __(''));
-    $col->addContent('<button type=\'button\' id="listCustomField"  class="btn btn-white" onclick=\'loadCustomFieldList();\'>Manage Custom Field List</button>');
-
+    $col = $row->addColumn()->setClass("newdes customHandleCol");
+    $col->addLabel("addCustomField", __(""));
+    $col->addContent(
+        '<button type=\'button\' id="listCustomField"  class="btn btn-white" onclick=\'loadCustomFieldList();\'>Manage Custom Field List</button>'
+    );
 
     /*
     $row = $form->addRow();
@@ -151,9 +170,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     $customModel = $customField->loadCustomFieldModal($tableID);
     $cuModules = $customModel[0]["modules"];
     $cuTabs = $customModel[0]["tabs"];
-
-
-?>
+    ?>
 
     <form method="post" id="customFieldFormHideShow" class="mt-4">
         <div class="table-responsive dataTables_wrapper">
@@ -169,17 +186,15 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 </thead>
                 <tbody>
                     <?php
-
                     $len = count($cd);
                     $i = 0;
                     $cnt = 1;
                     $cls = "odd";
                     while ($i < $len) {
-
-                        $isFieldActive = TRUE;
+                        $isFieldActive = true;
                         $fieldStr = "Active"; //show or active
                         if (in_array($cd[$i]["Field"], $inactiveCol)) {
-                            $isFieldActive = FALSE;
+                            $isFieldActive = false;
                             $fieldStr = "Hidden";
                         }
                         $cls = "odd";
@@ -192,12 +207,22 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                         echo "\n<td>" . $fieldStr . "</td>";
 
                         if ($cd[$i]["Key"]) {
-                            echo "\n<td><i class=\"mdi mdi-lock\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
+                            echo "\n<td><i class=\"mdi mdi-lock\"></i>&nbsp;&nbsp;" .
+                                strtoupper($cd[$i]["Field"]) .
+                                "</td>";
                             //echo "\n<td>" . strtoupper($cd[$i]["Field"]) . "</td>";
                             //} else if ($isFieldActive == FALSE) {
                             //echo "\n<td><i class=\"mdi mdi-eye-off\"></i>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</td>";
                         } else {
-                            echo "\n<td><input type='checkbox' name='fields[]' value='" . $cd[$i]["Field"] . "' id='" . $cd[$i]["Field"] . "'><label for='" . $cd[$i]["Field"] . "'>&nbsp;&nbsp;" . strtoupper($cd[$i]["Field"]) . "</label></td>";
+                            echo "\n<td><input type='checkbox' name='fields[]' value='" .
+                                $cd[$i]["Field"] .
+                                "' id='" .
+                                $cd[$i]["Field"] .
+                                "'><label for='" .
+                                $cd[$i]["Field"] .
+                                "'>&nbsp;&nbsp;" .
+                                strtoupper($cd[$i]["Field"]) .
+                                "</label></td>";
                             //echo "\n<td>" . strtoupper($cd[$i]["Field"]) . "</td>";
                         }
 
@@ -220,7 +245,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
     <form method="post" autocomplete="on" enctype="multipart/form-data" class="smallIntBorder fullWidth standardForm" id="customFieldForm" onsubmit="pupilsightFormSubmitted(this)">
         <div class="container" id='customFieldPanel' style='font-size:14px;'>
             <h3 class='mt-4'>General Information</h3>
-            <input type='hidden' name='table_name' id='dbTable' value='<?= $tableID; ?>'>
+            <input type='hidden' name='table_name' id='dbTable' value='<?= $tableID ?>'>
             <input type='hidden' name='customAction' value='add'>
 
             <div class="row mt-4">
@@ -233,8 +258,18 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     $strChecked = "checked";
                     while ($ci < $clen) {
                         $moduleName = trim($cust[$ci]);
-                        echo "\n<input type='checkbox' name='modules[]' id='cuh_" . $ci . "' value='" . $moduleName . "' " . $strChecked . ">";
-                        echo "<label for='cuh_" . $ci . "' class='ml-2 mr-2'>" . ucwords($moduleName) . "</label>";
+                        echo "\n<input type='checkbox' name='modules[]' id='cuh_" .
+                            $ci .
+                            "' value='" .
+                            $moduleName .
+                            "' " .
+                            $strChecked .
+                            ">";
+                        echo "<label for='cuh_" .
+                            $ci .
+                            "' class='ml-2 mr-2'>" .
+                            ucwords($moduleName) .
+                            "</label>";
                         $strChecked = "";
                         $ci++;
                     }
@@ -253,8 +288,18 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     while ($ci < $clen) {
                         $tabName = trim($cust[$ci]);
                         $tabTitle = str_replace("_", " ", $tabName);
-                        echo "\n<div class='float-left mr-2'><input type='radio' name='tab' id='rdh_" . $ci . "' value='" . $tabName . "' " . $strChecked . ">";
-                        echo "<label for='rdh_" . $ci . "' class='ml-2 mr-2'>" . ucwords($tabTitle) . "</label></div>";
+                        echo "\n<div class='float-left mr-2'><input type='radio' name='tab' id='rdh_" .
+                            $ci .
+                            "' value='" .
+                            $tabName .
+                            "' " .
+                            $strChecked .
+                            ">";
+                        echo "<label for='rdh_" .
+                            $ci .
+                            "' class='ml-2 mr-2'>" .
+                            ucwords($tabTitle) .
+                            "</label></div>";
                         $ci++;
                         $strChecked = "";
                     }
@@ -270,14 +315,20 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                         <?php
                         $len = count($cd);
                         $i = 0;
-                        $cols = array();
+                        $cols = [];
                         $len1 = $len - 1;
                         $selected = "";
                         while ($i < $len) {
                             if ($i == $len1) {
                                 $selected = "selected";
                             }
-                            echo "\n<option value='" . $cd[$i]["Field"] . "' " . $selected . ">" . $cd[$i]["Field"] . "</option>";
+                            echo "\n<option value='" .
+                                $cd[$i]["Field"] .
+                                "' " .
+                                $selected .
+                                ">" .
+                                $cd[$i]["Field"] .
+                                "</option>";
                             $cols[$i] = strtolower($cd[$i]["Field"]);
                             $i++;
                             $cnt++;
@@ -482,8 +533,18 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     while ($ci < $clen) {
                         $tabName = trim($cust[$ci]);
                         $tabTitle = str_replace("_", " ", $tabName);
-                        echo "\n<div class='float-left mr-2'><input type='radio' name='edit_tab' id='edit_rdh_" . $ci . "' value='" . $tabName . "' " . $strChecked . ">";
-                        echo "<label for='edit_rdh_" . $ci . "' class='ml-2 mr-2'>" . ucwords($tabTitle) . "</label></div>";
+                        echo "\n<div class='float-left mr-2'><input type='radio' name='edit_tab' id='edit_rdh_" .
+                            $ci .
+                            "' value='" .
+                            $tabName .
+                            "' " .
+                            $strChecked .
+                            ">";
+                        echo "<label for='edit_rdh_" .
+                            $ci .
+                            "' class='ml-2 mr-2'>" .
+                            ucwords($tabTitle) .
+                            "</label></div>";
                         $ci++;
                         $strChecked = "";
                     }
@@ -665,7 +726,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 while ($ci < $clen) {
                     $tabName = trim($cust[$ci]);
                     $tabTitle = str_replace("_", " ", $tabName);
-                    echo "\n<div class='sortDiv w-100'><input type='hidden' name='tabs[]' value='" . $tabName . "' >" . ucwords($tabTitle) . "</div>";
+                    echo "\n<div class='sortDiv w-100'><input type='hidden' name='tabs[]' value='" .
+                        $tabName .
+                        "' >" .
+                        ucwords($tabTitle) .
+                        "</div>";
                     $ci++;
                 }
                 ?>
@@ -989,7 +1054,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             <thead>
                 <tr>
 
-                    <th colspan='4' style='line-height: 28px;'>Total Custom Fields : <b><?= $len; ?></b></th>
+                    <th colspan='4' style='line-height: 28px;'>Total Custom Fields : <b><?= $len ?></b></th>
                     <th colspan='3' style='text-align:right;line-height: 28px;'>
                         To change tab or section use dropdown
                     </th>
@@ -1005,6 +1070,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                 <tr>
                     <th class='column'>Table</th>
                     <th class='column'>Field Name</th>
+                    <th class='column'>Field ID</th>
                     <th class='column'>Field Type</th>
                     <th class='column'>Modules</th>
                     <th class='column'>Tab / Section</th>
@@ -1022,9 +1088,12 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             while ($i < $len) {
                 $field_type = $customFieldList[$i]["field_type"];
                 //if ($field_type) {
-                $isColAvl = $customField->isColumnAvailable($customFieldList[$i]["table_name"], $customFieldList[$i]["field_name"]);
+                $isColAvl = $customField->isColumnAvailable(
+                    $customFieldList[$i]["table_name"],
+                    $customFieldList[$i]["field_name"]
+                );
                 $id = $customFieldList[$i]["id"];
-                if ($isColAvl == FALSE) {
+                if ($isColAvl == false) {
                     $customField->removeUnusedColumn($id);
                 } else {
                     $fieldTitle = $customFieldList[$i]["field_title"];
@@ -1034,18 +1103,47 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     }
 
                     $str .= "\n<tr id='custom_row_" . $id . "' >";
-                    $str .= "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
+                    $str .=
+                        "<td>" . $customFieldList[$i]["table_tag"] . "</td>";
                     $str .= "<td>" . $fieldTitle . "</td>";
-                    $str .= "<td>" . $customField->getInputTag($customFieldList[$i]["field_type"]) . "</td>";
-                    $mod = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["modules"]) . "</div>";
+                    $str .= "<td>" . $fieldName . "</td>";
+                    $str .=
+                        "<td>" .
+                        $customField->getInputTag(
+                            $customFieldList[$i]["field_type"]
+                        ) .
+                        "</td>";
+                    $mod =
+                        "<div>" .
+                        str_replace(
+                            ",",
+                            "</div><div>",
+                            $customFieldList[$i]["modules"]
+                        ) .
+                        "</div>";
                     $str .= "<td>" . $mod . "</td>";
 
                     $tabs = explode(",", $customFieldList[$i]["tabs"]);
                     $jlen = count($tabs);
                     $j = 0;
-                    $opt = "<input type='hidden' id='fieldid_" . $fieldName . "' value='" . $customFieldList[$i]["id"] . "'>";
-                    $opt .= "<input type='hidden' id='tabSelect_" . $fieldName . "' value='" . $customFieldList[$i]["tab"] . "'>";
-                    $opt .= "<select id='switchTab_" . $fieldName . "' onchange=\"changeTab('" . $fieldName . "');\">";
+                    $opt =
+                        "<input type='hidden' id='fieldid_" .
+                        $fieldName .
+                        "' value='" .
+                        $customFieldList[$i]["id"] .
+                        "'>";
+                    $opt .=
+                        "<input type='hidden' id='tabSelect_" .
+                        $fieldName .
+                        "' value='" .
+                        $customFieldList[$i]["tab"] .
+                        "'>";
+                    $opt .=
+                        "<select id='switchTab_" .
+                        $fieldName .
+                        "' onchange=\"changeTab('" .
+                        $fieldName .
+                        "');\">";
                     $opt .= "\n<option value=''>Select</option>";
                     $optse = "";
                     while ($j < $jlen) {
@@ -1053,7 +1151,14 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                         if ($tabs[$j] == $customFieldList[$i]["tab"]) {
                             $optse = " selected";
                         }
-                        $opt .= "\n<option value='" . $tabs[$j] . "' " . $optse . ">" . $tabs[$j] . "</option>";
+                        $opt .=
+                            "\n<option value='" .
+                            $tabs[$j] .
+                            "' " .
+                            $optse .
+                            ">" .
+                            $tabs[$j] .
+                            "</option>";
                         $j++;
                     }
                     $opt .= "</select>";
@@ -1061,14 +1166,38 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
                     $str .= "<td>" . $opt . "</td>";
 
                     $str .= "<td>" . $customFieldList[$i]["active"] . "</td>";
-                    $pv = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_view"]) . "</div>";
+                    $pv =
+                        "<div>" .
+                        str_replace(
+                            ",",
+                            "</div><div>",
+                            $customFieldList[$i]["page_view"]
+                        ) .
+                        "</div>";
                     $str .= "<td>" . $pv . "</td>";
-                    $pe = "<div>" . str_replace(",", "</div><div>", $customFieldList[$i]["page_edit"]) . "</div>";
+                    $pe =
+                        "<div>" .
+                        str_replace(
+                            ",",
+                            "</div><div>",
+                            $customFieldList[$i]["page_edit"]
+                        ) .
+                        "</div>";
                     $str .= "<td>" . $pe . "</td>";
 
                     $str .= "<td>";
-                    $str .= "<button class='btn btn-danger' title='Delete' onclick=\"deleteCustomField('" . $id . "','" . $customFieldList[$i]["table_name"] . "','" . $fieldName . "');\"><i class='mdi mdi-delete mdi-18px'></i></button>";
-                    $str .= "<button class='btn btn-info ml-1' title='Edit' onclick=\"loadCustomFieldEditModal('" . $id . "');\"><i class='mdi mdi-pencil mdi-18px'></i></button>";
+                    $str .=
+                        "<button class='btn btn-danger' title='Delete' onclick=\"deleteCustomField('" .
+                        $id .
+                        "','" .
+                        $customFieldList[$i]["table_name"] .
+                        "','" .
+                        $fieldName .
+                        "');\"><i class='mdi mdi-delete mdi-18px'></i></button>";
+                    $str .=
+                        "<button class='btn btn-info ml-1' title='Edit' onclick=\"loadCustomFieldEditModal('" .
+                        $id .
+                        "');\"><i class='mdi mdi-pencil mdi-18px'></i></button>";
                     $str .= "</td>";
                     $str .= "</tr>";
                 }
@@ -1077,7 +1206,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
             }
 
             echo $str;
-        } ?>
+
+}
+?>
             </tbody>
         </table>
     </div>
@@ -1303,4 +1434,4 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/customFieldSe
         });
         //['insertImage'], ignore for now
     </script>
-    <?php
+    

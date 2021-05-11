@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -564,8 +565,8 @@ class TemplateProcessor
 
         // collect document parts
         $searchParts = array(
-                            $this->getMainPartName() => &$this->tempDocumentMainPart,
-                            );
+            $this->getMainPartName() => &$this->tempDocumentMainPart,
+        );
         foreach (array_keys($this->tempDocumentHeaders) as $headerIndex) {
             $searchParts[$this->getHeaderName($headerIndex)] = &$this->tempDocumentHeaders[$headerIndex];
         }
@@ -604,7 +605,7 @@ class TemplateProcessor
                     if (preg_match('/(<[^<]+>)([^<]*)(' . preg_quote($varNameWithArgsFixed) . ')([^>]*)(<[^>]+>)/Uu', $partContent, $matches)) {
                         $wholeTag = $matches[0];
                         array_shift($matches);
-                        list($openTag, $prefix, , $postfix, $closeTag) = $matches;
+                        list($openTag, $prefix,, $postfix, $closeTag) = $matches;
                         $replaceXml = $openTag . $prefix . $closeTag . $xmlImage . $openTag . $postfix . $closeTag;
                         // replace on each iteration, because in one tag we can have 2+ inline variables => before proceed next variable we need to change $partContent
                         $partContent = $this->setValueForPart($wholeTag, $replaceXml, $partContent, $limit);
@@ -660,47 +661,53 @@ class TemplateProcessor
      */
     public function cloneRow($search, $numberOfClones)
     {
-        $search = static::ensureMacroCompleted($search);
+        try {
+            $search = static::ensureMacroCompleted($search);
 
-        $tagPos = strpos($this->tempDocumentMainPart, $search);
-        if (!$tagPos) {
-            throw new Exception('Can not clone row, template variable not found or variable contains markup.');
-        }
-
-        $rowStart = $this->findRowStart($tagPos);
-        $rowEnd = $this->findRowEnd($tagPos);
-        $xmlRow = $this->getSlice($rowStart, $rowEnd);
-
-        // Check if there's a cell spanning multiple rows.
-        if (preg_match('#<w:vMerge w:val="restart"/>#', $xmlRow)) {
-            // $extraRowStart = $rowEnd;
-            $extraRowEnd = $rowEnd;
-            while (true) {
-                $extraRowStart = $this->findRowStart($extraRowEnd + 1);
-                $extraRowEnd = $this->findRowEnd($extraRowEnd + 1);
-
-                // If extraRowEnd is lower then 7, there was no next row found.
-                if ($extraRowEnd < 7) {
-                    break;
-                }
-
-                // If tmpXmlRow doesn't contain continue, this row is no longer part of the spanned row.
-                $tmpXmlRow = $this->getSlice($extraRowStart, $extraRowEnd);
-                if (!preg_match('#<w:vMerge/>#', $tmpXmlRow) &&
-                    !preg_match('#<w:vMerge w:val="continue"\s*/>#', $tmpXmlRow)) {
-                    break;
-                }
-                // This row was a spanned row, update $rowEnd and search for the next row.
-                $rowEnd = $extraRowEnd;
+            $tagPos = strpos($this->tempDocumentMainPart, $search);
+            if (!$tagPos) {
+                throw new Exception('Can not clone row, template variable not found or variable contains markup.');
             }
+
+            $rowStart = $this->findRowStart($tagPos);
+            $rowEnd = $this->findRowEnd($tagPos);
             $xmlRow = $this->getSlice($rowStart, $rowEnd);
+
+            // Check if there's a cell spanning multiple rows.
+            if (preg_match('#<w:vMerge w:val="restart"/>#', $xmlRow)) {
+                // $extraRowStart = $rowEnd;
+                $extraRowEnd = $rowEnd;
+                while (true) {
+                    $extraRowStart = $this->findRowStart($extraRowEnd + 1);
+                    $extraRowEnd = $this->findRowEnd($extraRowEnd + 1);
+
+                    // If extraRowEnd is lower then 7, there was no next row found.
+                    if ($extraRowEnd < 7) {
+                        break;
+                    }
+
+                    // If tmpXmlRow doesn't contain continue, this row is no longer part of the spanned row.
+                    $tmpXmlRow = $this->getSlice($extraRowStart, $extraRowEnd);
+                    if (
+                        !preg_match('#<w:vMerge/>#', $tmpXmlRow) &&
+                        !preg_match('#<w:vMerge w:val="continue"\s*/>#', $tmpXmlRow)
+                    ) {
+                        break;
+                    }
+                    // This row was a spanned row, update $rowEnd and search for the next row.
+                    $rowEnd = $extraRowEnd;
+                }
+                $xmlRow = $this->getSlice($rowStart, $rowEnd);
+            }
+
+            $result = $this->getSlice(0, $rowStart);
+            $result .= implode($this->indexClonedVariables($numberOfClones, $xmlRow));
+            $result .= $this->getSlice($rowEnd);
+
+            $this->tempDocumentMainPart = $result;
+        } catch (Exception $ex) {
+            echo "cloneRow : " . $ex->getMessage();
         }
-
-        $result = $this->getSlice(0, $rowStart);
-        $result .= implode($this->indexClonedVariables($numberOfClones, $xmlRow));
-        $result .= $this->getSlice($rowEnd);
-
-        $this->tempDocumentMainPart = $result;
     }
 
     /**
@@ -716,7 +723,11 @@ class TemplateProcessor
         foreach ($values as $rowKey => $rowData) {
             $rowNumber = $rowKey + 1;
             foreach ($rowData as $macro => $replace) {
-                $this->setValue($macro . '#' . $rowNumber, $replace);
+                try {
+                    $this->setValue($macro . '#' . $rowNumber, $replace);
+                } catch (Exception $ex) {
+                    echo "cloneRowAndSetValues " . $ex->getMessage();
+                }
             }
         }
     }

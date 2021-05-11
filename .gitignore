@@ -81,3 +81,11 @@ Thumb.db
 nbproject/
 /config.php
 akkhor-main/*
+
+package.json
+package-lock.json
+
+node_modules/*
+/node_modules/*
+
+

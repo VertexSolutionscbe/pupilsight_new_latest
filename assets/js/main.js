@@ -7032,6 +7032,36 @@ function CustomField() {
 
             }
 
+            if (_this.activeColManage) {
+                var len = _this.activeColManage.length;
+                var i = 0;
+                while (i < len) {
+                    var el = _this.activeColManage[i];
+                    var element = el["element"];
+                    var row = el["row"];
+                    var col = el["col"];
+
+                    var colCount = (document.getElementById(element).rows[0].cells.length) - 1;
+                    currentCol = (document.getElementById(element).rows[row].cells.length) - 1;
+                    if (currentCol == col) {
+                        var j = 0;
+                        var str = "";
+                        var colCount1 = colCount - 1;
+                        while (j < colCount) {
+                            if (j == colCount1) {
+                                str += "<td class='tdborder'>&nbsp;</td>";
+                            } else {
+                                str += "<td>&nbsp;</td>";
+                            }
+                            j++;
+                        }
+                        //console.log(str);
+                        $('#' + element + ' tr:last').append(str);
+                    }
+                    i++;
+                }
+            }
+
         } catch (ex) {
             console.log(ex);
         }
@@ -7255,6 +7285,7 @@ function CustomField() {
     _this.isRowActive = false;
     _this.colActiveStr = "";
     _this.activeElement = "";
+    _this.activeColManage = [];
     this.createView = function (obj) {
 
         var fieldTitle = "";
@@ -7263,7 +7294,7 @@ function CustomField() {
             fieldTitle = obj.field_title;
             fieldName = obj.field_name;
         }
-
+        _this.activeColManage = [];
         var elementVal = "";
         try {
             if (pcdt) {
@@ -7317,16 +7348,27 @@ function CustomField() {
             //console.log(obj.field_name, currentRow, currentCol, colCount);
             var isData = $('#' + element + ' tr:last td:last').text();
             var isNotAdded = true;
+
             if (isData == "") {
                 isNotAdded = false;
                 str = `<span class="form-label">` + fieldTitle + `</span>
                 <div>` + elementVal + `</div>`;
                 $('#' + element + ' tr:last td:last').html(str);
             } else if (currentCol != 0 && currentCol == colCount) {
+                //console.log("here??");
                 $("#" + element).append("<tr></tr>");
             }
             if (isNotAdded) {
                 $('#' + element + ' tr:last').append(str);
+            }
+            if (document.getElementById(element).rows.length > 0) {
+                var crow = document.getElementById(element).rows.length - 1;
+                var ccol = document.getElementById(element).rows[crow].cells.length - 1;
+                //console.log(crow, ccol);
+                if (ccol < colCount) {
+                    var ts = { "element": element, "row": crow, "col": ccol };
+                    _this.activeColManage.push(ts);
+                }
             }
 
         } else {

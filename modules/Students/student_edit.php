@@ -16,6 +16,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 	echo __('You do not have access to this action.');
 	echo '</div>';
 } else {
+	
 	//Proceed!
 	$page->breadcrumbs
 		//->add(__('Manage Users'), 'user_manage.php')
@@ -45,9 +46,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 	} else {
 		try {
 			//custom Field Added
+			
 			$customField  = $container->get(CustomField::class);
 			$customField->getPostData("pupilsightPerson", "pupilsightPersonID", $pupilsightPersonID, "student");
-
+			
 			$data = array('pupilsightPersonID' => $pupilsightPersonID);
 			$sql = 'SELECT * FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
 			$result = $connection2->prepare($sql);
@@ -70,6 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/student_edit.ph
 		} catch (PDOException $e) {
 			echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
 		}
+
+		
 
 		if ($result->rowCount() != 1) {
 			echo "<div class='alert alert-danger'>";

@@ -436,15 +436,16 @@ if (isset($_POST['type'])) {
                                 $itemamount = $values['total_amount'];
                                 $fn_fee_item_id = $values['fn_fee_item_id'];
 
-                                $chkpayitem = 'SELECT a.id FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fees_invoice_id = ' . $fn_fee_invoice_id . ' AND a.fn_fee_invoice_item_id = ' . $itid . ' AND a.pupilsightPersonID = ' . $pupilsightPersonID . ' AND b.transaction_status = 1 ';
+                                $chkpayitem = 'SELECT a.id, a.total_amount_collection FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fees_invoice_id = ' . $fn_fee_invoice_id . ' AND a.fn_fee_invoice_item_id = ' . $itid . ' AND a.pupilsightPersonID = ' . $pupilsightPersonID . ' AND b.transaction_status = 1 ';
                                 $resultcp = $connection2->query($chkpayitem);
                                 $valuecp = $resultcp->fetch();
 
                                 
 
                                 if (!empty($valuecp)) {
-                                    $datai = array('partial_transaction_id' => $transactionId, 'total_amount_collection' => $itemamount, 'status' => '1', 'id' => $valuecp['id']);
-                                    $sqli = 'UPDATE fn_fees_student_collection SET partial_transaction_id=:partial_transaction_id, total_amount_collection=:total_amount_collection, status=:status WHERE id=:id';
+                                    $paidAmt = $itemamount - $valuecp['total_amount_collection'];
+                                    $datai = array('partial_transaction_id' => $transactionId, 'total_amount_collection' => $itemamount, 'total_amount_partial_paid' => $paidAmt, 'status' => '1', 'id' => $valuecp['id']);
+                                    $sqli = 'UPDATE fn_fees_student_collection SET partial_transaction_id=:partial_transaction_id, total_amount_collection=:total_amount_collection, total_amount_partial_paid=:total_amount_partial_paid, status=:status WHERE id=:id';
                                     $resulti = $connection2->prepare($sqli);
                                     $resulti->execute($datai);
                                 } else {
@@ -574,7 +575,7 @@ if (isset($_POST['type'])) {
                         $fieldName = '';
                     }
 
-                    $sqlstu = "SELECT a.officialName , a.admission_no, a.roll_no, sc.name as academic_year, p.name as progname, b.name as class, c.name as section ".$fieldName." FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightSchoolYear AS sc ON d.pupilsightSchoolYearID = sc.pupilsightSchoolYearID LEFT JOIN pupilsightProgram AS p ON d.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " ";
+                    $sqlstu = "SELECT a.officialName , a.admission_no, a.roll_no, sc.name as academic_year, p.name as progname, b.name as class, c.name as section ".$fieldName." FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightSchoolYear AS sc ON d.pupilsightSchoolYearID = sc.pupilsightSchoolYearID LEFT JOIN pupilsightProgram AS p ON d.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " AND d.pupilsightSchoolYearID = ".$pupilsightSchoolYearID." ";
                     $resultstu = $connection2->query($sqlstu);
                     $valuestu = $resultstu->fetch();
 
@@ -640,12 +641,7 @@ if (isset($_POST['type'])) {
                         $coreaddress = '';
                     }
 
-                    
-
-                    // echo '<pre>';
-                    // print_r($dts_receipt);
-                    // echo '</pre>';
-                    // die();
+                   
                     $stuName = str_replace(' ', '_', $valuestu["officialName"]);
                     $filename = $stuName . '_' . $transactionId;
                     $session->forget(['doc_receipt_id']);
@@ -708,11 +704,15 @@ if (isset($_POST['type'])) {
                                     if (!empty($valuefi)) {
                                         //$cnt = 1;
                                         foreach ($valuefi as $vfi) {
-                                            $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." )  ";
+                                            $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol, SUM(total_amount_partial_paid) AS ttamtPartCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." )  ";
                                             $resultcol = $connection2->query($sqcol);
                                             $valuecol = $resultcol->fetch();
                                             $itemAmt    = $valuecol["tamntCol"];
                                             $itemAmtCol = $valuecol["ttamtCol"];
+                                            $ttamtPartCol = $valuecol["ttamtPartCol"];
+                                            if(!empty($ttamtPartCol)){
+                                                $itemAmtCol = $ttamtPartCol;
+                                            }
 
                                             $sqitid = "SELECT GROUP_CONCAT(id) AS itmIds FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ".$iid." ";
                                             $resultitid = $connection2->query($sqitid);
@@ -723,17 +723,20 @@ if (isset($_POST['type'])) {
                                             $resultdis = $connection2->query($sqdis);
                                             $valuedis = $resultdis->fetch();
                                             $disItemAmt = 0;
-                                            if(!empty($valuedis)){
-                                                $disItemAmt = $valuedis['dis'];
-                                                $newItemAmtCol = $itemAmtCol + $disItemAmt;
-                                                $itemAmtPen = $itemAmt - $newItemAmtCol;
+
+                                            if(!empty($ttamtPartCol)){
+                                                $itemAmtPen = $itemAmt - $valuecol["ttamtCol"];
                                             } else {
-                                                $disItemAmt = 0;
-                                                $itemAmtPen = $itemAmt - $itemAmtCol;
+                                                if(!empty($valuedis)){
+                                                    $disItemAmt = $valuedis['dis'];
+                                                    $newItemAmtCol = $itemAmtCol + $disItemAmt;
+                                                    $itemAmtPen = $itemAmt - $newItemAmtCol;
+                                                } else {
+                                                    $disItemAmt = 0;
+                                                    $itemAmtPen = $itemAmt - $itemAmtCol;
+                                                }
                                             }
 
-
-                                            $itemAmtPen = $itemAmt - $itemAmtCol;
 
                                             $taxamt = 0;
                                             if(!empty($vfi["ttax"])){
@@ -770,19 +773,30 @@ if (isset($_POST['type'])) {
                                             $valuecol = $resultcol->fetch();
                                             $itemAmt    = $valuecol["total_amount"];
                                             $itemAmtCol = $valuecol["total_amount_collection"];
+                                            $ttamtPartCol = $valuecol["total_amount_partial_paid"];
+                                            if(!empty($ttamtPartCol)){
+                                                $itemAmtCol = $ttamtPartCol;
+                                            }
 
                                             $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $vfi["id"] . " ";
                                             $resultdis = $connection2->query($sqdis);
                                             $valuedis = $resultdis->fetch();
                                             $disItemAmt = 0;
-                                            if(!empty($valuedis)){
-                                                $disItemAmt = $valuedis['discount'];
-                                                $newItemAmtCol = $itemAmtCol + $disItemAmt;
-                                                $itemAmtPen = $itemAmt - $newItemAmtCol;
+
+                                            if(!empty($ttamtPartCol)){
+                                                $itemAmtPen = $itemAmt - $valuecol["total_amount_collection"];
                                             } else {
-                                                $disItemAmt = 0;
-                                                $itemAmtPen = $itemAmt - $itemAmtCol;
+                                                if(!empty($valuedis)){
+                                                    $disItemAmt = $valuedis['discount'];
+                                                    $newItemAmtCol = $itemAmtCol + $disItemAmt;
+                                                    $itemAmtPen = $itemAmt - $newItemAmtCol;
+                                                } else {
+                                                    $disItemAmt = 0;
+                                                    $itemAmtPen = $itemAmt - $itemAmtCol;
+                                                }
                                             }
+
+                                            
 
                                             
                                             $taxamt = '0';
@@ -933,11 +947,6 @@ if (isset($_POST['type'])) {
 
                     
 
-                    // echo '<pre>';
-                    // print_r($dts_receipt);
-                    // print_r($dts_receipt_feeitem);
-                    // echo '</pre>';
-                    //die();
 
                     if (!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)) {
                         $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/phpword/receiptNew.php';
@@ -1635,22 +1644,22 @@ if (isset($_POST['type'])) {
 
                     echo "<div>";
 ?>
-                    <table class="table" cellspacing="0" style="width: 100%;">
-                        <thead>
-                            <tr class="head">
-                                <th>Sl.No</th>
-                                <th>Invoice No</th>
-                                <th>Invoice Amount</th>
-                                <th>Pending Amount</th>
-                                <th>Discout Amount</th>
-                                <th>Select</th>
-                                <th class="waiveClass" style="display:none">Assigned By</th>
-                                <th class="waiveClass" style="display:none">Date</th>
-                                <th class="waiveClass" style="display:none">Remark</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
+<table class="table" cellspacing="0" style="width: 100%;">
+    <thead>
+        <tr class="head">
+            <th>Sl.No</th>
+            <th>Invoice No</th>
+            <th>Invoice Amount</th>
+            <th>Pending Amount</th>
+            <th>Discout Amount</th>
+            <th>Select</th>
+            <th class="waiveClass" style="display:none">Assigned By</th>
+            <th class="waiveClass" style="display:none">Date</th>
+            <th class="waiveClass" style="display:none">Remark</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
                             if (!empty($invdata)) {
                                 $i = 1;
                                 foreach ($invdata as $ind) {
@@ -1683,25 +1692,25 @@ if (isset($_POST['type'])) {
                                 echo "<tr><td colspan='4'>No invoices found</td></tr>";
                             }
                             ?>
-                        </tbody>
-                    </table>
-                    <a href="#" class="btn btn-primary save_sp_discount" id="save_sp_discount" data-type="invoice_level_dataStore">Apply</a>
-                    </div>
-                <?php
+    </tbody>
+</table>
+<a href="#" class="btn btn-primary save_sp_discount" id="save_sp_discount" data-type="invoice_level_dataStore">Apply</a>
+</div>
+<?php
                 } else {
                 ?>
-                    <table class="table" cellspacing="0" style="width: 100%;">
-                        <thead>
-                            <tr class="head">
-                                <th>Sl.No</th>
-                                <th>Fee Item</th>
-                                <th>Amount</th>
-                                <th>Discount</th>
-                                <th>Select</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
+<table class="table" cellspacing="0" style="width: 100%;">
+    <thead>
+        <tr class="head">
+            <th>Sl.No</th>
+            <th>Fee Item</th>
+            <th>Amount</th>
+            <th>Discount</th>
+            <th>Select</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
                             $std_query = "SELECT fee_category_id FROM `pupilsightPerson` WHERE `pupilsightPersonID` = '" . $stuId . "'";
                             $std_exe = $connection2->query($std_query);
                             $std_data = $std_exe->fetch();
@@ -1793,8 +1802,9 @@ if (isset($_POST['type'])) {
                             echo "</tbody>";
                             echo "</table>";
                             ?>
-                            <a href="#" class="btn btn-primary save_sp_discount" id="save_sp_discount" data-type="fee_item_level_dataStore">Apply</a>
-                    <?php
+        <a href="#" class="btn btn-primary save_sp_discount" id="save_sp_discount"
+            data-type="fee_item_level_dataStore">Apply</a>
+        <?php
                 }
             } else {
                 echo "<center>Select apply discount </center>";
@@ -2059,22 +2069,23 @@ if (isset($_POST['type'])) {
             $resu_h = $connection2->query($sql1);
             $datam_h = $resu_h->fetchAll();
                     ?>
-                    <table id="excelexport">
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Student ID</th>
-                            <th>Class</th>
-                            <th>Section</th>
-                            <?php
+        <table id="excelexport">
+            <tr>
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Class</th>
+                <th>Section</th>
+                <?php
                             foreach ($datam_h as $m) {
                             ?>
-                                <th><?php echo $m['subject_name'] . "-" . $m['skill_display_name'] . "/" . ceil($m['max_marks']); ?></th>
-                            <?php
+                <th><?php echo $m['subject_name'] . "-" . $m['skill_display_name'] . "/" . ceil($m['max_marks']); ?>
+                </th>
+                <?php
                             }
                             ?>
-                        </tr>
+            </tr>
 
-                        <?php foreach ($data as $row) {
+            <?php foreach ($data as $row) {
                             echo "<tr>
     <td>" . $row['officialName'] . "</td>
     <td>" . $row['pupilsightPersonID'] . "</td>
@@ -2109,10 +2120,10 @@ if (isset($_POST['type'])) {
                                 }
                             }
                         ?>
-                            </tr>
-                        <?php } ?>
-                    </table>
-                <?php
+            </tr>
+            <?php } ?>
+        </table>
+        <?php
                 break;
             case 'subjectMarks_excel';
                 $testId = implode(',', $_POST['testId']);
@@ -2141,22 +2152,23 @@ if (isset($_POST['type'])) {
                 $datam_h = $resu_h->fetchAll();
                 ?>
 
-                    <table id="subexcelexport">
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Student ID</th>
-                            <th>Class</th>
-                            <th>Section</th>
-                            <?php
+        <table id="subexcelexport">
+            <tr>
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Class</th>
+                <th>Section</th>
+                <?php
                             foreach ($datam_h as $m) {
                             ?>
-                                <th><?php echo $m['subject_name'] . "-" . $m['skill_display_name'] . "/" . ceil($m['max_marks']); ?></th>
-                            <?php
+                <th><?php echo $m['subject_name'] . "-" . $m['skill_display_name'] . "/" . ceil($m['max_marks']); ?>
+                </th>
+                <?php
                             }
                             ?>
-                        </tr>
+            </tr>
 
-                        <?php foreach ($data as $row) {
+            <?php foreach ($data as $row) {
                             echo "<tr>
     <td>" . $row['officialName'] . "</td>
     <td>" . $row['pupilsightPersonID'] . "</td>
@@ -2192,10 +2204,10 @@ if (isset($_POST['type'])) {
                                 }
                             }
                         ?>
-                            </tr>
-                        <?php } ?>
-                    </table>
-                <?php
+            </tr>
+            <?php } ?>
+        </table>
+        <?php
                 break;
             case "load_Student_data":
                 $cid = $_POST['val'];
@@ -2240,22 +2252,23 @@ if (isset($_POST['type'])) {
                 $datam_h = $resu_h->fetchAll();
                 ?>
 
-                    <table id="subexcelexport">
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Student ID</th>
-                            <th>Class</th>
-                            <th>Section</th>
-                            <?php
+        <table id="subexcelexport">
+            <tr>
+                <th>Student Name</th>
+                <th>Student ID</th>
+                <th>Class</th>
+                <th>Section</th>
+                <?php
                             foreach ($datam_h as $m) {
                             ?>
-                                <th><?php echo $m['subject_name'] . "-" . $m['skill_display_name'] . "/" . ceil($m['max_marks']); ?></th>
-                            <?php
+                <th><?php echo $m['subject_name'] . "-" . $m['skill_display_name'] . "/" . ceil($m['max_marks']); ?>
+                </th>
+                <?php
                             }
                             ?>
-                        </tr>
+            </tr>
 
-                        <?php foreach ($data as $row) {
+            <?php foreach ($data as $row) {
                             echo "<tr>
 <td>" . $row['officialName'] . "</td>
 <td>" . $row['pupilsightPersonID'] . "</td>
@@ -2291,9 +2304,9 @@ if (isset($_POST['type'])) {
                                 }
                             }
                         ?>
-                            </tr>
-                        <?php } ?>
-                    </table>
+            </tr>
+            <?php } ?>
+        </table>
         <?php
                 break;
 

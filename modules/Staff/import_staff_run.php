@@ -5,39 +5,54 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 
+include $_SERVER["DOCUMENT_ROOT"] . "/db.php";
 
-include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
+require __DIR__ . "/moduleFunctions.php";
 
+$URL =
+    $_SESSION[$guid]["absoluteURL"] .
+    "/index.php?q=/modules/Staff/import_staff_run.php";
 
-
-require __DIR__ . '/moduleFunctions.php';
-
-$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Staff/import_staff_run.php';
-
-if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php") == false) {
+if (
+    isActionAccessible(
+        $guid,
+        $connection2,
+        "/modules/Staff/import_staff_run.php"
+    ) == false
+) {
     // Access denied
-    $page->addError(__('You do not have access to this action.'));
+    $page->addError(__("You do not have access to this action."));
 } else {
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
+
+    if (isset($_GET["return"])) {
+        returnProcess($guid, $_GET["return"], null, null);
     }
 
-    $page->breadcrumbs->add(__('Staff Import'));
-    $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run.php');
+    $page->breadcrumbs->add(__("Staff Import"));
+    $form = Form::create(
+        "importStep1",
+        $_SESSION[$guid]["absoluteURL"] .
+            "/index.php?q=/modules/" .
+            $_SESSION[$guid]["module"] .
+            "/import_staff_run.php"
+    );
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-
+    $form->addHiddenValue("address", $_SESSION[$guid]["address"]);
 
     $row = $form->addRow();
-    $row->addLabel('file', __('File'))->description(__('See Notes below for specification.'));
-    $row->addFileUpload('file')->required()->accepts('.csv');
+    $row->addLabel("file", __("File"))->description(
+        __("See Notes below for specification.")
+    );
+    $row->addFileUpload("file")
+        ->required()
+        ->accepts(".csv");
 
     $row = $form->addRow();
     $row->addFooter();
     $row->addSubmit();
 
     echo $form->getOutput();
-?>
+    ?>
     <style>
         .hide {
             display: none;
@@ -45,211 +60,256 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
         }
     </style>
 
-<?php
+<?php if ($_POST) {
+    if (isset($_POST["validFormData"])) {
+        //print_r($_POST);
 
+        if (isset($_POST["data"])) {
+            $data = $_POST["data"];
+        }
 
-    if ($_POST) {
-        if (isset($_POST["validFormData"])) {
-            //print_r($_POST);
-
-            if (isset($_POST["data"])) {
-                $data = $_POST["data"];
-            }
-
-            try {
-                foreach ($data as  $alrow) {
-
-                    // staff Entry
-                    $sql = "INSERT INTO pupilsightPerson (";
-                    foreach ($alrow as $key => $ar) {
-                        if (strpos($key, '##_') !== false && !empty($ar)) {
-                            //$clname = ltrim($key, '##_'); 
-                            $clname = substr($key, 3, strlen($key));
-                            $sql .= $clname . ',';
-                        }
-                    }
-                    $sql .= 'preferredName,pupilsightRoleIDPrimary,pupilsightRoleIDAll';
-                    //$sql = rtrim($sql, ", ");
-                    $sql .= ") VALUES (";
-                    foreach ($alrow as $k => $value) {
-                        if ($k == "##_dob" && !empty($value)) {
-                            $value = date('Y-m-d', strtotime($value));
-                        }
-                        if (strpos($k, '##_') !== false && !empty($value)) {
-                            $val = str_replace('"', "", $value);
-                            $sql .= '"' . $val . '",';
-                        }
-                    }
-                    $sql .= '"' . $alrow['##_officialName'] . '","002","002"';
-                    //$sql = rtrim($sql, ", ");
-                    $sql .= ")";
-                    $sql = rtrim($sql, ", ");
-                    //echo "\n<br>" . $sql;
-                    $conn->query($sql);
-                    $stu_id = $conn->insert_id;
-
-                    if (!empty($stu_id)) {
-                        $sqle = 'INSERT INTO pupilsightStaff (pupilsightPersonID,type) VALUES ("' . $stu_id . '","' . $alrow['at_type'] . '")';
-                        $enrol = $conn->query($sqle);
+        try {
+            foreach ($data as $alrow) {
+                // staff Entry
+                $sql = "INSERT INTO pupilsightPerson (";
+                foreach ($alrow as $key => $ar) {
+                    if (strpos($key, "##_") !== false && !empty($ar)) {
+                        //$clname = ltrim($key, '##_');
+                        $clname = substr($key, 3, strlen($key));
+                        $sql .= $clname . ",";
                     }
                 }
-
-                $URL .= '&return=success1';
-                header("Location: {$URL}");
-            } catch (Exception $ex) {
-                print_r($ex);
-            }
-        } else {
-            $handle = fopen($_FILES['file']['tmp_name'], "r");
-            $headers = fgetcsv($handle, 10000, ",");
-            $hders = array();
-            // echo '<pre>';
-            // print_r($headers);
-            // echo '</pre>';
-            $chkHeaderKey = array();
-            foreach ($headers as $key => $hd) {
-
-                if ($hd == 'Official Name') {
-                    $headers[$key] = '##_officialName';
-                } else if ($hd == 'Type') {
-                    $headers[$key] = 'at_type';
-                } else if ($hd == 'Gender') {
-                    $headers[$key] = '##_gender';
-                } else if ($hd == 'Date of Birth') {
-                    $headers[$key] = '##_dob';
-                } else if ($hd == 'Username') {
-                    $headers[$key] = '##_username';
-                } else if ($hd == 'Can Login') {
-                    $headers[$key] = '##_canLogin';
-                } else if ($hd == 'Email') {
-                    $headers[$key] = '##_email';
-                } else if ($hd == 'Mobile') {
-                    $headers[$key] = '##_phone1';
-                } else if ($hd == 'Address') {
-                    $headers[$key] = '##_address1';
-                } else if ($hd == 'District') {
-                    $headers[$key] = '##_address1District';
-                } else if ($hd == 'Country') {
-                    $headers[$key] = '##_address1Country';
-                } else if ($hd == 'First Language') {
-                    $headers[$key] = '##_languageFirst';
-                } else if ($hd == 'Second Language') {
-                    $headers[$key] = '##_languageSecond';
-                } else if ($hd == 'Third Language') {
-                    $headers[$key] = '##_languageThird';
-                } else if ($hd == 'Country of Birth') {
-                    $headers[$key] = '##_countryOfBirth';
-                } else if ($hd == 'Ethnicity') {
-                    $headers[$key] = '##_ethnicity';
-                } else if ($hd == 'Religion') {
-                    $headers[$key] = '##_religion';
-                } else if ($hd == 'National ID Card Number') {
-                    $headers[$key] = '##_nationalIDCardNumber';
-                } else {
-
-                    //$sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
-                    $sqlchk = "SELECT field_name, modules FROM custom_field WHERE field_title = '" . $hd . "' and  find_in_set('staff',modules)";
-
-                    $resultchk = $connection2->query($sqlchk);
-                    $cd = $resultchk->fetch();
-                    $modules = explode(',', $cd['modules']);
-
-                    if (in_array('staff', $modules)) {
-                        $headers[$key] = '##_' . $cd['field_name'];
-                        $chkHeaderKey[] = '##_' . $cd['field_name'];
+                $sql .=
+                    "preferredName, pupilsightRoleIDPrimary, pupilsightRoleIDAll";
+                //$sql = rtrim($sql, ", ");
+                $sql .= ") VALUES (";
+                foreach ($alrow as $k => $value) {
+                    if ($k == "##_dob" && !empty($value)) {
+                        $value = date("Y-m-d", strtotime($value));
                     }
+                    if (strpos($k, "##_") !== false && !empty($value)) {
+                        $val = str_replace('"', "", $value);
+                        $sql .= '"' . $val . '",';
+                    }
+                }
+                $sql .= '"' . $alrow["##_officialName"] . '","002","002"';
+                //$sql = rtrim($sql, ", ");
+                $sql .= ")";
+                $sql = rtrim($sql, ", ");
+                //echo "\n<br>" . $sql . ";";
+                $conn->query($sql);
 
-                    $page->breadcrumbs->add(__('Staff Import'));
-                    $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run.php');
+                $stu_id = $conn->insert_id;
+
+                if (!empty($stu_id)) {
+                    $sqle =
+                        'INSERT INTO pupilsightStaff (pupilsightPersonID,type) VALUES ("' .
+                        $stu_id .
+                        '","' .
+                        $alrow["at_type"] .
+                        '")';
+                    $enrol = $conn->query($sqle);
                 }
             }
 
-            $hders = $headers;
+            $URL .= "&return=success1";
+            header("Location: {$URL}");
+        } catch (Exception $ex) {
+            print_r($ex);
+        }
+    } else {
+        $handle = fopen($_FILES["file"]["tmp_name"], "r");
+        $headers = fgetcsv($handle, 10000, ",");
+        $hders = [];
+        // echo '<pre>';
+        // print_r($headers);
+        // echo '</pre>';
+        $chkHeaderKey = [];
+        foreach ($headers as $key => $hd) {
+            if ($hd == "Official Name") {
+                $headers[$key] = "##_officialName";
+            } elseif ($hd == "Type") {
+                $headers[$key] = "at_type";
+            } elseif ($hd == "Gender") {
+                $headers[$key] = "##_gender";
+            } elseif ($hd == "Date of Birth") {
+                $headers[$key] = "##_dob";
+            } elseif ($hd == "Username") {
+                $headers[$key] = "##_username";
+            } elseif ($hd == "Can Login") {
+                $headers[$key] = "##_canLogin";
+            } elseif ($hd == "Email") {
+                $headers[$key] = "##_email";
+            } elseif ($hd == "Mobile") {
+                $headers[$key] = "##_phone1";
+            } elseif ($hd == "Address") {
+                $headers[$key] = "##_address1";
+            } elseif ($hd == "District") {
+                $headers[$key] = "##_address1District";
+            } elseif ($hd == "Country") {
+                $headers[$key] = "##_address1Country";
+            } elseif ($hd == "First Language") {
+                $headers[$key] = "##_languageFirst";
+            } elseif ($hd == "Second Language") {
+                $headers[$key] = "##_languageSecond";
+            } elseif ($hd == "Third Language") {
+                $headers[$key] = "##_languageThird";
+            } elseif ($hd == "Country of Birth") {
+                $headers[$key] = "##_countryOfBirth";
+            } elseif ($hd == "Ethnicity") {
+                $headers[$key] = "##_ethnicity";
+            } elseif ($hd == "Religion") {
+                $headers[$key] = "##_religion";
+            } elseif ($hd == "National ID Card Number") {
+                $headers[$key] = "##_nationalIDCardNumber";
+            } else {
+                //$sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
+                $sqlchk =
+                    "SELECT field_name, modules FROM custom_field WHERE field_title = '" .
+                    $hd .
+                    "' and  find_in_set('staff',modules)";
 
-            $all_rows = array();
-            while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
-                $all_rows[] = array_combine($hders, $data);
+                $resultchk = $connection2->query($sqlchk);
+                $cd = $resultchk->fetch();
+                $modules = explode(",", $cd["modules"]);
+
+                if (in_array("staff", $modules)) {
+                    $headers[$key] = "##_" . $cd["field_name"];
+                    $chkHeaderKey[] = "##_" . $cd["field_name"];
+                }
+
+                $page->breadcrumbs->add(__("Staff Import"));
+                $form = Form::create(
+                    "importStep1",
+                    $_SESSION[$guid]["absoluteURL"] .
+                        "/index.php?q=/modules/" .
+                        $_SESSION[$guid]["module"] .
+                        "/import_staff_run.php"
+                );
+            }
+        }
+
+        $hders = $headers;
+
+        $all_rows = [];
+        while (($data = fgetcsv($handle, 10000, ",")) !== false) {
+            $all_rows[] = array_combine($hders, $data);
+        }
+
+        if (!empty($all_rows)) {
+            function getSaltNew()
+            {
+                $c = explode(
+                    " ",
+                    ". / a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9"
+                );
+                $ks = array_rand($c, 22);
+                $s = "";
+                foreach ($ks as $k) {
+                    $s .= $c[$k];
+                }
+                return $s;
             }
 
-            if (!empty($all_rows)) {
+            $salt = getSaltNew();
+            $pass = "Admin@123456";
+            $password = hash("sha256", $salt . $pass);
+            //echo "<pre>";
+            //print_r($all_rows);
+            //echo "</pre>";
 
-                function getSaltNew()
-                {
-                    $c = explode(' ', '. / a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9');
-                    $ks = array_rand($c, 22);
-                    $s = '';
-                    foreach ($ks as $k) {
-                        $s .= $c[$k];
+            $tbl =
+                '<hr/><form id="formValidSubmit" class="mt-3" action="' .
+                $URL .
+                '" method="post" enctype="multipart/form-data">';
+            $tbl .= "<input type='hidden' name='validFormData' value='1'>";
+            $tbl .= "<div class='table-responsive dataTables_wrapper'>";
+            $tbl .= "\n<table id='validate_tbl' class='table'>";
+            //header
+            $tbl .= "\n<thead>";
+            foreach ($all_rows as $alrow) {
+                $tbl .= "\n<tr>";
+                foreach ($alrow as $key => $ar) {
+                    if (strpos($key, "##_") !== false) {
+                        $clname = substr($key, 3, strlen($key));
+
+                        if (
+                            $clname == "phone1" ||
+                            $clname == "email" ||
+                            $clname == "username" ||
+                            $clname == "dob"
+                        ) {
+                            $clname .= " - validate";
+                        }
+                        $tbl .= "\n<th " . $colWidth . ">" . $clname . "</th>";
                     }
-                    return $s;
                 }
+                $tbl .= "\n</tr>";
+                break;
+            }
+            $tbl .= "\n</thead>";
 
-                $salt = getSaltNew();
-                $pass = 'Admin@123456';
-                $password = hash('sha256', $salt . $pass);
-                //echo '<pre>';
-                //print_r($all_rows);
-                //echo '</pre>';
-
-                $tbl = '<hr/><form id="formValidSubmit" class="mt-3" action="' . $URL . '" method="post" enctype="multipart/form-data">';
-                $tbl .= "<input type='hidden' name='validFormData' value='1'>";
-                $tbl .= "<div class='table-responsive dataTables_wrapper'>";
-                $tbl .= "\n<table id='validate_tbl' class='table'>";
-                //header
-                $tbl .= "\n<thead>";
-                foreach ($all_rows as  $alrow) {
-                    $tbl .= "\n<tr>";
-                    foreach ($alrow as $key => $ar) {
-                        if (strpos($key, '##_') !== false) {
-                            $clname = substr($key, 3, strlen($key));
-
-                            if ($clname == "phone1" || $clname == "email" || $clname == "username" || $clname == "dob") {
-                                $clname .= " - validate";
-                            }
-                            $tbl .= "\n<th " . $colWidth . ">" . $clname . "</th>";
-                        }
+            //data
+            $tbl .= "\n<tbody>";
+            $cnt = 1;
+            $row = 0;
+            foreach ($all_rows as $alrow) {
+                $tbl .= "\n<tr>";
+                foreach ($alrow as $k => $value) {
+                    if ($k == "##_dob" && !empty($value)) {
+                        $value = date("Y-m-d", strtotime($value));
                     }
-                    $tbl .= "\n</tr>";
-                    break;
-                }
-                $tbl .= "\n</thead>";
-
-                //data
-                $tbl .= "\n<tbody>";
-                $cnt = 1;
-                $row = 0;
-                foreach ($all_rows as  $alrow) {
-                    $tbl .= "\n<tr>";
-                    foreach ($alrow as $k => $value) {
-                        if ($k == "##_dob" && !empty($value)) {
-                            $value = date('Y-m-d', strtotime($value));
-                        }
-                        if (strpos($k, '##_') !== false && !empty($value)) {
-                            $value = str_replace('"', "", $value);
-                        }
-
-                        $tfwidth = "";
-                        $tfValidate = "";
-                        if ($k == "##_phone1" || $k == "##_email" || $k == "##_username" || $k == "##_dob") {
-                            $tfwidth = " style='width:180px;'";
-                            $tfValidate = " validActive ";
-                        }
-                        $tbl .= "\n<td><span class='hide'>" . $value . "</span><input type='text' id='" . $k . "_" . $cnt . "' data-type='" . $k . "' class='w-full " . $tfValidate . "' " . $tfwidth . " name='data[" . $row . "][" . $k . "]' value='" . $value . "'></td>";
-                        $cnt++;
+                    if (strpos($k, "##_") !== false && !empty($value)) {
+                        $value = str_replace('"', "", $value);
                     }
-                    $tbl .= "\n</tr>";
-                    $row++;
+
+                    $tfwidth = "";
+                    $tfValidate = "";
+                    if (
+                        $k == "##_phone1" ||
+                        $k == "##_email" ||
+                        $k == "##_username" ||
+                        $k == "##_dob"
+                    ) {
+                        $tfwidth = " style='width:180px;'";
+                        $tfValidate = " validActive ";
+                    }
+                    $tbl .=
+                        "\n<td><span class='hide'>" .
+                        $value .
+                        "</span><input type='text' id='" .
+                        $k .
+                        "_" .
+                        $cnt .
+                        "' data-type='" .
+                        $k .
+                        "' class='w-full " .
+                        $tfValidate .
+                        "' " .
+                        $tfwidth .
+                        " name='data[" .
+                        $row .
+                        "][" .
+                        $k .
+                        "]' value='" .
+                        $value .
+                        "'></td>";
                     $cnt++;
                 }
-                $tbl .= "\n</tbody></table></div>";
-                $tbl .= "\n<button type='button' class='btn btn-primary mt-3' onclick='validateImport();'>Validate & Submit</button>";
-                $tbl .= "\n</form>";
-                echo $tbl;
+                $tbl .= "\n</tr>";
+                $row++;
+                $cnt++;
             }
-
-            fclose($handle);
+            $tbl .= "\n</tbody></table></div>";
+            $tbl .=
+                "\n<button type='button' class='btn btn-primary mt-3' onclick='validateImport();'>Validate & Submit</button>";
+            $tbl .= "\n</form>";
+            echo $tbl;
         }
+
+        fclose($handle);
     }
+}
 }
 ?>
 <script>
@@ -364,4 +424,3 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
         return false;
     }
 </script>
-<?php

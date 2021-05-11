@@ -10,6 +10,10 @@ header( 'Pragma: no-cache' );
 include('config.php');
 include $_SERVER['DOCUMENT_ROOT'].'/pupilsight.php';
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
 // This is landing page where you will receive response from airpay. 
 // The name of the page should be as per you have configured in airpay system
 // All columns are mandatory
@@ -122,25 +126,121 @@ if(!empty($sid) && !empty($cid) && !empty($txnid)){
         $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/parent_admission_success.php?sid=' . $sid.'&amt='.$amount;
         header('Location: '.$callback);
     } else if($ptype == 'fee_collection'){
-        $data = array('gateway' => 'AIRPAY', 'pupilsightPersonID' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
 
-        $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+        $sqlon = 'SELECT transaction_ref_no FROM fn_fee_payment_details WHERE transaction_ref_no = "'.$mihpayid.'" ';
+        $resulton = $connection2->query($sqlon);
+        $onData = $resulton->fetch();
+        if(!empty($onData)){
+            header('Location: index.php');
+            exit;
+        } else {
+            $data = array('gateway' => 'AIRPAY', 'pupilsightPersonID' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
 
-        $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/fee_update.php?payid=' . $txnid;
+            $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
-        // $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/fee_collection_success.php?sid=' . $sid.'&amt='.$amount;
-        header('Location: '.$callback);
+            $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/fee_update.php?payid=' . $mihpayid;
+
+            // $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/fee_collection_success.php?sid=' . $sid.'&amt='.$amount;
+            header('Location: '.$callback);
+        }
     } else if($ptype == 'multiple_fee_collection'){
-        $data = array('gateway' => 'AIRPAY', 'pupilsightPersonID' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
+        $sqlon = 'SELECT transaction_ref_no FROM fn_fee_payment_details WHERE transaction_ref_no = "'.$mihpayid.'" ';
+        $resulton = $connection2->query($sqlon);
+        $onData = $resulton->fetch();
+        if(!empty($onData)){
+            header('Location: index.php');
+            exit;
+        } else {
+            $data = array('gateway' => 'AIRPAY', 'pupilsightPersonID' => $sid, 'transaction_ref_no' => $mihpayid, 'order_id' => $txnid, 'amount' => $amount, 'status' => 'S');
 
-        $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
+            $sql = 'INSERT INTO fn_fee_payment_details SET gateway=:gateway, pupilsightPersonID=:pupilsightPersonID, transaction_ref_no=:transaction_ref_no, order_id=:order_id, amount=:amount, status=:status';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
 
-        $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/multiple_fee_collection_success.php?sid=' . $sid.'&amt='.$amount;
-        header('Location: '.$callback);
+            $dtall = $_SESSION["paypost"];
+            $newdt = json_decode($dtall['formdata']);
+            $stuID = $newdt[0]->stuid;
+
+            if(!empty($newdt)){
+                $invData = array();
+                $feeData = array();
+                $amount = 0;
+                $total_amount_without_fine_discount = 0;
+                $fine = 0;
+                $discount = 0;
+                foreach($newdt as $ndt){
+                    $invData['fn_fees_invoice_id'][] = $ndt->fn_fees_invoice_id;
+                    $invData['fn_fee_invoice_item_id'][] = $ndt->fn_fee_invoice_item_id;
+                    $invData['payid'][] = $ndt->payid;
+                    $total_amount_without_fine_discount +=  $ndt->total_amount_without_fine_discount;
+                    $fine +=  $ndt->fine;
+                    $discount +=  $ndt->discount;
+                    $amount +=  $ndt->amount;
+                    $pupilsightSchoolYearID = $ndt->pupilsightSchoolYearID;
+                    $pupilsightProgramID = $ndt->pupilsightProgramID;
+                    $classid = $ndt->classid;
+                    $className = $ndt->className;
+                    $sectionid = $ndt->sectionid;
+                    $payment_gateway_id = $ndt->payment_gateway_id;
+                    $fn_fees_head_id = $ndt->fn_fees_head_id;
+                    $rec_fn_fee_series_id = $ndt->rec_fn_fee_series_id;
+                    $receipt_number = $ndt->receipt_number;
+                    $name = $ndt->name;
+                    $email = $ndt->email;
+                    $phone = $ndt->phone;
+                    $stuid = $ndt->stuid;
+                    $callbackurl = $ndt->callbackurl;
+                    $organisationName = $ndt->organisationName;
+                    $organisationLogo = $ndt->organisationLogo;
+                    
+                }
+                if(!empty($invData['fn_fees_invoice_id'])){
+                    $fn_fees_invoice_id = implode(',', $invData['fn_fees_invoice_id']);
+                }
+
+                if(!empty($invData['fn_fee_invoice_item_id'])){
+                    $fn_fee_invoice_item_id = implode(',', $invData['fn_fee_invoice_item_id']);
+                }
+
+                if(!empty($invData['payid'])){
+                    $payid = implode(',', $invData['payid']);
+                }
+
+                $feeData['fn_fees_invoice_id'] = $fn_fees_invoice_id;
+                $feeData['fn_fee_invoice_item_id'] = $fn_fee_invoice_item_id;
+                $feeData['payid'] = $payid;
+                $feeData['total_amount_without_fine_discount'] = $total_amount_without_fine_discount;
+                $feeData['fine'] = $fine;
+                $feeData['discount'] = $discount;
+                $feeData['amount'] = $amount;
+                $feeData['pupilsightSchoolYearID'] = $pupilsightSchoolYearID;
+                $feeData['pupilsightProgramID'] = $pupilsightProgramID;
+                $feeData['classid'] = $classid;
+                $feeData['className'] = $className;
+                $feeData['sectionid'] = $sectionid;
+                $feeData['payment_gateway_id'] = $payment_gateway_id;
+                $feeData['fn_fees_head_id'] = $fn_fees_head_id;
+                $feeData['rec_fn_fee_series_id'] = $rec_fn_fee_series_id;
+                $feeData['receipt_number'] = $receipt_number;
+                $feeData['name'] = $name;
+                $feeData['email'] = $email;
+                $feeData['phone'] = $phone;
+                $feeData['stuid'] = $stuid;
+                $feeData['callbackurl'] = $callbackurl;
+                $feeData['organisationName'] = $organisationName;
+                $feeData['organisationLogo'] = $organisationLogo;
+                unset($_SESSION["paypost"]);
+                $_SESSION["paypost"] = $feeData;
+            }
+            
+
+            $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/fee_update.php?payid=' . $mihpayid;
+
+            //$callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/payment/airpay/multiple_fee_collection_success.php?sid=' . $sid.'&amt='.$amount;
+            header('Location: '.$callback);
+        }
     }
 }
 

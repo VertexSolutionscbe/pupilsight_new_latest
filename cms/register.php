@@ -1,16 +1,19 @@
 <?php
-include_once 'w2f/adminLib.php';
+include_once "w2f/adminLib.php";
 $adminlib = new adminlib();
 session_start();
 $data = $adminlib->getPupilSightData();
 $section = $adminlib->getPupilSightSectionFrontendData();
-$campaign_id=$_REQUEST['url_id'];
-if($_POST){
+$campaign_id = $_REQUEST["url_id"];
+if ($_POST) {
     function getSalt()
     {
-        $c = explode(' ', '. / a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9');
+        $c = explode(
+            " ",
+            ". / a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9"
+        );
         $ks = array_rand($c, 22);
-        $s = '';
+        $s = "";
         foreach ($ks as $k) {
             $s .= $c[$k];
         }
@@ -19,58 +22,50 @@ if($_POST){
     }
 
     $salt = getSalt();
-    $passwordStrong = hash('sha256', $salt.$_POST['password']);
-    $input = array();
-    $input['firstName'] = $_POST['name'];
-    $input['preferredName'] = $_POST['name'];
-    $input['officialName'] = $_POST['name'];
-    $input['email'] = $_POST['email'];
-    $input['username'] = $_POST['email'];
+    $passwordStrong = hash("sha256", $salt . $_POST["password"]);
+    $input = [];
+    $input["firstName"] = $_POST["name"];
+    $input["preferredName"] = $_POST["name"];
+    $input["officialName"] = $_POST["name"];
+    $input["email"] = $_POST["email"];
+    $input["username"] = $_POST["email"];
     //$input['mobile'] = $_POST['mobile'];
     //$input['campaign_id'] = $_POST['campaign_id'];
-    $input['passwordStrong'] = $passwordStrong;
-    $input['passwordStrongSalt'] = $salt;
-    $input['canLogin'] = 'Y';
-    $input['pupilsightRoleIDPrimary'] = '033';
-    $input['pupilsightRoleIDAll'] = '033';
-    $input['phone1Type'] = 'Mobile';
-    $input['phone1'] = $_POST['mobile'];
-    //$_SESSION['campaignuserdata'] = $input; 
-    
+    $input["passwordStrong"] = $passwordStrong;
+    $input["passwordStrongSalt"] = $salt;
+    $input["canLogin"] = "Y";
+    $input["pupilsightRoleIDPrimary"] = "033";
+    $input["pupilsightRoleIDAll"] = "033";
+    $input["phone1Type"] = "Mobile";
+    $input["phone1"] = $_POST["mobile"];
+    //$_SESSION['campaignuserdata'] = $input;
+
     //$insert = $adminlib->createCampaignRegistration($input, $_POST['campaign_id']);
 
-     
-    $sql = 'SELECT count(*) AS cnt FROM pupilsightPerson WHERE email="'.$input['email'].'" ';
-              
-    $result = database::doSelectOne($sql);	
+    $sql =
+        'SELECT count(*) AS cnt FROM pupilsightPerson WHERE email="' .
+        $input["email"] .
+        '" ';
+
+    $result = database::doSelectOne($sql);
     //print_r($result);
     //echo "cnt".$result['cnt'];
-        if($result['cnt']>0)
-        {
-            echo "<script type='text/javascript'>alert('Email id already exists ');
+    if ($result["cnt"] > 0) {
+        echo "<script type='text/javascript'>alert('Email id already exists ');
 		window.history.go(-1);
 
 		</script>";
-		exit;
-        }
-
-        else 
-        {
-            $insert = $adminlib->createCampaignRegistration($input, $_POST['campaign_id']);
-          //  $URL = 'application_page.php?url_id='.$campaign_id.'&status=not';
-          $URL = 'register.php?url_id='.$campaign_id.'&reg_status=1';
-          header("Location: {$URL}");
-        }
-
-        
-
-    
-      
-    
+        exit();
+    } else {
+        $insert = $adminlib->createCampaignRegistration(
+            $input,
+            $_POST["campaign_id"]
+        );
+        //  $URL = 'application_page.php?url_id='.$campaign_id.'&status=not';
+        $URL = "register.php?url_id=" . $campaign_id . "&reg_status=1";
+        header("Location: {$URL}");
+    }
 }
-
-
-
 ?>
 <!DOCTYPE html>
 <html itemscope itemtype="http://schema.org/WebPage" lang="en-US"
@@ -79,7 +74,7 @@ if($_POST){
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta charset="UTF-8">
-    <title><?php echo $data['title']; ?></title>
+    <title><?php echo $data["title"]; ?></title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
@@ -278,8 +273,12 @@ background-color: rgba(78, 88, 178, 0.75)!important;
             <div class="container">
                 <div class="header-wrapper" style="padding-top: 17px; padding-bottom: 17px;">
                     <div class="width-logo sm-logo">
-                        <img class="mobile-logo" src="<?php echo 'images/logo/' . $data['logo_image']; ?>" alt="" />
-                        <img src="<?php echo 'images/logo/' . $data['logo_image']; ?>" alt="" width="221" height="64" />
+                        <img class="mobile-logo" src="<?php echo "images/logo/" .
+                            $data["logo_image"]; ?>" alt="" />
+                        <img src="<?php echo "images/logo/" .
+                            $data[
+                                "logo_image"
+                            ]; ?>" alt="" width="221" height="64" />
                     </div>
                     <nav class="width-navigation main-navigation">
                         <ul id="primaryMenu">
@@ -838,17 +837,19 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                                         
                                     <div class="col-sm-12 col-lg-12 ">
                                         <center>
-                                            <?php if($_REQUEST)
-                                            {
-                                                $sts= isset($_REQUEST['reg_status'])?1:"";
-                                                if($sts==1)
-                                                {
-                                            ?>
+                                            <?php if ($_REQUEST) {
+                                                $sts = isset(
+                                                    $_REQUEST["reg_status"]
+                                                )
+                                                    ? 1
+                                                    : "";
+                                                if ($sts == 1) { ?>
                                     <span class="success_fnt">Thank you for Registration,  <div class="login-links" style="display: inline">
                                                     <a class="login" data-active=".box-login" data-effect="mfp-zoom-in"
                                                         title="Login" href="#bp-popup-login"><span class="blinking">Click here</a></span>
                                                 </div> to Login and Apply for Admissions</span>
-                                <?php }} ?>                                  
+                                <?php }
+                                            } ?>                                  
                                 </center>                               
                                     <br>
                                                                     </div>  
@@ -900,7 +901,7 @@ background-color: rgba(78, 88, 178, 0.75)!important;
                                         </span>
                                         <input type='password' id="confirm_password" name='confpassword' class='custom_input form-control' required>
                                     </div>
-                                   <input type="hidden" name="campaign_id" value="<?php echo $campaign_id;?>">
+                                   <input type="hidden" name="campaign_id" value="<?php echo $campaign_id; ?>">
                                     <center>
                                         <button type="submit" id="chkRegister" class='loginbtn btn-primary pl-4 pr-4 pt-1 pb-1 ml-1'>Submit</button>
                                     </center>

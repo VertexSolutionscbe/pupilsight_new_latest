@@ -269,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         $cauData = $cauData1 + $cauData2; 
 
         $sqlstu = 'SELECT a.pupilsightPersonID, a.officialName, a.admission_no,  d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID  LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID 
-        WHERE a.pupilsightPersonID = "'.$stuId.'" ';
+        WHERE a.pupilsightPersonID = "'.$stuId.'" AND b.pupilsightSchoolYearID = "'.$pupilsightSchoolYearIDpost.'" ';
        
         $resultstu = $connection2->query($sqlstu);
         $studetails = $resultstu->fetch();

@@ -42,8 +42,6 @@ if (isset($_POST["rememberme"])) {
     }
 }
 
-
-
 if (empty($username) or empty($password)) {
     $URL .= '?loginReturn=fail0b';
     header("Location: {$URL}");
@@ -104,7 +102,7 @@ else {
 
         //Check fail count, reject & alert if 3rd time
 
-        if ($row['failCount'] > 2) {
+        if ($row['failCount'] > 4) {
             try {
                 $dataSecure = array('lastFailIPAddress' => $_SERVER['REMOTE_ADDR'], 'lastFailTimestamp' => date('Y-m-d H:i:s'), 'failCount' => ($row['failCount'] + 1), 'username' => $username);
                 $sqlSecure = 'UPDATE pupilsightPerson SET lastFailIPAddress=:lastFailIPAddress, lastFailTimestamp=:lastFailTimestamp, failCount=:failCount WHERE (username=:username)';
@@ -113,7 +111,7 @@ else {
             } catch (PDOException $e) {
             }
 
-            if ($row['failCount'] == 3) {
+            if ($row['failCount'] == 5) {
                 // Raise a new notification event
                 $event = new NotificationEvent('User Admin', 'Login - Failed');
 

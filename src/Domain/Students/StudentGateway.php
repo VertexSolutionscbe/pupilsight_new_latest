@@ -21,7 +21,7 @@ class StudentGateway extends QueryableGateway
 
     private static $tableName = 'pupilsightStudentEnrolment';
 
-    private static $searchableColumns = ['pupilsightPerson.officialName','pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightPerson.username', 'pupilsightPerson.email', 'pupilsightPerson.emailAlternate', 'pupilsightPerson.studentID', 'pupilsightPerson.phone1', 'pupilsightPerson.vehicleRegistration'];
+    private static $searchableColumns = ['pupilsightPerson.officialName', 'pupilsightPerson.preferredName', 'pupilsightPerson.surname', 'pupilsightPerson.username', 'pupilsightPerson.email', 'pupilsightPerson.emailAlternate', 'pupilsightPerson.studentID', 'pupilsightPerson.phone1', 'pupilsightPerson.vehicleRegistration'];
 
     /**
      * @param QueryCriteria $criteria
@@ -129,7 +129,7 @@ class StudentGateway extends QueryableGateway
         $query->where('pupilsightPerson.is_delete = "0" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.officialName ASC']);
-            //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
+        //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
         // echo $query;
@@ -763,11 +763,11 @@ class StudentGateway extends QueryableGateway
 
         if (!empty($search)) {
             $query->where('( pupilsightPerson.officialName LIKE "%' . $search . '%" ')
-            ->orwhere('pupilsightPerson.pupilsightPersonID = "' . $search . '" ')
-            ->orwhere('pupilsightPerson.admission_no = "' . $search . '" ')
-            ->orwhere('pupilsightPerson.username LIKE "%' . $search . '%" ')
-            ->orwhere('pupilsightPerson.email LIKE "%' . $search . '%" ')
-            ->orwhere('pupilsightPerson.phone1 LIKE "%' . $search . '%" )');
+                ->orwhere('pupilsightPerson.pupilsightPersonID = "' . $search . '" ')
+                ->orwhere('pupilsightPerson.admission_no = "' . $search . '" ')
+                ->orwhere('pupilsightPerson.username LIKE "%' . $search . '%" ')
+                ->orwhere('pupilsightPerson.email LIKE "%' . $search . '%" ')
+                ->orwhere('pupilsightPerson.phone1 LIKE "%' . $search . '%" )');
         }
 
 
@@ -775,7 +775,7 @@ class StudentGateway extends QueryableGateway
         $query->where('pupilsightPerson.is_delete = "0" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.officialName ASC']);
-            //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
+        //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
 
         //echo $query;
         // die();
