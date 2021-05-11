@@ -22,9 +22,9 @@ use Pupilsight\Tables\DataTable;
 require_once __DIR__ . "/moduleFunctions.php";
 
 $page->breadcrumbs->add(__("Chat Message"));
-
-if (
-    isActionAccessible(
+$accessFlag = true;
+/*
+if (isActionAccessible(
         $guid,
         $connection2,
         "/modules/Messenger/messenger_post.php"
@@ -34,7 +34,9 @@ if (
     print "<div class='alert alert-danger'>";
     print __("You do not have access to this action.");
     print "</div>";
-} else {
+}*/
+
+if ($accessFlag) {
 
     $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
     $isPostAllow = true;
@@ -105,7 +107,7 @@ if (
 
 
         <div class="col-12 mt-4">
-            <button type="button" class="btn btn-primary" onclick="postMessage();">Post Message</button>
+            <button type="button" class="btn btn-primary" id='postBtn' onclick="postMessage();">Post Message</button>
             <button type="button" class="btn btn-secondary ml-2" onclick="closeChatBox();">Cancel</button>
         </div>
     </div>
@@ -131,7 +133,7 @@ if (
             </div>
         </div>
         <div class="col-12">
-            <button type="button" class="btn btn-primary" onclick="replyMessage();">Reply Message</button>
+            <button type="button" class="btn btn-primary" id='replyBtn' onclick="replyMessage();">Reply Message</button>
             <button type="button" class="btn btn-secondary ml-2" onclick="closeReplyBox();">Cancel</button>
         </div>
     </div>
@@ -182,6 +184,7 @@ if (
 				-->
 
     </div>
+
 </div>
 <?php
 }
@@ -189,9 +192,12 @@ if (
 <script>
 function isValidFile(id) {
     var ext = $('#' + id).val().split('.').pop().toLowerCase();
-    if ($.inArray(ext, ['ade', ' adp', ' apk', ' appx', ' appxbundle', ' bat', ' cab', ' chm', ' cmd', ' com', ' cpl',
-            ' dll', ' dmg', ' ex', ' ex_', ' exe', ' hta', ' ins', ' isp', ' iso', ' jar', ' js', ' jse', ' lib',
-            ' lnk', ' mde', ' msc', ' msi', ' msix', ' msixbundle', ' msp', ' mst', ' nsh', ' pif', ' ps1', ' scr',
+    if ($.inArray(ext, ['ade', ' adp', ' apk', ' appx', ' appxbundle', ' bat', ' cab', ' chm', ' cmd', ' com',
+            ' cpl',
+            ' dll', ' dmg', ' ex', ' ex_', ' exe', ' hta', ' ins', ' isp', ' iso', ' jar', ' js', ' jse',
+            ' lib',
+            ' lnk', ' mde', ' msc', ' msi', ' msix', ' msixbundle', ' msp', ' mst', ' nsh', ' pif', ' ps1',
+            ' scr',
             ' sct', ' shb', ' sys', ' vb', ' vbe', ' vbs', ' vxd', ' wsc', ' wsf', ' wsh'
         ]) == -1) {
         alert('Invalid file attachment. Please upload valid file type!');
@@ -299,16 +305,23 @@ function closeChatBox() {
     $("#chatPostWidget").hide(transcation);
     $("#chat_message").val("");
     $("#chat_parent_id").val("");
+    $("#post_attachment").val("");
+    var $select = $('#studentList').selectize();
+    var control = $select[0].selectize;
+    control.clear();
 }
 
 function replyPost(chat_parent_id, deliveryType) {
     openReplyBox();
     $("#chat_parent_id").val(chat_parent_id);
     $("#reply_delivery_type").val(deliveryType);
+    $("#reply_attachment").val("");
+    document.getElementById("chatReplyWidget").focus();
 }
 
-function postMessage() {
 
+
+function postMessage() {
     var msg = $("#chat_message").val();
     var msg_type = $('input[name="msg_type"]:checked').val();
     var people = $("#studentList").val();
@@ -331,6 +344,7 @@ function postMessage() {
 
 
     if (msg) {
+        $("#postBtn").prop('disabled', true);
         $.ajax({
             url: 'ajax_chat.php',
             type: 'post',
@@ -340,6 +354,7 @@ function postMessage() {
             async: false,
             data: data,
             success: function(response) {
+                $("#postBtn").prop('disabled', false);
                 //console.log(response);
                 var obj = jQuery.parseJSON(response);
                 loadMessage();
@@ -372,6 +387,7 @@ function replyMessage() {
 
 
     if (msg) {
+        $("#replyBtn").prop('disabled', true);
         $.ajax({
             url: 'ajax_chat.php',
             type: 'post',
@@ -381,6 +397,7 @@ function replyMessage() {
             async: false,
             data: data,
             success: function(response) {
+                $("#replyBtn").prop('disabled', false);
                 //console.log(response);
                 var obj = jQuery.parseJSON(response);
                 loadMessage();
@@ -431,13 +448,15 @@ function createCardMessage(obj) {
     //console.log("test card message: ",obj);
     var replyBtn = "";
     if (obj["msg_type"] == "2") {
-        replyBtn = "<button class='btn btn-link' onclick=\"replyPost('" + obj["id"] + "','" + obj["delivery_type"] +
-            "');\"><i class='mdi mdi-message-reply mr-1'></i> Reply</button>";
+        replyBtn = "<a href ='#chatReplyWidget' class='ml-2' onclick=\"replyPost('" + obj["id"] + "','" + obj[
+                "delivery_type"] +
+            "');\"><i class ='mdi mdi-message-reply-text mr-1'></i> Reply </a>";
     }
     var attachment = "";
     if (obj["attachment"]) {
-        attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" + obj[
-            "attach_file"] + "</a></div>";
+        attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" +
+            obj[
+                "attach_file"] + "</a></div>";
     }
 
     var str =
@@ -446,12 +465,10 @@ function createCardMessage(obj) {
 			<span class='avatar'>` + obj["shortName"] + `</span>
 			</div>
 			<div class='col'>
-			<div class='text-truncate' id='msg_` + obj["id"] + `'>
-			<strong>` + obj["officialName"] + `</strong> ` + obj["msg"] + `
+            <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span></div>
+			<div class='text-truncate' id='msg_` + obj["id"] + `'>` + obj["msg"] + `
 			</div>` + attachment + `
-			<div class='text-muted'> 
-				<span>` + obj["ts"] + `</span>
-				<button class='btn btn-link ml-2' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read more</button>
+			<div><a href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read more</a>
 				` + replyBtn + `
 			</div>
 			<div id='cardReply_` + obj["id"] + `'></div>
@@ -488,8 +505,9 @@ function createCardMessageReply(obj) {
 
     var attachment = "";
     if (obj["attachment"]) {
-        attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" + obj[
-            "attach_file"] + "</a></div>";
+        attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" +
+            obj[
+                "attach_file"] + "</a></div>";
     }
 
     var str =
@@ -498,12 +516,12 @@ function createCardMessageReply(obj) {
 		<span class='avatar'>` + obj["shortName"] + `</span>
 		</div>
 		<div class='col'>
+        <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span></div>
 		<div class='text-truncate' id='msg_` + obj["id"] + `'>
-		<strong>` + obj["officialName"] + `</strong> ` + obj["msg"] + `
+		 ` + obj["msg"] + `
 		</div>` + attachment + `
-		<div class='text-muted'> 
-			<span>` + obj["ts"] + `</span>
-			<button class='btn btn-link ml-2' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read more</button>
+		<div>
+        <a href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read more</a>
 		</div>
 		</div>
 	</div>`;

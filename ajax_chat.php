@@ -159,9 +159,13 @@ if ($type == "postMessage") {
         if ($delivery_type == "individual") {
             if (empty($people)) {
                 $flag = false;
+            }else{
+                if(is_array($people)==FALSE){
+                    $people = explode(",", $people); 
+                }  
             }
         }
-
+        
         if ($flag) {
             try {
                 $attachment = chatAttachment();
@@ -208,6 +212,7 @@ if ($type == "postMessage") {
                 $connection2->query($sq);
                 //INSERT INTO tbl_name (a,b,c) VALUES(1,2,3),(4,5,6),(7,8,9);
                 if ($delivery_type == "individual") {
+                    
                     $sqi =
                         "insert into chat_share (id, chat_msg_id, uid, isread, cdt, udt, timestamp) values ";
                     $len = count($people);
@@ -235,7 +240,6 @@ if ($type == "postMessage") {
                             "')";
                         $i++;
                     }
-                    //echo $sqi;
                     $connection2->query($sqi);
                     resetSuperKey();
                 }

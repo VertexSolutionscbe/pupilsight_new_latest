@@ -53,11 +53,11 @@ $valuept = $result->fetch();
 
 $file = $valuept['template_path'];
 */
+
 $file = "/var/www/sjbhs/public/thirdparty/pdfgenerate/bulk/bulk_template.pdf";
-$sqlf = "SELECT id FROM wp_fluentform_submissions where form_id='" . $formid . "' ";
+$sqlf = "SELECT id FROM wp_fluentform_submissions where form_id='" . $formid . "' and date(created_at)>'2021-04-28' ";
 $resultf = $connection2->query($sqlf);
 $applications = $resultf->fetchAll();
-
 
 // echo '<pre>';
 // print_r($arrHeader);
@@ -74,7 +74,7 @@ if (!empty($file)) {
         if ($zip->open($zipFileName, ZipArchive::CREATE) !== TRUE) {
             exit("cannot open <$zipFileName>\n");
         }
-
+        //$len = 2;
         while ($i < $len) {
             $aid = $applications[$i]["id"];
 
