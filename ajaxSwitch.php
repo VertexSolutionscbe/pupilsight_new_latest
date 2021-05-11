@@ -436,15 +436,16 @@ if (isset($_POST['type'])) {
                                 $itemamount = $values['total_amount'];
                                 $fn_fee_item_id = $values['fn_fee_item_id'];
 
-                                $chkpayitem = 'SELECT a.id FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fees_invoice_id = ' . $fn_fee_invoice_id . ' AND a.fn_fee_invoice_item_id = ' . $itid . ' AND a.pupilsightPersonID = ' . $pupilsightPersonID . ' AND b.transaction_status = 1 ';
+                                $chkpayitem = 'SELECT a.id, a.total_amount_collection FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fees_invoice_id = ' . $fn_fee_invoice_id . ' AND a.fn_fee_invoice_item_id = ' . $itid . ' AND a.pupilsightPersonID = ' . $pupilsightPersonID . ' AND b.transaction_status = 1 ';
                                 $resultcp = $connection2->query($chkpayitem);
                                 $valuecp = $resultcp->fetch();
 
                                 
 
                                 if (!empty($valuecp)) {
-                                    $datai = array('partial_transaction_id' => $transactionId, 'total_amount_collection' => $itemamount, 'status' => '1', 'id' => $valuecp['id']);
-                                    $sqli = 'UPDATE fn_fees_student_collection SET partial_transaction_id=:partial_transaction_id, total_amount_collection=:total_amount_collection, status=:status WHERE id=:id';
+                                    $paidAmt = $itemamount - $valuecp['total_amount_collection'];
+                                    $datai = array('partial_transaction_id' => $transactionId, 'total_amount_collection' => $itemamount, 'total_amount_partial_paid' => $paidAmt, 'status' => '1', 'id' => $valuecp['id']);
+                                    $sqli = 'UPDATE fn_fees_student_collection SET partial_transaction_id=:partial_transaction_id, total_amount_collection=:total_amount_collection, total_amount_partial_paid=:total_amount_partial_paid, status=:status WHERE id=:id';
                                     $resulti = $connection2->prepare($sqli);
                                     $resulti->execute($datai);
                                 } else {
@@ -574,7 +575,7 @@ if (isset($_POST['type'])) {
                         $fieldName = '';
                     }
 
-                    $sqlstu = "SELECT a.officialName , a.admission_no, a.roll_no, sc.name as academic_year, p.name as progname, b.name as class, c.name as section ".$fieldName." FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightSchoolYear AS sc ON d.pupilsightSchoolYearID = sc.pupilsightSchoolYearID LEFT JOIN pupilsightProgram AS p ON d.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " ";
+                    $sqlstu = "SELECT a.officialName , a.admission_no, a.roll_no, sc.name as academic_year, p.name as progname, b.name as class, c.name as section ".$fieldName." FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightSchoolYear AS sc ON d.pupilsightSchoolYearID = sc.pupilsightSchoolYearID LEFT JOIN pupilsightProgram AS p ON d.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " AND d.pupilsightSchoolYearID = ".$pupilsightSchoolYearID." ";
                     $resultstu = $connection2->query($sqlstu);
                     $valuestu = $resultstu->fetch();
 
@@ -640,12 +641,7 @@ if (isset($_POST['type'])) {
                         $coreaddress = '';
                     }
 
-                    
-
-                    // echo '<pre>';
-                    // print_r($dts_receipt);
-                    // echo '</pre>';
-                    // die();
+                   
                     $stuName = str_replace(' ', '_', $valuestu["officialName"]);
                     $filename = $stuName . '_' . $transactionId;
                     $session->forget(['doc_receipt_id']);
@@ -708,11 +704,15 @@ if (isset($_POST['type'])) {
                                     if (!empty($valuefi)) {
                                         //$cnt = 1;
                                         foreach ($valuefi as $vfi) {
-                                            $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." )  ";
+                                            $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol, SUM(total_amount_partial_paid) AS ttamtPartCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." )  ";
                                             $resultcol = $connection2->query($sqcol);
                                             $valuecol = $resultcol->fetch();
                                             $itemAmt    = $valuecol["tamntCol"];
                                             $itemAmtCol = $valuecol["ttamtCol"];
+                                            $ttamtPartCol = $valuecol["ttamtPartCol"];
+                                            if(!empty($ttamtPartCol)){
+                                                $itemAmtCol = $ttamtPartCol;
+                                            }
 
                                             $sqitid = "SELECT GROUP_CONCAT(id) AS itmIds FROM fn_fee_invoice_item WHERE fn_fee_invoice_id = ".$iid." ";
                                             $resultitid = $connection2->query($sqitid);
@@ -723,17 +723,20 @@ if (isset($_POST['type'])) {
                                             $resultdis = $connection2->query($sqdis);
                                             $valuedis = $resultdis->fetch();
                                             $disItemAmt = 0;
-                                            if(!empty($valuedis)){
-                                                $disItemAmt = $valuedis['dis'];
-                                                $newItemAmtCol = $itemAmtCol + $disItemAmt;
-                                                $itemAmtPen = $itemAmt - $newItemAmtCol;
+
+                                            if(!empty($ttamtPartCol)){
+                                                $itemAmtPen = $itemAmt - $valuecol["ttamtCol"];
                                             } else {
-                                                $disItemAmt = 0;
-                                                $itemAmtPen = $itemAmt - $itemAmtCol;
+                                                if(!empty($valuedis)){
+                                                    $disItemAmt = $valuedis['dis'];
+                                                    $newItemAmtCol = $itemAmtCol + $disItemAmt;
+                                                    $itemAmtPen = $itemAmt - $newItemAmtCol;
+                                                } else {
+                                                    $disItemAmt = 0;
+                                                    $itemAmtPen = $itemAmt - $itemAmtCol;
+                                                }
                                             }
 
-
-                                            $itemAmtPen = $itemAmt - $itemAmtCol;
 
                                             $taxamt = 0;
                                             if(!empty($vfi["ttax"])){
@@ -770,19 +773,30 @@ if (isset($_POST['type'])) {
                                             $valuecol = $resultcol->fetch();
                                             $itemAmt    = $valuecol["total_amount"];
                                             $itemAmtCol = $valuecol["total_amount_collection"];
+                                            $ttamtPartCol = $valuecol["total_amount_partial_paid"];
+                                            if(!empty($ttamtPartCol)){
+                                                $itemAmtCol = $ttamtPartCol;
+                                            }
 
                                             $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $vfi["id"] . " ";
                                             $resultdis = $connection2->query($sqdis);
                                             $valuedis = $resultdis->fetch();
                                             $disItemAmt = 0;
-                                            if(!empty($valuedis)){
-                                                $disItemAmt = $valuedis['discount'];
-                                                $newItemAmtCol = $itemAmtCol + $disItemAmt;
-                                                $itemAmtPen = $itemAmt - $newItemAmtCol;
+
+                                            if(!empty($ttamtPartCol)){
+                                                $itemAmtPen = $itemAmt - $valuecol["total_amount_collection"];
                                             } else {
-                                                $disItemAmt = 0;
-                                                $itemAmtPen = $itemAmt - $itemAmtCol;
+                                                if(!empty($valuedis)){
+                                                    $disItemAmt = $valuedis['discount'];
+                                                    $newItemAmtCol = $itemAmtCol + $disItemAmt;
+                                                    $itemAmtPen = $itemAmt - $newItemAmtCol;
+                                                } else {
+                                                    $disItemAmt = 0;
+                                                    $itemAmtPen = $itemAmt - $itemAmtCol;
+                                                }
                                             }
+
+                                            
 
                                             
                                             $taxamt = '0';
@@ -933,11 +947,6 @@ if (isset($_POST['type'])) {
 
                     
 
-                    // echo '<pre>';
-                    // print_r($dts_receipt);
-                    // print_r($dts_receipt_feeitem);
-                    // echo '</pre>';
-                    //die();
 
                     if (!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)) {
                         $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/phpword/receiptNew.php';

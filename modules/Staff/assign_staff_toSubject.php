@@ -112,7 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
     // echo "<a  id='unassignStudentstaff'  class='btn btn-primary'>Remove Staff</a>&nbsp;&nbsp;";  
     // echo "</div><div class='float-none'></div></div>";
     echo "<a style='display:none' id='clickstaffunassign' href='fullscreen.php?q=/modules/Staff/remove_assigned_staffSub.php&width=600'  class='thickbox '> Unassign Staff</a>";
-    echo '<div  ><a id="unassignsubj" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Unassign</a>&nbsp;&nbsp;<a href="index.php?q=/modules/Staff/select_staff_sub.php" class= "btn btn-primary" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Assign Staff To Subject</a></div>';
+    echo '<div  ><a style="float:right;height: 34px;margin-left: 10px;" class=" btn btn-primary" id="export_payment_details" title=
+    Export Excel"  >Export</a>&nbsp;&nbsp;<a id="unassignsubj" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Unassign</a>&nbsp;&nbsp;<a href="index.php?q=/modules/Staff/select_staff_sub.php" class= "btn btn-primary" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Assign Staff To Subject</a></div>';
 
     $form = Form::create('studentViewSearch', '');
 
@@ -149,15 +150,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
         ->pageSize(1000)
         ->fromPOST();
 
-    $getselstaff = $StaffGateway->getStaffByFilter($criteria, $staffIds);
+    $getselstaff = $StaffGateway->getStaffByFilter($criteria, $staffIds, $pupilsightSchoolYearID,  $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
     $table = DataTable::createPaginated('FeeStructureManage', $criteria);
 
     $table->addCheckboxColumn('st_id', __(''))
         ->setClass('chkbox')
         ->notSortable();
     $table->addColumn('fname', __('Staff'));
+    $table->addColumn('program', __('Program'));
+    $table->addColumn('class', __('Class'));
+    $table->addColumn('section', __('Section'));
     $table->addColumn('dep_name', __('Subject'));
 
 
     echo $table->render($getselstaff);
 }
+?>
+<script>
+    $(document).on('click', '#export_payment_details', function () {
+
+        $("#expore_tbl tr").each(function () {
+            $(this).find("th:first").remove();
+            $(this).find("td:first").remove();
+        });
+
+        $("#expore_tbl").table2excel({
+            name: "Worksheet Name",
+            filename: "Staff_to_Subject_Details.xls",
+            fileext: ".xls",
+            exclude: ".checkall",
+            exclude: ".rm_cell",
+            exclude_inputs: true,
+            columns: [1, 2, 3, 4, 5]
+
+        });
+        location.reload();
+    });
+</script>
