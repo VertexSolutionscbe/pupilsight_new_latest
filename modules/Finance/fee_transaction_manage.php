@@ -165,6 +165,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
         $t_amount = 0;
     }
 
+    $kountTransaction = count($feeTransaction);
+
     $form = Form::create('program', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/fee_transaction_manage.php')->addClass('newform');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
