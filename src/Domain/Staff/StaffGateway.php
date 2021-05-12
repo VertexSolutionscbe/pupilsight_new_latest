@@ -657,7 +657,7 @@ class StaffGateway extends QueryableGateway
                 "assignstaff_tosubject.*",
                 "assignstaff_tosubject.pupilsightStaffID AS st_id",
                 "pupilsightPerson.officialName AS fname",
-                "GROUP_CONCAT(DISTINCT subjectToClassCurriculum.subject_display_name SEPARATOR ', ') as dep_name","pupilsightProgram.name as program","pupilsightYearGroup.name as class","pupilsightRollGroup.name as section"
+                "GROUP_CONCAT(DISTINCT subjectToClassCurriculum.subject_display_name SEPARATOR ', ') as dep_name","pupilsightProgram.name as program","pupilsightYearGroup.name as class"
             ])
             ->leftJoin(
                 "pupilsightStaff",
@@ -668,31 +668,30 @@ class StaffGateway extends QueryableGateway
                 "pupilsightStaff.pupilsightPersonID=pupilsightPerson.pupilsightPersonID"
             )
             ->leftJoin(
-                "subjectToClassCurriculum",
-                "assignstaff_tosubject.pupilsightdepartmentID=subjectToClassCurriculum.pupilsightDepartmentID"
-            )
-            
-            ->leftJoin(
                 "assignstaff_toclasssection",
                 "pupilsightPerson.pupilsightPersonID=assignstaff_toclasssection.pupilsightPersonID"
             )
+            // ->leftJoin(
+            //     "pupilsightProgramClassSectionMapping",
+            //     "assignstaff_toclasssection.pupilsightMappingID=pupilsightProgramClassSectionMapping.pupilsightMappingID"
+            // )
             ->leftJoin(
-                "pupilsightProgramClassSectionMapping",
-                "assignstaff_toclasssection.pupilsightMappingID=pupilsightProgramClassSectionMapping.pupilsightMappingID"
+                "subjectToClassCurriculum",
+                "assignstaff_tosubject.subjectToClassCurriculumID=subjectToClassCurriculum.id"
             )
             ->leftJoin(
                 "pupilsightProgram",
-                "pupilsightProgramClassSectionMapping.pupilsightProgramID=pupilsightProgram.pupilsightProgramID"
+                "subjectToClassCurriculum.pupilsightProgramID=pupilsightProgram.pupilsightProgramID"
             )
             ->leftJoin(
                 "pupilsightYearGroup",
-                "pupilsightProgramClassSectionMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID"
-            )
-            
-            ->leftJoin(
-                "pupilsightRollGroup",
-                "pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID"
+                "subjectToClassCurriculum.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID"
             );
+            
+            // ->leftJoin(
+            //     "pupilsightRollGroup",
+            //     "pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID"
+            // );
             if (!empty($staffIds)) {
                 $query->WHERE(
                     "assignstaff_tosubject.pupilsightStaffID IN (" .
@@ -707,6 +706,11 @@ class StaffGateway extends QueryableGateway
                         $pupilsightSchoolYearID .
                         " "
                 );
+                // ->WHERE(
+                //     "pupilsightProgramClassSectionMapping.pupilsightSchoolYearID = " .
+                //         $pupilsightSchoolYearID .
+                //         " "
+                // );
             }
             if (!empty($pupilsightProgramID)) {
                 $query->WHERE(
@@ -721,25 +725,25 @@ class StaffGateway extends QueryableGateway
                     "subjectToClassCurriculum.pupilsightYearGroupID = " .
                         $pupilsightYearGroupID .
                         " "
-                )
-                ->WHERE(
-                    "pupilsightProgramClassSectionMapping.pupilsightYearGroupID = " .
-                        $pupilsightYearGroupID .
-                        " "
-                );;
-            }
-
-            if (!empty($pupilsightRollGroupID)) {
-                $query->WHERE(
-                    "pupilsightProgramClassSectionMapping.pupilsightRollGroupID = " .
-                        $pupilsightRollGroupID .
-                        " "
                 );
+                // ->WHERE(
+                //     "pupilsightProgramClassSectionMapping.pupilsightYearGroupID = " .
+                //         $pupilsightYearGroupID .
+                //         " "
+                // );
             }
-            
 
-            $query->groupBy(["pupilsightPerson.pupilsightPersonID"]);
-            // echo $query;
+            // if (!empty($pupilsightRollGroupID)) {
+            //     $query->WHERE(
+            //         "pupilsightProgramClassSectionMapping.pupilsightRollGroupID = " .
+            //             $pupilsightRollGroupID .
+            //             " "
+            //     );
+            // }
+            
+            //$query->groupBy(["pupilsightProgramClassSectionMapping.pupilsightRollGroupID"]);
+            $query->groupBy(["pupilsightPerson.pupilsightPersonID, subjectToClassCurriculum.pupilsightYearGroupID"]);
+             //echo $query;
             // die();
             return $this->runQuery($query, $criteria);
     }
@@ -792,5 +796,101 @@ class StaffGateway extends QueryableGateway
             ->orderBy(["pupilsightFeedback.id DESC"]);
 
         return $this->runQuery($query, $criteria, true);
+    }
+
+    public function getStaffByFilterOld(QueryCriteria $criteria, $staffIds, $pupilsightSchoolYearID,  $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID)
+    {
+        $query = $this->newQuery()
+        ->from("assignstaff_tosubject")
+        ->cols([
+            "assignstaff_tosubject.*",
+            "assignstaff_tosubject.pupilsightStaffID AS st_id",
+            "pupilsightPerson.officialName AS fname",
+            "GROUP_CONCAT(DISTINCT subjectToClassCurriculum.subject_display_name SEPARATOR ', ') as dep_name","pupilsightProgram.name as program","pupilsightYearGroup.name as class"
+        ])
+        ->leftJoin(
+            "pupilsightStaff",
+            "assignstaff_tosubject.pupilsightStaffID=pupilsightStaff.pupilsightStaffID"
+        )
+        ->leftJoin(
+            "pupilsightPerson",
+            "pupilsightStaff.pupilsightPersonID=pupilsightPerson.pupilsightPersonID"
+        )
+        ->leftJoin(
+            "subjectToClassCurriculum",
+            "assignstaff_tosubject.pupilsightdepartmentID=subjectToClassCurriculum.pupilsightDepartmentID"
+        )
+        
+        ->leftJoin(
+            "assignstaff_toclasssection",
+            "pupilsightPerson.pupilsightPersonID=assignstaff_toclasssection.pupilsightPersonID"
+        )
+        ->leftJoin(
+            "pupilsightProgramClassSectionMapping",
+            "assignstaff_toclasssection.pupilsightMappingID=pupilsightProgramClassSectionMapping.pupilsightMappingID"
+        )
+        ->leftJoin(
+            "pupilsightProgram",
+            "pupilsightProgramClassSectionMapping.pupilsightProgramID=pupilsightProgram.pupilsightProgramID"
+        )
+        ->leftJoin(
+            "pupilsightYearGroup",
+            "pupilsightProgramClassSectionMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID"
+        )
+        
+        ->leftJoin(
+            "pupilsightRollGroup",
+            "pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID"
+        );
+        if (!empty($staffIds)) {
+            $query->WHERE(
+                "assignstaff_tosubject.pupilsightStaffID IN (" .
+                    $staffIds .
+                    ") "
+            );
+        }
+
+        if (!empty($pupilsightSchoolYearID)) {
+            $query->WHERE(
+                "subjectToClassCurriculum.pupilsightSchoolYearID = " .
+                    $pupilsightSchoolYearID .
+                    " "
+            );
+        }
+        if (!empty($pupilsightProgramID)) {
+            $query->WHERE(
+                "subjectToClassCurriculum.pupilsightProgramID = " .
+                    $pupilsightProgramID .
+                    " "
+            );
+        }
+        
+        if (!empty($pupilsightYearGroupID)) {
+            $query->WHERE(
+                "subjectToClassCurriculum.pupilsightYearGroupID = " .
+                    $pupilsightYearGroupID .
+                    " "
+            )
+            ->WHERE(
+                "pupilsightProgramClassSectionMapping.pupilsightYearGroupID = " .
+                    $pupilsightYearGroupID .
+                    " "
+            );;
+        }
+
+        // if (!empty($pupilsightRollGroupID)) {
+        //     $query->WHERE(
+        //         "pupilsightProgramClassSectionMapping.pupilsightRollGroupID = " .
+        //             $pupilsightRollGroupID .
+        //             " "
+        //     );
+        // }
+        
+
+        $query->groupBy(["pupilsightPerson.pupilsightPersonID"]);
+        // echo $query;
+        // die();
+        return $this->runQuery($query, $criteria);
+
     }
 }

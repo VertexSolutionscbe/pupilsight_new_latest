@@ -29,7 +29,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 //print_r($choices3);
 //print_r($choices4);//die();
 //print_r($choices5);die();
+// echo '<pre>';
+// print_r($_POST);
+// echo '</pre>';
+// die();
     $pupilsightSchoolYearID=$_POST['pupilsightSchoolYearID1'];
+
+    if(!empty($_POST['is_chat'])){
+        $is_chat = $_POST['is_chat'];
+    } else {
+        $is_chat = '0';
+    }
 
     //print_r($_POST);
     if (empty($name) || (empty($choices) && empty($choices1) && empty($choices3) && empty($choices4) && empty($choices5))) {
@@ -42,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
         //Create the group
         $pupilsightGroupID = $_POST['rowid'];
         if ($pupilsightGroupID != '') {
-            $data = array('pupilsightGroupID' => $pupilsightGroupID, 'name' => $name);
+            $data = array('pupilsightGroupID' => $pupilsightGroupID, 'name' => $name, 'is_chat' => $is_chat);
             $updated = $groupGateway->updateGroup($data);
             $partialFail = false;
 
@@ -102,9 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
             }
         } else {
 
-            $data = array('pupilsightPersonIDOwner' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'name' => $name);
+            $data = array('pupilsightPersonIDOwner' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'name' => $name, 'is_chat' => $is_chat);
             $AI = $groupGateway->insertGroup($data);
-
             if (!$AI) {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

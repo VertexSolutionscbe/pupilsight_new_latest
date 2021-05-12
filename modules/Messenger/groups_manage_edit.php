@@ -259,6 +259,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             $col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
             $col->addSelect('pupilsightYearGroupID1')->setId("pupilsightYearGroupIDB")->addClass("pupilsightRollGroupIDP2")->selectMultiple();
 
+            $row = $form->addRow();
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('is_chat', __('Chat'));
+            $col->addCheckBox('is_chat')->addClass('txtfield')->setValue('1');
+
             $col = $row->addColumn()->setClass('newdes noEdit');
             $col->addLabel('', __(''));
 
