@@ -111,6 +111,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             // print_r($_POST);
             // echo '</pre>';
             //die();
+            
             if ($_GET) {
 
                 $pupilsightProgramID =  $_GET['pupilsightProgramID'];
@@ -121,8 +122,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 $searchbyPost =  '';
                 $search =  $_GET['search'];
                 $stuId = $_GET['studentId'];
-                $classes =  $HelperGateway->getClassByProgram_Attconfig($connection2, $pupilsightProgramID, $pupilsightSchoolYearIDpost);
-                $sections =  $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
+                $classes = $HelperGateway->getClassByProgram_Attconfig($connection2, $pupilsightProgramID, $pupilsightSchoolYearIDpost);
+                $sections = $HelperGateway->getSectionByProgram_attConfig($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearIDpost);
+                
             } else {
                 $pupilsightProgramID =  '';
 
@@ -135,6 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 $classes = array('');
                 $sections = array('');
             }
+            
             $sqls = 'SELECT a.*, b.officialName FROM  pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND a.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" AND pupilsightRoleIDPrimary=003 GROUP BY b.pupilsightPersonID';
             $results = $connection2->query($sqls);
             $rowdatastd = $results->fetchAll();
@@ -318,242 +321,242 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
 ?>
 
 <script type="text/javascript">
-    $(document).on('change', '#pupilsightProgramID', function() {
-        var val = $(this).val();
-        var type = "getClass";
-        if (val != "") {
-            $.ajax({
-                url: 'ajax_data.php',
-                type: 'post',
-                data: {
-                    val: val,
-                    type: type
-                },
-                async: true,
-                success: function(response) {
-                    $("#pupilsightYearGroupIDA").html();
-                    $("#pupilsightYearGroupIDA").html(response);
-
-                }
-            })
-        }
-    });
-
-    $(document).on('change', '#pupilsightYearGroupIDA', function() {
-        var id = $(this).val();
-        var pid = $('#pupilsightProgramID').val();
-        var type = 'getSection';
+$(document).on('change', '#pupilsightProgramID', function() {
+    var val = $(this).val();
+    var type = "getClass";
+    if (val != "") {
         $.ajax({
             url: 'ajax_data.php',
             type: 'post',
             data: {
-                val: id,
-                type: type,
-                pid: pid
-            },
-            async: true,
-            success: function(response) {
-                $("#pupilsightRollGroupID").html();
-                $("#pupilsightRollGroupID").html(response);
-            }
-        })
-    });
-
-    $(document).on('change', '.pupilsightRollGroupIDP', function() {
-        var id = $("#pupilsightRollGroupID").val();
-        var yid = $('#pupilsightSchoolYearID').val();
-        var pid = $('#pupilsightProgramID').val();
-        var cid = $('#pupilsightYearGroupIDA').val();
-        var type = 'getStudent';
-        $.ajax({
-            url: 'ajax_data.php',
-            type: 'post',
-            data: {
-                val: id,
-                type: type,
-                yid: yid,
-                pid: pid,
-                cid: cid
-            },
-            async: true,
-            success: function(response) {
-                $("#pupilsightPersonID").html();
-                $("#pupilsightPersonID").html(response);
-            }
-        });
-    });
-
-    $(document).on('change', '.pupilsightRollGroupIDP1', function() {
-        var id = $("#pupilsightRollGroupID").val();
-        var yid = $('#pupilsightSchoolYearID').val();
-        var pid = $('#pupilsightProgramID').val();
-        var cid = $('#pupilsightYearGroupIDA').val();
-        var type = 'getStudentClassAndSection';
-        $.ajax({
-            url: 'ajax_data.php',
-            type: 'post',
-            data: {
-                val: id,
-                type: type,
-                yid: yid,
-                pid: pid,
-                cid: cid
-            },
-            async: true,
-            success: function(response) {
-                $("#pupilsightPersonID").html();
-                $("#pupilsightPersonID").append(response);
-            }
-        });
-    });
-
-    $(document).on('change', '.load_configSession', function() {
-        var id = $('#pupilsightProgramID').val();
-        var pupilsightYearGroupID = $('#pupilsightYearGroupIDA').val();
-        var type = 'getsessionConfigured';
-        $.ajax({
-            url: 'ajax_data.php',
-            type: 'post',
-            data: {
-                val: id,
-                pupilsightYearGroupID: pupilsightYearGroupID,
+                val: val,
                 type: type
             },
             async: true,
             success: function(response) {
-                $("#session").html();
-                $("#session").html(response);
+                $("#pupilsightYearGroupIDA").html();
+                $("#pupilsightYearGroupIDA").html(response);
+
             }
-        });
-    });
+        })
+    }
+});
 
-    //class with section
-    $(document).on('change', '#pupilsightProgramID1', function() {
-        var val = $(this).val();
-        var type = "getclasswithSection";
-        if (val != "") {
-            $.ajax({
-                url: 'ajax_data.php',
-                type: 'post',
-                data: {
-                    val: val,
-                    type: type
-                },
-                async: true,
-                success: function(response) {
-                    $("#pupilsightYearGroupIDB").html();
-                    $("#pupilsightYearGroupIDB").append(response);
+$(document).on('change', '#pupilsightYearGroupIDA', function() {
+    var id = $(this).val();
+    var pid = $('#pupilsightProgramID').val();
+    var type = 'getSection';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: {
+            val: id,
+            type: type,
+            pid: pid
+        },
+        async: true,
+        success: function(response) {
+            $("#pupilsightRollGroupID").html();
+            $("#pupilsightRollGroupID").html(response);
+        }
+    })
+});
 
-                }
-            })
+$(document).on('change', '.pupilsightRollGroupIDP', function() {
+    var id = $("#pupilsightRollGroupID").val();
+    var yid = $('#pupilsightSchoolYearID').val();
+    var pid = $('#pupilsightProgramID').val();
+    var cid = $('#pupilsightYearGroupIDA').val();
+    var type = 'getStudent';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: {
+            val: id,
+            type: type,
+            yid: yid,
+            pid: pid,
+            cid: cid
+        },
+        async: true,
+        success: function(response) {
+            $("#pupilsightPersonID").html();
+            $("#pupilsightPersonID").html(response);
         }
     });
+});
+
+$(document).on('change', '.pupilsightRollGroupIDP1', function() {
+    var id = $("#pupilsightRollGroupID").val();
+    var yid = $('#pupilsightSchoolYearID').val();
+    var pid = $('#pupilsightProgramID').val();
+    var cid = $('#pupilsightYearGroupIDA').val();
+    var type = 'getStudentClassAndSection';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: {
+            val: id,
+            type: type,
+            yid: yid,
+            pid: pid,
+            cid: cid
+        },
+        async: true,
+        success: function(response) {
+            $("#pupilsightPersonID").html();
+            $("#pupilsightPersonID").append(response);
+        }
+    });
+});
+
+$(document).on('change', '.load_configSession', function() {
+    var id = $('#pupilsightProgramID').val();
+    var pupilsightYearGroupID = $('#pupilsightYearGroupIDA').val();
+    var type = 'getsessionConfigured';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: {
+            val: id,
+            pupilsightYearGroupID: pupilsightYearGroupID,
+            type: type
+        },
+        async: true,
+        success: function(response) {
+            $("#session").html();
+            $("#session").html(response);
+        }
+    });
+});
+
+//class with section
+$(document).on('change', '#pupilsightProgramID1', function() {
+    var val = $(this).val();
+    var type = "getclasswithSection";
+    if (val != "") {
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: {
+                val: val,
+                type: type
+            },
+            async: true,
+            success: function(response) {
+                $("#pupilsightYearGroupIDB").html();
+                $("#pupilsightYearGroupIDB").append(response);
+
+            }
+        })
+    }
+});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#members').select2();
-    });
+$(document).ready(function() {
+    $('#members').select2();
+});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#staffmembers').select2();
-    });
+$(document).ready(function() {
+    $('#staffmembers').select2();
+});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#parentmembers').select2();
-    });
+$(document).ready(function() {
+    $('#parentmembers').select2();
+});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#allmembers').select2();
-    });
+$(document).ready(function() {
+    $('#allmembers').select2();
+});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#pupilsightPersonID').select2();
-    });
+$(document).ready(function() {
+    $('#pupilsightPersonID').select2();
+});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#pupilsightYearGroupIDA').select2();
-    });
+$(document).ready(function() {
+    $('#pupilsightYearGroupIDA').select2();
+});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#pupilsightYearGroupIDB').select2();
-    });
+$(document).ready(function() {
+    $('#pupilsightYearGroupIDB').select2();
+});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        $('#pupilsightProgramID1').select2();
-    });
+$(document).ready(function() {
+    $('#pupilsightProgramID1').select2();
+});
 </script>
 <script type="text/javascript">
-    $("#massdeleteall").on("click", function() {
-        var favorite = [];
-        $.each($("input[name='ppid[]']:checked"), function() {
-            favorite.push($(this).val());
+$("#massdeleteall").on("click", function() {
+    var favorite = [];
+    $.each($("input[name='ppid[]']:checked"), function() {
+        favorite.push($(this).val());
+    });
+    //alert("My favourite sports are: " + favorite.join(", "));
+    if (favorite.length > 0) {
+        $.ajax({
+            type: "GET",
+            data: {
+                tid: favorite
+            },
+            url: '<?php echo $massdeleteurl; ?>',
+            success: function(msg) {
+                alert(msg);
+                location.reload();
+            }
         });
-        //alert("My favourite sports are: " + favorite.join(", "));
-        if (favorite.length > 0) {
-            $.ajax({
-                type: "GET",
-                data: {
-                    tid: favorite
-                },
-                url: '<?php echo $massdeleteurl; ?>',
-                success: function(msg) {
-                    alert(msg);
-                    location.reload();
-                }
-            });
-        } else {
-            alert('Please select users');
-        }
-    });
+    } else {
+        alert('Please select users');
+    }
+});
 </script>
 <script>
-    $(document).on('change', '#pupilsightSchoolYearID', function() {
-        var val = $(this).val();
-        var type = "getPrograms1";
-        if (val != "") {
-            $.ajax({
-                url: 'ajax_data.php',
-                type: 'post',
-                data: {
-                    val: val,
-                    type: type
-                },
-                async: true,
-                success: function(response) {
-                    $("#pupilsightProgramID").html();
-                    $("#pupilsightProgramID").html(response);
+$(document).on('change', '#pupilsightSchoolYearID', function() {
+    var val = $(this).val();
+    var type = "getPrograms1";
+    if (val != "") {
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: {
+                val: val,
+                type: type
+            },
+            async: true,
+            success: function(response) {
+                $("#pupilsightProgramID").html();
+                $("#pupilsightProgramID").html(response);
 
-                }
-            })
-        }
-    });
+            }
+        })
+    }
+});
 </script>
 <script>
-    $(document).on('change', '#pupilsightSchoolYearID1', function() {
-        var val = $(this).val();
-        var type = "getPrograms1";
-        if (val != "") {
-            $.ajax({
-                url: 'ajax_data.php',
-                type: 'post',
-                data: {
-                    val: val,
-                    type: type
-                },
-                async: true,
-                success: function(response) {
-                    $("#pupilsightProgramID1").html();
-                    $("#pupilsightProgramID1").html(response);
+$(document).on('change', '#pupilsightSchoolYearID1', function() {
+    var val = $(this).val();
+    var type = "getPrograms1";
+    if (val != "") {
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: {
+                val: val,
+                type: type
+            },
+            async: true,
+            success: function(response) {
+                $("#pupilsightProgramID1").html();
+                $("#pupilsightProgramID1").html(response);
 
-                }
-            })
-        }
-    });
+            }
+        })
+    }
+});
 </script>

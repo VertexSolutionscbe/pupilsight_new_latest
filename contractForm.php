@@ -3,6 +3,16 @@ include_once "cms/w2f/adminLib.php";
 $adminlib = new adminlib();
 $data = $adminlib->getPupilSightData();
 
+$priority_contact = "father";
+if(isset($_GET["priority_contact"])){
+    $priority_contact = strtolower($_GET["priority_contact"]);
+    if($priority_contact=="father"||$priority_contact=="mother"){
+        //
+    }else{
+        $priority_contact = "father";
+    }
+}
+
 //echo '<pre>';
 //print_r($data);
 
@@ -73,7 +83,8 @@ if (isset($_GET["invalid"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Contract Form</title>
-    <meta name="description" content="Pupilpod is India’s first cloud based School ERP Software. It is 100% customizable and evolves to meet each School or University’s needs.
+    <meta name="description"
+        content="Pupilpod is India’s first cloud based School ERP Software. It is 100% customizable and evolves to meet each School or University’s needs.
     Discover how with Pupilpod you can automate your entire Academic, Operational, and Management information systems" />
     <meta name="keywords" content="Pupilpod,School ERP,erp,School ERP Software, School Management Solution">
 
@@ -112,9 +123,9 @@ if (isset($_GET["invalid"])) {
 
 
     <style>
-        body {
-            font-size: 16px;
-        }
+    body {
+        font-size: 16px;
+    }
     </style>
 
 </head>
@@ -134,7 +145,7 @@ if (isset($_GET["invalid"])) {
                         <h2>
                             <div class="row">
                                 <div class="col-12 text-center">
-                                    jj PART A – PRIVATE EDUCATION INSTITUTION – STUDENT CONTRACT
+                                    PART A – PRIVATE EDUCATION INSTITUTION – STUDENT CONTRACT
                                 </div>
                                 <div class="col-12 text-right">
                                     Regulation 25(5)(b)
@@ -158,17 +169,29 @@ if (isset($_GET["invalid"])) {
                         <div class="row">
                             <div class="col-12 my-3">
                                 <p>
-                                    You are strongly encouraged to thoroughly research on the Private Education Institution (PEI) conducting the course before signing up for any course. You should consider, for example, the reputation of the PEI, the teacher-student ratio of its classes, the qualifications of the teaching staff, and the course materials provided by the PEI.
+                                    You are strongly encouraged to thoroughly research on the Private Education
+                                    Institution (PEI) conducting the course before signing up for any course. You should
+                                    consider, for example, the reputation of the PEI, the teacher-student ratio of its
+                                    classes, the qualifications of the teaching staff, and the course materials provided
+                                    by the PEI.
                                 </p>
                                 <p>
-                                    By signing and returning the Student Contract (the “Contract”), you agree to the Terms and Conditions which will bind you and the PEI, if you accept the PEI’s offer of a place in a course of study offered or provided by the PEI.
+                                    By signing and returning the Student Contract (the “Contract”), you agree to the
+                                    Terms and Conditions which will bind you and the PEI, if you accept the PEI’s offer
+                                    of a place in a course of study offered or provided by the PEI.
                                 </p>
                                 <p>
-                                    You should ask the PEI to allow you to read a copy of the Contract (with all blanks filled in and options selected) in both English and the official language of your home country, if necessary. For your own protection, you should review all the PEI’s policies, and check carefully that you agree to all the terms of the Contract, including the details relating to each of the following sections, before signing the Contract:
+                                    You should ask the PEI to allow you to read a copy of the Contract (with all blanks
+                                    filled in and options selected) in both English and the official language of your
+                                    home country, if necessary. For your own protection, you should review all the PEI’s
+                                    policies, and check carefully that you agree to all the terms of the Contract,
+                                    including the details relating to each of the following sections, before signing the
+                                    Contract:
                                 </p>
                                 <ol type="a">
                                     <li>
-                                        The duration of the course, including holidays and examination schedules, and contact hours by days and week;
+                                        The duration of the course, including holidays and examination schedules, and
+                                        contact hours by days and week;
                                     </li>
                                     <li>
                                         The total fees payable, including course fees and other related costs;
@@ -177,7 +200,8 @@ if (isset($_GET["invalid"])) {
                                         Dates when respective payments are due;
                                     </li>
                                     <li>
-                                        The refund policy in the event of voluntary withdrawal (by you) or enforced dismissal from the course or programme (by PEI);
+                                        The refund policy in the event of voluntary withdrawal (by you) or enforced
+                                        dismissal from the course or programme (by PEI);
                                     </li>
                                     <li>
                                         The Fee Protection Scheme you are subscribed to and its coverage;
@@ -189,17 +213,20 @@ if (isset($_GET["invalid"])) {
                                         Information about the PEI’s policies on academic and disciplinary matters
                                     </li>
                                     <li>
-                                        The degree or diploma or qualification which will be awarded to you upon successful completion of the course.
+                                        The degree or diploma or qualification which will be awarded to you upon
+                                        successful completion of the course.
                                     </li>
                                 </ol>
                                 <p class='mt-2'>
-                                    If you have any doubt about the contents of the Contract, or if the terms are different
+                                    If you have any doubt about the contents of the Contract, or if the terms are
+                                    different
                                     from what the agent or the PEI have informed you previously, or advertised, you
                                     should always seek advice and/or clarifications before signing the Contract.
                                 </p>
                                 <p>
                                     This portion below is to be completed by the signatory of the Student Contract, i.e.
-                                    either the student, or if the student is below the age of 18, his parent or guardian.
+                                    either the student, or if the student is below the age of 18, his parent or
+                                    guardian.
                                 </p>
 
                             </div>
@@ -245,7 +272,8 @@ if (isset($_GET["invalid"])) {
                                 <div class='text-center font-italic'>(NRIC)</div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="st_passport_number" id="st_passport_number">
+                                <input type="text" class="form-control" name="st_passport_number"
+                                    id="st_passport_number">
                                 <div class='text-center font-italic'>(Passport Number)</div>
                             </div>
                         </div>
@@ -272,7 +300,9 @@ if (isset($_GET["invalid"])) {
                                 <h2>PRIVATE EDUCATION INSTITUTION-STUDENT CONTRACT</h2>
                             </div>
                             <div class="col-12">
-                                <p>This Contract binds both the Private Education Institution (PEI) and the Student once both parties sign this Contract. If the Student is under eighteen (18) years of age, the Student will be represented by the Parent/Legal Guardian.</p>
+                                <p>This Contract binds both the Private Education Institution (PEI) and the Student once
+                                    both parties sign this Contract. If the Student is under eighteen (18) years of age,
+                                    the Student will be represented by the Parent/Legal Guardian.</p>
                                 <p>
                                     This Contract is made between:
                                 </p>
@@ -284,37 +314,49 @@ if (isset($_GET["invalid"])) {
                                 <ol>
                                     <li>
                                         <div class="row">
-                                            <div class="col-md-6 col-sm-12 my-3">Registered Name of PEI<br />Registration Number
+                                            <div class="col-md-6 col-sm-12 my-3">Registered Name of
+                                                PEI<br />Registration Number
                                             </div>
-                                            <div class="col-md-6 col-sm-12 my-3"><u>G I G International School Pte Ltd</u><br /><u>201000716D</u></div>
+                                            <div class="col-md-6 col-sm-12 my-3"><u>G I G International School Pte
+                                                    Ltd</u><br /><u>201000716D</u></div>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">Full Name of Student
                                             </div>
-                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control" name="student_name" id="student_name"></div>
+                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
+                                                    name="student_name" id="student_name"></div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-12 my-3">(as in NRIC for Singapore Citizen (SC) and Permanent Resident (PR) / as in passport for international student)*</div>
+                                            <div class="col-12 my-3">(as in NRIC for Singapore Citizen (SC) and
+                                                Permanent Resident (PR) / as in passport for international student)*
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">NRIC Number (for SC/PR)*</div>
-                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control" name="nric_number" id="nric_number" required></div>
+                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
+                                                    name="nric_number" id="nric_number" required></div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-6 col-sm-12 my-3">Student’s Pass Number (if available)/<br />Passport Number (for international student)*</div>
-                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control" name="st_pass_number" id="st_pass_number" required></div>
+                                            <div class="col-md-6 col-sm-12 my-3">Student’s Pass Number (if
+                                                available)/<br />Passport Number (for international student)*</div>
+                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
+                                                    name="st_pass_number" id="st_pass_number" required></div>
                                         </div>
                                     </li>
                                     <li>
                                         <div class="row">
-                                            <div class="col-md-6 col-sm-12 my-3">Full Name of Parent/Legal Guardian*<br />(if Student is under eighteen (18) years of age)</div>
-                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control" name="parent_legal_name" id="parent_legal_name" required></div>
+                                            <div class="col-md-6 col-sm-12 my-3">Full Name of Parent/Legal
+                                                Guardian*<br />(if Student is under eighteen (18) years of age)</div>
+                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
+                                                    name="parent_legal_name" id="parent_legal_name" required></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-1">NRIC/Passport Number*</div>
-                                            <div class="col-md-6 col-sm-12 my-1"><input type="text" class="form-control" name="parent_legal_passport_number" id="parent_legal_passport_number" required></div>
+                                            <div class="col-md-6 col-sm-12 my-1"><input type="text" class="form-control"
+                                                    name="parent_legal_passport_number"
+                                                    id="parent_legal_passport_number" required></div>
                                         </div>
                                     </li>
                                 </ol>
@@ -333,41 +375,79 @@ if (isset($_GET["invalid"])) {
                                     <li>
                                         <h3>COURSE INFORMATION AND FEES</h3>
                                         <ol type="I">
-                                            <li>The PEI will deliver the Course as set out in Schedule A to the Student, towards conferment of the stated qualification upon successful Course completion.</li>
-                                            <li>The PEI confirms that the Course has been permitted by the Committee for Private Education (CPE) and no amendments have been made to the Course as set out in Schedule A, unless otherwise permitted by CPE.</li>
-                                            <li>The Course Fees payable are set out in Schedule B and the optional Miscellaneous Fees in Schedule C.</li>
-                                            <li>The PEI considers payment made 3 days/month* after the scheduled due date(s) in Schedule B as late. The PEI will explain to the Student its policy for late payment of Course Fees, including any late payment fee charged in Schedule C (if applicable) and any impact on Course/module completion (if applicable).</li>
+                                            <li>The PEI will deliver the Course as set out in Schedule A to the Student,
+                                                towards conferment of the stated qualification upon successful Course
+                                                completion.</li>
+                                            <li>The PEI confirms that the Course has been permitted by the Committee for
+                                                Private Education (CPE) and no amendments have been made to the Course
+                                                as set out in Schedule A, unless otherwise permitted by CPE.</li>
+                                            <li>The Course Fees payable are set out in Schedule B and the optional
+                                                Miscellaneous Fees in Schedule C.</li>
+                                            <li>The PEI considers payment made 3 days/month* after the scheduled due
+                                                date(s) in Schedule B as late. The PEI will explain to the Student its
+                                                policy for late payment of Course Fees, including any late payment fee
+                                                charged in Schedule C (if applicable) and any impact on Course/module
+                                                completion (if applicable).</li>
                                         </ol>
 
                                     </li>
                                     <li>
                                         <h3 class="my-3">REFUND POLICY</h3>
                                         <h3>2.1 <u>Refund for Withdrawal Due to Non-Delivery of Course:</u></h3>
-                                        <ol type='I'>The PEI will notify the Student within three (3) working days upon knowledge of any of the following:<li>It does not commence the Course on the Course Commencement Date;</li>
+                                        <ol type='I'>The PEI will notify the Student within three (3) working days upon
+                                            knowledge of any of the following:<li>It does not commence the Course on the
+                                                Course Commencement Date;</li>
                                             <li>It terminates the Course before the Course Commencement Date;</li>
                                             <li>It does not complete the Course by the Course Completion Date;</li>
                                             <li> It terminates the Course before the Course Completion Date;</li>
-                                            <li>It has not ensured that the Student meets the course entry or matriculation requirement as set by the organisation stated in Schedule A within any stipulated timeline set by CPE; or
+                                            <li>It has not ensured that the Student meets the course entry or
+                                                matriculation requirement as set by the organisation stated in Schedule
+                                                A within any stipulated timeline set by CPE; or
                                             </li>
-                                            <li>The Student’s Pass application is rejected by Immigration and Checkpoints Authority (ICA).</li>
-                                            <li>The Student should be informed in writing of alternative study arrangements (if any), and also be entitled to a refund of the entire Course Fees and Miscellaneous Fees already paid should the Student decide to withdraw, within seven (7) working days of the above notice.</li>
+                                            <li>The Student’s Pass application is rejected by Immigration and
+                                                Checkpoints Authority (ICA).</li>
+                                            <li>The Student should be informed in writing of alternative study
+                                                arrangements (if any), and also be entitled to a refund of the entire
+                                                Course Fees and Miscellaneous Fees already paid should the Student
+                                                decide to withdraw, within seven (7) working days of the above notice.
+                                            </li>
                                         </ol>
                                         <h3 class="my-3">2.2 <u>Refund for Withdrawal Due to Other Reasons:</u></h3>
-                                        If the Student withdraws from the Course for any reason other than those stated in Clause 2.1, the PEI will, within seven (7) working days of receiving the Student’s written notice of withdrawal, refund to the Student an amount based on the table in Schedule D.
+                                        If the Student withdraws from the Course for any reason other than those stated
+                                        in Clause 2.1, the PEI will, within seven (7) working days of receiving the
+                                        Student’s written notice of withdrawal, refund to the Student an amount based on
+                                        the table in Schedule D.
 
                                         <h3 class="my-3">2.3 <u>Refund During Cooling-Off Period:</u></h3>
-                                        The PEI will provide the Student with a cooling-off period of seven (7) working days after the date that the Contract has been signed by both parties.
-                                        The Student will be refunded the highest percentage (stated in Schedule D) of the fees already paid if the Student submits a written notice of withdrawal to the PEI within the cooling-off period, regardless of whether the Student has started the course or not.</h3>
+                                        The PEI will provide the Student with a cooling-off period of seven (7) working
+                                        days after the date that the Contract has been signed by both parties.
+                                        The Student will be refunded the highest percentage (stated in Schedule D) of
+                                        the fees already paid if the Student submits a written notice of withdrawal to
+                                        the PEI within the cooling-off period, regardless of whether the Student has
+                                        started the course or not.</h3>
                                     </li>
                                     <li>
                                         <h3 class="my-3">ADDITIONAL INFORMATION</h3>
-                                        <br><b>3.1 </b>laws of Singapore will apply to how this Contract will be read and to the rights the parties have under this Contract.
-                                        <br><b>3.2 </b>If any part of this Contract is not valid for any reason under the law of Singapore, this will not affect any other part of this Contract.
-                                        <br><b>3.3 </b>the Student and the PEI cannot settle a dispute using the way arranged by the PEI, the Student and the PEI may refer the dispute to the CPE Mediation-Arbitration Scheme (www.cpe.gov.sg).
-                                        <br><b>3.4 </b>All information given by the Student to the PEI will not be given by the PEI to anyone else, unless the Student signs in writing that he agrees or unless the PEI is allowed to give the information by law.
-                                        <br><b>3.5 </b>there is any other agreement between the PEI and the Student that is different from the terms in this Contract, then the terms in this Contract will apply.
-                                        <br><b>3.6 </b>the Student or the PEI does not exercise or delay exercising any right granted by this Contract, the Student and the PEI will still be able to exercise the same type of right under this Contract during the rest of the time the Contract continues.
-                                        <br><b>3.7 </b>this Contract is also signed or translated in any language other than English and there is a difference from the English language copy of this Contract, the English language copy will apply.
+                                        <br><b>3.1 </b>laws of Singapore will apply to how this Contract will be read
+                                        and to the rights the parties have under this Contract.
+                                        <br><b>3.2 </b>If any part of this Contract is not valid for any reason under
+                                        the law of Singapore, this will not affect any other part of this Contract.
+                                        <br><b>3.3 </b>the Student and the PEI cannot settle a dispute using the way
+                                        arranged by the PEI, the Student and the PEI may refer the dispute to the CPE
+                                        Mediation-Arbitration Scheme (www.cpe.gov.sg).
+                                        <br><b>3.4 </b>All information given by the Student to the PEI will not be given
+                                        by the PEI to anyone else, unless the Student signs in writing that he agrees or
+                                        unless the PEI is allowed to give the information by law.
+                                        <br><b>3.5 </b>there is any other agreement between the PEI and the Student that
+                                        is different from the terms in this Contract, then the terms in this Contract
+                                        will apply.
+                                        <br><b>3.6 </b>the Student or the PEI does not exercise or delay exercising any
+                                        right granted by this Contract, the Student and the PEI will still be able to
+                                        exercise the same type of right under this Contract during the rest of the time
+                                        the Contract continues.
+                                        <br><b>3.7 </b>this Contract is also signed or translated in any language other
+                                        than English and there is a difference from the English language copy of this
+                                        Contract, the English language copy will apply.
                                     </li>
                                 </ol>
                             </div>
@@ -380,7 +460,8 @@ if (isset($_GET["invalid"])) {
                             <div class="col-12 text-center">
                                 <h3>COURSE DETAILS</h3>
                             </div>
-                            <div class="col-12 font-italic">Note: The information provided below should be the same as that submitted to the CPE. </div>
+                            <div class="col-12 font-italic">Note: The information provided below should be the same as
+                                that submitted to the CPE. </div>
                             <div class="col-12">
                                 <table border="1" class="table">
                                     <tbody>
@@ -410,14 +491,19 @@ if (isset($_GET["invalid"])) {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>6) Date of Commencement of Studies if later than Course Commencement Date<p><em><span style="font-weight: 400;">Note: &ldquo;N.A.&rdquo; if both dates are the same&nbsp;</span></em></p>
+                                            <td>6) Date of Commencement of Studies if later than Course Commencement
+                                                Date<p><em><span style="font-weight: 400;">Note: &ldquo;N.A.&rdquo; if
+                                                            both dates are the same&nbsp;</span></em></p>
                                             </td>
                                             <td>N.A.</td>
                                         </tr>
                                         <tr>
-                                            <td>7) Qualification<p><em><span style="font-weight: 400;">(Name of award to be conferred on the Student upon successful Course completion)</span></em></p>
+                                            <td>7) Qualification<p><em><span style="font-weight: 400;">(Name of award to
+                                                            be conferred on the Student upon successful Course
+                                                            completion)</span></em></p>
                                             </td>
-                                            <td>Performance Profile with Promotion to </span><span style="font-weight: 400;">Cambridge Secondary 2
+                                            <td>Performance Profile with Promotion to </span><span
+                                                    style="font-weight: 400;">Cambridge Secondary 2
                                             </td>
                                         </tr>
                                         <tr>
@@ -432,23 +518,32 @@ if (isset($_GET["invalid"])) {
                                         </tr>
                                         <tr>
                                             <td>10) Course entry requirement(s)</td>
-                                            <td>As per GIGIS age criteria as on </span><span style="font-weight: 400;">5</span><span style="font-weight: 400;">th</span><span style="font-weight: 400;"> April 2021</span></li>
-                                                <li style="font-weight: 400;"><span style="font-weight: 400;">Pass the preceding year&rsquo;s assessment</span></li>
-                                                <li style="font-weight: 400;"><span style="font-weight: 400;">Submitted the required documents</span></li>
-                                                <li style="font-weight: 400;"><span style="font-weight: 400;">Paid due fees
+                                            <td>As per GIGIS age criteria as on </span><span
+                                                    style="font-weight: 400;">5</span><span
+                                                    style="font-weight: 400;">th</span><span style="font-weight: 400;">
+                                                    April 2021</span></li>
+                                                <li style="font-weight: 400;"><span style="font-weight: 400;">Pass the
+                                                        preceding year&rsquo;s assessment</span></li>
+                                                <li style="font-weight: 400;"><span style="font-weight: 400;">Submitted
+                                                        the required documents</span></li>
+                                                <li style="font-weight: 400;"><span style="font-weight: 400;">Paid due
+                                                        fees
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>11) Course schedule with modules and/or subjects</td>
-                                            <td>As per Class/module details stated in the GIGIS Student Handbook.&nbsp;</td>
+                                            <td>As per Class/module details stated in the GIGIS Student Handbook.&nbsp;
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td>12) Scheduled holidays (public and school) and/or semester/term break for course</td>
+                                            <td>12) Scheduled holidays (public and school) and/or semester/term break
+                                                for course</td>
                                             <td>As per Class/module details stated in the GIGIS Student Handbook.</td>
                                         </tr>
                                         <tr>
                                             <td>13) Examination and/or other assessment period</td>
-                                            <td>Continuous Comprehensive Evaluation with last assessment in </span><span style="font-weight: 400;">March 2022
+                                            <td>Continuous Comprehensive Evaluation with last assessment in </span><span
+                                                    style="font-weight: 400;">March 2022
                                             </td>
                                         </tr>
                                         <tr>
@@ -496,7 +591,8 @@ if (isset($_GET["invalid"])) {
                                         </tr>
                                         <tr>
                                             <td colspan="4">
-                                                <span class="text-danger">Note: show full breakdown of total payable course fees on a monthly basis</span>
+                                                <span class="text-danger">Note: show full breakdown of total payable
+                                                    course fees on a monthly basis</span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -583,7 +679,8 @@ if (isset($_GET["invalid"])) {
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <h3><strong>Instalment</strong><strong>1</strong><strong> Schedule</strong></h3>
+                                                <h3><strong>Instalment</strong><strong>1</strong><strong>
+                                                        Schedule</strong></h3>
                                             </td>
                                             <td>
                                                 <strong>Amount (with GST) (S$)</strong>
@@ -688,12 +785,14 @@ if (isset($_GET["invalid"])) {
                                 </ol>
                                 <ul>
                                     <li><s>12 months&rsquo; worth of fees for EduTrust certified PEIs*; or</li>
-                                    <li>6 months&rsquo; worth of fees for non-EduTrust-certified PEIs with Industry-Wide Course Fee Insurance Scheme (IWC)*; or</s></li>
+                                    <li>6 months&rsquo; worth of fees for non-EduTrust-certified PEIs with Industry-Wide
+                                        Course Fee Insurance Scheme (IWC)*; or</s></li>
                                     <li>2 months&rsquo; worth of fees for non-EduTrust-certified PEIs without IWC*.</li>
                                 </ul>
                                 <p>*<em>Delete as appropriate by striking through.</em></p>
                                 <ol start="2">
-                                    <li>Each instalment after the first shall be collected within one week before the next payment scheduled.</li>
+                                    <li>Each instalment after the first shall be collected within one week before the
+                                        next payment scheduled.</li>
                                 </ol>
                             </div>
                         </div>
@@ -723,7 +822,8 @@ if (isset($_GET["invalid"])) {
                                         </tr>
                                         <tr>
                                             <td colspan="4" class="text-danger font-italic">
-                                                Note: show full breakdown of total payable course fees on a monthly basis
+                                                Note: show full breakdown of total payable course fees on a monthly
+                                                basis
                                             </td>
                                         </tr>
                                         <tr>
@@ -811,7 +911,8 @@ if (isset($_GET["invalid"])) {
                                     <tbody>
                                         <tr>
                                             <td>
-                                                <h3><strong>Instalment</strong><strong>1</strong><strong> Schedule</strong></h3>
+                                                <h3><strong>Instalment</strong><strong>1</strong><strong>
+                                                        Schedule</strong></h3>
                                             </td>
                                             <td>
                                                 <strong>Amount (with GST) (S$)</strong>
@@ -917,12 +1018,15 @@ if (isset($_GET["invalid"])) {
                                 </ol>
                                 <ul>
                                     <li><s>12 months&rsquo; worth of fees for EduTrust certified PEIs*; or</li>
-                                    <li>6 months&rsquo; worth of fees for non-EduTrust-certified PEIs with Industry-Wide Course Fee Insurance Scheme (IWC)*; or</li>
-                                    <li></s>2 months&rsquo; worth of fees for non-EduTrust-certified PEIs without IWC*.</li>
+                                    <li>6 months&rsquo; worth of fees for non-EduTrust-certified PEIs with Industry-Wide
+                                        Course Fee Insurance Scheme (IWC)*; or</li>
+                                    <li></s>2 months&rsquo; worth of fees for non-EduTrust-certified PEIs without IWC*.
+                                    </li>
                                 </ul>
                                 <p>*<em>Delete as appropriate by striking through.</em></p>
                                 <ol start="2">
-                                    <li>Each instalment after the first shall be collected within one week before the next payment scheduled.</li>
+                                    <li>Each instalment after the first shall be collected within one week before the
+                                        next payment scheduled.</li>
                                 </ol>
                             </div>
                         </div>
@@ -952,7 +1056,8 @@ if (isset($_GET["invalid"])) {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="5">Examples include late payment fees, replacement of student ID, re-taking examinations</td>
+                                            <td colspan="5">Examples include late payment fees, replacement of student
+                                                ID, re-taking examinations</td>
                                         </tr>
                                         <tr>
                                             <td>1</td>
@@ -1069,7 +1174,9 @@ if (isset($_GET["invalid"])) {
                                     </tbody>
                                 </table>
                                 <ol start="3">
-                                    <li>Miscellaneous Fees refer to any non-compulsory fees which the students pay only when applicable. Such fees are normally collected by the PEI when the need arises</li>
+                                    <li>Miscellaneous Fees refer to any non-compulsory fees which the students pay only
+                                        when applicable. Such fees are normally collected by the PEI when the need
+                                        arises</li>
                                 </ol>
                             </div>
                         </div>
@@ -1088,7 +1195,8 @@ if (isset($_GET["invalid"])) {
                                                 <p>% of [the amount of fees paid under Schedules B and C]</p>
                                             </td>
                                             <td>
-                                                <h3><br />If Student&rsquo;s written notice of withdrawal is received:</h3>
+                                                <h3><br />If Student&rsquo;s written notice of withdrawal is received:
+                                                </h3>
                                             </td>
                                         </tr>
                                         <tr>
@@ -1104,7 +1212,8 @@ if (isset($_GET["invalid"])) {
                                                 <p>[50%]</p>
                                             </td>
                                             <td>
-                                                <p>before, but not more than [7] days before the Course Commencement Date</p>
+                                                <p>before, but not more than [7] days before the Course Commencement
+                                                    Date</p>
                                             </td>
                                         </tr>
                                         <tr>
@@ -1112,7 +1221,8 @@ if (isset($_GET["invalid"])) {
                                                 <p>[0%]</p>
                                             </td>
                                             <td>
-                                                <p>after, but not more than [7] days after the Course Commencement Date</p>
+                                                <p>after, but not more than [7] days after the Course Commencement Date
+                                                </p>
                                             </td>
                                         </tr>
                                         <tr>
@@ -1129,14 +1239,17 @@ if (isset($_GET["invalid"])) {
                             <div class="col-12">
                                 <label class="form-check">
                                     <input class="form-check-input" type="checkbox" checked="">
-                                    <span class="form-check-label">The parties hereby acknowledge and agree to the terms stated in this Contract.
+                                    <span class="form-check-label">The parties hereby acknowledge and agree to the terms
+                                        stated in this Contract.
                                     </span>
                                 </label>
                             </div>
                             <div class="col-12 mt-3">
                                 <p>SIGNED by the PEI</p>
                                 <p>For:</p>
-                                <p><br /><br /></p>
+                                <p>
+                                    <img src='assets/img/gigis_signature.png'></img>
+                                </p>
                                 <p>_____________________________________________________________________</p>
                                 <p>Authorised Signatory of the PEISeal of PEI</p>
                                 <p>Name: Mr BK Arun</p>
@@ -1158,7 +1271,8 @@ if (isset($_GET["invalid"])) {
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
                                 <input type="file" class="form-control" name="dependant_pass" id="dependant_pass">
-                                <div class=''>Name of Child Immigration Type <span class="bg-yellow-lt">_Dependant’s Pass_</span></div>
+                                <div class=''>Name of Child Immigration Type <span class="bg-yellow-lt">_Dependant’s
+                                        Pass_</span></div>
 
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
@@ -1170,13 +1284,15 @@ if (isset($_GET["invalid"])) {
                             <div class="col-md-6 col-sm-12 my-3">
                                 <div class="row">
                                     <div class="col-auto">Date</div>
-                                    <div class="col"><input type="date" class="form-control" name="sign_date" id="sign_date"></div>
+                                    <div class="col"><input type="date" class="form-control" name="sign_date"
+                                            id="sign_date"></div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
                                 <div class="row">
                                     <div class="col-auto">Date</div>
-                                    <div class="col"><input type="date" class="form-control" name="sign_date" id="sign_date"></div>
+                                    <div class="col"><input type="date" class="form-control" name="sign_date"
+                                            id="sign_date"></div>
                                 </div>
                             </div>
                         </div>
@@ -1204,29 +1320,57 @@ if (isset($_GET["invalid"])) {
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                <p>enrolled in <strong>G I G International School Pte Ltd</strong> hereby state that:</p>
+                                <p>enrolled in <strong>G I G International School Pte Ltd</strong> hereby state that:
+                                </p>
                                 <ol>
-                                    <li>I / We have read and understood the guidelines for Singapore Citizens issued by the Ministry of Education (the &ldquo;MOE&rdquo;) which are as follows:
+                                    <li>I / We have read and understood the guidelines for Singapore Citizens issued by
+                                        the Ministry of Education (the &ldquo;MOE&rdquo;) which are as follows:
 
-                                        <p>Admission of Singapore Citizen or Foreign Students and Singapore Permanent Residents who attain Singapore Citizenship</p>
-                                        <p>Singapore Citizens are exempted from seeking MOE&rsquo;s approval to study at the foreign system school&rsquo;s Kindergarten / Pre-School.</p>
-                                        <p>Singapore Citizens who are enrolled in Kindergarten / Pre-School are not guaranteed continue admission to Grade / Standard / Class 1 and are required to seek prior MOE approval for continuing education in GIGIS.&nbsp;</p>
+                                        <p>Admission of Singapore Citizen or Foreign Students and Singapore Permanent
+                                            Residents who attain Singapore Citizenship</p>
+                                        <p>Singapore Citizens are exempted from seeking MOE&rsquo;s approval to study at
+                                            the foreign system school&rsquo;s Kindergarten / Pre-School.</p>
+                                        <p>Singapore Citizens who are enrolled in Kindergarten / Pre-School are not
+                                            guaranteed continue admission to Grade / Standard / Class 1 and are required
+                                            to seek prior MOE approval for continuing education in GIGIS.&nbsp;</p>
                                         <p><strong>Singapore Citizens below 6 years:</strong></p>
-                                        <p>All Singapore Citizens who will be age appropriate for the MOE School Primary 1 registration exercise should participate in the P1 registration process. This is to ensure that these children continue their education in the national schools, if their application to study at GIGIS is not approved by MOE.&nbsp;</p>
-                                        <p>All Singapore Citizen children, who are age appropriate for MOE School Primary 1 and have not obtained MOE approval to continue their study in GIGIS will be required to study in the MOE schools no later than the start of the respective MOE Primary Year 1 academic year.&nbsp;</p>
+                                        <p>All Singapore Citizens who will be age appropriate for the MOE School Primary
+                                            1 registration exercise should participate in the P1 registration process.
+                                            This is to ensure that these children continue their education in the
+                                            national schools, if their application to study at GIGIS is not approved by
+                                            MOE.&nbsp;</p>
+                                        <p>All Singapore Citizen children, who are age appropriate for MOE School
+                                            Primary 1 and have not obtained MOE approval to continue their study in
+                                            GIGIS will be required to study in the MOE schools no later than the start
+                                            of the respective MOE Primary Year 1 academic year.&nbsp;</p>
                                         <p><strong>Singapore Citizens above 6 years:</strong></p>
-                                        <p>Parents of GIGIS students who become Singapore Citizen after they have achieved 6 years age, are exempted from MOE approval for continuing their education in GIGIS. However, parents of such students are required to comply with the requirements specified in Point 4 below and seek a written approval from the GIGIS Admissions Department confirming the promotion / re-admission in the next grade.&nbsp;</p>
+                                        <p>Parents of GIGIS students who become Singapore Citizen after they have
+                                            achieved 6 years age, are exempted from MOE approval for continuing their
+                                            education in GIGIS. However, parents of such students are required to comply
+                                            with the requirements specified in Point 4 below and seek a written approval
+                                            from the GIGIS Admissions Department confirming the promotion / re-admission
+                                            in the next grade.&nbsp;</p>
                                     </li>
                                     <li>
-                                        I / We understand that, <strong>G I G International School Pte Ltd</strong> has granted admission to _ Cambridge Secondary 1_ subject to the following Terms and Conditions.
+                                        I / We understand that, <strong>G I G International School Pte Ltd</strong> has
+                                        granted admission to _ Cambridge Secondary 1_ subject to the following Terms and
+                                        Conditions.
                                         <ol type="i">
-                                            <li>That my child holds a non-Singapore Citizenship OR is a Singapore Citizen authorised by the Ministry of Education as per clause &ldquo;1&rdquo; above, to study at GIGIS and&nbsp;</li>
+                                            <li>That my child holds a non-Singapore Citizenship OR is a Singapore
+                                                Citizen authorised by the Ministry of Education as per clause
+                                                &ldquo;1&rdquo; above, to study at GIGIS and&nbsp;</li>
 
-                                            <li>That my child is eligible for a promotion to next grade and / or satisfies the re-enrolment criteria as established by the school, and&nbsp;</li>
+                                            <li>That my child is eligible for a promotion to next grade and / or
+                                                satisfies the re-enrolment criteria as established by the school,
+                                                and&nbsp;</li>
 
-                                            <li>That I / We have read the School Terms and Conditions, School Policies and the Student Handbook and that I / We agree to comply, and shall ensure that my / our child also complies with the afore-mentioned terms, and&nbsp;</li>
+                                            <li>That I / We have read the School Terms and Conditions, School Policies
+                                                and the Student Handbook and that I / We agree to comply, and shall
+                                                ensure that my / our child also complies with the afore-mentioned terms,
+                                                and&nbsp;</li>
 
-                                            <li>That my child has not violated laws of any country or is facing any trial in any court or is convicted of any offence(s).</li>
+                                            <li>That my child has not violated laws of any country or is facing any
+                                                trial in any court or is convicted of any offence(s).</li>
                                         </ol>
                                         <br><br />
                                     </li>
@@ -1240,51 +1384,86 @@ if (isset($_GET["invalid"])) {
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">Nationality:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="text" class="form-control" name="bnationality" id="bnationality">
+                                                <input type="text" class="form-control" name="bnationality"
+                                                    id="bnationality">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">Passport Number:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="text" class="form-control" name="bpassport_number" id="bpassport_number">
+                                                <input type="text" class="form-control" name="bpassport_number"
+                                                    id="bpassport_number">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">Issue Date:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="date" class="form-control" name="bissue_date" id="bissue_date">
+                                                <input type="date" class="form-control" name="bissue_date"
+                                                    id="bissue_date">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">Immigration Status:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="date" class="form-control" name="bimmigration_status" id="bimmigration_status">
+                                                <input type="date" class="form-control" name="bimmigration_status"
+                                                    id="bimmigration_status">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">NRIC / FIN Number:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="date" class="form-control" name="bfin_number" id="bfin_number">
+                                                <input type="date" class="form-control" name="bfin_number"
+                                                    id="bfin_number">
                                             </div>
                                         </div>
                                         <br /><br />
                                     </li>
                                     <li>
-                                        I / We agree that at any time our child is granted and accepts a Singapore Citizenship, then within 7 (seven) working days from date of such acceptance, I / We agree to do the following:
+                                        I / We agree that at any time our child is granted and accepts a Singapore
+                                        Citizenship, then within 7 (seven) working days from date of such acceptance, I
+                                        / We agree to do the following:
                                         <ol type="i">
-                                            <li>Apply for MOE approval through the GIGIS Admissions Department, applicability to be determined as per Clause 1, where applicable,&nbsp;</li>
+                                            <li>Apply for MOE approval through the GIGIS Admissions Department,
+                                                applicability to be determined as per Clause 1, where applicable,&nbsp;
+                                            </li>
 
-                                            <li>Update the student particulars in profile and submit the new passport and immigration documents / Ministry letters if any to school office, and seek acknowledgment of changed profile by the class teacher,&nbsp;</li>
+                                            <li>Update the student particulars in profile and submit the new passport
+                                                and immigration documents / Ministry letters if any to school office,
+                                                and seek acknowledgment of changed profile by the class teacher,&nbsp;
+                                            </li>
 
-                                            <li>Get a written confirmation from the GIGIS Admissions Department (<a href="mailto:admissions@gigis.edu.sg">admissions@gigis.edu.sg</a>) that the child is exempted from MOE approval and the child can continue his/her education at GIGIS,&nbsp;</li>
+                                            <li>Get a written confirmation from the GIGIS Admissions Department (<a
+                                                    href="mailto:admissions@gigis.edu.sg">admissions@gigis.edu.sg</a>)
+                                                that the child is exempted from MOE approval and the child can continue
+                                                his/her education at GIGIS,&nbsp;</li>
 
-                                            <li>Generate a new student e-contract with revised nationality and immigration status and inform the class teacher by written email if the student contract could not be generated / completed for any reason(s).</li>
+                                            <li>Generate a new student e-contract with revised nationality and
+                                                immigration status and inform the class teacher by written email if the
+                                                student contract could not be generated / completed for any reason(s).
+                                            </li>
                                         </ol>
                                         <br /><br />
                                     </li>
                                     <li>
-                                        I / We agree and fully understand that in the event we fail to perform and comply with steps mentioned in Clause “4” above, then it would be deemed as a breach of School’s Terms and Conditions.
+                                        I / We agree and fully understand that in the event we fail to perform and
+                                        comply with steps mentioned in Clause “4” above, then it would be deemed as a
+                                        breach of School’s Terms and Conditions.
                                         <br /><br />
                                     </li>
-                                    <li>I / We represent that all the information and details mentioned in the student profile of my / our child is correct and valid as on the date of signing of this Declaration, I / We agree and undertake that I / We shall ensure that the student profile of my / our child is updated with latest, correct and valid particulars at all times during the time my / our child is enrolled with GIGIS. In case any of the particulars of the student profile of my child are changed, including but not limited to change in the immigration status of my child from Dependent Pass Holder to Permanent Resident, I shall update the latest details on the student profile within seven (7) days of such change becoming effective.
+                                    <li>I / We represent that all the information and details mentioned in the student
+                                        profile of my / our child is correct and valid as on the date of signing of this
+                                        Declaration, I / We agree and undertake that I / We shall ensure that the
+                                        student profile of my / our child is updated with latest, correct and valid
+                                        particulars at all times during the time my / our child is enrolled with GIGIS.
+                                        In case any of the particulars of the student profile of my child are changed,
+                                        including but not limited to change in the immigration status of my child from
+                                        Dependent Pass Holder to Permanent Resident, I shall update the latest details
+                                        on the student profile within seven (7) days of such change becoming effective.
                                         <br /><br />
                                     </li>
-                                    <li>I / We agree that the school may be asked to share student particulars with the Ministry of Education or any other relevant authority in case of an enquiry or as a matter of routine administrative procedure in accordance with the applicable laws.
+                                    <li>I / We agree that the school may be asked to share student particulars with the
+                                        Ministry of Education or any other relevant authority in case of an enquiry or
+                                        as a matter of routine administrative procedure in accordance with the
+                                        applicable laws.
                                         <br /><br />
                                     </li>
-                                    <li>I / We understand that suppression of facts or furnishing misleading / false information or failure to provide updated information as required under this Declaration may result in cancellation / termination of admission from the School and the School may exercise other rights and seek remedies as may be available under law at my / our cost and liability.
+                                    <li>I / We understand that suppression of facts or furnishing misleading / false
+                                        information or failure to provide updated information as required under this
+                                        Declaration may result in cancellation / termination of admission from the
+                                        School and the School may exercise other rights and seek remedies as may be
+                                        available under law at my / our cost and liability.
                                         <br /><br />
                                     </li>
                                     <li>
@@ -1293,13 +1472,15 @@ if (isset($_GET["invalid"])) {
                                                 I / We,
                                             </div>
                                             <div class="col">
-                                                <input type="text" class="form-control" name="cparent_name" id="cparent_name">
+                                                <input type="text" class="form-control" name="cparent_name"
+                                                    id="cparent_name">
                                             </div>
                                             <div class="col-12 text-center font-italic">
                                                 (Name of Parent/ Guardian)
                                             </div>
                                             <div class="col-12 mt-2">
-                                                certify that the information provided in this declaration is true and complete.
+                                                certify that the information provided in this declaration is true and
+                                                complete.
                                             </div>
                                         </div>
                                         <!--
@@ -1323,6 +1504,9 @@ if (isset($_GET["invalid"])) {
                             </ol>
                         </div>
 
+                        <?php
+                            if($priority_contact=="father"){
+                        ?>
                         <div class="row">
                             <div class="col-md-4 col-sm-12 my-3 text-right">
                                 Father's Name:
@@ -1331,6 +1515,22 @@ if (isset($_GET["invalid"])) {
                                 <input type="text" class="form-control" name="father_name" id="father_name">
                             </div>
                         </div>
+                        <?php
+                            }else{
+                        ?>
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-12 my-3 text-right">
+                                Mother's Name:
+                            </div>
+                            <div class="col-md-8 col-sm-12 my-3">
+                                <input type="text" class="form-control" name="mother_name" id="mother_name">
+                            </div>
+                        </div>
+                        <?php
+                            }
+                        ?>
+
                         <div class="row">
                             <div class="col-md-4 col-sm-12 my-3 text-right">
                                 IC No:
@@ -1353,13 +1553,16 @@ if (isset($_GET["invalid"])) {
                                 <h3><u>LATE COURSE COMMENCEMENT</u></h3>
                             </div>
                             <div class="col-12">
-                                <p>I have been informed by the Admissions Team and I am aware that the course I am enrolling for in G I G International School has commenced prior to my becoming a student in the school.
+                                <p>I have been informed by the Admissions Team and I am aware that the course I am
+                                    enrolling for in G I G International School has commenced prior to my becoming a
+                                    student in the school.
                                 </p>
-                                <p>I acknowledge and agree to be enrolled for the course that has already commenced on the Course Commencement Date mentioned in the student contract.
+                                <p>I acknowledge and agree to be enrolled for the course that has already commenced on
+                                    the Course Commencement Date mentioned in the student contract.
                                 </p>
                             </div>
                         </div>
-                    
+
                         <!--
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
@@ -1416,8 +1619,8 @@ if (isset($_GET["invalid"])) {
 
 
     <script>
-        document.body.style.display = "block";
-        $(document).ready(function() {});
+    document.body.style.display = "block";
+    $(document).ready(function() {});
     </script>
 
 </body>
