@@ -374,7 +374,7 @@ $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
 
                                             $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
                                             $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
-                                ?>
+                                        ?>
                                             <form id="admissionPay" action="../thirdparty/payment/worldline/skit/meTrnPay.php" method="post" style="text-align:center;">
                                                 <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
                                                 <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
@@ -472,7 +472,7 @@ $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
 
                                                 <button type="submit" class="btnPay" style="display:none;" id="payAdmissionFee">Pay</button>
                                             </form>
-                                <?php }
+                                <?php   }
                                     }
                                 } ?>
                             </div>

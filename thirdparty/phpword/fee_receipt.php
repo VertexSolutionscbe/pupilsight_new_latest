@@ -1,6 +1,8 @@
 <?php
 include '../../pupilsight.php';
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 // require_once $_SERVER["DOCUMENT_ROOT"].'/vendor/phpoffice/phpword/bootstrap.php';
 
 // $file = $_SERVER["DOCUMENT_ROOT"]."/thirdparty/phpword/templates/receipt_1.docx";

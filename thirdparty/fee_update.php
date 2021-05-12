@@ -156,7 +156,9 @@ if(!empty($dt)){
 
         $academic_year = $ayData["name"];
 
-        $class_section = $clss . "" . $section;
+        $class_section = $clss . " - " . $section;
+        $class_name = $clss;
+        $section_name = $section;
         $bank_name = '';
 
         $chkcussql = 'SELECT field_name FROM custom_field WHERE field_name = "correspondence_address" ';
@@ -429,6 +431,8 @@ if(!empty($dt)){
                             "mother_name" => $mother_name,
                             "program_name" => $prog,
                             "class_section" => $class_section,
+                            "class_name" => $class_name,
+                            "section_name" => $section_name,
                             "instrument_date" => "NA",
                             "instrument_no" => "NA",
                             "transcation_amount" => $dt["amount"],

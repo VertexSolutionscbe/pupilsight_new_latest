@@ -117,7 +117,7 @@ class GroupGateway extends QueryableGateway
 
     public function insertGroup(array $data)
     {
-        $sql = "INSERT INTO pupilsightGroup SET pupilsightPersonIDOwner=:pupilsightPersonIDOwner, pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, timestampCreated=NOW()";
+        $sql = "INSERT INTO pupilsightGroup SET pupilsightPersonIDOwner=:pupilsightPersonIDOwner, pupilsightSchoolYearID=:pupilsightSchoolYearID, name=:name, is_chat=:is_chat, timestampCreated=NOW()";
 
         return $this->db()->insert($sql, $data);
     }
@@ -131,7 +131,7 @@ class GroupGateway extends QueryableGateway
 
     public function updateGroup(array $data)
     {
-        $sql = "UPDATE pupilsightGroup SET name=:name WHERE pupilsightGroupID=:pupilsightGroupID";
+        $sql = "UPDATE pupilsightGroup SET name=:name, is_chat=:is_chat WHERE pupilsightGroupID=:pupilsightGroupID";
 
         return $this->db()->update($sql, $data);
     }

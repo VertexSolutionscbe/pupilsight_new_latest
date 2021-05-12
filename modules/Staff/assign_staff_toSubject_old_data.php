@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
         ->pageSize(1000)
         ->fromPOST();
 
-    $getselstaff = $StaffGateway->getStaffByFilter($criteria, $staffIds, $pupilsightSchoolYearID,  $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
+    $getselstaff = $StaffGateway->getStaffByFilterOld($criteria, $staffIds, $pupilsightSchoolYearID,  $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID);
     $table = DataTable::createPaginated('FeeStructureManage', $criteria);
 
     $table->addCheckboxColumn('st_id', __(''))

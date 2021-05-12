@@ -43,6 +43,8 @@ use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Domain\Admission\AdmissionGateway;
 
 
+
+
 // Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 //include '../../pupilsight.php';
@@ -88,37 +90,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                 <input type="hidden" id="cmpid" value="<?php echo $id; ?>">
                 <input type="hidden" id="fid" value="<?php echo $rowdata['form_id']; ?>">
                 <input type="hidden" id="pupilsightPersonID" value="<?php echo $pupilsightPersonID; ?>">
-
+                <input type="hidden" id="chkfeesett" value="<?php echo $rowdata['is_fee_generate']; ?>">
                 <?php if (!empty($programData)) { ?>
-                    <span style="width: 40%;">Program<span style="color:red;">*</span> : </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <select id="pid">
-                        <option value="">Select Program</option>
-                        <?php if (!empty($programData)) {
-                            foreach ($programData as $prg) {
-                        ?>
-                                <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
-                        <?php }
-                        } ?>
-                    </select>
-                    <span style="width: 40%;" class="ml-2">Class <span style="color:red;">*</span> : </span>
-                    <select id="class">
-                        <option value="">Select Class</option>
-                    </select>
-                    <input type="hidden" id="chkProg" value="1">
+                    <div id="progClassDiv" style="display:inline-flex;width:100%">
+                        <span style="width: 40%;">Program<span style="color:red;">*</span> : </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <select id="pid">
+                            <option value="">Select Program</option>
+                            <?php if (!empty($programData)) {
+                                foreach ($programData as $prg) {
+                            ?>
+                                    <option value="<?php echo  $prg['pupilsightProgramID']; ?>"><?php echo  $prg['name']; ?></option>
+                            <?php }
+                            } ?>
+                        </select>
+                        <span style="width: 40%;" class="ml-2">Class <span style="color:red;">*</span> : </span>
+                        <select id="class">
+                            <option value="">Select Class</option>
+                        </select>
+                        <input type="hidden" id="chkProg" value="1">
+                    </div>
                 <?php } else { ?>
-                    <input type="hidden" id="chkProg" value="2">
-                    <input type="hidden" id="pid" value="<?php echo $rowdata['pupilsightProgramID']; ?>">
-                    <span style="width: 40%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <span style="width: 20%;">Class <span style="color:red;">*</span> : </span>
-                    <select id="class">
-                        <option value="">Select Class</option>
-                        <?php if (!empty($getClass)) {
-                            foreach ($getClass as $cls) {
-                        ?>
-                                <option value="<?php echo  $cls['pupilsightYearGroupID']; ?>"><?php echo  $cls['name']; ?></option>
-                        <?php }
-                        } ?>
-                    </select>
+                    <div id="progClassDiv" style="display:inline-flex;width:100%">
+                        <input type="hidden" id="chkProg" value="2">
+                        <input type="hidden" id="pid" value="<?php echo $rowdata['pupilsightProgramID']; ?>">
+                        <span style="width: 40%;">Program: <?php echo $program; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="width: 20%;">Class <span style="color:red;">*</span> : </span>
+                        <select id="class">
+                            <option value="">Select Class</option>
+                            <?php if (!empty($getClass)) {
+                                foreach ($getClass as $cls) {
+                            ?>
+                                    <option value="<?php echo  $cls['pupilsightYearGroupID']; ?>"><?php echo  $cls['name']; ?></option>
+                            <?php }
+                            } ?>
+                        </select>
+                    </div>
                 <?php } ?>
                 <!-- <span style="color:red;font-size: 11px;">You Have to Select Class</span> -->
 
@@ -127,6 +133,139 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
     <?php
         echo  '<iframe id="innerForm" class="mt-4" data-campid=' . $id . ' src=' . $rowdata['page_link'] . ' style="width:100%;height:120vh;border:0;" allowtransparency="true"></iframe>';
         //echo "<script>setTimeout(function(){iframeLoaded('innerForm');},1000);</script>";
+    ?>
+
+        <?php if (!empty($rowdata['fn_fee_structure_id']) && $rowdata['is_fee_generate'] == '2') {
+            $sql = "SELECT SUM(total_amount) AS amt FROM fn_fee_structure_item WHERE fn_fee_structure_id = " . $rowdata['fn_fee_structure_id'] . " ";
+            $results = $connection2->query($sql);
+            $result = $results->fetch();
+            $applicationAmount = $result['amt'] * 100;
+
+            $random_number = mt_rand(1000, 9999);
+            $today = time();
+            $orderId = $today . $random_number;
+
+            $sqlfh = "SELECT fn_fees_head_id FROM fn_fee_structure WHERE id =".$rowdata['fn_fee_structure_id']." ";
+            $results1 = $connection2->query($sqlfh);
+            $resultfh = $results1->fetch();
+            
+
+            $fn_fees_head_id = $resultfh['fn_fees_head_id'];
+
+            $sql = 'SELECT b.* FROM fn_fees_head AS a LEFT JOIN fn_fee_payment_gateway AS b ON a.payment_gateway_id = b.id WHERE a.id = '.$fn_fees_head_id.' ';
+            $result = $connection2->query($sql);
+            $gatewayData = $result->fetch();
+            
+            $terms = $gatewayData['terms_and_conditions'];
+            $gatewayID = $gatewayData['id'];
+            $gateway = $gatewayData['name'];
+
+            if (!empty($gateway)) {
+                if ($gateway == 'WORLDLINE') {
+
+                    $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                    $responseLink = $base_url . "/thirdparty/payment/worldline/skit/meTrnSuccess.php";
+                ?>
+                    <form id="admissionPay" action="<?php echo $base_url;?>/thirdparty/payment/worldline/skit/meTrnPay.php" method="post" style="text-align:center;">
+                        <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
+                        <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
+                        <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+                        <input type="hidden" value="INR" id="currencyName" name="currencyName">
+                        <input type="hidden" value="S" id="meTransReqType" name="meTransReqType">
+                        <input type="hidden" name="mid" id="mid" value="<?php echo $gatewayData['mid']; ?>">
+                        <input type="hidden" name="enckey" id="enckey" value="<?php echo $gatewayData['key_id']; ?>">
+                        <input type="hidden" name="campaignid" value="<?php echo $id; ?>">
+                        <input type="hidden" name="sid" value="0">
+                        <input type="hidden" class="applicantName" name="name" value="">
+                        <input type="hidden" class="applicantEmail" name="email" value="">
+                        <input type="hidden" class="applicantPhone" name="phone" value="">
+
+                        <input type="hidden" name="responseUrl" id="responseUrl" value="<?php echo $responseLink; ?>" />
+
+                        <button type="submit" class="btnPay btn btn-primary" style="display:none;" id="payAdmissionFee">Pay</button>
+                    </form>
+                <?php } elseif ($gateway == 'RAZORPAY') {
+                    $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                    // $responseLink = $base_url . "/cms/index.php?return=1";
+                    $responseLink = $base_url . "/home.php";
+
+                ?>
+                    <form id="admissionPay" action="<?php echo $base_url;?>/thirdparty/paymentadm/razorpay/pay.php" method="post" style="text-align:center;">
+                        <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
+                        <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
+                        <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+
+                        <input type="hidden" name="mid" id="mid" value="WL0000000009424">
+                        <input type="hidden" name="enckey" id="enckey" value="4d6428bf5c91676b76bb7c447e6546b8">
+                        <input type="hidden" name="campaignid" value="<?php echo $id; ?>">
+                        <input type="hidden" name="sid" value="0">
+                        <input type="hidden" class="applicantName" name="name" value="">
+                        <input type="hidden" class="applicantEmail" name="email" value="">
+                        <input type="hidden" class="applicantPhone" name="phone" value="">
+
+                        <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+                        <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                        <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+
+                        <button type="submit" class="btnPay btn btn-primary" style="display:none;" id="payAdmissionFee">Pay</button>
+                    </form>
+
+                <?php } elseif ($gateway == 'PAYU') {
+                    $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                    //$responseLink = $base_url . "/cms/index.php?return=1";
+                    $responseLink = $base_url . "/home.php";
+                ?>
+                    <form id="admissionPay" action="<?php echo $base_url;?>/thirdparty/payment/payu/checkout.php" method="post" style="text-align:center;">
+                        <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
+                        <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="OrderId">
+                        <input type="hidden" name="amount" value="<?php echo $applicationAmount; ?>">
+
+                        <input type="hidden" name="campaignid" value="<?php echo $id; ?>">
+                        <input type="hidden" name="sid" value="0">
+                        <input type="hidden" class="applicantName" name="name" value="">
+                        <input type="hidden" class="applicantEmail" name="email" value="">
+                        <input type="hidden" class="applicantPhone" name="phone" value="">
+
+                        <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+                        <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                        <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+
+                        <button type="submit" class="btnPay btn btn-primary" style="display:none;" id="payAdmissionFee">Pay</button>
+                    </form>
+                <?php } elseif ($gateway == 'AIRPAY') {
+                    $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
+                    //$responseLink = $base_url . "/cms/index.php?return=1";
+                    $responseLink = $base_url . "/home.php";
+                    $airpayamount = number_format($applicationAmount, 2, '.', '');
+                ?>
+                    <form id="admissionPay" action="<?php echo $base_url;?>/thirdparty/payment/airpay/sendtoairpay.php" method="post" style="text-align:center;">
+                        <input type="hidden" name="payment_gateway_id" value="<?php echo $gatewayID; ?>">
+                        <input type="hidden" value="<?php echo $orderId; ?>" id="OrderId" name="orderid">
+                        <input type="hidden" name="amount" value="<?php echo $airpayamount; ?>">
+
+                        <input type="hidden" name="campaignid" value="<?php echo $id; ?>">
+                        <input type="hidden" name="sid" value="0">
+                        <input type="hidden" class="applicantName" name="buyerFirstName" value="">
+                        <input type="hidden" class="applicantName" name="buyerLastName" value="">
+                        <input type="hidden" class="applicantEmail" name="buyerEmail" value="">
+                        <input type="hidden" class="applicantAirPayPhone" name="buyerPhone" value="">
+
+                        <input type="hidden" class="buyerAddress" name="buyerAddress" value="">
+                        <input type="hidden" class="buyerCity" name="buyerCity" value="">
+                        <input type="hidden" class="buyerState" name="buyerState" value="">
+                        <input type="hidden" class="buyerPinCode" name="buyerPinCode" value="">
+                        <input type="hidden" class="buyerCountry" name="buyerCountry" value="">
+                        <input type="hidden" class="ptype" name="ptype" value="admission">
+
+                        <input type="hidden" name="callbackurl" id="responseUrl" value="<?= $responseLink ?>">
+                        <input type="hidden" value="<?php echo $orgData['title']; ?>" id="organisationName" name="organisationName">
+                        <input type="hidden" value="<?php echo $orgData['logo_image']; ?>" id="organisationLogo" name="organisationLogo">
+
+                        <button type="submit" class="btnPay btn btn-primary" style="display:none;" id="payAdmissionFee">Pay</button>
+                    </form>
+        <?php   }
+            }
+        } 
     }
     ?>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
@@ -343,6 +482,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             var fid = $("#fid").val();
             var clid = $("#class").val();
             var pupilsightPersonID = $("#pupilsightPersonID").val();
+            var chkfeeSett = $("#chkfeesett").val();
             if (val != '') {
                 var type = 'updateApplicantData';
                 setTimeout(function() {
@@ -355,16 +495,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                             pid: pid,
                             fid: fid,
                             clid: clid,
-                            pupilsightPersonID: pupilsightPersonID
+                            pupilsightPersonID: pupilsightPersonID,
+                            chkfeeSett: chkfeeSett
                         },
                         async: true,
                         success: function(response) {
-                            $("#downloadLink")[0].click();
-                            alert('Your Application Submitted Successfully, We Will get back to you Soon!');
-                            window.location.href = 'index.php?q=/modules/Campaign/check_status.php';
                             // $('html, body').animate({
                             //     scrollTop: $("#showdiv").offset().top
                             // }, 2000);
+                            if (chkfeeSett == '2') {
+                                $("#progClassDiv").remove();
+                                $("#payAdmissionFee").show();
+                            } else {
+                                $("#downloadLink")[0].click();
+                                alert('Your Application Submitted Successfully, We Will get back to you Soon!');
+                                window.location.href = 'index.php?q=/modules/Campaign/check_status.php';
+                            }
                         }
                     });
                 }, 500);

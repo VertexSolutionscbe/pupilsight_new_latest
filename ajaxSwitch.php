@@ -627,7 +627,9 @@ if (isset($_POST['type'])) {
 
 
 
-                    $class_section = $valuestu["class"] . " " . $valuestu["section"];
+                    $class_section = $valuestu["class"] . " - " . $valuestu["section"];
+                    $class_name = $valuestu["class"];
+                    $section_name = $valuestu["section"];
                     $payment_receipt_date = date('d-m-Y', strtotime($payment_date));
                     if(!empty($instrument_date)){
                         $instrument_receipt_date = date('d-m-Y', strtotime($instrument_date));
@@ -923,6 +925,8 @@ if (isset($_POST['type'])) {
                         "mother_name" => $mother_name,
                         "program_name" => $valuestu["progname"],
                         "class_section" => $class_section,
+                        "class_name" => $class_name,
+                        "section_name" => $section_name,
                         "instrument_date" => $instrument_receipt_date,
                         "instrument_no" => $instrument_no,
                         "transcation_amount" => number_format($amount_paying, 2, '.', ''),
@@ -942,7 +946,8 @@ if (isset($_POST['type'])) {
                         "inv_total" => number_format($totalamtWitoutTaxDis, 2, '.', ''),
                         "concat_invoice_title" => htmlspecialchars($concatInvoiceTitle),
                         "total_amount_discount" => number_format($discount, 2, '.', ''),
-                        "total_amount_pending" => number_format($totalPending, 2, '.', '')
+                        "total_amount_pending" => number_format($totalPending, 2, '.', ''),
+                        "remarks" => $remarks
                     );
 
                     

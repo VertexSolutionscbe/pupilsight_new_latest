@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
         $getstaff= $resultp->fetchAll();
         
     
-        $sqld = 'SELECT a.name, a.pupilsightDepartmentID AS sub_id, b.id FROM pupilsightDepartment AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE b.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND b.pupilsightProgramID = '.$pupilsightProgramID.' AND b.pupilsightYearGroupID = '.$pupilsightYearGroupID.'';
+        $sqld = 'SELECT a.name, a.pupilsightDepartmentID AS sub_id FROM pupilsightDepartment AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE b.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND b.pupilsightProgramID = '.$pupilsightProgramID.' AND b.pupilsightYearGroupID = '.$pupilsightYearGroupID.'';
         $resultd = $connection2->query($sqld);
         $getsub= $resultd->fetchAll();
 
@@ -185,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
                     foreach($getsub as $sub){
                         $subname = $sub['name'];
                         if($subname){
-                            $subid = $sub['id'];
+                            $subid = $sub['sub_id'];
                             echo "\n<div class='m-2' style='line-height:20px;'>";
                             echo "\n<input type=\"checkbox\" name=\"selected_sub[]\" id=\"".$subid."\" value='".$subid."'>";
                             echo "<label class='ml-2' for=\"".$subid."\">".ucwords($subname)."</label></div>";

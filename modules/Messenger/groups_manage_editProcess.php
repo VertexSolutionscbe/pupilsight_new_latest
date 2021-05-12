@@ -29,6 +29,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         $choices4 = isset($_POST['pupilsightPersonID'])? $_POST['pupilsightPersonID'] : array();
         $choices5 = isset($_POST['pupilsightYearGroupID1'])? $_POST['pupilsightYearGroupID1'] : array();
         $pupilsightSchoolYearID=$_POST['pupilsightSchoolYearID1'];
+
+        if(!empty($_POST['is_chat'])){
+            $is_chat = $_POST['is_chat'];
+        } else {
+            $is_chat = '0';
+        }
         if (empty($name)) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
@@ -48,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
                 header("Location: {$URL}");
                 exit;
             } else {
-                $data = array('pupilsightGroupID' => $pupilsightGroupID, 'name' => $name);
+                $data = array('pupilsightGroupID' => $pupilsightGroupID, 'name' => $name, 'is_chat' => $is_chat);
                 $updated = $groupGateway->updateGroup($data);
                 $partialFail = false;
 
