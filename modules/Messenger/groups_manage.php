@@ -144,6 +144,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', true, true]));
 
     $table->addColumn('count', __('Group Members'))->sortable();
+    $table->addColumn('is_chat', __('Include In Chat'))
+    ->format(function ($groups) {
+        if ($groups['is_chat'] == '1') {
+            return 'Active';
+        } else {
+            return '';
+        }
+        return $groups['is_chat'];
+    });
 
     $table->addActionColumn()
         ->addParam('pupilsightGroupID')

@@ -261,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
             $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('is_chat', __('Chat'));
+            $col->addLabel('is_chat', __('Include In Chat Module'));
             $col->addCheckBox('is_chat')->addClass('txtfield')->setValue('1');
 
             $col = $row->addColumn()->setClass('newdes noEdit');
