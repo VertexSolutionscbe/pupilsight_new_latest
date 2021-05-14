@@ -34,7 +34,7 @@ class GroupGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'pupilsightGroup.pupilsightGroupID', 'pupilsightGroup.name', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'COUNT(DISTINCT pupilsightGroupPersonID) as count', 'pupilsightSchoolYear.name as schoolYear'
+                'pupilsightGroup.pupilsightGroupID', 'pupilsightGroup.name', 'pupilsightGroup.is_chat', 'pupilsightPerson.surname', 'pupilsightPerson.preferredName', 'COUNT(DISTINCT pupilsightGroupPersonID) as count', 'pupilsightSchoolYear.name as schoolYear'
             ])
             ->innerJoin('pupilsightSchoolYear', 'pupilsightSchoolYear.pupilsightSchoolYearID=pupilsightGroup.pupilsightSchoolYearID')
             ->leftJoin('pupilsightGroupPerson', 'pupilsightGroupPerson.pupilsightGroupID=pupilsightGroup.pupilsightGroupID')
