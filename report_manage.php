@@ -13,7 +13,12 @@ try {
     //$fileDownloadType = "xlsx"; // for excel keep blank
 
     //p.admission_no
-    $today = date("Y-m-d");
+    if(isset($_GET['dt'])){
+        $today = date("Y-m-d",strtotime($_GET['dt']));
+    }else{
+        $today = date("Y-m-d");
+    }
+    
     $sq =
         "select p.pupilsightPersonID, p.officialName, CONCAT(cl.name, '-',sec.name) as grade, fn.receipt_number,
         IFNULL(fm.name,'online') as payment_mode, fn.dd_cheque_date, fn.dd_cheque_no, 
@@ -27,7 +32,7 @@ try {
           left join fn_masters as bnk on fn.bank_id = bnk.id
           where fn.amount_paying is not null and fn.payment_date ='" .
         $today .
-        "' and e.pupilsightSchoolYearID='3'
+        "' and e.pupilsightSchoolYearID='3' group by fn.pay_gateway_id
           order by p.officialName asc";
 
     //echo $sq;
@@ -145,7 +150,7 @@ try {
     $html .= "</html>";
 
     if ($fileDownloadType == "html") {
-        $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/test.html";
+        $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/report.html";
 
         file_put_contents($fileName, $html);
 
@@ -182,7 +187,7 @@ try {
         //$sheet->getActiveSheet()->mergeCells("A1:E1");
 
         $writer = new Xlsx($spreadsheet);
-        $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/hello_world.xlsx";
+        $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/report.xlsx";
         $writer->save($fileName);
 
         header(
