@@ -138,6 +138,8 @@ if ($type == "postMessage") {
         $msg = null;
         $people = null;
         $delivery_type = null;
+        $group_id = null;
+        $group_name = null;
         $flag = true;
 
         if (isset($_POST["msg"])) {
@@ -165,6 +167,13 @@ if ($type == "postMessage") {
                 }  
             }
         }
+
+        if (isset($_POST["group_id"])) {
+            $group_id = $_POST["group_id"];
+        }
+        if (isset($_POST["group_id"])) {
+            $group_name = $_POST["group_name"];
+        }
         
         if ($flag) {
             try {
@@ -185,7 +194,7 @@ if ($type == "postMessage") {
                 $timestamp = time();
                 //$sq ="insert into chat_message(id, chat_parent_id, cuid, pupilsightSchoolYearID, msg_type, attachment, msg, cdt, timestamp)";
                 $sq =
-                    "insert into chat_message(id, cuid, pupilsightSchoolYearID, msg_type, attachment, delivery_type, msg, cdt, udt, timestamp)";
+                    "insert into chat_message(id, cuid, pupilsightSchoolYearID, msg_type, attachment, delivery_type, group_id, group_name, msg, cdt, udt, timestamp)";
                 $sq .=
                     "values('" .
                     $id .
@@ -199,7 +208,7 @@ if ($type == "postMessage") {
                     $attachment .
                     "','" .
                     $delivery_type .
-                    "','" .
+                    "','".$group_id."','".$group_name."','" .
                     nl2br(addslashes(htmlspecialchars($msg))) .
                     "','" .
                     $cdt .
@@ -331,43 +340,45 @@ if ($type == "postMessage") {
 
                 if ($delivery_type == "individual") {
                     $sqi = "insert into chat_share ";
-                    $sqi .=
-                        "(id, chat_msg_id, uid, isread, cdt, udt, timestamp) values ";
+                    $sqi .="(id, chat_msg_id, uid, isread, cdt, udt, timestamp) values ";
 
-                    $sqshare =
-                        "select uid from chat_share where chat_msg_id='" .
-                        $chat_parent_id .
-                        "' ";
+                    $sqshare ="select uid from chat_share where chat_msg_id='" .$chat_parent_id ."' ";
                     $query = $connection2->query($sqshare);
                     $res = $query->fetchAll();
+                    $flag = false; 
                     if ($res) {
                         $len = count($res);
                         $i = 0;
                         $sqi .= "";
                         while ($i < $len) {
                             $cid = createSuperKey();
-
                             if ($i > 0) {
                                 $sqi .= ",";
                             }
-                            $sqi .=
-                                "('" .
-                                $cid .
-                                "','" .
-                                $id .
-                                "','" .
-                                $res[$i]["uid"] .
-                                "','1','" .
-                                $cdt .
-                                "','" .
-                                $cdt .
-                                "','" .
-                                $timestamp .
-                                "')";
+                            $sqi .="('" .$cid ."','" .$id ."','" .$res[$i]["uid"] ."','1','" .$cdt ."','" .$cdt ."','" .$timestamp ."')";
+                            $i++;
+                            $flag = true; 
+                        }
+                    }
+
+                    $sqshare1 ="select cuid as uid from chat_message where id='" .$chat_parent_id ."' ";
+                    $query1 = $connection2->query($sqshare1);
+                    $res1 = $query1->fetchAll();
+                    if ($res1) {
+                        $len = count($res1);
+                        $i = 0;
+                        while ($i < $len) {
+                            $cid = createSuperKey();
+                            if ($flag) {
+                                $sqi .= ",";
+                            }else{
+                                $flag = true;
+                            }
+                            $sqi .="('" .$cid ."','" .$id ."','" .$res1[$i]["uid"] ."','1','" .$cdt ."','" .$cdt ."','" .$timestamp ."')";
                             $i++;
                         }
                     }
-                    //echo $sqi;
+                    
                     if ($sqi) {
                         $connection2->query($sqi);
                         resetSuperKey();
@@ -410,20 +421,19 @@ if ($type == "postMessage") {
             $sq .= " left join chat_share as cs on cm.id=cs.chat_msg_id ";
         }
 
+        $sq .=" where cm.msg is not null ";
+        if($roleid != "001"){
+            $sq .=" and cm.cuid='".$cuid."' ";
+        }
+
         if ($lts) {
-            $sq .= " where cm.timestamp > " . $lts . " ";
-            $isWhereAdded = true;
+            $sq .= " and cm.timestamp > " . $lts . " ";
         }
 
         if ($roleid == "003" || $roleid == "004") {
-            if (!$isWhereAdded) {
-                $sq .= " where ";
-            } else {
-                $sq .= " and ";
-            }
-            $sq .= " (cm.delivery_type in('all_students','all') ";
-            $sq .= " or cs.uid='" . $cuid . "') ";
+            $sq .= " or (cm.delivery_type in('all_students','all') or cs.uid='" . $cuid . "') ";
         }
+        //for other role we need to 
 
         $sq .= " order by cm.cdt desc limit 0, 10000 ";
         //echo $sq;

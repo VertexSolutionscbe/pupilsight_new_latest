@@ -74,6 +74,7 @@ class HelperGateway extends QueryableGateway
         $classes = $classes1 + $classes2;
         return $classes;
     }
+
     public function getClassByProgram_Attconfig($connection2, $pupilsightProgramID, $pupilsightSchoolYearID) {
         $sq = 'SELECT pupilsightYearGroupID FROM attn_settings WHERE pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND pupilsightProgramID = "' . $pupilsightProgramID . '" ';
         if ($att_type != "") {
@@ -225,6 +226,49 @@ class HelperGateway extends QueryableGateway
         }
         } 
         return $array;
+    }
+
+    public function getClassTeacher($connection2, $pupilsightSchoolYearID, $pupilsightPersonID) {
+        $res = array();
+        if($pupilsightSchoolYearID && $pupilsightPersonID){
+            $sql = "select pupilsightYearGroupID,pupilsightProgramID,pupilsightRollGroupID  from pupilsightStudentEnrolment ";
+            $sql .=" where pupilsightSchoolYearID='".$pupilsightSchoolYearID."' and pupilsightPersonID='".$pupilsightPersonID."' ";       
+
+            $query = $connection2->query($sql);
+            $result = $query->fetch();
+            $pupilsightYearGroupID = $result["pupilsightYearGroupID"];
+            $pupilsightProgramID = $result["pupilsightProgramID"];
+            $pupilsightRollGroupID = $result["pupilsightRollGroupID"];
+            
+            $sq1 = "SELECT pupilsightPersonID FROM assign_class_teacher_section 
+            where pupilsightSchoolYearID='".$pupilsightSchoolYearID."' 
+            and pupilsightYearGroupID='".$pupilsightYearGroupID."' 
+            and pupilsightProgramID='".$pupilsightProgramID."' 
+            and pupilsightRollGroupID='".$pupilsightRollGroupID."' ";
+
+            $query1 = $connection2->query($sq1);
+            $result1 = $query1->fetch();
+            
+            $sq = "select stc.subject_display_name, subject_type, ps.pupilsightPersonID from subjectToClassCurriculum as stc
+            left join assignstaff_tosubject as asub on asub.subjectToClassCurriculumID = stc.id
+            left join pupilsightStaff as ps on ps.pupilsightStaffID = asub.pupilsightStaffID
+            where stc.pupilsightSchoolYearID='".$pupilsightSchoolYearID."' 
+            and stc.pupilsightYearGroupID='".$pupilsightYearGroupID."' 
+            and stc.pupilsightProgramID='".$pupilsightProgramID."' and ps.pupilsightPersonID is not null ";
+            
+            $query3 = $connection2->query($sq);
+            $res["sublist"] = $query3->fetchAll();
+            $res["pupilsightPersonID"] = $result1["pupilsightPersonID"];
+        }
+        return $res;
+    }
+
+    public function getGroupList($connection2, $pupilsightSchoolYearID){
+            $sq = "select group_concat(pg.pupilsightPersonID) as uid, g.name, g.pupilsightGroupID as groupid FROM pupilsightGroup as g 
+            left join pupilsightGroupPerson as pg on pg.pupilsightGroupID = g.pupilsightGroupID
+            where g.is_chat=1 and g.pupilsightSchoolYearID='".$pupilsightSchoolYearID."' and pg.pupilsightPersonID is not null group by g.pupilsightGroupID; ";
+            $query = $connection2->query($sq);
+            return $query->fetchAll();
     }
          //get sort val name in attendance_take_byRollGroupListView using
     public function getSortValByName($type){

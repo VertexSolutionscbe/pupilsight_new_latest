@@ -4,6 +4,7 @@
 }
 </style>
 <?php
+
 /*
 Pupilsight, Flexible & Open School System
 */
@@ -13,7 +14,6 @@ use Pupilsight\Contracts\Comms\SMS;
 use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Domain\Helper\HelperGateway;
 use Pupilsight\Services\Format;
-
 use Pupilsight\Domain\Messenger\GroupGateway;
 use Pupilsight\Tables\DataTable;
 ?>
@@ -37,14 +37,27 @@ if (isActionAccessible(
 }*/
 
 if ($accessFlag) {
-
+    
+    $helperGateway = $container->get(HelperGateway::class);
     $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
     $isPostAllow = true;
+    $isStParent = false; // student and parent post
     if ($roleid == "003") {
         $isPostAllow = false;
+        $isStParent = true;
     } elseif ($roleid == "004") {
         $isPostAllow = false;
+        $isStParent = true;
     }
+    
+    if($isStParent){
+        $pupilsightSchoolYearID  =$_SESSION[$guid]["pupilsightSchoolYearID"];
+        $pupilsightPersonID  =$_SESSION[$guid]["pupilsightPersonID"];
+        $stSubList = $helperGateway->getClassTeacher($connection2, $pupilsightSchoolYearID, $pupilsightPersonID);
+        $groupList = $helperGateway->getGroupList($connection2, $pupilsightSchoolYearID);
+    }
+    
+    
     if ($isPostAllow) { ?>
 <!---Chat Post Widget---->
 <div class="card" id='chatPostWidget'>
@@ -113,9 +126,70 @@ if ($accessFlag) {
     </div>
 </div>
 </div>
-<?php }
+<?php }else if($isStParent){
     ?>
+<div class="card" id='chatStPostWidget'>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4 col-sm-12">
+                <select id='stGroup' onchange="stGroupChange()">
+                    <option value="">Select Type</option>
+                    <?php
+                        if($stSubList["pupilsightPersonID"]){
+                            echo "<option value='".$stSubList["pupilsightPersonID"]."' groupid='' groupname='Class Teacher'>Class Teacher</option>";
+                        }
+                        echo "<option value='subject_teacher' groupid='' groupname='Subject Teacher'>Subject Teacher(s)</option>";
+                        
+                        if($groupList){
+                            $len = count($groupList);
+                            $i = 0;
+                            while($i<$len){
+                                echo "<option value='".$groupList[$i]["uid"]."' groupid='".$groupList[$i]["groupid"]."' groupname='".$groupList[$i]["name"]."'>".$groupList[$i]["name"]."</option>";
+                                $i++;
+                            }
+                        }
+                    ?>
+                </select>
+            </div>
 
+            <div class="col-md-4 col-sm-12">
+                <select id='stSubject'>
+                    <?php
+                        $sublist = $stSubList["sublist"];
+                        $len = count($sublist);
+                        $i = 0;
+                        while($i<$len){
+                            echo "<option value='".$sublist[$i]["pupilsightPersonID"]."'>".$sublist[$i]["subject_display_name"]."</option>";
+                            $i++;
+                        }
+                    ?>
+                </select>
+            </div>
+
+            <div class="col-12 my-3">
+                <textarea class="form-control" id="st_chat_message" name="chat_message" rows="6"
+                    placeholder="Write Message Here"></textarea>
+            </div>
+
+            <div class="col-12 my-1">
+                <div class="form-label">Attachment</div>
+                <form enctype="multipart/form-data" id="st_post_form">
+                    <input type="file" id='st_post_attachment' name="attachment" class='form-control'>
+                </form>
+            </div>
+
+            <div class="col-12 mt-4">
+                <button type="button" class="btn btn-primary" id='postStBtn' onclick="postStMessage();">Post
+                    Message</button>
+                <button type="button" class="btn btn-secondary ml-2" onclick="closeStChatBox();">Cancel</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<?php
+}
+?>
 <div class="card" id='chatReplyWidget'>
     <div class="card-body">
         <div class="row">
@@ -133,7 +207,8 @@ if ($accessFlag) {
             </div>
         </div>
         <div class="col-12">
-            <button type="button" class="btn btn-primary" id='replyBtn' onclick="replyMessage();">Reply Message</button>
+            <button type="button" class="btn btn-primary" id='replyBtn' onclick="replyMessage();">Reply
+                Message</button>
             <button type="button" class="btn btn-secondary ml-2" onclick="closeReplyBox();">Cancel</button>
         </div>
     </div>
@@ -150,45 +225,104 @@ if ($accessFlag) {
                     <h2>Chat Message</h2>
                 </div>
                 <div class='col-auto ml-auto'>
-                    <?php if ($isPostAllow) { ?>
-                    <button class='btn btn-primary' onclick="openChatBox();">Post New Message</button>
-                    <?php } ?>
+                    <?php if ($isPostAllow) { 
+                        echo "<button class='btn btn-primary' onclick='openChatBox();'>Post New Message</button>";
+                     } else if($isStParent){
+                        echo "<button class='btn btn-primary' onclick='openStChatBox();'>Post New Message</button>";
+                    } ?>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card-body" id='cardMessage'>
-        <!--
-				<div class='row border py-2' id=''>
-					<div class='col-auto my-2'>
-					<span class='avatar'>HS</span>
-					</div>
-					<div class='col'>
-					<div class='text-truncate'>
-					<strong>Rakesh Kumar</strong> As you are aware that we have gone live with parents login for St. Josephs Indian High School yesterday and parents are logging into the portal access their respective wards information. 
-					The school has asked the parents to make the fee payment online and the payment gateway is configured to accept the payments.
-					Parents have been making the fee payment online from today, however parents reached out to use saying they logged into pupilpod 
-					and made the payment of Rs. 15,000/- but once the payment is made they get no response and the page just freezes there with no details of the 
-					payment or invoice. When they login to the portal the invoice to which the payment was made is still showing as Not Paid where the amount has been 
-					deducted from there respective Bank account and they also got SMS saying the transaction is successful.
-					</div>
-					<div class='text-muted'> 
-						<span>12.25pm</span>
-						<button class='btn btn-link'><i class='mdi mdi-book-open-variant mr-1'></i> Read more</button>
-						<button class='btn btn-link'><i class='mdi mdi-message-reply mr-1'></i> Reply</button>
-					</div>
-					</div>
-					<div id='cardReply'></div>
-				</div>
-				-->
-
-    </div>
+    <!--Card Message Check-->
+    <div class="card-body" id='cardMessage'></div>
 
 </div>
-<?php
+
+<script>
+function openStChatBox() {
+    $("#chatStPostWidget").show(400);
+    $("#st_chat_message").val("");
+    $("#st_post_attachment").val("");
 }
-?>
+
+function closeStChatBox() {
+    $("#chatStPostWidget").hide(400);
+    $("#st_chat_message").val("");
+    $("#st_post_attachment").val("");
+}
+
+function stGroupChange() {
+    var stgroup = $("#stGroup").val();
+    if (stgroup == "subject_teacher") {
+        $("#stSubject").show(400);
+    } else {
+        $("#stSubject").hide(400);
+    }
+}
+
+function postStMessage() {
+    var msg = $("#st_chat_message").val();
+    if (msg == "") {
+        alert("Please enter your message");
+        return;
+    }
+
+    var stGroup = $("#stGroup").val();
+    if (stGroup == "") {
+        alert("Please select group type or class teacher");
+        return;
+    }
+
+    var people = stGroup;
+    if (stGroup == "subject_teacher") {
+        people = $("#stSubject").val();
+    }
+
+    var delivery_type = "individual";
+
+    var groupid = $("#stGroup").find(':selected').attr('groupid');
+    var groupName = $("#stGroup").find(':selected').attr('groupname');
+
+
+    var data = new FormData(document.getElementById("st_post_form"));
+    data.append("type", "postMessage");
+    data.append("msg_type", "2");
+    data.append("people", people);
+    data.append("group_id", groupid);
+    data.append("group_name", groupName);
+    data.append("delivery_type", delivery_type);
+    data.append("msg", msg);
+    //console.log(data);
+
+
+    if (msg) {
+        $("#postStBtn").prop('disabled', true);
+        $.ajax({
+            url: 'ajax_chat.php',
+            type: 'post',
+            contentType: false,
+            cache: false,
+            processData: false,
+            async: false,
+            data: data,
+            success: function(response) {
+                $("#postStBtn").prop('disabled', false);
+                //console.log(response);
+                var obj = jQuery.parseJSON(response);
+                loadMessage();
+                if (obj.status == "1") {
+                    closeStChatBox();
+                }
+                alert(obj.msg);
+            }
+        });
+    } else {
+        alert("Message is empty.");
+    }
+}
+</script>
 <script>
 function isValidFile(id) {
     var ext = $('#' + id).val().split('.').pop().toLowerCase();
@@ -207,7 +341,7 @@ function isValidFile(id) {
 $('#post_attachment').on('change', function() {
     /*var file = this.files[0];
     if (file.size > 1024) {
-      alert('max upload size is 1k');
+    alert('max upload size is 1k');
     }*/
     //isValidFile("post_attachment");
     // Also see .name, .type
@@ -277,7 +411,7 @@ $(function() {
     interval = setInterval(() => {
         loadMessage();
     }, 10000);
-    $("#chatPostWidget, #chatReplyWidget").hide();
+    $("#chatPostWidget, #chatReplyWidget, #stSubject, #chatStPostWidget").hide();
 });
 
 var transcation = 400;
@@ -318,8 +452,6 @@ function replyPost(chat_parent_id, deliveryType) {
     $("#reply_attachment").val("");
     document.getElementById("chatReplyWidget").focus();
 }
-
-
 
 function postMessage() {
     var msg = $("#chat_message").val();
@@ -442,8 +574,6 @@ function loadMessage() {
     });
 }
 
-
-
 function createCardMessage(obj) {
     //console.log("test card message: ",obj);
     var replyBtn = "";
@@ -455,17 +585,21 @@ function createCardMessage(obj) {
     var attachment = "";
     if (obj["attachment"]) {
         attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" +
-            obj[
-                "attach_file"] + "</a></div>";
+            obj["attach_file"] + "</a></div>";
     }
 
+    var groupName = "";
+    if (obj["group_name"]) {
+        groupName = "<span class='ml-2 px-2 bg-blue-lt'>" + obj["group_name"] + "</span>";
+    }
     var str =
         `<div class='row border py-2 my-2' id='` + obj["id"] + `'>
 			<div class='col-auto my-2'>
 			<span class='avatar'>` + obj["shortName"] + `</span>
 			</div>
 			<div class='col'>
-            <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span></div>
+            <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span>` +
+        groupName + `</div>
 			<div class='text-truncate' id='msg_` + obj["id"] + `'>` + obj["msg"] + `
 			</div>` + attachment + `
 			<div><a href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read more</a>
@@ -535,3 +669,5 @@ function createCardMessageReply(obj) {
     }
 }
 </script>
+<?php
+}

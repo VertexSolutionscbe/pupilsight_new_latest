@@ -1,1 +1,4 @@
-{}
+{
+    "editor.formatOnSave": true,
+    "files.autoSaveDelay": 10000
+}
