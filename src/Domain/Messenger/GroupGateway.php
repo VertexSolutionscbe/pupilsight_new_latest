@@ -39,7 +39,8 @@ class GroupGateway extends QueryableGateway
             ->innerJoin('pupilsightSchoolYear', 'pupilsightSchoolYear.pupilsightSchoolYearID=pupilsightGroup.pupilsightSchoolYearID')
             ->leftJoin('pupilsightGroupPerson', 'pupilsightGroupPerson.pupilsightGroupID=pupilsightGroup.pupilsightGroupID')
             ->leftJoin('pupilsightPerson', 'pupilsightPerson.pupilsightPersonID=pupilsightGroup.pupilsightPersonIDOwner')
-            ->groupBy(['pupilsightGroup.pupilsightGroupID']);
+            ->groupBy(['pupilsightGroup.pupilsightGroupID'])
+            ->orderBy(['pupilsightGroup.pupilsightGroupID DESC']);
         
         $query->where('pupilsightGroup.pupilsightSchoolYearID = :pupilsightSchoolYearID')
             ->bindValue('pupilsightSchoolYearID', $pupilsightSchoolYearID);
@@ -68,6 +69,8 @@ class GroupGateway extends QueryableGateway
             ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
             ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
             ->where('pupilsightGroupPerson.pupilsightGroupID = :pupilsightGroupID')
+            ->groupBy(['pupilsightStudentEnrolment.pupilsightPersonID'])
+            ->orderBy(['pupilsightStudentEnrolment.pupilsightPersonID DESC'])
             ->bindValue('pupilsightGroupID', $pupilsightGroupID);
 
         return $this->runQuery($query, $criteria);
