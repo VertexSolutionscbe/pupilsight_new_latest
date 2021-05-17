@@ -235,6 +235,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('', __('Complete Class'))->addClass('dte');
 
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('', __(''))->addClass('dte');
+
     $col = $row->addColumn()->setClass('newdes noEdit');
     $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
     $col->addSelect('pupilsightSchoolYearID1')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);
@@ -373,7 +376,7 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
     });
 
     $(document).on('change', '.pupilsightRollGroupIDP1', function() {
-        var id = $("#pupilsightRollGroupID").val();
+        //var id = $("#pupilsightRollGroupID").val();
         var yid = $('#pupilsightSchoolYearID').val();
         var pid = $('#pupilsightProgramID').val();
         var cid = $('#pupilsightYearGroupIDA').val();
@@ -382,11 +385,10 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
             url: 'ajax_data.php',
             type: 'post',
             data: {
-                val: id,
+                val: cid,
                 type: type,
                 yid: yid,
-                pid: pid,
-                cid: cid
+                pid: pid
             },
             async: true,
             success: function(response) {
@@ -419,18 +421,20 @@ $massdeleteurl = $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/" . $_
 //class with section
     $(document).on('change', '#pupilsightProgramID1', function() {
         var val = $(this).val();
+        var aid = $("#pupilsightSchoolYearID1").val();
         var type = "getclasswithSection";
-        if (val != "") {
+        if (val != "" && aid !='') {
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
                 data: {
                     val: val,
-                    type: type
+                    type: type,
+                    aid: aid
                 },
                 async: true,
                 success: function(response) {
-                    $("#pupilsightYearGroupIDB").html();
+                    $("#pupilsightYearGroupIDB").html('');
                     $("#pupilsightYearGroupIDB").append(response);
 
                 }

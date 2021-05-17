@@ -4293,3 +4293,24 @@ if ($type == 'resetpassword') {
     }
     
 }
+
+if ($type == 'getclasswithSection') {
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $pupilsightSchoolYearID = $_POST['aid'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    $pid = implode(",", $val);
+    
+    $sql = 'SELECT a.*, b.name as clsName, c.name as secName FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID IN (' . $pid . ') GROUP BY a.pupilsightRollGroupID';
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+    // echo '<pre>';
+    // print_r($classes);
+    // echo '</pre>';
+    $data = '<option value="">Select Class</option>';
+    if (!empty($classes)) {
+        foreach ($classes as $k => $cl) {
+            $data .= '<option value="' . $cl['pupilsightProgramID'] . '-' .$cl['pupilsightYearGroupID'] .'-' .$cl['pupilsightRollGroupID'] . '">' . $cl['clsName'] .' - '. $cl['secName'] .'</option>';
+        }
+    }
+    echo $data;
+}

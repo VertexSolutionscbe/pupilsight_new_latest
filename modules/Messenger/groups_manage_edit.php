@@ -246,6 +246,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             $col = $row->addColumn()->setClass('newdes');
             $col->addLabel('', __('Complete Class'))->addClass('dte');
 
+            $col = $row->addColumn()->setClass('newdes');
+            $col->addLabel('', __(''))->addClass('dte');
+
             $col = $row->addColumn()->setClass('newdes noEdit');
             $col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
             $col->addSelect('pupilsightSchoolYearID1')->fromArray($academic)->selected($pupilsightSchoolYearIDpost);
@@ -413,25 +416,28 @@ $(document).on('change', '.pupilsightRollGroupIDP1', function() {
             $("#pupilsightPersonID").append(response);
         }
     });
-});
 
-$(document).on('change', '.load_configSession', function() {
-    var id = $('#pupilsightProgramID').val();
-    var pupilsightYearGroupID = $('#pupilsightYearGroupIDA').val();
-    var type = 'getsessionConfigured';
-    $.ajax({
-        url: 'ajax_data.php',
-        type: 'post',
-        data: {
-            val: id,
-            pupilsightYearGroupID: pupilsightYearGroupID,
-            type: type
-        },
-        async: true,
-        success: function(response) {
-            $("#session").html();
-            $("#session").html(response);
-        }
+    $(document).on('change', '.pupilsightRollGroupIDP1', function() {
+        //var id = $("#pupilsightRollGroupID").val();
+        var yid = $('#pupilsightSchoolYearID').val();
+        var pid = $('#pupilsightProgramID').val();
+        var cid = $('#pupilsightYearGroupIDA').val();
+        var type = 'getStudentClassAndSection';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: {
+                val: cid,
+                type: type,
+                yid: yid,
+                pid: pid
+            },
+            async: true,
+            success: function(response) {
+                $("#pupilsightPersonID").html();
+                $("#pupilsightPersonID").append(response);
+            }
+        });
     });
 });
 
@@ -449,8 +455,30 @@ $(document).on('change', '#pupilsightProgramID1', function() {
             },
             async: true,
             success: function(response) {
-                $("#pupilsightYearGroupIDB").html();
-                $("#pupilsightYearGroupIDB").append(response);
+                $("#session").html();
+                $("#session").html(response);
+            }
+        });
+    });
+
+    //class with section
+    $(document).on('change', '#pupilsightProgramID1', function() {
+        var val = $(this).val();
+        var aid = $("#pupilsightSchoolYearID1").val();
+        var type = "getclasswithSection";
+        if (val != "") {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: {
+                    val: val,
+                    type: type,
+                    aid: aid
+                },
+                async: true,
+                success: function(response) {
+                    $("#pupilsightYearGroupIDB").html('');
+                    $("#pupilsightYearGroupIDB").append(response);
 
             }
         })
