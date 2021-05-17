@@ -900,6 +900,8 @@ $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
             });
 
         });
+        </script>
+        <script>
 
 
         function toWords(s) {
@@ -1026,10 +1028,18 @@ $title = isset($data["title"]) ? ucwords($data["title"]) : "Pupilpod";
                         success: function(response) {
                             $("#progClassDiv").remove();
                             //$("#downloadLink")[0].click();
+                            <?php
+                                if(strpos($baseurl,"gigis")>-1){
+                                   echo "location.href='".$baseurl."/contractForm.php';";
+                                }else{
+                            ?>
                             $("#application_view").addClass('iheight');
                             if (chkfeeSett == '2') {
                                 $("#payAdmissionFee").show();
                             }
+                            <?php
+                                }
+                            ?>
                         }
                     });
                 }, 500);

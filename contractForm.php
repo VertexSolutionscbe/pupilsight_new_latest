@@ -39,6 +39,51 @@ function getDomain()
 //$baseurl = getDomain().'/pupilsight';
 $baseurl = getDomain();
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if(isset($_SESSION['submissionId'])){
+    $subid = $_SESSION['submissionId'];
+    $data = $adminlib->getCampaignData($_SESSION['submissionId']);
+    $len = count($data);
+    $i = 0;
+    $dt = array();
+    while($i<$len){
+        $dt[$data[$i]["field_name"]] = $data[$i]["field_value"];
+        $i++;
+    }
+
+
+    $dt["parent_name"] = $dt["father_name"];
+    $dt["parent_immigration_status"] = $dt["father_immigration_status"];
+    $dt["parent_nationality"] = $dt["father_nationality"];
+    $dt["parent_email"] = $dt["father_email"];
+    $dt["parent_passport_no"] = $dt["father_passport_no"];
+    $dt["parent_passport_expiry"] =  $dt["father_passport_expiry"];
+    $dt["parent_nric_no"] =  $dt["father_nric_no"];
+    $dt["parent_nric_expiry"] = $dt["father_nric_expiry"];
+    $dt["parent_company_name"] =  $dt["father_company_name"];
+    $dt["parent_occupation"] =  $dt["father_occupation"];
+
+    if($dt["priority_contact"]=="Mother"){
+        $dt["parent_name"] = $dt["mother_name"];
+        $dt["parent_immigration_status"] = $dt["mother_immigration_status"];
+        $dt["parent_nationality"] = $dt["mother_nationality"];
+        $dt["parent_email"] = $dt["mother_email"];
+        $dt["parent_passport_no"] = $dt["mother_passport_no"];
+        $dt["parent_passport_expiry"] =  $dt["mother_passport_expiry"];
+        $dt["parent_nric_no"] =  $dt["mother_nric_no"];
+        $dt["parent_nric_expiry"] = $dt["mother_nric_expiry"];
+        $dt["parent_company_name"]=  $dt["mother_company_name"];
+        $dt["parent_occupation"] =  $dt["mother_occupation"];
+    }
+
+}else{
+    header("Location:".$baseurl);
+    die();
+}
+
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
 $hero_image = $baseurl . "/cms/images/welcome.png";
 $about_us = $baseurl . "/cms/images/about_us.png";
@@ -236,7 +281,7 @@ if (isset($_GET["invalid"])) {
                                 I,
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" name="parent_name" id="parent_name">
+                                <input type="text" class="form-control" name="parent_name" id="parent_name" value="<?=$dt["parent_name"];?>">
                             </div>
                             <div class="col-12 text-center font-italic">
                                 (Name of Parent/ Guardian)
@@ -244,11 +289,11 @@ if (isset($_GET["invalid"])) {
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="nric" id="nric">
+                                <input type="text" class="form-control" name="nric" id="nric" value="<?=$dt["parent_nric_no"];?>">
                                 <div class='text-center font-italic'>(NRIC)</div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="passport_number" id="passport_number">
+                                <input type="text" class="form-control" name="passport_number" id="passport_number" value="<?=$dt["parent_passport_no"];?>">
                                 <div class='text-center font-italic'>(Passport Number)</div>
                             </div>
                         </div>
@@ -260,7 +305,7 @@ if (isset($_GET["invalid"])) {
                                 For myself/ my ward**
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" name="parent_name" id="parent_name">
+                                <input type="text" class="form-control" name="parent_name" id="parent_name" value="<?=$dt["parent_name"];?>">
                             </div>
                             <div class="col-12 mb-3">
                                 <div class='text-center font-italic'>(Name of Child)</div>
@@ -268,12 +313,12 @@ if (isset($_GET["invalid"])) {
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="st_nric" id="st_nric">
+                                <input type="text" class="form-control" name="st_nric" id="st_nric" value="<?=$dt["student_nric_no"];?>">
                                 <div class='text-center font-italic'>(NRIC)</div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
                                 <input type="text" class="form-control" name="st_passport_number"
-                                    id="st_passport_number">
+                                    id="st_passport_number" value="<?=$dt["student_passport_no"];?>">
                                 <div class='text-center font-italic'>(Passport Number)</div>
                             </div>
                         </div>
@@ -291,7 +336,7 @@ if (isset($_GET["invalid"])) {
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-12 my-3">
-                                <input type="date" class="form-control" name="date" id="date">
+                                <input type='text' class="form-control" name="date" id="date" value='<?= date("m/d/Y");?>'>
                                 <div class="text-center font-italic">(Date)</div>
                             </div>
                         </div>
@@ -326,7 +371,7 @@ if (isset($_GET["invalid"])) {
                                             <div class="col-md-6 col-sm-12 my-3">Full Name of Student
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
-                                                    name="student_name" id="student_name"></div>
+                                                    name="student_name" id="student_name" value="<?=$dt["student_name"];?>"></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-12 my-3">(as in NRIC for Singapore Citizen (SC) and
@@ -336,13 +381,13 @@ if (isset($_GET["invalid"])) {
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">NRIC Number (for SC/PR)*</div>
                                             <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
-                                                    name="nric_number" id="nric_number" required></div>
+                                                    name="nric_number" id="nric_number" required value="<?=$dt["student_nric_no"];?>"></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">Student’s Pass Number (if
                                                 available)/<br />Passport Number (for international student)*</div>
                                             <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
-                                                    name="st_pass_number" id="st_pass_number" required></div>
+                                                    name="st_pass_number" id="st_pass_number" required value="<?=$dt["student_passport_no"];?>"></div>
                                         </div>
                                     </li>
                                     <li>
@@ -350,13 +395,13 @@ if (isset($_GET["invalid"])) {
                                             <div class="col-md-6 col-sm-12 my-3">Full Name of Parent/Legal
                                                 Guardian*<br />(if Student is under eighteen (18) years of age)</div>
                                             <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
-                                                    name="parent_legal_name" id="parent_legal_name" required></div>
+                                                    name="parent_legal_name" id="parent_legal_name" required value="<?=$dt["parent_name"];?>"></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-1">NRIC/Passport Number*</div>
                                             <div class="col-md-6 col-sm-12 my-1"><input type="text" class="form-control"
                                                     name="parent_legal_passport_number"
-                                                    id="parent_legal_passport_number" required></div>
+                                                    id="parent_legal_passport_number" required value="<?=$dt["parent_passport_no"];?>"></div>
                                         </div>
                                     </li>
                                 </ol>
@@ -1244,16 +1289,25 @@ if (isset($_GET["invalid"])) {
                                     </span>
                                 </label>
                             </div>
-                            <div class="col-12 mt-3">
+                            <div class="col-md-6 col-sm-12 mt-3">
                                 <p>SIGNED by the PEI</p>
                                 <p>For:</p>
                                 <p>
-                                    <img src='assets/img/gigis_signature.png'></img>
+                                    <img src='assets/img/gigis_signature.png'></img><br/>
                                 </p>
-                                <p>_____________________________________________________________________</p>
-                                <p>Authorised Signatory of the PEISeal of PEI</p>
+                                <p>__________________________________________________________________</p>
+                                <p>Authorised Signatory of the PEI</p>
                                 <p>Name: Mr BK Arun</p>
                                 <p>Date: 26/1/2021</p>
+                            </div>
+                            <div class="col-md-6 col-sm-12 mt-3">
+                            <p>&nbsp;</p>
+                                <p>&nbsp;</p>
+                                <p>
+                                    <img src='assets/img/gigis_seal.png' style='height:90px;'></img>
+                                </p>
+                                <p>__________________________________________________________________</p>
+                                <p>Seal of PEI</p>
                             </div>
                         </div>
                         <!--
@@ -1276,7 +1330,7 @@ if (isset($_GET["invalid"])) {
 
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="parent_legal_name" id="parent_legal_name">
+                                <input type="text" class="form-control" name="parent_legal_name" id="parent_legal_name" value="<?=$dt["parent_name"];?>">
                                 <div class=''>Name of Parent/ Legal Guardian:</div>
                             </div>
                         </div>
@@ -1284,15 +1338,13 @@ if (isset($_GET["invalid"])) {
                             <div class="col-md-6 col-sm-12 my-3">
                                 <div class="row">
                                     <div class="col-auto">Date</div>
-                                    <div class="col"><input type="date" class="form-control" name="sign_date"
-                                            id="sign_date"></div>
+                                    <div class="col"><input type='text' class="form-control" name="sign_date" id="sign_date" value="<?=date("m/d/Y");?>"></div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
                                 <div class="row">
                                     <div class="col-auto">Date</div>
-                                    <div class="col"><input type="date" class="form-control" name="sign_date"
-                                            id="sign_date"></div>
+                                    <div class="col"><input type='text' class="form-control" name="sign_date" id="sign_date" value="<?=date("m/d/Y");?>"></div>
                                 </div>
                             </div>
                         </div>
@@ -1309,11 +1361,11 @@ if (isset($_GET["invalid"])) {
                             </div>
                             <div class="col">
                                 <div>
-                                    <input type="text" class="form-control" name="bparent_name" id="bparent_name">
+                                    <input type="text" class="form-control" name="bparent_name" id="bparent_name" value="<?=$dt["parent_name"];?>">
                                 </div>
                                 <div class="mt-1 font-italic text-center">(Name of Parent/ Guardian)</div>
                                 <div class="mt-2">
-                                    <input type="text" class="form-control" name="bstudent_name" id="bstudent_name">
+                                    <input type="text" class="form-control" name="bstudent_name" id="bstudent_name" value="<?=$dt["student_name"];?>">
                                 </div>
                                 <div class="font-italic text-center">(Name of Child)</div>
                             </div>
@@ -1377,7 +1429,7 @@ if (isset($_GET["invalid"])) {
                                     <li>
                                         As on the date of signing this document, I/ We declare that
                                         <div>
-                                            <input type="text" class="form-control" name="child_name" id="child_name">
+                                            <input type="text" class="form-control" name="child_name" id="child_name" value="<?=$dt["student_name"];?>">
                                         </div>
                                         <div class="font-italic text-center">(Name of Child)</div>
                                         <div>has following nationality and immigration details:</div>
@@ -1385,27 +1437,27 @@ if (isset($_GET["invalid"])) {
                                             <div class="col-md-6 col-sm-12 my-3">Nationality:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
                                                 <input type="text" class="form-control" name="bnationality"
-                                                    id="bnationality">
+                                                    id="bnationality" value="<?=$dt["student_nationality"];?>">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">Passport Number:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
                                                 <input type="text" class="form-control" name="bpassport_number"
-                                                    id="bpassport_number">
+                                                    id="bpassport_number" value="<?=$dt["student_passport_no"];?>">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">Issue Date:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="date" class="form-control" name="bissue_date"
-                                                    id="bissue_date">
+                                                <input type='text' class="form-control" name="bissue_date"
+                                                    id="bissue_date" value="">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">Immigration Status:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="date" class="form-control" name="bimmigration_status"
-                                                    id="bimmigration_status">
+                                                <input type='text' class="form-control" name="bimmigration_status"
+                                                    id="bimmigration_status" value="<?=$dt["student_immigration_status"];?>">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">NRIC / FIN Number:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="date" class="form-control" name="bfin_number"
-                                                    id="bfin_number">
+                                                <input type='text' class="form-control" name="bfin_number"
+                                                    id="bfin_number" value="<?=$dt["student_nric_no"];?>">
                                             </div>
                                         </div>
                                         <br /><br />
@@ -1473,7 +1525,7 @@ if (isset($_GET["invalid"])) {
                                             </div>
                                             <div class="col">
                                                 <input type="text" class="form-control" name="cparent_name"
-                                                    id="cparent_name">
+                                                    id="cparent_name" value="<?=$dt["parent_name"];?>">
                                             </div>
                                             <div class="col-12 text-center font-italic">
                                                 (Name of Parent/ Guardian)
@@ -1493,7 +1545,7 @@ if (isset($_GET["invalid"])) {
                                                 on
                                             </div>
                                             <div class="col my-3">
-                                                <input type="date" class="form-control" name="cparent_sign_date" id="cparent_sign_date">
+                                                <input type='text' class="form-control" name="cparent_sign_date" id="cparent_sign_date">
                                             </div>
                                         </div>
                                         -->
@@ -1512,7 +1564,7 @@ if (isset($_GET["invalid"])) {
                                 Father's Name:
                             </div>
                             <div class="col-md-8 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="father_name" id="father_name">
+                                <input type="text" class="form-control" name="father_name" id="father_name" value="<?=$dt["father_name"];?>">
                             </div>
                         </div>
                         <?php
@@ -1524,7 +1576,7 @@ if (isset($_GET["invalid"])) {
                                 Mother's Name:
                             </div>
                             <div class="col-md-8 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="mother_name" id="mother_name">
+                                <input type="text" class="form-control" name="mother_name" id="mother_name" value="<?=$dt["mother_name"];?>">
                             </div>
                         </div>
                         <?php
@@ -1536,7 +1588,7 @@ if (isset($_GET["invalid"])) {
                                 IC No:
                             </div>
                             <div class="col-md-8 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="ic_number" id="ic_number">
+                                <input type="text" class="form-control" name="ic_number" id="ic_number" value="<?=$dt["parent_nric_no"];?>">
                             </div>
                         </div>
                         <div class="row">
@@ -1544,7 +1596,7 @@ if (isset($_GET["invalid"])) {
                                 Passport Number:
                             </div>
                             <div class="col-md-8 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dpassport_number" id="dpassport_number">
+                                <input type="text" class="form-control" name="dpassport_number" id="dpassport_number" value="<?=$dt["parent_passport_no"];?>">
                             </div>
                         </div>
 
@@ -1579,25 +1631,25 @@ if (isset($_GET["invalid"])) {
 
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dstudent_name" id="dstudent_name">
+                                <input type="text" class="form-control" name="dstudent_name" id="dstudent_name" value="<?=$dt["student_name"];?>">
                                 <div>Name Of Student</div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dparent_name" id="dparent_name">
+                                <input type="text" class="form-control" name="dparent_name" id="dparent_name" value="<?=$dt["parent_name"];?>">
                                 <div>Name of Parent / Legal Guardian</div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-12 my-3">
-                                <input type="date" class="form-control" name="ddate" id="ddate">
+                                <input type='text' class="form-control" name="ddate" id="ddate" value="<?=date("m/d/Y");?>">
                                 <div>Date</div>
                             </div>
                             <div class="col-md-4 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dpassport" id="dpassport">
+                                <input type="text" class="form-control" name="dpassport" id="dpassport" value="<?=$dt["parent_passport_no"];?>">
                                 <div>Passport Number</div>
                             </div>
                             <div class="col-md-4 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dnrc_number" id="dnrc_number">
+                                <input type="text" class="form-control" name="dnrc_number" id="dnrc_number" value="<?=$dt["parent_nric_no"];?>">
                                 <div>NRIC No</div>
                             </div>
                         </div>
@@ -1606,7 +1658,7 @@ if (isset($_GET["invalid"])) {
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-auto mx-4">
-                                <button type="button" class="btn btn-primary">Submit</button>
+                                <button type="button" class="btn btn-primary" onclick="openOtp();">Submit</button>
                             </div>
                         </div>
                     </div>
@@ -1616,11 +1668,53 @@ if (isset($_GET["invalid"])) {
     </div>
     </div>
 
+<div id="otpPanel" class="container-tight py-6">
+
+            <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
+        <div class="card">
+            <div class="card-body">
+                
+                <div class="text-center my-3">
+                    <img src="<?= $logo ?>" height="50" alt="">
+                </div>
+                <h2 class="mb-3 text-center">Verify OTP</h2>
+                <div class="empty-warning" id='otpVerify'></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Enter OTP</label>
+                    <input type="text" id="otp" value="" name="otp" class="form-control" required="">
+                    <div class="invalid-feedback">Invalid OTP</div>
+                </div>
+
+                <div class="mt-2 text-center">
+                        <button class="btn btn-primary" type="button" onclick="validateOtp();">Validate</button>
+                </div>
+
+            </div>
+            </div>
+
+</div>
 
 
     <script>
     document.body.style.display = "block";
-    $(document).ready(function() {});
+    $(document).ready(function() {
+        $("#otpPanel").hide();
+    });
+
+    function openOtp(){
+        $("#contentPanel").hide(400);
+        $("#otpPanel").show(400);
+    }
+
+    function validateOtp(){
+        var val = $("#otp").val();
+        if(val==""){
+            alert("Invalid OTP");
+            return;
+        }
+        //ajax session
+    }
     </script>
 
 </body>

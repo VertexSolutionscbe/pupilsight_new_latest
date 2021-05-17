@@ -25,6 +25,7 @@ class adminlib
 		$result = database::doSelectOne($sql);
 		return $result;
 	}
+
 	function getApp_statusData()
 	{
 		$sql = "SELECT * FROM app_status WHERE status = '1' ";
@@ -36,6 +37,13 @@ class adminlib
 	function getcampaign()
 	{
 		$sql = "SELECT a.* FROM campaign AS a JOIN workflow_map AS b ON a.id = b.campaign_id WHERE  a.status = '2' AND CURDATE() between start_date and end_date order by id DESC";
+		$result = database::doSelect($sql);
+		return $result;
+	}
+
+	function getCampaignData($submissionId)
+	{
+		$sql = "SELECT * FROM gigis_erp.wp_fluentform_entry_details where submission_id='".$submissionId."'";;
 		$result = database::doSelect($sql);
 		return $result;
 	}

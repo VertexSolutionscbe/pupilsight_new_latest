@@ -472,7 +472,7 @@ if ($type == "insertcampaigndetails") {
                     );
                 }
             }
-            unset($_SESSION["submissionId"]);
+            //unset($_SESSION["submissionId"]);
         }
     }
 }
