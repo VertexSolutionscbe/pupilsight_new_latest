@@ -4314,13 +4314,13 @@ if ($type == 'getclasswithSection') {
     }
     echo $data;
 }
-
-if($type == 'getRandomOtpNo'){
+/*
+if($type == 'getContractOtp'){
     $otp = rand(1000,9999);
     $_SESSION['contract_form_otp'] = $otp;
     echo $otp;
 }
-
+*/
 if($type == 'checkOtpForContractForm'){
     $getOtp = $_POST['otp'];
     $otp = $_SESSION['contract_form_otp'];

@@ -1686,8 +1686,12 @@ if (isset($_GET["invalid"])) {
                     <div class="invalid-feedback">Invalid OTP</div>
                 </div>
 
-                <div class="mt-2 text-center">
-                        <button class="btn btn-primary" type="button" onclick="validateOtp();">Validate</button>
+                <div class="mt-2">
+                    <button class="btn btn-primary" type="button" onclick="validateOtp();">Validate</button>
+                </div>
+
+                <div class="mt-2 text-right">
+                    <button class="btn btn-link" type="button" onclick="openOtp();">Resent Otp</button>   
                 </div>
 
             </div>
@@ -1702,9 +1706,29 @@ if (isset($_GET["invalid"])) {
         $("#otpPanel").hide();
     });
 
+    var otpLimit = 0;
     function openOtp(){
+        if(otpLimit>10){
+            alert("Your account is locked due to multiple otp failed.");
+            return;
+        }
+        otpLimit++;
         $("#contentPanel").hide(400);
         $("#otpPanel").show(400);
+        alert("A Otp email is sent on ur mail id [<?=$dt["parent_email"];?>].Please verify the same.");
+        try{
+            $.ajax({
+                url: 'contact_form_mail_send.php',
+                type: 'post',
+                data: { to: "<?=$dt["parent_email"];?>" },
+                async: true,
+                success: function (response) {
+                    
+                }
+            });
+        }catch(ex){
+            console.log(ex);
+        }
     }
 
     function validateOtp(){
@@ -1714,6 +1738,24 @@ if (isset($_GET["invalid"])) {
             return;
         }
         //ajax session
+        try{
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: { otp: val, val: val, type:"checkOtpForContractForm"},
+                async: true,
+                success: function (response) {
+                    if(response=="success"){
+                        alert("Your contract form submitted successfully");
+                        location.href="home.php";
+                    }else{
+                        alert("Invalid OTP");
+                    }
+                }
+            });
+        }catch(ex){
+            console.log(ex);
+        }
     }
     </script>
 

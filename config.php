@@ -8,8 +8,8 @@ Pupilsight, Flexible & Open School System
  * Sets the database connection information.
  * You can supply an optional $databasePort if your server requires one.
  */
-$databaseServer = "127.0.0.1";
-$databaseUsername = "root";
+$databaseServer = '127.0.0.1';
+$databaseUsername = 'root';
 
 //$databasePassword = "password";
 //$databaseName = "pupilsight"; //pd_demo
@@ -17,18 +17,18 @@ $databaseUsername = "root";
 //$databaseName = 'bips_erp'; //pd_demo
 //$databaseName = 'ups'; //pd_demo
 //live
-$databasePassword = "xyz"; //xyz
-$databaseName = "pd_demo"; //pd_demo
+$databasePassword = 'xyz'; //xyz
+$databaseName = 'pd_demo'; //pd_demo
 
 //if (session_status() == PHP_SESSION_NONE) {
 //    session_start();
 //}
 
-$_SESSION["databaseName"] = $databaseName;
+$_SESSION['databaseName'] = $databaseName;
 /**
  * Sets a globally unique id, to allow multiple installs on a single server.
  */
-$guid = "4r8tmxybf-0du5-5ido-mwzw-medt3ucr55";
+$guid = '4r8tmxybf-0du5-5ido-mwzw-medt3ucr55';
 
 /**
  * Sets system-wide caching factor, used to balance performance and freshness.
