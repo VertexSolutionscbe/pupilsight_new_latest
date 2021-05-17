@@ -112,9 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
     echo $form->getOutput();
 }
-
 ?>
-
 <script type='text/javascript'>
 	$(document).ready(function() {
 		$("#bodyedButtonPreview").trigger('click');

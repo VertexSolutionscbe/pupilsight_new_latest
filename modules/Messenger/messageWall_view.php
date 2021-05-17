@@ -2,7 +2,6 @@
 /*
 Pupilsight, Flexible & Open School System
 */
-
 use Pupilsight\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php') == false) {
@@ -96,10 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 
     echo getMessages1($guid, $connection2, 'print', dateConvert($guid, $date), dateConvert($guid, $fromdate) , $category, $msgtype);
 }
-
-
 ?>
-
 <script>
     <?php if($roleId == '004'){ ?>
         $(".container-fluid").children().children(".navbar-nav").hide();

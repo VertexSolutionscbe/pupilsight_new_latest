@@ -13,10 +13,10 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$otp = rand(1000,9999);
+$otp = rand(1000, 9999);
 $_SESSION['contract_form_otp'] = $otp;
-if(isset($_POST["to"])){
-    $to = $_POST["to"];
+if (isset($_POST['to'])) {
+    $to = $_POST['to'];
 }
 //$to = "rakesh@thoughtnet.in";
 
@@ -24,9 +24,12 @@ if(isset($_POST["to"])){
 $subject = 'OTP For Contract Form';
 
 //$otp = '1234';
-$body = "Dear Parent,
+$body =
+    "Dear Parent,
 </br>
-Use <b>".$otp."</b> as your authorization OTP to accept GIGIS Student eContract. OTP is confidential and valid for 10 mins. Sharing it with anyone gives them complete access to your eContract.
+Use <b>" .
+    $otp .
+    "</b> as your authorization OTP to accept GIGIS Student eContract. OTP is confidential and valid for 10 mins. Sharing it with anyone gives them complete access to your eContract.
 </br></br>
 Regards,
 </br>
@@ -55,4 +58,4 @@ $res = $mail->Send();
 //echo $name ." ---  ".$email;
 //print_r($_POST);
 //print_r($res);
-echo "done";
+echo 'done';
