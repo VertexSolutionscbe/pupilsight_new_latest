@@ -896,7 +896,6 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 		$('#pupilsightYearGroupIDA').select2();
 	});
 </script>
-
 <script type='text/javascript'>
 	$(document).ready(function() {
 		$('#pupilsightPersonID').select2();

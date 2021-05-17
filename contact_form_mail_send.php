@@ -22,8 +22,18 @@ Regards,
 GIGIS Admin Team";
 //die();
 
+$sql = "SELECT value FROM pupilsightSetting WHERE name = 'organisationName' ";
+$result = $connection2->query($sql);
+$nameData = $result->fetch();
+$name = $nameData['value'];
+
+$sqle = "SELECT value FROM pupilsightSetting WHERE name = 'organisationEmail' ";
+$resulte = $connection2->query($sqle);
+$emailData = $resulte->fetch();
+$email = $emailData['value'];
+
 $mail = $container->get(Mailer::class);
-$mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+$mail->SetFrom($email, $name);
 
 $mail->AddAddress($to);
 $mail->CharSet = 'UTF-8';

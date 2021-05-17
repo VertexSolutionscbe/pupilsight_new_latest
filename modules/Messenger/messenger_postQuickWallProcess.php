@@ -144,8 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                     }
                 }
             }
-
-
+            
             if ($partialFail == true) {
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
