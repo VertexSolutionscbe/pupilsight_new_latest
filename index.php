@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 */
 
 //echo  "http://localhost/pupilsight/wp/wp-login.php?user=".urlencode('admin')."&pass=".urlencode('Admin@123456');
-//error_reporting(E_ERROR | E_PARSE);
+error_reporting(E_ERROR | E_PARSE);
 //error_reporting(0);
 
 //ini_set('display_errors', 1);
@@ -44,10 +44,7 @@ $isLoggedIn =
 
 if ($isLoggedIn && ($module = $page->getModule())) {
     $mid = $module->pupilsightModuleID;
-    $sql =
-        'SELECT p.category FROM pupilsightModule AS p WHERE p.pupilsightModuleID = "' .
-        $mid .
-        '"';
+    $sql ='SELECT p.category FROM pupilsightModule AS p WHERE p.pupilsightModuleID = "' .$mid .'"';
     $result = $connection2->query($sql);
     $moduledata = $result->fetch();
     $moduleName = $moduledata["category"];
@@ -867,7 +864,7 @@ if ($isLoggedIn) {
     ];
 
     if (isset($menuMainItems["Academics"])) {
-        if ($roleid == "035") {
+        if ($roleid == "035" || $roleid == "002") {
             $testList = [];
             $testList[0] = [
                 "name" => "Enter A.A.T",

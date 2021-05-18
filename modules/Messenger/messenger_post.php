@@ -13,13 +13,13 @@ use Pupilsight\Domain\Messenger\GroupGateway;
 use Pupilsight\Tables\DataTable;
 ?>
 <style>
-	#individualList {
-		width: 500px;
-	}
+#individualList {
+  width: 500px;
+}
 
-	.staticwidth {
-		width: 220px;
-	}
+.staticwidth {
+  width: 220px;
+}
 </style>
 <?php
 require_once __DIR__ . '/moduleFunctions.php';
@@ -214,8 +214,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 					print "$('#subject').val('" . htmlPrep($rowSelect["subject"]) . "');";
 					print "tinyMCE.execCommand('mceRemoveEditor', false, 'body') ;";
 					print "tinyMCE.execCommand('mceRemoveEditor', false, 'body1') ;";
-					print "
-											$.get('./modules/Messenger/messenger_post_ajax.php?pupilsightMessengerCannedResponseID=" . $rowSelect["pupilsightMessengerCannedResponseID"] . "', function(response) {
+					print "$.get('./modules/Messenger/messenger_post_ajax.php?pupilsightMessengerCannedResponseID=" . $rowSelect["pupilsightMessengerCannedResponseID"] . "', function(response) {
 												 var result = response;
 												$('#body').val(result + '" . addSlashes($signature) . "');
 												$('#body1').val(result + '" . addSlashes($signature) . "');
@@ -749,155 +748,153 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 }
 ?>
 <script type='text/javascript'>
-	$(document).ready(function() {
-		$("#bodyedButtonPreview").trigger('click');
-		
-		$('#individualList').select2({
-			minimumInputLength: 3
-		});
-	});
+$(document).ready(function() {
+  $("#bodyedButtonPreview").trigger('click');
+
+  $('#individualList').select2({
+    minimumInputLength: 3
+  });
+});
 </script>
 
 <script type="text/javascript">
-	$("#body1").keyup(function() {
-		//$("#count").text("Characters left: " + (500 - $(this).val().length));
-		$("#count").text("Characters Count : " + $(this).val().length);
-	});
+$("#body1").keyup(function() {
+  //$("#count").text("Characters left: " + (500 - $(this).val().length));
+  $("#count").text("Characters Count : " + $(this).val().length);
+});
 </script>
 <script>
-	$('input[type=radio][name=email]').change(function() {
-		if (this.value == 'Y') {
-			//alert("yes");
-			$('#body').prop('disabled',false);
-			$('#body1').prop('disabled',true);
-			$("input[name=sms][value='N']").prop("checked", true);
-			$("input[name=messageWall][value='N']").prop("checked", true);
-			$("[id=publicationdate").hide();
-			$("[id=body1hide").hide();
-			$("[id=bodyhide").show();
-			$("[id=categoryhide").show();
-			$("[id=copysmshide").hide();
-		} else if (this.value == 'N') {
-			//alert("no");
-		}
-	});
+$('input[type=radio][name=email]').change(function() {
+  if (this.value == 'Y') {
+    //alert("yes");
+    $('#body').prop('disabled', false);
+    $('#body1').prop('disabled', true);
+    $("input[name=sms][value='N']").prop("checked", true);
+    $("input[name=messageWall][value='N']").prop("checked", true);
+    $("[id=publicationdate").hide();
+    $("[id=body1hide").hide();
+    $("[id=bodyhide").show();
+    $("[id=categoryhide").show();
+    $("[id=copysmshide").hide();
+  } else if (this.value == 'N') {
+    //alert("no");
+  }
+});
 </script>
 <script>
-	$('input[type=radio][name=sms]').change(function() {
-		if (this.value == 'Y') {
-			$("#body1edButtonPreview").trigger('click');
-			//alert("yes");
-			$("input[name=email][value='N']").prop("checked", true);
-			$("input[name=messageWall][value='N']").prop("checked", true);
-			$('#body').prop('disabled',true);
-			$('#body1').prop('disabled',false);
-			$("[id=replyemail").hide();
-			$("[id=bccemail").hide();
-			$("[id=publicationdate").hide();
-			$("[id=subjecthide").hide();
-			$("[id=bodyhide").hide();
-			$("[id=categoryhide").hide();
-		} else if (this.value == 'N') {
-			//alert("no");
-		}
-	});
+$('input[type=radio][name=sms]').change(function() {
+  if (this.value == 'Y') {
+    $("#body1edButtonPreview").trigger('click');
+    //alert("yes");
+    $("input[name=email][value='N']").prop("checked", true);
+    $("input[name=messageWall][value='N']").prop("checked", true);
+    $('#body').prop('disabled', true);
+    $('#body1').prop('disabled', false);
+    $("[id=replyemail").hide();
+    $("[id=bccemail").hide();
+    $("[id=publicationdate").hide();
+    $("[id=subjecthide").hide();
+    $("[id=bodyhide").hide();
+    $("[id=categoryhide").hide();
+  } else if (this.value == 'N') {
+    //alert("no");
+  }
+});
 </script>
 <script>
-	$('input[type=radio][name=messageWall]').change(function() {
-		if (this.value == 'Y') {
-			//alert("yes");
-			$('#body').prop('disabled',false);
-			$('#body1').prop('disabled',true);
-			$("input[name=sms][value='N']").prop("checked", true);
-			$("input[name=email][value='N']").prop("checked", true);
-			$("[id=replyemail").hide();
-			$("[id=bccemail").hide();
-			$("[id=body1hide").hide();
-			$("[id=copysmshide").hide();
-			$("[id=bodyhide").show();
-			$("[id=categoryhide").show();
-		} else if (this.value == 'N') {
-			//alert("no");
-		}
-	});
+$('input[type=radio][name=messageWall]').change(function() {
+  if (this.value == 'Y') {
+    //alert("yes");
+    $('#body').prop('disabled', false);
+    $('#body1').prop('disabled', true);
+    $("input[name=sms][value='N']").prop("checked", true);
+    $("input[name=email][value='N']").prop("checked", true);
+    $("[id=replyemail").hide();
+    $("[id=bccemail").hide();
+    $("[id=body1hide").hide();
+    $("[id=copysmshide").hide();
+    $("[id=bodyhide").show();
+    $("[id=categoryhide").show();
+  } else if (this.value == 'N') {
+    //alert("no");
+  }
+});
 </script>
 <script>
-	$(document).on('change', '#pupilsightSchoolYearID', function() {
-		var val = $(this).val();
-		var type = "getPrograms1";
-		if (val != "") {
-			$.ajax({
-				url: 'ajax_data.php',
-				type: 'post',
-				data: {
-					val: val,
-					type: type
-				},
-				async: true,
-				success: function(response) {
-					$("#pupilsightProgramIDA").html();
-					$("#pupilsightProgramIDA").html(response);
-
-				}
-			});
-		}
-	});
+$(document).on('change', '#pupilsightSchoolYearID', function() {
+  var val = $(this).val();
+  var type = "getPrograms1";
+  if (val != "") {
+    $.ajax({
+      url: 'ajax_data.php',
+      type: 'post',
+      data: {
+        val: val,
+        type: type
+      },
+      async: true,
+      success: function(response) {
+        $("#pupilsightProgramIDA").html();
+        $("#pupilsightProgramIDA").html(response);
+      }
+    });
+  }
+});
 </script>
 <script type="text/javascript">
-	$(document).on('change', '#pupilsightProgramIDA', function() {
-		var val = $(this).val();
-		var type = "getClass";
-		if (val != "") {
-			$.ajax({
-				url: 'ajax_data.php',
-				type: 'post',
-				data: {
-					val: val,
-					type: type
-				},
-				async: true,
-				success: function(response) {
-					$("#pupilsightYearGroupIDA").html();
-					$("#pupilsightYearGroupIDA").html(response);
-
-				}
-			});
-		}
-	});
+$(document).on('change', '#pupilsightProgramIDA', function() {
+  var val = $(this).val();
+  var type = "getClass";
+  if (val != "") {
+    $.ajax({
+      url: 'ajax_data.php',
+      type: 'post',
+      data: {
+        val: val,
+        type: type
+      },
+      async: true,
+      success: function(response) {
+        $("#pupilsightYearGroupIDA").html();
+        $("#pupilsightYearGroupIDA").html(response);
+      }
+    });
+  }
+});
 </script>
 <script type="text/javascript">
-	$(document).on('change', '#pupilsightYearGroupIDA', function() {
-		//var id = $("#pupilsightRollGroupID").val();
-		var yid = $('#pupilsightSchoolYearID').val();
-		var pid = $('#pupilsightProgramIDA').val();
-		var cid = $(this).val();
-		if (cid != "") {
-			var type = 'getStudentClassAndSection';
-			$.ajax({
-				url: 'ajax_data.php',
-				type: 'post',
-				data: {
-					val: cid,
-					type: type,
-					yid: yid,
-					pid: pid
-				},
-				async: true,
-				success: function(response) {
-					$("#pupilsightPersonID").html('');
-					$("#pupilsightPersonID").append(response);
-				}
-			});
-		}
-	});
+$(document).on('change', '#pupilsightYearGroupIDA', function() {
+  //var id = $("#pupilsightRollGroupID").val();
+  var yid = $('#pupilsightSchoolYearID').val();
+  var pid = $('#pupilsightProgramIDA').val();
+  var cid = $(this).val();
+  if (cid != "") {
+    var type = 'getStudentClassAndSection';
+    $.ajax({
+      url: 'ajax_data.php',
+      type: 'post',
+      data: {
+        val: cid,
+        type: type,
+        yid: yid,
+        pid: pid
+      },
+      async: true,
+      success: function(response) {
+        $("#pupilsightPersonID").html('');
+        $("#pupilsightPersonID").append(response);
+      }
+    });
+  }
+});
 </script>
 <script type='text/javascript'>
-	$(document).ready(function() {
-		$('#pupilsightYearGroupIDA').select2();
-	});
+$(document).ready(function() {
+  $('#pupilsightYearGroupIDA').select2();
+});
 </script>
 <script type='text/javascript'>
-	$(document).ready(function() {
-		$('#pupilsightPersonID').select2();
-	});
+$(document).ready(function() {
+  $('#pupilsightPersonID').select2();
+});
 </script>

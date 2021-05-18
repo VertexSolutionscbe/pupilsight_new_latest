@@ -23,21 +23,17 @@
 <link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
     -->
 
-    <link rel="stylesheet"
-        href="//cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css">
 
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/fullcalendar.min.css?v=1.0" type="text/css" media="all" />
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/jquery.dataTables.min.css?v=1.0" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap-multiselect.css?v=1.0" type="text/css"
-        media="all" />
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap-multiselect.css?v=1.0" type="text/css" media="all" />
     <!--
 <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/jquery-ui/css/blitzer/jquery-ui.css?v=1.0" type="text/css" media="all" />
     -->
 
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/jquery-timepicker/jquery.timepicker.css?v=1.0"
-        type="text/css" media="all" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/thickbox/thickbox.css?v=1.0" type="text/css"
-        media="all" />
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/jquery-timepicker/jquery.timepicker.css?v=1.0" type="text/css" media="all" />
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/thickbox/thickbox.css?v=1.0" type="text/css" media="all" />
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
     <link href="{{ absoluteURL }}/assets/css/selectize.css" rel="stylesheet" />
     <link href="{{ absoluteURL }}/assets/css/tabler.css" rel="stylesheet" />
@@ -56,11 +52,9 @@
     <script src="{{ absoluteURL }}/assets/js/core.js"></script>
     <script src="{{ absoluteURL }}/assets/js/main.js"></script>
     <script src="{{ absoluteURL }}/assets/js/jquery.table2excel.js"></script>
-    <script
-        type="text/javascript">var tb_pathToImage = "{{ absoluteURL }}/assets/libs/thickbox/loadingAnimation.gif";</script>
+    <script type="text/javascript">var tb_pathToImage = "{{ absoluteURL }}/assets/libs/thickbox/loadingAnimation.gif";</script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/tinymce/tinymce.min.js?v=1.0"></script>
-    <script type="text/javascript"
-        src="{{ absoluteURL }}/assets/libs/jquery-tokeninput/src/jquery.tokeninput.js?v=1.0"></script>
+    <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/jquery-tokeninput/src/jquery.tokeninput.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/moment.min.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/fullcalendar.min.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
@@ -136,10 +130,8 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <a href="{{ absoluteURL }}/index.php"
-                    class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
-                    <img src="{{ absoluteURL }}/{{ organisationLogo|default(" /themes/Default/img/logo.png ") }}"
-                        alt="Tabler" class="navbar-brand-image">
+                <a href="{{ absoluteURL }}/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
+                    <img src="{{ absoluteURL }}/{{ organisationLogo|default(" /themes/Default/img/logo.png ") }}" alt="Tabler" class="navbar-brand-image">
                 </a>
                 <div class="navbar-nav flex-row order-md-last">
                     {% if changeyear=="allow" %}
@@ -147,8 +139,7 @@
                         <form action="yearSwitcherProcess.php" method="post">
                             <div style="display:inline-flex;">
                                 <div class="input-group">
-                                    <select name="pupilsightSchoolYearID" style="float:left;width: 120px;"
-                                        id="academicYearChange">
+                                    <select name="pupilsightSchoolYearID" style="float:left;width: 120px;" id="academicYearChange">
                                         <option value="">Select Academic Year</option>
                                         {% for ay in academicYear %}
                                         {% if ay.pupilsightSchoolYearID == pupilsightSchoolYearID %}
@@ -169,12 +160,9 @@
 
                     <div class="nav-item dropdown d-none d-md-flex mr-3">
                         <a href="#" class="nav-link px-0" data-toggle="dropdown" tabindex="-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                stroke-linecap="round" stroke-linejoin="round">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" />
-                                <path
-                                    d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
+                                <path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
                                 <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
                             </svg>
                             <span class="_badge bg-red"></span>
@@ -188,8 +176,7 @@
                         </div>
                     </div>
                     <div class="nav-item dropdown">
-                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-toggle="dropdown"
-                            aria-expanded="false">
+                        <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-toggle="dropdown" aria-expanded="false">
                             <span class="avatar">{{ shortname }}</span>
                             <div class="d-none d-xl-block pl-2">
                                 <div>{{ uname|raw }}</div>
@@ -238,8 +225,7 @@
 
                             <li class="nav-item {{ dropmenu }} {{menuSelect}}">
                                 <a class="nav-link {{ dropdownToggle }}" href="{{ navlink }}" {{ data_toggle }}>
-                                    <span
-                                        class="nav-link-icon d-md-none d-lg-inline-block {{ menuMainIcon[categoryName] }}"></span>
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block {{ menuMainIcon[categoryName] }}"></span>
                                     <span class="nav-link-title">
                                         {{ categoryName }}
                                     </span>
