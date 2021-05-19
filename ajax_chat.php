@@ -130,6 +130,20 @@ function chatAttachment()
     return $attachment;
 }
 
+function getIndividualUserList($con, $res){
+    try{
+        if($res["delivery_type"]=="individual" && empty($res["chat_parent_id"])){
+            $chat_msg_id = $res["id"];
+            $sq = "select cs.uid, p.officialName from chat_share as cs left join pupilsightPerson as p on cs.uid=p.pupilsightPersonID where cs.chat_msg_id='".$chat_msg_id."' and p.pupilsightPersonID is not null ";
+            $query = $con->query($sq);
+            return $query->fetchAll();
+        }
+    }catch(Exception $ex){
+        echo $ex->getMessage();
+    }
+    return "";
+}
+
 /* open Description Indicator */
 if ($type == 'postMessage') {
     try {
@@ -448,10 +462,26 @@ if ($type == 'postMessage') {
             $lts = $_POST['lts'];
         }
         $isWhereAdded = false;
+        $classid="";
+        $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+        if($roleid == '003'||$roleid == '004'){
 
-        $sq = 'select cm.*, p.officialName from chat_message as cm ';
-        $sq .=
-            'left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
+            $sq1="select pupilsightSchoolYearID, pupilsightProgramID, pupilsightYearGroupID, pupilsightRollGroupID from pupilsightStudentEnrolment ";
+            if($roleid == '004'){
+                $sq1 .="where pupilsightPersonID='".$_SESSION['student_id']."' ";
+            }else{
+                $sq1 .="where pupilsightPersonID='".$cuid."' ";
+            }
+            $sq1 .="and pupilsightSchoolYearID='".$pupilsightSchoolYearID."' ";
+            $query2 = $connection2->query($sq1);
+            $res2 = $query2->fetch();
+            $classid = $res2["pupilsightSchoolYearID"]."-".$res2["pupilsightProgramID"]."-".$res2["pupilsightYearGroupID"]."-".$res2["pupilsightRollGroupID"];
+        }
+
+        $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID,cm.msg_type, ';
+        $sq .='cm.attachment,cm.delivery_type,cm.group_id,cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
+        $sq .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
+        //$sq .='inner join chat_message as cm1 on cm.id=cm1.chat_parent_id ';
 
         //if ($roleid == '003' || $roleid == '004') {
         if ($roleid != '001') {
@@ -459,19 +489,26 @@ if ($type == 'postMessage') {
         }
 
         $sq .= ' where cm.msg is not null ';
-        if ($roleid != '001') {
-            $sq .= " and cs.uid='" . $cuid . "' ";
+
+        if ($roleid == '003') {
+            $sq .=" and (cm.delivery_type in('all_students','all','".$classid."') 
+                or cs.uid='" .$cuid ."' or cm.cuid='".$cuid."') ";
+        } elseif ($roleid == '004') {
+            $sq .=" and (cm.delivery_type in('all_students','all','".$classid."')
+                or cs.uid in('" .$_SESSION['student_id'] ."','" .$cuid ."')
+                or cm.cuid in('" .$_SESSION['student_id'] ."','" .$cuid ."')) ";
+        }else if($roleid == '002'){
+            if(isset($_SESSION["teacher_class_id"])){
+                $sq .= " and (cm.delivery_type in(".$_SESSION["teacher_class_id"].",'all_staff') or cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
+            }else{
+                $sq .= " and (cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
+            }
+        }else if($roleid != '001'){
+            $sq .= " and (cm.delivery_type in('all','all_staff') or cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
         }
 
         if ($lts) {
             $sq .= ' and cm.timestamp > ' . $lts . ' ';
-        }
-
-        if ($roleid == '003' || $roleid == '004') {
-            $sq .=
-                " or (cm.delivery_type in('all_students','all') or cs.uid='" .
-                $cuid .
-                "') ";
         }
         //for other role we need to
 
@@ -480,32 +517,40 @@ if ($type == 'postMessage') {
         $query = $connection2->query($sq);
         $res = $query->fetchAll();
         //print_r($res);
+        //die();
         if ($res) {
             //$len = count($res);
             $i = count($res) - 1;
+            $cnt = 0;
+            
             while ($i > -1) {
-                $res[$i]['officialName'] = ucwords(
-                    strtolower($res[$i]['officialName'])
-                );
+                $officialName = $res[$i]['officialName'];
                 $res[$i]['ts'] = advDateOut($res[$i]['cdt']);
-                $res[$i]['shortName'] = get2Char($res[$i]['officialName']);
+                $res[$i]['shortName'] = get2Char($officialName);
+                
                 if ($res[$i]['attachment']) {
                     $res[$i]['attach_file'] = basename($res[$i]['attachment']);
                 }
-
+                
                 $parentid = $res[$i]['chat_parent_id'];
+                //echo "<br/>shortname : ".$res[$i]['shortName']." ts ".$ts." | ".$officialName." | ".$cdt;
+                
+                $res[$i]["userlist"] =  getIndividualUserList($connection2, $res[$i]);    
                 if ($parentid) {
                     if (isset($result[$parentid])) {
                         $result[$parentid]['response'][] = $res[$i];
                     } else {
                         //no parent data here
-                        $sqj =
-                            'select cm.*, p.officialName from chat_message as cm ';
-                        $sqj .=
-                            'left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
+                        $sqj ='select cm.*, p.officialName from chat_message as cm ';
+                        $sqj .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
                         $sqj .= " where cm.id='" . $parentid . "'";
                         $query1 = $connection2->query($sqj);
-                        $result[$parentid] = $query1->fetch();
+                        $resWait = $query1->fetch();
+                        
+                        $resWait['ts'] = advDateOut($resWait['cdt']);
+                        $resWait['shortName'] = get2Char($resWait['officialName']);
+                        $result[$parentid] = $resWait;
+                        
                         $result[$parentid]['response'][] = $res[$i];
                     }
                 } else {
@@ -519,6 +564,7 @@ if ($type == 'postMessage') {
         $result['status'] = 2;
         $result['msg'] = 'Exception: ' . $ex->getMessage();
     }
+    
     if ($result) {
         echo json_encode($result);
     }

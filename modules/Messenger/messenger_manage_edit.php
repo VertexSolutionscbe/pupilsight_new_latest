@@ -710,3 +710,14 @@ else {
 		}
 	}
 }
+?>
+
+<script type='text/javascript'>
+	$(document).ready(function() {
+		$("#bodyedButtonPreview").trigger('click');
+		
+		$('#individualList').select2({
+			minimumInputLength: 3
+		});
+	});
+</script>

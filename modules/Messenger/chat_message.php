@@ -2,9 +2,11 @@
 .text-truncate {
   height: 26px;
 }
+select[multiple] {
+    min-height: auto !important;
+}
 </style>
 <?php
-
 /*
 Pupilsight, Flexible & Open School System
 */
@@ -19,10 +21,12 @@ use Pupilsight\Tables\DataTable;
 ?>
 
 <?php
-require_once __DIR__ . "/moduleFunctions.php";
+require_once __DIR__ . '/moduleFunctions.php';
 
-$page->breadcrumbs->add(__("Chat Message"));
+$page->breadcrumbs->add(__('Chat Message'));
 $accessFlag = true;
+$uid = $_SESSION[$guid]['pupilsightPersonID'];
+$pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 /*
 if (isActionAccessible(
         $guid,
@@ -37,59 +41,305 @@ if (isActionAccessible(
 }*/
 
 if ($accessFlag) {
-    
+
+    $isPostActive = true;
     $helperGateway = $container->get(HelperGateway::class);
-    $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
+    $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
     $isPostAllow = true;
     $isStParent = false; // student and parent post
-    if ($roleid == "003") {
+    if ($roleid == '003') {
         $isPostAllow = false;
         $isStParent = true;
-    } elseif ($roleid == "004") {
+    } elseif ($roleid == '004') {
         $isPostAllow = false;
         $isStParent = true;
+        $isPostActive = false;
     }
-    
-    if($isStParent){
-        $pupilsightSchoolYearID  =$_SESSION[$guid]["pupilsightSchoolYearID"];
-        $pupilsightPersonID  =$_SESSION[$guid]["pupilsightPersonID"];
-        $stSubList = $helperGateway->getClassTeacher($connection2, $pupilsightSchoolYearID, $pupilsightPersonID);
-        $groupList = $helperGateway->getGroupList($connection2, $pupilsightSchoolYearID);
+
+    if (!$isPostActive) {
+
+        //student list for parents
+        $cuid = $_SESSION[$guid]['pupilsightPersonID'];
+
+        $sqlf =
+            'SELECT pupilsightFamilyID FROM pupilsightFamilyAdult WHERE pupilsightPersonID= ' .
+            $cuid .
+            ' ';
+        $resultf = $connection2->query($sqlf);
+        $fdata = $resultf->fetch();
+        $pupilsightFamilyID = $fdata['pupilsightFamilyID'];
+
+        if (!empty($_GET['cid'])) {
+            $chkchilds =
+                'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' .
+                $pupilsightFamilyID .
+                ' AND a.pupilsightPersonID = ' .
+                $_GET['cid'] .
+                ' ';
+            $resultachk = $connection2->query($chkchilds);
+            $chkstuData = $resultachk->fetch();
+
+            if (!empty($chkstuData)) {
+                $childs =
+                    'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' .
+                    $pupilsightFamilyID .
+                    ' AND a.pupilsightPersonID != "" ';
+                $resulta = $connection2->query($childs);
+                $stuData = $resulta->fetchAll();
+
+                $students = $chkstuData;
+                $stuId = $_GET['cid'];
+            } else {
+                echo '<h1>No Child</h1>';
+            }
+        } else {
+            $childs =
+                'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' .
+                $pupilsightFamilyID .
+                ' AND a.pupilsightPersonID != "" ';
+            $resulta = $connection2->query($childs);
+            $stuData = $resulta->fetchAll();
+            $students = $stuData[0];
+            $stuId = $students['pupilsightPersonID'];
+        }
+        $_SESSION['student_id'] = $stuId;
+
+        $tab = '';
+        if (!empty($stuData) && count($stuData) > 1) {
+            $tab =
+                '<div style="display:inline-flex;width:25%" class="mb-2"><span style="width:25%">Child : </span><select id="childSel" class="form-control" style="width:100%">';
+            foreach ($stuData as $stu) {
+                $selected = '';
+                if (!empty($_GET['cid'])) {
+                    if ($_GET['cid'] == $stu['pupilsightPersonID']) {
+                        $selected = 'selected';
+                    }
+                }
+                $tab .=
+                    '<option value=' .
+                    $stu['pupilsightPersonID'] .
+                    '  ' .
+                    $selected .
+                    '>' .
+                    $stu['officialName'] .
+                    '</option>';
+            }
+            $tab .= '</select></div>';
+        }
+        echo $tab;
+        ?>
+<script>
+$(document).on('change', '#childSel', function() {
+  var id = $(this).val();
+  var hrf = 'index.php?q=/modules/Messenger/chat_message.php&cid=' + id;
+  window.location.href = hrf;
+});
+</script>
+<?php
     }
-    
-    
+
+    if ($isStParent) {
+      
+      if($roleid=="004"){
+        $uid = $_SESSION['student_id'];
+      }
+      
+      $stSubList = $helperGateway->getClassTeacher(
+          $connection2,
+          $pupilsightSchoolYearID,
+          $uid
+      );
+      $groupList = $helperGateway->getGroupList(
+          $connection2,
+          $pupilsightSchoolYearID
+      );
+  }
     if ($isPostAllow) { ?>
 <!---Chat Post Widget---->
 <div class="card" id='chatPostWidget'>
   <div class="card-body">
-    <div class="row">
-      <div class='col-md-2 col-sm-12'>
-        <div class="form-label">Bulk or Individual Type</div>
-        <select id='delivery_type' name='delivery_type' class='form-control' onchange="changeDeliveryType();">
-          <option value='individual'>Individual</option>
-          <option value='all'>All</option>
-          <option value='all_students'>All Students</option>
-          <option value='all_parents'>All Parents</option>
-          <option value='all_staff'>All Staff</option>
+      <?php
+        $postFunctionStr = "postMessage();";
+        if($roleid=="002"){
+          $postFunctionStr = "postClassTeacherMessage();";
+          $sct = $helperGateway->getStudentAndClassViaClassTeacher($connection2,$pupilsightSchoolYearID,$uid);
+      ?>
+      <div class="row">
+      <div class="col-md-3 col-sm-12">
+        <label>Select Class Group</label>
+        <select id='teacherSelect'>
+          <?php
+            $len = count($sct);
+            $i = 0;
+            $str = "";
+            $clsid = "";
+            while($i<$len){
+              if($clsid){
+                $clsid .="','";
+              }
+              $clsid = $sct[$i]["classid"];
+              echo "\n<option value='".$sct[$i]["classid"]."'>".$sct[$i]["class"]."</option>";
+              $stlist = $sct[$i]["st"];
+              $len1 = count($stlist);
+              $j = 0;
+              while($j<$len1){
+                $str .="<option value='".$stlist[$j]["pupilsightPersonID"]."'>".$stlist[$j]["officialName"]."</option>";
+                $j++;
+              }
+              $i++;
+            }
+            $_SESSION["teacher_class_id"]="'".$clsid."'";
+          ?>
         </select>
       </div>
-      <div class="col-md-10 col-sm-12" id='individualList'>
-        <div class="row">
-          <div class='col-md-3 col-sm-12'>
-            <div class="form-label">Select User Type</div>
-            <select id='userType' name='userType' class='form-control' onchange="changeUserType();">
-              <option value='all'>All</option>
-              <option value='003'>Students</option>
-              <option value='004'>Parent</option>
-              <option value='staff'>Staff</option>
-            </select>
-          </div>
-          <div class='col-md-9 col-sm-12'>
-            <div class="form-label">Select User</div>
-            <select id='studentList' name='people[]' class='form-control' multiple></select>
+      <div class="col-md-3 col-sm-12">
+        <label>Select Individual Student</label>
+        <select id='ctStudentList' name='people[]' class='form-control' multiple></select>
+        <script>
+          function loadCtStudentList(){
+            $('#ctStudentList').html("<?=$str;?>");
+            $('#ctStudentList').selectize({
+              plugins: ['remove_button'],
+            });
+          }
+        $(function() {
+            loadCtStudentList();
+        });
+        </script>
+      </div>
+      </div>
+        <?php
+      }else{
+        $pro = $helperGateway->getProgram($connection2);
+        
+      ?>
+      <div class="row">
+        <div class='col-md-2 col-sm-12'>
+          <div class="form-label">Bulk or Individual Type</div>
+          <select id='delivery_type' name='delivery_type' class='form-control' onchange="changeDeliveryType();">
+            <option value='individual'>Individual</option>
+            <option value='all'>All</option>
+            <option value='all_students'>All Students</option>
+            <option value='all_parents'>All Parents</option>
+            <option value='all_staff'>All Staff</option>
+          </select>
+        </div>
+        <div class="col-md-10 col-sm-12" id='individualList'>
+          <div class="row">
+            <div class='col-md-3 col-sm-12'>
+              <div class="form-label">Select User Type</div>
+              <select id='userType' name='userType' class='form-control' onchange="changeUserType();">
+                <option value='all'>All</option>
+                <option value='003'>Students</option>
+                <option value='004'>Parent</option>
+                <option value='staff'>Staff</option>
+              </select>
+            </div>
+            <div class='col-md-9 col-sm-12'>
+              <div class="form-label">Select User</div>
+              <select id='studentList' name='people[]' class='form-control' multiple></select>
+            </div>
           </div>
         </div>
       </div>
+      <div class="row mt-3">
+        <div class='col-md-2 col-sm-12'>
+          <label>Select Program</label>
+          <select id='programSelect' class='form-control' onchange="changeProgram();">
+          <option value="">Select Program</option>
+                <?php
+
+                  $len = count($pro);
+                  $i = 0;
+                  while($i<$len){
+                    echo "\n<option value='".$pro[$i]["pupilsightProgramID"]."'>".$pro[$i]["name"]."</option>";
+                    $i++;
+                  }
+                ?>
+          </select>
+          <script>
+            function changeProgram(){
+                var id = $("#programSelect").val();
+                var type = 'getClass';
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: id, type: type },
+                    async: true,
+                    success: function (response) {
+                        $("#classSelect").html('');
+                        //$("#pupilsightRollGroupID").html('');
+                        $("#classSelect").html(response);
+                    }
+                });
+            }
+            </script>
+        </div>
+        <div class='col-md-2 col-sm-12'>
+        <label>Select Class</label>
+            <select id='classSelect' class='form-control' onchange="changeClass();"></select>
+            <script>
+            function changeClass() {
+                var id = $("#classSelect").val();
+                var pid = $("#programSelect").val();
+                var type = 'getSection';
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: id, type: type, pid: pid },
+                    async: true,
+                    success: function (response) {
+                        $("#sectionSelect").html('');
+                        $("#sectionSelect").html(response);
+                    }
+                });
+            }
+            </script>
+            
+        </div>
+        <div class='col-md-2 col-sm-12'>
+        <label>Select Section</label>
+            <select id='sectionSelect' class='form-control' onchange="changeSection();">
+                  
+            </select>
+            <script>
+            var pupilsightSchoolYearID = "<?=$pupilsightSchoolYearID;?>";
+            function changeSection() {
+                var id = $("#sectionSelect").val();
+                var yid = pupilsightSchoolYearID;
+                var pid = $("#programSelect").val();
+                var cid = $("#classSelect").val();
+                var type = 'getStudent';
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: { val: id, type: type, yid: yid, pid: pid, cid: cid },
+                    async: true,
+                    success: function (response) {
+                      //console.log(response);
+                        $('#studentSelect').selectize()[0].selectize.destroy();
+                        $("#studentSelect").html();
+                        $("#studentSelect").html(response);
+                        $('#studentSelect').selectize({
+                          plugins: ['remove_button'],
+                        });
+                    }
+                });
+
+            }
+            </script>
+        </div>
+        <div class='col-md-6 col-sm-12'>
+        <label>Select Student</label>
+            <select id='studentSelect' name="people[]" class='form-control' multiple></select>
+        </div>
+
+      </div>
+      <?php
+      }
+      ?>
+
+      <div class="row">
       <div class="col-12 my-3">
         <textarea class="form-control" id="chat_message" name="chat_message" rows="6" placeholder="Write Message Here"></textarea>
       </div>
@@ -119,14 +369,13 @@ if ($accessFlag) {
 
 
     <div class="col-12 mt-4">
-      <button type="button" class="btn btn-primary" id='postBtn' onclick="postMessage();">Post Message</button>
+      <button type="button" class="btn btn-primary" id='postBtn' onclick="<?=$postFunctionStr;?>">Post Message</button>
       <button type="button" class="btn btn-secondary ml-2" onclick="closeChatBox();">Cancel</button>
     </div>
   </div>
 </div>
 </div>
-<?php }else if($isStParent){
-    ?>
+<?php } elseif ($isStParent) { ?>
 <div class="card" id='chatStPostWidget'>
   <div class="card-body">
     <div class="row">
@@ -134,34 +383,48 @@ if ($accessFlag) {
         <select id='stGroup' onchange="stGroupChange()">
           <option value="">Select Type</option>
           <?php
-                        if($stSubList["pupilsightPersonID"]){
-                            echo "<option value='".$stSubList["pupilsightPersonID"]."' groupid='' groupname='Class Teacher'>Class Teacher</option>";
-                        }
-                        echo "<option value='subject_teacher' groupid='' groupname='Subject Teacher'>Subject Teacher(s)</option>";
-                        
-                        if($groupList){
-                            $len = count($groupList);
-                            $i = 0;
-                            while($i<$len){
-                                echo "<option value='".$groupList[$i]["uid"]."' groupid='".$groupList[$i]["groupid"]."' groupname='".$groupList[$i]["name"]."'>".$groupList[$i]["name"]."</option>";
-                                $i++;
-                            }
-                        }
-                    ?>
+          if ($stSubList['pupilsightPersonID']) {
+              echo "<option value='" .
+                  $stSubList['pupilsightPersonID'] .
+                  "' groupid='' groupname='Class Teacher'>Class Teacher</option>";
+          }
+          echo "<option value='subject_teacher' groupid='' groupname='Subject Teacher'>Subject Teacher(s)</option>";
+
+          if ($groupList) {
+              $len = count($groupList);
+              $i = 0;
+              while ($i < $len) {
+                  echo "<option value='" .
+                      $groupList[$i]['uid'] .
+                      "' groupid='" .
+                      $groupList[$i]['groupid'] .
+                      "' groupname='" .
+                      $groupList[$i]['name'] .
+                      "'>" .
+                      $groupList[$i]['name'] .
+                      '</option>';
+                  $i++;
+              }
+          }
+          ?>
         </select>
       </div>
 
       <div class="col-md-4 col-sm-12">
         <select id='stSubject'>
           <?php
-                        $sublist = $stSubList["sublist"];
-                        $len = count($sublist);
-                        $i = 0;
-                        while($i<$len){
-                            echo "<option value='".$sublist[$i]["pupilsightPersonID"]."'>".$sublist[$i]["subject_display_name"]."</option>";
-                            $i++;
-                        }
-                    ?>
+          $sublist = $stSubList['sublist'];
+          $len = count($sublist);
+          $i = 0;
+          while ($i < $len) {
+              echo "<option value='" .
+                  $sublist[$i]['pupilsightPersonID'] .
+                  "'>" .
+                  $sublist[$i]['subject_display_name'] .
+                  '</option>';
+              $i++;
+          }
+          ?>
         </select>
       </div>
 
@@ -185,9 +448,8 @@ if ($accessFlag) {
 
   </div>
 </div>
-<?php
-}
-?>
+<?php }
+    ?>
 <div class="card" id='chatReplyWidget'>
   <div class="card-body">
     <div class="row">
@@ -222,11 +484,11 @@ if ($accessFlag) {
           <h2>Chat Message</h2>
         </div>
         <div class='col-auto ml-auto'>
-          <?php if ($isPostAllow) { 
-                        echo "<button class='btn btn-primary' onclick='openChatBox();'>Post New Message</button>";
-                     } else if($isStParent){
-                        echo "<button class='btn btn-primary' onclick='openStChatBox();'>Post New Message</button>";
-                    } ?>
+          <?php if ($isPostAllow) {
+              echo "<button class='btn btn-primary' onclick='openChatBox();'>Post New Message</button>";
+          } elseif ($isStParent) {
+              echo "<button class='btn btn-primary' onclick='openStChatBox();'>Post New Message</button>";
+          } ?>
         </div>
       </div>
     </div>
@@ -375,7 +637,7 @@ function loadPeople(userType) {
         //console.log(response);
         var obj = jQuery.parseJSON(response);
         var len = obj.length;
-        console.log(len);
+        //console.log(len);
         var i = 0;
         var str = "";
         while (i < len) {
@@ -392,7 +654,7 @@ function loadPeople(userType) {
             plugins: ['remove_button'],
           });
         }
-        console.log(obj);
+        //console.log(obj);
       }
     });
   } catch (ex) {
@@ -450,11 +712,31 @@ function replyPost(chat_parent_id, deliveryType) {
   document.getElementById("chatReplyWidget").focus();
 }
 
+Array.prototype.unique = function() {
+    var a = this.concat();
+    for(var i=0; i<a.length; ++i) {
+        for(var j=i+1; j<a.length; ++j) {
+            if(a[i] === a[j])
+                a.splice(j--, 1);
+        }
+    }
+
+    return a;
+};
+
 function postMessage() {
   var msg = $("#chat_message").val();
   var msg_type = $('input[name="msg_type"]:checked').val();
   var people = $("#studentList").val();
   var delivery_type = $("#delivery_type").val();
+
+  if(people==""){
+    people = $("#studentSelect").val();
+  }else{
+    var peo2 = $("#studentSelect").val();
+    people = people.concat(peo2).unique();
+  }
+  
 
   if (delivery_type == "individual") {
     if (people == "") {
@@ -497,6 +779,58 @@ function postMessage() {
     alert("Message is empty.");
   }
 }
+
+function postClassTeacherMessage() {
+  var msg = $("#chat_message").val();
+  var msg_type = $('input[name="msg_type"]:checked').val();
+  var people = $("#ctStudentList").val();
+
+  var delivery_type = $("#teacherSelect").val();
+  var confirmForGroup = false;
+  if (people != "") {
+      delivery_type="individual";
+  }else{
+    confirmForGroup = true;
+  }
+
+  if(confirmForGroup){
+    if(!confirm("Are you sure you are sending message to entire class")){
+      return;
+    }
+  }
+  var data = new FormData(document.getElementById("post_form"));
+  data.append("type", "postMessage");
+  data.append("msg_type", msg_type);
+  data.append("people", people);
+  data.append("delivery_type", delivery_type);
+  data.append("msg", msg);
+
+  if (msg) {
+    $("#postBtn").prop('disabled', true);
+    $.ajax({
+      url: 'ajax_chat.php',
+      type: 'post',
+      contentType: false,
+      cache: false,
+      processData: false,
+      async: false,
+      data: data,
+      success: function(response) {
+        $("#postBtn").prop('disabled', false);
+        //console.log(response);
+        var obj = jQuery.parseJSON(response);
+        loadMessage();
+        if (obj.status == "1") {
+          closeChatBox();
+        }
+        alert(obj.msg);
+      }
+    });
+  } else {
+    alert("Message is empty.");
+  }
+}
+
 
 function replyMessage() {
   var msg = $("#reply_message").val();
@@ -571,6 +905,9 @@ function loadMessage() {
   });
 }
 
+var roleid = "<?=$roleid;?>";
+
+
 function createCardMessage(obj) {
   //console.log("test card message: ",obj);
   var replyBtn = "";
@@ -581,6 +918,7 @@ function createCardMessage(obj) {
   }
   var attachment = "";
   if (obj["attachment"]) {
+    
     attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" +
       obj["attach_file"] + "</a></div>";
   }
@@ -589,14 +927,35 @@ function createCardMessage(obj) {
   if (obj["group_name"]) {
     groupName = "<span class='ml-2 px-2 bg-blue-lt'>" + obj["group_name"] + "</span>";
   }
+  var induser = "";
+  var nrid = Number(roleid);
+  if(nrid < 3 || nrid > 4){
+    var len = obj.userlist.length;
+    var i = 0;
+    while(i<len){
+      try{
+        var userid = Number(obj["userlist"][i]["uid"]);
+        var postuid = Number(obj["cuid"]);
+        if(postuid!=userid){
+          var userName = obj["userlist"][i]["officialName"];
+          if(userName!=""){
+            induser +="<span class='ml-2 px-2 bg-green-lt'>"+obj["userlist"][i]["officialName"]+"</span>";
+          } 
+        }
+      }catch(ex){
+        console.log(ex);
+      }
+      i++;
+    }
+  }
+
   var str =
     `<div class='row border py-2 my-2' id='` + obj["id"] + `'>
 			<div class='col-auto my-2'>
 			<span class='avatar'>` + obj["shortName"] + `</span>
 			</div>
 			<div class='col'>
-            <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span>` +
-    groupName + `</div>
+      <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span>` +groupName + induser + `</div>
 			<div class='text-truncate' id='msg_` + obj["id"] + `'>` + obj["msg"] + `
 			</div>` + attachment + `
 			<div><a href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read more</a>
