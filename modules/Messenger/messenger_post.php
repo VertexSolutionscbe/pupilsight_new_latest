@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 } else {
 	if ($_SESSION[$guid]["email"] == "") {
 		print "<div class='alert alert-danger'>";
-		print __("You do not have a personal email address set in Pupilsight, and so cannot send out emails.");
+		print __("You do not have a personal email address set in Pupilpod, and so cannot send out emails.");
 		print "</div>";
 	} else {
 		//Proceed!
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		}
 
 		print "<div class='alert alert-warning'>";
-		print sprintf(__('Each family in Pupilsight must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $_SESSION[$guid]["organisationNameShort"]);
+		print sprintf(__('Each family in Pupilpod must have one parent who is contact priority 1, and who must be enabled to receive email and SMS messages from %1$s. As a result, when targetting parents, you can be fairly certain that messages should get through to each family.'), $_SESSION[$guid]["organisationNameShort"]);
 		print "</div>";
 
 		//start of sms counter
@@ -844,7 +844,7 @@ $(document).on('change', '#pupilsightSchoolYearID', function() {
 <script type="text/javascript">
 $(document).on('change', '#pupilsightProgramIDA', function() {
   var val = $(this).val();
-  var type = "getClass";
+  var type = "getWallClass";
   if (val != "") {
     $.ajax({
       url: 'ajax_data.php',
