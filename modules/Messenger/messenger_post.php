@@ -374,11 +374,12 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 			$row->addYesNoRadio('rollGroup')->checked('N')->required();
 
 			$form->toggleVisibilityByClass('rollGroup')->onRadio('rollGroup')->when('Y');
-
+			/*
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
 				$data = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"]);
 				//$sql = "SELECT pupilsightRollGroup.pupilsightRollGroupID AS value, pupilsightRollGroup.name FROM pupilsightRollGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name";
 				$sql = "SELECT a.pupilsightMappingID as value, d.name as sectionname, a.pupilsightProgramID, b.pupilsightYearGroupID , b.name as name1, CONCAT(b.name,' ',d.name) as name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS d ON a.pupilsightRollGroupID = d.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID ORDER BY a.pupilsightMappingID";
+
 			} else {
 				if ($roleCategory == "Staff") {
 					$data = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightPersonID1" => $_SESSION[$guid]["pupilsightPersonID"], "pupilsightPersonID2" => $_SESSION[$guid]["pupilsightPersonID"], "pupilsightPersonID3" => $_SESSION[$guid]["pupilsightPersonID"], "pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"]);
@@ -387,9 +388,26 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 					$data = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightPersonID" => $_SESSION[$guid]["pupilsightPersonID"],);
 					$sql = "SELECT pupilsightRollGroup.pupilsightRollGroupID AS value, pupilsightRollGroup.name FROM pupilsightRollGroup JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightRollGroup.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name";
 				}
+			}*/
+			//above code need to recheck because it copied from edit function add function code commented temporary 
+			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
+				$data=array("pupilsightSchoolYearID"=>$_SESSION[$guid]["pupilsightSchoolYearID"]);
+				$sql="SELECT pupilsightRollGroupID AS value, name FROM pupilsightRollGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name" ;
+			}
+			else {
+				if ($roleCategory == "Staff") {
+					$data=array("pupilsightSchoolYearID"=>$_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightPersonID1"=>$_SESSION[$guid]["pupilsightPersonID"], "pupilsightPersonID2"=>$_SESSION[$guid]["pupilsightPersonID"], "pupilsightPersonID3"=>$_SESSION[$guid]["pupilsightPersonID"], "pupilsightSchoolYearID"=>$_SESSION[$guid]["pupilsightSchoolYearID"]);
+					$sql="SELECT pupilsightRollGroupID AS value, name FROM pupilsightRollGroup WHERE (pupilsightPersonIDTutor=:pupilsightPersonID1 OR pupilsightPersonIDTutor2=:pupilsightPersonID2 OR pupilsightPersonIDTutor3=:pupilsightPersonID3) AND pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name" ;
+				}
+				else if ($roleCategory == "Student") {
+					$data=array("pupilsightSchoolYearID"=>$_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightPersonID"=>$_SESSION[$guid]["pupilsightPersonID"], );
+					$sql="SELECT pupilsightRollGroupID AS value, name FROM pupilsightRollGroup JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightRollGroup.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name" ;
+				}
 			}
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
 			$row->addLabel('rollGroups[]', __('Select Roll Groups'));
+//echo "sql : " . $sql;
+//die();
 			$row->addSelect('rollGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
 
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
