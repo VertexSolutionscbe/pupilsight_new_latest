@@ -1418,9 +1418,10 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
             }
         }
 
-        
+
         //If parent get a list of student IDs
         if ($parent) {
+
             $children = '(';
             try {
                 $data = array('pupilsightPersonID' => $_SESSION[$guid]['pupilsightPersonID']);
