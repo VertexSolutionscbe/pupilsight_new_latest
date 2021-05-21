@@ -4,6 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 
 include '../../pupilsight.php';
+use Pupilsight\Contracts\Comms\Mailer;
 
 $session = $container->get('session');
 
@@ -20,6 +21,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
     // print_r($_POST);
     // echo '</pre>';
     // die();
+
+    function getDomain()
+    {
+        if (isset($_SERVER['HTTPS'])) {
+            $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+        } else {
+            $protocol = 'http';
+        }
+        //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        return $protocol . "://" . $_SERVER['HTTP_HOST'];
+    }
+    $baseurl = getDomain();
+
     $counterid = $session->get('counterid');
     $invoice_id = $_POST['invoice_id'];
     $invoice_item_id = $_POST['invoice_item_id'];
@@ -267,6 +281,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                         }
                     }
                 }
+
+                //if(strpos($baseurl,"gigis")>-1){
+                if(strpos($baseurl,"localhost")>-1){
+                    $sql = 'SELECT state FROM campaign_form_status WHERE submission_id = "'.$submission_id.'" ORDER BY id DESC ';
+                    $result = $connection2->query($sql);
+                    $chkStData = $result->fetch();
+                    if($chkStData['state'] == 'Term Fee Paid'){
+                        $bdy = 'has paid the term fee, request you to kindly assign a section.';
+                        $sub = 'Paid Term Fees';
+                    } else {
+                        $bdy = 'has paid registration fee.';
+                        $sub = 'Paid Registration Fees';
+                    }
+                
+                    try {
+                        $sql = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id= "'.$submission_id.'" AND field_name = "student_name" ';
+                        $result = $connection2->query($sql);
+                        $attachData = $result->fetch();
+                        $student_name = $attachData['field_value'];
+
+                        //$to = 'admissions@gigis.edu.sg';
+                        //$to = 'bikash@thoughtnet.in';
+                        $to = 'anand.r@thoughtnet.in';
+                        $subject = $sub;
+                        $body = 'Hi,
+                        </br>
+                        '.$student_name.' '.$bdy;
+                    
+                        $mail = $container->get(Mailer::class);
+                        $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+
+                        $mail->AddAddress($to);
+                        $mail->CharSet = 'UTF-8';
+                        $mail->Encoding = 'base64';
+                        $mail->isHTML(true);
+                        $mail->Subject = $subject;
+                        $mail->Body = nl2br($body);
+
+                        $mail->Send();
+                        
+                    } catch (Exception $ex) {
+                        print_r($ex);
+                        //die();
+                    }
+                }
                 
                
                 if (!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)) {
@@ -278,6 +337,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                         $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receipt_offline.php';
                         header('Location: '.$callback);
                     }  
+                } else {
+                    $URL .= "&return=success0";
+                    header("Location: {$URL}");
                 }
 
             } catch (PDOException $e) {

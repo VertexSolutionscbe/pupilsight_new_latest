@@ -48,6 +48,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+
+    // function getDomain()
+    // {
+    //     if (isset($_SERVER['HTTPS'])) {
+    //         $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+    //     } else {
+    //         $protocol = 'http';
+    //     }
+    //     //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    //     return $protocol . "://" . $_SERVER['HTTP_HOST'];
+    // }
+    // $baseurlforgigis = getDomain();
     
     $callbacklink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ?
         "https" : "http") . "://" . $_SERVER['HTTP_HOST'] .
@@ -58,6 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
     $baseurl = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
     $baseurl .= "://" . $_SERVER['HTTP_HOST'];
     $baseurl .= str_replace(basename($_SERVER['SCRIPT_NAME']), "", $_SERVER['SCRIPT_NAME']);
+    //echo $baseurl;
 
     $pupilsightSchoolYearID = '';
     if (isset($_GET['pupilsightSchoolYearID'])) {
@@ -110,9 +123,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
     $table = DataTable::createPaginated('userManage', $criteria);
 
     if($roleId == '004'){
-        echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=%2Fmodules%2FCampaign%2Fparent_active_campaign.php' class='btn btn-primary'>Apply Here</a></div><div class='float-none'></div></div>";
+        echo "<div style='height:50px;'><div class='float-right mb-2 contentPanel'><a href='index.php?q=%2Fmodules%2FCampaign%2Fparent_active_campaign.php' class='btn btn-primary'>Apply Here</a></div><div class='float-none'></div></div>";
     } else {
-        echo "<div style='height:50px;'><div class='float-right mb-2'><a href='index.php?q=%2Fmodules%2FCampaign%2Factive_campaign.php' class='btn btn-primary'>Apply Here</a></div><div class='float-none'></div></div>";
+        echo "<div style='height:50px;'><div class='float-right mb-2 contentPanel'><a href='index.php?q=%2Fmodules%2FCampaign%2Factive_campaign.php' class='btn btn-primary'>Apply Here</a></div><div class='float-none'></div></div>";
     }
    
 
@@ -130,9 +143,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
 
     // echo $table->render($dataSet);
 
-    echo "<div class ='row fee_hdr FeeInvoiceListManage'><div class='col-md-12'><h2>Applied Campaign</h2></div></div>";
+    echo "<div class ='row fee_hdr FeeInvoiceListManage contentPanel' id=''><div class='col-md-12'><h2>Applied Campaign</h2></div></div>";
 
-    echo "<table class='table' id='FeeInvoiceListManage'>";
+    echo "<table class='table contentPanel' id='FeeInvoiceListManage'>";
     echo "<thead>";
     echo "<tr class='head'>";
     echo '<th>';
@@ -156,16 +169,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
     echo "<th>";
     echo __('Fee Receipt Download');
     echo '</th>';
+    if(strpos($baseurl,"gigis")>-1){
+        //if(strpos($baseurl,"localhost")>-1){
+        echo "<th>";
+        echo __('Term Fee Amount');
+        echo '</th>';
+        echo "<th>";
+        echo __('Term Fee Status');
+        echo '</th>';
+        echo "<th>";
+        echo __('Upload Fee Attachment');
+        echo '</th>';
+        echo "<th>";
+        echo __('Student Contract Form');
+        echo '</th>';
+    }
     echo "</thead>";
     echo "<tbody id='getInvoiceFeeItem'>";
     
-        //echo'<pre>';
-        //print_r($dataSet);
-        //die();
-
+        // echo'<pre>';
+        // print_r($dataSet);
+        // die();
+        $totalamountnew = '';
         foreach ($dataSet as $campstatus) {
             if(!empty($campstatus['subid'])){
-
+                $workflowstate = $campstatus['workflowstate'];
                 $sqla = "select application_id FROM wp_fluentform_submissions  where id = ".$campstatus['subid']." ";
                 $resulta = $connection2->query($sqla);
                 $applicationData = $resulta->fetch();
@@ -343,22 +371,80 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 
                 if ($chkpayment == 'Paid') {
                     $cls = 'Paid';
-                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $campstatus['state'] . '</td><td>' . $totalamountnew . '</td><td>&nbsp;&nbsp;Paid</td><td><a href="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'" title="Download Pdf Form " data-aid="'.$applicationId.'" data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
-                    $lin = $baseurl . "public/receipts/" . $inv["filename"] . ".pdf";
-                    echo "<td><a href='" . $lin . "' download><i title='Fee Receipt Download' class='mdi mdi-file-pdf mdi-24px download_icon'></i></a></td></tr>";
+                    echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $workflowstate . '</td><td>' . $totalamountnew . '</td><td>&nbsp;&nbsp;Paid</td><td><a href="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'" title="Download Pdf Form " data-aid="'.$applicationId.'" data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
+                    $lin = $baseurl . "public/receipts/" . $invdata["filename"] . ".pdf";
+                    echo "<td><a href='" . $lin . "' download><i title='Fee Receipt Download' class='mdi mdi-file-pdf mdi-24px download_icon'></i></a></td>";
+                    if(strpos($baseurl,"gigis")>-1){
+                        //if(strpos($baseurl,"localhost")>-1){
+                        $sql = 'SELECT a.campaign_id, b.to_state, c.amount, c.fn_fee_structure_id, e.invoice_no FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id LEFT JOIN fn_fee_admission_settings AS c ON b.fn_fee_admission_setting_ids = c.id LEFT JOIN fn_fee_invoice AS d ON c.fn_fee_structure_id = d.fn_fee_structure_id LEFT JOIN fn_fee_invoice_applicant_assign AS e ON d.id = e.fn_fee_invoice_id WHERE a.submission_id = "'.$campstatus['subid'].'" AND a.state = "Generate Term Fee"  ';
+                        $result = $connection2->query($sql);
+                        $chkStData = $result->fetch();
+                        $to_state = $chkStData['to_state'];
+                        $campaign_id = $chkStData['campaign_id'];
+                        $invoice_no = $chkStData['invoice_no'];
+
+                        if(!empty($chkStData['amount'])){
+                            $termamount = number_format((float)$chkStData['amount'], 2, '.', '');
+                            echo '<td>'.$termamount.'</td>';
+
+                            $sql = 'SELECT * FROM fn_fees_applicant_collection WHERE invoice_no= "'.$invoice_no.'" AND submission_id= "'.$campstatus['subid'].'" ';
+                            $result = $connection2->query($sql);
+                            $payData = $result->fetch();
+                            if(!empty($payData)){
+                                echo '<td>Paid</td>';
+                            } else {
+                                echo '<td></td>';
+                            }
+                            
+                        } else {
+                            echo '<td></td>';
+                            echo '<td></td>';
+                        }
+                        
+                        $sql = 'SELECT * FROM campaign_payment_attachment WHERE campaign_id= "'.$campstatus['campaign_id'].'" AND submission_id= "'.$campstatus['subid'].'" ';
+                        $result = $connection2->query($sql);
+                        $attachData = $result->fetch();
+                        // if (!empty($attachData)) {
+                        //     echo '<td><a href=" '. $attachData['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
+                        // } else {
+                            echo '<td><a href="index.php?q=/modules/Campaign/pay_receipt_template_add.php&cid=' . $campstatus['campaign_id'] . '&sid='.$campstatus['subid'].'"" class=" btn btn-primary">Upload</a></td>';
+                        // }
+
+                        //if($campstatus['is_contract_generated'] != '1'){
+                            $sql = 'SELECT field_value FROM wp_fluentform_entry_details WHERE field_name = "priority_contact" AND submission_id= "'.$campstatus['subid'].'" ';
+                            $result = $connection2->query($sql);
+                            $sdData = $result->fetch();
+                            if($sdData == 'Mother'){
+                                $sql1 = 'SELECT field_value FROM wp_fluentform_entry_details WHERE field_name = "mother_email" AND submission_id= "'.$campstatus['subid'].'" ';
+                            } else {
+                                $sql1 = 'SELECT field_value FROM wp_fluentform_entry_details WHERE field_name = "father_email" AND submission_id= "'.$campstatus['subid'].'" ';
+                            }
+                            $result1 = $connection2->query($sql1);
+                            $sdEmailData = $result1->fetch();
+                            $sdEmail = $sdEmailData['field_value'];
+                            echo '<td><button href="contractForm.php?sid='.$campstatus['subid'].'" class=" btn btn-primary openOtp" data-sid="'.$campstatus['subid'].'" data-semail = "'.$sdEmail.'"  >Contract Form</button></td>';
+                        // } else {
+                        //     echo '<td>Contract Form Generated</td>';
+                        // }
+                    }
+                    echo "</tr>";
                 } else {
 
-                    if ($campstatus['is_fee_generate'] == '2') {
-                        $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $campstatus['subid'] . "  ";
-                        $resulttr = $connection2->query($sql2);
-                        $stateChk = $resulttr->fetch();
-                        if (!empty($stateChk['transaction_id'])) {
-                            $statusCamp = 'Submitted';
+                    if(!empty($workflowstate)){
+                        $statusCamp = $workflowstate;
+                    } else { 
+                        if ($campstatus['is_fee_generate'] == '2') {
+                            $sql2 = "SELECT transaction_id FROM fn_fees_applicant_collection WHERE submission_id = " . $campstatus['subid'] . "  ";
+                            $resulttr = $connection2->query($sql2);
+                            $stateChk = $resulttr->fetch();
+                            if (!empty($stateChk['transaction_id'])) {
+                                $statusCamp = 'Submitted';
+                            } else {
+                                $statusCamp = 'Created';
+                            }
                         } else {
-                            $statusCamp = 'Created';
+                            $statusCamp = 'Submitted';
                         }
-                    } else {
-                        $statusCamp = 'Submitted';
                     }
                     
                     echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $statusCamp . '</td><td>' . $totalamountnew . '</td>';
@@ -376,9 +462,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                     $gatewayID = $gatewayData['id'];
 
                     
-
-                    if($gatewayData['name'] == 'RAZORPAY'){
-    ?>
+                    
+                if($gatewayData['name'] == 'RAZORPAY'){
+                    ?>
                     <td>
                         <form action="thirdparty/applicantpayment/razorpay/pay.php" method="post">
                             <input type="hidden" name="payment_gateway_id" value="<?= $gatewayID ?>">
@@ -395,7 +481,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                             <input type="hidden" name="fine" value="<?= $fineamount ?>">
                             <input type="hidden" name="discount" value="0">
                             
-                            <input type="hidden" name="receipt_number" value="<?= $invdata['stu_invoice_no'] ?>">
+                            <input type="hidden" name="receipt_number" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
                             <input type="hidden" name="name" value="<?= $studetails['field_value'] ?>">
                             <input type="hidden" name="email" value="<?= $campstatus['email'] ?>">
                             <input type="hidden" name="phone" value="<?= $campstatus['phone1'] ?>">
@@ -422,7 +508,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                             <input type="hidden" name="fine" value="<?= $fineamount ?>">
                             <input type="hidden" name="discount" value="0">
                             
-                            <input type="hidden" name="receipt_number" value="<?= $invdata['stu_invoice_no'] ?>">
+                            <input type="hidden" name="receipt_number" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
                             <input type="hidden" name="name" value="<?= $studetails['field_value'] ?>">
                             <input type="hidden" name="email" value="<?= $campstatus['email'] ?>">
                             <input type="hidden" name="phone" value="<?= $campstatus['phone1'] ?>">
@@ -457,7 +543,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                             <input type="hidden" name="fine" value="<?= $fineamount ?>">
                             <input type="hidden" name="discount" value="0">
                             
-                            <input type="hidden" name="receipt_number" value="<?= $invdata['stu_invoice_no'] ?>">
+                            <input type="hidden" name="receipt_number" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
                             <input type="hidden" name="name" value="<?= $studetails['field_value'] ?>">
                             <input type="hidden" name="buyerFirstName" value="<?= $studetails['field_value'] ?>">
                             <input type="hidden" name="buyerLastName" value="<?= $studetails['field_value'] ?>">
@@ -480,13 +566,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 <?php
                     // echo '<td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     echo '<td><a href="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'"  title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
-                    echo "<td>NA</td></tr>";
+                    echo "<td>NA</td>";
+                    if(strpos($baseurl,"gigis")>-1){
+                    //if(strpos($baseurl,"localhost")>-1){
+                        $sql = 'SELECT a.campaign_id, b.to_state, c.amount, c.fn_fee_structure_id, e.invoice_no FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id LEFT JOIN fn_fee_admission_settings AS c ON b.fn_fee_admission_setting_ids = c.id LEFT JOIN fn_fee_invoice AS d ON c.fn_fee_structure_id = d.fn_fee_structure_id LEFT JOIN fn_fee_invoice_applicant_assign AS e ON d.id = e.fn_fee_invoice_id WHERE a.submission_id = "'.$campstatus['subid'].'" AND a.state = "Generate Term Fee"  ';
+                        $result = $connection2->query($sql);
+                        $chkStData = $result->fetch();
+                        $to_state = $chkStData['to_state'];
+                        $campaign_id = $chkStData['campaign_id'];
+                        $invoice_no = $chkStData['invoice_no'];
+
+                        if(!empty($chkStData['amount'])){
+                            $termamount = number_format((float)$chkStData['amount'], 2, '.', '');
+                            echo '<td>'.$termamount.'</td>';
+
+                            $sql = 'SELECT * FROM fn_fees_applicant_collection WHERE invoice_no= "'.$invoice_no.'" AND submission_id= "'.$campstatus['subid'].'" ';
+                            $result = $connection2->query($sql);
+                            $payData = $result->fetch();
+                            if(!empty($payData)){
+                                echo '<td>Paid</td>';
+                            } else {
+                                echo '<td></td>';
+                            }
+                            
+                        } else {
+                            echo '<td></td>';
+                            echo '<td></td>';
+                        }
+                        $sql = 'SELECT * FROM campaign_payment_attachment WHERE campaign_id= "'.$campstatus['campaign_id'].'" AND submission_id= "'.$campstatus['subid'].'" ';
+                        $result = $connection2->query($sql);
+                        $attachData = $result->fetch();
+                        // if (!empty($attachData)) {
+                        //     echo '<td><a href=" '. $attachData['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
+                        // } else {
+                            echo '<td><a href="index.php?q=/modules/Campaign/pay_receipt_template_add.php&cid=' . $campstatus['campaign_id'] . '&sid='.$campstatus['subid'].'"" class=" btn btn-primary">Upload</a></td>';
+                        // }
+                        echo '<td></td>';
+                    }
+                    echo "</tr>";
                 }
                 //echo '<tr><td>'.$ind['officialName'].'</td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['totalamount'].'</td><td>'.$ind['pendingamount'].'</td><td>'.$cls.'</td></tr>';
             } else {
-                $cmstatus="Submitted";
-                if($campstatus['state']){
-                    $cmstatus=$campstatus['state'];
+                
+                if(!empty($workflowstate)){
+                    $cmstatus = $workflowstate;
+                } else {
+                    $cmstatus="Submitted";
+                    if($campstatus['state']){
+                        $cmstatus=$campstatus['state'];
+                    }
                 }
                 echo '<tr>
                 <td>' . $campstatus['name'] ." - ".$classname["classname"]. '</td>
@@ -494,7 +622,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 <td>' . $cmstatus . '</td>
                 <td>' . $totalamountnew . '</td>
                 <td>NA</td>
-                <td><a href="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td><td>NA</td></tr>';
+                <td><a href="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td><td>NA</td>';
+                if(strpos($baseurl,"gigis")>-1){
+                    //if(strpos($baseurl,"localhost")>-1){
+                    $sql = 'SELECT a.campaign_id, b.to_state, c.amount, c.fn_fee_structure_id, e.invoice_no FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id LEFT JOIN fn_fee_admission_settings AS c ON b.fn_fee_admission_setting_ids = c.id LEFT JOIN fn_fee_invoice AS d ON c.fn_fee_structure_id = d.fn_fee_structure_id LEFT JOIN fn_fee_invoice_applicant_assign AS e ON d.id = e.fn_fee_invoice_id WHERE a.submission_id = "'.$campstatus['subid'].'" AND a.state = "Generate Term Fee"  ';
+                    $result = $connection2->query($sql);
+                    $chkStData = $result->fetch();
+                    $to_state = $chkStData['to_state'];
+                    $campaign_id = $chkStData['campaign_id'];
+                    $invoice_no = $chkStData['invoice_no'];
+
+                    if(!empty($chkStData['amount'])){
+                        $termamount = number_format((float)$chkStData['amount'], 2, '.', '');
+                        echo '<td>'.$termamount.'</td>';
+
+                        $sql = 'SELECT * FROM fn_fees_applicant_collection WHERE invoice_no= "'.$invoice_no.'" AND submission_id= "'.$campstatus['subid'].'" ';
+                        $result = $connection2->query($sql);
+                        $payData = $result->fetch();
+                        if(!empty($payData)){
+                            echo '<td>Paid</td>';
+                        } else {
+                            echo '<td></td>';
+                        }
+                        
+                    } else {
+                        echo '<td></td>';
+                        echo '<td></td>';
+                    }
+                    $sql = 'SELECT * FROM campaign_payment_attachment WHERE campaign_id= "'.$campstatus['campaign_id'].'" AND submission_id= "'.$campstatus['subid'].'" ';
+                    $result = $connection2->query($sql);
+                    $attachData = $result->fetch();
+                    // if (!empty($attachData)) {
+                    //     echo '<td><a href=" '. $attachData['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
+                    // } else {
+                        echo '<td><a href="index.php?q=/modules/Campaign/pay_receipt_template_add.php&cid=' . $campstatus['campaign_id'] . '&sid='.$campstatus['subid'].'"" class=" btn btn-primary">Upload</a></td>';
+                    // }
+                    echo '<td></td>';
+                }
+                echo "</tr>";
             }
             
         }
@@ -504,6 +669,118 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
     
 }
 ?>
+
+<div id="otpPanel" class="container-tight py-6">
+
+            <!-- <form action="../login.php?" class="card card-md needs-validation" novalidate="" method="post" autocomplete="off"> -->
+        <div class="card">
+            <div class="card-body">
+                
+                <div class="text-center my-3">
+                    <img src="<?= $logo ?>" height="50" alt="">
+                </div>
+                <h2 class="mb-3 text-center">Verify OTP</h2>
+                <div class="empty-warning" id='otpVerify'></div>
+
+                <div class="mb-3">
+                    <label class="form-label">Enter OTP</label>
+                    <input type="text" id="otp" value="" name="otp" class="form-control" required="">
+                    <div class="invalid-feedback">Invalid OTP</div>
+                </div>
+
+                <div class="mt-2">
+                    <button class="btn btn-primary validateOtp" type="button" data-sid="">Validate</button>
+                </div>
+
+                <!-- <div class="mt-2 text-right">
+                    <button class="btn btn-link" type="button" onclick="openOtp();">Resent Otp</button>   
+                </div> -->
+
+            </div>
+            </div>
+
+</div>
+
+<script>
+    document.body.style.display = "block";
+    $(document).ready(function() {
+        $("#otpPanel").hide();
+    });
+
+    var otpLimit = 0;
+    $(document).on('click', '.openOtp', function (e) {
+        var sid = $(this).attr('data-sid');
+        var semail = $(this).attr('data-semail');
+        //function openOtp(sid,email){
+        //alert(sid);
+        if(otpLimit>10){
+            alert("Your account is locked due to multiple otp failed.");
+            return;
+        }
+        otpLimit++;
+        $(".validateOtp").attr('data-sid',sid);
+        $(".contentPanel").hide(400);
+        $("#otpPanel").show(400);
+        alert("A Otp email is sent on ur mail id ["+semail+"].Please verify the same.");
+        try{
+            $.ajax({
+                url: 'contact_form_mail_send.php',
+                type: 'post',
+                data: { to: semail },
+                async: true,
+                success: function (response) {
+                    
+                }
+            });
+        }catch(ex){
+            console.log(ex);
+        }
+    });
+
+    $(document).on('click', '.validateOtp', function (e) {
+    //function validateOtp(){
+        var sid = $(this).attr('data-sid');
+        //var stu_name = '<?=$dt["student_name"];?>';
+        var val = $("#otp").val();
+        if(val==""){
+            alert("Invalid OTP");
+            return;
+        }
+        //ajax session
+        try{
+            $("#preloader").show();
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: { otp: val, val: val, type:"checkOtpForContractForm"},
+                async: true,
+                success: function (response) {
+                    if(response=="success"){
+                        window.location.href = 'contractForm.php?sid='+sid;
+                        // $.ajax({
+                        //     url: 'student_contract_mail_send.php',
+                        //     type: 'post',
+                        //     data: { sid: sid, stu_name:stu_name },
+                        //     async: true,
+                        //     success: function (response) {
+                        //         $("#preloader").hide();
+                        //         alert("Your contract form submitted successfully");
+                        //         window.location.href = 'index.php?q=/modules/Campaign/check_status.php';
+                        //     }
+                        // });
+                        
+                    }else{
+                        $("#preloader").hide();
+                        alert("Invalid OTP");
+                    }
+                }
+            });
+        }catch(ex){
+            console.log(ex);
+        }
+    });
+</script>
+
 <script type="text/javascript">
     $(document).on('click','.download_form',function(){
         var id = $(this).attr('data-id');

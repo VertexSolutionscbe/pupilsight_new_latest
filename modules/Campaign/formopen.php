@@ -54,6 +54,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
+    function getDomain()
+    {
+        if (isset($_SERVER['HTTPS'])) {
+            $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+        } else {
+            $protocol = 'http';
+        }
+        //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        return $protocol . "://" . $_SERVER['HTTP_HOST'];
+    }
+    $baseurl = getDomain();
     $id = isset($_GET['id']) ? $_GET['id'] : '';
     $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
 
@@ -133,6 +144,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
     <?php
         echo  '<iframe id="innerForm" class="mt-4" data-campid=' . $id . ' src=' . $rowdata['page_link'] . ' style="width:100%;height:120vh;border:0;" allowtransparency="true"></iframe>';
         //echo "<script>setTimeout(function(){iframeLoaded('innerForm');},1000);</script>";
+
+        echo '<input type="hidden" class="firstName" name="name" value="">';
+        echo '<input type="hidden" class="lastName" name="name" value="">';
+       
     ?>
 
         <?php if (!empty($rowdata['fn_fee_structure_id']) && $rowdata['is_fee_generate'] == '2') {
@@ -289,6 +304,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
             iframe.find("input[name=dob_in_words]").prop('readonly', true);
             iframe.find("head").append($("<style type='text/css'>  #site-content{margin-top:-90px;}  </style>"));
 
+            iframe.find("input[name=student_name]").change(function() {
+                var val = $(this).val();
+                if (val != '') {
+                    $(".applicantName").val(val);
+                    $(".firstName").val(val);
+                }
+            });
+
+            iframe.find("input[name=last_name]").change(function() {
+                var val = $(this).val();
+                //alert(val);
+                if (val != '') {
+                    $(".lastName").val(val);
+                }
+            });
+
+            
             iframe.find("input[name=date_of_birth]").change(function() {
 
                 var userDate = $(this).val();
@@ -503,14 +535,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                             // $('html, body').animate({
                             //     scrollTop: $("#showdiv").offset().top
                             // }, 2000);
-                            if (chkfeeSett == '2') {
-                                $("#progClassDiv").remove();
-                                $("#payAdmissionFee").show();
-                            } else {
-                                $("#downloadLink")[0].click();
-                                alert('Your Application Submitted Successfully, We Will get back to you Soon!');
-                                window.location.href = 'index.php?q=/modules/Campaign/check_status.php';
-                            }
+                            <?php
+                                if(strpos($baseurl,"gigis")>-1){
+                                //if(strpos($baseurl,"localhost")>-1){
+                            ?>
+                                    try{
+                                        var fname = $(".firstName").val();
+                                        var lname = $(".lastName").val();
+                                        var name = fname+' '+lname;
+                                        $.ajax({
+                                            url: 'admission_apply_mail_send.php',
+                                            type: 'post',
+                                            data: { to: "anand.r@thoughtnet.in", stuname : name },
+                                            //data: { to: "admissions@gigis.edu.sg", stuname : name },
+                                            async: true,
+                                            success: function (response) {
+                                                $("#downloadLink")[0].click();
+                                                alert('Your Application Submitted Successfully, We Will get back to you Soon!');
+                                                window.location.href = 'index.php?q=/modules/Campaign/check_status.php';
+                                            }
+                                        });
+                                    }catch(ex){
+                                        console.log(ex);
+                                    }
+                            <?php
+                                }else{
+                            ?>
+                                if (chkfeeSett == '2') {
+                                    $("#progClassDiv").remove();
+                                    $("#payAdmissionFee").show();
+                                } else {
+                                    $("#downloadLink")[0].click();
+                                    alert('Your Application Submitted Successfully, We Will get back to you Soon!');
+                                    window.location.href = 'index.php?q=/modules/Campaign/check_status.php';
+                                }
+                            <?php
+                                }
+                            ?>
                         }
                     });
                 }, 500);

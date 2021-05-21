@@ -39,6 +39,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $page->addError(__('You do not have access to this action.'));
 } else {
 
+    function getDomain()
+    {
+        if (isset($_SERVER['HTTPS'])) {
+            $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+        } else {
+            $protocol = 'http';
+        }
+        //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        return $protocol . "://" . $_SERVER['HTTP_HOST'];
+    }
+    $baseurl = getDomain();
+
     $page->breadcrumbs->add(__('Campaign Submitted Form List'));
 
 
@@ -382,6 +394,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                     ->width('10%')
                     ->translatable();
 
+                if(strpos($baseurl,"gigis")>-1){
+                    //if(strpos($baseurl,"localhost")>-1){
+                    $sql = 'SELECT * FROM campaign_payment_attachment WHERE campaign_id= "'.$id.'" AND submission_id= "'.$dataSet->data[$i]["submission_id"].'" ';
+                    $result = $connection2->query($sql);
+                    $attachData = $result->fetch();
+                    if (!empty($attachData)) {
+                        // $dataSet->data[$i]["attachFile"] = '<a href=" '. $attachData['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a>';
+                        $dataSet->data[$i]["attachFile"] = '<a href="fullscreen.php?q=/modules/Campaign/pay_receipt_template.php&cid='.$id.'&sid='.$dataSet->data[$i]["submission_id"].'"  title="Pay Receipts " class="thickbox btn btn-secondary">Pay Receipts</a>';
+                    } else {
+                        $dataSet->data[$i]["attachFile"] = '';
+                    }
+                }
+
+                $table->addColumn('attachFile', __('Pay Receipt'))
+                ->width('10%')
+                ->translatable();
+
 
                 while ($j < $jlen) {
                     $dataSet->data[$i][$field[$j]] = $fieldval[$j];
@@ -421,6 +450,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
             $table->addColumn('created_at', __('Submitted Date and time'))
                 ->width('10%')
                 ->translatable();
+
+            
+            
 
             $table->addActionColumn()
 

@@ -747,7 +747,7 @@
                     data: { cid: cid, sid: sid, sname: sname, fid: fid, subid: subid },
                     async: true,
                     success: function (response) {
-                        //location.reload();
+                        location.reload();
                     }
                 });
             } else {
