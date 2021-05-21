@@ -237,9 +237,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 			// print "<th>";
 			// print __("SMS");
 			// print "</th>";
-			/*print "<th style='width: 120px'>" ;
+			print "<th style='width: 120px'>" ;
 						print __("Actions") ;
-					print "</th>" ;*/
+					print "</th>" ;
 			print "</tr>";
 			print '</thead>';
 
@@ -498,7 +498,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				close by bikash
 				*/ 
 
-				/*print "<td>" ;
+				print "<td>" ;
                     if ($row["sms"]=="Y" || $row["email"]=="Y") {
                         //print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&pupilsightMessengerID=" . $row["pupilsightMessengerID"] . "&sidebar=true&search=$search'><i title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
                     }else{
@@ -520,7 +520,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 							if ($row["smsReport"]!="" OR $row["emailReport"]!="") {
 								print "<a title='" . __('Show Comment') . "' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/" . $_SESSION[$guid]["pupilsightThemeName"] . "/img/page_down.png' alt='" . __('Show Comment') . "' onclick='return false;' /></a>" ;
 							}
-						print "</td>" ;*/
+						print "</td>" ;
 				print "</tr>";
 				if ($row["smsReport"] != "" or $row["emailReport"] != "") {
 					print "<tr class='comment-$count' id='comment-$count'>";

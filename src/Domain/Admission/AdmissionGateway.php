@@ -80,12 +80,14 @@ class AdmissionGateway extends QueryableGateway
                 "ws.pupilsightProgramID",
                 "ws.pupilsightYearGroupID",
                 "ws.pupilsightPersonID",
+                "ws.is_contract_generated",
                 "we.field_name",
                 "we.sub_field_name",
                 "we.field_value",
                 "pupilsightPerson.email",
                 "pupilsightPerson.phone1",
                 "cm.is_fee_generate",
+                "(select workflow_transition.transition_display_name AS state from campaign_form_status LEFT JOIN workflow_transition ON campaign_form_status.state_id = workflow_transition.id where campaign_form_status.submission_id=we.submission_id and campaign_form_status.status=1 order by campaign_form_status.id desc limit 1) as workflowstate",
             ])
             ->leftJoin(
                 "wp_fluentform_submissions AS ws",
@@ -100,7 +102,8 @@ class AdmissionGateway extends QueryableGateway
             ->where("ws.id IN (" . $submissionId . ") ")
             //->where("cm.form_id in (".$form_id.")")
             ->groupBy(["ws.id"]);
-        //echo $query;
+        // echo $query;
+        // die();
         return $this->runQuery($query, $criteria);
     }
 
@@ -120,7 +123,7 @@ class AdmissionGateway extends QueryableGateway
                     "GROUP_CONCAT(fd.field_name order by fd.id) as field_name",
                     "fd.status",
                     "GROUP_CONCAT(field_value order by fd.id SEPARATOR '|$$|') as field_value",
-                    "(select workflow_transition.transition_display_name AS state from campaign_form_status LEFT JOIN workflow_transition ON campaign_form_status.state_id = workflow_transition.id where campaign_form_status.submission_id=fd.submission_id and campaign_form_status.status=1 order by campaign_form_status.id desc limit 1) as workflowstate",
+                    "(select workflow_transition.transition_display_name AS state from campaign_form_status LEFT JOIN workflow_transition ON campaign_form_status.state_id = workflow_transition.id where campaign_form_status.submission_id=fd.submission_id and campaign_form_status.status=1 order by campaign_form_status.id desc limit 1) as workflowstate"
                 ])
                 ->where("fd.form_id = " . $form_id . " ")
                 ->groupBy(["fd.submission_id"])
@@ -564,6 +567,18 @@ class AdmissionGateway extends QueryableGateway
             ->from("fn_fee_payment_details")
             ->cols(["fn_fee_payment_details.*"])
             ->orderBy(["fn_fee_payment_details.id DESC"]);
+
+        return $this->runQuery($query, $criteria, true);
+    }
+
+    public function getAllPayReceipts(QueryCriteria $criteria, $cid, $sid)
+    {
+        $query = $this->newQuery()
+            ->from("campaign_payment_attachment")
+            ->cols(["campaign_payment_attachment.*"])
+            ->where('campaign_payment_attachment.campaign_id = "' . $cid . '" ')
+            ->where('campaign_payment_attachment.submission_id = "' . $sid . '" ')
+            ->orderBy(['campaign_payment_attachment.id DESC ']);
 
         return $this->runQuery($query, $criteria, true);
     }

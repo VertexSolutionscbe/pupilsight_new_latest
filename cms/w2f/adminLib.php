@@ -43,7 +43,7 @@ class adminlib
 
 	function getCampaignData($submissionId)
 	{
-		$sql = "SELECT * FROM gigis_erp.wp_fluentform_entry_details where submission_id='".$submissionId."'";;
+		$sql = "SELECT * FROM wp_fluentform_entry_details where submission_id='".$submissionId."'";;
 		$result = database::doSelect($sql);
 		return $result;
 	}
@@ -450,6 +450,13 @@ class adminlib
 		// print_r($result1);
 		// echo '</pre>';
 		// die();
+		return $result;
+	}
+
+	function getcampaignChkforMenu()
+	{
+		$sql = "SELECT * FROM campaign";
+		$result = database::doSelectOne($sql);
 		return $result;
 	}
 }

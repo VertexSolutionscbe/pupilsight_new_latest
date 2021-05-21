@@ -10,6 +10,7 @@ $section = $adminlib->getPupilSightSectionFrontendData();
 //echo '<pre>';print_r($section['7']);
 //die();
 $campaign = $adminlib->getcampaign();
+$campaignChk = $adminlib->getcampaignChkforMenu();
 session_start();
 if (isset($_SESSION["loginstatus"])) {
     header("Location: index.php");
@@ -448,7 +449,9 @@ if (isset($_GET["invalid"])) {
                                             ] ?></span>
                                         </a>
                                     </li>
-                                <?php } else { ?>
+                                <?php } else {
+                                    if(!empty($campaignChk)){
+                                ?>
                                     <li class="nav-item dropdown">
 
                                         <a class="nav-link dropdown-toggle" href="#navbar-admission" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -472,7 +475,7 @@ if (isset($_GET["invalid"])) {
                                             </li>
                                         </ul>
                                     </li>
-                            <?php }
+                            <?php } }
                             }
                             ?>
                         </ul>

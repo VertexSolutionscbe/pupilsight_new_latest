@@ -16,7 +16,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/edit_wf_transitio
     $wid = $_GET['wid'];
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Campaign'), 'index.php?q=/modules/Campaign/index.php')
+        //->add(__('Campaign'), 'index.php?q=/modules/Campaign/index.php')
         ->add(__('Manage Work Flow'), 'wf_manage.php&id='.$id)
         ->add(__('Edit Work Flow Transition'));
 

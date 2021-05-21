@@ -14,6 +14,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
+
+    
+    if (isset($_SERVER['HTTPS'])) {
+        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+    } else {
+        $protocol = 'http';
+    }
+    //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $baseurl = $protocol . "://" . $_SERVER['HTTP_HOST'];
+    
     $sms = $container->get(SMS::class);
   
     $stateid = $_POST['sid'];
@@ -31,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
         $URL .= '&return=error1';
         header("Location: {$URL}");
     }  else {
-        $sqlnotitype="SELECT a.notification, a.pupilsightTemplateIDs, b.fn_fee_admission_setting_ids FROM workflow_state AS a LEFT JOIN workflow_transition AS b ON a.id = b.to_state WHERE b.id = ".$stateid." ";
+        $sqlnotitype="SELECT a.name, a.notification, a.pupilsightTemplateIDs, b.fn_fee_admission_setting_ids FROM workflow_state AS a LEFT JOIN workflow_transition AS b ON a.id = b.to_state WHERE b.id = ".$stateid." ";
         $resultchk = $connection2->query($sqlnotitype);
         $chknotitype = $resultchk->fetch();
 
@@ -39,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
         $admsettingsId = $chknotitype['fn_fee_admission_setting_ids'];
         //print_r($submissionId);die();
         foreach($submissionId as $sub){
-            $sqle = "SELECT a.response, a.pupilsightProgramID, a.application_id, b.pupilsightYearGroupID FROM wp_fluentform_submissions AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.id = ".$sub." ";
+            $sqle = "SELECT a.response, a.pupilsightProgramID, a.application_id, a.pupilsightPersonID, b.pupilsightYearGroupID FROM wp_fluentform_submissions AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.id = ".$sub." ";
             $resulte = $connection2->query($sqle);
             $rowdata = $resulte->fetch();
             $sd = json_decode($rowdata['response'], TRUE);
@@ -48,9 +58,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
             if(!empty($sd)){
                 //print_r($sd);
                 try{
-                    $names = implode(' ', $sd['student_name']);
+                    // $names = implode(' ', $sd['student_name']);
+                    $names = $sd['student_name'];
                     $email = $sd['father_email'];
-                    $number = $sd['father_mobile'];
+                    if(isset($sd['father_mobile'])){
+                        $number = $sd['father_mobile'];
+                    } else {
+                        $number = '';
+                    }
+                    
                     $father_name = $sd['father_name'];
                     $mother_email = $sd['mother_email'];
                     $mother_name = $sd['mother_name'];
@@ -218,8 +234,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                     $res = file_get_contents($url);
 
                                     $ibody = stripslashes($body);
-                                    $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', email='".$email."', subject='".$subject."', description='".$body."', pupilsightPersonID=".$cuid." ";
+                                    $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', email='".$email."', subject='".$subject."', description='".addslashes(htmlspecialchars($body))."', pupilsightPersonID=".$cuid." ";
                                     $connection2->query($sq);
+
+                                    if(strpos($baseurl,"gigis")>-1 && $chknotitype['name'] == 'Pay Registration Fee'){
+                                    //if(strpos($baseurl,"localhost")>-1 && $chknotitype['name'] == 'Pay Registration Fee'){
+                                        $sub = 'Registration Fee Generated';
+                                        $bdy = "Hi,
+                                            </br>
+                                            Registration Fee is generated for <b>" . $names . "</b>.";
+                                        $url1 = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/mailsend.php';
+                                        //$url1 .="&to=accounts@gigis.edu.sg";
+                                        $url1 .="&to=anand.r@thoughtnet.in";
+                                        $url1 .="&subject=".rawurlencode($sub);
+                                        $url1 .="&body=".nl2br($bdy);
+                                        $res1 = file_get_contents($url1);
+                                        //echo $url1;
+                                    }
                                 }    
                             } else if($td['type'] == 'Sms'){
                                 if(!empty($body) && !empty($number)){
@@ -257,10 +288,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                 $url .="&subject=".rawurlencode($subject);
                                 $url .="&body=".rawurlencode($body);
                                 $res = file_get_contents($url);
-                                echo $url;
+                                //echo $url;
                                 
-                                echo $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', email='".$email."', subject='".$subject."', description='".stripslashes($body)."', pupilsightPersonID=".$cuid." ";
+                                $sq = "INSERT INTO campaign_email_sms_sent_details SET campaign_id = ".$campaignId.", submission_id = ".$sub.", state_id = ".$stateid." ,state_name='".$statename."', email='".$email."', subject='".$subject."', description='".addslashes(htmlspecialchars($body))."', pupilsightPersonID=".$cuid." ";
                                 $connection2->query($sq);
+
+                                //echo $chknotitype['name'];
+                                if(strpos($baseurl,"gigis")>-1 && $chknotitype['name'] == 'Pay Registration Fee'){
+                                //if(strpos($baseurl,"localhost")>-1 && $chknotitype['name'] == 'Pay Registration Fee'){
+                                    $sub = 'Registration Fee Generated';
+                                    $bdy = "Hi,
+                                        </br>
+                                         Registration Fee is generated for <b>" . $names . "</b>.";
+                                    $url1 = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/mailsend.php';
+                                    //$url1 .="&to=accounts@gigis.edu.sg";
+                                    $url1 .="&to=anand.r@thoughtnet.in";
+                                    $url1 .="&subject=".rawurlencode($sub);
+                                    $url1 .="&body=".nl2br($bdy);
+                                    $res1 = file_get_contents($url1);
+                                    //echo $url1;
+                                }
                             }    
                         } else if($chknotitype['notification'] == '2'){
                             if(!empty($body) && !empty($number)){

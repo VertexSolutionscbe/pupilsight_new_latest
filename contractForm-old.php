@@ -1,19 +1,29 @@
 <?php
 include_once "cms/w2f/adminLib.php";
 $adminlib = new adminlib();
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-
-if (isset($_SESSION["loginuser"])){
-
 $data = $adminlib->getPupilSightData();
 
+$priority_contact = "father";
+if(isset($_GET["priority_contact"])){
+    $priority_contact = strtolower($_GET["priority_contact"]);
+    if($priority_contact=="father"||$priority_contact=="mother"){
+        //
+    }else{
+        $priority_contact = "father";
+    }
+}
+
+//echo '<pre>';
+//print_r($data);
+
 $section = $adminlib->getPupilSightSectionFrontendData();
-
+//echo '<pre>';print_r($section['7']);
+//die();
 $campaign = $adminlib->getcampaign();
-//session_start();
-
+session_start();
+//if (isset($_SESSION["loginstatus"])) {
+//    header("Location: index.php");
+//}
 
 function getDomain()
 {
@@ -29,87 +39,48 @@ function getDomain()
 //$baseurl = getDomain().'/pupilsight';
 $baseurl = getDomain();
 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
-
-
-if(isset($_GET['sid'])){
-    $subid = $_GET['sid'];
-    $dataApplicant = $adminlib->getCampaignData($_GET['sid']);
-    if(!empty($dataApplicant)){
-        $len = count($dataApplicant);
-        $i = 0;
-        $dt = array();
-        while($i<$len){
-            $dt[$dataApplicant[$i]["field_name"]] = $dataApplicant[$i]["field_value"];
-            $i++;
-        }
-
-        $priority_contact = "father";
-        if(isset($dt["priority_contact"])){
-            $priority_contact = strtolower($dt["priority_contact"]);
-            if($priority_contact=="father"||$priority_contact=="mother"){
-                //
-            }else{
-                $priority_contact = "father";
-            }
-        }
-
-
-        $dt["parent_name"] = $dt["father_name"];
-        $dt["parent_immigration_status"] = $dt["father_immigration_status"];
-        $dt["parent_nationality"] = $dt["father_nationality"];
-        $dt["parent_email"] = $dt["father_email"];
-        $dt["parent_passport_no"] = $dt["father_passport_no"];
-        $dt["parent_passport_expiry"] =  $dt["father_passport_expiry"];
-        $dt["parent_nric_no"] =  $dt["father_nric_no"];
-        $dt["parent_nric_expiry"] = $dt["father_nric_expiry"];
-        $dt["parent_company_name"] = '';
-        if(isset($dt["father_company_name"])){
-            $dt["parent_company_name"] =  $dt["father_company_name"];
-        }
-        $dt["parent_occupation"] =  '';
-        if(isset($dt["father_occupation"])){
-            $dt["parent_occupation"] =  $dt["father_occupation"];
-        }
-        
-
-        if($dt["priority_contact"]=="Mother"){
-            $dt["parent_name"] = $dt["mother_name"];
-            $dt["parent_immigration_status"] = $dt["mother_immigration_status"];
-            $dt["parent_nationality"] = $dt["mother_nationality"];
-            $dt["parent_email"] = $dt["mother_email"];
-            $dt["parent_passport_no"] = $dt["mother_passport_no"];
-            $dt["parent_passport_expiry"] =  $dt["mother_passport_expiry"];
-            $dt["parent_nric_no"] =  $dt["mother_nric_no"];
-            $dt["parent_nric_expiry"] = $dt["mother_nric_expiry"];
-            $dt["parent_company_name"]=  $dt["mother_company_name"];
-            $dt["parent_occupation"] =  $dt["mother_occupation"];
-        }
-
-        
-        $sql = 'SELECT a.pupilsightProgramID, a.pupilsightYearGroupID, b.academic_id, c.name, c.sequenceNumber, p.name as progname FROM wp_fluentform_submissions AS a LEFT JOIN campaign AS b ON a.form_id = b.form_id LEFT JOIN pupilsightProgram AS p ON a.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS c ON a.pupilsightYearGroupID = c.pupilsightYearGroupID AND b.academic_id = c.pupilsightSchoolYearID WHERE a.id = "'.$subid.'" ';
-        $subData = database::doSelectOne($sql);
-        $pupilsightSchoolYearID = $subData['academic_id'];
-        $progName = $subData['progname'];
-        $className = $subData['name'];
-        $sequenceNumber = $subData['sequenceNumber'];
-        $nextsequenceNumber = $sequenceNumber + 1;
-
-        $nextClassName = '';
-        $sql1 = 'SELECT name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND sequenceNumber = "'.$nextsequenceNumber.'" ';
-        $subData1 = database::doSelectOne($sql1);
-        if(!empty($subData1)){
-            $nextClassName = $subData1['name'];
-        }
-    } else{
-        $redirectUrl = $baseurl.'/index.php?q=/modules/Campaign/check_status.php';
-        header("Location:".$redirectUrl);
-        die();
+if(isset($_SESSION['submissionId'])){
+    $subid = $_SESSION['submissionId'];
+    $data = $adminlib->getCampaignData($_SESSION['submissionId']);
+    $len = count($data);
+    $i = 0;
+    $dt = array();
+    while($i<$len){
+        $dt[$data[$i]["field_name"]] = $data[$i]["field_value"];
+        $i++;
     }
-   
+
+
+    $dt["parent_name"] = $dt["father_name"];
+    $dt["parent_immigration_status"] = $dt["father_immigration_status"];
+    $dt["parent_nationality"] = $dt["father_nationality"];
+    $dt["parent_email"] = $dt["father_email"];
+    $dt["parent_passport_no"] = $dt["father_passport_no"];
+    $dt["parent_passport_expiry"] =  $dt["father_passport_expiry"];
+    $dt["parent_nric_no"] =  $dt["father_nric_no"];
+    $dt["parent_nric_expiry"] = $dt["father_nric_expiry"];
+    $dt["parent_company_name"] =  $dt["father_company_name"];
+    $dt["parent_occupation"] =  $dt["father_occupation"];
+
+    if($dt["priority_contact"]=="Mother"){
+        $dt["parent_name"] = $dt["mother_name"];
+        $dt["parent_immigration_status"] = $dt["mother_immigration_status"];
+        $dt["parent_nationality"] = $dt["mother_nationality"];
+        $dt["parent_email"] = $dt["mother_email"];
+        $dt["parent_passport_no"] = $dt["mother_passport_no"];
+        $dt["parent_passport_expiry"] =  $dt["mother_passport_expiry"];
+        $dt["parent_nric_no"] =  $dt["mother_nric_no"];
+        $dt["parent_nric_expiry"] = $dt["mother_nric_expiry"];
+        $dt["parent_company_name"]=  $dt["mother_company_name"];
+        $dt["parent_occupation"] =  $dt["mother_occupation"];
+    }
+
 }else{
-    $redirectUrl = $baseurl.'/index.php?q=/modules/Campaign/check_status.php';
-    header("Location:".$redirectUrl);
+    header("Location:".$baseurl);
     die();
 }
 
@@ -205,9 +176,6 @@ if (isset($_GET["invalid"])) {
 </head>
 
 <body id='chkCounterSession' class='antialiased'>
-<!-- Preloader Start Here -->
-<div id="preloader" style="display:none;"></div>
-    <!-- Preloader End Here -->
 
     <div class="container" id="contentPanel">
         <div class="row my-5">
@@ -530,7 +498,6 @@ if (isset($_GET["invalid"])) {
                             </div>
                         </div>
 
-                    <?php if($progName == 'IGCSE') { ?>
                         <div class="row">
                             <div class="col-12 text-center mt-5">
                                 <h3>SCHEDULE A</h3>
@@ -545,7 +512,7 @@ if (isset($_GET["invalid"])) {
                                     <tbody>
                                         <tr>
                                             <td>1) Course Title</td>
-                                            <td><?php echo $className;?>
+                                            <td>Cambridge Secondary 1
                                             </td>
                                         </tr>
                                         <tr>
@@ -581,7 +548,7 @@ if (isset($_GET["invalid"])) {
                                                             completion)</span></em></p>
                                             </td>
                                             <td>Performance Profile with Promotion to </span><span
-                                                    style="font-weight: 400;"><?php echo $nextClassName;?>
+                                                    style="font-weight: 400;">Cambridge Secondary 2
                                             </td>
                                         </tr>
                                         <tr>
@@ -1258,735 +1225,7 @@ if (isset($_GET["invalid"])) {
                                 </ol>
                             </div>
                         </div>
-                    <?php } else { ?>
-                        <div class="row">
-                            <div class="col-12 text-center mt-5">
-                                <h3>SCHEDULE A</h3>
-                            </div>
-                            <div class="col-12 text-center">
-                                <h3>COURSE DETAILS</h3>
-                            </div>
-                            <div class="col-12 font-italic">Note: The information provided below should be the same as
-                                that submitted to the CPE. </div>
-                            <div class="col-12">
-                                <table border="1" class="table">
-                                    <tbody>
-                                        <tr>
-                                            <td>1) Course Title</td>
-                                            <td><?php echo $className;?>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2) Course Duration (in months)</td>
-                                            <td>12
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>3) Full-time or Part-time Course</td>
-                                            <td>Full Time
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>4) Course Commencement Date</td>
-                                            <td>5 April 2021
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>5) Course Completion Date</td>
-                                            <td>31 March 2022
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>6) Date of Commencement of Studies if later than Course Commencement
-                                                Date<p><em><span style="font-weight: 400;">Note: &ldquo;N.A.&rdquo; if
-                                                            both dates are the same&nbsp;</span></em></p>
-                                            </td>
-                                            <td>N.A.</td>
-                                        </tr>
-                                        <tr>
-                                            <td>7) Qualification<p><em><span style="font-weight: 400;">(Name of award to
-                                                            be conferred on the Student upon successful Course
-                                                            completion)</span></em></p>
-                                            </td>
-                                            <td>Performance Profile with Promotion to </span><span
-                                                    style="font-weight: 400;"><?php echo $nextClassName;?>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>8) Organisation which develops the Course</td>
-                                            <td>G I G International School
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>9) Organisation which awards/ confers the qualification</td>
-                                            <td>G I G International School
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>10) Course entry requirement(s)</td>
-                                            <td>As per GIGIS age criteria as on </span><span
-                                                    style="font-weight: 400;">5</span><span
-                                                    style="font-weight: 400;">th</span><span style="font-weight: 400;">
-                                                    April 2021</span></li>
-                                                <li style="font-weight: 400;"><span style="font-weight: 400;">Pass the
-                                                        preceding year&rsquo;s assessment</span></li>
-                                                <li style="font-weight: 400;"><span style="font-weight: 400;">Submitted
-                                                        the required documents</span></li>
-                                                <li style="font-weight: 400;"><span style="font-weight: 400;">Paid due
-                                                        fees
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>11) Course schedule with modules and/or subjects</td>
-                                            <td>As per Class/module details stated in the GIGIS Student Handbook.&nbsp;
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>12) Scheduled holidays (public and school) and/or semester/term break
-                                                for course</td>
-                                            <td>As per Class/module details stated in the GIGIS Student Handbook.</td>
-                                        </tr>
-                                        <tr>
-                                            <td>13) Examination and/or other assessment period</td>
-                                            <td>Continuous Comprehensive Evaluation with last assessment in </span><span
-                                                    style="font-weight: 400;">March 2022
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>14) Expected examination results release date</td>
-                                            <td>March 2022
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>15) Expected award conferment date</td>
-                                            <td>March 2022
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
 
-                            <div class="col-12 text-center mt-5">
-                                <h3>SCHEDULE B</h3>
-                            </div>
-                            <div class="col-12 text-center">
-                                <h3>COURSE FEES</h3>
-                            </div>
-                            <div class="col-12 my-3">
-                                <table class="table" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <p><strong>Fees Breakdown</strong></p>
-                                            </td>
-                                            <td>
-                                                Fees Payable
-                                                (without GST)
-                                                <p><strong>(S$)</strong></p>
-                                            </td>
-                                            <td>
-                                                Sibling Subsidy*
-                                                (without GST)
-                                                <p><strong>(S$)</strong></p>
-                                            </td>
-                                            <td>
-                                                Total Fees
-                                                (with GST)
-                                                <p><strong>(S$)</strong></p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="4">
-                                                <span class="text-danger">Note: show full breakdown of total payable
-                                                    course fees on a monthly basis</span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><br />
-                                                Tuition Fee&nbsp;
-                                                <br />
-                                                Activity Fee &amp; School Events
-                                                <br />
-                                                Student Welfare Fee
-                                                <br />
-                                                Resource Fee
-                                                <br />
-                                                Technology Fee
-                                            </td>
-                                            <td><br />
-                                                $700.00
-                                                <br />
-                                                $50.00
-                                                <br />
-                                                $25.00
-                                                <br />
-                                                $135.00
-                                                <br />
-                                                $130.00
-                                            </td>
-                                            <td><br />
-                                                $0.00
-                                                <br />
-                                                $0.00
-                                                <br />
-                                                $0.00
-                                                <br />
-                                                $0.00
-                                                <br />
-                                                $0.00
-                                            </td>
-                                            <td><br />
-                                                $749.00
-                                                <br />
-                                                $53.50
-                                                <br />
-                                                $26.75
-                                                <br />
-                                                $144.45
-                                                <br />
-                                                $139.10
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p><strong>Total Course Fees Payable: Per month</strong></p>
-                                            </td>
-                                            <td><br />
-                                                <p><strong>$1040.00</strong></p>
-                                            </td>
-                                            <td><br />
-                                                <p><strong>$0.00</strong></p>
-                                            </td>
-                                            <td><br />
-                                                <p><strong>$1112.80</strong></p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                No. of Instalment/s
-                                            </td>
-                                            <td colspan="3">
-                                                6
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div class="col-12 my-3 font-italic">*Sibling Subsidy 5% on Tuition Fees</div>
-
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12 text-center my-3">
-                                <h3><u>INSTALMENT SCHEDULE</u></h3>
-                            </div>
-                            <div class="col-12 my-3">
-                                <table class="table" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <h3><strong>Instalment</strong><strong>1</strong><strong>
-                                                        Schedule</strong></h3>
-                                            </td>
-                                            <td>
-                                                <strong>Amount (with GST) (S$)</strong>
-                                            </td>
-                                            <td>
-                                                <p><strong>Date Due</strong><strong>2</strong></p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>1st Instalment (April &amp; May 2021)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2225.60</p>
-                                            </td>
-                                            <td>
-                                                <p>05/03/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>2nd Instalment (June &amp; July 2021)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2225.60</p>
-                                            </td>
-                                            <td>
-                                                <p>05/05/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>3rd Instalment (Aug &amp; Sep 2021)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2225.60</p>
-                                            </td>
-                                            <td>
-                                                <p>05/07/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>4th Instalment (Oct &amp; Nov 2021)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2225.60</p>
-                                            </td>
-                                            <td>
-                                                <p>05/09/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>5th Instalment (Dec&rsquo;21 &amp; Jan&rsquo;22)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2225.60</p>
-                                            </td>
-                                            <td>
-                                                <p>05/11/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>6th Instalment (Feb &amp; Mar 2022)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2225.60</p>
-                                            </td>
-                                            <td>
-                                                <p>05/01/2022</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p><strong>Total Course Fees Payable:</strong></p>
-                                            </td>
-                                            <td>
-                                                <p><strong>$13353.60</strong></p>
-                                            </td>
-                                            <td>&nbsp;</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-12 my-3">
-                                <ol>
-                                    <li>Each instalment amount <u>shall not exceed</u> the following:</li>
-                                </ol>
-                                <ul>
-                                    <li><s>12 months&rsquo; worth of fees for EduTrust certified PEIs*; or</li>
-                                    <li>6 months&rsquo; worth of fees for non-EduTrust-certified PEIs with Industry-Wide
-                                        Course Fee Insurance Scheme (IWC)*; or</s></li>
-                                    <li>2 months&rsquo; worth of fees for non-EduTrust-certified PEIs without IWC*.</li>
-                                </ul>
-                                <p>*<em>Delete as appropriate by striking through.</em></p>
-                                <ol start="2">
-                                    <li>Each instalment after the first shall be collected within one week before the
-                                        next payment scheduled.</li>
-                                </ol>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12 mt-5 text-center">
-                                <h3>SCHEDULE B<br />
-                                    COURSE FEES (SIBILING DISCOUNT)
-                                </h3>
-                            </div>
-                            <div class="col-12">
-                                <table class="table" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <strong>Fees Breakdown</strong>
-                                            </td>
-                                            <td>
-                                                Fees Payable (without GST) <strong>(S$)</strong>
-                                            </td>
-                                            <td>
-                                                Sibling Subsidy* (without GST) <strong>(S$)</strong>
-                                            </td>
-                                            <td>
-                                                Total Fees (with GST) <strong>(S$)</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="4" class="text-danger font-italic">
-                                                Note: show full breakdown of total payable course fees on a monthly
-                                                basis
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><br />
-                                                <p>Tuition Fee&nbsp;</p>
-                                                <br />
-                                                <p>Activity Fee &amp; School Events</p>
-                                                <br />
-                                                <p>Student Welfare Fee</p>
-                                                <br />
-                                                <p>Resource Fee</p>
-                                                <br />
-                                                <p>Technology Fee</p>
-                                            </td>
-                                            <td><br />
-                                                <p>$700.00</p>
-                                                <br />
-                                                <p>$50.00</p>
-                                                <br /><br />
-                                                <p>$25.00</p>
-                                                <br />
-                                                <p>$135.00</p>
-                                                <br />
-                                                <p>$130.00</p>
-                                            </td>
-                                            <td><br />
-                                                <p>$35.00</p>
-                                                <br />
-                                                <p>$0.00</p>
-                                                <br /><br />
-                                                <p>$0.00</p>
-                                                <br />
-                                                <p>$0.00</p>
-                                                <br />
-                                                <p>$0.00</p>
-                                            </td>
-                                            <td><br />
-                                                <p>$711.55</p>
-                                                <br />
-                                                <p>$53.50</p>
-                                                <br /><br />
-                                                <p>$26.75</p>
-                                                <br />
-                                                <p>$144.45</p>
-                                                <br />
-                                                <p>$139.10</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p><strong>Total Course Fees Payable: Per month</strong></p>
-                                            </td>
-                                            <td><br />
-                                                <p><strong>$1040.00</strong></p>
-                                            </td>
-                                            <td><br />
-                                                <p><strong>$35.00</strong></p>
-                                            </td>
-                                            <td><br />
-                                                <p><strong>$1075.35</strong></p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p>No. of Instalment/s</p>
-                                            </td>
-                                            <td colspan="3">
-                                                <p>6</p>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <p class="font-italic">*Sibling Subsidy 5% on Tuition Fees</p>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12 mt-5 text-center">
-                                <h3>
-                                    <u>INSTALMENT SCHEDULE</u>
-                                </h3>
-                            </div>
-                            <div class="col-12 my-3">
-                                <table class="table" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <h3><strong>Instalment</strong><strong>1</strong><strong>
-                                                        Schedule</strong></h3>
-                                            </td>
-                                            <td>
-                                                <strong>Amount (with GST) (S$)</strong>
-                                            </td>
-                                            <td>
-                                                <strong>Date Due 2</strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>1st Instalment (April &amp; May 2021)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2150.70</p>
-                                            </td>
-                                            <td>
-                                                <p>05/03/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>2nd Instalment (June &amp; July 2021)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2150.70</p>
-                                            </td>
-                                            <td>
-                                                <p>05/05/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>3rd Instalment (Aug &amp; Sep 2021)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2150.70</p>
-                                            </td>
-                                            <td>
-                                                <p>05/07/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>4th Instalment (Oct &amp; Nov 2021)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2150.70</p>
-                                            </td>
-                                            <td>
-                                                <p>05/09/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>5th Instalment (Dec&rsquo;21 &amp; Jan&rsquo;22)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2150.70</p>
-                                            </td>
-                                            <td>
-                                                <p>05/11/2021</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <ul>
-                                                    <li>6th Instalment (Feb &amp; Mar 2022)</li>
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <p>$2150.70</p>
-                                            </td>
-                                            <td>
-                                                <p>05/01/2022</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <p><strong>Total Course Fees Payable:</strong></p>
-                                            </td>
-                                            <td>
-                                                <p><strong>$12904.20</strong></p>
-                                            </td>
-                                            <td>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-12 my-3">
-                                <ol>
-                                    <li>Each instalment amount shall not exceed the following:</li>
-                                </ol>
-                                <ul>
-                                    <li><s>12 months&rsquo; worth of fees for EduTrust certified PEIs*; or</li>
-                                    <li>6 months&rsquo; worth of fees for non-EduTrust-certified PEIs with Industry-Wide
-                                        Course Fee Insurance Scheme (IWC)*; or</li>
-                                    <li></s>2 months&rsquo; worth of fees for non-EduTrust-certified PEIs without IWC*.
-                                    </li>
-                                </ul>
-                                <p>*<em>Delete as appropriate by striking through.</em></p>
-                                <ol start="2">
-                                    <li>Each instalment after the first shall be collected within one week before the
-                                        next payment scheduled.</li>
-                                </ol>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12 mt-5 text-center">
-                                <h3>SCHEDULE C<br>
-                                    <u>MISCELLANEOUS FEES</u>
-                                </h3>
-                            </div>
-                            <div class="col-12 my-3">
-                                <table class="table" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td style='width:20px;'>&nbsp;</td>
-                                            <td>
-                                                <strong>Purpose of Fee</strong>
-                                            </td>
-                                            <td>
-                                                Amount (without GST) <strong>(S$)&nbsp;</strong>
-                                            </td>
-                                            <td>
-                                                Amount (with GST) <strong>(S$)</strong>
-                                            </td>
-                                            <td>
-                                                Frequency
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="5">Examples include late payment fees, replacement of student
-                                                ID, re-taking examinations</td>
-                                        </tr>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Bus Zone I (up to 4km)</td>
-                                            <td>$225.00</td>
-                                            <td>$240.75</td>
-                                            <td>Per month</td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Bus Zone I (above 4km to 8km)</td>
-                                            <td>$245.00</td>
-                                            <td>$262.15</td>
-                                            <td>Per month</td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Bus Zone III (above 8km to 10km)</td>
-                                            <td>$265.00</td>
-                                            <td>$283.55</td>
-                                            <td>Per month</td>
-                                        </tr>
-                                        <tr>
-                                            <td>4</td>
-                                            <td>Bus Zone IV (above 10km)</td>
-                                            <td>$296.00</td>
-                                            <td>$316.72</td>
-                                            <td>Per month</td>
-                                        </tr>
-                                        <tr>
-                                            <td>5</td>
-                                            <td>Club Fees</td>
-                                            <td>$300.00</td>
-                                            <td>$321.00</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>6</td>
-                                            <td>Event Costumes</td>
-                                            <td> $75.00</td>
-                                            <td>$80.25</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>7</td>
-                                            <td>Camps & Workshops Activities</td>
-                                            <td>$150.00</td>
-                                            <td>$160.50</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>8</td>
-                                            <td>Class/Graduation Photo</td>
-                                            <td>$10.00</td>
-                                            <td>$10.70</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>9</td>
-                                            <td>Annual Day CD</td>
-                                            <td>$10.00</td>
-                                            <td>$10.70</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>10</td>
-                                            <td>Competition & Cultural Activities Fee</td>
-                                            <td>$100.00</td>
-                                            <td>$107.00</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>11</td>
-                                            <td>UNSW/ASSET/Olympiad/NTSE(2018-19)</td>
-                                            <td>$150.00</td>
-                                            <td>$160.50</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>12</td>
-                                            <td>Online programme</td>
-                                            <td>$80.00</td>
-                                            <td>$85.60</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>13</td>
-                                            <td>Check points</td>
-                                            <td>$250.00</td>
-                                            <td>$267.50</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>14</td>
-                                            <td>Duplicate ID card</td>
-                                            <td>$20.00</td>
-                                            <td>$21.40</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>15</td>
-                                            <td>Books and Note books</td>
-                                            <td>$400.00</td>
-                                            <td>$428.00</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                        <tr>
-                                            <td>16</td>
-                                            <td>Late Payment Charges</td>
-                                            <td>$100.00</td>
-                                            <td>$107.00</td>
-                                            <td>Per instance</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <ol start="3">
-                                    <li>Miscellaneous Fees refer to any non-compulsory fees which the students pay only
-                                        when applicable. Such fees are normally collected by the PEI when the need
-                                        arises</li>
-                                </ol>
-                            </div>
-                        </div>
-                    <?php } ?>
                         <div class="row">
                             <div class="col-12 mt-5 text-center">
                                 <h3>SCHEDULE D<br>
@@ -2166,7 +1405,7 @@ if (isset($_GET["invalid"])) {
                                     </li>
                                     <li>
                                         I / We understand that, <strong>G I G International School Pte Ltd</strong> has
-                                        granted admission to _ <?php echo $className;?>_ subject to the following Terms and
+                                        granted admission to _ Cambridge Secondary 1_ subject to the following Terms and
                                         Conditions.
                                         <ol type="i">
                                             <li>That my child holds a non-Singapore Citizenship OR is a Singapore
@@ -2493,8 +1732,6 @@ if (isset($_GET["invalid"])) {
     }
 
     function validateOtp(){
-        var sid = '<?=$subid;?>';
-        var stu_name = '<?=$dt["student_name"];?>';
         var val = $("#otp").val();
         if(val==""){
             alert("Invalid OTP");
@@ -2502,7 +1739,6 @@ if (isset($_GET["invalid"])) {
         }
         //ajax session
         try{
-            $("#preloader").show();
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
@@ -2510,21 +1746,9 @@ if (isset($_GET["invalid"])) {
                 async: true,
                 success: function (response) {
                     if(response=="success"){
-                        
-                        $.ajax({
-                            url: 'student_contract_mail_send.php',
-                            type: 'post',
-                            data: { sid: sid, stu_name:stu_name },
-                            async: true,
-                            success: function (response) {
-                                $("#preloader").hide();
-                                alert("Your contract form submitted successfully");
-                                window.location.href = 'index.php?q=/modules/Campaign/check_status.php';
-                            }
-                        });
-                        
+                        alert("Your contract form submitted successfully");
+                        location.href="home.php";
                     }else{
-                        $("#preloader").hide();
                         alert("Invalid OTP");
                     }
                 }
@@ -2538,10 +1762,3 @@ if (isset($_GET["invalid"])) {
 </body>
 
 </html>
-
-<?php 
-} else {
-    header("Location: home.php");
-    die();
-}
-?>
