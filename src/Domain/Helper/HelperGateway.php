@@ -23,6 +23,20 @@ class HelperGateway extends QueryableGateway
 
     private static $tableName = '';
 
+    public function getActiveReport($connection2)
+    {
+        $sq = "select * from report_manager where status='2' ";
+        $result = $connection2->query($sq);
+        return $result->fetchAll();
+    }
+
+    public function getBasicActiveReport($connection2)
+    {
+        $sq = "select id,name,description,module,date1,date2,date3,date4,param1,param2,param3,param4,param5,param6,param7,param8 from report_manager where status='2' ";
+        $result = $connection2->query($sq);
+        return $result->fetchAll();
+    }
+
     public function getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID) {
         $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
         $result = $connection2->query($sql);
