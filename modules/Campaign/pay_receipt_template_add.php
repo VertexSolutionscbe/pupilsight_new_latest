@@ -16,7 +16,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage Fee Receipts Template'), 'fee_receipts_manage.php')
+        //->add(__('Manage Fee Receipts Template'), 'fee_receipts_manage.php')
         ->add(__('Add Fee Receipts Template'));
 
     if (isset($_GET['return'])) {
@@ -84,10 +84,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
         $table = DataTable::createPaginated('userManage', $criteria);
 
         $table->addColumn('serial_number', __('SI No'));
-        $table->addColumn('type', __('Receipt Type'));
+        $table->addColumn('type', __('Document Type'));
         $table->addColumn('pay_amount', __('Amount'));
         $table->addColumn('pay_date', __('Date'));
-        $table->addColumn('pay_attachment', __('Receipt'))
+        $table->addColumn('pay_attachment', __('Document'))
         ->format(function ($dataSet) {
             if (!empty($dataSet['pay_attachment'])) {
                 return '<a href=" '. $dataSet['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a>';
@@ -99,12 +99,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
         
             
         // ACTIONS
-        $table->addActionColumn()
-            ->addParam('id')
-            ->format(function ($yearGroups, $actions) use ($guid) {
-               $actions->addAction('delete', __('Delete'))
-                        ->setURL('/modules/Campaign/pay_receipt_template_delete.php');
-            });
+        // $table->addActionColumn()
+        //     ->addParam('id')
+        //     ->format(function ($yearGroups, $actions) use ($guid) {
+        //        $actions->addAction('delete', __('Delete'))
+        //                 ->setURL('/modules/Campaign/pay_receipt_template_delete.php');
+        //     });
 
         echo $table->render($receipts);
 }

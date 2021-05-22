@@ -158,10 +158,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
     echo __('Status');
     echo '</th>';
     echo '<th>';
-    echo __('Amount');
+    if(strpos($baseurl,"gigis")>-1){
+        echo __('Reg Fees (In. GST)');
+    } else {
+        echo __('Amount');
+    }
     echo '</th>';
     echo "<th>";
-    echo __('Action');
+    if(strpos($baseurl,"gigis")>-1){
+        echo __('Status');
+    } else {
+        echo __('Action');
+    }
+    
     echo '</th>';
     echo "<th>";
     echo __('Form Download');
@@ -169,13 +178,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
     echo "<th>";
     echo __('Fee Receipt Download');
     echo '</th>';
+    
     if(strpos($baseurl,"gigis")>-1){
         //if(strpos($baseurl,"localhost")>-1){
         echo "<th>";
-        echo __('Term Fee Amount');
+        echo __('Term Fees(In. GST)');
         echo '</th>';
         echo "<th>";
-        echo __('Term Fee Status');
+        echo __('Status');
+        echo '</th>';
+        echo "<th>";
+        echo __('Term Fee Receipt Download');
         echo '</th>';
         echo "<th>";
         echo __('Upload Fee Attachment');
@@ -376,39 +389,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                     echo "<td><a href='" . $lin . "' download><i title='Fee Receipt Download' class='mdi mdi-file-pdf mdi-24px download_icon'></i></a></td>";
                     if(strpos($baseurl,"gigis")>-1){
                         //if(strpos($baseurl,"localhost")>-1){
-                        $sql = 'SELECT a.campaign_id, b.to_state, c.amount, c.fn_fee_structure_id, e.invoice_no FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id LEFT JOIN fn_fee_admission_settings AS c ON b.fn_fee_admission_setting_ids = c.id LEFT JOIN fn_fee_invoice AS d ON c.fn_fee_structure_id = d.fn_fee_structure_id LEFT JOIN fn_fee_invoice_applicant_assign AS e ON d.id = e.fn_fee_invoice_id WHERE a.submission_id = "'.$campstatus['subid'].'" AND a.state = "Generate Term Fee"  ';
+                        $sql = 'SELECT a.campaign_id, b.to_state, c.amount, c.fn_fee_structure_id, e.invoice_no, d.id as invoice_id FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id LEFT JOIN fn_fee_admission_settings AS c ON b.fn_fee_admission_setting_ids = c.id LEFT JOIN fn_fee_invoice AS d ON c.fn_fee_structure_id = d.fn_fee_structure_id LEFT JOIN fn_fee_invoice_applicant_assign AS e ON d.id = e.fn_fee_invoice_id WHERE a.submission_id = "'.$campstatus['subid'].'" AND a.state = "Generate Term Fee"  ';
                         $result = $connection2->query($sql);
                         $chkStData = $result->fetch();
                         $to_state = $chkStData['to_state'];
                         $campaign_id = $chkStData['campaign_id'];
                         $invoice_no = $chkStData['invoice_no'];
+                        $invoice_id = $chkStData['invoice_id'];
 
                         if(!empty($chkStData['amount'])){
-                            $termamount = number_format((float)$chkStData['amount'], 2, '.', '');
-                            echo '<td>'.$termamount.'</td>';
+                            $sql = 'SELECT SUM(total_amount) as amt FROM fn_fee_invoice_item WHERE fn_fee_invoice_id= "'.$invoice_id.'"  ';
+                            $result = $connection2->query($sql);
+                            $payAmt = $result->fetch();
 
-                            $sql = 'SELECT * FROM fn_fees_applicant_collection WHERE invoice_no= "'.$invoice_no.'" AND submission_id= "'.$campstatus['subid'].'" ';
+                            //$termamount = number_format((float)$chkStData['amount'], 2, '.', '');
+                            echo '<td>'.$payAmt['amt'].'</td>';
+
+                            $sql = 'SELECT a.*, b.filename FROM fn_fees_applicant_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.invoice_no= "'.$invoice_no.'" AND a.submission_id= "'.$campstatus['subid'].'" ';
                             $result = $connection2->query($sql);
                             $payData = $result->fetch();
                             if(!empty($payData)){
                                 echo '<td>Paid</td>';
+                                if(!empty($payData['filename'])){
+                                    $lin = $baseurl . "public/receipts/" . $payData["filename"] . ".pdf";
+                                    echo "<td><a href='" . $lin . "' download><i title='Fee Receipt Download' class='mdi mdi-file-pdf mdi-24px download_icon'></i></a></td>";
+                                } else {
+                                    echo '<td></td>';
+                                }
+                                
                             } else {
+                                echo '<td></td>';
                                 echo '<td></td>';
                             }
                             
                         } else {
                             echo '<td></td>';
                             echo '<td></td>';
+                            echo '<td></td>';
                         }
                         
-                        $sql = 'SELECT * FROM campaign_payment_attachment WHERE campaign_id= "'.$campstatus['campaign_id'].'" AND submission_id= "'.$campstatus['subid'].'" ';
+                        $sql = 'SELECT id FROM campaign_form_status WHERE submission_id = "'.$campstatus['subid'].'" AND state = "Pay Registration Fee"  ';
                         $result = $connection2->query($sql);
-                        $attachData = $result->fetch();
-                        // if (!empty($attachData)) {
-                        //     echo '<td><a href=" '. $attachData['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
-                        // } else {
+                        $chkStateData = $result->fetch();
+
+                        if(!empty($chkStateData)){
                             echo '<td><a href="index.php?q=/modules/Campaign/pay_receipt_template_add.php&cid=' . $campstatus['campaign_id'] . '&sid='.$campstatus['subid'].'"" class=" btn btn-primary">Upload</a></td>';
-                        // }
+                        }
 
                         //if($campstatus['is_contract_generated'] != '1'){
                             $sql = 'SELECT field_value FROM wp_fluentform_entry_details WHERE field_name = "priority_contact" AND submission_id= "'.$campstatus['subid'].'" ';
@@ -422,7 +448,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                             $result1 = $connection2->query($sql1);
                             $sdEmailData = $result1->fetch();
                             $sdEmail = $sdEmailData['field_value'];
-                            echo '<td><button href="contractForm.php?sid='.$campstatus['subid'].'" class=" btn btn-primary openOtp" data-sid="'.$campstatus['subid'].'" data-semail = "'.$sdEmail.'"  >Contract Form</button></td>';
+
+                            $sql = 'SELECT id FROM campaign_form_status WHERE submission_id = "'.$campstatus['subid'].'" AND state = "Student Contract Generation"  ';
+                            $result = $connection2->query($sql);
+                            $chkconData = $result->fetch();
+
+                            if(!empty($chkconData)){
+                                echo '<td><a href="contractForm.php?sid='.$campstatus['subid'].'" class=" btn btn-primary"  >Contract Form</a></td>';
+                            } else {
+                                echo '<td></td>';
+                            }
+                            // echo '<td><button href="contractForm.php?sid='.$campstatus['subid'].'" class=" btn btn-primary openOtp" data-sid="'.$campstatus['subid'].'" data-semail = "'.$sdEmail.'"  >Contract Form</button></td>';
                         // } else {
                         //     echo '<td>Contract Form Generated</td>';
                         // }
@@ -462,64 +498,66 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                     $gatewayID = $gatewayData['id'];
 
                     
-                    
-                if($gatewayData['name'] == 'RAZORPAY'){
-                    ?>
-                    <td>
-                        <form action="thirdparty/applicantpayment/razorpay/pay.php" method="post">
-                            <input type="hidden" name="payment_gateway_id" value="<?= $gatewayID ?>">
-                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $invdata['pupilsightSchoolYearID'] ?>">
-                            <input type="hidden" name="classid" value="<?=$campstatus['pupilsightYearGroupID'] ?>">
-                            <input type="hidden" name="sectionid" value="">
-                            <input type="hidden" name="fn_fees_invoice_id" value="<?= $invoiceId ?>">
-                            <input type="hidden" name="fn_fees_head_id" value="<?= $invdata['fn_fees_head_id'] ?>">
-                            <input type="hidden" name="rec_fn_fee_series_id" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
-                            <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $fn_fee_invoice_item_id ?>">
+                if(strpos($baseurl,"gigis")>-1){  
+                    echo '<td></td>';
+                } else {
+                    if($gatewayData['name'] == 'RAZORPAY'){
+                        ?>
+                        <td>
+                            <form action="thirdparty/applicantpayment/razorpay/pay.php" method="post">
+                                <input type="hidden" name="payment_gateway_id" value="<?= $gatewayID ?>">
+                                <input type="hidden" name="pupilsightSchoolYearID" value="<?= $invdata['pupilsightSchoolYearID'] ?>">
+                                <input type="hidden" name="classid" value="<?=$campstatus['pupilsightYearGroupID'] ?>">
+                                <input type="hidden" name="sectionid" value="">
+                                <input type="hidden" name="fn_fees_invoice_id" value="<?= $invoiceId ?>">
+                                <input type="hidden" name="fn_fees_head_id" value="<?= $invdata['fn_fees_head_id'] ?>">
+                                <input type="hidden" name="rec_fn_fee_series_id" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
+                                <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $fn_fee_invoice_item_id ?>">
 
-                            <input type="hidden" name="total_amount_without_fine_discount" value="<?= $finalamount ?>">
-                            <input type="hidden" name="amount" value="<?= $totalamountnew ?>">
-                            <input type="hidden" name="fine" value="<?= $fineamount ?>">
-                            <input type="hidden" name="discount" value="0">
-                            
-                            <input type="hidden" name="receipt_number" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
-                            <input type="hidden" name="name" value="<?= $studetails['field_value'] ?>">
-                            <input type="hidden" name="email" value="<?= $campstatus['email'] ?>">
-                            <input type="hidden" name="phone" value="<?= $campstatus['phone1'] ?>">
-                            <input type="hidden" name="payid" value="<?= $invdata['stu_invoice_no'] ?>">
-                            <input type="hidden" name="stuid" value="<?= $campstatus['subid'] ?>">
-                            <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
-                            <button type="submit" class="btn btn-primary">Pay</button>
-                        </form> 
-                    </td>
-                <?php } elseif($gatewayData['name'] == 'PAYU'){ ?>
-                    <td>
-                        <form action="thirdparty/payment/payu/checkout_parent.php" method="post">
-                            <input type="hidden" name="payment_gateway_id" value="<?= $gatewayID ?>">
-                            <input type="hidden" name="pupilsightSchoolYearID" value="<?= $invdata['pupilsightSchoolYearID'] ?>">
-                            <input type="hidden" name="classid" value="<?=$campstatus['pupilsightYearGroupID'] ?>">
-                            <input type="hidden" name="sectionid" value="">
-                            <input type="hidden" name="fn_fees_invoice_id" value="<?= $invoiceId ?>">
-                            <input type="hidden" name="fn_fees_head_id" value="<?= $invdata['fn_fees_head_id'] ?>">
-                            <input type="hidden" name="rec_fn_fee_series_id" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
-                            <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $fn_fee_invoice_item_id ?>">
+                                <input type="hidden" name="total_amount_without_fine_discount" value="<?= $finalamount ?>">
+                                <input type="hidden" name="amount" value="<?= $totalamountnew ?>">
+                                <input type="hidden" name="fine" value="<?= $fineamount ?>">
+                                <input type="hidden" name="discount" value="0">
+                                
+                                <input type="hidden" name="receipt_number" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
+                                <input type="hidden" name="name" value="<?= $studetails['field_value'] ?>">
+                                <input type="hidden" name="email" value="<?= $campstatus['email'] ?>">
+                                <input type="hidden" name="phone" value="<?= $campstatus['phone1'] ?>">
+                                <input type="hidden" name="payid" value="<?= $invdata['stu_invoice_no'] ?>">
+                                <input type="hidden" name="stuid" value="<?= $campstatus['subid'] ?>">
+                                <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
+                                <button type="submit" class="btn btn-primary">Pay</button>
+                            </form> 
+                        </td>
+                    <?php } elseif($gatewayData['name'] == 'PAYU'){ ?>
+                        <td>
+                            <form action="thirdparty/payment/payu/checkout_parent.php" method="post">
+                                <input type="hidden" name="payment_gateway_id" value="<?= $gatewayID ?>">
+                                <input type="hidden" name="pupilsightSchoolYearID" value="<?= $invdata['pupilsightSchoolYearID'] ?>">
+                                <input type="hidden" name="classid" value="<?=$campstatus['pupilsightYearGroupID'] ?>">
+                                <input type="hidden" name="sectionid" value="">
+                                <input type="hidden" name="fn_fees_invoice_id" value="<?= $invoiceId ?>">
+                                <input type="hidden" name="fn_fees_head_id" value="<?= $invdata['fn_fees_head_id'] ?>">
+                                <input type="hidden" name="rec_fn_fee_series_id" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
+                                <input type="hidden" name="fn_fee_invoice_item_id" value="<?= $fn_fee_invoice_item_id ?>">
 
-                            <input type="hidden" name="total_amount_without_fine_discount" value="<?= $finalamount ?>">
-                            <input type="hidden" name="amount" value="<?= $totalamountnew ?>">
-                            <input type="hidden" name="fine" value="<?= $fineamount ?>">
-                            <input type="hidden" name="discount" value="0">
-                            
-                            <input type="hidden" name="receipt_number" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
-                            <input type="hidden" name="name" value="<?= $studetails['field_value'] ?>">
-                            <input type="hidden" name="email" value="<?= $campstatus['email'] ?>">
-                            <input type="hidden" name="phone" value="<?= $campstatus['phone1'] ?>">
-                            <input type="hidden" name="payid" value="<?= $invdata['stu_invoice_no'] ?>">
-                            <input type="hidden" name="stuid" value="<?= $campstatus['subid'] ?>">
-                            <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
-                            <button type="submit" class="btn btn-primary">Pay</button>
-                        </form> 
-                    </td>
+                                <input type="hidden" name="total_amount_without_fine_discount" value="<?= $finalamount ?>">
+                                <input type="hidden" name="amount" value="<?= $totalamountnew ?>">
+                                <input type="hidden" name="fine" value="<?= $fineamount ?>">
+                                <input type="hidden" name="discount" value="0">
+                                
+                                <input type="hidden" name="receipt_number" value="<?= $invdata['rec_fn_fee_series_id'] ?>">
+                                <input type="hidden" name="name" value="<?= $studetails['field_value'] ?>">
+                                <input type="hidden" name="email" value="<?= $campstatus['email'] ?>">
+                                <input type="hidden" name="phone" value="<?= $campstatus['phone1'] ?>">
+                                <input type="hidden" name="payid" value="<?= $invdata['stu_invoice_no'] ?>">
+                                <input type="hidden" name="stuid" value="<?= $campstatus['subid'] ?>">
+                                <input type="hidden" name="callbackurl" value="<?= $callbacklink ?>">
+                                <button type="submit" class="btn btn-primary">Pay</button>
+                            </form> 
+                        </td>
 
-                <?php } elseif($gatewayData['name'] == 'AIRPAY'){ 
+                    <?php } elseif($gatewayData['name'] == 'AIRPAY'){ 
                         $random_number = mt_rand(1000, 9999);
                         $today = time();
                         $orderId = $today . $random_number;
@@ -562,19 +600,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                             <button type="submit" class="btn btn-primary">Pay</button>
                         </form> 
                     </td>
-                <?php } ?>
+                <?php } } ?>
                 <?php
                     // echo '<td><a href="javascript:void(0)" class="download_form" title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     echo '<td><a href="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'"  title="Download Pdf Form " data-aid="'.$applicationId.'"  data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
                     echo "<td>NA</td>";
                     if(strpos($baseurl,"gigis")>-1){
-                    //if(strpos($baseurl,"localhost")>-1){
-                        $sql = 'SELECT a.campaign_id, b.to_state, c.amount, c.fn_fee_structure_id, e.invoice_no FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id LEFT JOIN fn_fee_admission_settings AS c ON b.fn_fee_admission_setting_ids = c.id LEFT JOIN fn_fee_invoice AS d ON c.fn_fee_structure_id = d.fn_fee_structure_id LEFT JOIN fn_fee_invoice_applicant_assign AS e ON d.id = e.fn_fee_invoice_id WHERE a.submission_id = "'.$campstatus['subid'].'" AND a.state = "Generate Term Fee"  ';
+                        //if(strpos($baseurl,"localhost")>-1){
+                        $sql = 'SELECT a.campaign_id, a.state, b.to_state, c.amount, c.fn_fee_structure_id, e.invoice_no FROM campaign_form_status AS a LEFT JOIN workflow_transition AS b ON a.state_id = b.id LEFT JOIN fn_fee_admission_settings AS c ON b.fn_fee_admission_setting_ids = c.id LEFT JOIN fn_fee_invoice AS d ON c.fn_fee_structure_id = d.fn_fee_structure_id LEFT JOIN fn_fee_invoice_applicant_assign AS e ON d.id = e.fn_fee_invoice_id WHERE a.submission_id = "'.$campstatus['subid'].'" AND a.state = "Generate Term Fee"  ';
                         $result = $connection2->query($sql);
                         $chkStData = $result->fetch();
                         $to_state = $chkStData['to_state'];
                         $campaign_id = $chkStData['campaign_id'];
                         $invoice_no = $chkStData['invoice_no'];
+                        $currState = $chkStData['state'];
 
                         if(!empty($chkStData['amount'])){
                             $termamount = number_format((float)$chkStData['amount'], 2, '.', '');
@@ -585,22 +624,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                             $payData = $result->fetch();
                             if(!empty($payData)){
                                 echo '<td>Paid</td>';
+                                echo '<td></td>';
                             } else {
+                                echo '<td></td>';
                                 echo '<td></td>';
                             }
                             
                         } else {
                             echo '<td></td>';
                             echo '<td></td>';
+                            echo '<td></td>';
                         }
-                        $sql = 'SELECT * FROM campaign_payment_attachment WHERE campaign_id= "'.$campstatus['campaign_id'].'" AND submission_id= "'.$campstatus['subid'].'" ';
+                        
+                        $sql = 'SELECT id FROM campaign_form_status WHERE submission_id = "'.$campstatus['subid'].'" AND state = "Pay Registration Fee"  ';
                         $result = $connection2->query($sql);
-                        $attachData = $result->fetch();
-                        // if (!empty($attachData)) {
-                        //     echo '<td><a href=" '. $attachData['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
-                        // } else {
+                        $chkStateData = $result->fetch();
+
+                        if(!empty($chkStateData)){
                             echo '<td><a href="index.php?q=/modules/Campaign/pay_receipt_template_add.php&cid=' . $campstatus['campaign_id'] . '&sid='.$campstatus['subid'].'"" class=" btn btn-primary">Upload</a></td>';
-                        // }
+                        }
                         echo '<td></td>';
                     }
                     echo "</tr>";
@@ -641,22 +683,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                         $payData = $result->fetch();
                         if(!empty($payData)){
                             echo '<td>Paid</td>';
+                            echo '<td></td>';
                         } else {
+                            echo '<td></td>';
                             echo '<td></td>';
                         }
                         
                     } else {
                         echo '<td></td>';
                         echo '<td></td>';
+                        echo '<td></td>';
                     }
-                    $sql = 'SELECT * FROM campaign_payment_attachment WHERE campaign_id= "'.$campstatus['campaign_id'].'" AND submission_id= "'.$campstatus['subid'].'" ';
-                    $result = $connection2->query($sql);
-                    $attachData = $result->fetch();
-                    // if (!empty($attachData)) {
-                    //     echo '<td><a href=" '. $attachData['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
-                    // } else {
+                    $sql = 'SELECT id FROM campaign_form_status WHERE submission_id = "'.$campstatus['subid'].'" AND state = "Pay Registration Fee"  ';
+                        $result = $connection2->query($sql);
+                        $chkStateData = $result->fetch();
+
+                    if(!empty($chkStateData)){
                         echo '<td><a href="index.php?q=/modules/Campaign/pay_receipt_template_add.php&cid=' . $campstatus['campaign_id'] . '&sid='.$campstatus['subid'].'"" class=" btn btn-primary">Upload</a></td>';
-                    // }
+                    }
                     echo '<td></td>';
                 }
                 echo "</tr>";

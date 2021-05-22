@@ -546,7 +546,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/formopen.php') ==
                                         $.ajax({
                                             url: 'admission_apply_mail_send.php',
                                             type: 'post',
-                                            data: { to: "anand.r@thoughtnet.in", stuname : name },
+                                            data: { to: "anand.r@thoughtnet.in", stuname : fname },
                                             //data: { to: "admissions@gigis.edu.sg", stuname : name },
                                             async: true,
                                             success: function (response) {

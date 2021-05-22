@@ -128,8 +128,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			$emailReceiptText = $_POST["emailReceiptText"];
 
 		//print_r($_POST);die();
-		// if (($body == "" and $body1 == "") or ($email == "Y" and $from == "") or $emailReceipt == '' or ($emailReceipt == "Y" and $emailReceiptText == "") or ($_POST["role"] == 'N' and $_POST["roleCategory"] == 'N' and $_POST["yearGroup"] == 'N' and $_POST["rollGroup"] == 'N' and $_POST["activity"] == 'N' and $_POST["applicants"] == 'N' and $_POST["houses"] == 'N' and $_POST["transport"] == 'N' and $_POST["attendance"] == 'N' and $_POST["group"] == 'N' and $_POST["individuals"] == 'N'  and $_POST["individualList"] == '' and $_POST["pupilsightPersonID"] == '') or ($email == "N" and $messageWall == "N" and $sms == "N")) {
-		if (($body == "" and $body1 == "") or ($email == "Y" and $from == "") or $emailReceipt == '' or ($emailReceipt == "Y" and $emailReceiptText == "") or ($email == "N" and $messageWall == "N" and $sms == "N")) {
+		if (($body == "" and $body1 == "") or ($email == "Y" and $from == "") or $emailReceipt == '' or ($emailReceipt == "Y" and $emailReceiptText == "") or ($_POST["role"] == 'N' and $_POST["roleCategory"] == 'N' and $_POST["yearGroup"] == 'N' and $_POST["rollGroup"] == 'N' and $_POST["activity"] == 'N' and $_POST["applicants"] == 'N' and $_POST["houses"] == 'N' and $_POST["transport"] == 'N' and $_POST["attendance"] == 'N' and $_POST["group"] == 'N' and $_POST["individuals"] == 'N'  and $_POST["individualList"] == '' and $_POST["pupilsightPersonID"] == '') or ($email == "N" and $messageWall == "N" and $sms == "N")) {
 			//Fail 3
 			$URL .= "&addReturn=fail3";
 			header("Location: {$URL}");

@@ -60,7 +60,7 @@ $subject = 'Student Contract Generated';
 $body =
     "Hi,
 </br>
- <b>" . $stu_name . "</b> has generated a student contract.";
+ <b>" . $stu_name . "</b> has generated student contract. Request you to change the application status to 'Generate Term Fee'.";
 //die();
 
 $sql = "SELECT value FROM pupilsightSetting WHERE name = 'organisationName' ";
@@ -88,22 +88,21 @@ $res = $mail->Send();
 
 
 //$to = "accounts@gigis.edu.sg";
-$to = 'anand.r@thoughtnet.in';
-$subject = 'Student Contract Generated';
+// $to = 'anand.r@thoughtnet.in';
+// $subject = 'Student Contract Generated';
 
-//$otp = '1234';
-$body =
-    "Hi,
-</br>
- <b>" . $stu_name . "</b> has generated student contract and term fee has been generated.";
+// $body =
+//     "Hi,
+// </br>
+//  <b>" . $stu_name . "</b> has generated student contract and term fee has been generated.";
 
-$mail1 = $container->get(Mailer::class);
-$mail1->SetFrom($email, $name);
-$mail1->AddAddress($to);
-$mail1->CharSet = 'UTF-8';
-$mail1->Encoding = 'base64';
-$mail1->IsHTML(true);
-$mail1->Subject = $subject;
-$mail1->Body = nl2br($body);
-$res1 = $mail1->Send();
+// $mail1 = $container->get(Mailer::class);
+// $mail1->SetFrom($email, $name);
+// $mail1->AddAddress($to);
+// $mail1->CharSet = 'UTF-8';
+// $mail1->Encoding = 'base64';
+// $mail1->IsHTML(true);
+// $mail1->Subject = $subject;
+// $mail1->Body = nl2br($body);
+// $res1 = $mail1->Send();
 echo 'done';

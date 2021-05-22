@@ -87,13 +87,15 @@ if(isset($_GET['sid'])){
         }
 
         
-        $sql = 'SELECT a.pupilsightProgramID, a.pupilsightYearGroupID, b.academic_id, c.name, c.sequenceNumber, p.name as progname FROM wp_fluentform_submissions AS a LEFT JOIN campaign AS b ON a.form_id = b.form_id LEFT JOIN pupilsightProgram AS p ON a.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS c ON a.pupilsightYearGroupID = c.pupilsightYearGroupID AND b.academic_id = c.pupilsightSchoolYearID WHERE a.id = "'.$subid.'" ';
+        $sql = 'SELECT a.pupilsightProgramID, a.pupilsightYearGroupID, a.is_contract_generated, b.academic_id, c.name, c.sequenceNumber, p.name as progname FROM wp_fluentform_submissions AS a LEFT JOIN campaign AS b ON a.form_id = b.form_id LEFT JOIN pupilsightProgram AS p ON a.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS c ON a.pupilsightYearGroupID = c.pupilsightYearGroupID AND b.academic_id = c.pupilsightSchoolYearID WHERE a.id = "'.$subid.'" ';
         $subData = database::doSelectOne($sql);
         $pupilsightSchoolYearID = $subData['academic_id'];
         $progName = $subData['progname'];
         $className = $subData['name'];
         $sequenceNumber = $subData['sequenceNumber'];
         $nextsequenceNumber = $sequenceNumber + 1;
+
+        $is_contract_generated = $subData['is_contract_generated'];
 
         $nextClassName = '';
         $sql1 = 'SELECT name FROM pupilsightYearGroup WHERE pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND sequenceNumber = "'.$nextsequenceNumber.'" ';
@@ -313,7 +315,7 @@ if (isset($_GET["invalid"])) {
                                 I,
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" name="parent_name" id="parent_name" value="<?=$dt["parent_name"];?>">
+                                <input readonly type="text" class="form-control" name="parent_name" id="parent_name" value="<?=$dt["parent_name"];?>">
                             </div>
                             <div class="col-12 text-center font-italic">
                                 (Name of Parent/ Guardian)
@@ -321,11 +323,11 @@ if (isset($_GET["invalid"])) {
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="nric" id="nric" value="<?=$dt["parent_nric_no"];?>">
+                                <input readonly type="text" class="form-control" name="nric" id="nric" value="<?=$dt["parent_nric_no"];?>">
                                 <div class='text-center font-italic'>(NRIC)</div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="passport_number" id="passport_number" value="<?=$dt["parent_passport_no"];?>">
+                                <input readonly type="text" class="form-control" name="passport_number" id="passport_number" value="<?=$dt["parent_passport_no"];?>">
                                 <div class='text-center font-italic'>(Passport Number)</div>
                             </div>
                         </div>
@@ -337,7 +339,7 @@ if (isset($_GET["invalid"])) {
                                 For myself/ my ward**
                             </div>
                             <div class="col">
-                                <input type="text" class="form-control" name="parent_name" id="parent_name" value="<?=$dt["parent_name"];?>">
+                                <input readonly type="text" class="form-control" name="parent_name" id="parent_name" value="<?=$dt["parent_name"];?>">
                             </div>
                             <div class="col-12 mb-3">
                                 <div class='text-center font-italic'>(Name of Child)</div>
@@ -345,11 +347,11 @@ if (isset($_GET["invalid"])) {
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="st_nric" id="st_nric" value="<?=$dt["student_nric_no"];?>">
+                                <input readonly type="text" class="form-control" name="st_nric" id="st_nric" value="<?=$dt["student_nric_no"];?>">
                                 <div class='text-center font-italic'>(NRIC)</div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="st_passport_number"
+                                <input readonly type="text" class="form-control" name="st_passport_number"
                                     id="st_passport_number" value="<?=$dt["student_passport_no"];?>">
                                 <div class='text-center font-italic'>(Passport Number)</div>
                             </div>
@@ -362,13 +364,13 @@ if (isset($_GET["invalid"])) {
                         </div>
                         <div class="row">
                             <div class="col-auto my-3">
-                                <input type="file" class="form-control" name="parent_signature" id="parent_signature">
-                                <div class="text-center font-italic">(Signature Of Parent)</div>
+                                <!-- <input readonly type="file" class="form-control" name="parent_signature" id="parent_signature"> -->
+                                <!-- <div class="text-center font-italic">(Signature Of Parent)</div> -->
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-12 my-3">
-                                <input type='text' class="form-control" name="date" id="date" value='<?= date("m/d/Y");?>'>
+                                <input readonly type='text' class="form-control" name="date" id="date" value='<?= date("m/d/Y");?>'>
                                 <div class="text-center font-italic">(Date)</div>
                             </div>
                         </div>
@@ -402,7 +404,7 @@ if (isset($_GET["invalid"])) {
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">Full Name of Student
                                             </div>
-                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
+                                            <div class="col-md-6 col-sm-12 my-3"><input readonly type="text" class="form-control"
                                                     name="student_name" id="student_name" value="<?=$dt["student_name"];?>"></div>
                                         </div>
                                         <div class="row">
@@ -412,13 +414,13 @@ if (isset($_GET["invalid"])) {
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">NRIC Number (for SC/PR)*</div>
-                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
+                                            <div class="col-md-6 col-sm-12 my-3"><input readonly type="text" class="form-control"
                                                     name="nric_number" id="nric_number" required value="<?=$dt["student_nric_no"];?>"></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">Student’s Pass Number (if
                                                 available)/<br />Passport Number (for international student)*</div>
-                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
+                                            <div class="col-md-6 col-sm-12 my-3"><input readonly type="text" class="form-control"
                                                     name="st_pass_number" id="st_pass_number" required value="<?=$dt["student_passport_no"];?>"></div>
                                         </div>
                                     </li>
@@ -426,12 +428,12 @@ if (isset($_GET["invalid"])) {
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">Full Name of Parent/Legal
                                                 Guardian*<br />(if Student is under eighteen (18) years of age)</div>
-                                            <div class="col-md-6 col-sm-12 my-3"><input type="text" class="form-control"
+                                            <div class="col-md-6 col-sm-12 my-3"><input readonly type="text" class="form-control"
                                                     name="parent_legal_name" id="parent_legal_name" required value="<?=$dt["parent_name"];?>"></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-1">NRIC/Passport Number*</div>
-                                            <div class="col-md-6 col-sm-12 my-1"><input type="text" class="form-control"
+                                            <div class="col-md-6 col-sm-12 my-1"><input readonly type="text" class="form-control"
                                                     name="parent_legal_passport_number"
                                                     id="parent_legal_passport_number" required value="<?=$dt["parent_passport_no"];?>"></div>
                                         </div>
@@ -2044,7 +2046,7 @@ if (isset($_GET["invalid"])) {
                             </div>
                             <div class="col-12">
                                 <label class="form-check">
-                                    <input class="form-check-input" type="checkbox" checked="">
+                                    <input readonly class="form-check-input" type="checkbox" checked="">
                                     <span class="form-check-label">The parties hereby acknowledge and agree to the terms
                                         stated in this Contract.
                                     </span>
@@ -2074,24 +2076,27 @@ if (isset($_GET["invalid"])) {
                         <!--
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="file" class="form-control" name="student_sign" id="student_sign">
+                                <input readonly type="file" class="form-control" name="student_sign" id="student_sign">
                                 <div class=''>SIGNED by the Student</div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="file" class="form-control" name="parent_sign" id="parent_sign">
+                                <input readonly type="file" class="form-control" name="parent_sign" id="parent_sign">
                                 <div class=''>SIGNED by the Student’s parent or legal guardian (if the student is under eighteen (18) years of age</div>
                             </div>
                         </div>
                         -->
                         <div class="row">
-                            <div class="col-md-6 col-sm-12 my-3">
-                                <input type="file" class="form-control" name="dependant_pass" id="dependant_pass">
-                                <div class=''>Name of Child Immigration Type <span class="bg-yellow-lt">_Dependant’s
-                                        Pass_</span></div>
+                            <div class="col-md-4 col-sm-12 my-3">
+                                <input readonly type="text" class="form-control" name="dependant_pass" id="dependant_pass" value="<?=$dt["student_name"];?>">
+                                <div class=''>Name of Child</div>
 
                             </div>
-                            <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="parent_legal_name" id="parent_legal_name" value="<?=$dt["parent_name"];?>">
+                            <div class="col-md-4 col-sm-12 my-3">
+                                <input readonly type="text" class="form-control" name="parent_legal_name" id="parent_legal_name" value="<?=$dt["student_immigration_status"];?>">
+                                <div class=''>Immigration type</div>
+                            </div>
+                            <div class="col-md-4 col-sm-12 my-3">
+                                <input readonly type="text" class="form-control" name="parent_legal_name" id="parent_legal_name" value="<?=$dt["parent_name"];?>">
                                 <div class=''>Name of Parent/ Legal Guardian:</div>
                             </div>
                         </div>
@@ -2099,13 +2104,13 @@ if (isset($_GET["invalid"])) {
                             <div class="col-md-6 col-sm-12 my-3">
                                 <div class="row">
                                     <div class="col-auto">Date</div>
-                                    <div class="col"><input type='text' class="form-control" name="sign_date" id="sign_date" value="<?=date("m/d/Y");?>"></div>
+                                    <div class="col"><input readonly type='text' class="form-control" name="sign_date" id="sign_date" value="<?=date("m/d/Y");?>"></div>
                                 </div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
                                 <div class="row">
                                     <div class="col-auto">Date</div>
-                                    <div class="col"><input type='text' class="form-control" name="sign_date" id="sign_date" value="<?=date("m/d/Y");?>"></div>
+                                    <div class="col"><input readonly type='text' class="form-control" name="sign_date" id="sign_date" value="<?=date("m/d/Y");?>"></div>
                                 </div>
                             </div>
                         </div>
@@ -2122,11 +2127,11 @@ if (isset($_GET["invalid"])) {
                             </div>
                             <div class="col">
                                 <div>
-                                    <input type="text" class="form-control" name="bparent_name" id="bparent_name" value="<?=$dt["parent_name"];?>">
+                                    <input readonly type="text" class="form-control" name="bparent_name" id="bparent_name" value="<?=$dt["parent_name"];?>">
                                 </div>
                                 <div class="mt-1 font-italic text-center">(Name of Parent/ Guardian)</div>
                                 <div class="mt-2">
-                                    <input type="text" class="form-control" name="bstudent_name" id="bstudent_name" value="<?=$dt["student_name"];?>">
+                                    <input readonly type="text" class="form-control" name="bstudent_name" id="bstudent_name" value="<?=$dt["student_name"];?>">
                                 </div>
                                 <div class="font-italic text-center">(Name of Child)</div>
                             </div>
@@ -2190,34 +2195,34 @@ if (isset($_GET["invalid"])) {
                                     <li>
                                         As on the date of signing this document, I/ We declare that
                                         <div>
-                                            <input type="text" class="form-control" name="child_name" id="child_name" value="<?=$dt["student_name"];?>">
+                                            <input readonly type="text" class="form-control" name="child_name" id="child_name" value="<?=$dt["student_name"];?>">
                                         </div>
                                         <div class="font-italic text-center">(Name of Child)</div>
                                         <div>has following nationality and immigration details:</div>
                                         <div class="row">
                                             <div class="col-md-6 col-sm-12 my-3">Nationality:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="text" class="form-control" name="bnationality"
+                                                <input readonly type="text" class="form-control" name="bnationality"
                                                     id="bnationality" value="<?=$dt["student_nationality"];?>">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">Passport Number:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type="text" class="form-control" name="bpassport_number"
+                                                <input readonly type="text" class="form-control" name="bpassport_number"
                                                     id="bpassport_number" value="<?=$dt["student_passport_no"];?>">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">Issue Date:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type='text' class="form-control" name="bissue_date"
+                                                <input readonly type='text' class="form-control" name="bissue_date"
                                                     id="bissue_date" value="">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">Immigration Status:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type='text' class="form-control" name="bimmigration_status"
+                                                <input readonly type='text' class="form-control" name="bimmigration_status"
                                                     id="bimmigration_status" value="<?=$dt["student_immigration_status"];?>">
                                             </div>
                                             <div class="col-md-6 col-sm-12 my-3">NRIC / FIN Number:</div>
                                             <div class="col-md-6 col-sm-12 my-3">
-                                                <input type='text' class="form-control" name="bfin_number"
+                                                <input readonly type='text' class="form-control" name="bfin_number"
                                                     id="bfin_number" value="<?=$dt["student_nric_no"];?>">
                                             </div>
                                         </div>
@@ -2285,7 +2290,7 @@ if (isset($_GET["invalid"])) {
                                                 I / We,
                                             </div>
                                             <div class="col">
-                                                <input type="text" class="form-control" name="cparent_name"
+                                                <input readonly type="text" class="form-control" name="cparent_name"
                                                     id="cparent_name" value="<?=$dt["parent_name"];?>">
                                             </div>
                                             <div class="col-12 text-center font-italic">
@@ -2300,13 +2305,13 @@ if (isset($_GET["invalid"])) {
                                         <div class="row">
                                             <div class="col-auto my-3">Signed by (Parent/ Guardian)</div>
                                             <div class="col my-3">
-                                                <input type="file" class="form-control" name="cparent_sign" id="cparent_sign">
+                                                <input readonly type="file" class="form-control" name="cparent_sign" id="cparent_sign">
                                             </div>
                                             <div class="col-auto my-3">
                                                 on
                                             </div>
                                             <div class="col my-3">
-                                                <input type='text' class="form-control" name="cparent_sign_date" id="cparent_sign_date">
+                                                <input readonly type='text' class="form-control" name="cparent_sign_date" id="cparent_sign_date">
                                             </div>
                                         </div>
                                         -->
@@ -2325,7 +2330,7 @@ if (isset($_GET["invalid"])) {
                                 Father's Name:
                             </div>
                             <div class="col-md-8 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="father_name" id="father_name" value="<?=$dt["father_name"];?>">
+                                <input readonly type="text" class="form-control" name="father_name" id="father_name" value="<?=$dt["father_name"];?>">
                             </div>
                         </div>
                         <?php
@@ -2337,7 +2342,7 @@ if (isset($_GET["invalid"])) {
                                 Mother's Name:
                             </div>
                             <div class="col-md-8 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="mother_name" id="mother_name" value="<?=$dt["mother_name"];?>">
+                                <input readonly type="text" class="form-control" name="mother_name" id="mother_name" value="<?=$dt["mother_name"];?>">
                             </div>
                         </div>
                         <?php
@@ -2349,7 +2354,7 @@ if (isset($_GET["invalid"])) {
                                 IC No:
                             </div>
                             <div class="col-md-8 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="ic_number" id="ic_number" value="<?=$dt["parent_nric_no"];?>">
+                                <input readonly type="text" class="form-control" name="ic_number" id="ic_number" value="<?=$dt["parent_nric_no"];?>">
                             </div>
                         </div>
                         <div class="row">
@@ -2357,7 +2362,7 @@ if (isset($_GET["invalid"])) {
                                 Passport Number:
                             </div>
                             <div class="col-md-8 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dpassport_number" id="dpassport_number" value="<?=$dt["parent_passport_no"];?>">
+                                <input readonly type="text" class="form-control" name="dpassport_number" id="dpassport_number" value="<?=$dt["parent_passport_no"];?>">
                             </div>
                         </div>
 
@@ -2379,11 +2384,11 @@ if (isset($_GET["invalid"])) {
                         <!--
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="file" class="form-control" name="bstudent_sign" id="bstudent_sign">
+                                <input readonly type="file" class="form-control" name="bstudent_sign" id="bstudent_sign">
                                 <div>SIGNED by the Student</div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="file" class="form-control" name="bparent_sign" id="bparent_sign">
+                                <input readonly type="file" class="form-control" name="bparent_sign" id="bparent_sign">
                                 <div>Signed by the Student’s Parent/Legal Guardian</div>
                                 <div class='text-center font-italic'>(If student is under eighteen (18) years of age)</div>
                             </div>
@@ -2392,30 +2397,31 @@ if (isset($_GET["invalid"])) {
 
                         <div class="row">
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dstudent_name" id="dstudent_name" value="<?=$dt["student_name"];?>">
+                                <input readonly type="text" class="form-control" name="dstudent_name" id="dstudent_name" value="<?=$dt["student_name"];?>">
                                 <div>Name Of Student</div>
                             </div>
                             <div class="col-md-6 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dparent_name" id="dparent_name" value="<?=$dt["parent_name"];?>">
+                                <input readonly type="text" class="form-control" name="dparent_name" id="dparent_name" value="<?=$dt["parent_name"];?>">
                                 <div>Name of Parent / Legal Guardian</div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4 col-sm-12 my-3">
-                                <input type='text' class="form-control" name="ddate" id="ddate" value="<?=date("m/d/Y");?>">
+                                <input readonly type='text' class="form-control" name="ddate" id="ddate" value="<?=date("m/d/Y");?>">
                                 <div>Date</div>
                             </div>
                             <div class="col-md-4 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dpassport" id="dpassport" value="<?=$dt["parent_passport_no"];?>">
+                                <input readonly type="text" class="form-control" name="dpassport" id="dpassport" value="<?=$dt["parent_passport_no"];?>">
                                 <div>Passport Number</div>
                             </div>
                             <div class="col-md-4 col-sm-12 my-3">
-                                <input type="text" class="form-control" name="dnrc_number" id="dnrc_number" value="<?=$dt["parent_nric_no"];?>">
+                                <input readonly type="text" class="form-control" name="dnrc_number" id="dnrc_number" value="<?=$dt["parent_nric_no"];?>">
                                 <div>NRIC No</div>
                             </div>
                         </div>
 
                     </div>
+                    <?php if($is_contract_generated != '1'){ ?>
                     <div class="card-footer">
                         <div class="row">
                             <div class="col-auto mx-4">
@@ -2423,6 +2429,7 @@ if (isset($_GET["invalid"])) {
                             </div>
                         </div>
                     </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
