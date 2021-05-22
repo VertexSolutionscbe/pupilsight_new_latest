@@ -248,13 +248,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
                 $attachData = $result->fetch();
                 if (!empty($attachData)) {
                     // $dataSet->data[$i]["attachFile"] = '<a href=" '. $attachData['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a>';
-                    $dataSet->data[$i]["attachFile"] = '<a href="fullscreen.php?q=/modules/Campaign/pay_receipt_template.php&cid='.$id.'&sid='.$dataSet->data[$i]["submission_id"].'"  title="Pay Receipts " class="thickbox btn btn-secondary">Pay Receipts</a>';
+                    $dataSet->data[$i]["attachFile"] = '<a href="fullscreen.php?q=/modules/Campaign/pay_receipt_template.php&cid='.$id.'&sid='.$dataSet->data[$i]["submission_id"].'"  title="Pay Receipts " class="thickbox btn btn-secondary">View</a>';
                 } else {
                     $dataSet->data[$i]["attachFile"] = '';
                 }
             }
 
-            $table->addColumn('attachFile', __('Pay Receipt'))
+            $table->addColumn('attachFile', __('Fee Details'))
             ->width('10%')
             ->translatable();
 

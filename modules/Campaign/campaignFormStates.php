@@ -230,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                     $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/mailsend.php';
                                     $url .="&to=".$email;
                                     $url .="&subject=".rawurlencode($subject);
-                                    $url .="&body=".rawurlencode($body);
+                                    $url .="&body=".rawurlencode(nl2br($body));
                                     $res = file_get_contents($url);
 
                                     $ibody = stripslashes($body);
@@ -240,9 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                     if(strpos($baseurl,"gigis")>-1 && $chknotitype['name'] == 'Pay Registration Fee'){
                                     //if(strpos($baseurl,"localhost")>-1 && $chknotitype['name'] == 'Pay Registration Fee'){
                                         $sub = 'Registration Fee Generated';
-                                        $bdy = "Hi,
-                                            </br>
-                                            Registration Fee is generated for <b>" . $names . "</b>.";
+                                        $bdy = "Hi, Registration Fee is generated for <b>" . $names . "</b>.";
                                         $url1 = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/mailsend.php';
                                         //$url1 .="&to=accounts@gigis.edu.sg";
                                         $url1 .="&to=anand.r@thoughtnet.in";
@@ -286,7 +284,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                 $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/mailsend.php';
                                 $url .="&to=".$email;
                                 $url .="&subject=".rawurlencode($subject);
-                                $url .="&body=".rawurlencode($body);
+                                $url .="&body=".rawurlencode(nl2br($body));
                                 $res = file_get_contents($url);
                                 //echo $url;
                                 
@@ -297,9 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                                 if(strpos($baseurl,"gigis")>-1 && $chknotitype['name'] == 'Pay Registration Fee'){
                                 //if(strpos($baseurl,"localhost")>-1 && $chknotitype['name'] == 'Pay Registration Fee'){
                                     $sub = 'Registration Fee Generated';
-                                    $bdy = "Hi,
-                                        </br>
-                                         Registration Fee is generated for <b>" . $names . "</b>.";
+                                    $bdy = "Hi, Registration Fee is generated for <b>" . $names . "</b>.";
                                     $url1 = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/mailsend.php';
                                     //$url1 .="&to=accounts@gigis.edu.sg";
                                     $url1 .="&to=anand.r@thoughtnet.in";

@@ -43,10 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
         $table = DataTable::createPaginated('userManage', $criteria);
 
         $table->addColumn('serial_number', __('SI No'));
-        $table->addColumn('type', __('Receipt Type'));
+        $table->addColumn('type', __('Document Type'));
         $table->addColumn('pay_amount', __('Amount'));
         $table->addColumn('pay_date', __('Date'));
-        $table->addColumn('pay_attachment', __('Receipt'))
+        $table->addColumn('pay_attachment', __('Document'))
         ->format(function ($dataSet) {
             if (!empty($dataSet['pay_attachment'])) {
                 return '<a href=" '. $dataSet['pay_attachment'] .'"  title="Download Pay Receipt " download><i title="Uploaded Pay receipt" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a>';

@@ -223,10 +223,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 $resultstu = $connection2->query($sqlstu);
                 $studetails = $resultstu->fetch();
 
+                $sqlinv = 'SELECT GROUP_CONCAT(DISTINCT b.invoice_no) AS invNo, b.*, GROUP_CONCAT(c.title) AS invtitle, c.cdt, c.due_date FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_applicant_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id LEFT JOIN fn_fee_invoice AS c ON a.fn_fee_invoice_id = c.id WHERE a.id IN (' . $invoice_item_id . ') AND b.submission_id = ' . $submission_id . '  ORDER BY b.id ASC';
+                $resultinv = $connection2->query($sqlinv);
+                $valueinv = $resultinv->fetch();
+                $invNo = $valueinv['invNo'];
+                $inv_title = $valueinv['invtitle'];
+
                 $payment_receipt_date = date('d-m-Y', strtotime($payment_date));
                 $class_section = $valuestu["prog"].' - '.$valuestu["class"];
                 $dts_receipt = array(
                     "receipt_no" => $receipt_number,
+                    "invoice_no" => $invNo,
                     "date" => $payment_receipt_date,
                     "student_name" => $studetails['field_value'],
                     "student_id" => $submission_id,
@@ -281,14 +288,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                         }
                     }
                 }
-
-                //if(strpos($baseurl,"gigis")>-1){
-                if(strpos($baseurl,"localhost")>-1){
+                
+                if(strpos($baseurl,"gigis")>-1){
+                    //if(strpos($baseurl,"localhost")>-1){
                     $sql = 'SELECT state FROM campaign_form_status WHERE submission_id = "'.$submission_id.'" ORDER BY id DESC ';
                     $result = $connection2->query($sql);
                     $chkStData = $result->fetch();
                     if($chkStData['state'] == 'Term Fee Paid'){
-                        $bdy = 'has paid the term fee, request you to kindly assign a section.';
+                        $bdy = 'has paid the term fee.  Request you to kindly change the application form status to "Admit" and complete with section assignment.';
                         $sub = 'Paid Term Fees';
                     } else {
                         $bdy = 'has paid registration fee.';
@@ -324,6 +331,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                     } catch (Exception $ex) {
                         print_r($ex);
                         //die();
+                    }
+
+                    if($chkStData['state'] != 'Term Fee Paid'){
+                        try {
+                            if (isset($submission_id)) {
+                                $sid = $submission_id;
+                            
+                                $sql = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = "'.$sid.'" AND field_name = "student_transport_opted"  ';
+                                $result = $connection2->query($sql);
+                                $chkStData = $result->fetch();
+                                if(!empty($chkStData)){
+                                    if($chkStData['field_value'] == 'Yes'){
+                                        $sql = 'SELECT * FROM wp_fluentform_entry_details WHERE submission_id = "'.$sid.'"  ';
+                                        $result = $connection2->query($sql);
+                                        $data = $result->fetchAll();
+                            
+                                        $len = count($data);
+                                        $i = 0;
+                                        $dt = array();
+                                        while($i<$len){
+                                            $dt[$data[$i]["field_name"]] = $data[$i]["field_value"];
+                                            $i++;
+                                        }
+                                        
+                                        $stu_name = $dt["student_name"];
+                                        $address = $dt["student_address"];
+                                        $student_postal_code = $dt["student_postal_code"];
+                                        $student_bus_service = $dt["student_bus_service"];
+                                        $student_transport_start_date = $dt["student_transport_start_date"];
+                            
+                                        //$to = 'accounts@gigis.edu.sg';
+                                        $to = 'anand.r@thoughtnet.in';
+                                        $subject = 'Student Transport Details';
+                                        $body = 'Hi,
+                                        </br>
+                                        '.$stu_name.' has opted for transport. Following are the details.
+                                        1. Student Name         = '.$stu_name.'</br>
+                                        2. Address              = '.$address.'</br>
+                                        3. Postal Code          = '.$student_postal_code.'</br>
+                                        4. Bus Service          = '.$student_bus_service.'</br>
+                                        5. Transport Start Date = '.$student_transport_start_date;
+                            
+                                        $mail1 = $container->get(Mailer::class);
+                                        $mail1->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                                        $mail1->AddAddress($to);
+                                        $mail1->CharSet = 'UTF-8';
+                                        $mail1->Encoding = 'base64';
+                                        $mail1->IsHTML(true);
+                                        $mail1->Subject = $subject;
+                                        $mail1->Body = nl2br($body);
+                                        $res1 = $mail1->Send();
+                                    }
+                                }
+                            }
+                        } catch (Exception $ex) {
+                            print_r($ex);
+                            //die();
+                        }
                     }
                 }
                 

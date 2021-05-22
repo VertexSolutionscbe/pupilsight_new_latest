@@ -150,6 +150,7 @@ print_r($values);  */
         
         if(!empty($rowdata)){ 
             $i = '1';
+            $templateIds = '';
             foreach($rowdata as $k=>$st){   
                 $stateId = $st['id'];
                 $sqlchkst = 'SELECT COUNT(id) as kount FROM workflow_transition  WHERE from_state = '.$stateId.' OR to_state = '.$stateId.' ';
@@ -191,7 +192,7 @@ print_r($values);  */
                 }
                 $col->addSelect('notification['.$st['id'].']')->addClass('txtfield kountseat szewdt showTemplate')->fromArray($notification)->selected($st['notification'])->addData('sid', $st['id']);
 
-                $col->addContent('<a href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" data-hrf="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" class="thickbox" id="clickTemplate'.$st['id'].'" style="display:none;">click</a><input type="hidden" name="pupilsightTemplateIDs['.$st['id'].']" id="pupilsightTemplateID-'.$st['id'].'" value=""><div id="showTemplateName'.$st['id'].'" >'.$templateNames.'</div>');
+                $col->addContent('<a href="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" data-hrf="'.$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Campaign/email_sms_template.php&wsid='.$st['id'].'&type=" class="thickbox" id="clickTemplate'.$st['id'].'" style="display:none;">click</a><input type="hidden" name="pupilsightTemplateIDs['.$st['id'].']" id="pupilsightTemplateID-'.$st['id'].'" value="'. $templateIds.'"><div id="showTemplateName'.$st['id'].'" >'.$templateNames.'</div>');
 
                 // $col->addLabel('', __(''))->addClass('dte'); 
                 //$col = $row->addColumn()->setClass('newdes del_style');
