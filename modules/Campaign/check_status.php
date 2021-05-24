@@ -385,7 +385,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/check_status.php'
                 if ($chkpayment == 'Paid') {
                     $cls = 'Paid';
                     echo '<tr><td>' . $campstatus['name'] ." - ".$classname["classname"] . '</td><td>' . $campstatus['created_at'] . '</td><td>' . $workflowstate . '</td><td>' . $totalamountnew . '</td><td>&nbsp;&nbsp;Paid</td><td><a href="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $campstatus['campaign_id'] . '&submissionId='.$campstatus['subid'].'" title="Download Pdf Form " data-aid="'.$applicationId.'" data-id="'.$campstatus['subid'].'"><i title="Applied Form Download" class="mdi mdi-file-pdf mdi-24px download_icon"></i></a></td>';
-                    $lin = $baseurl . "public/receipts/" . $invdata["filename"] . ".pdf";
+                    $lin = $baseurl . "public/receipts/" . $inv["filename"] . ".pdf";
                     echo "<td><a href='" . $lin . "' download><i title='Fee Receipt Download' class='mdi mdi-file-pdf mdi-24px download_icon'></i></a></td>";
                     if(strpos($baseurl,"gigis")>-1){
                         //if(strpos($baseurl,"localhost")>-1){
