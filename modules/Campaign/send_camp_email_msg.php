@@ -7,6 +7,10 @@ include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight.php';
 use Pupilsight\Contracts\Comms\SMS;
 use Pupilsight\Contracts\Comms\Mailer;
 
+ini_set('max_execution_time', 7200);
+ini_set('memory_limit','1024M');
+set_time_limit(1200);
+
 //$container = new League\Container\Container();
 
 $URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/campaignFormList.php';
@@ -58,8 +62,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
         //         $attachmentStatus = "Yes";
         //     }
         // }
-
+        
         foreach ($sub_id as $si) {
+            $chkSendMail = 1;
             $sqle = "SELECT response FROM wp_fluentform_submissions WHERE id = " . $si . " ";
             $resulte = $connection2->query($sqle);
             $rowdata = $resulte->fetch();
@@ -118,82 +123,91 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
             $rowdatm = $resultm->fetch();
 
             if (!empty($emailquote) && !empty($body)) {
-
+                //echo $chkSendMail.'--'.$si.'<br>';
                 if (!empty($ft_email)) {
-                    $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
-                    $url .= "&to=" . $ft_email;
-                    $url .= "&subject=" . rawurlencode($subject);
-                    $url .= "&body=" . rawurlencode($body);
-                    //sendEmail($container, $ft_email, $subject, $body, $subid, $cuid, $NewNameFile, $connection2, $url, $attachmentStatus);
-                    
-                    $to = $ft_email;
-                    $res = file_get_contents($url);
-                    $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
-                    $connection2->query($sq);
-                    $msgby =$_SESSION[$guid]["pupilsightPersonID"];
-                    //Updatemessesnger($connection2,$_SESSION[$guid]["pupilsightPersonID"],$to,$body,$subject);
+                    if($chkSendMail == 1){
+                        $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
+                        $url .= "&to=" . $ft_email;
+                        $url .= "&subject=" . rawurlencode($subject);
+                        $url .= "&body=" . rawurlencode($body);
+                        //sendEmail($container, $ft_email, $subject, $body, $subid, $cuid, $NewNameFile, $connection2, $url, $attachmentStatus);
+                        
+                        $to = $ft_email;
+                        $res = file_get_contents($url);
+                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
+                        $connection2->query($sq);
+                        $msgby =$_SESSION[$guid]["pupilsightPersonID"];
+                        //Updatemessesnger($connection2,$_SESSION[$guid]["pupilsightPersonID"],$to,$body,$subject);
+                        $chkSendMail = 2;
+                    }
                 }
                 if (!empty($mt_email)) {
-                    $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
-                    $url .= "&to=" . $mt_email;
-                    $url .= "&subject=" . rawurlencode($subject);
-                    $url .= "&body=" . rawurlencode($body);
-                    //sendEmail($container, $mt_email, $subject, $body, $subid, $cuid, $NewNameFile, $connection2, $url, $attachmentStatus);
+                    if($chkSendMail == 1){
+                        $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
+                        $url .= "&to=" . $mt_email;
+                        $url .= "&subject=" . rawurlencode($subject);
+                        $url .= "&body=" . rawurlencode($body);
+                        //sendEmail($container, $mt_email, $subject, $body, $subid, $cuid, $NewNameFile, $connection2, $url, $attachmentStatus);
 
-                    $to = $mt_email;
-                    $res = file_get_contents($url);
-                    $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
-                    $connection2->query($sq);
-                    $msgby =$_SESSION[$guid]["pupilsightPersonID"];
-                    //Updatemessesnger($connection2,$_SESSION[$guid]["pupilsightPersonID"],$to,$body,$subject);
+                        $to = $mt_email;
+                        $res = file_get_contents($url);
+                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
+                        $connection2->query($sq);
+                        $msgby =$_SESSION[$guid]["pupilsightPersonID"];
+                        //Updatemessesnger($connection2,$_SESSION[$guid]["pupilsightPersonID"],$to,$body,$subject);
+                        $chkSendMail = 2;
+                    }
                 }
                 if (!empty($gt_email)) {
-                    $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
-                    $url .= "&to=" . $gt_email;
-                    $url .= "&subject=" . rawurlencode($subject);
-                    $url .= "&body=" . rawurlencode($body);
-                    //sendEmail($container, $gt_email, $subject, $body, $subid, $cuid, $NewNameFile, $connection2, $url, $attachmentStatus);
+                    if($chkSendMail == 1){
+                        $url = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Campaign/mailsend.php';
+                        $url .= "&to=" . $gt_email;
+                        $url .= "&subject=" . rawurlencode($subject);
+                        $url .= "&body=" . rawurlencode($body);
+                        //sendEmail($container, $gt_email, $subject, $body, $subid, $cuid, $NewNameFile, $connection2, $url, $attachmentStatus);
 
-                    $to = $gt_email;
-                    $res = file_get_contents($url);
-                    $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
-                    $connection2->query($sq);
-                    $msgby =$_SESSION[$guid]["pupilsightPersonID"];
-                    //Updatemessesnger($connection2,$_SESSION[$guid]["pupilsightPersonID"],$to,$body,$subject);
+                        $to = $gt_email;
+                        $res = file_get_contents($url);
+                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', pupilsightPersonID=" . $cuid . " ";
+                        $connection2->query($sq);
+                        $msgby =$_SESSION[$guid]["pupilsightPersonID"];
+                        //Updatemessesnger($connection2,$_SESSION[$guid]["pupilsightPersonID"],$to,$body,$subject);
+                        $chkSendMail = 2;
+                    }
                 }
             }
 
             if (!empty($smsquote) && !empty($msg)) {
                 if (!empty($ft_number)) {
                     //sendSMS($ft_number, $msg, $subid, $cuid, $connection2);
-                    $msgto=$subid;
+                    $msgto=$si;
                     $msgby=$cuid;
                     $number = $ft_number;
                     $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                     if ($res) {
-                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
+                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
                         $connection2->query($sq);
                     }
                 }
                 if (!empty($mt_number)) {
                     //sendSMS($mt_number, $msg, $subid, $cuid, $connection2);
-                    $msgto=$subid;
+                    $msgto=$si;
                     $msgby=$cuid;
                     $number = $mt_number;
                     $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                     if ($res) {
-                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
+                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
                         $connection2->query($sq);
                     }
                 }
                 if (!empty($gt_number)) {
                     //sendSMS($gt_number, $msg, $subid, $cuid, $connection2);
-                    $msgto=$subid;
+                    $msgto=$si;
                     $msgby=$cuid;
                     $number = $gt_number;
                     $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
                     if ($res) {
-                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $subid . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
+                        $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
                         $connection2->query($sq);
                     }
                 }

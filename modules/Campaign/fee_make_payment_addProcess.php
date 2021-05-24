@@ -93,11 +93,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
        
             //Write to database
             try {
-                $sqlrt = 'SELECT b.path FROM campaign AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.fn_fees_receipt_template_id = b.id WHERE a.id = ' . $cid . ' ';
+                $sqlrt = 'SELECT a.academic_year, b.path, b.column_start_by FROM campaign AS a LEFT JOIN fn_fees_receipt_template_master AS b ON a.fn_fees_receipt_template_id = b.id WHERE a.id = ' . $cid . ' ';
                 $resultrt = $connection2->query($sqlrt);
                 $recTempData = $resultrt->fetch();
                 $receiptTemplate = $recTempData['path'];
-
+                $academic_year = $recTempData['academic_year'];
+                $column_start_by = $recTempData['column_start_by'];
 
                 if(!empty($fn_fees_receipt_series_id)){
                     $sqlrec = 'SELECT id, formatval FROM fn_fee_series WHERE id = "'.$fn_fees_receipt_series_id.'" ';
@@ -219,9 +220,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 $resultpt = $connection2->query($sqlpt);
                 $valuept = $resultpt->fetch();
 
-                $sqlstu = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = "'.$submission_id.'" AND field_name = "student_name" ';
-                $resultstu = $connection2->query($sqlstu);
-                $studetails = $resultstu->fetch();
+                // $sqlstu = 'SELECT field_value FROM wp_fluentform_entry_details WHERE submission_id = "'.$submission_id.'" AND field_name = "student_name" ';
+                // $resultstu = $connection2->query($sqlstu);
+                // $studetails = $resultstu->fetch();
 
                 $sqlinv = 'SELECT GROUP_CONCAT(DISTINCT b.invoice_no) AS invNo, b.*, GROUP_CONCAT(c.title) AS invtitle, c.cdt, c.due_date FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_applicant_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id LEFT JOIN fn_fee_invoice AS c ON a.fn_fee_invoice_id = c.id WHERE a.id IN (' . $invoice_item_id . ') AND b.submission_id = ' . $submission_id . '  ORDER BY b.id ASC';
                 $resultinv = $connection2->query($sqlinv);
@@ -229,25 +230,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 $invNo = $valueinv['invNo'];
                 $inv_title = $valueinv['invtitle'];
 
+                $inv_date = '';
+                if(!empty($valueinv['cdt'])){
+                    $inv_date = date('d/m/Y', strtotime($valueinv['cdt']));
+                }
+
+                $due_date = '';
+                if(!empty($valueinv['due_date']) && $valueinv['due_date'] != '1970-01-01'){
+                    $due_date = date('d/m/Y', strtotime($valueinv['due_date']));
+                }
+
                 $payment_receipt_date = date('d-m-Y', strtotime($payment_date));
                 $class_section = $valuestu["prog"].' - '.$valuestu["class"];
-                $dts_receipt = array(
-                    "receipt_no" => $receipt_number,
-                    "invoice_no" => $invNo,
-                    "date" => $payment_receipt_date,
-                    "student_name" => $studetails['field_value'],
-                    "student_id" => $submission_id,
-                    "class_section" => $class_section,
-                    "instrument_date" => "NA",
-                    "instrument_no" => "NA",
-                    "transcation_amount" => $amount_paying,
-                    "fine_amount" => $fine,
-                    "other_amount" => "NA",
-                    "pay_mode" => $valuept['name'],
-                    "transactionId" => $transactionId,
-                    "receiptTemplate" => $receiptTemplate
-                );
+
+
+                $sqlstu = 'SELECT * FROM wp_fluentform_entry_details WHERE submission_id = "'.$submission_id.'" ';
+                $resultstu = $connection2->query($sqlstu);
+                $dataApplicant = $resultstu->fetchAll();
+                //print_r($dataApplicant);
+
+                $student_name = '';
+                $father_name = '';
+                $mother_name = '';
+                if(!empty($dataApplicant)){
+                    $len = count($dataApplicant);
+                    $i = 0;
+                    $dt = array();
+                    while($i<$len){
+                        $dt[$dataApplicant[$i]["field_name"]] = $dataApplicant[$i]["field_value"];
+                        $i++;
+                    }
+ 
+                    $student_name = $dt["student_name"];
+                    $father_name = $dt["father_name"];
+                    $mother_name = $dt["mother_name"];
+                }
                 
+                $total = 0;
+                $totalTax = 0;
+                $totalamtWitoutTaxDis = 0;
+                $totalPending = 0;
+                $totalDiscount = 0;
                 if(!empty($invoice_id)){
                     $invid = explode(',', $invoice_id);
                     foreach($invid as $iid){
@@ -255,39 +278,121 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                         $resultch = $connection2->query($chsql);
                         $valuech = $resultch->fetch();
                         if($valuech['display_fee_item'] == '2'){
-                            $sqcs = "select SUM(fi.total_amount) AS tamnt from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$invoice_item_id.")";
+                            $sqcs = "select SUM(fi.total_amount) AS tamnt, SUM(fi.amount) AS amnt, SUM(fi.tax) AS ttax from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$invoice_item_id.")";
                             $resultfi = $connection2->query($sqcs);
                             $valuefi = $resultfi->fetchAll();
                             if (!empty($valuefi)) {
                                 $cnt = 1;
                                 foreach($valuefi as $vfi){
+                                    $itemAmtCol = $vfi["tamnt"];
+                                    $itemAmtPen = 0;
+                                    $taxamt = 0;
+                                    $disItemAmt = 0;
+                                    if(!empty($vfi["ttax"])){
+                                        $taxamt = ($vfi["ttax"] / 100) * $vfi["amnt"];
+                                        $taxamt = number_format($taxamt, 2, '.', '');
+                                    }
                                     $dts_receipt_feeitem[] = array(
                                         "serial.all"=>$cnt,
-                                        "particulars.all"=>$valuech['invoice_title'],
-                                        "amount.all"=>$vfi["tamnt"]
+                                        "particulars.all"=> htmlspecialchars(trim($valuech['invoice_title'])),
+                                        "amount.all"=>$vfi["tamnt"],
+                                        "inv_amt.all" => $vfi["amnt"],
+                                        "tax.all" => $taxamt,
+                                        "inv_amt_paid.all" => number_format($itemAmtCol,2),
+                                        "inv_amt_pending.all" => number_format($itemAmtPen,2),
+                                        "inv_amt_discount.all" => number_format($disItemAmt,2)
                                     );
-                                    $cnt ++;
+                                    $total += $vfi["tamnt"];
+                                    $totalTax += $taxamt;
+                                    $totalamtWitoutTaxDis += $vfi["amnt"];
+                                    $totalPending += $itemAmtPen;
+                                    $totalDiscount += $disItemAmt;
+                                    $cnt++;
                                 }
                             }
 
                         } else {
-                            $sqcs = "select fi.total_amount, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$invoice_item_id.")";
+                            $sqcs = "select fi.total_amount, fi.amount, fi.tax, fi.id, items.name from fn_fee_invoice_item as fi, fn_fee_items as items where fi.fn_fee_item_id = items.id and fi.id in(".$invoice_item_id.")";
                             $resultfi = $connection2->query($sqcs);
                             $valuefi = $resultfi->fetchAll();
                             if (!empty($valuefi)) {
                                 $cnt = 1;
                                 foreach($valuefi as $vfi){
+                                    $itemAmtCol = $vfi["total_amount"];
+                                    $itemAmtPen = 0;
+                                    $taxamt = '0';
+                                    $disItemAmt = 0;
+                                    if(!empty($vfi["tax"])){
+                                        $taxamt = ($vfi["tax"] / 100) * $vfi["amount"];
+                                        $taxamt = number_format($taxamt, 2, '.', '');
+                                    }
                                     $dts_receipt_feeitem[] = array(
                                         "serial.all"=>$cnt,
-                                        "particulars.all"=>$vfi["name"],
-                                        "amount.all"=>$vfi["total_amount"]
+                                        "particulars.all"=> htmlspecialchars(trim($vfi["name"])),
+                                        "amount.all"=>$vfi["total_amount"],
+                                        "inv_amt.all" => $vfi["amount"],
+                                        "tax.all" => $taxamt,
+                                        "inv_amt_paid.all" => number_format($itemAmtCol,2),
+                                        "inv_amt_pending.all" => number_format($itemAmtPen,2),
+                                        "inv_amt_discount.all" => number_format($disItemAmt,2)
                                     );
+                                    $total += $vfi["total_amount"];
+                                    $totalTax += $taxamt;
+                                    $totalamtWitoutTaxDis += $vfi["amount"];
+                                    $totalPending += $itemAmtPen;
+                                    $totalDiscount += $disItemAmt;
                                     $cnt ++;
                                 }
                             }
                         }
                     }
                 }
+
+
+                $bank_name = '';
+                $fee_head_acc_no = '';
+                $dts_receipt = array(
+                    "academic_year" => $academic_year,
+                    "receipt_no" => $receipt_number,
+                    "invoice_no" => $invNo,
+                    "date" => $payment_receipt_date,
+                    "student_name" => $student_name,
+                    "student_id" => $submission_id,
+
+                    "father_name" => $father_name,
+                    "mother_name" => $mother_name,
+                    "program_name" => $valuestu["prog"],
+                    "class_name" => $valuestu["class"],
+                    "class_section" => $class_section,
+
+                    "instrument_date" => "NA",
+                    "instrument_no" => "NA",
+                    "transcation_amount" => number_format($amount_paying, 2, '.', ''),
+                    "fine_amount" => $fine,
+                    "other_amount" => "NA",
+                    "pay_mode" => $valuept['name'],
+                    "transactionId" => $transactionId,
+                    "receiptTemplate" => $receiptTemplate,
+
+                    "bank_name" => $bank_name,
+                    "fee_head_acc_no" => $fee_head_acc_no, 
+                    "column_start_by" => $column_start_by,
+                    "inv_title" => htmlspecialchars($inv_title),
+                    "inv_date" => $inv_date,
+                    "due_date" => $due_date,
+                    "total_tax" => number_format($totalTax, 2, '.', ''),
+                    "inv_total" => number_format($totalamtWitoutTaxDis, 2, '.', ''),
+                    //"concat_invoice_title" => htmlspecialchars($concatInvoiceTitle),
+                    "total_amount_discount" => number_format($discount, 2, '.', ''),
+                    "total_amount_pending" => number_format($totalPending, 2, '.', ''),
+                    "remarks" => $remarks
+                );
+
+                // echo '<pre>';
+                // print_r($dts_receipt);
+                // print_r($dts_receipt_feeitem);
+                // echo '</pre>';
+                // die();
                 
                 if(strpos($baseurl,"gigis")>-1){
                     //if(strpos($baseurl,"localhost")>-1){
@@ -399,9 +504,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                     $URL .= "&return=success0";
                     $_SESSION["admin_callback"] = $URL;
                     if(!empty($dts_receipt) && !empty($dts_receipt_feeitem)){ 
-                        $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receipt_offline.php';
+                        $callback = $_SESSION[$guid]['absoluteURL'].'/thirdparty/phpword/receipt_offline_new.php';
                         header('Location: '.$callback);
                     }  
+                    
                 } else {
                     $URL .= "&return=success0";
                     header("Location: {$URL}");
