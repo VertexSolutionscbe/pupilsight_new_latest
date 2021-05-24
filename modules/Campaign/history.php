@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/history.php') != 
     </table>
 
     <?php if(!empty($mailsmsdata)) { ?>
-    <h2>Email Sms Sent History<h2>
+    <h2>Email Sms Sent History</h2>
      <table class="table">
     <thead>
         <tr>

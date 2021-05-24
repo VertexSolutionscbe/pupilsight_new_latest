@@ -325,11 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                     }
                 }
             }    
-            
-           die();
-
-            
-            
+          
         }
         
         echo $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Campaign/campaignFormList.php&id='.$campaignId.'&search=';

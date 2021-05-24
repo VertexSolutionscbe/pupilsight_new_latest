@@ -135,7 +135,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/send_stud_email_m
 
                             $senderid=$_SESSION[$guid]["pupilsightPersonID"];
                             Updatemessesnger($connection2,$senderid,$st,$body,'na');
-                            $res = file_get_contents($url);
                             $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $st . ", email='" . $to . "', subject='" . $subject . "', description='" . $body . "', uid=" . $cuid . " ";
                             $connection2->query($sq);
                             $nowtime =date("Y-m-d H:i:s");

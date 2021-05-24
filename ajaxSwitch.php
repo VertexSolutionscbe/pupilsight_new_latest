@@ -758,6 +758,7 @@ if (isset($_POST['type'])) {
                                             $total += $vfi["tamnt"];
                                             $totalTax += $taxamt;
                                             $totalamtWitoutTaxDis += $vfi["amnt"];
+                                            $totalPending += $itemAmtPen;
                                             $totalDiscount += $disItemAmt;
                                             $cnt++;
                                         }
