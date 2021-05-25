@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
 
             if (!empty($smsquote) && !empty($msg)) {
                 if (!empty($ft_number)) {
-                    if($chkSendSms == 1){
+                    // if($chkSendSms == 1){
                         //sendSMS($ft_number, $msg, $subid, $cuid, $connection2);
                         $msgto=$si;
                         $msgby=$cuid;
@@ -190,11 +190,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
                             $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
                             $connection2->query($sq);
                         }
-                        $chkSendSms = 2;
-                    }
+                    //     $chkSendSms = 2;
+                    // }
                 }
                 if (!empty($mt_number)) {
-                    if($chkSendSms == 1){
+                    // if($chkSendSms == 1){
                         //sendSMS($mt_number, $msg, $subid, $cuid, $connection2);
                         $msgto=$si;
                         $msgby=$cuid;
@@ -204,23 +204,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/send_camp_email_m
                             $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
                             $connection2->query($sq);
                         }
-                        $chkSendSms = 2;
-                    }
+                    //     $chkSendSms = 2;
+                    // }
                 }
-                if (!empty($gt_number)) {
-                    if($chkSendSms == 1){
-                        //sendSMS($gt_number, $msg, $subid, $cuid, $connection2);
-                        $msgto=$si;
-                        $msgby=$cuid;
-                        $number = $gt_number;
-                        $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
-                        if ($res) {
-                            $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
-                            $connection2->query($sq);
-                        }
-                        $chkSendSms = 2;
-                    }
-                }
+                // if (!empty($gt_number)) {
+                //     if($chkSendSms == 1){
+                //         $msgto=$si;
+                //         $msgby=$cuid;
+                //         $number = $gt_number;
+                //         $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
+                //         if ($res) {
+                //             $sq = "INSERT INTO campaign_email_sms_sent_details SET  submission_id = " . $si . ", phone=" . $number . ", description='" . stripslashes($msg) . "', pupilsightPersonID=" . $cuid . " ";
+                //             $connection2->query($sq);
+                //         }
+                //         $chkSendSms = 2;
+                //     }
+                // }
             }
         }
     }

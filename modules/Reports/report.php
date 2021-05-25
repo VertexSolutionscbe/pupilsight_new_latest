@@ -407,7 +407,7 @@ if ($accessFlag == false) {
             if(!isEmpty(pdate)){
                 str +="\n<div class='col-auto'>";
                 str +="<label class='form-label required'>"+pdate+"</label>";
-                str +="<input type='date' name='"+pdate+"' class='form-control reqParam' id='"+pdateid+"'>";
+                str +="<input type='date' name='"+pdateid+"' class='form-control reqParam' id='"+pdateid+"'>";
                 str +="</div>";
                 isParamActive = true;
             }
@@ -445,7 +445,8 @@ if ($accessFlag == false) {
                         url: 'report_download.php',
                         type: 'post',
                         data: _data,
-                        async: true,
+                        processData: false,
+                        contentType: false,
                         success: function (response) {
                             if(response){
                                 var res = $.trim(response);
@@ -464,7 +465,7 @@ if ($accessFlag == false) {
             if(!isEmpty(param)){
                 str +="\n<div class='col-auto'>";
                 str +="<label class='form-label required'>"+param+"</label>";
-                str +="<input type='text' name='"+param+"' class='form-control reqParam' id='"+paramid+"'>";
+                str +="<input type='text' name='"+paramid+"' class='form-control reqParam' id='"+paramid+"'>";
                 str +="</div>";
                 isParamActive = true;
             }

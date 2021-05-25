@@ -339,14 +339,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFromListS
         $table->addActionColumn()
      
         ->addParam('submission_id')
-        ->format(function ($person, $actions) use ($guid) { 
+        ->format(function ($dataSet, $actions) use ($guid) {
                $actions->addAction('View', __('Show History'))
                ->setTitle('form')
                ->setIcon('eye')
+               ->setId('showhistory-' . $dataSet["submission_id"])
                ->setURL('modules/Campaign/history.php')
                ->modalWindow(1100, 550);
 
                $actions->addAction('form', __('Form'))
+                ->setId('showform-' . $dataSet["submission_id"])
                 ->setURL('/modules/Campaign/form_open.php')
                 ->modalWindow(1100, 550);
           
