@@ -12,8 +12,7 @@
     $forms = $result->fetch();
     $formId = $forms['form_id'];
     $campId = $forms['campId'];
-    ?>
-
+    
  ?>
 
  <div class="modal fade bd-example-modal-lg show" id="popUp" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display:block !important;">

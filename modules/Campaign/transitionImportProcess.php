@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                 print_r($ex);
             }
 
-            //echo $chk;
+            // echo $chk;
             // echo '<pre> tdata';
             // print_r($tdata);
             // echo '</pre>';
@@ -238,7 +238,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                                 $value =  date('Y-m-d', strtotime($sdate));
                             }
                             if (strpos($k, 'st_') !== false && !empty($value)) {
-                                $val = str_replace('"', "", $value);
+                                $val1 = str_replace("'", "", $value);
+                                $val = str_replace('"', "", $val1);
                                 $sql .= '"' . $val . '",';
 
                                 if (!empty($value['st_officialName'])) {
@@ -274,7 +275,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                                 $value =  date('Y-m-d', strtotime($sdate));
                             }
                             if (strpos($k, 'ft_') !== false  && !empty($value)) {
-                                $val = str_replace('"', "", $value);
+                                $val1 = str_replace("'", "", $value);
+                                $val = str_replace('"', "", $val1);
                                 $sqlf .= '"' . $val . '",';
                             }
                         }
@@ -302,7 +304,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                                 $value =  date('Y-m-d', strtotime($sdate));
                             }
                             if (strpos($k, 'mt_') !== false  && !empty($value)) {
-                                $val = str_replace('"', "", $value);
+                                $val1 = str_replace("'", "", $value);
+                                $val = str_replace('"', "", $val1);
                                 $sqlm .= '"' . $val . '",';
                             }
                         }
@@ -388,6 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/transitionImportP
                     }
                 } catch (Exception $ex) {
                     print_r($ex);
+                    die();
                 }
             }
         }
