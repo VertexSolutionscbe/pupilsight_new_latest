@@ -8,7 +8,7 @@ try {
     if (isset($_POST["fd"])) {
         $fileDownloadType = $_POST["fd"];
     }
-    $isTotal = false;
+    $isTotal = true;
     $totColumns = "amount_paying";
     //$fileDownloadType = "xlsx"; // for excel keep blank
 
@@ -21,12 +21,7 @@ try {
     }
 
 
-    function html_table(
-        $data = [],
-        $header = [],
-        $total = null,
-        $addSerialNo = true
-    ) {
+    function html_table($data = [],$header = [],$total = null,$addSerialNo = true) {
         $rows = [];
         $cnt = 1;
         $colLen = 1;
@@ -101,7 +96,10 @@ try {
     }
 
     if($report["sql_query"]){
-        $query1 = $connection2->query(htmlspecialchars_decode($report["sql_query"], ENT_QUOTES));
+        $sq = htmlspecialchars_decode($report["sql_query"], ENT_QUOTES);
+        echo "sq: ".$sq;
+        print_r($_POST);
+        $query1 = $connection2->query($sq);
         $result = $query1->fetch();
     }else{
         //api call working on now
@@ -140,8 +138,9 @@ try {
     $fileNameGen = $input = preg_replace("/[^a-zA-Z]+/", "", $report["name"]);
 
     if ($fileDownloadType == "html") {
+        echo "file downlod type html";
         $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/".$fileNameGen.".html";
-
+        echo "file ".$fileName;
         file_put_contents($fileName, $html);
 
         $fileDownName = basename($fileName);
@@ -150,7 +149,7 @@ try {
         header("Pragma: no-cache");
         header("Expires: 0");
         readfile($fileName);
-        unlink($fileName);
+        //unlink($fileName);
     } else {
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
         $spreadsheet = $reader->loadFromString($htmlString);
