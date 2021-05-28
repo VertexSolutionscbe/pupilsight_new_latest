@@ -37,7 +37,7 @@ if ($pupilsightSchoolYearID == '') { echo 'Fatal error loading this page!';
 
             foreach($studentid as $pupilsightPersonID){
 
-                $sqlchk = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = '.$pupilsightPersonID.' ';
+                $sqlchk = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = '.$pupilsightPersonID.' ORDER BY pupilsightStudentEnrolmentID DESC ';
                 $resultchk = $connection2->query($sqlchk);
                 $stuData = $resultchk->fetch();
 

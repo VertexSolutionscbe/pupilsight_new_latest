@@ -1,22 +1,24 @@
  <?php
-    $progId = $_POST['id'];
-
-    $sqlc = 'SELECT a.pupilsightYearGroupID, a.name, b.id, GROUP_CONCAT(b.fn_fee_structure_id) AS fsid FROM pupilsightProgramClassSectionMapping AS p LEFT JOIN  pupilsightYearGroup AS a ON p.pupilsightYearGroupID = a.pupilsightYearGroupID LEFT JOIN fn_fees_class_assign AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE p.pupilsightProgramID = '.$progId.' GROUP BY a.pupilsightYearGroupID ORDER BY a.pupilsightYearGroupID ASC ';
+$progId = $_POST['id'];
+$pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+if(!empty($progId)){
+    $sqlc = 'SELECT a.pupilsightYearGroupID, a.name, b.id, GROUP_CONCAT(b.fn_fee_structure_id) AS fsid FROM pupilsightProgramClassSectionMapping AS p LEFT JOIN  pupilsightYearGroup AS a ON p.pupilsightYearGroupID = a.pupilsightYearGroupID LEFT JOIN fn_fees_class_assign AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE p.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND p.pupilsightProgramID = '.$progId.' GROUP BY a.pupilsightYearGroupID ORDER BY a.pupilsightYearGroupID ASC ';
     $resultc = $connection2->query($sqlc);
     $rowdatacls = $resultc->fetchAll();
 
     // echo '<pre>';
     // print_r($rowdatacls);
     // echo '</pre>';
-    $classes=array();  
-    foreach ($rowdatacls as $dt) {
-        if(empty($dt['id'])){
-            $content = '<span style="color:red;">(Not Assign)</span>';
-        } else {
-            $content = '';
+    if(!empty($rowdatacls)){
+        $classes=array();  
+        foreach ($rowdatacls as $dt) {
+            if(empty($dt['id'])){
+                $content = '<span style="color:red;">(Not Assign)</span>';
+            } else {
+                $content = '';
+            }
+            $classes[$dt['pupilsightYearGroupID']] = $content.' '.$dt['name'];
         }
-        $classes[$dt['pupilsightYearGroupID']] = $content.' '.$dt['name'];
-    }
      
  
  ?>
@@ -99,3 +101,4 @@
              </div>	
         </td>
   
+<?php } } ?>
