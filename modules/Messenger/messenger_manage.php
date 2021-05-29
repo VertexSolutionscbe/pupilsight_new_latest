@@ -294,8 +294,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				print "</td>";
 				print "<td>";
 				try {
-					$dataTargets = array("pupilsightMessengerID" => $row["pupilsightMessengerID"]);
-					$sqlTargets = "SELECT type, id FROM pupilsightMessengerTarget WHERE pupilsightMessengerID=:pupilsightMessengerID ORDER BY type, id";
+					$dataTargets = array("pupilsightMessengerID" => $row["pupilsightMessengerID"], "is_display" => "Y");
+					$sqlTargets = "SELECT type, id FROM pupilsightMessengerTarget WHERE pupilsightMessengerID=:pupilsightMessengerID AND is_display=:is_display ORDER BY type, id";
 					$resultTargets = $connection2->prepare($sqlTargets);
 					$resultTargets->execute($dataTargets);
 				} catch (PDOException $e) {

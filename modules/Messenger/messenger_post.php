@@ -355,7 +355,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 
 			$row = $form->addRow()->addClass('yearGroup hiddenReveal');
 			$row->addLabel('yearGroupsStaff', __('Include Staff?'));
-			$row->addYesNo('yearGroupsStaff')->selected('Y');
+			$row->addYesNo('yearGroupsStaff')->selected('N');
 
 			$row = $form->addRow()->addClass('yearGroup hiddenReveal');
 			$row->addLabel('yearGroupsStudents', __('Include Students?'));
@@ -364,7 +364,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_parents")) {
 				$row = $form->addRow()->addClass('yearGroup hiddenReveal');
 				$row->addLabel('yearGroupsParents', __('Include Parents?'));
-				$row->addYesNo('yearGroupsParents')->selected('N');
+				$row->addYesNo('yearGroupsParents')->selected('Y');
 			}
 		}
 
@@ -395,7 +395,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
 			$row->addLabel('rollGroupsStaff', __('Include Staff?'));
-			$row->addYesNo('rollGroupsStaff')->selected('Y');
+			$row->addYesNo('rollGroupsStaff')->selected('N');
 
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
 			$row->addLabel('rollGroupsStudents', __('Include Students?'));
@@ -404,7 +404,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_parents")) {
 				$row = $form->addRow()->addClass('rollGroup hiddenReveal');
 				$row->addLabel('rollGroupsParents', __('Include Parents?'));
-				$row->addYesNo('rollGroupsParents')->selected('N');
+				$row->addYesNo('rollGroupsParents')->selected('Y');
 			}
 		}
 
@@ -515,7 +515,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_activities_parents")) {
 				$row = $form->addRow()->addClass('activity hiddenReveal');
 				$row->addLabel('activitiesParents', __('Include Parents?'));
-				$row->addYesNo('activitiesParents')->selected('N');
+				$row->addYesNo('activitiesParents')->selected('Y');
 			}
 		}
 
@@ -577,7 +577,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_transport_parents")) {
 				$row = $form->addRow()->addClass('transport hiddenReveal');
 				$row->addLabel('transportParents', __('Include Parents?'));
-				$row->addYesNo('transportParents')->selected('N');
+				$row->addYesNo('transportParents')->selected('Y');
 			}
 		}
 
@@ -657,7 +657,7 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
 				$row = $form->addRow()->addClass('messageGroup hiddenReveal');
 				$row->addLabel('groupsParents', __('Include Parents?'))->description('Parents who are members, and parents of student members.');
-				$row->addYesNo('groupsParents')->selected('N');
+				$row->addYesNo('groupsParents')->selected('Y');
 			}
 		}
 

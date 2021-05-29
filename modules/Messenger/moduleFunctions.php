@@ -2879,3 +2879,18 @@ function queryMembersreceipt($guid, $connection2, $mode = '', $msgtype = '', $fr
         return $count;
     }
 }
+
+function getParentData($guid, $connection2, $userID){
+    $sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyChild WHERE pupilsightPersonID= ' . $userID . ' ';
+    $resultfc = $connection2->query($sqlf);
+    $fdata = $resultfc->fetch();
+    $pupilsightFamilyID = $fdata['pupilsightFamilyID'];
+
+    $data = array();
+    if(!empty($pupilsightFamilyID)){
+        $sqlp = 'SELECT pupilsightPersonID1 FROM pupilsightFamilyRelationship WHERE pupilsightFamilyID= '.$pupilsightFamilyID.' GROUP BY pupilsightPersonID1';
+        $resultf = $connection2->query($sqlp);
+        $data = $resultf->fetchAll();
+    }
+    return $data;
+}

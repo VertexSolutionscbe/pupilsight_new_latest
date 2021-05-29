@@ -198,8 +198,8 @@ else {
 
 				//Get existing TARGETS
 				try {
-					$dataTarget=array("pupilsightMessengerID"=>$pupilsightMessengerID);
-					$sqlTarget="SELECT * FROM pupilsightMessengerTarget WHERE pupilsightMessengerID=:pupilsightMessengerID ORDER BY type" ;
+					$dataTarget=array("pupilsightMessengerID"=>$pupilsightMessengerID, "is_display" => "Y");
+					$sqlTarget="SELECT * FROM pupilsightMessengerTarget WHERE pupilsightMessengerID=:pupilsightMessengerID AND is_display=:is_display ORDER BY type" ;
 					$resultTarget=$connection2->prepare($sqlTarget);
 					$resultTarget->execute($dataTarget);
 				}
