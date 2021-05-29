@@ -1941,6 +1941,25 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
                             $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
+
+							$chkParentData = getParentData($guid, $connection2, $t);
+							if(!empty($chkParentData)){
+								try {
+									foreach($chkParentData as $par){
+										try {
+											$parId = $par['pupilsightPersonID1'];
+											$data = array("pupilsightMessengerID" => $AI, "id" => $parId, "is_display" => "N");
+											$sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id, is_display=:is_display";
+											$result = $connection2->prepare($sql);
+											$result->execute($data);
+										} catch (PDOException $e) {
+											$partialFail = TRUE;
+										}
+									}
+								} catch (PDOException $e) {
+									$partialFail = TRUE;
+								}
+							}
                         } catch (PDOException $e) {
                             $partialFail = TRUE;
                         }
@@ -2001,6 +2020,25 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
                                 }
                                 //$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
                                 $report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $targetperson, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+
+								$chkParentData = getParentData($guid, $connection2, $targetperson);
+								if(!empty($chkParentData)){
+									try {
+										foreach($chkParentData as $par){
+											try {
+												$parId = $par['pupilsightPersonID1'];
+												$data = array("pupilsightMessengerID" => $AI, "id" => $parId, "is_display" => "N");
+												$sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id, is_display=:is_display";
+												$result = $connection2->prepare($sql);
+												$result->execute($data);
+											} catch (PDOException $e) {
+												$partialFail = TRUE;
+											}
+										}
+									} catch (PDOException $e) {
+										$partialFail = TRUE;
+									}
+								}
                             }
 
                             $report = reportAdd($report, $emailReceipt, 'smscopy', 'Individuals', 'smscopy', 'SMS', $copysms);
@@ -2019,6 +2057,25 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 								$sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id";
 								$result = $connection2->prepare($sql);
 								$result->execute($data);
+
+								$chkParentData = getParentData($guid, $connection2, $t);
+								if(!empty($chkParentData)){
+									try {
+										foreach($chkParentData as $par){
+											try {
+												$parId = $par['pupilsightPersonID1'];
+												$data = array("pupilsightMessengerID" => $AI, "id" => $parId, "is_display" => "N");
+												$sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id, is_display=:is_display";
+												$result = $connection2->prepare($sql);
+												$result->execute($data);
+											} catch (PDOException $e) {
+												$partialFail = TRUE;
+											}
+										}
+									} catch (PDOException $e) {
+										$partialFail = TRUE;
+									}
+								}
 							} catch (PDOException $e) {
 								$partialFail = TRUE;
 							}
@@ -2080,6 +2137,25 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 									}
 									//$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
 									$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Individuals', $targetperson, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+
+									$chkParentData = getParentData($guid, $connection2, $targetperson);
+									if(!empty($chkParentData)){
+										try {
+											foreach($chkParentData as $par){
+												try {
+													$parId = $par['pupilsightPersonID1'];
+													$data = array("pupilsightMessengerID" => $AI, "id" => $parId, "is_display" => "N");
+													$sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Individuals', id=:id, is_display=:is_display";
+													$result = $connection2->prepare($sql);
+													$result->execute($data);
+												} catch (PDOException $e) {
+													$partialFail = TRUE;
+												}
+											}
+										} catch (PDOException $e) {
+											$partialFail = TRUE;
+										}
+									}
 								}
 
 								$report = reportAdd($report, $emailReceipt, 'smscopy', 'Individuals', 'smscopy', 'SMS', $copysms);

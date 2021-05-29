@@ -34,10 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
             header("Location: {$URL}");
         } else {
             //Validate Inputs
-    //            echo '<pre>';
-    // print_r($_POST);
-    // echo '</pre>';
-    // die();
+   
             $name = $_POST['name'];
             $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
             $invoice_title = $_POST['invoice_title'];
@@ -79,13 +76,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
                 $update_invoices = '1';
                 $sql = 'SELECT a.id FROM fn_fee_invoice AS a LEFT JOIN fn_fee_invoice_class_assign AS b ON a.id = b.fn_fee_invoice_id WHERE a.fn_fee_structure_id = '.$id.' ';
                 $result = $connection2->query($sql);
-                $invData = $result->fetch();
-                $prevInvId = $invData['id'];
+                $invData = $result->fetchAll();
+                if(!empty($invData)){
+                    $prevInvId = $invData[0]['id'];
+                } else {
+                    $update_invoices = '2';
+                    $prevInvId = '';
+                }
             } else {
                 $update_invoices = '2';
                 $prevInvId = '';
             }
-            
+            // echo '<pre>';
+            // echo $prevInvId;
+            // print_r($invData);
+            // echo '</pre>';
+            // die();
 
             if ($name == ''  or $pupilsightSchoolYearID == '' or $invoice_title == ''  or $pupilsightSchoolFinanceYearID == '' or $fn_fees_head_id == '') {
                 $URL .= '&return=error3';
@@ -224,9 +230,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_structure_mana
                                         
                                     }
 
-                                    
-                                    $sq = "UPDATE fn_fee_invoice_student_assign SET fn_fee_invoice_id = ". $invId ." WHERE fn_fee_invoice_id = ".$prevInvId." AND invoice_status = 'Not Paid' ";
-                                    $connection2->query($sq);
+                                    foreach($invData as $in){
+                                        $sq = "UPDATE fn_fee_invoice_student_assign SET fn_fee_invoice_id = ". $invId ." WHERE fn_fee_invoice_id = ".$in['id']." AND invoice_status = 'Not Paid' ";
+                                        $connection2->query($sq);
+                                    }
                                 }
 
 

@@ -174,14 +174,22 @@ else {
 						if ($values["emailReceipt"]=="Y") {
 							$row->addContent("
 							<i class='mdi mdi-check mdi-24px' title='" . __('Sent by email.') . "'></i>")->addClass('right');
+							$row = $form->addRow()->addClass('emailReceipt');
+							$row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
+							$row->addTextArea('emailReceiptText')->setRows(3)->required()->setValue(__('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'))->readonly();
 						}
 						else {
-							$row->addContent("<i class='mdi mdi-check px-2 cross-times' title='" . __('Not sent by email.') . "'></i>")->addClass('right') ;
+							//$row->addContent("<i class='mdi mdi-close px-2 cross-times' title='" . __('Not sent by email.') . "'></i>")->addClass('right') ;
+							$row->addYesNoRadio('emailReceipt')->checked('N')->required();
+
+							$form->toggleVisibilityByClass('emailReceipt')->onRadio('emailReceipt')->when('Y');
+
+							$row = $form->addRow()->addClass('emailReceipt');
+							$row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
+							$row->addTextArea('emailReceiptText')->setRows(4)->required()->setValue(__('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'));
 						}
 
-					$row = $form->addRow()->addClass('emailReceipt');
-						$row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
-						$row->addTextArea('emailReceiptText')->setRows(3)->required()->setValue(__('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'))->readonly();
+					
 				}
 
 				//TARGETS
@@ -190,8 +198,8 @@ else {
 
 				//Get existing TARGETS
 				try {
-					$dataTarget=array("pupilsightMessengerID"=>$pupilsightMessengerID);
-					$sqlTarget="SELECT * FROM pupilsightMessengerTarget WHERE pupilsightMessengerID=:pupilsightMessengerID ORDER BY type" ;
+					$dataTarget=array("pupilsightMessengerID"=>$pupilsightMessengerID, "is_display" => "Y");
+					$sqlTarget="SELECT * FROM pupilsightMessengerTarget WHERE pupilsightMessengerID=:pupilsightMessengerID AND is_display=:is_display ORDER BY type" ;
 					$resultTarget=$connection2->prepare($sqlTarget);
 					$resultTarget->execute($dataTarget);
 				}
@@ -674,6 +682,54 @@ else {
 					}
 				}
 
+				//Advance Search for students
+
+				$row = $form->addRow();
+				$row->addLabel('AdvanceSearch', __('Advance Search'))->description(__('Advance Students Search.'));
+				$row->addYesNoRadio('advancestudents')->checked('N')->required();
+
+				$form->toggleVisibilityByClass('messageAdvStudents')->onRadio('advancestudents')->when('Y');
+				$check_role = 'SELECT role.name FROM pupilsightPerson as p LEFT JOIN pupilsightRole as role ON p.pupilsightRoleIDAll = role.pupilsightRoleID 
+			WHERE p.pupilsightPersonID ="' . $_SESSION[$guid]['pupilsightPersonID'] . '" AND role.name="Administrator"';
+				$check_role = $connection2->query($check_role);
+				$role = $check_role->fetch();
+				$sqlq = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
+				$resultval = $connection2->query($sqlq);
+				$rowdata = $resultval->fetchAll();
+				$academic = array();
+				$ayear = '';
+				if (!empty($rowdata)) {
+					$ayear = $rowdata[0]['name'];
+					foreach ($rowdata as $dt) {
+						$academic[$dt['pupilsightSchoolYearID']] = $dt['name'];
+					}
+				}
+				$academic1 = array('' => 'Select Year');
+				$academic = $academic1 + $academic;
+
+				$row = $form->addRow()->addClass('messageAdvStudents');;
+				$col = $row->addLabel('Class wise students', __('Class wise students'));
+
+				$col = $row->addColumn()->setClass('newdes noEdit');
+				$col->addLabel('pupilsightSchoolYearID', __('Academic Year'));
+				$col->addSelect('pupilsightSchoolYearID')->fromArray($academic);
+
+				$col = $row->addColumn()->setClass('newdes');
+				$col->addLabel('pupilsightProgramID', __('Program'));
+				$col->addSelect('pupilsightProgramID')->setId("pupilsightProgramIDA")->placeholder();
+
+				$col = $row->addColumn()->setClass('newdes');
+				$col->addLabel('pupilsightYearGroupID', __('Class'))->addClass('dte');
+				$col->addSelect('pupilsightYearGroupID')->setId("pupilsightYearGroupIDA")->addClass("pupilsightRollGroupIDP1 staticwidth")->selectMultiple();
+
+				$col = $row->addColumn()->setClass('newdes');
+				$col->addLabel('pupilsightPersonID', __('Students'))->addClass('dte');
+				if (isset($pupilsightPersonID)) {
+					$col->addSelect('pupilsightPersonID')->selected($pupilsightPersonID)->selectMultiple()->addClass("staticwidth");
+				} else {
+					$col->addSelect('pupilsightPersonID')->selectMultiple()->addClass("staticwidth");
+				}
+
 				// Individuals
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
 					$selected = array_reduce($targets, function($group, $item) {
@@ -698,7 +754,7 @@ else {
 
 					$row = $form->addRow()->addClass('individuals hiddenReveal');
 						$row->addLabel('individualList[]', __('Select Individuals'));
-						$row->addSelect('individualList[]')->fromArray($individuals)->selectMultiple()->setSize(6)->required()->selected($selected);
+						$row->addSelect('individualList[]')->setId('individualList')->fromArray($individuals)->selectMultiple()->setSize(6)->required()->selected($selected);
 				}
 
 				$form->loadAllValuesFrom($values);
@@ -714,6 +770,16 @@ else {
 }
 ?>
 
+<style>
+	#individualList {
+		width: 500px;
+	}
+
+	.staticwidth {
+		width: 220px;
+	}
+</style>
+
 <script type='text/javascript'>
 	$(document).ready(function() {
 		$("#bodyedButtonPreview").trigger('click');
@@ -721,5 +787,86 @@ else {
 		$('#individualList').select2({
 			minimumInputLength: 3
 		});
+	});
+</script>
+
+<script>
+	$(document).on('change', '#pupilsightSchoolYearID', function() {
+		var val = $(this).val();
+		var type = "getPrograms1";
+		if (val != "") {
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: val,
+					type: type
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightProgramIDA").html();
+					$("#pupilsightProgramIDA").html(response);
+
+				}
+			});
+		}
+	});
+</script>
+<script type="text/javascript">
+	$(document).on('change', '#pupilsightProgramIDA', function() {
+		var val = $(this).val();
+		var type = "getClass";
+		if (val != "") {
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: val,
+					type: type
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightYearGroupIDA").html();
+					$("#pupilsightYearGroupIDA").html(response);
+
+				}
+			});
+		}
+	});
+</script>
+<script type="text/javascript">
+	$(document).on('change', '#pupilsightYearGroupIDA', function() {
+		//var id = $("#pupilsightRollGroupID").val();
+		var yid = $('#pupilsightSchoolYearID').val();
+		var pid = $('#pupilsightProgramIDA').val();
+		var cid = $(this).val();
+		if (cid != "") {
+			var type = 'getStudentClassAndSection';
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: cid,
+					type: type,
+					yid: yid,
+					pid: pid
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightPersonID").html('');
+					$("#pupilsightPersonID").append(response);
+				}
+			});
+		}
+	});
+</script>
+<script type='text/javascript'>
+	$(document).ready(function() {
+		$('#pupilsightYearGroupIDA').select2();
+	});
+</script>
+<script type='text/javascript'>
+	$(document).ready(function() {
+		$('#pupilsightPersonID').select2();
 	});
 </script>

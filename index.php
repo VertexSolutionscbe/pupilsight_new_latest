@@ -123,6 +123,7 @@ if ($session->get("pageLoads") == 0 && !$session->has("address")) {
 
     if ($session->has("username")) {
         // Are we logged in?
+        
         $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
 
         $roleCategory = getRoleCategory(
@@ -281,6 +282,7 @@ if ($isLoggedIn) {
     $sessionDuration = $session->get("sessionDuration");
     $sessionDuration = max(intval($sessionDuration), 1200);
 }
+$domain = $_SERVER['HTTP_HOST'];
 
 /**
  * LOCALE
@@ -898,11 +900,20 @@ if ($isLoggedIn) {
             ];
 
             //$menuMainItems["Academics"][0] = $testList[0];
-            $menuMainItems["Academics"][0] = $testList[1];
-            $menuMainItems["Academics"][1] = $testList[2];
-            $menuMainItems["Academics"][2] = $testList[4];
-            $menuMainItems["Academics"][3] = $testList[3];
+            
+            if($domain=="amaatra.pupilpod.net"){
+                $menuMainItems["Academics"] = [];
+                $menuMainItems["Academics"][0] = $testList[1];
+                $menuMainItems["Academics"][1] = $testList[2];
+            }else{
+                $menuMainItems["Academics"][0] = $testList[1];
+                $menuMainItems["Academics"][1] = $testList[2];
+                $menuMainItems["Academics"][2] = $testList[4];
+                $menuMainItems["Academics"][3] = $testList[3];
+            }
+            //echo $_SESSION[$guid]["username"];
         } else {
+            $menuMainItems["Academics"] = [];
             $menuMainItems["Academics"][0] = $curriculumMenu;
             $menuMainItems["Academics"][1] = $testMenu;
         }
@@ -956,6 +967,12 @@ if ($isLoggedIn) {
             $menuMainItems["Assess"],
             $menuMainItems["Learn"],
             $menuMainItems["Other"]
+        );
+    }
+
+    if ($roleid == "002" && $domain=="amaatra.pupilpod.net") {
+        unset(
+            $menuMainItems["People"]
         );
     }
 
@@ -1044,6 +1061,8 @@ if ($isLoggedIn) {
     }
 }
 //print_r($menuModuleItems);
+//print_r($currentModule);
+//die();
 /**
  * TEMPLATE DATA
  *

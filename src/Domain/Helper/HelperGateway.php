@@ -23,6 +23,13 @@ class HelperGateway extends QueryableGateway
 
     private static $tableName = '';
 
+    public function getStudentList($con, $data){
+        $sq = "select pupilsightPersonID, officialName, username, email, phone1, admission_no from pupilsightPerson ";
+        $sq .=" where pupilsightRoleIDPrimary='003' order by officialName asc";
+        $result = $con->query($sq);
+        return $result->fetchAll();
+    }
+    
     public function getActiveReport($connection2)
     {
         $sq = "select * from report_manager where status='2' ";
@@ -32,7 +39,7 @@ class HelperGateway extends QueryableGateway
 
     public function getBasicActiveReport($connection2)
     {
-        $sq = "select id,name,description,module,date1,date2,date3,date4,param1,param2,param3,param4,param5,param6,param7,param8 from report_manager where status='2' ";
+        $sq = "select id,name,header,total_column,description,module,date1,date2,date3,date4,param1,param2,param3,param4,param5,param6,param7,param8 from report_manager where status='2' ";
         $result = $connection2->query($sq);
         return $result->fetchAll();
     }

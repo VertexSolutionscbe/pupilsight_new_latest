@@ -144,6 +144,124 @@ function getIndividualUserList($con, $res){
     return "";
 }
 
+function getStudentQuery($connection2, $cuid, $pupilsightSchoolYearID, $lts){
+    $sq1="select pupilsightSchoolYearID, pupilsightProgramID, pupilsightYearGroupID, pupilsightRollGroupID from pupilsightStudentEnrolment ";
+    $sq1 .="where pupilsightPersonID='".$cuid."' ";
+    $sq1 .="and pupilsightSchoolYearID='".$pupilsightSchoolYearID."' ";
+    $query2 = $connection2->query($sq1);
+    $res2 = $query2->fetch();
+    $classid = $res2["pupilsightSchoolYearID"]."-".$res2["pupilsightProgramID"]."-".$res2["pupilsightYearGroupID"]."-".$res2["pupilsightRollGroupID"];
+
+
+    $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID,cm.msg_type, ';
+    $sq .='cm.attachment,cm.delivery_type,cm.group_id,cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
+    $sq .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
+    $sq .= ' left join chat_share as cs on cm.id=cs.chat_msg_id ';
+    $sq .= ' where  ';
+    $sq .="  (cm.delivery_type in('all_students','all','".$classid."') 
+            or cs.uid='" .$cuid ."' or cm.cuid='".$cuid."') ";
+
+    if ($lts) {
+        $sq .= ' and cm.timestamp > ' . $lts . ' ';
+    }
+    $sq .= ' order by cm.cdt desc limit 0, 10000 ';
+    $query = $connection2->query($sq);
+    return $query->fetchAll();
+
+}
+
+function getParentQuery($connection2, $cuid, $pupilsightSchoolYearID, $lts){
+    $sq1="select pupilsightSchoolYearID, pupilsightProgramID, pupilsightYearGroupID, pupilsightRollGroupID from pupilsightStudentEnrolment ";
+    $sq1 .="where pupilsightPersonID='".$_SESSION['student_id']."' ";
+    $sq1 .="and pupilsightSchoolYearID='".$pupilsightSchoolYearID."' ";
+    $query2 = $connection2->query($sq1);
+    $res2 = $query2->fetch();
+    $classid = $res2["pupilsightSchoolYearID"]."-".$res2["pupilsightProgramID"]."-".$res2["pupilsightYearGroupID"]."-".$res2["pupilsightRollGroupID"];
+
+
+    $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID,cm.msg_type, ';
+    $sq .='cm.attachment,cm.delivery_type,cm.group_id,cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
+    $sq .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
+    $sq .= ' left join chat_share as cs on cm.id=cs.chat_msg_id ';
+    $sq .= ' where  ';
+    $sq .=" (cm.delivery_type in('all_students','all','".$classid."')
+            or cs.uid in('" .$_SESSION['student_id'] ."','" .$cuid ."')
+            or cm.cuid in('" .$_SESSION['student_id'] ."','" .$cuid ."')) ";
+    
+
+    if ($lts) {
+        $sq .= ' and cm.timestamp > ' . $lts . ' ';
+    }
+    $sq .= ' order by cm.cdt desc limit 0, 10000 ';
+    $query = $connection2->query($sq);
+    return $query->fetchAll();
+}
+
+function getAdminQuery($connection2, $lts){
+    $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID,cm.msg_type, ';
+    $sq .='cm.attachment,cm.delivery_type,cm.group_id,cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
+    $sq .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
+    if ($lts) {
+        $sq .= ' where cm.timestamp > ' . $lts . ' ';
+    }
+    $sq .= ' order by cm.cdt desc limit 0, 10000 ';
+    //echo $sq;
+    $query = $connection2->query($sq);
+    return $query->fetchAll();
+}
+
+function getTeacherQuery($connection2, $cuid, $lts){
+    $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID,cm.msg_type, ';
+    $sq .='cm.attachment,cm.delivery_type,cm.group_id,cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
+    $sq .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
+    $sq .= ' left join chat_share as cs on cm.id=cs.chat_msg_id ';
+    
+    if(isset($_SESSION["teacher_class_id"])){
+        $sq .= " where (cm.delivery_type in(".$_SESSION["teacher_class_id"].",'all_staff') or cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
+    }else{
+        $sq .= " where (cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
+    }
+
+    if ($lts) {
+        $sq .= ' and cm.timestamp > ' . $lts . ' ';
+    }
+
+    $sq .= ' order by cm.cdt desc limit 0, 10000 ';
+    $query = $connection2->query($sq);
+    return $query->fetchAll();
+}
+
+function getOtherRoleQuery($connection2, $cuid, $lts){
+    
+    $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID,cm.msg_type, ';
+    $sq .='cm.attachment,cm.delivery_type,cm.group_id,cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
+    $sq .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
+    $sq .= 'left join chat_share as cs on cm.id=cs.chat_msg_id ';
+    $sq .= "where and (cm.delivery_type in('all','all_staff') or cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
+    
+    if ($lts) {
+        $sq .= ' and cm.timestamp > ' . $lts . ' ';
+    }
+    //for other role we need to
+    $sq .= ' order by cm.cdt desc limit 0, 10000 ';
+    $query = $connection2->query($sq);
+    return $query->fetchAll();
+}
+
+function getRoleQuery($roleid, $connection2, $cuid, $pupilsightSchoolYearID, $lts){
+    if($roleid=="001"){
+        return getAdminQuery($connection2, $lts);
+    }else if($roleid=="002"){
+        return getTeacherQuery($connection2, $cuid, $lts);
+    }else if($roleid=="003"){
+        return getStudentQuery($connection2, $cuid, $pupilsightSchoolYearID, $lts);
+    }else if($roleid=="004"){
+        return getParentQuery($connection2, $cuid, $pupilsightSchoolYearID, $lts);
+    }else {
+        return getOtherRoleQuery($connection2, $cuid, $lts);
+    }
+}
+
 /* open Description Indicator */
 if ($type == 'postMessage') {
     try {
@@ -464,58 +582,10 @@ if ($type == 'postMessage') {
         $isWhereAdded = false;
         $classid="";
         $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
-        if($roleid == '003'||$roleid == '004'){
 
-            $sq1="select pupilsightSchoolYearID, pupilsightProgramID, pupilsightYearGroupID, pupilsightRollGroupID from pupilsightStudentEnrolment ";
-            if($roleid == '004'){
-                $sq1 .="where pupilsightPersonID='".$_SESSION['student_id']."' ";
-            }else{
-                $sq1 .="where pupilsightPersonID='".$cuid."' ";
-            }
-            $sq1 .="and pupilsightSchoolYearID='".$pupilsightSchoolYearID."' ";
-            $query2 = $connection2->query($sq1);
-            $res2 = $query2->fetch();
-            $classid = $res2["pupilsightSchoolYearID"]."-".$res2["pupilsightProgramID"]."-".$res2["pupilsightYearGroupID"]."-".$res2["pupilsightRollGroupID"];
-        }
-
-        $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID,cm.msg_type, ';
-        $sq .='cm.attachment,cm.delivery_type,cm.group_id,cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
-        $sq .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
-        //$sq .='inner join chat_message as cm1 on cm.id=cm1.chat_parent_id ';
-
-        //if ($roleid == '003' || $roleid == '004') {
-        if ($roleid != '001') {
-            $sq .= ' left join chat_share as cs on cm.id=cs.chat_msg_id ';
-        }
-
-        $sq .= ' where cm.msg is not null ';
-
-        if ($roleid == '003') {
-            $sq .=" and (cm.delivery_type in('all_students','all','".$classid."') 
-                or cs.uid='" .$cuid ."' or cm.cuid='".$cuid."') ";
-        } elseif ($roleid == '004') {
-            $sq .=" and (cm.delivery_type in('all_students','all','".$classid."')
-                or cs.uid in('" .$_SESSION['student_id'] ."','" .$cuid ."')
-                or cm.cuid in('" .$_SESSION['student_id'] ."','" .$cuid ."')) ";
-        }else if($roleid == '002'){
-            if(isset($_SESSION["teacher_class_id"])){
-                $sq .= " and (cm.delivery_type in(".$_SESSION["teacher_class_id"].",'all_staff') or cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
-            }else{
-                $sq .= " and (cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
-            }
-        }else if($roleid != '001'){
-            $sq .= " and (cm.delivery_type in('all','all_staff') or cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
-        }
-
-        if ($lts) {
-            $sq .= ' and cm.timestamp > ' . $lts . ' ';
-        }
-        //for other role we need to
-
-        $sq .= ' order by cm.cdt desc limit 0, 10000 ';
-        //echo $sq;
-        $query = $connection2->query($sq);
-        $res = $query->fetchAll();
+        //get role wise data
+        $res = getRoleQuery($roleid, $connection2, $cuid, $pupilsightSchoolYearID, $lts);
+        
         //print_r($res);
         //die();
         if ($res) {
@@ -535,12 +605,12 @@ if ($type == 'postMessage') {
                 $parentid = $res[$i]['chat_parent_id'];
                 //echo "<br/>shortname : ".$res[$i]['shortName']." ts ".$ts." | ".$officialName." | ".$cdt;
                 
-                $res[$i]["userlist"] =  getIndividualUserList($connection2, $res[$i]);    
+                $res[$i]["userlist"] = getIndividualUserList($connection2, $res[$i]);    
                 if ($parentid) {
                     if (isset($result[$parentid])) {
                         $result[$parentid]['response'][] = $res[$i];
                     } else {
-                        //no parent data here
+                        //reply data found but post data not found so search the post actual data
                         $sqj ='select cm.*, p.officialName from chat_message as cm ';
                         $sqj .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
                         $sqj .= " where cm.id='" . $parentid . "'";

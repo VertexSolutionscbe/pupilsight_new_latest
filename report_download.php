@@ -2,87 +2,153 @@
 include "pupilsight.php";
 //use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Pupilsight\Domain\Report\ReportGateway;
+//use Pupilsight\Domain\Helper\HelperGateway;
 
 try {
+
+    function getDomain()
+    {
+        if (isset($_SERVER['HTTPS'])) {
+            $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+        } else {
+            $protocol = 'http';
+        }
+        //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        return $protocol . "://" . $_SERVER['HTTP_HOST'];
+    }
+    $baseurl = getDomain();
+
+    $res = array();
     $fileDownloadType = "html";
     if (isset($_POST["fd"])) {
         $fileDownloadType = $_POST["fd"];
     }
-    $isTotal = true;
-    $totColumns = "amount_paying";
+
     //$fileDownloadType = "xlsx"; // for excel keep blank
 
     $sq = "select * from report_manager where id='".$_POST["reportid"]."'";
     $query = $connection2->query($sq);
     $report = $query->fetch();
     if(empty($report)){
-        echo "No Data available for report";
+        $res["msg"]= "No Data available for report";
         die();
     }
 
 
-    function html_table($data = [],$header = [],$total = null,$addSerialNo = true) {
+    function html_table($data = [],$header = [],$total = null, $fileDownloadType, $addSerialNo = true) {
         $rows = [];
         $cnt = 1;
         $colLen = 1;
         foreach ($data as $row) {
             $cells = [];
             if ($addSerialNo) {
-                $cells[] = "<td>{$cnt}</td>";
+                $cells[] = "\n<td>{$cnt}</td>";
                 $cnt++;
             }
             $colLen = 1;
             foreach ($row as $cell) {
-                $cells[] = "<td>{$cell}</td>";
+                $cells[] = "\n<td>{$cell}</td>";
                 $colLen++;
             }
-            $rows[] = "<tr>" . implode("", $cells) . "</tr>";
+            $rows[] = "\n<tr>" . implode("", $cells) . "</tr>\n";
         }
 
         //for table header
-        if ($total) {
+        if ($total && $fileDownloadType!="ihtml") {
             if ($colLen) {
                 $rows[] =
-                    "<tr><td style='text-align:right' colspan='" .
+                    "\n<tr><td style='text-align:right' colspan='" .
                     $colLen .
                     "'><h3>Total : " .
                     $total .
-                    "</h3></td></tr>";
+                    "</h3></td>\n</tr>\n";
+            }
+        }
+        $hflag = false;
+        if (empty($header)) {
+            if($data[0]){
+                $hflag = true;
+                $header = array_keys($data[0]);
             }
         }
 
         if ($header) {
             $cells = [];
-            /*if ($addSerialNo) {
-                $cells[] = "<th>Serial No</th>";
-            }*/
-            foreach ($header as $cell) {
-                $cells[] = "<th>{$cell}</th>";
+            if ($addSerialNo) {
+                $cells[] = "\n<th>SN</th>";
             }
-            $th = "<tr>" . implode("", $cells) . "</tr>";
-            return "<table class='table'>" .
-                $th .
-                implode("", $rows) .
-                "</table>";
+            foreach ($header as $cell) {
+                if($hflag){
+                    $cells[] = "\n<th>".strtoupper($cell)."</th>";
+                }else{
+                    $cells[] = "\n<th>{$cell}</th>";
+                }
+            }
+            if($fileDownloadType=="ihtml"){
+                $th = "\n<thead><tr>" . implode("", $cells) . "\n</tr></thead>\n";
+            }else{
+                $th = "\n<tr>" . implode("", $cells) . "\n</tr>\n";
+            }
+            
         }
-        return "<table class='table'>" . implode("", $rows) . "</table>";
+
+        $tbl = "";
+        if($fileDownloadType=="ihtml"){
+            $tbl = "\n<table id='table' class='cell-border stripe order-column hover table table-striped dataTable' style='width:100%;'>" .$th;
+            $tbl .= "\n<tbody>".implode("", $rows) ."\n</tbody>\n</table>\n";
+            if ($total){
+                $tbl .= "\n<br><h3>Total - $total</h3>";
+            }
+        }else{
+            $tbl = "\n<table class='table' style='width:100%;'>" .$th;
+            $tbl .= implode("", $rows) ."\n</table>\n";
+        }
+        return $tbl;
+        //return "<table class='table'>" . implode("", $rows) . "</table>";
     }
 
-    $header = [
-        "SINo",
-        "Student Id",
-        "Student Name",
-        "Grade",
-        "Receipt No.",
-        "Payment Mode",
-        "DD Date",
-        "DD Number",
-        "Bank Details",
-        "Payment Date",
-        "Amount Paid",
-    ];
+    function getTranslateArray($sq){
+        $sd = array("date1","date2","date3","date4","param1","param2","param3","param4","param5","param6","param7","param8");
+        $len = count($sd);
+        $i = 0;
+        $trans = array();
+        while($i<$len){
+            $pos = strpos($sq, $sd[$i]);
+            if ($pos !== false) {
+                $trans[":".$sd[$i]]=$_POST[$sd[$i]];
+            }
+            $i++;
+        }
+        return $trans;
+    }
 
-    if ($isTotal) {
+    $header = [];
+    $totalValue = null;
+    
+
+    if($report["sql_query"]){
+        //run query
+        $sq = htmlspecialchars_decode($report["sql_query"], ENT_QUOTES);
+        $trans = getTranslateArray($sq);
+        $sq = strtr($sq, $trans);
+        $query1 = $connection2->query($sq);
+        $result = $query1->fetchAll();
+    }else{
+        //api call working on now
+        $reportGateway = $container->get(ReportGateway::class);
+        //$reportGateway = $container->get(HelperGateway::class);
+        $result = $reportGateway->{$report["api"]}($connection2, $_POST);
+    }
+    
+    if($report["header"]){
+        $header = explode(",",$report["header"]);
+    }
+
+    //if total need to calculate then
+    if($report["total_column"]){
+        $isTotal = true;
+        $totColumns = $report["total_column"];
         $len = count($result);
         $i = 0;
         $totalValue = 0;
@@ -95,26 +161,32 @@ try {
         }
     }
 
-    if($report["sql_query"]){
-        $sq = htmlspecialchars_decode($report["sql_query"], ENT_QUOTES);
-        echo "sq: ".$sq;
-        print_r($_POST);
-        $query1 = $connection2->query($sq);
-        $result = $query1->fetch();
-    }else{
-        //api call working on now
-    }
-
-    $htmlString = html_table($result, $header, $totalValue);
-
+    $htmlString = html_table($result, $header, $totalValue, $fileDownloadType);
     $html = "<html>";
-    $html .= "<style>.table {
+    if($fileDownloadType=="ihtml" || $fileDownloadType=="html"){
+        $html = "<html translate='no' lang='en' class='notranslate' translate='no'>";
+    }
+    
+    if($fileDownloadType=="ihtml"){
+        $html .="\n<head>";
+        $html .="\n<style>\n.table{font: normal 13px Arial, sans-serif;}\n</style>";
+        $html .="\n<meta name='google' content='notranslate' />";
+        $html .= "\n<script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>";
+        $html .="\n<link rel='stylesheet' href='https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css'>";
+        $html .= "\n<script src='https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js'></script>";
+        $html .= "\n<script>$(document).ready(function(){
+            $('#table').DataTable();
+        });
+        </script>";
+        $html .="\n</head>";
+    }else{
+    $html .= "\n<style>\n.table {
             border: solid 1px #DDEEEE;
             border-collapse: collapse;
             border-spacing: 0;
             font: normal 13px Arial, sans-serif;
         }
-        .table th {
+        \n.table th {
             background-color: #DDEFEF;
             border: solid 1px #DDEEEE;
             color: #336B6B;
@@ -122,34 +194,40 @@ try {
             text-align: left;
             text-shadow: 1px 1px 1px #fff;
         }
-        .table td {
+        \n.table td {
             border: solid 1px #DDEEEE;
             color: #333;
             padding: 10px;
             text-shadow: 1px 1px 1px #fff;
-        }</style>";
+        }\n</style>\n";
+    }
 
-    $html .= "<body>";
-    $html .= "<br/><center><h2>".$report["name"]."</h2></center><br/>";
+    $html .= "\n<body>";
+    $html .= "\n<center>\n<br><h2>".$_SESSION[$guid]["organisationName"]."</h2>";
+    $html .= "\n<h3>".$report["name"]."</h3><br/>\n</center>";
     $html .= $htmlString;
-    $html .= "</body>";
+    $html .= "\n</body>";
     $html .= "</html>";
-
+    
+    
     $fileNameGen = $input = preg_replace("/[^a-zA-Z]+/", "", $report["name"]);
 
-    if ($fileDownloadType == "html") {
-        echo "file downlod type html";
+    if ($fileDownloadType == "html" || $fileDownloadType == "ihtml") {
+        //echo "file downlod type html";
         $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/".$fileNameGen.".html";
-        echo "file ".$fileName;
+        //echo "file ".$fileName;
+        $res["file"]=$baseurl."/public/".$fileNameGen.".html";
+        //echo json_encode($res);
         file_put_contents($fileName, $html);
-
+        chmod($fileName, 0777);
         $fileDownName = basename($fileName);
-        header("Content-type:application/html");
+        //header("Content-type:application/html");
+        header('Content-Type: application/force-download');
         header("Content-Disposition: attachment; filename = $fileDownName");
         header("Pragma: no-cache");
         header("Expires: 0");
         readfile($fileName);
-        //unlink($fileName);
+        unlink($fileName);
     } else {
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
         $spreadsheet = $reader->loadFromString($htmlString);
@@ -169,6 +247,7 @@ try {
         $writer = new Xlsx($spreadsheet);
         $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/".$fileNameGen.".xlsx";
         $writer->save($fileName);
+        chmod($fileName, 0777);
 
         header(
             "Content-type:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -179,8 +258,9 @@ try {
         header("Expires: 0");
         readfile($fileName);
         unlink($fileName);
-        echo "Downloading Started";
+        //echo "Downloading Started";
     }
+
 } catch (Exception $ex) {
     echo $ex->getMessage();
 }
