@@ -310,7 +310,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
         <?php
             $helperGateway = $container->get(HelperGateway::class);
             if($roleid=="001"){
-                echo '\n<button type="button" class="btn btn-primary" onclick="addReport();"><i class="mdi mdi-plus"></i> New Report</button>';
+                echo '<button type="button" class="btn btn-primary" onclick="addReport();"><i class="mdi mdi-plus"></i> New Report</button>';
                 $res = $helperGateway->getActiveReport($connection2);
             }else{
                 $res = $helperGateway->getBasicActiveReport($connection2);
