@@ -4,6 +4,17 @@ Pupilsight, Flexible & Open School System
  */
 
 use Pupilsight\Domain\Helper\HelperGateway;
+function getDomain()
+{
+    if (isset($_SERVER['HTTPS'])) {
+        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+    } else {
+        $protocol = 'http';
+    }
+    //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    return $protocol . "://" . $_SERVER['HTTP_HOST'];
+}
+$baseurl = getDomain();
 
 $accessFlag = true;
 if ($accessFlag == false) {
@@ -12,8 +23,49 @@ if ($accessFlag == false) {
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
+    $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
     //Proceed!
+    //print_r($_SESSION[$guid]);
+    //die();
+/*
+    // Check if SELECT is in the query
+if (preg_match('/SELECT/', strtoupper($query)) != 0) {
+    // Array with forbidden query parts
+    $disAllow = array(
+        'INSERT',
+        'UPDATE',
+        'DELETE',
+        'RENAME',
+        'DROP',
+        'CREATE',
+        'TRUNCATE',
+        'ALTER',
+        'COMMIT',
+        'ROLLBACK',
+        'MERGE',
+        'CALL',
+        'EXPLAIN',
+        'LOCK',
+        'GRANT',
+        'REVOKE',
+        'SAVEPOINT',
+        'TRANSACTION',
+        'SET',
+    );
 
+    // Convert array to pipe-seperated string
+    // strings are appended and prepended with \b
+    $disAllow = implode('|',
+        array_map(function ($value) {
+            return '\b' . $value . '\b';
+        }
+    ), $disAllow);
+
+    // Check if no other harmfull statements exist
+    if (preg_match('/('.$disAllow.')/gai', $query) == 0) {
+        // Execute query
+    }
+}*/
 
     if (isset($_POST['name'])) {
 
@@ -24,6 +76,9 @@ if ($accessFlag == false) {
         $module_id = empty($_POST['module_id']) ? "NULL" : "'" . trim($_POST['module_id']) . "'";
         $sql_query = empty($_POST['sql_query']) ? "NULL" : "'" . htmlspecialchars(trim($_POST['sql_query']),ENT_QUOTES) . "'";
         $api = empty($_POST['api']) ? "NULL" : "'" . htmlspecialchars((trim($_POST['api'])),ENT_QUOTES) . "'";
+
+        $header = empty($_POST['header']) ? "NULL" : "'" . trim($_POST['header']) . "'";
+        $total_column = empty($_POST['total_column']) ? "NULL" : "'" . trim($_POST['total_column']) . "'";
 
         $date1 = empty($_POST['date1']) ? "NULL" : "'" . trim($_POST['date1']) . "'";
         $date2 = empty($_POST['date2']) ? "NULL" : "'" . trim($_POST['date2']) . "'";
@@ -41,7 +96,7 @@ if ($accessFlag == false) {
 
         //print_r($_POST);
         try {
-            if(isset($_POST["id"])){
+            if(!empty($_POST["id"])){
                 //update
                 $id = $_POST["id"];
                 $sq = "update report_manager set name=$name, ";
@@ -49,6 +104,8 @@ if ($accessFlag == false) {
                 $sq .= " module=$module, ";
                 $sq .= " module_id=$module_id, ";
                 $sq .= " sql_query=$sql_query, ";
+                $sq .= " header=$header, ";
+                $sq .= " total_column=$total_column, ";
                 $sq .= " api=$api, ";
                 $sq .= " date1=$date1, ";
                 $sq .= " date2=$date2, ";
@@ -64,11 +121,12 @@ if ($accessFlag == false) {
                 $sq .= " param8=$param8 ";
                 $sq .= "where id='".$id."' ";
             }else{
-                $sq = "insert into report_manager (name, description, module, module_id, sql_query, api, date1, date2, date3, date4, param1, param2, param3, param4, param5, param6, param7, param8,status) 
-                values($name,$description,$module,$module_id,$sql_query,$api,$date1,$date2,$date3,$date4,$param1,$param2,$param3,$param4,$param5,$param6,$param7,$param8,2)";
+                $sq = "insert into report_manager (name, description, module, module_id, sql_query, header, total_column, api, date1, date2, date3, date4, param1, param2, param3, param4, param5, param6, param7, param8,status) 
+                values($name,$description,$module,$module_id,$sql_query,$header,$total_column,$api,$date1,$date2,$date3,$date4,$param1,$param2,$param3,$param4,$param5,$param6,$param7,$param8,2)";
             }
             //echo $sq;
             $connection2->query($sq);
+            //die();
             header('Location: '.$_SERVER['REQUEST_URI']);
         } catch (Exception $ex) {
             echo $ex->getMessage();
@@ -146,7 +204,7 @@ if ($accessFlag == false) {
 
                 <div class="row my-4">
                     <div class="col-12 mt-2">
-                        <label class="form-label">Report SQL Query - Note pass variable like <span class='bg-blue-lt'>payment_date='".$_POST["date1"]."'</span> direct post variable in sql query</label>
+                        <label class="form-label">Report SQL Query - Note pass variable like <span class='bg-blue-lt'>payment_date=':date1' or payment_amount=':param1'</span> assign variable in sql query</label>
                         <textarea id="sql_query" name="sql_query" data-bs-toggle="autosize" class="form-control"></textarea>
                     </div>
 
@@ -155,17 +213,30 @@ if ($accessFlag == false) {
                     </div>
 
                     <div class="col-12 mt-2">
-                        <label class="form-label">Report API</label>
+                        <label class="form-label">Report Function Name</label>
                         <div class="input-group">
-                            <span class="input-group-text">https://testchristacademy.pupilpod.net/</span>
-                            <input type="text" id="api" name="api" class="form-control" value="" placeholder="relative path eg. ajaxdata.php?val=123">
+                            <span class="input-group-text">$Report-></span>
+                            <input type="text" id="api" name="api" class="form-control" value="" placeholder="your function name eg. studentreport">
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
+                    <div class="col-12 mt-2">
+                        <label class="form-label">Total column name by sql query or function call for auto sum</label>
+                        <input type="text" id="total_column" name="total_column" class="form-control" value="">
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <label class="form-label">Header value coma separated eg like <span class='bg-blue-lt'>Name, Grade, Payment Date</span> For report if you want to change mysql column name</label>
+                        <textarea id="header" name="header" rows='2' class="form-control"></textarea>
+                    </div>
+                </div>
+
+
+                <div class="row">
                     <div class="col-12 mt-4 text-center">
-                        <label class="form-label bg-green-lt">Input Parameters (Optional) used by sql query or api</label>
+                        <label class="form-label bg-green-lt">Input Parameters (Optional) used by sql query or function call</label>
                     </div>
                 </div>
                 <div class="row">
@@ -226,7 +297,7 @@ if ($accessFlag == false) {
         <div class="card-footer">
             <div class="row">
                 <div class="col-12 my-3">
-                    <button type="button" class="btn btn-primary" onclick="validate();">Submit</button>
+                    <button type="button" class="btn btn-primary" onclick="validate();">Save</button>
                     <button type="button" class="btn btn-secondary ml-1" onclick="cancelReport();">Cancel</button>
                 </div>
             </div>
@@ -235,20 +306,19 @@ if ($accessFlag == false) {
     </div>
     <!----Report Details---->
     <div class="card my-2" id='reportList'>
-        <div class="card-header text-right">
-            <button type="button" class="btn btn-primary" onclick="addReport();"><i class="mdi mdi-plus"></i> New Report</button>
+        <div class="card-header">
+        <?php
+            $helperGateway = $container->get(HelperGateway::class);
+            if($roleid=="001"){
+                echo '\n<button type="button" class="btn btn-primary" onclick="addReport();"><i class="mdi mdi-plus"></i> New Report</button>';
+                $res = $helperGateway->getActiveReport($connection2);
+            }else{
+                $res = $helperGateway->getBasicActiveReport($connection2);
+            }
+        ?>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <?php
-                    $helperGateway = $container->get(HelperGateway::class);
-                    $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
-                    if($roleid=="001"){
-                        $res = $helperGateway->getActiveReport($connection2);
-                    }else{
-                        $res = $helperGateway->getBasicActiveReport($connection2);
-                    }
-                ?>
                 <table id='reportTable' class="table card-table table-vcenter text-nowrap datatable border-bottom">
                     <thead>
                         <tr>
@@ -264,8 +334,6 @@ if ($accessFlag == false) {
                     </thead>
                     <tbody>
                     <?php
-                        
-                        
                         $len = count($res);
                         $i = 0;
                         $str = "";
@@ -307,7 +375,7 @@ if ($accessFlag == false) {
                 </button>
             </div>
             <div class="modal-body">
-                <form id="reportDialogForm" class="needs-validation" novalidate="" method="post" autocomplete="off">
+                <form id="reportDialogForm" action="<?=$baseurl."/report_download.php"?>" class="needs-validation" novalidate="" method="post" autocomplete="off">
                     <input type="hidden" name="reportid" id="reportid" value="">
                     <div class="row my-2">
                         <div class="col-12 form-label">Choose Report Type</div>
@@ -317,6 +385,10 @@ if ($accessFlag == false) {
                                 <span class="form-check-label">HTML</span>
                             </label>
                             <label class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="ihtml" name="fd">
+                                <span class="form-check-label">Interactive HTML</span>
+                            </label>
+                            <label class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" value="xlsx" name="fd">
                                 <span class="form-check-label">XLSX</span>
                             </label>
@@ -324,6 +396,7 @@ if ($accessFlag == false) {
                     </div>
                     <div id='paramPanel'></div>
                 </form>
+                
             </div>
             <div class="modal-footer">
                 <button type="button" id='closeDialogBtn' class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -338,7 +411,7 @@ if ($accessFlag == false) {
     <script>
         function editReport(id){
             var obj = report[id];
-            var elements = ["id","name","module_id","module","description","sql_query","api","date1","date2","date3","date4","param1","param2","param3","param4","param5","param6","param7","param8"];
+            var elements = ["id","name","header","total_column","module_id","module","description","sql_query","api","date1","date2","date3","date4","param1","param2","param3","param4","param5","param6","param7","param8"];
             var len = elements.length;
             var i = 0;
             while(i<len){
@@ -362,6 +435,7 @@ if ($accessFlag == false) {
     }
     ?>
     <script>
+        var baseurl = "<?=$baseurl;?>";
         var report = <?php echo json_encode($repo); ?>;
         var isParamActive = false;
         var activeDownloadId = "";
@@ -436,7 +510,9 @@ if ($accessFlag == false) {
                 try{
                     $("#closeDialogBtn").click();
                     console.log("Your report is downloading..");
-                    
+                    $('#reportDialogForm').submit();
+                    //return;
+                    /*
                     var form = $('#reportDialogForm')[0];
                     var _data = new FormData(form);
                     //data.append("CustomField", "This is some extra data, testing");
@@ -448,12 +524,25 @@ if ($accessFlag == false) {
                         processData: false,
                         contentType: false,
                         success: function (response) {
+                            console.log(response);
                             if(response){
-                                var res = $.trim(response);
-                                alert(res);
+                                //var res = $.trim(response);
+                                //alert(res);
+                                try{
+                                var obj = JSON.parse(response);
+                                if(obj.file){
+                                    console.log(obj.file);
+                                    //$("#fileDownload").attr("href",obj.file);
+                                    //$("#fileDownload")[0].click();
+                                    //$("#fileDownload").click();
+
+                                }
+                                }catch(ex){
+                                    console.log(ex);
+                                }
                             }
                         }
-                    });
+                    });*/
                 }catch(ex){
                     console.log(ex);
                 }
@@ -490,7 +579,7 @@ if ($accessFlag == false) {
         });
 
         function resetAddReport(){
-            var elements = ["id","name","module_id","module","description","sql_query","api","date1","date2","date3","date4","param1","param2","param3","param4","param5","param6","param7","param8"];
+            var elements = ["id","name","header","total_column","module_id","module","description","sql_query","api","date1","date2","date3","date4","param1","param2","param3","param4","param5","param6","param7","param8"];
             var len = elements.length;
             var i = 0;
             while(i<len){

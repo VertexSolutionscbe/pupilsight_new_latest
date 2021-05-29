@@ -1,8 +1,9 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html class="no-js" lang="" translate='no' lang='en' class='notranslate' translate='no'>
 
 <head>
     <meta charset="utf-8" />
+    <meta name='google' content='notranslate' />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Pupilpod</title>
@@ -90,7 +91,7 @@
         media="all" />
 
     <script src="{{ absoluteURL }}/assets/libs/trumbowyg/dist/plugins/colors/trumbowyg.colors.min.js"></script>
-
+    <script src="{{ absoluteURL }}/assets/libs/tata/dist/tata.js"></script>
 
     <style>
         body {
@@ -370,10 +371,38 @@
     {{ include('alert.twig.html') }}
 
 
-
-
     <script>
         document.body.style.display = "block";
+        //type log|info|success|warning|error
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        function toast(type, msg, title) {
+            if (type == "success") {
+                toastr.success(msg, title);
+            } else if (type == "warning") {
+                toastr.warning(msg, title);
+            } else if (type == "error") {
+                toastr.error(msg, title);
+            } else {
+                toastr.info(msg, title);
+            }
+        }
     </script>
 
 </body>

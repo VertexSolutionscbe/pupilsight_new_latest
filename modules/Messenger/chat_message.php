@@ -450,28 +450,30 @@ $(document).on('change', '#childSel', function() {
 </div>
 <?php }
     ?>
+ <!--   
 <div class="card" id='chatReplyWidget'>
-  <div class="card-body">
-    <div class="row">
-      <div class="col-12 my-3">
-        <textarea class="form-control" id="reply_message" name="chat_message" rows="6" placeholder="Write Message Here"></textarea>
-        <input type='hidden' id='chat_parent_id' value="">
-        <input type='hidden' id='reply_delivery_type' value="">
-      </div>
-      <div class="col-12 mb-3">
-        <div class="form-label">Attachment</div>
-        <form enctype="multipart/form-data" id="reply_form">
-          <input type="file" id='reply_attachment' name="attachment" class='form-control'>
-        </form>
-      </div>
+    <div class="card-body">
+          <div class="row">
+              <div class="col-12 my-3">
+                <textarea class="form-control" id="reply_message" name="chat_message" rows="6" placeholder="Write Message Here"></textarea>
+                <input type='hidden' id='chat_parent_id' value="">
+                <input type='hidden' id='reply_delivery_type' value="">
+              </div>
+              <div class="col-12 mb-3">
+                <div class="form-label">Attachment</div>
+                <form enctype="multipart/form-data" id="reply_form">
+                  <input type="file" id='reply_attachment' name="attachment" class='form-control'>
+                </form>
+              </div>
+          </div>
+          <div class="col-12">
+            <button type="button" class="btn btn-primary" id='replyBtn' onclick="replyMessage();">Reply
+              Message</button>
+            <button type="button" class="btn btn-secondary ml-2" onclick="closeReplyBox();">Cancel</button>
+          </div>
     </div>
-    <div class="col-12">
-      <button type="button" class="btn btn-primary" id='replyBtn' onclick="replyMessage();">Reply
-        Message</button>
-      <button type="button" class="btn btn-secondary ml-2" onclick="closeReplyBox();">Cancel</button>
-    </div>
-  </div>
 </div>
+--->
 </div>
 
 <!--Chat Area Details--->
@@ -498,7 +500,47 @@ $(document).on('change', '#childSel', function() {
   <div class="card-body" id='cardMessage'></div>
 
 </div>
+<!--Reply Dialog-->
+<div class="modal fade" id="replyDialog" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportDialogTitle">Reply Message</h5>
+                    <button id='btnReplyDiaCancel' type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
 
+                    <div class="row">
+                      <div class="col-12 my-3">
+                        <textarea class="form-control" id="reply_message" name="chat_message" rows="6" placeholder="Write Message Here"></textarea>
+                        <input type='hidden' id='chat_parent_id' value="">
+                        <input type='hidden' id='reply_delivery_type' value="">
+                      </div>
+                      <div class="col-12 mb-3">
+                        <div class="form-label">Attachment</div>
+                        <form enctype="multipart/form-data" id="reply_form">
+                          <input type="file" id='reply_attachment' name="attachment" class='form-control'>
+                        </form>
+                      </div>
+                    </div>
+                    
+                </div>
+
+                <div class="modal-footer">
+                  <div class="col-12">
+                    <button type="button" class="btn btn-primary" id='replyBtn' onclick="replyMessage();">Submit</button>
+                    <button type="button" class="btn btn-secondary ml-2" class="close" data-dismiss="modal" aria-label="Close" onclick="closeReplyBox();">Cancel</button>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<button type="button" id='btnReplyDia' data-toggle="modal" data-target="#replyDialog"></button>
+
+    <div id='dataHandler' style='line-height:18px;'></div>
 <script>
 function openStChatBox() {
   $("#chatStPostWidget").show(400);
@@ -524,13 +566,13 @@ function stGroupChange() {
 function postStMessage() {
   var msg = $("#st_chat_message").val();
   if (msg == "") {
-    alert("Please enter your message");
+    toast("error","Please enter your message");
     return;
   }
 
   var stGroup = $("#stGroup").val();
   if (stGroup == "") {
-    alert("Please select group type or class teacher");
+    toast("error","Please select group type or class teacher");
     return;
   }
 
@@ -555,8 +597,6 @@ function postStMessage() {
   data.append("msg", msg);
   //console.log(data);
 
-
-  if (msg) {
     $("#postStBtn").prop('disabled', true);
     $.ajax({
       url: 'ajax_chat.php',
@@ -573,13 +613,13 @@ function postStMessage() {
         loadMessage();
         if (obj.status == "1") {
           closeStChatBox();
+          toast("success",obj.msg);
+        }else{
+          toast("info",obj.msg);
         }
-        alert(obj.msg);
       }
     });
-  } else {
-    alert("Message is empty.");
-  }
+  
 }
 </script>
 <script>
@@ -670,20 +710,23 @@ $(function() {
   interval = setInterval(() => {
     loadMessage();
   }, 10000);
-  $("#chatPostWidget, #chatReplyWidget, #stSubject, #chatStPostWidget").hide();
+  //#chatReplyWidget, 
+  $("#chatPostWidget, #stSubject, #chatStPostWidget, #dataHandler, #btnReplyDia").hide();
 });
 
 var transcation = 400;
 
 function openReplyBox() {
   closeChatBox();
-  $("#chatReplyWidget").show(transcation);
+  $("#btnReplyDia").click();
+  //$("#chatReplyWidget").show(transcation);
   $("#reply_message").focus("");
   $("#reply_message").val("");
 }
 
 function closeReplyBox() {
-  $("#chatReplyWidget").hide(transcation);
+  //$("#chatReplyWidget").hide(transcation);
+  $("#btnReplyDiaCancel").click();
   $("#reply_message").val("");
   $("#reply_delivery_type").val("");
 }
@@ -726,6 +769,10 @@ Array.prototype.unique = function() {
 
 function postMessage() {
   var msg = $("#chat_message").val();
+  if(msg==""){
+    toast("info","Message can't left blank");
+    return;
+  }
   var msg_type = $('input[name="msg_type"]:checked').val();
   var people = $("#studentList").val();
   var delivery_type = $("#delivery_type").val();
@@ -740,7 +787,7 @@ function postMessage() {
 
   if (delivery_type == "individual") {
     if (people == "") {
-      alert("You have not selected any user");
+      toast("info","You have not selected any user");
       return;
     }
   }
@@ -754,7 +801,7 @@ function postMessage() {
   //console.log(data);
 
 
-  if (msg) {
+  
     $("#postBtn").prop('disabled', true);
     $.ajax({
       url: 'ajax_chat.php',
@@ -771,17 +818,21 @@ function postMessage() {
         loadMessage();
         if (obj.status == "1") {
           closeChatBox();
+          toast("success",obj.msg);
+        }else{
+          toast("info",obj.msg);
         }
-        alert(obj.msg);
       }
     });
-  } else {
-    alert("Message is empty.");
-  }
+  
 }
 
 function postClassTeacherMessage() {
   var msg = $("#chat_message").val();
+  if(msg==""){
+    toast("error","Message can't left blank");
+    return;
+  }
   var msg_type = $('input[name="msg_type"]:checked').val();
   var people = $("#ctStudentList").val();
 
@@ -805,7 +856,7 @@ function postClassTeacherMessage() {
   data.append("delivery_type", delivery_type);
   data.append("msg", msg);
 
-  if (msg) {
+  
     $("#postBtn").prop('disabled', true);
     $.ajax({
       url: 'ajax_chat.php',
@@ -822,20 +873,20 @@ function postClassTeacherMessage() {
         loadMessage();
         if (obj.status == "1") {
           closeChatBox();
+          toast("success",obj.msg);
+        }else{
+          toast("info",obj.msg);
         }
-        alert(obj.msg);
       }
     });
-  } else {
-    alert("Message is empty.");
-  }
+  
 }
 
 
 function replyMessage() {
   var msg = $("#reply_message").val();
   if (msg == "") {
-    alert("Message required");
+    toast("error","Message can't left empty");
     return;
   }
 
@@ -848,8 +899,7 @@ function replyMessage() {
   data.append("delivery_type", delivery_type);
   data.append("msg", msg);
 
-
-  if (msg) {
+  
     $("#replyBtn").prop('disabled', true);
     $.ajax({
       url: 'ajax_chat.php',
@@ -867,13 +917,13 @@ function replyMessage() {
         if (obj.status == "1") {
           closeChatBox();
           closeReplyBox();
+          toast("success",obj.msg);
+        }else{
+          toast("info",obj.msg);
         }
-        alert(obj.msg);
       }
     });
-  } else {
-    alert("Message is empty.");
-  }
+  
 }
 
 //var obj;
@@ -909,12 +959,13 @@ var roleid = "<?=$roleid;?>";
 
 
 function createCardMessage(obj) {
+  
   //console.log("test card message: ",obj);
   var replyBtn = "";
   if (obj["msg_type"] == "2") {
-    replyBtn = "<a href ='#chatReplyWidget' class='ml-2' onclick=\"replyPost('" + obj["id"] + "','" + obj[
+    replyBtn = "<a href ='#chatReplyWidget' class='' onclick=\"replyPost('" + obj["id"] + "','" + obj[
         "delivery_type"] +
-      "');\"><i class ='mdi mdi-message-reply-text mr-1'></i> Reply </a>";
+      "');\"><i class ='mdi mdi-reply-circle mr-1'></i> Reply </a>";
   }
   var attachment = "";
   if (obj["attachment"]) {
@@ -923,9 +974,14 @@ function createCardMessage(obj) {
       obj["attach_file"] + "</a></div>";
   }
 
+  var readMore = ""; 
+  if(isReadMoreRequire(obj["msg"])){
+    readMore  =`<a id='readMoreLink_` + obj["id"] + `' class='mr-2' href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read More</a>`;
+  }
+
   var groupName = "";
   if (obj["group_name"]) {
-    groupName = "<span class='ml-2 px-2 bg-blue-lt'>" + obj["group_name"] + "</span>";
+    groupName = "<span class='ml-2 px-2 bg-blue-lt badge'>" + obj["group_name"] + "</span>";
   }
   var induser = "";
   var nrid = Number(roleid);
@@ -939,7 +995,7 @@ function createCardMessage(obj) {
         if(postuid!=userid){
           var userName = obj["userlist"][i]["officialName"];
           if(userName!=""){
-            induser +="<span class='ml-2 px-2 bg-green-lt'>"+obj["userlist"][i]["officialName"]+"</span>";
+            induser +="<span class='ml-2 px-2 bg-green-lt badge'>"+obj["userlist"][i]["officialName"]+"</span>";
           } 
         }
       }catch(ex){
@@ -952,16 +1008,14 @@ function createCardMessage(obj) {
   var str =
     `<div class='row border py-2 my-2' id='` + obj["id"] + `'>
 			<div class='col-auto my-2'>
-			<span class='avatar'>` + obj["shortName"] + `</span>
+			<span class='avatar bg-blue text-white'>` + obj["shortName"] + `</span>
 			</div>
 			<div class='col'>
       <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span>` +groupName + induser + `</div>
 			<div class='text-truncate' id='msg_` + obj["id"] + `'>` + obj["msg"] + `
-			</div>` + attachment + `
-			<div><a href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read more</a>
-				` + replyBtn + `
-			</div>
-			<div id='cardReply_` + obj["id"] + `'></div>
+			</div><div>` + attachment + readMore + replyBtn + `</div>
+			<div id='cardReply_` + obj["id"] + `' class='float-left'></div>
+      <div class='float-none'></div>
 			</div>
 		</div>`;
   if (!isNaN(obj["timestamp"])) {
@@ -988,10 +1042,23 @@ function createCardMessage(obj) {
 }
 
 function readMore(id) {
-  $("#msg_" + id).removeClass("text-truncate");
+  if($("#msg_" + id).hasClass("text-truncate")){
+    $("#msg_" + id).addClass("show-truncate").removeClass("text-truncate");
+    $("#readMoreLink_" + id).html("<i class='mdi mdi-book-open-page-variant mr-1'></i> Read Less");
+  }else{
+    $("#msg_" + id).removeClass("show-truncate").addClass("text-truncate");
+    $("#readMoreLink_" + id).html("<i class='mdi mdi-book-open-variant mr-1'></i> Read More");
+  }
 }
 
 function createCardMessageReply(obj) {
+
+  var readMore = "";
+  if(isReadMoreRequire(obj["msg"])){
+    readMore=`<div>
+        <a id='readMoreLink_` + obj["id"] + `' href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read More</a>
+		</div>`;
+  }
 
   var attachment = "";
   if (obj["attachment"]) {
@@ -1001,18 +1068,16 @@ function createCardMessageReply(obj) {
   }
 
   var str =
-    `<div class='row border-bottom bg-gray-lt py-2' id='` + obj["id"] + `'>
+    `<div class='row border-bottom py-2 pl-1 pr-4 my-2 bg-blue-lt rounded' id='` + obj["id"] + `'>
 		<div class='col-auto my-2'>
-		<span class='avatar'>` + obj["shortName"] + `</span>
+		<span class='avatar bg-secondary text-white'>` + obj["shortName"] + `</span>
 		</div>
 		<div class='col'>
         <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span></div>
-		<div class='text-truncate' id='msg_` + obj["id"] + `'>
+		<div class='text-truncate text-secondary' id='msg_` + obj["id"] + `'>
 		 ` + obj["msg"] + `
-		</div>` + attachment + `
-		<div>
-        <a href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read more</a>
-		</div>
+		</div>` + attachment + readMore + `
+		
 		</div>
 	</div>`;
   if ($('#' + obj["id"]).length) {
@@ -1023,6 +1088,22 @@ function createCardMessageReply(obj) {
   if (!isNaN(obj["timestamp"])) {
     lts = Math.max(lts, Number(obj["timestamp"]));
   }
+}
+
+function isReadMoreRequire(data){
+  try{
+    $("#dataHandler").html(data);
+    var ht = Number($("#dataHandler").height());
+    $("#dataHandler").html("");
+    if(ht>20){
+      return true;
+    }else{
+      return false;
+    }
+  }catch(ex){
+    console.log(ex);
+  }
+  return true;
 }
 </script>
 <?php

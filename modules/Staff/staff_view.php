@@ -42,9 +42,9 @@ if (
             $pupilsightDepartmentID = "";
             $search = "";
         }
-
+        
         $staffGateway = $container->get(StaffGateway::class);
-
+        
         // QUERY
         $criteria = $staffGateway
             ->newQueryCriteria()
@@ -53,7 +53,7 @@ if (
             ->pageSize(5000)
             ->sortBy(["surname", "preferredName"])
             ->fromPOST();
-
+            
         echo "<h2>";
         echo __("Search");
         echo "</h2>";
@@ -84,7 +84,7 @@ if (
             $subject2[$dt["pupilsightDepartmentID"]] = $dt["name"];
         }
         $subjects += $subject2;
-
+        
         $form->setClass("noIntBorder fullWidth");
         $form->addHiddenValue("address", $_SESSION[$guid]["address"]);
         $form->addHiddenValue(
@@ -135,13 +135,14 @@ if (
 
         echo " </div><div class='float-none'></div></div>";
 
+        
         $staff = $staffGateway->queryAllStaff(
             $criteria,
             $pupilsightSchoolYearID,
             $pupilsightProgramID,
             $pupilsightDepartmentID
         );
-
+        
         $sqlf =
             "SELECT field_name FROM staff_field_show WHERE pupilsightPersonID = " .
             $pupilsightPersonID .

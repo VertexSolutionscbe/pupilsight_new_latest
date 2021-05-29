@@ -777,8 +777,6 @@ class StudentGateway extends QueryableGateway
             ->orderBy(['pupilsightPerson.officialName ASC']);
         //->orderBy(['pupilsightPerson.pupilsightPersonID DESC']);
 
-        //echo $query;
-        // die();
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
         return $this->runQuery($query, $criteria, TRUE);

@@ -169,6 +169,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->pageSize(5000)
                 ->fromPOST();
 
+           
+
 
             echo '<h2>';
             echo __('Filter');
@@ -357,14 +359,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo '<div class="float-left"><h2>Choose A Student</h2></div>';
             }
 
-
-
             // $students = $studentGateway->queryStudentsBySchoolYear($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search, $customFieldNames);
-
+            
             $students = $studentGateway->getAllStudentData($criteria, $pupilsightSchoolYearID, $canViewFullProfile, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $search);
 
-
-
+            
             // DATA TABLE
             $table = DataTable::createPaginated('students', $criteria);
             echo "<a style='display:none;' id='submitBulkStudentEnrolment' href='fullscreen.php?q=/modules/Students/studentEnrolment_manage_bulk_add.php&pupilsightSchoolYearID=" . $pupilsightSchoolYearID . "&width=800'  class='thickbox '>Bulk Student Enrollment</a>";
