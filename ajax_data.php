@@ -1139,8 +1139,8 @@ if ($type == 'assigncoresubtoclass') {
                 $prevData = $resultprev->fetchAll();
                 if (count($prevData) < 1) {
                     $cuid = $_SESSION[$guid]['pupilsightPersonID'];
-                    $data1 = array('pupilsightProgramID' => $pgrm_val, 'pupilsightYearGroupID' => $cl, 'pupilsightDepartmentID' => $sb);
-                    $sql1 = "INSERT INTO assign_core_subjects_toclass SET pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightDepartmentID=:pupilsightDepartmentID";
+                    $data1 = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pgrm_val, 'pupilsightYearGroupID' => $cl, 'pupilsightDepartmentID' => $sb);
+                    $sql1 = "INSERT INTO assign_core_subjects_toclass SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID,pupilsightDepartmentID=:pupilsightDepartmentID";
                     $result = $connection2->prepare($sql1);
                     $result->execute($data1);
                 }
