@@ -927,12 +927,20 @@ if ($isLoggedIn) {
                 "/index.php?q=/modules/custom/cms.php",
         ];
         $menuMainItems["Other"][2] = $cmsMenu;
-        $menuMainItems["Reports"][0] = [
+        /*$menuMainItems["Reports"][0] = [
             "name" => "Reports",
             "url" =>
                 $session->get("absoluteURL") .
                 "/index.php?q=/modules/custom/reports.php",
+        ];*/
+
+        $menuMainItems["Reports"][0] = [
+            "name" => "Reports",
+            "url" =>
+                $session->get("absoluteURL") .
+                "/index.php?q=/modules/Reports/report.php",
         ];
+
         $menuMainItems["LMS"][0] = [
             "name" => "LMS",
             "url" =>
@@ -989,9 +997,7 @@ if ($isLoggedIn) {
     if ($page->getModule()) {
         $menuModule = $session->get("menuModuleName");
         $currentModule = $page->getModule()->getName();
-        //print_r($currentModule);
-        // die();
-
+        
         if (
             $cacheLoad ||
             !$session->has("menuModuleItems") ||
@@ -1183,6 +1189,8 @@ if (isset($_GET["q"])) {
             }
             $customSelect = "LMS";
         }
+    }elseif ($gq[2] == "Reports") {
+        $customSelect = "Reports";
     }
 }
 if (isset($currentModule) == false) {
@@ -1279,7 +1287,7 @@ if ($isLoggedIn) {
     } else {
         $totalsmsbalance = $totalsms - $totalsmsused;
     }
-
+    
     $page->addData([
         "menuMain" => $session->get("menuMainItems", []),
         "menuMainIcon" => $menu_icon,

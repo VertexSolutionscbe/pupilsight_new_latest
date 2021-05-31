@@ -137,7 +137,6 @@ $(document).on('change', '#childSel', function() {
 </script>
 <?php
     }
-
     if ($isStParent) {
       
       if($roleid=="004"){
@@ -687,12 +686,16 @@ function loadPeople(userType) {
           i++;
         }
         if (str) {
-          $('#studentList').html("");
-          //$('#studentList').selectize()[0].selectize.destroy();
-          $('#studentList').html(str);
-          $('#studentList').selectize({
-            plugins: ['remove_button'],
-          });
+          try{
+            $('#studentList').html("");
+            $('#studentList').selectize()[0].selectize.destroy();
+            $('#studentList').html(str);
+            $('#studentList').selectize({
+              plugins: ['remove_button'],
+            });
+          }catch(ex){
+            console.log(ex);
+          }
         }
         //console.log(obj);
       }
@@ -1014,7 +1017,7 @@ function createCardMessage(obj) {
       <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span>` +groupName + induser + `</div>
 			<div class='text-truncate' id='msg_` + obj["id"] + `'>` + obj["msg"] + `
 			</div><div>` + attachment + readMore + replyBtn + `</div>
-			<div id='cardReply_` + obj["id"] + `' class='float-left'></div>
+			<div id='cardReply_` + obj["id"] + `' class='float-left' style='max-width:95%;'></div>
       <div class='float-none'></div>
 			</div>
 		</div>`;
