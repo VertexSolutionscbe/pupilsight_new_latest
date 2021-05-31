@@ -129,7 +129,7 @@ try {
 
     if($report["sql_query"]){
         //run query
-        $sq = htmlspecialchars_decode($report["sql_query"], ENT_QUOTES);
+        $sq = htmlspecialchars_decode(stripslashes($report["sql_query"]), ENT_QUOTES);
         $trans = getTranslateArray($sq);
         $sq = strtr($sq, $trans);
         $query1 = $connection2->query($sq);

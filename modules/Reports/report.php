@@ -1,7 +1,4 @@
 <?php
-/*
-Pupilsight, Flexible & Open School System
- */
 
 use Pupilsight\Domain\Helper\HelperGateway;
 function getDomain()
@@ -74,8 +71,8 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
         $description = empty($_POST['description']) ? "NULL" : "'" . trim($_POST['description']) . "'";
         $module = empty($_POST['module']) ? "NULL" : "'" . trim($_POST['module']) . "'";
         $module_id = empty($_POST['module_id']) ? "NULL" : "'" . trim($_POST['module_id']) . "'";
-        $sql_query = empty($_POST['sql_query']) ? "NULL" : "'" . htmlspecialchars(trim($_POST['sql_query']),ENT_QUOTES) . "'";
-        $api = empty($_POST['api']) ? "NULL" : "'" . htmlspecialchars((trim($_POST['api'])),ENT_QUOTES) . "'";
+        $sql_query = empty($_POST['sql_query']) ? "NULL" : "'" . htmlentities($_POST['sql_query'], ENT_QUOTES)."'";
+        $api = empty($_POST['api']) ? "NULL" :  "'" .(trim($_POST['api'])). "'";
 
         $header = empty($_POST['header']) ? "NULL" : "'" . trim($_POST['header']) . "'";
         $total_column = empty($_POST['total_column']) ? "NULL" : "'" . trim($_POST['total_column']) . "'";
@@ -125,11 +122,18 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                 values($name,$description,$module,$module_id,$sql_query,$header,$total_column,$api,$date1,$date2,$date3,$date4,$param1,$param2,$param3,$param4,$param5,$param6,$param7,$param8,2)";
             }
             //echo $sq;
-            $connection2->query($sq);
             //die();
+            $connection2->query($sq);
+            
+            $res["status"]=1;
+            $res["msg"]="Report saved successfully.";
+            $_SESSION["notify"] = $res;
+
             header('Location: '.$_SERVER['REQUEST_URI']);
         } catch (Exception $ex) {
-            echo $ex->getMessage();
+            $res["status"]=2;
+            $res["msg"]=addslashes($ex->getMessage());
+            $_SESSION["notify"] = $res;
         }
 
         //die();
@@ -137,6 +141,20 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
     $page->breadcrumbs->add(__('Report List'));
 
 ?>
+    <script>
+        $(document).ready(function() {
+            <?php
+                if(isset($_SESSION["notify"])){
+                    if($_SESSION["notify"]["status"]==1){
+                        echo "toast('success','".$_SESSION["notify"]["msg"]."');";
+                    }else{
+                        echo "toast('error',\"".$_SESSION["notify"]["msg"]."\");";
+                    }
+                }
+            ?>
+
+        });
+    </script>
     <div class="card my-2" id='addReport'>
         <div class="card-header">
             <h2>Add / Modify Report</h2>
@@ -163,6 +181,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                             <option value="0180">Academics</option>
                             <option value="0015">Activities</option>
                             <option value="0153">Alumni</option>
+                            <option value="archive">Archive</option>
                             <option value="0145">ATL</option>
                             <option value="0006">Attendance</option>
                             <option value="0155">Badges</option>
@@ -193,6 +212,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                             <option value="0141">Tracking</option>
                             <option value="0179">Transport</option>
                             <option value="0002">User Admin</option>
+                            
                         </select>
                     </div>
 
@@ -205,7 +225,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                 <div class="row my-4">
                     <div class="col-12 mt-2">
                         <label class="form-label">Report SQL Query - Note pass variable like <span class='bg-blue-lt'>payment_date=':date1' or payment_amount=':param1'</span> assign variable in sql query</label>
-                        <textarea id="sql_query" name="sql_query" data-bs-toggle="autosize" class="form-control"></textarea>
+                        <textarea id="sql_query" name="sql_query" data-bs-toggle="autosize" class="form-control" rows='6'></textarea>
                     </div>
 
                     <div class="col-12 mt-4 text-center">
@@ -275,7 +295,8 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                         <label class="form-label">Parameter4</label>
                         <input type="text" id="param4" name="param4" class="form-control param" value="" placeholder="">
                     </div>
-
+                </div>
+                <div class="row d-none">
                     <div class="col-3 mt-2">
                         <label class="form-label">Parameter5</label>
                         <input type="text" id="param5" name="param5" class="form-control param" value="" placeholder="">
@@ -311,6 +332,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
             $helperGateway = $container->get(HelperGateway::class);
             if($roleid=="001"){
                 echo '<button type="button" class="btn btn-primary" onclick="addReport();"><i class="mdi mdi-plus"></i> New Report</button>';
+                echo '<a href="'.$baseurl.'/index.php?q=/modules/custom/reports.php" class="btn btn-white ml-2" onclick="addReport();"><i class="mdi mdi-file-chart"></i> Advance Report Builder</a>';
                 $res = $helperGateway->getActiveReport($connection2);
             }else{
                 $res = $helperGateway->getBasicActiveReport($connection2);
@@ -345,7 +367,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                             $str .="\n<td><button type='button' class='btn btn-link' onclick=\"downloadReport('".$res[$i]['id']."');\"><i class='mdi mdi-download mr-2'></i>Download</button></td>";
                             if($roleid=="001"){
                                 if($res[$i]["sql_query"]){
-                                    $res[$i]["sql_query"] = htmlspecialchars_decode($res[$i]["sql_query"], ENT_QUOTES);
+                                    $res[$i]["sql_query"] = html_entity_decode($res[$i]["sql_query"],ENT_QUOTES);
                                 }
                                 $str .="\n<td><button type='button' class='btn btn-link' onclick=\"editReport('".$res[$i]['id']."');\"><i class='mdi mdi-edit mr-2'></i>Edit</button></td>";
                             }
@@ -479,7 +501,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
         function addDate(pdate, pdateid){
             var str = "";
             if(!isEmpty(pdate)){
-                str +="\n<div class='col-auto'>";
+                str +="\n<div class='col-auto mt-2'>";
                 str +="<label class='form-label required'>"+pdate+"</label>";
                 str +="<input type='date' name='"+pdateid+"' class='form-control reqParam' id='"+pdateid+"'>";
                 str +="</div>";
@@ -511,38 +533,6 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                     $("#closeDialogBtn").click();
                     console.log("Your report is downloading..");
                     $('#reportDialogForm').submit();
-                    //return;
-                    /*
-                    var form = $('#reportDialogForm')[0];
-                    var _data = new FormData(form);
-                    //data.append("CustomField", "This is some extra data, testing");
- 
-                    $.ajax({
-                        url: 'report_download.php',
-                        type: 'post',
-                        data: _data,
-                        processData: false,
-                        contentType: false,
-                        success: function (response) {
-                            console.log(response);
-                            if(response){
-                                //var res = $.trim(response);
-                                //alert(res);
-                                try{
-                                var obj = JSON.parse(response);
-                                if(obj.file){
-                                    console.log(obj.file);
-                                    //$("#fileDownload").attr("href",obj.file);
-                                    //$("#fileDownload")[0].click();
-                                    //$("#fileDownload").click();
-
-                                }
-                                }catch(ex){
-                                    console.log(ex);
-                                }
-                            }
-                        }
-                    });*/
                 }catch(ex){
                     console.log(ex);
                 }
@@ -552,7 +542,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
         function addParam(param, paramid){
             var str = "";
             if(!isEmpty(param)){
-                str +="\n<div class='col-auto'>";
+                str +="\n<div class='col-auto mt-2'>";
                 str +="<label class='form-label required'>"+param+"</label>";
                 str +="<input type='text' name='"+paramid+"' class='form-control reqParam' id='"+paramid+"'>";
                 str +="</div>";
@@ -677,4 +667,12 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
     </script>
 
 <?php
+if(isset($_SESSION["notify"])){
+    if($_SESSION["notify_exec"]=="1"){
+        unset($_SESSION["notify"],$_SESSION["notify_exec"]);
+    }else{
+        $_SESSION["notify_exec"] = "1";
+    }
+}
+//
 }

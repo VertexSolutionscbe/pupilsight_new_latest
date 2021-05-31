@@ -900,18 +900,31 @@ if ($isLoggedIn) {
             ];
 
             //$menuMainItems["Academics"][0] = $testList[0];
-            
-            if($domain=="amaatra.pupilpod.net"){
-                $menuMainItems["Academics"] = [];
-                $menuMainItems["Academics"][0] = $testList[1];
-                $menuMainItems["Academics"][1] = $testList[2];
-            }else{
-                $menuMainItems["Academics"][0] = $testList[1];
-                $menuMainItems["Academics"][1] = $testList[2];
-                $menuMainItems["Academics"][2] = $testList[4];
-                $menuMainItems["Academics"][3] = $testList[3];
-            }
-            //echo $_SESSION[$guid]["username"];
+            $menuMainItems["Academics"][0] = $testList[1];
+            $menuMainItems["Academics"][1] = $testList[2];
+            $menuMainItems["Academics"][2] = $testList[4];
+            $menuMainItems["Academics"][3] = $testList[3];
+        } else if ($roleid == "003" || $roleid == "004") {
+            $testList = [];
+            $testList[0] = [
+                "name" => "Elective Group",
+                "url" =>
+                    $session->get("absoluteURL") .
+                    "/index.php?q=/modules/Academics/manage_elective_group.php",
+            ];
+
+            $testList[1] = [
+                "name" => "Test Results",
+                "url" =>
+                    $session->get("absoluteURL") .
+                    "/index.php?q=/modules/Academics/manage_test_results.php",
+            ];
+
+            //$menuMainItems["Academics"][0] = $testList[0];
+            $menuMainItems["Academics"][0] = $testList[0];
+            $menuMainItems["Academics"][1] = $testList[1];
+            // $menuMainItems["Academics"][2] = $testList[4];
+            // $menuMainItems["Academics"][3] = $testList[3];
         } else {
             $menuMainItems["Academics"] = [];
             $menuMainItems["Academics"][0] = $curriculumMenu;
@@ -927,12 +940,20 @@ if ($isLoggedIn) {
                 "/index.php?q=/modules/custom/cms.php",
         ];
         $menuMainItems["Other"][2] = $cmsMenu;
-        $menuMainItems["Reports"][0] = [
+        /*$menuMainItems["Reports"][0] = [
             "name" => "Reports",
             "url" =>
                 $session->get("absoluteURL") .
                 "/index.php?q=/modules/custom/reports.php",
+        ];*/
+
+        $menuMainItems["Reports"][0] = [
+            "name" => "Reports",
+            "url" =>
+                $session->get("absoluteURL") .
+                "/index.php?q=/modules/Reports/report.php",
         ];
+
         $menuMainItems["LMS"][0] = [
             "name" => "LMS",
             "url" =>
@@ -989,9 +1010,7 @@ if ($isLoggedIn) {
     if ($page->getModule()) {
         $menuModule = $session->get("menuModuleName");
         $currentModule = $page->getModule()->getName();
-        //print_r($currentModule);
-        // die();
-
+        
         if (
             $cacheLoad ||
             !$session->has("menuModuleItems") ||
@@ -1183,6 +1202,8 @@ if (isset($_GET["q"])) {
             }
             $customSelect = "LMS";
         }
+    }elseif ($gq[2] == "Reports") {
+        $customSelect = "Reports";
     }
 }
 if (isset($currentModule) == false) {
@@ -1279,7 +1300,7 @@ if ($isLoggedIn) {
     } else {
         $totalsmsbalance = $totalsms - $totalsmsused;
     }
-
+    
     $page->addData([
         "menuMain" => $session->get("menuMainItems", []),
         "menuMainIcon" => $menu_icon,

@@ -152,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
         ->addParam('search', $criteria->getSearchText(true))
         ->displayLabel();
 
-    $table->addHeaderAction('add', __('Add'))
+    $table->addHeaderAction('addnew', __('Add Subject'))
         ->setClass('btn btn-white')
         ->setURL('/modules/Academics/department_manage_add.php')
         ->displayLabel();

@@ -184,7 +184,7 @@ function getParentQuery($connection2, $cuid, $pupilsightSchoolYearID, $lts){
     $sq .='left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
     $sq .= ' left join chat_share as cs on cm.id=cs.chat_msg_id ';
     $sq .= ' where  ';
-    $sq .=" (cm.delivery_type in('all_students','all','".$classid."')
+    $sq .=" (cm.delivery_type in('all_students','all','all_parents','".$classid."')
             or cs.uid in('" .$_SESSION['student_id'] ."','" .$cuid ."')
             or cm.cuid in('" .$_SESSION['student_id'] ."','" .$cuid ."')) ";
     
@@ -217,7 +217,7 @@ function getTeacherQuery($connection2, $cuid, $lts){
     $sq .= ' left join chat_share as cs on cm.id=cs.chat_msg_id ';
     
     if(isset($_SESSION["teacher_class_id"])){
-        $sq .= " where (cm.delivery_type in(".$_SESSION["teacher_class_id"].",'all_staff') or cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
+        $sq .= " where (cm.delivery_type in(".$_SESSION["teacher_class_id"].",'all_staff','all') or cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
     }else{
         $sq .= " where (cs.uid='" . $cuid . "' or cm.cuid='".$cuid."')  ";
     }
