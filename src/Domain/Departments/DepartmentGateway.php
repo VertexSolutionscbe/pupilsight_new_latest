@@ -76,9 +76,10 @@ class DepartmentGateway extends QueryableGateway
             ->newQuery()
             ->from('assign_core_subjects_toclass ')
             ->cols([
-                'assign_core_subjects_toclass.*','pupilsightProgram.name AS program_name','pupilsightDepartment.pupilsightDepartmentID','pupilsightProgram.pupilsightProgramID','pupilsightYearGroup.pupilsightYearGroupID',"GROUP_CONCAT(DISTINCT pupilsightDepartment.name SEPARATOR ', ') as subject","GROUP_CONCAT(DISTINCT pupilsightYearGroup.name SEPARATOR ', ') as class"
+                'assign_core_subjects_toclass.*','pupilsightProgram.name AS program_name','pupilsightDepartment.pupilsightDepartmentID','pupilsightProgram.pupilsightProgramID','pupilsightYearGroup.pupilsightYearGroupID',"GROUP_CONCAT(DISTINCT pupilsightDepartment.name SEPARATOR ', ') as subject","GROUP_CONCAT(DISTINCT pupilsightYearGroup.name SEPARATOR ', ') as class",'pupilsightSchoolYear.name as academic'
             ])
-           ->leftJoin('pupilsightDepartment', 'assign_core_subjects_toclass.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
+            ->leftJoin('pupilsightDepartment', 'assign_core_subjects_toclass.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
+            ->leftJoin('pupilsightSchoolYear', 'assign_core_subjects_toclass.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
             ->leftJoin('pupilsightProgram', 'assign_core_subjects_toclass.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
             ->leftJoin('pupilsightYearGroup', 'assign_core_subjects_toclass.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
             

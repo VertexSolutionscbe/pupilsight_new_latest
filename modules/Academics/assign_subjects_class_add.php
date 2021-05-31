@@ -147,6 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/assign_subjects_
             ->setClass('chkbox')
             ->notSortable();
     
+        $table->addColumn('academic', __('Academic Year'));
         $table->addColumn('program_name', __('Program'));
        // $table->addColumn('type', __('Type'))->translatable();
         $table->addColumn('class', __('Class'));
