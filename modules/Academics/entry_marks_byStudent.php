@@ -205,8 +205,9 @@
             //    $skill_arr = array_combine($skill_ids, $skills);
               if($electshow == '1' || $electshow == '2') {
           ?>
+   <?php if(!empty($s_test['skill_id'])){?>
    <tr>
-      <td><strong> <?php echo $s_test['subject'];?></strong></td>
+      <td><strong><h3> <?php echo $s_test['subject'];?></h3></strong></td>
       <?php echo ' <input type="hidden" name="pupilsightDepartmentID['.$s_test['pupilsightDepartmentID'].']" value="'.$s_test['pupilsightDepartmentID'].'">' ;
          echo ' <input type="hidden" name="test_id['.$s_test['test_id'].']" value="'.$s_test['test_id'].'">' ;
                
@@ -254,25 +255,11 @@
       <td></td>
       <td></td>
       <td>
-      <?php
-         $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $s_test['pupilsightDepartmentID'],'pupilsightPersonID' => $std_id);                    
-         $sql1 = 'SELECT remarks FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID ';
-         $result = $connection2->prepare($sql1);
-         $result->execute($data1);
-         $remdata =  $result->fetch();
-      ?>
-         <div class="input-group stylish-input-group">
-            <div class="flex-1 relative">
-            <?php if($s_test['enable_remarks'] == '1'){ ?>
-               <textarea type='text' name='remark_own[<?php echo $s_test['test_id'];?>][<?php echo $s_test['pupilsightDepartmentID'];?>]' class="remark_textarea w-full "><?php echo $remdata['remarks'];?></textarea>
-               <br><span></span>
-            <?php } ?>
-            </div>
-         </div>
-      <?php  ?>
+      
       </td>
       
    </tr>
+   <?php } ?>
    <?php       
       foreach($s_test['skills'] as $key=>$sl)
           { 
@@ -284,10 +271,17 @@
         
       ?>
    <tr>
+   <?php if(!empty($s_test['skill_id'])){ ?>
       <th scope="row"><span class='leftpadding'>
          <?php echo $sl['skill_display_name'];?>
          </span>
       </th>
+   <?php } else { ?>
+      <th scope="row"><span class='leftpadding'>
+      <h3><?php echo $s_test['subject'];?></h3>
+         </span>
+      </th>
+   <?php } ?>
       <?php 
         //  foreach($entrymarks as $s_test)
         //      {
@@ -392,11 +386,22 @@
          echo '<td id="grade_status'.$s_test['test_id'].'row'.$i.'">'.$gstatus.'</td>';
          $i++; ?> 
       <td>
-         <div class="input-group stylish-input-group">
-            <div class="flex-1 relative">
-               <!-- <input type='text' class="w-full"> -->
+         <?php
+            $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $s_test['pupilsightDepartmentID'],'pupilsightPersonID' => $std_id, 'skill_id' => $sl['skill_id']);                    
+            $sql1 = 'SELECT remarks FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND skill_id=:skill_id';
+            $result = $connection2->prepare($sql1);
+            $result->execute($data1);
+            $remdata =  $result->fetch();
+         ?>
+            <div class="input-group stylish-input-group">
+               <div class="flex-1 relative">
+               <?php if($s_test['enable_remarks'] == '1'){ ?>
+                  <textarea type='text' name='remark_own[<?php echo $s_test['test_id'];?>][<?php echo $s_test['pupilsightDepartmentID'];?>][<?php echo $sl['skill_id'];?>]' class="remark_textarea w-full "><?php echo $remdata['remarks'];?></textarea>
+                  <br><span></span>
+               <?php } ?>
+               </div>
             </div>
-         </div>
+         <?php  ?>
       </td>
      
    </tr>
