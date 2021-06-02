@@ -983,7 +983,7 @@ if ($isLoggedIn) {
         );
     }
 
-    if ($roleid == "003" || $roleid == "004") {
+    if ($roleid == "003" || $roleid == "004" || $roleid == "033") {
         $changeyear = "";
     } else {
         $changeyear = "allow";
