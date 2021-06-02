@@ -1,22 +1,61 @@
 <?php
-// $number = "8867776787";
-// $msg = "test sm dara";
-// sendSMS($number, $msg);
-// function sendSMS($number, $msg)
-// {
-//     try {
-//         $urls = "https://enterprise.smsgupshup.com/GatewayAPI/rest?method=SendMessage";
-//         $urls .= "&send_to=" . $number;
-//         $urls .= "&msg=" . rawurlencode($msg);
-//         $urls .= "&msg_type=TEXT&userid=2000185422&auth_scheme=plain&password=StUX6pEkz&v=1.1&format=text";
-//         $resms = file_get_contents($urls);
-//         print_r($resms);
-//     } catch (Exception $ex) {
-//         print_r($ex);
-//     }
-// }
+$loc = $_SERVER['DOCUMENT_ROOT']."/public/archive/fee_receipt"; //file location
+$htmlFiles = glob("$loc/*.{html,htm}", GLOB_BRACE); //only html files
 
-// die();
+$len = count($htmlFiles);
+$i = 0;
+$result = array();
+$sq = "";
+while($i<$len){
+    if($sq){
+        $sq .=",";
+    }
+    $res = getFileStudentDetails($htmlFiles[$i]);
+    if($res){
+        $sq .="('".$res["student_id"]."','".$res["student_name"]."','".$res["st_class"]."','".$res["st_date"]."','".$res["receipt_no"]."','".$res["file_html"]."')";
+    }
+    $i++;
+}
+//print_r($result);
+$sql = 'insert into archive_fee_receipt_html (student_id, student_name, st_class, st_date, receipt_no, file_html) VALUES '.$sq;
+//get 
+
+echo $sql;
+function getFileStudentDetails($fileName){
+    
+    $lines = file($fileName, FILE_IGNORE_NEW_LINES);
+    //print_r($lines);
+    $tag = array("Receipt No","Date","Student Name","Class","Student Id");
+    $tagkey = array("receipt_no","st_date","student_name","st_class","student_id");
+    $i = 0;
+    $ilen = count($lines);
+    $result = array();
+    $result["file_html"] = basename($fileName);
+    while($i<$ilen){
+
+        $len = count($tag);
+        $j = 0;
+        while($j<$len){
+            $pos = strpos($lines[$i], $tag[$j]);
+            if($pos !== false) {
+                $dt = strip_tags($lines[$i]);//data 
+                $dtv = str_replace($tag[$j],"",$dt); //data value
+
+                $dtvf = preg_replace('/[:\/]/', '', $dtv); //final value
+
+                $result[$tagkey[$j]] = trim($dtvf);
+                array_splice($tag, $j,1);
+                array_splice($tagkey, $j,1);
+                break;
+            }
+            $j++;
+        }
+        $i++;
+    }
+    return $result;
+}
+//print_r($result);
+die();
 include 'pupilsight.php';
 
 use Pupilsight\Contracts\Comms\Mailer;

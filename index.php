@@ -44,10 +44,7 @@ $isLoggedIn =
 
 if ($isLoggedIn && ($module = $page->getModule())) {
     $mid = $module->pupilsightModuleID;
-    $sql =
-        'SELECT p.category FROM pupilsightModule AS p WHERE p.pupilsightModuleID = "' .
-        $mid .
-        '"';
+    $sql ='SELECT p.category FROM pupilsightModule AS p WHERE p.pupilsightModuleID = "' .$mid .'"';
     $result = $connection2->query($sql);
     $moduledata = $result->fetch();
     $moduleName = $moduledata["category"];
@@ -126,6 +123,7 @@ if ($session->get("pageLoads") == 0 && !$session->has("address")) {
 
     if ($session->has("username")) {
         // Are we logged in?
+        
         $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
 
         $roleCategory = getRoleCategory(
@@ -284,6 +282,7 @@ if ($isLoggedIn) {
     $sessionDuration = $session->get("sessionDuration");
     $sessionDuration = max(intval($sessionDuration), 1200);
 }
+$domain = $_SERVER['HTTP_HOST'];
 
 /**
  * LOCALE
@@ -867,7 +866,7 @@ if ($isLoggedIn) {
     ];
 
     if (isset($menuMainItems["Academics"])) {
-        if ($roleid == "035") {
+        if ($roleid == "035" || $roleid == "002") {
             $testList = [];
             $testList[0] = [
                 "name" => "Enter A.A.T",
@@ -927,6 +926,7 @@ if ($isLoggedIn) {
             // $menuMainItems["Academics"][2] = $testList[4];
             // $menuMainItems["Academics"][3] = $testList[3];
         } else {
+            $menuMainItems["Academics"] = [];
             $menuMainItems["Academics"][0] = $curriculumMenu;
             $menuMainItems["Academics"][1] = $testMenu;
         }
@@ -940,12 +940,20 @@ if ($isLoggedIn) {
                 "/index.php?q=/modules/custom/cms.php",
         ];
         $menuMainItems["Other"][2] = $cmsMenu;
-        $menuMainItems["Reports"][0] = [
+        /*$menuMainItems["Reports"][0] = [
             "name" => "Reports",
             "url" =>
                 $session->get("absoluteURL") .
                 "/index.php?q=/modules/custom/reports.php",
+        ];*/
+
+        $menuMainItems["Reports"][0] = [
+            "name" => "Reports",
+            "url" =>
+                $session->get("absoluteURL") .
+                "/index.php?q=/modules/Reports/report.php",
         ];
+
         $menuMainItems["LMS"][0] = [
             "name" => "LMS",
             "url" =>
@@ -983,6 +991,12 @@ if ($isLoggedIn) {
         );
     }
 
+    if ($roleid == "002" && $domain=="amaatra.pupilpod.net") {
+        unset(
+            $menuMainItems["People"]
+        );
+    }
+
     if ($roleid == "003" || $roleid == "004" || $roleid == "033") {
         $changeyear = "";
     } else {
@@ -996,9 +1010,7 @@ if ($isLoggedIn) {
     if ($page->getModule()) {
         $menuModule = $session->get("menuModuleName");
         $currentModule = $page->getModule()->getName();
-        //print_r($currentModule);
-        // die();
-
+        
         if (
             $cacheLoad ||
             !$session->has("menuModuleItems") ||
@@ -1068,6 +1080,8 @@ if ($isLoggedIn) {
     }
 }
 //print_r($menuModuleItems);
+//print_r($currentModule);
+//die();
 /**
  * TEMPLATE DATA
  *
@@ -1188,6 +1202,8 @@ if (isset($_GET["q"])) {
             }
             $customSelect = "LMS";
         }
+    }elseif ($gq[2] == "Reports") {
+        $customSelect = "Reports";
     }
 }
 if (isset($currentModule) == false) {
@@ -1284,7 +1300,7 @@ if ($isLoggedIn) {
     } else {
         $totalsmsbalance = $totalsms - $totalsmsused;
     }
-
+    
     $page->addData([
         "menuMain" => $session->get("menuMainItems", []),
         "menuMainIcon" => $menu_icon,

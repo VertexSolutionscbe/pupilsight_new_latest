@@ -178,8 +178,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 		} catch (PDOException $e) {
 			print "<div class='alert alert-danger'>" . $e->getMessage() . "</div>";
 		}
-
-		
 		
 		$sqlPage = $sql . " ORDER BY timestamp DESC LIMIT " . $_SESSION[$guid]["pagination"] . " OFFSET " . (($page - 1) * $_SESSION[$guid]["pagination"]);
 

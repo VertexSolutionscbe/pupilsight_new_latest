@@ -1,8 +1,9 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html class="no-js" lang="" translate='no' lang='en' class='notranslate' translate='no'>
 
 <head>
     <meta charset="utf-8" />
+    <meta name='google' content='notranslate' />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Pupilpod</title>
@@ -18,16 +19,15 @@
     <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
 
-    <!-- CSS files -->
-    <!--
-<link rel="stylesheet" href="//cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
-    -->
-
     <link rel="stylesheet"
         href="//cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.8.55/css/materialdesignicons.min.css">
 
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/fullcalendar.min.css?v=1.0" type="text/css" media="all" />
+
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/jquery.dataTables.min.css?v=1.0" />
+
+
+
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap-multiselect.css?v=1.0" type="text/css"
         media="all" />
     <!--
@@ -39,9 +39,17 @@
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/thickbox/thickbox.css?v=1.0" type="text/css"
         media="all" />
     <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/normalize.css?v=1.0" type="text/css" media="all" />
+
     <link href="{{ absoluteURL }}/assets/css/selectize.css" rel="stylesheet" />
     <link href="{{ absoluteURL }}/assets/css/tabler.css" rel="stylesheet" />
     <link href="{{ absoluteURL }}/assets/css/dev.css" rel="stylesheet" />
+    <link href="{{ absoluteURL }}/assets/css/select2.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/Sortable.css?v=1.0" type="text/css" media="all" />
+    <!--
+<link href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet" />
+    -->
+
 
     <!-- Libs JS -->
     <script src="{{ absoluteURL }}/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -63,52 +71,41 @@
         src="{{ absoluteURL }}/assets/libs/jquery-tokeninput/src/jquery.tokeninput.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/moment.min.js?v=1.0"></script>
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/fullcalendar.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
+
     <script type="text/javascript" src="{{ absoluteURL }}/assets/js/bootstrap-multiselect.js?v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/js/selectize.min.js"></script>
     <script src="{{ absoluteURL }}/assets/js/tabler.min.js"></script>
+    <script type="text/javascript" src="{{ absoluteURL }}/assets/libs/thickbox/thickbox-compressed.js?v=1.0"></script>
+    <script src="{{ absoluteURL }}/assets/js/select2.js"></script>
+    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/jquery.form.js?v=1.0"></script>
 
-    <!--
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/bootstrap.min.css?v=1.0" type="text/css" media="all" />
-    
-    
-    
-    
-    
 
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/all.min.css?v=1.0" type="text/css" media="all" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/fonts/flaticon.css?v=1.0" type="text/css" media="all" />
+    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/Sortable.js?v=1.0"></script>
 
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/animate.min.css?v=1.0" type="text/css" media="all" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/sortable/css/Sortable.css?v=1.0" type="text/css" media="all" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/style.css?v=1.0" type="text/css" media="all" />
-    <link rel="stylesheet" href="{{ absoluteURL }}/assets/css/jquery.dropdown.css?v=1.0" type="text/css" media="all" />
-    <link rel="stylesheet" href="http://testoxygen.pupilpod.net/themes/Default/css/main.css?v=1.0.00" type="text/css" media="all" />
-    <link rel="stylesheet" href="http://testoxygen.pupilpod.net/resources/assets/css/theme.min.css?v=1.0" type="text/css" media="all" />
-    <link rel="stylesheet" href="http://testoxygen.pupilpod.net/resources/assets/css/core.min.css?v=1.0" 
+    <script src="{{ absoluteURL }}/assets/libs/trumbowyg/dist/trumbowyg.min.js"></script>
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/trumbowyg/dist/ui/trumbowyg.min.css" type="text/css"
+        media="all" />
 
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/popper.min.js?v=1.0"></script>
-    
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/chained/jquery.chained.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/modernizr-3.6.0.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/jquery.dropdown.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/jszip.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/plugins.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/jquery.counterup.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/jquery.waypoints.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/jquery.scrollUp.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/js/Chart.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/jquery-jslatex/jquery.jslatex.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/jquery-form/jquery.form.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/jquery-ui/i18n/jquery.ui.datepicker-en-GB.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/jquery-autosize/jquery.autosize.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/jquery-sessionTimeout/jquery.sessionTimeout.min.js?v=1.0"></script>
-    <script type="text/javascript" src="{{ absoluteURL }}/assets/sortable/js/Sortable.js?v=1.0"></script>
--->
+    <link rel="stylesheet"
+        href="{{ absoluteURL }}/assets/libs/trumbowyg/dist/plugins/colors/ui/trumbowyg.colors.min.css" type="text/css"
+        media="all" />
+
+    <script src="{{ absoluteURL }}/assets/libs/trumbowyg/dist/plugins/colors/trumbowyg.colors.min.js"></script>
+    <script src="{{ absoluteURL }}/assets/libs/tata/dist/tata.js"></script>
 
     <style>
         body {
             display: none;
+        }
+
+        table.dataTable thead th,
+        table.dataTable thead td {
+            border-bottom: 1px solid rgba(110, 117, 130, 0.2) !important;
+        }
+
+        .dataTables_wrapper .dataTables_filter {
+            text-align: right;
+            margin: 10px;
         }
 
         .ui-datepicker-title {
@@ -374,10 +371,38 @@
     {{ include('alert.twig.html') }}
 
 
-
-
     <script>
         document.body.style.display = "block";
+        //type log|info|success|warning|error
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        function toast(type, msg, title) {
+            if (type == "success") {
+                toastr.success(msg, title);
+            } else if (type == "warning") {
+                toastr.warning(msg, title);
+            } else if (type == "error") {
+                toastr.error(msg, title);
+            } else {
+                toastr.info(msg, title);
+            }
+        }
     </script>
 
 </body>

@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 		$category = $_POST["category"];
 		if($category==''){
             $category='Other';
-        }
+    }
 
 		$body = '';
 		$body1 = '';

@@ -1,8 +1,9 @@
 <!doctype html>
-<html class="no-js" lang="">
+<html class="no-js" lang="" translate='no' lang='en' class='notranslate' translate='no'>
 
 <head>
     <meta charset="utf-8" />
+    <meta name='google' content='notranslate' />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Pupilpod</title>
@@ -63,10 +64,11 @@
     <script src="{{ absoluteURL }}/assets/js/jquery.dataTables.min.js?v=1.0v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/libs/jquery-timepicker/jquery.timepicker.min.js?v=1.0"></script>
     <script src="{{ absoluteURL }}/assets/libs/livevalidation/livevalidation_standalone.compressed.js"></script>
-
+    <script src="{{ absoluteURL }}/assets/libs/autosize/dist/autosize.min.js"></script>
 
     <script src="{{ absoluteURL }}/assets/js/core.js"></script>
     <script src="{{ absoluteURL }}/assets/js/main.js"></script>
+    <script src="{{ absoluteURL }}/assets/js/double-scroll.js"></script>
     <script src="{{ absoluteURL }}/assets/js/jquery.table2excel.js"></script>
     <script
         type="text/javascript">var tb_pathToImage = "{{ absoluteURL }}/assets/libs/thickbox/loadingAnimation.gif";</script>
@@ -95,6 +97,11 @@
         media="all" />
 
     <script src="{{ absoluteURL }}/assets/libs/trumbowyg/dist/plugins/colors/trumbowyg.colors.min.js"></script>
+
+    <link rel="stylesheet" href="{{ absoluteURL }}/assets/libs/toastr/toastr.min.css" type="text/css" media="all" />
+
+    <script src="{{ absoluteURL }}/assets/libs/toastr/toastr.min.js"></script>
+
 
     <!-- <script src="{{ absoluteURL }}/assets/js/print.js"></script> -->
     <!--
@@ -556,6 +563,35 @@
 
     <script>
         document.body.style.display = "block";
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        function toast(type, msg, title) {
+            if (type == "success") {
+                toastr.success(msg, title);
+            } else if (type == "warning") {
+                toastr.warning(msg, title);
+            } else if (type == "error") {
+                toastr.error(msg, title);
+            } else {
+                toastr.info(msg, title);
+            }
+        }
     </script>
 
 </body>

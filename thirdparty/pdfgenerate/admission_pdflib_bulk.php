@@ -53,9 +53,9 @@ $valuept = $result->fetch();
 
 $file = $valuept['template_path'];
 */
-//11-May-2021 last executed for sjbhs
+//22-May-2021 last executed for sjbhs
 $file = "/var/www/sjbhs/public/thirdparty/pdfgenerate/bulk/bulk_template.pdf";
-$sqlf = "SELECT id FROM wp_fluentform_submissions where form_id='" . $formid . "' and date(created_at)>'2021-04-28' ";
+$sqlf = "SELECT id FROM wp_fluentform_submissions where form_id='" . $formid . "' and date(created_at)>'2021-05-11' ";
 $resultf = $connection2->query($sqlf);
 $applications = $resultf->fetchAll();
 

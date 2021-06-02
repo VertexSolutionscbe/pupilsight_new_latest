@@ -484,29 +484,35 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         } else if ($hd == 'Mother Landline No') {
                             $headers[$key] = '!!_phone2';
                         } else {
+                            try{
+                                $sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd .'"';
+                                //$sqlchk = "SELECT field_name, modules FROM custom_field WHERE field_title = '" . addslashes($hd) . "' and not find_in_set('staff',modules)";
+                                $resultchk = $connection2->query($sqlchk);
+                                $cd = $resultchk->fetch();
+                                if($cd){
+                                    $modules = explode(',', $cd['modules']);
 
-                            //$sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
-                            $sqlchk = "SELECT field_name, modules FROM custom_field WHERE field_title = '" . addslashes($hd) . "' and not  find_in_set('staff',modules)";
-                            $resultchk = $connection2->query($sqlchk);
-                            $cd = $resultchk->fetch();
-                            $modules = explode(',', $cd['modules']);
-
-                            //if(!in_array('##_'.$cd['field_name'], $chkHeaderKey)){
-                            if (in_array('student', $modules)) {
-                                $headers[$key] = '##_' . $cd['field_name'];
-                                $chkHeaderKey[] = '##_' . $cd['field_name'];
-                            }
-                            //}
-                            //else if(!in_array('&&_'.$cd['field_name'], $chkHeaderKey)){
-                            if (in_array('father', $modules)) {
-                                $headers[$key] = '&&_' . $cd['field_name'];
-                                $chkHeaderKey[] = '&&_' . $cd['field_name'];
-                            }
-                            //}
-                            //else if(!in_array('!!_'.$cd['field_name'], $chkHeaderKey)){
-                            if (in_array('mother', $modules)) {
-                                $headers[$key] = '!!_' . $cd['field_name'];
-                                $chkHeaderKey[] = '!!_' . $cd['field_name'];
+                                    //if(!in_array('##_'.$cd['field_name'], $chkHeaderKey)){
+                                    if (in_array('student', $modules)) {
+                                        $headers[$key] = '##_' . $cd['field_name'];
+                                        $chkHeaderKey[] = '##_' . $cd['field_name'];
+                                    }
+                                    //}
+                                    //else if(!in_array('&&_'.$cd['field_name'], $chkHeaderKey)){
+                                    if (in_array('father', $modules)) {
+                                        $headers[$key] = '&&_' . $cd['field_name'];
+                                        $chkHeaderKey[] = '&&_' . $cd['field_name'];
+                                    }
+                                    //}
+                                    //else if(!in_array('!!_'.$cd['field_name'], $chkHeaderKey)){
+                                    if (in_array('mother', $modules)) {
+                                        $headers[$key] = '!!_' . $cd['field_name'];
+                                        $chkHeaderKey[] = '!!_' . $cd['field_name'];
+                                    }
+                                }
+                            }catch(Exception $ex){
+                                echo "\n<br>".$sqlchk;
+                                echo "\n<br>Error : ".$ex->getMessage();
                             }
                             //}
                         }

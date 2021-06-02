@@ -393,7 +393,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/parent_add.php'
                         $sresult = $connection2->prepare($ssql);
                         $sresult->execute($sdata);
 
-                        $fdata = array('pupilsightFamilyID' => $familyId, 'pupilsightPersonID' => $parentId, 'comment' => '', 'childDataAccess' => 'Yes', 'contactPriority' => '1', 'contactCall' => 'Y', 'contactSMS' => 'Y', 'contactEmail' => 'Y', 'contactMail' => 'Y');
+                        $fdata = array('pupilsightFamilyID' => $familyId, 'pupilsightPersonID' => $parentId, 'comment' => '', 'childDataAccess' => 'Y', 'contactPriority' => '1', 'contactCall' => 'Y', 'contactSMS' => 'Y', 'contactEmail' => 'Y', 'contactMail' => 'Y');
 
                         $fsql = 'INSERT INTO pupilsightFamilyAdult SET pupilsightFamilyID=:pupilsightFamilyID, pupilsightPersonID=:pupilsightPersonID, comment=:comment, childDataAccess=:childDataAccess, contactPriority=:contactPriority, contactCall=:contactCall, contactSMS=:contactSMS, contactEmail=:contactEmail, contactMail=:contactMail';
                         $fresult = $connection2->prepare($fsql);

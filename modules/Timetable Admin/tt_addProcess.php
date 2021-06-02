@@ -4,14 +4,14 @@ Pupilsight, Flexible & Open School System
 */
 
 include '../../pupilsight.php';
-
-// echo '<pre>';
-// print_r($_POST);
-// echo '</pre>';
-// die();
-
+/*
+ echo '<pre>';
+ print_r($_POST);
+ echo '</pre>';
+ die();
+*/
 $name = $_POST['name'];
-echo $nameShort = $_POST['nameShort'];exit;
+$nameShort = $_POST['nameShort'];//exit;
 $nameShortDisplay = $_POST['nameShortDisplay'];
 $active = $_POST['active'];
 $count = $_POST['count'];
@@ -21,6 +21,7 @@ $pupilsightRollGroupIDList = $_POST["pupilsightRollGroupID"];
 $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
 $pupilsightProgramID = $_POST['pupilsightProgramID'];
 
+//print_r($_POST);
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt.php&pupilsightSchoolYearID=$pupilsightSchoolYearID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php') == false) {

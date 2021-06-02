@@ -23,6 +23,34 @@ class HelperGateway extends QueryableGateway
 
     private static $tableName = '';
 
+    public function getStudentList($con, $data){
+        $sq = "select pupilsightPersonID, officialName, username, email, phone1, admission_no from pupilsightPerson ";
+        $sq .=" where pupilsightRoleIDPrimary='003' order by officialName asc";
+        $result = $con->query($sq);
+        return $result->fetchAll();
+    }
+
+    public function getArchiveReport($connection2)
+    {
+        $sq = "select * from report_manager where status='2' and module_id='archive' ";
+        $result = $connection2->query($sq);
+        return $result->fetchAll();
+    }
+    
+    public function getActiveReport($connection2)
+    {
+        $sq = "select * from report_manager where status='2' and module_id<>'archive' ";
+        $result = $connection2->query($sq);
+        return $result->fetchAll();
+    }
+
+    public function getBasicActiveReport($connection2)
+    {
+        $sq = "select id,name,header,total_column,description,module,date1,date2,date3,date4,param1,param2,param3,param4,param5,param6,param7,param8 from report_manager where status='2' and module_id<>'archive'";
+        $result = $connection2->query($sq);
+        return $result->fetchAll();
+    }
+
     public function getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID) {
         $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
         $result = $connection2->query($sql);
@@ -409,6 +437,53 @@ class HelperGateway extends QueryableGateway
 
     }
 
+    public function getStudentAndClassViaClassTeacher($connection2, $pupilsightSchoolYearID, $uid) {
+        try{
+            $sql = 'SELECT a.*, b.name, c.name as section FROM assign_class_teacher_section AS a 
+            LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID 
+            LEFT JOIN pupilsightRollGroup AS c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID 
+            WHERE a.pupilsightPersonID = "'.$uid.'" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" 
+            GROUP BY a.pupilsightYearGroupID';
+            
+            $query = $connection2->query($sql);
+            
+            $result = $query->fetchAll();
+            $len = count($result);
+            $i = 0;
+            $res = array();
+            while($i<$len){
+                $sq = "select b.officialName, b.pupilsightPersonID from pupilsightStudentEnrolment as a
+                left join pupilsightPerson as b on a.pupilsightPersonID=b.pupilsightPersonID
+                where a.pupilsightSchoolYearID='".$pupilsightSchoolYearID."'
+                and a.pupilsightProgramID='".$result[$i]["pupilsightProgramID"]."'
+                and a.pupilsightYearGroupID='".$result[$i]["pupilsightYearGroupID"]."' 
+                and a.pupilsightRollGroupID='".$result[$i]["pupilsightRollGroupID"]."'  ";
+                
+                $query1 = $connection2->query($sq);
+                $st = $query1->fetchAll();
+                
+                $res[$i]["st"]=$st;
+                $res[$i]["class"]=$result[$i]["name"]."-".$result[$i]["section"];
+                $res[$i]["classid"]=$result[$i]["pupilsightSchoolYearID"]."-".$result[$i]["pupilsightProgramID"]."-".$result[$i]["pupilsightYearGroupID"]."-".$result[$i]["pupilsightRollGroupID"];
+                $res[$i]["result"]=$result[$i];
+                $i++;
+            }
+            return $res;
+        }catch(Exception $ex){
+            echo $ex->getMessage();
+        }
+        return "";
+    }
+
+    
+
+
+    public function getProgram($connection2) {
+        $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
+        $resultp = $connection2->query($sqlp);
+        return $resultp->fetchAll();
+    }      
+
     public function getClassByProgramForTeacher($connection2, $pupilsightProgramID, $uid) {
         $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "'.$uid.'" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
         $result = $connection2->query($sql);
@@ -425,7 +500,11 @@ class HelperGateway extends QueryableGateway
     }
 
     public function getSectionByProgramForTeacher($connection2, $pupilsightYearGroupID, $pupilsightProgramID, $uid) {
-        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightPersonID = "'.$uid.'" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" GROUP BY a.pupilsightRollGroupID';
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID 
+        WHERE a.pupilsightPersonID = "'.$uid.'" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" 
+        AND a.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" 
+        GROUP BY a.pupilsightRollGroupID';
+        
         $result = $connection2->query($sql);
         $sectionsdata = $result->fetchAll();
 

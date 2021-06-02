@@ -2418,7 +2418,7 @@ progress {
   background-color: #cbcfd6;
 }
 
-._input-group {
+.input-group {
   position: relative;
   display: flex;
   flex-wrap: wrap;
