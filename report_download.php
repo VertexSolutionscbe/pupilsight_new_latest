@@ -4,7 +4,11 @@ include "pupilsight.php";
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Pupilsight\Domain\Report\ReportGateway;
 //use Pupilsight\Domain\Helper\HelperGateway;
-
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL);
+ini_set('memory_limit', '-1');
+set_time_limit(0);
 try {
 
     function getDomain()
@@ -37,74 +41,82 @@ try {
 
 
     function html_table($data = [],$header = [],$total = null, $fileDownloadType, $addSerialNo = true) {
-        $rows = [];
-        $cnt = 1;
-        $colLen = 1;
-        foreach ($data as $row) {
-            $cells = [];
-            if ($addSerialNo) {
-                $cells[] = "\n<td>{$cnt}</td>";
-                $cnt++;
-            }
+        try{
+            $rows = [];
+            $cnt = 1;
             $colLen = 1;
-            foreach ($row as $cell) {
-                $cells[] = "\n<td>{$cell}</td>";
-                $colLen++;
+            foreach ($data as $row) {
+                $cells = [];
+                if ($addSerialNo) {
+                    $cells[] = "\n<td>{$cnt}</td>";
+                    $cnt++;
+                }
+                $colLen = 1;
+                foreach ($row as $cell) {
+                    $cv = "";
+                    if($cell){
+                        $cv = $cell;
+                    }
+                    $cells[] = "\n<td>".$cv."</td>";
+                    $colLen++;
+                }
+                $rows[] = "\n<tr>" . implode("", $cells) . "</tr>\n";
             }
-            $rows[] = "\n<tr>" . implode("", $cells) . "</tr>\n";
-        }
 
-        //for table header
-        if ($total && $fileDownloadType!="ihtml") {
-            if ($colLen) {
-                $rows[] =
-                    "\n<tr><td style='text-align:right' colspan='" .
-                    $colLen .
-                    "'><h3>Total : " .
-                    $total .
-                    "</h3></td>\n</tr>\n";
-            }
-        }
-        $hflag = false;
-        if (empty($header)) {
-            if($data[0]){
-                $hflag = true;
-                $header = array_keys($data[0]);
-            }
-        }
-
-        if ($header) {
-            $cells = [];
-            if ($addSerialNo) {
-                $cells[] = "\n<th>SN</th>";
-            }
-            foreach ($header as $cell) {
-                if($hflag){
-                    $cells[] = "\n<th>".strtoupper($cell)."</th>";
-                }else{
-                    $cells[] = "\n<th>{$cell}</th>";
+            //for table header
+            if ($total && $fileDownloadType!="ihtml") {
+                if ($colLen) {
+                    $rows[] =
+                        "\n<tr><td style='text-align:right' colspan='" .
+                        $colLen .
+                        "'><h3>Total : " .
+                        $total .
+                        "</h3></td>\n</tr>\n";
                 }
             }
-            if($fileDownloadType=="ihtml"){
-                $th = "\n<thead><tr>" . implode("", $cells) . "\n</tr></thead>\n";
-            }else{
-                $th = "\n<tr>" . implode("", $cells) . "\n</tr>\n";
+            $hflag = false;
+            if (empty($header)) {
+                if($data[0]){
+                    $hflag = true;
+                    $header = array_keys($data[0]);
+                }
             }
-            
-        }
 
-        $tbl = "";
-        if($fileDownloadType=="ihtml"){
-            $tbl = "\n<table id='table' class='cell-border stripe order-column hover table table-striped dataTable' style='width:100%;'>" .$th;
-            $tbl .= "\n<tbody>".implode("", $rows) ."\n</tbody>\n</table>\n";
-            if ($total){
-                $tbl .= "\n<br><h3>Total - $total</h3>";
+            if ($header) {
+                $cells = [];
+                if ($addSerialNo) {
+                    $cells[] = "\n<th>SN</th>";
+                }
+                foreach ($header as $cell) {
+                    if($hflag){
+                        $cells[] = "\n<th>".strtoupper($cell)."</th>";
+                    }else{
+                        $cells[] = "\n<th>{$cell}</th>";
+                    }
+                }
+                if($fileDownloadType=="ihtml"){
+                    $th = "\n<thead><tr>" . implode("", $cells) . "\n</tr></thead>\n";
+                }else{
+                    $th = "\n<tr>" . implode("", $cells) . "\n</tr>\n";
+                }
+                
             }
-        }else{
-            $tbl = "\n<table class='table' style='width:100%;'>" .$th;
-            $tbl .= implode("", $rows) ."\n</table>\n";
+
+            $tbl = "";
+            if($fileDownloadType=="ihtml"){
+                $tbl = "\n<table id='table' class='cell-border stripe order-column hover table table-striped dataTable' style='width:100%;'>" .$th;
+                $tbl .= "\n<tbody>".implode("", $rows) ."\n</tbody>\n</table>\n";
+                if ($total){
+                    $tbl .= "\n<br><h3>Total - $total</h3>";
+                }
+            }else{
+                $tbl = "\n<table class='table' style='width:100%;'>" .$th;
+                $tbl .= implode("", $rows) ."\n</table>\n";
+            }
+            return $tbl;
+        }catch(Exception $ex){
+            echo $ex->getMessage();
         }
-        return $tbl;
         //return "<table class='table'>" . implode("", $rows) . "</table>";
     }
 

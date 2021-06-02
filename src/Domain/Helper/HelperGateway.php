@@ -51,6 +51,13 @@ class HelperGateway extends QueryableGateway
         return $result->fetchAll();
     }
 
+    public function getArchiveFeeRecipt($connection2)
+    {
+        $sq = "select * from archive_fee_receipt_html order by student_name asc";
+        $result = $connection2->query($sq);
+        return $result->fetchAll();
+    }
+
     public function getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID) {
         $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY a.pupilsightYearGroupID';
         $result = $connection2->query($sql);
