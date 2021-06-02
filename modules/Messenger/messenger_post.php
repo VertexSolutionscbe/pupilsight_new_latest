@@ -848,7 +848,7 @@ $(document).on('change', '#pupilsightSchoolYearID', function() {
 <script type="text/javascript">
 $(document).on('change', '#pupilsightProgramIDA', function() {
   var val = $(this).val();
-  var type = "getWallClass";
+  var type = "getClass";
   if (val != "") {
     $.ajax({
       url: 'ajax_data.php',

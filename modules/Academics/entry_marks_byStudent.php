@@ -65,7 +65,7 @@
        JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)  
        JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) 
        
-       WHERE pupilsightPerson.pupilsightPersonID < "'.$std_id.'" AND pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND pupilsightStudentEnrolment.pupilsightProgramID="'.$pupilsightProgramID.'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$pupilsightYearGroupID.'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$pupilsightRollGroupID.'"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
+       WHERE pupilsightPerson.pupilsightPersonID < "'.$std_id.'" AND pupilsightPerson.pupilsightRoleIDPrimary = "003" AND pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND pupilsightStudentEnrolment.pupilsightProgramID="'.$pupilsightProgramID.'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$pupilsightYearGroupID.'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$pupilsightRollGroupID.'"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
            ';
        $resultp1 = $connection2->query($sqlp1);
        $previous1 = $resultp1->fetch();
@@ -84,7 +84,7 @@
        JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)  
        JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) 
        
-       WHERE pupilsightPerson.pupilsightPersonID > "'.$std_id.'" AND pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND pupilsightStudentEnrolment.pupilsightProgramID="'.$pupilsightProgramID.'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$pupilsightYearGroupID.'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$pupilsightRollGroupID.'"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
+       WHERE pupilsightPerson.pupilsightPersonID > "'.$std_id.'" AND pupilsightPerson.pupilsightRoleIDPrimary = "003" AND pupilsightStudentEnrolment.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND pupilsightStudentEnrolment.pupilsightProgramID="'.$pupilsightProgramID.'"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="'.$pupilsightYearGroupID.'" AND pupilsightStudentEnrolment.pupilsightRollGroupID="'.$pupilsightRollGroupID.'"  ORDER BY pupilsightPerson.pupilsightPersonID ASC
            ';
        $resultn = $connection2->query($sqln);
        $next = $resultn->fetch();
@@ -113,7 +113,7 @@
        
        $testIds = implode(',', $testId);
        $col = $row->addColumn()->setClass('');   
-       $col->addContent('<div class="float-left"><a id="'.$std_id.'"  class="'.$disble_class_pre.'  previous_std_data btn btn-primary ">Previous</a> <a id="'.$std_id.'"  class="'.$disble_class_next.' next_std_data btn btn-primary ">Next</a></div><div class="float-right"><a style="margin: 0 0 0 520px;" id="saveMarksByStudent" class="  btn btn-primary">Save</a> <a  id="" href="index.php?q=/modules/Academics/marks_by_student.php&pid='.$pupilsightProgramID.'&cid='.$pupilsightYearGroupID.'&sid='.$pupilsightRollGroupID.'&tid='.$testIds.'" class=" btn btn-primary">Close</a></div><div class="float-none;"></div></div>'); 
+       $col->addContent('<div class="float-left"><a id="'.$std_id.'"  class="'.$disble_class_pre.'  previous_std_data btn btn-primary " data-tid="'.$testIds.'">Previous</a> <a id="'.$std_id.'"  class="'.$disble_class_next.' next_std_data btn btn-primary ">Next</a></div><div class="float-right"><a style="margin: 0 0 0 520px;" id="saveMarksByStudent" class="  btn btn-primary">Save</a> <a  id="" href="index.php?q=/modules/Academics/marks_by_student.php&pid='.$pupilsightProgramID.'&cid='.$pupilsightYearGroupID.'&sid='.$pupilsightRollGroupID.'&tid='.$testIds.'" class=" btn btn-primary">Close</a></div><div class="float-none;"></div></div>'); 
        
        echo $searchform->getOutput();
        ?>

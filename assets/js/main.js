@@ -982,31 +982,43 @@
 
 
     $(document).on('click', '#expore_marks_xl', function () {
-        var type = 'studentMarks_excel';
+        //var type = 'studentMarks_excel';
+        var type = 'studentMarks_excel_new';
         var section = $('#pupilsightRollGroupIDbyPP').val();
         var cls = $('#pupilsightYearGroupIDbyPP').val();
         var program = $('#pupilsightProgramIDbyPP').val();
         var testId = $('#testId').val();
-
-        $.ajax({
-            url: 'ajaxSwitch.php',
-            type: 'post',
-            data: { val: val, type: type, program: program, cls: cls, section: section, testId: testId },
-            async: true,
-            success: function (response) {
-                //alert(response);
-                $("#marks_studentExcel").html(response);
-                $("#excelexport").table2excel({
-                    name: " Student Marks",
-                    filename: "Student_marks.xls",
-                    fileext: ".xls",
-                    exclude: ".checkall",
-                    exclude_inputs: true,
-                    exclude_links: true
-
-                });
-            }
+        var favorite = [];
+        $.each($("input[name='stuid[]']:checked"), function () {
+            favorite.push($(this).val());
         });
+        var stuid = favorite.join(",");
+        //alert(subid);
+        if (stuid) {
+            var stu_id = stuid;
+
+            $.ajax({
+                url: 'ajaxSwitch.php',
+                type: 'post',
+                data: { val: val, type: type, program: program, cls: cls, section: section, testId: testId, stu_id: stu_id },
+                async: true,
+                success: function (response) {
+                    //alert(response);
+                    $("#marks_studentExcel").html(response);
+                    $("#excelexport").table2excel({
+                        name: " Student Marks",
+                        filename: "Student_marks.xls",
+                        fileext: ".xls",
+                        exclude: ".checkall",
+                        exclude_inputs: true,
+                        exclude_links: true
+
+                    });
+                }
+            });
+        } else {
+            alert('Please Select Student First');
+        }
     });
 
 
@@ -6338,6 +6350,7 @@ $(document).on('click', '.previous_std_data', function () {
                 $("#preloader").hide();
                 $("#marksbyStudent").submit();
                 var current_id = $(this).attr('id');
+                var test_id = $(this).attr('data-tid');
                 if (current_id) {
                     var val = current_id;
                     var type = 'pre_stdMarksEntry';
@@ -6345,7 +6358,7 @@ $(document).on('click', '.previous_std_data', function () {
                         $.ajax({
                             url: 'ajax_data.php',
                             type: 'post',
-                            data: { val: val, type: type },
+                            data: { val: val, type: type, test_id: test_id },
                             async: true,
                             success: function (response) {
                                 location.reload();
@@ -6358,6 +6371,7 @@ $(document).on('click', '.previous_std_data', function () {
                 }
             } else {
                 var current_id = $(this).attr('id');
+                var test_id = $(this).attr('data-tid');
                 if (current_id) {
                     var val = current_id;
                     var type = 'pre_stdMarksEntry';
@@ -6365,7 +6379,7 @@ $(document).on('click', '.previous_std_data', function () {
                         $.ajax({
                             url: 'ajax_data.php',
                             type: 'post',
-                            data: { val: val, type: type },
+                            data: { val: val, type: type, test_id: test_id },
                             async: true,
                             success: function (response) {
                                 location.reload();
@@ -6379,6 +6393,7 @@ $(document).on('click', '.previous_std_data', function () {
             }
         } else {
             var current_id = $(this).attr('id');
+            var test_id = $(this).attr('data-tid');
             if (current_id) {
                 var val = current_id;
                 var type = 'pre_stdMarksEntry';
@@ -6386,7 +6401,7 @@ $(document).on('click', '.previous_std_data', function () {
                     $.ajax({
                         url: 'ajax_data.php',
                         type: 'post',
-                        data: { val: val, type: type },
+                        data: { val: val, type: type, test_id: test_id },
                         async: true,
                         success: function (response) {
                             location.reload();
@@ -6400,6 +6415,7 @@ $(document).on('click', '.previous_std_data', function () {
         }
     } else {
         var current_id = $(this).attr('id');
+        var test_id = $(this).attr('data-tid');
         if (current_id) {
             var val = current_id;
             var type = 'pre_stdMarksEntry';
@@ -6407,7 +6423,7 @@ $(document).on('click', '.previous_std_data', function () {
                 $.ajax({
                     url: 'ajax_data.php',
                     type: 'post',
-                    data: { val: val, type: type },
+                    data: { val: val, type: type, test_id: test_id },
                     async: true,
                     success: function (response) {
                         location.reload();

@@ -290,50 +290,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
          <a id='save_marks_by_subject' data-type='test' class='btn btn-primary' <?php echo $disabledButt; ?>>Save</a>     
          <div style="overflow-x:auto;">
          <div style='display:none' id='marks_subjectExcel'></div>
+         <div class="large-table-fake-top-scroll-container-3">
+            <div>&nbsp;</div>
+        </div>
+        <div class="double-scroll table-wrapper-scroll-y">
          <table  class ='table text-nowrap data-table' id="expore_tbl" cellspacing='0' style='width: 100%;margin-top: 20px;'>
-        <thead>
-            <tr class='head'>
-            <!--th style="width:80px" rowspan="2">
-                <input type="checkbox" name="checkall" id="checkall" value="on" class="floatNone checkall">
-                </th!-->
-                <th rowspan="2" style="width:50px"> Sl No </th>
-                <th rowspan="2" style="width:80px"> Student Name </th>
-                <th rowspan="2" style="width:80px" class="bdr_right"> Admission No </th>
+            <thead>
+                <tr class='head'>
+                <!--th style="width:80px" rowspan="2">
+                    <input type="checkbox" name="checkall" id="checkall" value="on" class="floatNone checkall">
+                    </th!-->
+                    <th rowspan="2" style="width:50px"> Sl No </th>
+                    <th rowspan="2" style="width:80px"> Student Name </th>
+                    <th rowspan="2" style="width:80px" class="bdr_right"> Admission No </th>
+                    <?php 
+                    //echo count($subject_wise_tests);
+                    $i1 = 1;
+                    foreach($subject_wise_tests as $s_test)
+                    { 
+                        if($i1 > 1){ 
+                            $colspan = '7';
+                        } else {
+                            $colspan = '6';
+                        }
+                        ?>
+                    <th colspan="<?php echo $colspan;?>" style="text-align:center; border:1px solid #dee2e6"><?php echo $s_test['name']?></th>
+                    <?php $i1++; } ?>               
+                </tr>
+                <tr>
                 <?php 
-                //echo count($subject_wise_tests);
-                $i1 = 1;
-                foreach($subject_wise_tests as $s_test)
-                { 
-                    if($i1 > 1){ 
-                        $colspan = '7';
-                    } else {
-                        $colspan = '6';
-                    }
-                    ?>
-                <th colspan="<?php echo $colspan;?>" style="text-align:center; border:1px solid #dee2e6"><?php echo $s_test['name']?></th>
-                <?php $i1++; } ?>               
-            </tr>
-            <tr>
-            <?php 
-            $i = 1;
-            foreach($subject_wise_tests as $s_test){ 
-                if($i > 1){
-            ?> 
-               
-                <th rowspan="2" style="width:80px"> Student Name <?php echo 'dd'.$s_test['enable_remarks'];?> </th>
-            <?php } ?>
-                    <th>Marks history</th>            
-                    <th colspan='2'> Marks <br/>Obtained(<?php echo str_replace(".00", "", $s_test['max_marks']);?>)</th>
-                    <th>Grade</th>
-                    <th>Grade Status</th>
-                    <?php if($s_test['enable_remarks'] == '1') { ?>
-                        <th class="bdr_right" data-orderable="false">Remark all <input type="checkbox" data-id="<?php echo $s_test['test_id'];?>" class="remark_all"></th>
-                    <?php } ?>
-                    
-                    <?php $i++; } ?>
-            </tr>    
-     </thead>       
-     <tbody>
+                $i = 1;
+                foreach($subject_wise_tests as $s_test){ 
+                    if($i > 1){
+                ?> 
+                
+                    <th rowspan="2" style="width:80px"> Student Name <?php echo 'dd'.$s_test['enable_remarks'];?> </th>
+                <?php } ?>
+                        <th>Marks history</th>            
+                        <th colspan='2'> Marks <br/>Obtained(<?php echo str_replace(".00", "", $s_test['max_marks']);?>)</th>
+                        <th>Grade</th>
+                        <th>Grade Status</th>
+                        <?php if($s_test['enable_remarks'] == '1') { ?>
+                            <th class="bdr_right" data-orderable="false">Remark all <input type="checkbox" data-id="<?php echo $s_test['test_id'];?>" class="remark_all"></th>
+                        <?php } ?>
+                        
+                        <?php $i++; } ?>
+                </tr>    
+            </thead>       
+        <tbody>
         <?php                           
             
             $count = 0;
@@ -549,7 +553,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
              }
 
         echo "</tbody>";
-        echo '</table> </div></form>';
+        echo '</table> </div></div></form>';
         echo '<input type="hidden" id="chkMarksSaveData" value="0">';
     }
 }
@@ -603,7 +607,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     .txtColor {
         background-color: lightblue !important;
     }
+
+    .table-wrapper-scroll-y {
+        display: block;
+        /* max-height: 200px; */
+        overflow-y: auto;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+    
 </style>
+
 <script>
 
     $(document).ready(function () {
@@ -893,23 +906,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $("#chkMarksSaveData").val(1);
     }); 
 
-    $(function() {
-        var tableContainer = $("#expore_tbl_wrapper");
-        var table = $("#expore_tbl");
-        var fakeContainer = $(".large-table-fake-top-scroll-container-3");
-        var fakeDiv = $(".large-table-fake-top-scroll-container-3 div");
+    $(document).ready(function(){
+        $('.double-scroll').doubleScroll();
+    });
 
-        var tableWidth = table.width();
-        fakeDiv.width(tableWidth);
-        
-        fakeContainer.scroll(function() {
-            tableContainer.scrollLeft(fakeContainer.scrollLeft());
-        });
-        tableContainer.scroll(function() {
-            fakeContainer.scrollLeft(tableContainer.scrollLeft());
-        });
-    })
-    
 
      
 </script>

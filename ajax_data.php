@@ -759,8 +759,8 @@ if ($type == 'getClass') {
     $uid = $_SESSION[$guid]['pupilsightPersonID'];
     $pid = $val;
     if ($roleId == '2') {
-        //$sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
-        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+        // $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+        $sql = 'SELECT b.*, c.name FROM assignstaff_toclasssection AS a LEFT JOIN pupilsightProgramClassSectionMapping AS b ON a.pupilsightMappingID = b.pupilsightMappingID LEFT JOIN pupilsightYearGroup AS c ON b.pupilsightYearGroupID = c.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND b.pupilsightProgramID = "' . $pid . '" GROUP BY b.pupilsightYearGroupID';
     } else {
         $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
     }
@@ -1659,17 +1659,21 @@ if ($type == 'storetestId') {
 
 if ($type == 'pre_stdMarksEntry') {
     $studentmarks_id = '';
+    $test_id = $_POST['test_id']; 
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-    $sql = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightPersonID= "' . $val . '" ';
+    $sql = 'SELECT * FROM pupilsightStudentEnrolment WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightPersonID= "' . $val . '" ';
     $res = $connection2->query($sql);
     $stu_detail = $res->fetch();
 
     $sqlp = 'SELECT pupilsightPerson.pupilsightPersonID  FROM pupilsightPerson 
-    JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
-    JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)  
-    JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) 
-     
-    WHERE  pupilsightStudentEnrolment.pupilsightProgramID="' . $stu_detail['pupilsightProgramID'] . '"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="' . $stu_detail['pupilsightYearGroupID'] . '" AND pupilsightStudentEnrolment.pupilsightRollGroupID="' . $stu_detail['pupilsightRollGroupID'] . '" AND  pupilsightPerson.pupilsightPersonID < "' . $val . '"  ORDER BY pupilsightPerson.pupilsightPersonID DESC
+    LEFT JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
+    LEFT JOIN examinationTestAssignClass ON (pupilsightStudentEnrolment.pupilsightYearGroupID=examinationTestAssignClass.pupilsightYearGroupID)  
+    LEFT JOIN pupilsightSchoolYear ON (examinationTestAssignClass.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID)  
+    LEFT JOIN pupilsightYearGroup ON (examinationTestAssignClass.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID)  
+    LEFT JOIN pupilsightRollGroup ON (examinationTestAssignClass.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) 
+    
+    WHERE pupilsightStudentEnrolment.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightStudentEnrolment.pupilsightProgramID="' . $stu_detail['pupilsightProgramID'] . '"  AND pupilsightStudentEnrolment.pupilsightYearGroupID="' . $stu_detail['pupilsightYearGroupID'] . '" AND pupilsightStudentEnrolment.pupilsightRollGroupID="' . $stu_detail['pupilsightRollGroupID'] . '" AND  pupilsightPerson.pupilsightPersonID < "' . $val . '" AND pupilsightPerson.pupilsightRoleIDPrimary = "003" AND  examinationTestAssignClass.test_id IN (' . $test_id . ') ORDER BY pupilsightPerson.pupilsightPersonID DESC
         ';
     $resultp = $connection2->query($sqlp);
     $previous = $resultp->fetch();
