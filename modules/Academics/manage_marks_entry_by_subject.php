@@ -509,39 +509,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                   
                     ?>
 
-                
-                    <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?>" style="display:none;width:190px"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
-                        <p><label>From List </label>
-                        <input type="radio" id="fromlist" class="rm_type" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="fromlist" style="margin-left: 2px;"  <?php if($prevdata['remark_type'] == 'list'){ ?> checked <?php } ?>>
-                        &nbsp;&nbsp;
-                        <label> Your Own </label>
-                        <input type="radio" id="enter_own"  class="rm_type rm_type_<?php echo $s_test['test_id'];?>" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="enter_own" style="margin-left: 2px;"   <?php if($prevdata['remark_type'] == 'own'){ ?> checked <?php } ?> >
-                        </p>
+                    <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?>"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" style="display:none;">
+                        <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?>" style="width:190px"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
+                            <p><label>From List </label>
+                            <input type="radio" id="fromlist" class="rm_type" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="fromlist" style="margin-left: 2px;"  <?php if($prevdata['remark_type'] == 'list'){ ?> checked <?php } ?>>
+                            &nbsp;&nbsp;
+                            <label> Your Own </label>
+                            <input type="radio" id="enter_own"  class="rm_type rm_type_<?php echo $s_test['test_id'];?>" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="enter_own" style="margin-left: 2px;"   <?php if($prevdata['remark_type'] == 'own' && !empty($prevdata['remarks'])){ ?> checked <?php } ?> >
+                            </p>
+                        </div>
+                        <?php 
+                            if($prevdata['remark_type'] == 'list'){ 
+                                $showlist = '';
+                            } else {
+                                $showlist = 'display:none;';
+                            }
+                        ?>
+                        <select id="remarklist<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="" class="w-full remarklist rmk_width" style="<?php echo $showlist;?>" data-id="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
+                        <?php echo $data_sel;?>
+                        </select>
+
+                        <?php 
+                            if($prevdata['remark_type'] == 'list'){
+                                $remList = $prevdata['remarks'];
+                            } else {
+                                $remList = '';
+                            }
+                        ?>
+                    
+                        <input id="remarklistval<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" type="hidden" name="remark_frmlst[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="<?php echo $remList;?>">
+                        <?php 
+                            if($prevdata['remark_type'] == 'own'){
+                                $remOwnData = $prevdata['remarks'];
+                            } else {
+                                $remOwnData = '';
+                            }
+                        ?>
+
+                        <?php 
+                            if($prevdata['remark_type'] == 'own' && !empty($prevdata['remarks'])){ 
+                                $showown = '';
+                            } else {
+                                $showown = 'display:none;';
+                            }
+                        ?>
+                        <textarea data-tid="<?php echo $s_test['test_id'];?>"  data-fid="<?php echo $f;?>"  style="<?php echo $showown;?> margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class="tabfocusRemark remark_textarea text_remark_<?php echo $s_test['test_id']; ?>  focustabRemark-<?php echo $s_test['test_id'];?>-<?php echo $f; ?>" ><?php echo $remOwnData; ?></textarea> 
+                        <br/> 
+                        <span class="rcount_<?php echo $s_test['test_id'];?>"></span>        
                     </div>
-                    <select id="remarklist<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="" class="w-full remarklist rmk_width" style="display:none" data-id="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
-                     <?php echo $data_sel;?>
-                    </select>
-
-                    <?php 
-                        if($prevdata['remark_type'] == 'list'){
-                            $remList = $prevdata['remarks'];
-                        } else {
-                            $remList = '';
-                        }
-                    ?>
-                
-                    <input id="remarklistval<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" type="hidden" name="remark_frmlst[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="<?php echo $remList;?>">
-                    <?php 
-                        if($prevdata['remark_type'] == 'own'){
-                            $remOwnData = $prevdata['remarks'];
-                        } else {
-                            $remOwnData = '';
-                        }
-                    ?>
-
-                    <textarea data-tid="<?php echo $s_test['test_id'];?>"  data-fid="<?php echo $f;?>"  style="display:none;margin: 0 0px 0px -8px;" name="remark_own[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" id="remark_textarea<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" rows="2" cols="10" class="tabfocusRemark remark_textarea text_remark_<?php echo $s_test['test_id']; ?>  focustabRemark-<?php echo $s_test['test_id'];?>-<?php echo $f; ?>" ><?php echo $remOwnData; ?></textarea> 
-                    <br/> 
-                    <span class="rcount_<?php echo $s_test['test_id'];?>"></span>        
                     <?php
                     echo '</td>';
                 }
@@ -822,7 +837,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             var keycode = (window.event) ? event.keyCode : e.keyCode;
             if (keycode == 9){
                 window.setTimeout(function() {
-                    $(".focustabRemark-"+tid+'-'+newid).focus().addClass('txtColor');
+                    // $(".focustabRemark-"+tid+'-'+newid).focus().addClass('txtColor');
+                    $(".focustabRemark-"+tid+'-'+newid).focus();
                 }, 10);
             }
         });       
