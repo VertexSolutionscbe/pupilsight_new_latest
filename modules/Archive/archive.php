@@ -174,6 +174,7 @@ if ($accessFlag == false) {
                                     //$files = glob("$loc/*.{pdf}", GLOB_BRACE); //only html files
                                     $files = expandDirectories($loc);
                                     //print_r($files);
+                                    //die();
                                     $len = count($files);
                                     $i = 0;
                                     $cnt = 1;
@@ -188,11 +189,13 @@ if ($accessFlag == false) {
                                         
                                         //print_r($fd);
                                         $fdlen = count($fd);
+                                        //echo "fdlen ".$fdlen;
+                                        //die();
                                         $year = $fd[1];
                                         $st_class = $fd[2];
                                         $section = "";
                                         $sa = "";
-                                        if($fdlen==6){
+                                        if($fdlen==7){
                                             $section = $fd[3];
                                             $sa = $fd[4];
                                         }

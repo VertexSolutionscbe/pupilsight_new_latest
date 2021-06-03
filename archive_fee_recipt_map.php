@@ -1,10 +1,12 @@
 <?php
 include 'pupilsight.php';
 $session = $container->get('session');
+//before start check table is created or not
 die();
 $loc = $_SERVER['DOCUMENT_ROOT']."/public/archive/fee_receipt"; //file location
 $htmlFiles = glob("$loc/*.{html,htm}", GLOB_BRACE); //only html files
-
+//print_r($htmlFiles); //for debug files check here
+//die();
 $len = count($htmlFiles);
 $i = 0;
 $result = array();
