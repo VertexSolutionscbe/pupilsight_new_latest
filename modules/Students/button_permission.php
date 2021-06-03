@@ -35,10 +35,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
        
         $staffPost = $_POST['staff'];
         if(!empty($staffPost)){
+            $pupilsightModuleID = '5';
+            $datadel = array('pupilsightModuleID' => $pupilsightModuleID);
+            $sqldel = 'DELETE FROM pupilsightModuleButtonPermission WHERE pupilsightModuleID=:pupilsightModuleID';
+            $resultdel = $connection2->prepare($sqldel);
+            $resultdel->execute($datadel);
+
             foreach($staffPost as $k => $sp){
                 $pupilsightModuleButtonID = $k;
-                $pupilsightModuleID = '5';
-
+                
                 $sqln = 'SELECT name FROM pupilsightModuleButton WHERE pupilsightModuleButtonID = '.$pupilsightModuleButtonID.' ';
                 $resultn = $connection2->query($sqln);
                 $buttonNameData = $resultn->fetch();
@@ -46,10 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
                 
                 foreach($sp as $st){
                     $data = array('pupilsightModuleID' => $pupilsightModuleID, 'pupilsightModuleButtonID' => $pupilsightModuleButtonID, 'pupilsightPersonID' => $st, 'name' => $btnName);
-                    $sqldel = 'DELETE FROM pupilsightModuleButtonPermission WHERE pupilsightModuleID=:pupilsightModuleID AND pupilsightModuleButtonID=:pupilsightModuleButtonID AND pupilsightPersonID=:pupilsightPersonID AND name=:name';
-                    $resultdel = $connection2->prepare($sqldel);
-                    $resultdel->execute($data);
-
                     $sql = "INSERT INTO pupilsightModuleButtonPermission SET pupilsightModuleID=:pupilsightModuleID, pupilsightModuleButtonID=:pupilsightModuleButtonID, pupilsightPersonID=:pupilsightPersonID, name=:name";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
