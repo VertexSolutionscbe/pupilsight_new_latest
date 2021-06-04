@@ -1046,6 +1046,8 @@ if (
     </script>
     <?php
     $customFieldList = $customField->getCustomFieldList();
+    //print_r($customFieldList);
+    //die();
     $len = count($customFieldList);
     ?>
     <!----Custom Field List----->
@@ -1065,7 +1067,7 @@ if (
                 </tr>
             </thead>
         </table>
-        <table class="table display text-nowrap filterTable" cellspacing="0" id='customFieldList'>
+        <table class="table table-responsive display filterTable " cellspacing="0" id='customFieldList'>
             <thead>
                 <tr>
                     <th class='column'>Table</th>
@@ -1186,6 +1188,7 @@ if (
                     $str .= "<td>" . $pe . "</td>";
 
                     $str .= "<td>";
+                    if($customFieldList[$i]["active"]=="Y"){
                     $str .=
                         "<button class='btn btn-danger' title='Delete' onclick=\"deleteCustomField('" .
                         $id .
@@ -1198,6 +1201,10 @@ if (
                         "<button class='btn btn-info ml-1' title='Edit' onclick=\"loadCustomFieldEditModal('" .
                         $id .
                         "');\"><i class='mdi mdi-pencil mdi-18px'></i></button>";
+                    }else{
+                        $str .="NA";
+                    }
+
                     $str .= "</td>";
                     $str .= "</tr>";
                 }

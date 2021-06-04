@@ -51,7 +51,7 @@ if ($type == 'subjectSortTab') {
             if (isset($_POST["relation"])) {
                 $modules = trim(strtolower($_POST["relation"]));
             }
-        } else if ($val == "student_edit.php" || $val == "student_add.php") {
+        } else if ($val == "student_edit.php" || $val == "student_add.php" || $val == "student_view_details.php") {
             $modules = "student";
         } else if ($val == "staff_manage_add.php" || $val == "staff_manage_edit.php" || $val == "staff_view_details.php") {
             $modules = "staff";
@@ -59,7 +59,7 @@ if ($type == 'subjectSortTab') {
 
         $sq = "select c.*,m.tabs  from custom_field_modal as m, custom_field as c ";
         $sq .= "where m.table_name = c.table_name and FIND_IN_SET('" . $val . "',page_view) ";
-        $sq .= "and c.modules like '%" . $modules . "%'";
+        $sq .= "and ((c.modules like '%" . $modules . "%') or c.modules='') ";
         //echo $sq;
         $result = $connection2->query($sq);
 
@@ -68,7 +68,7 @@ if ($type == 'subjectSortTab') {
         if (empty($rs)) {
             $sq = "select c.*,m.tabs  from custom_field_modal as m, custom_field as c where m.table_name = c.table_name ";
             $sq .= "and FIND_IN_SET('" . $val . "',page_edit) ";
-            $sq .= "and c.modules like '%" . $modules . "%'";
+            $sq .= "and (c.modules like '%" . $modules . "%')";
             //echo "\n" . $sq;
             $result = $connection2->query($sq);
             $dt["data"] = $result->fetchAll();
@@ -153,7 +153,8 @@ if ($type == 'subjectSortTab') {
                 $result = $connection2->query($sqs);
                 $row = $result->fetchAll();
                 if (isset($row[0]["id"])) {
-                    $squ = "update custom_field set active='Y' where id='" . $row[0]["id"] . "' ";
+                    //$squ = "update custom_field set active='Y' where id='" . $row[0]["id"] . "' ";
+                    $squ = "delete from custom_field where id='" . $row[0]["id"] . "' ";
                     $connection2->query($squ);
                 }
                 $i++;
