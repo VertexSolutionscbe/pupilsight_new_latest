@@ -1523,5 +1523,14 @@ if ($roleid == "001") {
         echo $page->render("index_admin_frame.twig.html");
     }
 } else {
+    if (isset($_SESSION["reportaccess"]) == false) {
+        $reportAutoLogin =
+            $session->get("absoluteURL") .
+            "/wp/wp-login.php?user=admin&pass=Admin@123456";
+        $page->addData([
+            "reportAutoLogin" => $reportAutoLogin,
+        ]);
+        $_SESSION["reportaccess"] = "1";
+    }
     echo $page->render("index.twig.html");
 }

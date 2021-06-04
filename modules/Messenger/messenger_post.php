@@ -242,7 +242,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 			}
 		}
 
-		$form->toggleVisibilityByClass('email1')->onRadio('email')->when('Y');
+		//$form->toggleVisibilityByClass('email1 messageWall')->onRadio('email messageWall')->when('Y');
+		//$form->toggleVisibilityByClass('messageWall')->onRadio('messageWall')->when('Y');
 		$row = $form->addRow()->addClass('email1')->setID('subjecthide');
 		$row->addLabel('subject', __('Subject'));
 		$row->addTextField('subject')->maxLength(200)->required();
@@ -780,6 +781,7 @@ $('input[type=radio][name=email]').change(function() {
     $("[id=bodyhide").show();
     $("[id=categoryhide").show();
     $("[id=copysmshide").hide();
+	$("[id=subjecthide").show();
   } else if (this.value == 'N') {
     //alert("no");
   }
@@ -819,6 +821,7 @@ $('input[type=radio][name=messageWall]').change(function() {
     $("[id=copysmshide").hide();
     $("[id=bodyhide").show();
     $("[id=categoryhide").show();
+	$("[id=subjecthide").show();
   } else if (this.value == 'N') {
     //alert("no");
   }

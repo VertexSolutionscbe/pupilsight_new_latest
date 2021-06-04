@@ -613,7 +613,7 @@ if ($type == 'searchStudentInvoice') {
         $search = '';
     }
 
-    $sqli = 'SELECT a.pupilsightPersonID, a.admission_no, p.name, a.officialName,d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON b.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE a.pupilsightRoleIDPrimary = "003" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND b.pupilsightProgramID = "' . $pupilsightProgramID . '" AND b.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ';
+    $sqli = 'SELECT a.pupilsightPersonID, a.admission_no, p.name, a.officialName,d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON b.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE a.pupilsightRoleIDPrimary = "003" AND a.is_delete = "0" AND b.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND b.pupilsightProgramID = "' . $pupilsightProgramID . '" AND b.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" ';
     if ($pupilsightRollGroupID != "") {
         $sqli .= ' AND b.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ';
     }
@@ -655,7 +655,7 @@ if ($type == 'searchStudent') {
     $search = $_POST['search'];
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
 
-    $sqli = 'SELECT a.pupilsightPersonID, a.admission_no, p.name,a.officialName,  d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON b.pupilsightProgramID = p.pupilsightProgramID  LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE b.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightRoleIDPrimary = "003" AND a.officialName LIKE "%' . $search . '%" OR  a.pupilsightPersonID = "' . $search . '" OR  a.admission_no = "' . $search . '"';
+    $sqli = 'SELECT a.pupilsightPersonID, a.admission_no, p.name,a.officialName,  d.name as class, e.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightProgram AS p ON b.pupilsightProgramID = p.pupilsightProgramID  LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE b.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.is_delete = "0" AND a.pupilsightRoleIDPrimary = "003" AND a.officialName LIKE "%' . $search . '%" OR  a.pupilsightPersonID = "' . $search . '" OR  a.admission_no = "' . $search . '"';
     $resulti = $connection2->query($sqli);
     $students = $resulti->fetchAll();
     //print_r($students);

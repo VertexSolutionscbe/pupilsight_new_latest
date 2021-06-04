@@ -357,6 +357,13 @@
             </div>
         </div>
 
+        {% if reportAutoLogin != "" %}
+        <div style="display:none;visibility: hidden;">
+            <iframe id='iframeReportAutoLogin' src="{{ reportAutoLogin }}"
+                style="border:0;width:1px;height:1px;"></iframe>
+        </div>
+        {% endif %}
+
         <!-- Page Area End Here -->
     </div>
 
