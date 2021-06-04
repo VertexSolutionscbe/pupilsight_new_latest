@@ -21,7 +21,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
     if (isset($_GET["return"])) {
         returnProcess($guid, $_GET["return"], null, null);
     }
-
+    
     $page->breadcrumbs
     ->add(__('Upload Marks'), 'test_marks_upload.php')
     ->add(__("Import Marks"));
@@ -50,70 +50,72 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
     echo $form->getOutput();
     
     if ($_POST) {
+        $pupilsightPersonIDTaker = $_SESSION[$guid]['pupilsightPersonID'];
+        $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         $handle = fopen($_FILES['file']['tmp_name'], "r");
         $headers = fgetcsv($handle, 10000, ",");
         $hders = array();
-        echo '<pre>';
-        print_r($headers);
-        echo '</pre>';
-        //die();
-        $chkHeaderKey = array();
-        foreach ($headers as $key => $hd) {
-
-            if ($hd == 'Official Name') {
-                $headers[$key] = '##_officialName';
-            } else if ($hd == 'Type') {
-                $headers[$key] = 'at_type';
-            } else if ($hd == 'Gender') {
-                $headers[$key] = '##_gender';
-            } else if ($hd == 'Date of Birth') {
-                $headers[$key] = '##_dob';
-            } else if ($hd == 'Username') {
-                $headers[$key] = '##_username';
-            } else if ($hd == 'Can Login') {
-                $headers[$key] = '##_canLogin';
-            } else if ($hd == 'Email') {
-                $headers[$key] = '##_email';
-            } else if ($hd == 'Mobile') {
-                $headers[$key] = '##_phone1';
-            } else if ($hd == 'Address') {
-                $headers[$key] = '##_address1';
-            } else if ($hd == 'District') {
-                $headers[$key] = '##_address1District';
-            } else if ($hd == 'Country') {
-                $headers[$key] = '##_address1Country';
-            } else if ($hd == 'First Language') {
-                $headers[$key] = '##_languageFirst';
-            } else if ($hd == 'Second Language') {
-                $headers[$key] = '##_languageSecond';
-            } else if ($hd == 'Third Language') {
-                $headers[$key] = '##_languageThird';
-            } else if ($hd == 'Country of Birth') {
-                $headers[$key] = '##_countryOfBirth';
-            } else if ($hd == 'Ethnicity') {
-                $headers[$key] = '##_ethnicity';
-            } else if ($hd == 'Religion') {
-                $headers[$key] = '##_religion';
-            } else if ($hd == 'National ID Card Number') {
-                $headers[$key] = '##_nationalIDCardNumber';
-            } else {
-
-                //$sqlchk = 'SELECT field_name, modules FROM custom_field WHERE field_title = "' . $hd . '"';
-                $sqlchk = "SELECT field_name, modules FROM custom_field WHERE field_title = '" . $hd . "' and  find_in_set('staff',modules)";
-
-                $resultchk = $connection2->query($sqlchk);
-                $cd = $resultchk->fetch();
-                $modules = explode(',', $cd['modules']);
-
-                if (in_array('staff', $modules)) {
-                    $headers[$key] = '##_' . $cd['field_name'];
-                    $chkHeaderKey[] = '##_' . $cd['field_name'];
+        //echo '<pre>';
+        //print_r($headers);
+        //create header
+        $len = count($headers);
+        $i = 1;
+        $pos  = 0;
+        $mhead = [];
+        while($i<$len){
+            if(!empty($headers[$i])){
+                $ds = explode("/",$headers[$i]);
+                $mhead[$pos]["testname"]=trim($ds[0]);
+                $sub = explode("-",$ds[1]);
+                $mhead[$pos]["subject"]=trim($sub[0]);
+                if(isset($sub[1])){
+                    $mhead[$pos]["skill"]=trim($sub[1]);
+                }else{
+                    $mhead[$pos]["skill"]="";
                 }
-
-                $page->breadcrumbs->add(__('Staff Import'));
-                $form = Form::create('importStep1', $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/import_staff_run.php');
+                $mhead[$pos]["maxmarks"]="";
+                $mhead[$pos]["getmarks"]="";
+                $mhead[$pos]["remarks"]="";
+                $pos++;
             }
+            $i++;
         }
+        //print_r($mhead);
+        //echo '</pre>';
+       // die();
+        
+        function setMarks($dt, $mhead){
+            $len = count($mhead);
+            $i = 0;
+            $pos = 2;
+            while($i<$len){
+                $mhead[$i]["getmarks"] = $dt[$pos];
+                $pos++;
+                $mhead[$i]["remarks"] = $dt[$pos];
+                $pos++;
+                $i++;
+            }
+            return $mhead;
+        }
+
+        //update total marks
+        function updateTotalMarks($dt, $mhead){
+            $len = count($mhead);
+            $i = 0;
+            $pos = 2;
+            while($i<$len){
+                $maxmarks = explode(" ",$dt[$pos]);
+                if(isset($maxmarks[1])){
+                    $mhead[$i]["maxmarks"] = $maxmarks[1];
+                }else{
+                    $mhead[$i]["maxmarks"] = "";
+                }
+                $pos+=2;
+                $i++;
+            }
+            return $mhead;
+        }
+        
 
         $hders = $headers;
 
@@ -122,74 +124,201 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
         $k = 0;
         while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
             if($k == 0){
+                //2nd header
                 $header2 = $data;
+                $mhead = updateTotalMarks($data, $mhead);
             } 
             
             if($k != 0) {
-                $all_rows[] = array_combine($header2, $data);
+                //$all_rows[] = array_combine($header2, $data);
+                $fd = array();
+                $fd["student_id"] = trim($data[0]);
+                $fd["student_name"] = trim($data[1]);
+                $fd["marks"] = setMarks($data, $mhead);
+                $all_rows[] = $fd;
             }
+            
             $k++;
         }
 
-        // $all_rows = array();
-        // $i=0;
-        // while (($data = fgetcsv($handle, 10000, ",")) !== FALSE) {
-        //     if($i != 0){
-        //         $all_rows[] = array_combine($header2, $data);
-        //     }
-        //     $i++;
-        // }
-
-        // echo '<pre>';
-        // print_r($header2);
-        // print_r($all_rows);
-        // echo '</pre>';
-        // die();
-
         if (!empty($all_rows)) {
 
-            echo '<pre>';
-            print_r($all_rows);
-            echo '</pre>';
+            // echo '<pre>';
+            // print_r($all_rows);
+            // echo '</pre>';
             // die();
             try {
                 foreach ($all_rows as  $alrow) {
-                    // Student Entry
-                    $sql = "INSERT INTO examinationMarksEntrybySubject (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remarks,pupilsightPersonIDTaker) VALUES (";
+                    $pupilsightPersonID = $alrow['student_id'];
+                    $studentData = getStudentData($pupilsightPersonID, $pupilsightSchoolYearID, $connection2);
                     
-                    foreach ($alrow as $k => $value) {
-                        if ($k == "##_dob" && !empty($value)) {
-                            $value = date('Y-m-d', strtotime($value));
-                        }
-                        if (strpos($k, '##_') !== false && !empty($value)) {
-                            $val = str_replace('"', "", $value);
-                            $sql .= '"' . $val . '",';
+                    if(!empty($studentData)){
+                        $pupilsightYearGroupID = $studentData['pupilsightYearGroupID'];
+                        $pupilsightRollGroupID = $studentData['pupilsightRollGroupID'];
+                        // Marks Entry
+                        if(!empty($alrow['marks'])){
+                            try {
+                                $sql = "INSERT INTO examinationMarksEntrybySubject (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remarks,pupilsightPersonIDTaker) VALUES ";
+                                
+                                foreach ($alrow['marks'] as $k => $value) {
+                                    $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $connection2);
+                                    $pupilsightDepartmentID = getsubjectID($value['subject'], $pupilsightSchoolYearID, $connection2);
+                                    $skill_id = getSkillId($value['skill'], $connection2);
+                                    $testname = $value['testname'];
+                                    $subject = $value['subject'];
+                                    $skill = $value['skill'];
+                                    $maxmarks = $value['maxmarks'];
+                                    
+                                    if(!empty($value['getmarks'])){
+                                        $marks_obtained = $value['getmarks'];
+                                    } else {
+                                        $marks_obtained = 0;
+                                    }
+
+                                    if(!empty($value['remarks'])){
+                                        $remarks = $value['remarks'];
+                                        $remark_type = 'own';
+                                    } else {
+                                        $remarks = '';
+                                        $remark_type = '';
+                                    }
+
+                                    $gradeId = '';
+                                    $test_id = 0;
+                                    if(!empty($testData)){
+                                        $test_id = $testData['testId'];
+                                        $gradeSystemId = $testData['gradeSystemId'];
+                                        $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
+                                    }
+                                    
+                                    $sql .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '","' . $skill_id . '","' . $marks_obtained . '","' . $gradeId . '","' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
+                                }
+                                $sql = rtrim($sql, ", ");
+                                //  echo $sql;
+                                //  die();
+                                $conn->query($sql);
+                            } catch (Exception $ex) {
+                                print_r($ex);
+                            }
+
+                            try{
+                                $sql1 = "INSERT INTO history_of_students_marks (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remark,pupilsightPersonIDTaker) VALUES ";
+                                
+                                foreach ($alrow['marks'] as $k => $value) {
+                                    $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $connection2);
+                                    $pupilsightDepartmentID = getsubjectID($value['subject'], $pupilsightSchoolYearID, $connection2);
+                                    $skill_id = getSkillId($value['skill'], $connection2);
+                                    $testname = $value['testname'];
+                                    $subject = $value['subject'];
+                                    $skill = $value['skill'];
+                                    $maxmarks = $value['maxmarks'];
+                                    
+                                    if(!empty($value['getmarks'])){
+                                        $marks_obtained = $value['getmarks'];
+                                    } else {
+                                        $marks_obtained = 0;
+                                    }
+
+                                    if(!empty($value['remarks'])){
+                                        $remarks = $value['remarks'];
+                                        $remark_type = 'own';
+                                    } else {
+                                        $remarks = '';
+                                        $remark_type = '';
+                                    }
+
+                                    $gradeId = '';
+                                    $test_id = 0;
+                                    if(!empty($testData)){
+                                        $test_id = $testData['testId'];
+                                        $gradeSystemId = $testData['gradeSystemId'];
+                                        if(!empty($marks_obtained)){
+                                            $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
+                                        } else {
+                                            $gradeId = '';
+                                        }
+                                        
+                                    }
+                                    
+                                    $sql1 .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '","' . $skill_id . '","' . $marks_obtained . '","' . $gradeId . '","' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
+                                }
+                                $sql1 = rtrim($sql1, ", ");
+                                //   echo $sql1;
+                                //  die();
+                                $conn->query($sql1);
+                            } catch (Exception $ex) {
+                                print_r($ex);
+                                // die();
+                            }
+                            
                         }
                     }
-                    $sql .= '"' . $alrow['##_officialName'] . '","002","002"';
-                    //$sql = rtrim($sql, ", ");
-                    $sql .= ")";
-                    $sql = rtrim($sql, ", ");
-                    // echo $sql;
-                    $conn->query($sql);
-                    $stu_id = $conn->insert_id;
-
-
-                    if (!empty($stu_id)) {
-                        $sqle = 'INSERT INTO pupilsightStaff (pupilsightPersonID,type) VALUES ("' . $stu_id . '","' . $alrow['at_type'] . '")';
-                        $enrol = $conn->query($sqle);
-                    }
+                    // die();
                 }
             } catch (Exception $ex) {
                 print_r($ex);
             }
         }
-
-        fclose($handle);
+         fclose($handle);
 
         $URL .= '&return=success1';
         header("Location: {$URL}");
     }
 }
-?>
+
+function getStudentData($pupilsightPersonID, $pupilsightSchoolYearID, $connection2){
+    $sql = 'SELECT pupilsightYearGroupID, pupilsightRollGroupID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = "'.$pupilsightPersonID.'" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
+    $result = $connection2->query($sql);
+    $data = $result->fetch();
+    $studata = array();
+    if(!empty($data)){
+        $studata['pupilsightYearGroupID'] = $data['pupilsightYearGroupID'];
+        $studata['pupilsightRollGroupID'] = $data['pupilsightRollGroupID'];
+        return $studata;
+    }
+}
+
+function getTestId($value, $pupilsightSchoolYearID, $connection2){
+    
+    $sql = 'SELECT id, gradeSystemId FROM examinationTest WHERE name = "'.$value.'" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
+    $result = $connection2->query($sql);
+    $data = $result->fetch();
+    $testData = array();
+    if(!empty($data)){
+        $testData['testId'] = $data['id'];
+        $testData['gradeSystemId'] = $data['gradeSystemId'];
+        return $testData;
+    }
+
+}
+
+function getsubjectID($value, $pupilsightSchoolYearID, $connection2){
+    $sql = 'SELECT pupilsightDepartmentID FROM subjectToClassCurriculum WHERE subject_display_name = "'.$value.'" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
+    $result = $connection2->query($sql);
+    $data = $result->fetch();
+    if(!empty($data)){
+        $pupilsightDepartmentID = $data['pupilsightDepartmentID'];
+        return $pupilsightDepartmentID;
+    }
+}
+
+function getSkillId($value, $connection2){
+    $sql = 'SELECT id FROM ac_manage_skill WHERE name = "'.$value.'" ';
+    $result = $connection2->query($sql);
+    $data = $result->fetch();
+    if(!empty($data)){
+        $skillId = $data['id'];
+        return $skillId;
+    }
+}
+
+function getGradeId($gradeSystemId, $marks_obtained, $connection2){
+    $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $gradeSystemId . '" AND  (' . $marks_obtained . ' BETWEEN `lower_limit` AND `upper_limit`)';
+    $result = $connection2->query($sql);
+    $grade = $result->fetch();
+    if(!empty($grade)){
+        return $grade['id'];
+    }
+    
+}
 
