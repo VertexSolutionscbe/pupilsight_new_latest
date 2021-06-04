@@ -9,6 +9,10 @@ include $_SERVER["DOCUMENT_ROOT"] . "/db.php";
 
 require __DIR__ . "/moduleFunctions.php";
 
+ini_set('max_execution_time', 7200);
+ini_set('memory_limit','1024M');
+set_time_limit(1200);
+
 $URL =
     $_SESSION[$guid]["absoluteURL"] .
     "/index.php?q=/modules/Academics/import_marks.php";
@@ -190,6 +194,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                         $gradeSystemId = $testData['gradeSystemId'];
                                         $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
                                     }
+
+                                    if(!empty($marks_obtained)){
+                                        if(!empty($skill_id)){
+                                            $data1 = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $pupilsightPersonID, 'skill_id' => $skill_id);
+                                            $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND skill_id=:skill_id';
+                                            $result1 = $connection2->prepare($sql1);
+                                            $result1->execute($data1);
+                                        } else {
+                                            $data1 = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $pupilsightPersonID);
+                                            $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID';
+                                            $result1 = $connection2->prepare($sql1);
+                                            $result1->execute($data1);
+                                        }
+                                    }
+
+
                                     
                                     $sql .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '","' . $skill_id . '","' . $marks_obtained . '","' . $gradeId . '","' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
                                 }
