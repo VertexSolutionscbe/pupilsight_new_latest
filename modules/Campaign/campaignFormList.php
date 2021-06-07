@@ -114,20 +114,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
 
     echo '<input type="hidden" id="cmpId" value="' . $id . '">';
 
-    echo '<label class="switch"><input type="checkbox" id="togBtn" class="changeForm" checked><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
+    echo '<div style="margin-bottom:5px;margin-top: -5px;"><label class="switch"><input type="checkbox" id="togBtn" class="changeForm" checked><div class="slider round"><span class="on" style="margin: 0 0 0 -12px;">Online</span><span class="off" style="margin: 0 0 0 12px;">Offline</span></div></label>';
 
     echo "<a style='display:none;' href='' class='thickbox' id='clickStateRemark'>Remark</a>";
 
     // echo $butt = '<i id="btnExport" title="Export PDF" class="far fa-file-pdf download_icon"></i> ';
     //echo $butt = '<i id="expore_csv" title="Export CSV" class="fas fa-file-csv download_icon"></i> ';
-    echo "<div style='height:25px; margin-top:5px;'><div class='float-right mb-2'>
+    echo "<div style='height:25px; margin-top:5px;width: 50%;float: right;'><div class='float-right mb-2'>
     <a style='display:none; ' href='" . $_SESSION[$guid]['absoluteURL'] . "/fullscreen.php?q=/modules/Campaign/fee_make_payment.php&cid=" . $id . "' class='thickbox btn btn-primary' id='clickAdmissionFeePayment'>Fee Payment</a>
     <a style='display:none; margin-bottom:10px;'  class='btn btn-primary' id='admissionFeePayment'>Fee Payment</a>
     &nbsp;&nbsp;<a id='offlineClick' style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/offline_campaignFormList.php&id=" . $id . "'   class=' btn btn-primary' >Offline Submitted List</a>
     &nbsp;&nbsp;<a style='display:none; margin-bottom:10px;' href='?q=/modules/Campaign/formopen.php&id=" . $id . "'   class='btn btn-white' id='' >Apply</a>  &nbsp;&nbsp;<a style=' margin-bottom:10px;' href=''  data-toggle='modal' data-target='#large-modal-campaign_list' data-noti='2'  class='sendButton_campaign_list btn btn-white' data-cid=" . $id . " data-fid=" . $formId . " id='sendSMS'>Send SMS</a>";
     echo "&nbsp;&nbsp;<a style=' margin-bottom:10px;' href='' data-toggle='modal' data-noti='1' data-target='#large-modal-campaign_list' class='sendButton_campaign_list btn btn-white' data-cid=" . $id . "  data-fid=" . $formId . " id='sendEmail'>Send Email</a>";
     //echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="index.php?q=/modules/Campaign/ajaxfile.php&cid='.$id.'&id=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
-    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $id . '&submissionId=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div> <br>';
+    echo $butt = '<i id="expore_xl_campaign" title="Export Excel" class="mdi mdi-file-excel mdi-24px download_icon"></i><i id="pdf_export" title="Export PDF" class="mdi mdi-file-pdf mdi-24px download_icon"></i><a id="downloadLink" data-hrf="thirdparty/pdfgenerate/admission_pdflib.php?cid=' . $id . '&submissionId=" href="index.php?q=/modules/Campaign/ajaxfile.php" class="" style="display:none;">Download Receipts</a><i id="showHistory" title="Show History" class="mdi mdi-eye-outline mdi-24px download_icon"></i><i  id="viewForm" title="View Form" class="mdi mdi-clipboard-list-outline  mdi-24px download_icon"></i></div></div></div> ';
 
     //  print_r($criteria);
     //  die();
@@ -570,8 +570,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
         border-radius: 50%;
     }
 
-    .table-responsive {
+    /* .table-responsive {
         height: 500px;
+    } */
+
+    #expore_tbl{
+        margin-top:-15px;
+    }
+
+    .card-body{
+        margin-top:-15px;
+    }
+
+    .table-responsive {
+        height: 375px !important;
     }
 </style>
 

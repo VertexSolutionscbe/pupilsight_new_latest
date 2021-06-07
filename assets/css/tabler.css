@@ -9357,7 +9357,7 @@ body {
 }
 
 body .content *::-webkit-scrollbar {
-  width: 6px;
+  width: 12px;
   height: 6px;
   -webkit-transition: .3s background;
   transition: .3s background;
@@ -9366,6 +9366,7 @@ body .content *::-webkit-scrollbar {
 body .content *::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background: #dee1e7;
+  min-height: 50px;
 }
 
 body .content *::-webkit-scrollbar-corner {
@@ -10762,8 +10763,9 @@ Navbar vertical
 .page-header {
   display: flex;
   align-items: center;
-  min-height: 2.25rem;
-  margin: 0 0 1.25rem;
+  margin: -0.50rem 0 1rem;
+  /* min-height: 2.25rem;
+  margin: 0 0 1.25rem; */
 }
 
 .page-header>* {
