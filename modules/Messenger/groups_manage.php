@@ -26,6 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    
     $groupGateway = $container->get(GroupGateway::class);
 
     $criteria = $groupGateway->newQueryCriteria()

@@ -4,6 +4,8 @@ Pupilsight, Flexible & Open School System
  */
 
 use Pupilsight\Domain\Helper\HelperGateway;
+use Pupilsight\Domain\Archive\ArchiveGateway;
+
 function getDomain()
 {
     if (isset($_SERVER['HTTPS'])) {
@@ -49,8 +51,20 @@ if ($accessFlag == false) {
     <div class="my-2" id='reportList'>
         <?php
             try{
+            
             $helperGateway = $container->get(HelperGateway::class);
             $res = $helperGateway->getArchiveReport($connection2);
+
+            $archiveGateway = $container->get(ArchiveGateway::class);
+
+            $term = $archiveGateway->listFeeInvoiceTerm($connection2);
+            $academicYear = $archiveGateway->listFeeInvoiceAcademicYear($connection2);
+            $stream = $archiveGateway->listFeeInvoiceStream($connection2);
+
+            $termTrans = $archiveGateway->listFeeTransTerm($connection2);
+            $academicYearTrans = $archiveGateway->listFeeTransAcademicYear($connection2);
+            $streamTrans = $archiveGateway->listFeeTransStream($connection2);
+            
             }catch(Exception $ex){
                 echo $ex->getMessage();
             }
@@ -60,6 +74,12 @@ if ($accessFlag == false) {
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a href="#archiveList" class="nav-link active">Archive List</a>
+            </li>
+            <li class="nav-item">
+                <a href="#feeTransactions" class="nav-link">Fee Transactions</a>
+            </li>
+            <li class="nav-item">
+                <a href="#feeInvoice" class="nav-link">Fee Invoice</a>
             </li>
             <li class="nav-item">
                 <a href="#feeRecipt" class="nav-link">Fee Recipt</a>
@@ -100,6 +120,184 @@ if ($accessFlag == false) {
                                 }
                             ?>  
                             </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id='feeTransactions'>
+                    <div class="row my-4">
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Academic Year</label>
+                            <select id="transYear">
+                            <?php
+                                echo $archiveGateway->createOption($academicYearTrans,"AcademicYear");
+                            ?>
+                            </select>
+                        </div>
+
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Term</label>
+                            <select id="transTerm">
+                            <?php
+                                echo $archiveGateway->createOption($termTrans,"Term");
+                            ?>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Stream</label>
+                            <select id="invoiceStream">
+                            <?php
+                                echo $archiveGateway->createOption($streamTrans, "Stream");
+                            ?>
+                            </select>
+                        </div>
+
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Student Id</label>
+                            <input type="text" class="form-control" id="transStudentId" value="">
+                        </div>
+
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Student Name</label>
+                            <input type="text" class="form-control" id="transStudent" value="">
+                        </div>
+
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="button" class="btn btn-primary" onclick="searchTrans()"><i class='mdi mdi-magnify mr-2'></i>Search</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id='feeTransactionsTable' class="mt-2 table card-table table-vcenter text-nowrap datatable border-bottom">
+                            <thead>
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Stake Holder</th>
+                                    <th>Full Name</th>
+                                    <th>StudentID</th>
+                                    <th>Organisation</th>
+                                    <th>Program</th>
+                                    <th>Stream</th>
+                                    <th>Intake</th>
+                                    <th>Term</th>
+                                    <th>Academic Year</th>
+                                    <th>Transaction Id</th>
+                                    <th>Receipt No</th>
+                                    <th>Instrument Amount</th>
+                                    <th>Payment Mode</th>
+                                    <th>Bank Name</th>
+                                    <th>Instrument No</th>
+                                    <th>Instrument Date</th>
+                                    <th>Payment Status</th>
+                                    <th>Transaction Amount</th>
+                                    <th>Payment Received Date</th>
+                                    <th>Cheque Received Date</th>
+                                    <th>Other Amount</th>
+                                    <th>Remarks</th>
+                                    <th>Manual Receipt Number</th>
+                                    <th>Total Fine Amount</th>
+                                    <th>Overpayment Amount</th>
+                                    <th>Overpayment Made</th>
+                                    <th>Invoice No</th>
+                                    <th>Invoice Amount</th>
+                                    <th>Calculated Fine Amount</th>
+                                    <th>Invoice Title</th>
+                                    <th>Invoice Status</th>
+                                    <th>Fee Item Name</th>
+                                    <th>Fee Item Amount</th>
+                                    <th>Fee Item Amount Paid</th>
+                                    <th>Is Discount Trans</th>
+                                    <th>Discount Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id='feeTransactionsBody'></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id='feeInvoice'>
+                    <div class="row my-4">
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Academic Year</label>
+                            <select id="invoiceYear">
+                            <?php
+                                echo $archiveGateway->createOption($academicYear,"AcademicYear");
+                            ?>
+                            </select>
+                        </div>
+
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Term</label>
+                            <select id="invoiceTerm">
+                            <?php
+                                echo $archiveGateway->createOption($term,"Term");
+                            ?>
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Stream</label>
+                            <select id="invoiceStream">
+                            <?php
+                                echo $archiveGateway->createOption($stream, "Stream");
+                            ?>
+                            </select>
+                        </div>
+
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Student Id</label>
+                            <input type="text" class="form-control" id="invoiceStudentId" value="">
+                        </div>
+
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">Student Name</label>
+                            <input type="text" class="form-control" id="invoiceStudent" value="">
+                        </div>
+
+                        <div class="col-md-auto col-sm-12">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="button" class="btn btn-primary" onclick="searchInvoice()"><i class='mdi mdi-magnify mr-2'></i>Search</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id='feeInvoiceTable' class="mt-2 table card-table table-vcenter text-nowrap datatable border-bottom">
+                            <thead>
+                                <tr>
+                                    <th>SN</th>
+                                    <th>Stakeholder</th>
+                                    <th>Name</th>
+                                    <th>StudentID</th>
+                                    <th>Organization</th>
+                                    <th>Program</th>
+                                    <th>Stream</th>
+                                    <th>Intake</th>
+                                    <th>Term</th>
+                                    <th>Academic Year</th>
+                                    <th>Invoice Title</th>
+                                    <th>Final Amount</th>
+                                    <th>Amount</th>
+                                    <th>Tax</th>
+                                    <th>Invoice No</th>
+                                    <th>Invoice Status</th>
+                                    <th>Invoice Gen Date</th>
+                                    <th>Amount Paid</th>
+                                    <th>Amount Pending</th>
+                                    <th>Due Date</th>
+                                    <th>Fine</th>
+                                    <th>Fee Item Name</th>
+                                    <th>Fee Item Amount</th>
+                                    <th>Fee Item Discount</th>
+                                    <th>Fee Item Amount Paid</th>
+                                    <th>Fee Item Amount Discounted</th>
+                                    <th>Fee Item Amount Pending</th>
+                                    <th>Invoice Item Status</th>
+                                    <th>Fee Item Tax</th>
+                                    <th>Fee Item Final Amount</th>
+                                    <th>Fee Item Order</th>
+                                </tr>
+                            </thead>
+                            <tbody id='feeInvoiceBody'></tbody>
                         </table>
                     </div>
                 </div>
@@ -270,6 +468,157 @@ if ($accessFlag == false) {
             </div>
         </div>
     </div>
+
+    <script>
+    
+        function searchTrans(){
+            try{
+                var academicYear = $("#transYear").val();
+                var term = $("#transTerm").val();
+                var stream = $("#transStream").val();
+                var studentId = $("#transStudentId").val();
+                var studentName = $("#transStudent").val();
+                
+                $.ajax({
+                    url: 'ajax_archive.php',
+                    type: 'post',
+                    data: {
+                        type: "feeTransactions",
+                        AcademicYear:academicYear,
+                        Term:term,
+                        Stream:stream,
+                        StudentID:studentId,
+                        FullName:studentName,
+                    },
+                    success: function(response) {
+                        //console.log(response);
+                    if (response) {
+                            var obj = jQuery.parseJSON(response);
+                            if(obj.status==1){
+                                //console.log(obj.data);
+                                json2TableTrans(obj.data);
+                            }
+                        }
+                    }
+                });
+            }catch(ex){
+                console.log(ex);
+            }
+        }
+        var data
+        var isTableTransCreated = false;
+        var tableDataTrans;
+        function json2TableTrans(obj){
+            //console.log("indixe object");
+            var len = obj.length;
+            var i = 0;
+            var srn = 1; 
+            var str = "";
+            if(isTableTransCreated){
+                $('#feeTransactionsTable').DataTable().destroy();
+            }
+            while(i<len){
+                str +="\n<tr>";
+                str +="\n<td>"+srn+"</td>";
+                str +=createTd(obj[i]);
+                str +="\n</tr>";
+                i++;
+                srn++;
+            }
+            tableDataTrans = str;
+            if(str!=""){
+                //console.log("str not empty");
+                $("#feeTransactionsBody").html(str);
+                if(!isTableTransCreated){
+                    manageTablePaging("feeTransactionsTable");
+                    isTableTransCreated = true;
+                }else{
+                    //console.log("object "+str);
+                    $('#feeTransactionsTable').DataTable().draw();
+                    $(".dataTables_length").find("select").css("width", "90px");
+                    $(".dataTables_length").find("select").css("display", "inline-block");
+                }
+            }
+        }
+
+    </script>
+
+    <script>
+        function searchInvoice(){
+            try{
+                var academicYear = $("#invoiceYear").val();
+                var term = $("#invoiceTerm").val();
+                var stream = $("#invoiceStream").val();
+                var studentId = $("#invoiceStudentId").val();
+                var studentName = $("#invoiceStudent").val();
+                
+                $.ajax({
+                    url: 'ajax_archive.php',
+                    type: 'post',
+                    data: {
+                        type: "feeInvoice",
+                        AcademicYear:academicYear,
+                        Term:term,
+                        Stream:stream,
+                        StudentID:studentId,
+                        Name:studentName,
+                    },
+                    success: function(response) {
+                        //console.log(response);
+                        if (response) {
+                            var obj = jQuery.parseJSON(response);
+                            if(obj.status==1){
+                                //console.log(obj.data);
+                                json2Table(obj.data);
+                            }
+                        }
+                    }
+                });
+            }catch(ex){
+                console.log(ex);
+            }
+        }
+
+        var isTableCreated = false;
+        function json2Table(obj){
+            var len = obj.length;
+            var i = 0;
+            var srn = 1; 
+            var str = "";
+            if(isTableCreated){
+                $('#feeInvoiceTable').DataTable().destroy();
+            }
+            while(i<len){
+                str +="\n<tr>";
+                str +="\n<td>"+srn+"</td>";
+                str +=createTd(obj[i]);
+                str +="\n</tr>";
+                i++;
+                srn++;
+            }
+            if(str!=""){
+                $("#feeInvoiceBody").html(str);
+                if(!isTableCreated){
+                    manageTablePaging("feeInvoiceTable");
+                    isTableCreated = true;
+                }else{
+                    $('#feeInvoiceTable').DataTable().draw();
+                    $(".dataTables_length").find("select").css("width", "90px");
+                    $(".dataTables_length").find("select").css("display", "inline-block");
+                }
+            }
+        }
+
+        function createTd(obj){
+            var str = "";
+            for( var key in obj ) {
+                var value = obj[key];
+                str +="\n<td>"+value+"</td>";
+                //console.log(value);
+            }
+            return str;
+        }
+    </script>
     <script>
         $(document).ready(function(){
             $(".card-body").removeClass("card-body");
@@ -377,6 +726,7 @@ if ($accessFlag == false) {
             return str;
         }
     </script>
+
     <script>
         $(document).ready(function() {
             $("#btnReportParam").hide();
@@ -391,8 +741,20 @@ if ($accessFlag == false) {
             });
             $(".dataTables_length").find("select").css("width", "90px");
             $(".dataTables_length").find("select").css("display", "inline-block");
-            autosize($('#sql_query'));
         });
+
+        function manageTablePaging(tableid){
+            $('#'+tableid).DataTable({
+                "pageLength": 25,
+                "lengthMenu": [
+                    [10, 25, 50, 250, -1],
+                    [10, 25, 50, 250, "All"]
+                ],
+                "sDom": '<"top"lpf>rt<"bottom"ipf><"clear">'
+            });
+            $(".dataTables_length").find("select").css("width", "90px");
+            $(".dataTables_length").find("select").css("display", "inline-block");
+        }
     </script>
 <?php
 }

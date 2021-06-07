@@ -12,7 +12,7 @@ use Pupilsight\Domain\QueryableGateway;
 
 
 /**
- * School Year Gateway
+ * Helper Gateway
  *
  * @version v17
  * @since   v17
