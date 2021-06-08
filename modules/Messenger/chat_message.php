@@ -154,6 +154,7 @@ $(document).on('change', '#childSel', function() {
       );
   }
     if ($isPostAllow) { ?>
+    
 <!---Chat Post Widget---->
 <div class="card" id='chatPostWidget'>
   <div class="card-body">

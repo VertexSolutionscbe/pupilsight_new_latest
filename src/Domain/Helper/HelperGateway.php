@@ -12,7 +12,7 @@ use Pupilsight\Domain\QueryableGateway;
 
 
 /**
- * School Year Gateway
+ * Helper Gateway
  *
  * @version v17
  * @since   v17
@@ -47,6 +47,13 @@ class HelperGateway extends QueryableGateway
     public function getBasicActiveReport($connection2)
     {
         $sq = "select id,name,header,total_column,description,module,date1,date2,date3,date4,param1,param2,param3,param4,param5,param6,param7,param8 from report_manager where status='2' and module_id<>'archive'";
+        $result = $connection2->query($sq);
+        return $result->fetchAll();
+    }
+
+    public function getArchiveFeeRecipt($connection2)
+    {
+        $sq = "select * from archive_fee_receipt_html order by student_name asc";
         $result = $connection2->query($sq);
         return $result->fetchAll();
     }
