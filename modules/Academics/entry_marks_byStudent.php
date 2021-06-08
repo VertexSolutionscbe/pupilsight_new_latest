@@ -277,9 +277,10 @@
          </span>
       </th>
    <?php } else { ?>
-      <th scope="row"><span class='leftpadding'>
-      <h3><?php echo $s_test['subject'];?></h3>
-         </span>
+      <th scope="row">
+      <strong>
+      <h3 style="color: #354052 !important;"><?php echo $s_test['subject'];?></h3>
+      </strong>
       </th>
    <?php } ?>
       <?php 

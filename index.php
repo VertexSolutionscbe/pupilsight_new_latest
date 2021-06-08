@@ -906,18 +906,18 @@ if ($isLoggedIn) {
             $menuMainItems["Academics"][3] = $testList[3];
         } else if ($roleid == "003" || $roleid == "004") {
             $testList = [];
-            $testList[0] = [
-                "name" => "Elective Group",
-                "url" =>
-                    $session->get("absoluteURL") .
-                    "/index.php?q=/modules/Academics/manage_elective_group.php",
-            ];
+            // $testList[0] = [
+            //     "name" => "Electives",
+            //     "url" =>
+            //         $session->get("absoluteURL") .
+            //         "/index.php?q=/modules/Academics/manage_elective_group.php",
+            // ];
 
-            $testList[1] = [
-                "name" => "Test Results",
+            $testList[0] = [
+                "name" => "Academic Result & Report",
                 "url" =>
                     $session->get("absoluteURL") .
-                    "/index.php?q=/modules/Academics/manage_test_results.php",
+                    "/index.php?q=/modules/Academics/result.php",
             ];
 
             //$menuMainItems["Academics"][0] = $testList[0];

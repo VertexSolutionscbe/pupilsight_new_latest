@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 
-include $_SERVER["DOCUMENT_ROOT"] . "/db.php";
+include $_SERVER["DOCUMENT_ROOT"] . "/pupilsight/db.php";
 
 require __DIR__ . "/moduleFunctions.php";
 
@@ -188,14 +188,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     }
 
                                     $gradeId = '';
-                                    $test_id = 0;
+                                    $test_id = '';
                                     if(!empty($testData)){
                                         $test_id = $testData['testId'];
                                         $gradeSystemId = $testData['gradeSystemId'];
                                         $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
                                     }
 
-                                    if(!empty($marks_obtained)){
+                                    if(!empty($marks_obtained) && !empty($test_id)){
                                         if(!empty($skill_id)){
                                             $data1 = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $pupilsightPersonID, 'skill_id' => $skill_id);
                                             $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND skill_id=:skill_id';
@@ -210,8 +210,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     }
 
 
-                                    
-                                    $sql .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '","' . $skill_id . '","' . $marks_obtained . '","' . $gradeId . '","' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
+                                    if(!empty($test_id)){
+                                        $sql .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '","' . $skill_id . '","' . $marks_obtained . '","' . $gradeId . '","' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
+                                    }
                                 }
                                 $sql = rtrim($sql, ", ");
                                 //  echo $sql;
@@ -260,7 +261,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                         
                                     }
                                     
-                                    $sql1 .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '","' . $skill_id . '","' . $marks_obtained . '","' . $gradeId . '","' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
+                                    if(!empty($test_id)){
+                                        $sql1 .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '","' . $skill_id . '","' . $marks_obtained . '","' . $gradeId . '","' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
+                                    }
                                 }
                                 $sql1 = rtrim($sql1, ", ");
                                 //   echo $sql1;
