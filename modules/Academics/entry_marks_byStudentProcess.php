@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
                                     $remark_own = '';
                                 }
 
-                                if (!empty($marksdata) || $marksdata == '0' || !empty($marks_abex) || !empty($gradeId)) {
+                                if (!empty($marksdata) || $marksdata == '0' || !empty($marks_abex) || !empty($gradeId) || !empty($remark_own)) {
 
                                     // if(!empty($marks_abex) || !empty($gradeId)){
                                     //     $marksdata = '';

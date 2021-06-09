@@ -2032,7 +2032,7 @@ if (isset($_POST['type'])) {
             if(!empty($_POST['testID'])){
                
                 $testID = implode(',', $_POST['testID']);
-                $sqls = 'SELECT a.id,a.test_id,a.pupilsightDepartmentID,a.skill_id,i.subject_display_name as subname,j.name as skill FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum as i ON a.pupilsightDepartmentID =i.pupilsightDepartmentID LEFT JOIN ac_manage_skill as j ON a.skill_id = j.id WHERE a.test_id IN('.$testID.') AND a.is_tested = "1"  GROUP BY a.id  ORDER BY i.pos ASC  ';
+                $sqls = 'SELECT a.id,a.test_id,a.pupilsightDepartmentID,a.skill_id,i.subject_display_name as subname,j.name as skill, et.name as test_name FROM examinationSubjectToTest AS a LEFT JOIN examinationTest as et ON a.test_id = et.id LEFT JOIN subjectToClassCurriculum as i ON a.pupilsightDepartmentID =i.pupilsightDepartmentID LEFT JOIN ac_manage_skill as j ON a.skill_id = j.id WHERE a.test_id IN('.$testID.') AND a.is_tested = "1"  GROUP BY a.id  ORDER BY i.pos ASC, a.id  ';
 
                 $results = $connection2->query($sqls);
                 $rowdatas = $results->fetchAll();
@@ -2043,6 +2043,7 @@ if (isset($_POST['type'])) {
                     foreach ($rowdatas as $cl) {
                         $data .= '<tr><td>
                             <input class="slt_test_1" type ="checkbox" name="subjectSkillId[]" value="' . $cl['test_id'].'-'. $cl['pupilsightDepartmentID'].'-'.$cl['skill_id'] . '">' . " </td>
+                            <td>" . $cl['test_name'] . "</td>
                             <td>" . $cl['subname'] . "</td><td>" . $cl['skill'] . "</td></tr>";
                     }
                 }
