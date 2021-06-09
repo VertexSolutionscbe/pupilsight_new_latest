@@ -431,6 +431,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                                     <option value="">Select Method</option>
                                     <option value="Marks" <?php if($assesment_method == 'Marks') { ?> selected <?php } ?>>Marks</option>
                                     <option value="Grade" <?php if($assesment_method == 'Grade') { ?> selected <?php } ?>>Grade</option>
+                                    <option value="Remarks" <?php if($assesment_method == 'Remarks') { ?> selected <?php } ?>>Remarks</option>
                                 </select>
                             </div>
                         </div>
@@ -716,6 +717,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/subject_to_test.
                                     <option value="">Select Method</option>
                                     <option value="Marks" <?php if($chassesment_method == 'Marks') { ?> selected <?php } ?>>Marks</option>
                                     <option value="Grade" <?php if($chassesment_method == 'Grade') { ?> selected <?php } ?>>Grade</option>
+                                    <option value="Remarks" <?php if($chassesment_method == 'Remarks') { ?> selected <?php } ?>>Remarks</option>
                                 </select>
                             </div>
                         </div>

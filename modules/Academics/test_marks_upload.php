@@ -123,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
         <tbody>
             <tr class="flex flex-col sm:flex-row justify-between content-center p-0">
                 <td colspan="3" class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
-                    <table class="table tablewidth" border="0">
+                    <table class="table tablewidth" border="0" style="margin-top:40px">
                         <thead>
                             <tr>
                                 <th><input type="checkbox" name="checkall" id="checkall_sections" value="on" class="floatNone checkall"></th>
@@ -135,7 +135,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                     </table>
                 </td>
                 <td colspan='2' class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
-                    <table class="table" border="0">
+                    <input type="textbox" class="form-control" style="margin-bottom:5px" id="searchTest" placeholder="Search...">
+                    <table class="table" border="0" >
                         <thead>
                             <tr>
                                 <th><input type="checkbox" name="checkall" id="checkall_tests" value="on" class="floatNone checkall"></th>
@@ -147,10 +148,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                     </table>
                 </td>
                 <td colspan="3" class="w-full  px-2 border-b-0 sm:border-b border-t-0 newdes">
+                    <input type="textbox" class="form-control" style="margin-bottom:5px" id="searchSubject" placeholder="Search...">
                     <table class="table" border="0">
                         <thead>
                             <tr>
                                 <th><input type="checkbox" name="checkall" id="checkall_subject" value="on" class="floatNone checkall"></th>
+                                <th>Test Name</th>
                                 <th>Subject</th>
                                 <th>Skill</th>
                             <tr>
@@ -212,6 +215,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                     $("#checkall_sections").prop("checked", false);
                     $("#checkall_tests").prop("checked", false);
                     $("#checkall_subject").prop("checked", false);
+
+                    // $.ajax({
+                    //     url: 'ajax_data.php',
+                    //     type: 'post',
+                    //     data: {
+                    //         val: id,
+                    //         pupilsightProgramID: pupilsightProgramID,
+                    //         type: 'getCurriculumSubject'
+                    //     },
+                    //     async: true,
+                    //     success: function(response) {
+                    //         $("#subject_display").html('');
+                    //         $("#subject_display").html(response);
+                    //         $("#checkall_subject").prop("checked", false);
+                    //     }
+                    // });
                 }
             });
         }
@@ -283,4 +302,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
     $(document).on('click', '#download_template_test', function() {
         $("#downloadTemplate").submit();
     })
+
+    $("#searchSubject").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#subject_display tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+    $("#searchTest").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#tests_display tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
 </script>

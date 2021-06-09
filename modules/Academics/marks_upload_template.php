@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                 }
 
                 if(!empty($sklName)){
-                    $ssname = $testName.'/'.$subName.' - '.$sklName;
+                    $ssname = $testName.'/'.$subName.' # '.$sklName;
                 } else {
                     $ssname = $testName.'/'.$subName;
                 }

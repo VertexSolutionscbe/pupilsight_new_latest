@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
             if(!empty($headers[$i])){
                 $ds = explode("/",$headers[$i]);
                 $mhead[$pos]["testname"]=trim($ds[0]);
-                $sub = explode("-",$ds[1]);
+                $sub = explode("#",$ds[1]);
                 $mhead[$pos]["subject"]=trim($sub[0]);
                 if(isset($sub[1])){
                     $mhead[$pos]["skill"]=trim($sub[1]);
@@ -157,6 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                     $studentData = getStudentData($pupilsightPersonID, $pupilsightSchoolYearID, $connection2);
                     
                     if(!empty($studentData)){
+                        $pupilsightProgramID = $studentData['pupilsightProgramID'];
                         $pupilsightYearGroupID = $studentData['pupilsightYearGroupID'];
                         $pupilsightRollGroupID = $studentData['pupilsightRollGroupID'];
                         // Marks Entry
@@ -165,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                 $sql = "INSERT INTO examinationMarksEntrybySubject (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remarks,pupilsightPersonIDTaker) VALUES ";
                                 
                                 foreach ($alrow['marks'] as $k => $value) {
-                                    $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $connection2);
+                                    $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $connection2);
                                     $pupilsightDepartmentID = getsubjectID($value['subject'], $pupilsightSchoolYearID, $connection2);
                                     $skill_id = getSkillId($value['skill'], $connection2);
                                     $testname = $value['testname'];
@@ -178,6 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     } else {
                                         $marks_obtained = 0;
                                     }
+                                    $delmarks_obtained = $marks_obtained;
 
                                     if(!empty($value['remarks'])){
                                         $remarks = $value['remarks'];
@@ -191,11 +193,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     $test_id = '';
                                     if(!empty($testData)){
                                         $test_id = $testData['testId'];
-                                        $gradeSystemId = $testData['gradeSystemId'];
-                                        $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
+                                        $gradeSystemId = getGradeSystemIdBySujectandTest($test_id, $pupilsightDepartmentID, $skill_id, $connection2);
+                                        if(!empty($marks_obtained)){
+                                            if(is_numeric($marks_obtained)){
+                                                $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
+                                            } else {
+                                                $gradeId = getGradeIdByName($gradeSystemId, $marks_obtained, $connection2);
+                                                $marks_obtained = '';
+                                            }           
+                                        } else {
+                                            $gradeId = '';
+                                        }
+                                        
                                     }
 
-                                    if(!empty($marks_obtained) && !empty($test_id)){
+                                    if(!empty($delmarks_obtained) && !empty($test_id)){
                                         if(!empty($skill_id)){
                                             $data1 = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $pupilsightPersonID, 'skill_id' => $skill_id);
                                             $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND skill_id=:skill_id';
@@ -215,18 +227,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     }
                                 }
                                 $sql = rtrim($sql, ", ");
-                                //  echo $sql;
-                                //  die();
+                                  echo $sql;
+                                 //die();
                                 $conn->query($sql);
                             } catch (Exception $ex) {
                                 print_r($ex);
                             }
-
+                            
                             try{
                                 $sql1 = "INSERT INTO history_of_students_marks (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remark,pupilsightPersonIDTaker) VALUES ";
                                 
                                 foreach ($alrow['marks'] as $k => $value) {
-                                    $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $connection2);
+                                    $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $connection2);
                                     $pupilsightDepartmentID = getsubjectID($value['subject'], $pupilsightSchoolYearID, $connection2);
                                     $skill_id = getSkillId($value['skill'], $connection2);
                                     $testname = $value['testname'];
@@ -252,9 +264,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     $test_id = 0;
                                     if(!empty($testData)){
                                         $test_id = $testData['testId'];
-                                        $gradeSystemId = $testData['gradeSystemId'];
+                                        $gradeSystemId = getGradeSystemIdBySujectandTest($test_id, $pupilsightDepartmentID, $skill_id, $connection2);
                                         if(!empty($marks_obtained)){
-                                            $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
+                                            if(is_numeric($marks_obtained)){
+                                                $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
+                                            } else {
+                                                $gradeId = getGradeIdByName($gradeSystemId, $marks_obtained, $connection2);
+                                                $marks_obtained = '';
+                                            }           
                                         } else {
                                             $gradeId = '';
                                         }
@@ -274,6 +291,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                 // die();
                             }
                             
+                            
                         }
                     }
                     // die();
@@ -283,27 +301,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
             }
         }
          fclose($handle);
-
+        //die();
         $URL .= '&return=success1';
         header("Location: {$URL}");
     }
 }
 
 function getStudentData($pupilsightPersonID, $pupilsightSchoolYearID, $connection2){
-    $sql = 'SELECT pupilsightYearGroupID, pupilsightRollGroupID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = "'.$pupilsightPersonID.'" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
+    $sql = 'SELECT pupilsightProgramID, pupilsightYearGroupID, pupilsightRollGroupID FROM pupilsightStudentEnrolment WHERE pupilsightPersonID = "'.$pupilsightPersonID.'" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
     $result = $connection2->query($sql);
     $data = $result->fetch();
     $studata = array();
     if(!empty($data)){
+        $studata['pupilsightProgramID'] = $data['pupilsightProgramID'];
         $studata['pupilsightYearGroupID'] = $data['pupilsightYearGroupID'];
         $studata['pupilsightRollGroupID'] = $data['pupilsightRollGroupID'];
         return $studata;
     }
 }
 
-function getTestId($value, $pupilsightSchoolYearID, $connection2){
-    
-    $sql = 'SELECT id, gradeSystemId FROM examinationTest WHERE name = "'.$value.'" AND pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" ';
+function getTestId($value, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $connection2){
+    $sql = 'SELECT a.id, a.gradeSystemId FROM examinationTest AS a LEFT JOIN examinationTestAssignClass AS b ON a.id = b.test_id WHERE a.name = "'.$value.'" AND a.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND b.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND b.pupilsightProgramID = "'.$pupilsightProgramID.'" AND b.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" AND b.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"  ';
     $result = $connection2->query($sql);
     $data = $result->fetch();
     $testData = array();
@@ -345,3 +363,25 @@ function getGradeId($gradeSystemId, $marks_obtained, $connection2){
     
 }
 
+function getGradeIdByName($gradeSystemId, $grade_name, $connection2){
+    $sql = 'SELECT grade_name,id, subject_status FROM examinationGradeSystemConfiguration  WHERE gradeSystemId="' . $gradeSystemId . '" AND grade_name="' . $grade_name . '" ';
+    $result = $connection2->query($sql);
+    $grade = $result->fetch();
+    if(!empty($grade)){
+        return $grade['id'];
+    }
+    
+}
+
+function getGradeSystemIdBySujectandTest($test_id, $pupilsightDepartmentID, $skill_id, $connection2){
+    $sql = 'SELECT gradeSystemId FROM examinationSubjectToTest WHERE test_id ="' . $test_id . '" AND pupilsightDepartmentID ="' . $pupilsightDepartmentID . '" AND is_tested = "1" ';
+    if(!empty($skill_id)){
+        $sql .= ' AND skill_id = "'.$skill_id.'" ';
+    }
+
+    $result = $connection2->query($sql);
+    $grade = $result->fetch();
+    if(!empty($grade)){
+        return $grade['gradeSystemId'];
+    }
+}

@@ -1618,8 +1618,18 @@ if ($type == 'getSection_checkbox') {
 }
 
 if ($type == 'getSection_checkbox_td') {
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
     $cid = $val;
-    $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightYearGroupID = "' . $cid . '" GROUP BY a.pupilsightRollGroupID';
+    $pid = $_POST['pupilsightProgramID'];
+    if ($roleId == '2') {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
+    } else {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
+    }
+
     $result = $connection2->query($sql);
     $sections = $result->fetchAll();
     $data = ' ';
@@ -4380,4 +4390,25 @@ if($type == 'checkOtpForContractForm'){
     } else {
         echo 'fail';
     }
+}
+
+if($type == 'getCurriculumSubject'){
+    $pupilsightYearGroupID = $val;
+    $pupilsightProgramID = $_POST['pupilsightProgramID'];
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
+    $sqls = 'SELECT a.id,a.test_id,a.pupilsightDepartmentID,a.skill_id,i.subject_display_name as subname,j.name as skill FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum as i ON a.pupilsightDepartmentID =i.pupilsightDepartmentID LEFT JOIN ac_manage_skill as j ON a.skill_id = j.id WHERE a.test_id IN('.$testID.') AND a.is_tested = "1"  GROUP BY a.id  ORDER BY i.pos ASC  ';
+
+    $results = $connection2->query($sqls);
+    $rowdatas = $results->fetchAll();
+    if (!empty($rowdatas)) {
+        foreach ($rowdatas as $cl) {
+            $data .= '<tr><td>
+                <input class="slt_test_1" type ="checkbox" name="subjectSkillId[]" value="' . $cl['test_id'].'-'. $cl['pupilsightDepartmentID'].'-'.$cl['skill_id'] . '">' . " </td>
+                <td>" . $cl['subname'] . "</td><td>" . $cl['skill'] . "</td></tr>";
+        }
+    } else {
+        $data .= "<tr><td colspan='3'>No data</td></tr>";
+    }
+    echo $data;
 }

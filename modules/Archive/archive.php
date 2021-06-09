@@ -295,6 +295,7 @@ if ($accessFlag == false) {
                                     <th>Fee Item Tax</th>
                                     <th>Fee Item Final Amount</th>
                                     <th>Fee Item Order</th>
+                                    <th>Fee Head</th>
                                 </tr>
                             </thead>
                             <tbody id='feeInvoiceBody'></tbody>
