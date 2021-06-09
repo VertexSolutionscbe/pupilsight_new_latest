@@ -30,7 +30,7 @@ class CalendarGateway extends QueryableGateway
     }
 
     public function listEvent($con){
-        $sq = "SELECT e.*, et.* FROM calendar_event as e, calendar_event_type as et ";
+        $sq = "SELECT e.*, et.title as event_type_title FROM calendar_event as e, calendar_event_type as et ";
         $sq .= "where e.event_type_id = et.id ";
         $sq .= "order by e.id desc ";
         $result = $con->query($sq);
