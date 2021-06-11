@@ -496,6 +496,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     if ($sf['field_name'] == 'fatherName') {
                         $table->addColumn('fatherName', __('Father Name'));
                     }
+
+                    if ($sf['field_name'] == 'fatherUserName') {
+                        $table->addColumn('fatherUserName', __('Father Username'));
+                    }
+
                     if ($sf['field_name'] == 'fatherEmail') {
                         $table->addColumn('fatherEmail', __('Father Email'));
                     }
@@ -504,6 +509,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     }
                     if ($sf['field_name'] == 'motherName') {
                         $table->addColumn('motherName', __('Mother Name'));
+                    }
+                    if ($sf['field_name'] == 'motherUserName') {
+                        $table->addColumn('motherUserName', __('Mother Username'));
                     }
                     if ($sf['field_name'] == 'motherEmail') {
                         $table->addColumn('motherEmail', __('Mother Email'));
@@ -563,9 +571,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $table->addColumn('languageThird', __('Third Language'));
                 $table->addColumn('religion', __('Religion'));
                 $table->addColumn('fatherName', __('Father Name'));
+                $table->addColumn('fatherUserName', __('Father Username'));
                 $table->addColumn('fatherEmail', __('Father Email'));
                 $table->addColumn('fatherPhone', __('Father Phone'));
                 $table->addColumn('motherName', __('Mother Name'));
+                $table->addColumn('motherUserName', __('Mother Username'));
                 $table->addColumn('motherEmail', __('Mother Email'));
                 $table->addColumn('motherPhone', __('Mother Phone'));
             }

@@ -448,7 +448,8 @@ print_r($rs);
             ->leftJoin('pupilsightFamilyRelationship AS m', 'pupilsightPerson.pupilsightPersonID=m.pupilsightPersonID2')
             ->leftJoin('pupilsightPerson AS b', 'm.pupilsightPersonID1=b.pupilsightPersonID')
 
-            ->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ');
+            ->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ')
+            ->where('pupilsightPerson.is_delete = "0" ');
         if (!empty($input['pupilsightProgramID'])) {
             $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "' . $input['pupilsightProgramID'] . '" ');
         }
@@ -478,7 +479,8 @@ print_r($rs);
         }
         if (!empty($input['simplesearch']) && empty($input['searchfield'])) {
             $search = $input['simplesearch'];
-            $query->where('pupilsightPerson.officialName LIKE "%' . $search . '%" ')
+            $query->where('pupilsightPerson.is_delete = "0" ')
+                ->where('pupilsightPerson.officialName LIKE "%' . $search . '%" ')
                 ->orwhere('pupilsightPerson.pupilsightPersonID = "' . $search . '" ')
                 ->orwhere('pupilsightPerson.admission_no = "' . $search . '" ');
             //->orwhere('a.officialName  LIKE "%'.$search.'%" ')

@@ -163,7 +163,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                         // Marks Entry
                         if(!empty($alrow['marks'])){
                             try {
-                                $sql = "INSERT INTO examinationMarksEntrybySubject (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remarks,pupilsightPersonIDTaker) VALUES ";
+                                $sql ='SET sql_mode = "" ;';
+                                $sql .= "INSERT INTO examinationMarksEntrybySubject (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remarks,pupilsightPersonIDTaker) VALUES ";
                                 
                                 foreach ($alrow['marks'] as $k => $value) {
                                     $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $connection2);
@@ -227,15 +228,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     }
                                 }
                                 $sql = rtrim($sql, ", ");
-                                  echo $sql;
-                                 //die();
+                                //   echo $sql;
+                                //  die();
                                 $conn->query($sql);
                             } catch (Exception $ex) {
                                 print_r($ex);
                             }
                             
                             try{
-                                $sql1 = "INSERT INTO history_of_students_marks (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remark,pupilsightPersonIDTaker) VALUES ";
+                                $sql1 ='SET sql_mode = "" ;';
+                                $sql1 .= "INSERT INTO history_of_students_marks (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remark,pupilsightPersonIDTaker) VALUES ";
                                 
                                 foreach ($alrow['marks'] as $k => $value) {
                                     $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $connection2);
@@ -279,6 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     }
                                     
                                     if(!empty($test_id)){
+                                        
                                         $sql1 .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '","' . $skill_id . '","' . $marks_obtained . '","' . $gradeId . '","' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
                                     }
                                 }
