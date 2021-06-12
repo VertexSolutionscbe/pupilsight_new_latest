@@ -8,7 +8,7 @@ use Pupilsight\Tables\DataTable;
 
 
 
-include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
+include $_SERVER["DOCUMENT_ROOT"] . '/pupilsight/db.php';
 
 
 require __DIR__ . '/moduleFunctions.php';

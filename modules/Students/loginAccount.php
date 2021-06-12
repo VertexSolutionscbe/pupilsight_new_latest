@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
             -- LEFT JOIN pupilsightFamilyAdult as adult2 ON adult2.pupilsightFamilyID=child.pupilsightFamilyID AND adult2.contactPriority=2 
             -- LEFT JOIN pupilsightPerson as parent2 ON parent2.pupilsightPersonID=adult2.pupilsightPersonID AND parent2.status='Full' 
             
-            WHERE  b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID IN (" . $classIds . ") GROUP BY a.pupilsightPersonID ORDER BY a.pupilsightPersonID DESC ";
+            WHERE  a.is_delete = '0' AND b.pupilsightProgramID = " . $pupilsightProgramID . " AND b.pupilsightSchoolYearID = " . $pupilsightSchoolYearID . " AND b.pupilsightYearGroupID IN (" . $classIds . ") GROUP BY a.pupilsightPersonID ORDER BY a.pupilsightPersonID DESC ";
             //echo $sqle;
             // die();
             $resulte = $connection2->query($sqle);
@@ -183,17 +183,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                 <!-- <th colspan="4" style="text-align:center;">Guardian</th> -->
             </tr>
             <tr>
-                <th><input type="checkbox" class="chkAll"></th>
+                <th class="no-sort"><input type="checkbox" class="chkAll"></th>
                 <th>Name</th>
                 <th>Login Id</th>
                 <th>Status</th>
 
-                <th><input type="checkbox" class="chkAllFather"></th>
+                <th class="no-sort"><input type="checkbox" class="chkAllFather"></th>
                 <th>Name</th>
                 <th>Login Id</th>
                 <th>Status</th>
 
-                <th><input type="checkbox" class="chkAllMother"></th>
+                <th class="no-sort"><input type="checkbox" class="chkAllMother"></th>
                 <th>Name</th>
                 <th>Login Id</th>
                 <th>Status</th>
@@ -277,7 +277,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
 <script>
     $(function(){
         $("#historyTable").dataTable({
-            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]]
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+            "columnDefs": [ {
+                "targets"  : 'no-sort',
+                "orderable": false,
+            }],
         });
     })
     $("#start_date").datepicker({

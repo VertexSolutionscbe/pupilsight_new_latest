@@ -7,6 +7,8 @@ use Pupilsight\Forms\DatabaseFormFactory;
 use Pupilsight\Forms\Form;
 use Pupilsight\Tables\DataTable;
 use Pupilsight\Services\Format;
+use Pupilsight\Domain\Helper\HelperGateway;
+
 ini_set('max_execution_time', 7200);
 if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_entry_by_subject.php') == false) {
     //Acess denied
@@ -15,6 +17,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     echo '</div>';
 } else {
     //Proceed!
+    $HelperGateway = $container->get(HelperGateway::class);
+
     $page->breadcrumbs->add(__('Marks Entry By Subject'));
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -30,6 +34,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
         $pupilsightSchoolYearName = $_SESSION[$guid]['pupilsightSchoolYearName'];
     }
+
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
 
     $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
     $resultp = $connection2->query($sqlp);
@@ -101,8 +108,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             $test2[$ts['id']] = $ts['name'];
         }
         $testarr+=  $test2; 
+        $subjects=array();  
+        if ($roleId == '2') {
+            $classes =  $HelperGateway->getClassByProgramForAcademic($connection2, $pupilsightProgramID, $uid, $pupilsightSchoolYearID);
+            $sections =  $HelperGateway->getSectionByProgramForAcademic($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
+
+            $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND subjectToClassCurriculum.pupilsightProgramID = '" . $pupilsightProgramID . "' AND subjectToClassCurriculum.pupilsightYearGroupID ='" . $pupilsightYearGroupID . "' AND pupilsightStaff.pupilsightPersonID='" . $uid . "' order by subjectToClassCurriculum.subject_display_name asc";
+            $resultd = $connection2->query($sq);
+            $rowdatadept = $resultd->fetchAll();
+            
+            $subject2=array();  
+            // $subject1=array(''=>'Select Subjects');
+            foreach ($rowdatadept as $dt) {
+                $subject2[$dt['pupilsightDepartmentID']] = $dt['subject_display_name'];
+            }
+            $subjects=  $subject2; 
+        } else {
+            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
+            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
+
+            $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND pupilsightProgramID = '" . $pupilsightProgramID . "' AND pupilsightYearGroupID ='" . $pupilsightYearGroupID . "' order by subject_display_name asc";
+            $resultd = $connection2->query($sq);
+            $rowdatadept = $resultd->fetchAll();
+            
+            $subject2=array();  
+            foreach ($rowdatadept as $dt) {
+                $subject2[$dt['pupilsightDepartmentID']] = $dt['subject_display_name'];
+            }
+            $subjects=  $subject2; 
+        }
+
     } else {
-           $pupilsightProgramID =  '';
+        $classes = array('' => 'Select Class');
+        $sections = array('' => 'Select Section');
+        $subjects=array();  
+        $pupilsightProgramID =  '';
         //   $pupilsightSchoolYearIDpost = $pupilsightSchoolYearID;
         $pupilsightYearGroupID = '';
         $pupilsightRollGroupID = '';
@@ -128,17 +168,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $subject2[$dr['id']] = $dr['description'];
     }
     $remarks=  $remark2;  
-    //select subjects from department
-    $sqld = 'select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightYearGroupID ="'.$pupilsightYearGroupID.'" order by subject_display_name asc ';
-    $resultd = $connection2->query($sqld);
-    $rowdatadept = $resultd->fetchAll();
-    $subjects=array();  
-    $subject2=array();  
-    // $subject1=array(''=>'Select Subjects');
-    foreach ($rowdatadept as $dt) {
-        $subject2[$dt['pupilsightDepartmentID']] = $dt['subject_display_name'];
-    }
-    $subjects=  $subject2; 
+    
+    
     //$test_types=array('' =>'Select test type','Term1'=>'Term 1','Term2');
     //$test_types = array(__('Select') => array ('Term1' => __('Term 1'), 'Term2' => __('Term 2')));
 
@@ -169,19 +200,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     }
     $skills+=  $skills2;     
 
-    $cls_sql='SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "'.$pupilsightProgramID.'" GROUP BY a.pupilsightYearGroupID';
-    $cls_res = $connection2->query($cls_sql);
-    $cls_res1 = $cls_res->fetchAll();
-
-    $s_sql='SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" GROUP BY a.pupilsightRollGroupID';
-    $s_res = $connection2->query($s_sql);
-    $s_res1 = $s_res->fetchAll();
-    $section=array ('' => __('Select'));  
-    $section1=array(); 
-    foreach ($s_res1 as $s) {
-        $section1[$s['pupilsightRollGroupID']] = $s['name'];
-    }
-    $section+=  $section1;
 
     $searchform = Form::create('searchForm', '');
     $searchform->setFactory(DatabaseFormFactory::create($pdo));
@@ -190,28 +208,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     $row = $searchform->addRow();
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
-    $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder('Select Program');
+    $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPPbyMarks')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder('Select Program');
 
     $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('pupilsightProgramIDbyPP', __('Class *'));
-    //$col->addSelectYearGroup('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->selected($pupilsightYearGroupID)->required()->placeholder('Select Class');
-    $option='<option value="">Select class</option>';
-    foreach ($cls_res1 as $val) {
-        $slt='';
-        if($val['pupilsightYearGroupID']==$pupilsightYearGroupID){
-          $slt="selected";
-        }
-     $option.="<option value='".$val['pupilsightYearGroupID']."' ".$slt.">".$val['name']."</option>";
-    }
-     $col->addContent('<select class=" w-full"   id="pupilsightYearGroupIDbyPP" name="pupilsightYearGroupID"  required>'.$option.'</select>');
+    $col->addLabel('pupilsightYearGroupID', __('Class'));
+     $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPPbyMarks')->fromArray($classes)->selected($pupilsightYearGroupID)->required()->placeholder('Select Class');
+
+     
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightRollGroupID', __('Section'));
-    $col->addSelect('pupilsightRollGroupID')->fromArray($section1)->setId('pupilsightRollGroupIDbyPP')->required()->placeholder('Select Section')->selected($pupilsightRollGroupID);
-    //$col->addSelectRollGroup('pupilsightRollGroupID', $pupilsightSchoolYearID)->setId('pupilsightRollGroupIDbyPP')->selected($pupilsightRollGroupID)->required()->placeholder('Select Section');
+    $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPPbyMarks')->fromArray($sections)->required()->selected($pupilsightRollGroupID)->placeholder('Select Section');
+
+
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightDepartmentID', __('Subjects'));
-    $col->addSelect('pupilsightDepartmentID')->setId('pupilsightDepartmentIDbyPP')->fromArray($subjects)->required()->selected($pupilsightDepartmentID)->placeholder()->required();
+    $col->addSelect('pupilsightDepartmentID')->setId('pupilsightDepartmentIDbyPPbyMarks')->fromArray($subjects)->required()->selected($pupilsightDepartmentID)->placeholder()->required();
       $col = $row->addColumn()->setClass('newdes');
+
     $col->addLabel('skill_id', 'Skill');
     //$col->addSelect('skill_id')->fromArray($skillsdata)->selected($skill_id)->required();
     $col->addSelect('skill_id')->fromArray($skillsdata)->selected($skill_id);
@@ -238,7 +251,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         ->pageSize(1000)
         ->fromPOST();
         //print_r($criteria);
-    $students = $CurriculamGateway->getstudent_subject_skill_test_mappingdata($criteria, $pupilsightSchoolYearID, $pupilsightProgramID,$pupilsightYearGroupID, $pupilsightRollGroupID,$pupilsightDepartmentID,$skill_id,$test_id1,$test_type);
+
+    $chkelectSubsql = 'SELECT a.id FROM ac_elective_group AS a LEFT JOIN ac_elective_group_subjects AS b ON a.id = b.ac_elective_group_id WHERE a.pupilsightSchoolYearID = "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'" AND b.pupilsightDepartmentID = "'.$pupilsightDepartmentID.'" ';
+    $resChk= $connection2->query($chkelectSubsql);
+    $chkEleSubData = $resChk->fetch();
+    if(!empty($chkEleSubData)){
+       $chkEleSub = $chkEleSubData['id'];
+    } else {
+       $chkEleSub = '';
+    }
+
+
+    $students = $CurriculamGateway->getstudent_subject_skill_test_mappingdata($criteria, $pupilsightSchoolYearID, $pupilsightProgramID,$pupilsightYearGroupID, $pupilsightRollGroupID,$pupilsightDepartmentID,$skill_id,$test_id1,$test_type, $chkEleSub);
 
     $subject_wise_tests =  $CurriculamGateway->getStudentTestSubjectClassWise($criteria,$pupilsightSchoolYearID,$pupilsightDepartmentID,$pupilsightYearGroupID,$pupilsightRollGroupID,$test_id1);
 
@@ -778,14 +802,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         var roleid= $("#roleid").val();
         var pupilsightPersonID = $("#roleid").attr('data-pid');
         
-        $("#pupilsightYearGroupIDbyPP").change(function() {
+        $("#pupilsightYearGroupIDbyPPbyMarks").change(function() {
             loadSubjects();
         });
         
 
         function loadSubjects() {
-            var pupilsightProgramID = $("#pupilsightProgramIDbyPP").val();
-            var pupilsightYearGroupID = $("#pupilsightYearGroupIDbyPP").val();
+            var pupilsightProgramID = $("#pupilsightProgramIDbyPPbyMarks").val();
+            var pupilsightYearGroupID = $("#pupilsightYearGroupIDbyPPbyMarks").val();
             //var roleid= $("#roleid").val();
             if (pupilsightYearGroupID) {
                 var type = "getSubjectbasedonclassNew";
@@ -801,9 +825,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         },
                         async: true,
                         success: function(response) {
-                            $("#pupilsightDepartmentIDbyPP").html(response);
+                            $("#pupilsightDepartmentIDbyPPbyMarks").html(response);
                             if (reloadCall) {
-                                $("#pupilsightDepartmentIDbyPP").val(_pupilsightDepartmentID);
+                                $("#pupilsightDepartmentIDbyPPbyMarks").val(_pupilsightDepartmentID);
                               
                             }
                         }
@@ -926,6 +950,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         $('.double-scroll').doubleScroll();
     });
 
-
+    
      
 </script>

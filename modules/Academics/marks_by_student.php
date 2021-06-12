@@ -23,6 +23,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
     $page->breadcrumbs->add(__('Marks Entry By Student'));
     
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
 
     $sqlterm = 'SELECT * FROM pupilsightSchoolYearTerm WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' ORDER BY pupilsightSchoolYearTermID ASC';
     $resultterm = $connection2->query($sqlterm);
@@ -62,8 +64,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
             $test_id  =  $_POST['test_id'];
             $testId  =  $_POST['test_id'];
     
-            $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
-            $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
+            if ($roleId == '2') {
+                $classes =  $HelperGateway->getClassByProgramForAcademic($connection2, $pupilsightProgramID, $uid, $pupilsightSchoolYearID);
+                $sections =  $HelperGateway->getSectionByProgramForAcademic($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
+            } else {
+                $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
+                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
+            }
             $test_type=$_POST['test_type'];
 
             $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'" AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
@@ -84,8 +91,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
                 $test_id  =  explode(',',$_GET['tid']);
                 $testId  =  explode(',',$_GET['tid']);
                 
-                $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
-                $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
+
+                if ($roleId == '2') {
+                    $classes =  $HelperGateway->getClassByProgramForAcademic($connection2, $pupilsightProgramID, $uid, $pupilsightSchoolYearID);
+                    $sections =  $HelperGateway->getSectionByProgramForAcademic($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
+                } else {
+                    $classes =  $HelperGateway->getClassByProgram($connection2, $pupilsightProgramID, $pupilsightSchoolYearID);
+                    $sections =  $HelperGateway->getSectionByProgram($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $pupilsightSchoolYearID);
+                }
                 //$test_type=$_POST['test_type'];
 
                 $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID ="'.$pupilsightYearGroupID.'" AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
@@ -119,17 +132,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightProgramID', __('Program'));
-    $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder('Select Program');
+    $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPPbyMarks')->fromArray($program)->selected($pupilsightProgramID)->required()->placeholder('Select Program');
 
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightYearGroupID', __('Class'));
-     $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->required()->placeholder('Select Class');
+     $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPPbyMarks')->fromArray($classes)->selected($pupilsightYearGroupID)->required()->placeholder('Select Class');
 
      
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('pupilsightRollGroupID', __('Section'));
-    $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->required()->selected($pupilsightRollGroupID)->placeholder('Select Section');
+    $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPPbyMarks')->fromArray($sections)->required()->selected($pupilsightRollGroupID)->placeholder('Select Section');
 
     $col = $row->addColumn()->setClass('newdes');   
     $col->addLabel('test_type', __('Test Type'));
@@ -203,10 +216,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
       	});
     });
 
-    $(document).on('change', '#pupilsightRollGroupIDbyPP', function() {
+    $(document).on('change', '#pupilsightRollGroupIDbyPPbyMarks', function() {
         var id = $(this).val();
-        var cid = $('#pupilsightYearGroupIDbyPP').val();
-        var pid = $('#pupilsightProgramIDbyPP').val();
+        var cid = $('#pupilsightYearGroupIDbyPPbyMarks').val();
+        var pid = $('#pupilsightProgramIDbyPPbyMarks').val();
         var type = 'getTestBySection';
         $('#testId').selectize()[0].selectize.destroy();
         $.ajax({

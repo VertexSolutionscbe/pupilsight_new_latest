@@ -9752,3 +9752,74 @@ $(document).on('click', '#updateAdmissionInvoiceStnButton', function () {
 
     }
 });
+
+$(document).ready(function () {
+    $('#checkall').parent().parent().parent().addClass('no-sort');
+});
+
+$(document).on('change', '#pupilsightProgramIDbyPPbyMarks', function () {
+    var id = $(this).val();
+    var type = 'getClassForAcademic';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type },
+        async: true,
+        success: function (response) {
+            $("#pupilsightYearGroupIDbyPPbyMarks").html();
+            $("#pupilsightYearGroupIDbyPPbyMarks").html(response);
+        }
+    });
+});
+
+$(document).on('change', '#pupilsightYearGroupIDbyPPbyMarks', function () {
+    var id = $(this).val();
+    var pid = $('#pupilsightProgramIDbyPPbyMarks').val();
+    var type = 'getSectionForAcademic';
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, pid: pid },
+        async: true,
+        success: function (response) {
+            $("#pupilsightRollGroupIDbyPPbyMarks").html();
+            $("#pupilsightRollGroupIDbyPPbyMarks").html(response);
+        }
+    });
+});
+
+$(document).on('change', '#pupilsightDepartmentIDbyPPbyMarks', function () {
+    var id = $(this).val();
+    var pid = $('#pupilsightProgramIDbyPPbyMarks').val();
+    var cid = $('#pupilsightYearGroupIDbyPPbyMarks').val();
+    var sid = $('#pupilsightRollGroupIDbyPPbyMarks').val();
+    var type = 'getSkillBySubject';
+    $('#testId').selectize()[0].selectize.destroy();
+    $.ajax({
+        url: 'ajax_data.php',
+        type: 'post',
+        data: { val: id, type: type, pid: pid, cid: cid, sid: sid },
+        async: true,
+        success: function (response) {
+            $('#skill_id').empty();
+            $('#skill_id').append(response);
+            //$('#pupilsightClassID').multiselect('rebuild');
+            var ntype = 'getTestBySubject';
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: { val: id, type: ntype, pid: pid, cid: cid, sid: sid },
+                async: true,
+                success: function (response) {
+                    $("#testId").html();
+                    $("#testId").html(response);
+                    $("#testId").parent().children('.LV_validation_message').remove();
+                    $('#testId').selectize({
+                        plugins: ['remove_button'],
+                    });
+                }
+            });
+        }
+    });
+
+});

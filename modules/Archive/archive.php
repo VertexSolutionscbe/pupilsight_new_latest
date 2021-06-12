@@ -599,6 +599,10 @@ if ($accessFlag == false) {
             }
             if(str!=""){
                 $("#feeInvoiceBody").html(str);
+
+                $('#feeInvoiceBody').find('tr').find('td:nth-child(33)').remove();
+                $('#feeInvoiceBody').find('tr').find('td:nth-child(34)').remove();
+                $('#feeInvoiceBody').find('tr').find('td:last').remove();
                 if(!isTableCreated){
                     manageTablePaging("feeInvoiceTable");
                     isTableCreated = true;

@@ -168,6 +168,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 <td>Father Name</td>
             </tr>
             <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="fatherUserName" <?php if (in_array("fatherUserName", $field)) { ?> checked <?php } ?>></td>
+                <td>Father UserName</td>
+            </tr>
+            <tr>
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="fatherEmail" <?php if (in_array("fatherEmail", $field)) { ?> checked <?php } ?>></td>
                 <td>Father Email</td>
             </tr>
@@ -178,6 +182,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             <tr>
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="motherName" <?php if (in_array("motherName", $field)) { ?> checked <?php } ?>></td>
                 <td>Mother Name</td>
+            </tr>
+            <tr>
+                <td><input type="checkbox" class="chkChild" name="field_name[]" value="motherUserName" <?php if (in_array("motherUserName", $field)) { ?> checked <?php } ?>></td>
+                <td>Mother UserName</td>
             </tr>
             <tr>
                 <td><input type="checkbox" class="chkChild" name="field_name[]" value="motherEmail" <?php if (in_array("motherEmail", $field)) { ?> checked <?php } ?>></td>
