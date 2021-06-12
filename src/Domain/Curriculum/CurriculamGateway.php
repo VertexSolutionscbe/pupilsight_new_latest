@@ -442,7 +442,7 @@ class CurriculamGateway extends QueryableGateway
         return $this->runQuery($query, $criteria, TRUE);
     }
 
-    public function getstudent_subject_skill_test_mappingdata(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $pupilsightDepartmentID, $skill_id, $test_id, $test_type)
+    public function getstudent_subject_skill_test_mappingdata(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $pupilsightDepartmentID, $skill_id, $test_id, $test_type, $chkEleSub)
     {
         $pupilsightRoleIDAll = '003';
         $query = $this
@@ -454,6 +454,9 @@ class CurriculamGateway extends QueryableGateway
             ->leftJoin('pupilsightStudentEnrolment', 'pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
             ->leftJoin('pupilsightRollGroup', 'pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
             ->leftJoin('pupilsightYearGroup', 'pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
+            if(!empty($chkEleSub)){
+                $query->leftJoin('assign_elective_subjects_tostudents', 'pupilsightPerson.pupilsightPersonID=assign_elective_subjects_tostudents.pupilsightPersonID');
+            }
         // ->leftJoin('subjectToClassCurriculum', 'subjectToClassCurriculum.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
         // ->leftJoin('subjectSkillMapping', 'subjectSkillMapping.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID');
         if (!empty($pupilsightProgramID)) {
@@ -468,6 +471,11 @@ class CurriculamGateway extends QueryableGateway
         if (!empty($pupilsightRollGroupID)) {
             $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" ');
         }
+
+        if(!empty($chkEleSub)){
+            $query->where('assign_elective_subjects_tostudents.ac_elective_group_id = "' . $chkEleSub . '" ')
+            ->where('assign_elective_subjects_tostudents.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ');
+        }
         /*   if (!empty($pupilsightDepartmentID)) {
             $query->where('subjectToClassCurriculum.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ');
         }
@@ -478,7 +486,7 @@ class CurriculamGateway extends QueryableGateway
         $query->where('pupilsightPerson.pupilsightRoleIDAll = "' . $pupilsightRoleIDAll . '" ')
             ->groupBy(['pupilsightPerson.pupilsightPersonID'])
             ->orderBy(['pupilsightPerson.pupilsightPersonID ASC']);
-        // echo $query;    
+         //echo $query;    
         $res = $this->runQuery($query, $criteria);
         $data = $res->data;
 

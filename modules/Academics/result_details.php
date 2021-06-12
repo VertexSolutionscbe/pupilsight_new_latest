@@ -136,6 +136,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
                         $subName = $subdata['subject_display_name'];
                         $style = '';
                     }
+
+                    if(!empty($mksData['marks_obtained']) && $mksData['marks_obtained'] != '0.00'){
+                        $marksObtained = floatval($mksData['marks_obtained']);
+                    } else {
+                        $marksObtained = '';
+                    }
     ?>
                     <tr>
                     <?php if($sbd['kountData'] >= 1){?>
@@ -143,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
                     <?php } else { ?>
                         <td <?php echo $style;?>><h3><?php echo $subName;?></h3></td>
                     <?php } ?>
-                        <td><?php echo $mksData['marks_obtained'];?></td>
+                        <td><?php echo $marksObtained;?></td>
                         <td><?php echo $grade_name;?></td>
                         <td><?php echo $mksData['remarks'];?></td>
                     </tr>

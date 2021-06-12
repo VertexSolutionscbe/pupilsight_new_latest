@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
             <table class="table" id="historyTable">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" class="chkAll"></th>
+                        <th class="no-sort"><input type="checkbox" class="chkAll"></th>
                         <th>Name</th>
                         <th>Login Id</th>
                         <th>Status</th>
@@ -207,6 +207,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
                 [10, 25, 50, 250, -1],
                 [10, 25, 50, 250, "All"]
             ],
+            "columnDefs": [ {
+                "targets"  : 'no-sort',
+                "orderable": false,
+            }],
             "sDom": '<"top"lfpi>rt<"bottom"ifp><"clear">'
         });
         //$("#historyTable").dataTable();

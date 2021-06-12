@@ -183,17 +183,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                 <!-- <th colspan="4" style="text-align:center;">Guardian</th> -->
             </tr>
             <tr>
-                <th><input type="checkbox" class="chkAll"></th>
+                <th class="no-sort"><input type="checkbox" class="chkAll"></th>
                 <th>Name</th>
                 <th>Login Id</th>
                 <th>Status</th>
 
-                <th><input type="checkbox" class="chkAllFather"></th>
+                <th class="no-sort"><input type="checkbox" class="chkAllFather"></th>
                 <th>Name</th>
                 <th>Login Id</th>
                 <th>Status</th>
 
-                <th><input type="checkbox" class="chkAllMother"></th>
+                <th class="no-sort"><input type="checkbox" class="chkAllMother"></th>
                 <th>Name</th>
                 <th>Login Id</th>
                 <th>Status</th>
@@ -278,7 +278,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
     $(function(){
         $("#historyTable").dataTable({
             "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-            "ordering": false
+            "columnDefs": [ {
+                "targets"  : 'no-sort',
+                "orderable": false,
+            }],
         });
     })
     $("#start_date").datepicker({

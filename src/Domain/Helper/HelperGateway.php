@@ -587,4 +587,37 @@ class HelperGateway extends QueryableGateway
         return $classes;
     }
 
+    public function getClassByProgramForAcademic($connection2, $pupilsightProgramID, $uid) {
+        $sql = 'SELECT b.*, c.name FROM assignstaff_toclasssection AS a LEFT JOIN pupilsightProgramClassSectionMapping AS b ON a.pupilsightMappingID = b.pupilsightMappingID LEFT JOIN pupilsightYearGroup AS c ON b.pupilsightYearGroupID = c.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND b.pupilsightProgramID = "' . $pupilsightProgramID . '" GROUP BY b.pupilsightYearGroupID';
+
+        $result = $connection2->query($sql);
+        $classesdata = $result->fetchAll();
+
+        $classes = array();
+        $classes2 = array();
+        $classes1 = array('' => 'Select Class');
+        foreach ($classesdata as $ct) {
+            $classes2[$ct['pupilsightYearGroupID']] = $ct['name'];
+        }
+        $classes = $classes1 + $classes2;
+        return $classes;
+    }
+
+    public function getSectionByProgramForAcademic($connection2, $pupilsightYearGroupID, $pupilsightProgramID, $uid) {
+        
+        $sql = 'SELECT b.*, c.name FROM assignstaff_toclasssection AS a LEFT JOIN pupilsightProgramClassSectionMapping AS b ON a.pupilsightMappingID = b.pupilsightMappingID LEFT JOIN pupilsightRollGroup AS c ON b.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND b.pupilsightProgramID = "' . $pupilsightProgramID . '" AND b.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '"  GROUP BY b.pupilsightRollGroupID';
+
+        $result = $connection2->query($sql);
+        $sectionsdata = $result->fetchAll();
+
+        $sections = array();
+        $sections2 = array();
+        $sections1 = array('' => 'Select Section');
+        foreach ($sectionsdata as $ct) {
+            $sections2[$ct['pupilsightRollGroupID']] = $ct['name'];
+        }
+        $sections = $sections1 + $sections2;
+        return $sections;
+    }
+
 }

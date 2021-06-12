@@ -354,20 +354,23 @@
          // $grade_ids = explode(',', $s_test['grade_ids']);
          // $grade_arr = array_combine($grade_ids, $test_grades);
          //      echo "<pre>";print_r($grade_ids);
-         $sqlGr = 'SELECT * FROM examinationGradeSystemConfiguration WHERE gradeSystemId = '.$s_test['gradeSystemId'].' ORDER BY rank ASC';
-         $resultGr = $connection2->query($sqlGr);
-         $gradeData = $resultGr->fetchAll();
-         foreach ($gradeData as $gdata) {
-
-            $grdid = $gdata['id'];
-            $tgrade = $gdata['grade_name'];
-            if($prevdata['gradeId'] == $grdid){
-               $selected = 'checked';
-            } else {
-               $selected = '';
-            }
-         echo ' <input type="radio" class="chkData abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'" id="grade_val'.$s_test['test_id'].'row'.$i.'grade'.trim($grdid).'"   name="grade_val['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']" value="'.$grdid.'" '.$disabled.'  '.$selected.'>'.$tgrade.'';
          
+         if(!empty($s_test['gradeSystemId'])){
+            $sqlGr = 'SELECT * FROM examinationGradeSystemConfiguration WHERE gradeSystemId = '.$s_test['gradeSystemId'].' ORDER BY rank ASC';
+            $resultGr = $connection2->query($sqlGr);
+            $gradeData = $resultGr->fetchAll();
+            foreach ($gradeData as $gdata) {
+
+               $grdid = $gdata['id'];
+               $tgrade = $gdata['grade_name'];
+               if($prevdata['gradeId'] == $grdid){
+                  $selected = 'checked';
+               } else {
+                  $selected = '';
+               }
+            
+               echo ' <input type="radio" class="chkData abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'" id="grade_val'.$s_test['test_id'].'row'.$i.'grade'.trim($grdid).'"   name="grade_val['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']" value="'.$grdid.'" '.$disabled.'  '.$selected.'>'.$tgrade.'';
+            }
          }
          echo '</td>';
 
