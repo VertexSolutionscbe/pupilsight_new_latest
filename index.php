@@ -990,12 +990,13 @@ if ($isLoggedIn) {
             $menuMainItems["Other"]
         );
     }
-
+    /*
     if ($roleid == "002" && $domain=="amaatra.pupilpod.net") {
+       
         unset(
             $menuMainItems["People"]
         );
-    }
+    }*/
 
     if ($roleid == "003" || $roleid == "004" || $roleid == "033") {
         $changeyear = "";

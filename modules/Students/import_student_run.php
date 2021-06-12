@@ -59,6 +59,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                 $username_stock = array();
                 $dusername_stock = array();
                 $dtable_str = "";
+                //print_r($data);
+                //die();
                 foreach ($data as  $alrow) {
 
                     $pupilsightSchoolYearID = '0';
@@ -166,7 +168,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                         $sql = rtrim($sql, ", ");
                         //echo "\n<br>" . $cnt . " " . $offical_name;
 
-                        echo "\n" . $sql . ";";
+                        //echo "\n" . $sql . ";";
+                        //die();
                         //mysqli_query($conn, $sql);
 
                         if (in_array($username, $username_stock)) {
@@ -193,8 +196,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                             $chkFamily = 0;
                             if (!empty($alrow['&&_officialName'])) {
 
-                                if (!empty($alrow['&&_email'])) {
-                                    $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE a.email = "' . $alrow['&&_email'] . '" AND a.pupilsightRoleIDPrimary="004" ';
+                                //if (!empty($alrow['&&_email'])) { // we stopped email mapping for parents
+                                if (!empty($alrow['&&_phone1'])) {
+                                    $sqlchk = 'SELECT a.pupilsightPersonID, b.pupilsightFamilyID FROM pupilsightPerson AS a LEFT JOIN pupilsightFamilyRelationship AS b ON a.pupilsightPersonID = b.pupilsightPersonID1 WHERE a.phone1 = "' . $alrow['&&_phone1'] . '" AND a.pupilsightRoleIDPrimary="004" ';
                                     $resultchk = $connection2->query($sqlchk);
                                     $pd = $resultchk->fetch();
                                     if (!empty($pd)) {
@@ -618,12 +622,14 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                     $tfValidate = " validActive ";
                                 }
 
-                                if ($k == "&&_phone1" || $k == "&&_email" || $k == "&&_username" || $k == "&&_dob") {
+                                //if ($k == "&&_phone1" || $k == "&&_email" || $k == "&&_username" || $k == "&&_dob") {
+                                if ($k == "&&_email" || $k == "&&_username" || $k == "&&_dob") {    
                                     $tfwidth = " style='width:180px;'";
                                     $tfValidate = " validActive ";
                                 }
 
-                                if ($k == "!!_phone1" || $k == "!!_email" || $k == "!!_username" || $k == "!!_dob") {
+                                //if ($k == "!!_phone1" || $k == "!!_email" || $k == "!!_username" || $k == "!!_dob") {
+                                if ($k == "!!_email" || $k == "!!_username" || $k == "!!_dob") {    
                                     $tfwidth = " style='width:180px;'";
                                     $tfValidate = " validActive ";
                                 }
@@ -707,7 +713,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                 }
             }
 
-            if ($(this).attr("data-type") == "##_phone1" || $(this).attr("data-type") == "&&_phone1" || $(this).attr("data-type") == "!!_phone1") {
+            //if ($(this).attr("data-type") == "##_phone1" || $(this).attr("data-type") == "&&_phone1" || $(this).attr("data-type") == "!!_phone1") {
+            if ($(this).attr("data-type") == "##_phone1") {    
                 if ($(this).val()) {
                     ph.push($(this).val());
                 }
@@ -750,7 +757,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                 }
             }
 
-            if ($(this).attr("data-type") == "##_phone1" || $(this).attr("data-type") == "&&_phone1" || $(this).attr("data-type") == "!!_phone1") {
+            //if ($(this).attr("data-type") == "##_phone1" || $(this).attr("data-type") == "&&_phone1" || $(this).attr("data-type") == "!!_phone1") {
+            if ($(this).attr("data-type") == "##_phone1") {    
                 if ($(this).val()) {
                     ph.push($(this).val());
                 }
@@ -771,6 +779,11 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
 
         if (formValid) {
             ///start submit
+            //$('#validate_tbl').dataTable().fnClearTable();
+            //$('#validate_tbl').dataTable().destroy();
+            var table = $('#validate_tbl').DataTable();
+            table.destroy();
+
             $("form#formValidSubmit").submit();
             console.log("ready for submit");
         } else {
@@ -786,7 +799,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
             }
         }
 
-        if (dataType == "##_phone1" || dataType == "&&_phone1" || dataType == "!!_phone1") {
+        //if (dataType == "##_phone1" || dataType == "&&_phone1" || dataType == "!!_phone1") {
+        if (dataType == "##_phone1") {    
             var regx = /^[6-9]\d{9}$/;
             if (regx.test(val)) {
                 return true;
@@ -818,7 +832,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
             }
         }
 
-        if (dataType == "##_phone1" || dataType == "&&_phone1" || dataType == "!!_phone1") {
+        //if (dataType == "##_phone1" || dataType == "&&_phone1" || dataType == "!!_phone1") {
+        if (dataType == "##_phone1") {    
             var regx = /^[6-9]\d{9}$/;
             if (regx.test(val)) {
                 return isDuplicate(ph, val);

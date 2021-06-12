@@ -24,11 +24,11 @@ if ($accessFlag == false) {
     $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
     $uid = $_SESSION[$guid]['pupilsightPersonID'];
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
-
+    $ts = date('Y-m-d H:i:s');
     if (isset($_POST['title'])) {
 
         $title = "'" . trim($_POST['title']) . "'";
-        $details = 'NULL';
+        $details = NULL;
         if(!empty($_POST['details'])){
             $details = htmlentities(htmlspecialchars($_POST['details']));
         }
@@ -40,7 +40,7 @@ if ($accessFlag == false) {
         
         //$is_all_day_event = empty($_POST['is_all_day_event']) ? "NULL" : "'" . trim($_POST['is_all_day_event']) . "'";
         
-        $ts = date('Y-m-d H:i:s');
+        
         $start_time_unix = strtotime($_POST['start_date']);
         $start_date = date('Y-m-d', $start_time_unix);
 
@@ -66,7 +66,7 @@ if ($accessFlag == false) {
                 //update
                 $id = $_POST["id"];
                 $sq = "update calendar_event set title=$title, ";
-                $sq .= " details=$details, ";
+                $sq .= " details='$details', ";
                 $sq .= " event_type_id=$event_type_id, ";
                 $sq .= " location=$location, ";
                 $sq .= " start_date='$start_date', ";
@@ -79,8 +79,8 @@ if ($accessFlag == false) {
                 $sq .= " udt=$ts ";
                 $sq .= "where id='".$id."' ";
             }else{
-                $sq = "insert into calendar_event (title, details, event_type_id, location, start_date, start_time, end_date, end_time, start_time_unix, end_time_unix, is_all_day_event, is_publish, cdt, udt) 
-                values($title,$details,$event_type_id,$location,'$start_date','$start_time','$end_date','$end_time',$start_time_unix,$end_time_unix,$is_all_day_event,1,'$ts','$ts')";
+                $sq = "insert into calendar_event (title, details, event_type_id, location, start_date, start_time, end_date, end_time, start_time_unix, end_time_unix, is_all_day_event, is_publish, block_attendance, cdt, udt) 
+                values($title,'$details',$event_type_id,$location,'$start_date','$start_time','$end_date','$end_time',$start_time_unix,$end_time_unix,$is_all_day_event,1,1,'$ts','$ts')";
             }
             //echo $sq;
             //die();
@@ -89,6 +89,7 @@ if ($accessFlag == false) {
             $res["status"]=1;
             $res["msg"]="Event saved successfully.";
             $_SESSION["notify"] = $res;
+            //die();
             header('Location: '.$_SERVER['REQUEST_URI']);
         } catch (Exception $ex) {
             $res["status"]=2;
@@ -97,6 +98,33 @@ if ($accessFlag == false) {
         }
 
         //die();
+    }else if(isset($_POST['eventid'])){
+        //event publish
+        if(!empty($_POST['eventid'])){
+            $res["status"]=1;
+            $res["msg"]="Event published successfully.";
+            $eventid = $_POST['eventid'];
+            $delivery_type = $_POST['delivery_type'];
+            $program = $_POST['program'];
+            $class = $_POST['class'];
+            $section = $_POST['section'];
+            $students = $_POST['students'];
+
+            $squ = "update calendar_event ";
+            if(!empty($delivery_type)){
+                $squ .= " set delivery_type='".$delivery_type."' and udt='".$ts."' ";
+            }else{
+                $program_name = $_POST['program_name'];
+                $class_name = $_POST['class_name'];
+                $section_name = $_POST['section_name'];
+            }
+            $squ .= "where id='".$eventid."' ";
+        }else{
+            $res["status"]=2;
+            $res["msg"]="Invalid Event Parameters.";
+        }
+        $_SESSION["notify"] = $res;
+        header('Location: '.$_SERVER['REQUEST_URI']);
     }
     $page->breadcrumbs->add(__('Manage Events'));
 
@@ -214,7 +242,6 @@ if ($accessFlag == false) {
                             </span>
                         </div>
                     </div>
-                    
                 </div>
                 <div class="row">
                     <div class="col-12 mt-5">
@@ -248,11 +275,12 @@ if ($accessFlag == false) {
                             <th>Start Date Time</th>
                             <th>End Date Time</th>
                             <th>Deliver</th>
+                            <th>Attendance</th>
                             <th>Location</th>
                             <th class='text-center'>Publish</th>
                             <?php
                                 if($roleid=="001"){
-                                    echo "<th style='width:60px;' class='text-center'>Edit</th>";
+                                    echo "<th style='width:60px;' class='text-center'>Action</th>";
                                 }
                             ?>
                         </tr>
@@ -274,9 +302,14 @@ if ($accessFlag == false) {
                             $events[$i]['end_time'] = date('h:i a', $events[$i]["end_time_unix"]);
 
                             $publish = "<button type='button' class='btn btn-link' onclick=\"publish('".$events[$i]["id"]."');\">Publish</button>";
-                            if($events[$i]["is_publish"]==2){
+                            $attendance = "NA";
+                            if($events[$i]["is_publish"]=="2"){
                                 $publish = "Posted";
+                                if($events[$i]["block_attendance"]=="2"){
+                                    $attendance = "Blocked";
+                                }
                             }
+
                             $delivery = "NA";
                             if(!empty($events[$i]["delivery"])){
                                 $delivery = $events[$i]["delivery"];
@@ -296,12 +329,16 @@ if ($accessFlag == false) {
                             $str .="\n<td>".$sdt."</td>";
                             $str .="\n<td>".$edt."</td>";
                             $str .="\n<td>".$delivery."</td>";
+                            $str .="\n<td>".$attendance."</td>";
                             $str .="\n<td>".$location."</td>";
 
                             $str .="\n<td class='text-center'>".$publish."</td>";
                             
                             if($roleid=="001"){
-                                $str .="\n<td><button type='button' class='btn btn-link' onclick=\"editEvent('".$events[$i]['id']."');\"><i class='mdi mdi-edit mr-2'></i>Edit</button></td>";
+                                $str .="\n<td>
+                                <button type='button' class='btn btn-warning' onclick=\"editEvent('".$events[$i]['id']."');\"><i class='mdi mdi-18px mdi-pencil-outline'></i></button>
+                                <button type='button' class='btn btn-danger mr-1' onclick=\"deleteEvent('".$events[$i]['id']."');\"><i class='mdi mdi-18px mdi-delete'></i></button>
+                                </td>";
                             }
                             $str .="\n</tr>";
                             $repo[$events[$i]['id']]=$events[$i];
@@ -326,8 +363,8 @@ if ($accessFlag == false) {
                 </button>
             </div>
             <div class="modal-body">
-                <form id="publishForm" action="<?=$baseurl."/report_download.php"?>" class="needs-validation" novalidate="" method="post" autocomplete="off">
-                    <input type="hidden" name="eventid" id="eventid" value="">
+                <form id="publishForm" action="" class="needs-validation" novalidate="" method="post" autocomplete="off">
+                    <input type="hidden" class='formDia' name="eventid" id="eventid" value="">
                     <?php
                     if($roleid=="001"){
                         $helperGateway = $container->get(HelperGateway::class);
@@ -335,21 +372,28 @@ if ($accessFlag == false) {
                         
                     ?>
                     <div class="row">
-                        <div class='col-md col-sm-12 mt-2'>
+                        <div class='col-md-auto col-sm-12 mt-2'>
                             <label class="form-label">Bulk Target</label>
-                            <select id='delivery_type' name='delivery_type' class='form-control'>
+                            <select id='delivery_type' name='delivery_type' class='form-control' onchange="changeBulkTarget();">
                                 <option value=''>Select</option>
                                 <option value='all'>All</option>
                                 <option value='all_students'>All Students</option>
                                 <option value='all_parents'>All Parents</option>
                                 <option value='all_staff'>All Staff</option>
+                                <option value='individual_staff'>Individual Staff</option>
+                                <option value='individuals'>Individuals</option>
                             </select>
+                        </div>
+                        <div class='col-md col-sm-12 mt-2' id='userSelectPanel'>
+                            <label class="form-label">Select User</label>
+                            <select id='userSelect' name="users[]" class='form-control' multiple></select>
                         </div>
                     </div>    
                     <div class="row">
                         <div class='col-md col-sm-12 indList mt-2'>
                             <label class="form-label">Select Program</label>
-                            <select id='programSelect' class='form-control' onchange="changeProgram();">
+                            <input type='hidden' class='formDia' name='program_name' id='program_name' value=''>
+                            <select id='programSelect' name="program" class='form-control' onchange="changeProgram();">
                             <option value="">Select Program</option>
                                     <?php
 
@@ -379,9 +423,11 @@ if ($accessFlag == false) {
                                 }
                             </script>
                         </div>
+
                         <div class='col-md col-sm-12 indList mt-2'>
                             <label class="form-label">Select Class</label>
-                                <select id='classSelect' class='form-control' onchange="changeClass();"></select>
+                                <select id='classSelect' name='class' class='form-control' onchange="changeClass();"></select>
+                                <input type='hidden' class='formDia' name='class_name' id='class_name' value=''>
                                 <script>
                                 function changeClass() {
                                     var id = $("#classSelect").val();
@@ -403,9 +449,8 @@ if ($accessFlag == false) {
                         
                         <div class='col-md col-sm-12 indList mt-2'>
                             <label class="form-label">Select Section</label>
-                                <select id='sectionSelect' class='form-control' onchange="changeSection();">
-                                    
-                                </select>
+                                <select id='sectionSelect' name="section" class='form-control' onchange="changeSection();"></select>
+                                <input type='hidden' class='formDia' name='section_name' id='section_name' value=''>
                                 <script>
                                 var pupilsightSchoolYearID = "<?=$pupilsightSchoolYearID;?>";
                                 function changeSection() {
@@ -435,12 +480,25 @@ if ($accessFlag == false) {
                             </div>
                         </div>
                         <div class="row">
-                        <div class='col-md col-sm-12 indList mt-2'>
-                            <label class="form-label">Select Student</label>
-                                <select id='studentSelect' name="people[]" class='form-control' multiple></select>
+                            <div class='col-md col-sm-12 indList mt-2'>
+                                <label class="form-label">Select Student</label>
+                                <select id='studentSelect' name="students[]" class='form-control' multiple></select>
+                            </div>
                         </div>
-
-                    </div>
+                        <div class="row">
+                            <div class="col-md col-sm-12 mt-3">
+                                <label class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="block_attendance" name="block_attendance">
+                                    <span class="form-check-label">Block Attendance</span>
+                                </label>
+                            </div>
+                            <div class="col-md col-sm-12 mt-3">
+                                <label class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="sms_notify" name="sms_notify">
+                                    <span class="form-check-label">Send SMS Notification</span>
+                                </label>
+                            </div>
+                        </div>
                     <?php
                     }
                     ?>
@@ -450,7 +508,7 @@ if ($accessFlag == false) {
             </div>
             <div class="modal-footer mt-3">
                 <button type="button" id='closeDialogBtn' class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="verfiyAndFinalDownload();">Publish</button>
+                <button type="button" class="btn btn-primary" onclick="verfiyAndPublish();">Publish</button>
             </div>
             </div>
         </div>
@@ -461,13 +519,59 @@ if ($accessFlag == false) {
     if($roleid=="001"){
     ?>
     <script>
+
+        function changeBulkTarget(){
+            var val = $("#delivery_type").val();
+            if(val=="individual_staff"||val=="individuals"){
+                $("#userSelectPanel").show();
+            }else{
+                $("#userSelectPanel").hide();
+            }
+        }
+
         function publish(id){
+            changeBulkTarget();
+            $(".formDia").val("");
+            resetAddEvent();
             var obj = Event[id];
             $("#publishTitle").text(obj["title"]);
+            $("#eventid").val(obj["id"]);
             $("#btnPublishDia").click();
         }
+
+        function verfiyAndPublish(){
+
+           var eventid = $("#eventid").val();
+           if(eventid==""){
+               toast("error","Invalid Event");
+               return;
+           }
+           var delivery_type = $("#delivery_type").val();
+           if(delivery_type==""){
+                var program = $("#programSelect").val();
+                if(program==""){
+                    toast("error","You have not selected any user type to publish");
+                    return;
+                }else{
+                    var programSelect = $("#programSelect option:selected").text();
+                    $("#program_name").val(programSelect);
+
+                    var classSelect = $("#classSelect option:selected").text();
+                    $("#class_name").val(classSelect);
+
+                    var sectionSelect = $("#sectionSelect option:selected").text();
+                    $("#section_name").val(sectionSelect);
+                }
+           }
+           $("form#publishForm").submit();
+        }
+
     </script>
     <script>
+        function deleteEvent(id){
+            console.log(id);
+        }
+
         function editEvent(id){
             addEvent();
             var obj = Event[id];
