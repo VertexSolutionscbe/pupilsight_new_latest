@@ -19,6 +19,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assigned_staff_toStu
     $subjectToClassCurriculumID = $_POST["selected_sub"];
     $cnt = count($subjectToClassCurriculumID);
 
+    $pupilsightSchoolYearID = $_POST['pupilsightSchoolYearID'];
+    $pupilsightProgramID = $_POST['pupilsightProgramID'];
+    $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
+    $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
+
     if ($pupilsightStaffID == ''  or $cnt == 0) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
@@ -31,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assigned_staff_toStu
             while ($i < $len) {
                 $j = 0;
                 while ($j < $slen) {
-                    $sq = "select id from assignstaff_tosubject where pupilsightStaffID='" . $pupilsightStaffID[$i] . "' and subjectToClassCurriculumID='" . $subjectToClassCurriculumID[$j] . "' ";
+                    $sq = "SELECT id from assignstaff_tosubject where pupilsightStaffID='" . $pupilsightStaffID[$i] . "' AND subjectToClassCurriculumID='" . $subjectToClassCurriculumID[$j] . "' AND pupilsightSchoolYearID='" . $pupilsightSchoolYearID . "' AND pupilsightProgramID='" . $pupilsightProgramID . "' AND pupilsightYearGroupID='" . $pupilsightYearGroupID . "' AND pupilsightRollGroupID='" . $pupilsightRollGroupID . "' ";
                     //echo $sq;
                     $re_mode_check = $connection2->query($sq);
                     //print_r($re_mode_check);
@@ -42,8 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assigned_staff_toStu
                         $DepData = $resDep->fetch();
                         $pupilsightdepartmentID = $DepData['pupilsightdepartmentID'];
 
-                        $data = array('pupilsightdepartmentID' => $pupilsightdepartmentID, 'pupilsightStaffID' => $pupilsightStaffID[$i], 'subjectToClassCurriculumID' => $subjectToClassCurriculumID[$j]);
-                        $sql = 'INSERT INTO assignstaff_tosubject SET pupilsightdepartmentID=:pupilsightdepartmentID, pupilsightStaffID=:pupilsightStaffID, subjectToClassCurriculumID=:subjectToClassCurriculumID';
+                        $data = array('pupilsightdepartmentID' => $pupilsightdepartmentID, 'pupilsightStaffID' => $pupilsightStaffID[$i], 'subjectToClassCurriculumID' => $subjectToClassCurriculumID[$j], 'pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID);
+                        $sql = 'INSERT INTO assignstaff_tosubject SET pupilsightdepartmentID=:pupilsightdepartmentID, pupilsightStaffID=:pupilsightStaffID, subjectToClassCurriculumID=:subjectToClassCurriculumID, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     }

@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
 
     
     
-    if ($submission_id == '' or $transcation_amount == '') {
+    if ($submission_id == '' or $transcation_amount == '' or $payment_mode_id == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {

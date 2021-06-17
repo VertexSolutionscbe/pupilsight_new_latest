@@ -77,6 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                                     $url .= "&body=" . rawurlencode($body);
 
                                     $res = file_get_contents($url);
+                                    $body = str_replace("'","",$body);
                                     $sq = "INSERT INTO user_email_sms_sent_details SET type='2', sent_to = '1', pupilsightPersonID = " . $pupilsightPersonID . ", email='" . $to . "', subject='" . $subject . "', description='" .  addslashes(htmlspecialchars($body)) . "', uid=" . $cuid . " ";
                                     $connection2->query($sq);
                                 }
@@ -108,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                                     $msgto=$smspupilsightPersonID;
                                     $msgby=$_SESSION[$guid]["pupilsightPersonID"];
                                     $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
-
+                                    $msg = str_replace("'","",$msg);
                                     if ($res) {
                                         $sq = "INSERT INTO user_email_sms_sent_details SET type='1', sent_to = '1', pupilsightPersonID = " . $pupilsightPersonID . ", phone=" . $number . ", description='" . addslashes(htmlspecialchars($msg)) . "', uid=" . $cuid . " ";
                                         // echo $sq;
@@ -155,6 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                                     // echo $url;
                                     // die();
                                     $res = file_get_contents($url);
+                                    $body = str_replace("'","",$body);
                                     $sq = "INSERT INTO user_email_sms_sent_details SET type='2', pupilsightPersonID = " . $pupilsightPersonID . ", email='" . $to . "', subject='" . $subject . "', description='" .  stripslashes($body) . "', uid=" . $cuid . " ";
                                     $connection2->query($sq);
                                 }
@@ -174,6 +176,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                                     $url .= "&body=" . rawurlencode($body);
 
                                     $res = file_get_contents($url);
+                                    $body = str_replace("'","",$body);
                                     $sq = "INSERT INTO user_email_sms_sent_details SET type='2', pupilsightPersonID = " . $pupilsightPersonID . ", email='" . $to . "', subject='" . $subject . "', description='" .  stripslashes($body) . "', uid=" . $cuid . " ";
                                     $connection2->query($sq);
                                 }
@@ -194,6 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                                     $msgto=$smspupilsightPersonID;
                                     $msgby=$_SESSION[$guid]["pupilsightPersonID"];
                                     $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
+                                    $msg = str_replace("'","",$msg);
                                     if ($res) {
                                         $sq = "INSERT INTO user_email_sms_sent_details SET type='1', sent_to = '1', pupilsightPersonID = " . $pupilsightPersonID . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
                                         $connection2->query($sq);
@@ -217,6 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/loginAccount.php'
                                     $msgto=$smspupilsightPersonID;
                                     $msgby=$_SESSION[$guid]["pupilsightPersonID"];
                                     $res = $sms->sendSMSPro($number, $msg, $msgto, $msgby);
+                                    $msg = str_replace("'","",$msg);
                                     if ($res) {
                                         $sq = "INSERT INTO user_email_sms_sent_details SET type='1', sent_to = '1', pupilsightPersonID = " . $pupilsightPersonID . ", phone=" . $number . ", description='" . stripslashes($msg) . "', uid=" . $cuid . " ";
                                         $connection2->query($sq);

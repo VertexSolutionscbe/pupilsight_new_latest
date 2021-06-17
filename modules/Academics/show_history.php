@@ -68,8 +68,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
             <?php if(!empty($data)){
                 $i=1;
               foreach ($data as $val) { 
-                  $marks = str_replace(".00","",$val['marks_obtained']);
-                  $marks = rtrim($marks,'0');
+                //   $marks = str_replace(".00","",$val['marks_obtained']);
+                //   $marks = rtrim($marks,'0');
+                //   $marks = floatval($val['marks_obtained']);
+                $marks = $val['marks_obtained'];
                   if($marks==0){
                       if($val['marks_abex']){
                         $marks = $val['marks_abex'];

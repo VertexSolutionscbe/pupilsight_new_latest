@@ -657,7 +657,7 @@ class StaffGateway extends QueryableGateway
                 "assignstaff_tosubject.*",
                 "assignstaff_tosubject.pupilsightStaffID AS st_id",
                 "pupilsightPerson.officialName AS fname",
-                "GROUP_CONCAT(DISTINCT subjectToClassCurriculum.subject_display_name SEPARATOR ', ') as dep_name","pupilsightProgram.name as program","pupilsightYearGroup.name as class"
+                "GROUP_CONCAT(DISTINCT subjectToClassCurriculum.subject_display_name SEPARATOR ', ') as dep_name","pupilsightProgram.name as program","pupilsightYearGroup.name as class", "pupilsightRollGroup.name as section","GROUP_CONCAT(DISTINCT assignstaff_tosubject.id) as as_id"
             ])
             ->leftJoin(
                 "pupilsightStaff",
@@ -686,6 +686,10 @@ class StaffGateway extends QueryableGateway
             ->leftJoin(
                 "pupilsightYearGroup",
                 "subjectToClassCurriculum.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID"
+            )
+            ->leftJoin(
+                "pupilsightRollGroup",
+                "assignstaff_tosubject.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID"
             );
             
             // ->leftJoin(
@@ -705,16 +709,21 @@ class StaffGateway extends QueryableGateway
                     "subjectToClassCurriculum.pupilsightSchoolYearID = " .
                         $pupilsightSchoolYearID .
                         " "
+                )
+                ->WHERE(
+                    "assignstaff_tosubject.pupilsightSchoolYearID = " .
+                        $pupilsightSchoolYearID .
+                        " "
                 );
-                // ->WHERE(
-                //     "pupilsightProgramClassSectionMapping.pupilsightSchoolYearID = " .
-                //         $pupilsightSchoolYearID .
-                //         " "
-                // );
             }
             if (!empty($pupilsightProgramID)) {
                 $query->WHERE(
                     "subjectToClassCurriculum.pupilsightProgramID = " .
+                        $pupilsightProgramID .
+                        " "
+                )
+                ->WHERE(
+                    "assignstaff_tosubject.pupilsightProgramID = " .
                         $pupilsightProgramID .
                         " "
                 );
@@ -725,24 +734,24 @@ class StaffGateway extends QueryableGateway
                     "subjectToClassCurriculum.pupilsightYearGroupID = " .
                         $pupilsightYearGroupID .
                         " "
+                )
+                ->WHERE(
+                    "assignstaff_tosubject.pupilsightYearGroupID = " .
+                        $pupilsightYearGroupID .
+                        " "
                 );
-                // ->WHERE(
-                //     "pupilsightProgramClassSectionMapping.pupilsightYearGroupID = " .
-                //         $pupilsightYearGroupID .
-                //         " "
-                // );
             }
 
-            // if (!empty($pupilsightRollGroupID)) {
-            //     $query->WHERE(
-            //         "pupilsightProgramClassSectionMapping.pupilsightRollGroupID = " .
-            //             $pupilsightRollGroupID .
-            //             " "
-            //     );
-            // }
+            if (!empty($pupilsightRollGroupID)) {
+                $query->WHERE(
+                    "assignstaff_tosubject.pupilsightRollGroupID = " .
+                        $pupilsightRollGroupID .
+                        " "
+                );
+            }
             
             //$query->groupBy(["pupilsightProgramClassSectionMapping.pupilsightRollGroupID"]);
-            $query->groupBy(["pupilsightPerson.pupilsightPersonID, subjectToClassCurriculum.pupilsightYearGroupID"]);
+            $query->groupBy(["pupilsightPerson.pupilsightPersonID, assignstaff_tosubject.pupilsightRollGroupID"]);
              //echo $query;
             // die();
             return $this->runQuery($query, $criteria);

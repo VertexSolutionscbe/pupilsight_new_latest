@@ -293,7 +293,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 				print "<td>";
 				try {
 					$dataTargets = array("pupilsightMessengerID" => $row["pupilsightMessengerID"], "is_display" => "Y");
-					$sqlTargets = "SELECT type, id FROM pupilsightMessengerTarget WHERE pupilsightMessengerID=:pupilsightMessengerID AND is_display=:is_display ORDER BY type, id";
+					$sqlTargets = "SELECT type, id, pupilsightSchoolYearID, pupilsightProgramID, pupilsightYearGroupID, pupilsightRollGroupID FROM pupilsightMessengerTarget WHERE pupilsightMessengerID=:pupilsightMessengerID AND is_display=:is_display ORDER BY type, id";
 					$resultTargets = $connection2->prepare($sqlTargets);
 					$resultTargets->execute($dataTargets);
 				} catch (PDOException $e) {
@@ -357,8 +357,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage
 						$targets .= "<b>" . __($rowTargets["type"]) . "</b> - " . __($rowTargets["id"]) . "<br/>";
 					} else if ($rowTargets["type"] == "Roll Group") {
 						try {
-							$dataTarget = array("pupilsightRollGroupID" => $rowTargets["id"]);
-							$sqlTarget = "SELECT name FROM pupilsightRollGroup WHERE pupilsightRollGroupID=:pupilsightRollGroupID";
+							// $dataTarget = array("pupilsightRollGroupID" => $rowTargets["id"]);
+							// $sqlTarget = "SELECT name FROM pupilsightRollGroup WHERE pupilsightRollGroupID=:pupilsightRollGroupID";
+
+							$dataTarget = array("pupilsightSchoolYearID" => $rowTargets["pupilsightSchoolYearID"],"pupilsightProgramID" => $rowTargets["pupilsightProgramID"],"pupilsightYearGroupID" => $rowTargets["pupilsightYearGroupID"],"pupilsightRollGroupID" => $rowTargets["id"]);
+
+							$sqlTarget = "SELECT d.name as sectionname, a.pupilsightProgramID, b.pupilsightYearGroupID , b.name as name1, CONCAT(b.name,' ',d.name) as name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS d ON a.pupilsightRollGroupID = d.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID AND a.pupilsightProgramID =:pupilsightProgramID AND a.pupilsightYearGroupID =:pupilsightYearGroupID AND a.pupilsightRollGroupID =:pupilsightRollGroupID";
+							
 							$resultTarget = $connection2->prepare($sqlTarget);
 							$resultTarget->execute($dataTarget);
 						} catch (PDOException $e) {

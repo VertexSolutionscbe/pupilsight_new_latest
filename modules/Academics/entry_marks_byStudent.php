@@ -33,6 +33,14 @@
            $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
            $pupilsightSchoolYearName = $_SESSION[$guid]['pupilsightSchoolYearName'];
        }
+
+       $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+       $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
+
+       $sql = 'SELECT pupilsightStaffID FROM pupilsightStaff WHERE pupilsightPersonID = '.$pupilsightPersonID.' ';
+       $result = $connection2->query($sql);
+       $stffData = $result->fetch();
+       $pupilsightStaffID = $stffData['pupilsightStaffID'];
    
        
        $sqlp = 'SELECT pupilsightPerson.officialName , pupilsightPerson.admission_no,pupilsightYearGroup.name AS class,pupilsightYearGroup.pupilsightYearGroupID ,pupilsightStudentEnrolment.pupilsightProgramID,pupilsightRollGroup.name AS section ,pupilsightRollGroup.pupilsightRollGroupID  FROM pupilsightPerson 
@@ -135,7 +143,7 @@
    <div style="display:inline-flex;width:100%"> 
    '; 
    foreach ($testId as $tst ) {
-   $entrymarks = $CurriculamGateway->getsubjectmarksStdWise($criteria ,$pupilsightProgramID, $pupilsightYearGroupID , $pupilsightSchoolYearID,$tst);      
+   $entrymarks = $CurriculamGateway->getsubjectmarksStdWise($criteria ,$pupilsightProgramID, $pupilsightYearGroupID , $pupilsightSchoolYearID,$tst, $roleId, $pupilsightStaffID, $pupilsightRollGroupID);      
       // echo '<pre>';
       // print_r($entrymarks);
       // echo '</pre>';
@@ -326,7 +334,7 @@
                   //$marksobt = str_replace(".00","",$prevdata['marks_obtained']);
                   //$marksobt = rtrim($marksobt,'0');
 
-                                     echo '<input type="text" data-mode="'.$sl['skill_configure'].'" data-mark="'.$sl['max_marks'].'" data-d="'.$sl['pupilsightDepartmentID'].'" data-gsid="'.$s_test['gradeSystemId'].'" data-cnt="'.$i.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']" data-fid="'.$i.'" id="focustab-'.$s_test['test_id'].'-'.$i.'" class="tabfocus numMarksfield chkData enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'  '.$en_dis_clss.' '.$total_class.' " value="'.$marksobt.'"  '.$disabled.'>';?>
+                                     echo '<input type="text" data-mode="'.$sl['skill_configure'].'" data-mark="'.$sl['max_marks'].'" data-d="'.$sl['pupilsightDepartmentID'].'" data-gsid="'.$s_test['gradeSystemId'].'" data-cnt="'.$i.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']" data-fid="'.$i.'" id="focustab-'.$s_test['test_id'].'-'.$i.'" class="tabfocus numMarksfield chkData enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'  '.$en_dis_clss.' '.$total_class.' " data-nid="'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'" value="'.$marksobt.'"  '.$disabled.'>';?>
             </div>
          </div>
       </td>
@@ -459,13 +467,21 @@
            var obtain_mark = Number($(this).attr('data-mark'));
            var enterd_mrk = Number($(this).val()); 
            var gsid = $(this).attr('data-gsid'); 
-           var d=$(this).attr('data-d');          
+           var d=$(this).attr('data-d');     
+           var nid = $(this).attr('data-nid');     
            if(obtain_mark < enterd_mrk){
                alert('You cannot enter marks greater than max marks defined');
                $(this).val(""); 
                return;
             }  
+            
+            if($(this).val() == ''){
+               $(".abexClsDis"+nid).prop("checked",false);
+               return;
+            }
+            
           var grad_val = percentage(obtain_mark, enterd_mrk);
+          
             //t250d41
           //var grad_val =  enterd_mrk;
           var tid = $(this).attr('data-tid');
@@ -490,7 +506,7 @@
             }*/
           
            var type = 'getGradeConfigData1';
-           if (grad_val != '') {
+           if (grad_val != '' || grad_val == 0) {
                $.ajax({
                    url: 'ajax_data.php',
                    type: 'post',
@@ -510,7 +526,8 @@
                                  $('.main_sub'+tid+'d'+d).val(sum); 
                                  //$(".t"+tid+"d"+d).trigger('change');
                           }*/
-                       if (enterd_mrk != '' && response != '') {
+                     //   if (enterd_mrk != '' && response != '') {
+                        if (response != '') {
                            var gid = response.id;
                            var gstatus = response.status;
                            $('#grade_val'+tid+'row'+data_cnt+'grade'+gid).prop("checked",true);

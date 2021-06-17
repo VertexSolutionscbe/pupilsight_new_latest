@@ -348,9 +348,9 @@ class AdmissionGateway extends QueryableGateway
                                 '" '
                         )
                         ->where(
-                            'fn_fee_admission_settings.pupilsightProgramID = "' .
+                            'fn_fee_admission_settings.pupilsightProgramID IN (' .
                                 $pupilsightProgramID .
-                                '" '
+                                ') '
                         )
                         ->orderBy(["fn_fee_admission_settings.id DESC"]);
 

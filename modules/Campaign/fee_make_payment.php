@@ -376,7 +376,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
     
         $col = $row->addColumn()->setClass('newdes');
         $col->addLabel('payment_mode_id', __('Payment Mode'));
-        $col->addSelect('payment_mode_id')->setId('paymentMode')->fromArray($paymentmode)->addClass(' txtfield')->required();
+        $col->addSelect('payment_mode_id')->setId('paymentMode')->fromArray($paymentmode)->addClass(' txtfield')->selected('1')->required();
         
         $col = $row->addColumn()->setClass('newdes hiddencol ddChequeRow');
         $col->addLabel('bank_id', __('Bank Name'));

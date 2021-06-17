@@ -568,14 +568,41 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 					$choices = $_POST["rollGroups"];
 					if ($choices != "") {
 						foreach ($choices as $t) {
-							try {
-								$data = array("AI" => $AI, "t" => $t, "staff" => $staff, "students" => $students, "parents" => $parents);
-								$sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents";
-								$result = $connection2->prepare($sql);
-								$result->execute($data);
+							try{
+								$sql = 'SELECT * FROM pupilsightProgramClassSectionMapping WHERE pupilsightMappingID = '.$t.' ';
+								$result = $connection2->query($sql);
+								$mappData = $result->fetch();
 							} catch (PDOException $e) {
 								$partialFail = TRUE;
 							}
+							$pupilsightSchoolYearID = '';
+							$pupilsightProgramID = '';
+							$pupilsightYearGroupID = '';
+							$pupilsightRollGroupID = '';
+							if(!empty($mappData)){
+								$pupilsightSchoolYearID = $mappData['pupilsightSchoolYearID'];
+								$pupilsightProgramID = $mappData['pupilsightProgramID'];
+								$pupilsightYearGroupID = $mappData['pupilsightYearGroupID'];
+								$pupilsightRollGroupID = $mappData['pupilsightRollGroupID'];
+								try {
+									$data = array("AI" => $AI, "t" => $pupilsightRollGroupID, "staff" => $staff, "students" => $students, "parents" => $parents, "pupilsightSchoolYearID" => $pupilsightSchoolYearID, "pupilsightProgramID" => $pupilsightProgramID , "pupilsightYearGroupID" => $pupilsightYearGroupID, "pupilsightRollGroupID" => $pupilsightRollGroupID, "pupilsightMappingID" => $t);
+									$sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID, pupilsightMappingID=:pupilsightMappingID";
+									$result = $connection2->prepare($sql);
+									$result->execute($data);
+								} catch (PDOException $e) {
+									$partialFail = TRUE;
+								}
+							} else {
+								try {
+									$data = array("AI" => $AI, "t" => $t, "staff" => $staff, "students" => $students, "parents" => $parents);
+									$sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents";
+									$result = $connection2->prepare($sql);
+									$result->execute($data);
+								} catch (PDOException $e) {
+									$partialFail = TRUE;
+								}
+							}
+							
 
 							//Get email addresses
 							if ($email == "Y") {
@@ -592,43 +619,102 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 									}
 								}
 								if ($students == "Y") {
-									try {
-										$dataEmail = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightRollGroupID" => $t);
-										$sqlEmail = "SELECT DISTINCT email, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT email='' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID";
-										$resultEmail = $connection2->prepare($sqlEmail);
-										$resultEmail->execute($dataEmail);
-									} catch (PDOException $e) {
-									}
-									while ($rowEmail = $resultEmail->fetch()) {
-										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"]);
-									}
-								}
-								if ($parents == "Y") {
-									try {
-										$dataStudents = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightRollGroupID" => $t);
-										$sqlStudents = "SELECT DISTINCT pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID";
-										$resultStudents = $connection2->prepare($sqlStudents);
-										$resultStudents->execute($dataStudents);
-									} catch (PDOException $e) {
-									}
-									while ($rowStudents = $resultStudents->fetch()) {
+									if(!empty($mappData)){
+										$pupilsightSchoolYearID = $mappData['pupilsightSchoolYearID'];
+										$pupilsightProgramID = $mappData['pupilsightProgramID'];
+										$pupilsightYearGroupID = $mappData['pupilsightYearGroupID'];
+										$pupilsightRollGroupID = $mappData['pupilsightRollGroupID'];
 										try {
-											$dataFamily = array("pupilsightPersonID" => $rowStudents["pupilsightPersonID"]);
-											$sqlFamily = "SELECT DISTINCT pupilsightFamily.pupilsightFamilyID FROM pupilsightFamily JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) WHERE pupilsightPersonID=:pupilsightPersonID";
-											$resultFamily = $connection2->prepare($sqlFamily);
-											$resultFamily->execute($dataFamily);
+											$dataEmail = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightProgramID" => $pupilsightProgramID, "pupilsightYearGroupID" => $pupilsightYearGroupID, "pupilsightRollGroupID" => $pupilsightRollGroupID);
+											$sqlEmail = "SELECT DISTINCT email, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT email='' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') 
+											AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID 
+											AND pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID 
+											AND pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID 
+											AND pupilsightStudentEnrolment.pupilsightRollGroupID=:pupilsightRollGroupID";
+											$resultEmail = $connection2->prepare($sqlEmail);
+											$resultEmail->execute($dataEmail);
 										} catch (PDOException $e) {
 										}
-										while ($rowFamily = $resultFamily->fetch()) {
+										while ($rowEmail = $resultEmail->fetch()) {
+											$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $pupilsightRollGroupID, 'Email', $rowEmail["email"]);
+										}
+									} else {
+										try {
+											$dataEmail = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightRollGroupID" => $t);
+											$sqlEmail = "SELECT DISTINCT email, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT email='' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID";
+											$resultEmail = $connection2->prepare($sqlEmail);
+											$resultEmail->execute($dataEmail);
+										} catch (PDOException $e) {
+										}
+										while ($rowEmail = $resultEmail->fetch()) {
+											$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"]);
+										}
+									}
+									
+								}
+								if ($parents == "Y") {
+									if(!empty($mappData)){
+										$pupilsightSchoolYearID = $mappData['pupilsightSchoolYearID'];
+										$pupilsightProgramID = $mappData['pupilsightProgramID'];
+										$pupilsightYearGroupID = $mappData['pupilsightYearGroupID'];
+										$pupilsightRollGroupID = $mappData['pupilsightRollGroupID'];
+										try {
+											$dataStudents = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightProgramID" => $pupilsightProgramID, "pupilsightYearGroupID" => $pupilsightYearGroupID, "pupilsightRollGroupID" => $pupilsightRollGroupID);
+											$sqlStudents = "SELECT DISTINCT pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID 
+											AND pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID 
+											AND pupilsightStudentEnrolment.pupilsightRollGroupID=:pupilsightRollGroupID";
+											$resultStudents = $connection2->prepare($sqlStudents);
+											$resultStudents->execute($dataStudents);
+										} catch (PDOException $e) {
+										}
+										while ($rowStudents = $resultStudents->fetch()) {
 											try {
-												$dataEmail = array("pupilsightFamilyID" => $rowFamily["pupilsightFamilyID"]);
-												$sqlEmail = "SELECT DISTINCT email, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT email='' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactEmail='Y'";
-												$resultEmail = $connection2->prepare($sqlEmail);
-												$resultEmail->execute($dataEmail);
+												$dataFamily = array("pupilsightPersonID" => $rowStudents["pupilsightPersonID"]);
+												$sqlFamily = "SELECT DISTINCT pupilsightFamily.pupilsightFamilyID FROM pupilsightFamily JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) WHERE pupilsightPersonID=:pupilsightPersonID";
+												$resultFamily = $connection2->prepare($sqlFamily);
+												$resultFamily->execute($dataFamily);
 											} catch (PDOException $e) {
 											}
-											while ($rowEmail = $resultEmail->fetch()) {
-												$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"]);
+											while ($rowFamily = $resultFamily->fetch()) {
+												try {
+													$dataEmail = array("pupilsightFamilyID" => $rowFamily["pupilsightFamilyID"]);
+													$sqlEmail = "SELECT DISTINCT email, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT email='' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactEmail='Y'";
+													$resultEmail = $connection2->prepare($sqlEmail);
+													$resultEmail->execute($dataEmail);
+												} catch (PDOException $e) {
+												}
+												while ($rowEmail = $resultEmail->fetch()) {
+													$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $pupilsightRollGroupID, 'Email', $rowEmail["email"]);
+												}
+											}
+										}
+									} else {
+										try {
+											$dataStudents = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightRollGroupID" => $t);
+											$sqlStudents = "SELECT DISTINCT pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID";
+											$resultStudents = $connection2->prepare($sqlStudents);
+											$resultStudents->execute($dataStudents);
+										} catch (PDOException $e) {
+										}
+										while ($rowStudents = $resultStudents->fetch()) {
+											try {
+												$dataFamily = array("pupilsightPersonID" => $rowStudents["pupilsightPersonID"]);
+												$sqlFamily = "SELECT DISTINCT pupilsightFamily.pupilsightFamilyID FROM pupilsightFamily JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) WHERE pupilsightPersonID=:pupilsightPersonID";
+												$resultFamily = $connection2->prepare($sqlFamily);
+												$resultFamily->execute($dataFamily);
+											} catch (PDOException $e) {
+											}
+											while ($rowFamily = $resultFamily->fetch()) {
+												try {
+													$dataEmail = array("pupilsightFamilyID" => $rowFamily["pupilsightFamilyID"]);
+													$sqlEmail = "SELECT DISTINCT email, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT email='' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactEmail='Y'";
+													$resultEmail = $connection2->prepare($sqlEmail);
+													$resultEmail->execute($dataEmail);
+												} catch (PDOException $e) {
+												}
+												while ($rowEmail = $resultEmail->fetch()) {
+													$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'Email', $rowEmail["email"]);
+												}
 											}
 										}
 									}
@@ -655,60 +741,139 @@ if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.p
 									}
 								}
 								if ($students == "Y") {
-									try {
-										$dataEmail = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightRollGroupID" => $t);
-										$sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone1='' AND phone1Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID)";
-										$sqlEmail .= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone2='' AND phone2Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID)";
-										$sqlEmail .= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone3='' AND phone3Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID)";
-										$sqlEmail .= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone4='' AND phone4Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID)";
-										$resultEmail = $connection2->prepare($sqlEmail);
-										$resultEmail->execute($dataEmail);
-									} catch (PDOException $e) {
-									}
-									while ($rowEmail = $resultEmail->fetch()) {
-										$countryCodeTemp = $countryCode;
-										if ($rowEmail["countryCode"] == "") {
-											$countryCodeTemp = $rowEmail["countryCode"];
-										}
-										$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
-									}
-								}
-								if ($parents == "Y") {
-									try {
-										$dataStudents = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightRollGroupID" => $t);
-										$sqlStudents = "SELECT DISTINCT pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID";
-										$resultStudents = $connection2->prepare($sqlStudents);
-										$resultStudents->execute($dataStudents);
-									} catch (PDOException $e) {
-									}
-									while ($rowStudents = $resultStudents->fetch()) {
+									if(!empty($mappData)){
+										$pupilsightSchoolYearID = $mappData['pupilsightSchoolYearID'];
+										$pupilsightProgramID = $mappData['pupilsightProgramID'];
+										$pupilsightYearGroupID = $mappData['pupilsightYearGroupID'];
+										$pupilsightRollGroupID = $mappData['pupilsightRollGroupID'];
 										try {
-											$dataFamily = array("pupilsightPersonID" => $rowStudents["pupilsightPersonID"]);
-											$sqlFamily = "SELECT DISTINCT pupilsightFamily.pupilsightFamilyID FROM pupilsightFamily JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) WHERE pupilsightPersonID=:pupilsightPersonID";
-											$resultFamily = $connection2->prepare($sqlFamily);
-											$resultFamily->execute($dataFamily);
+											$dataEmail = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightProgramID" => $pupilsightProgramID, "pupilsightYearGroupID" => $pupilsightYearGroupID, "pupilsightRollGroupID" => $pupilsightRollGroupID);
+											$sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone1='' AND phone1Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID 
+											AND pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID 
+											AND pupilsightStudentEnrolment.pupilsightRollGroupID=:pupilsightRollGroupID)";
+											$sqlEmail .= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone2='' AND phone2Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID 
+											AND pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID 
+											AND pupilsightStudentEnrolment.pupilsightRollGroupID=:pupilsightRollGroupID)";
+											$sqlEmail .= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone3='' AND phone3Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID 
+											AND pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID 
+											AND pupilsightStudentEnrolment.pupilsightRollGroupID=:pupilsightRollGroupID)";
+											$sqlEmail .= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone4='' AND phone4Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID 
+											AND pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID 
+											AND pupilsightStudentEnrolment.pupilsightRollGroupID=:pupilsightRollGroupID)";
+											$resultEmail = $connection2->prepare($sqlEmail);
+											$resultEmail->execute($dataEmail);
 										} catch (PDOException $e) {
 										}
-										while ($rowFamily = $resultFamily->fetch()) {
+										while ($rowEmail = $resultEmail->fetch()) {
+											$countryCodeTemp = $countryCode;
+											if ($rowEmail["countryCode"] == "") {
+												$countryCodeTemp = $rowEmail["countryCode"];
+											}
+											$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $pupilsightRollGroupID, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+										}
+									} else {
+										try {
+											$dataEmail = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightRollGroupID" => $t);
+											$sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone1='' AND phone1Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID)";
+											$sqlEmail .= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone2='' AND phone2Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID)";
+											$sqlEmail .= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone3='' AND phone3Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID)";
+											$sqlEmail .= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone4='' AND phone4Type='Mobile' AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID)";
+											$resultEmail = $connection2->prepare($sqlEmail);
+											$resultEmail->execute($dataEmail);
+										} catch (PDOException $e) {
+										}
+										while ($rowEmail = $resultEmail->fetch()) {
+											$countryCodeTemp = $countryCode;
+											if ($rowEmail["countryCode"] == "") {
+												$countryCodeTemp = $rowEmail["countryCode"];
+											}
+											$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+										}
+									}
+									
+								}
+								if ($parents == "Y") {
+									if(!empty($mappData)){
+										$pupilsightSchoolYearID = $mappData['pupilsightSchoolYearID'];
+										$pupilsightProgramID = $mappData['pupilsightProgramID'];
+										$pupilsightYearGroupID = $mappData['pupilsightYearGroupID'];
+										$pupilsightRollGroupID = $mappData['pupilsightRollGroupID'];
+										try {
+											$dataStudents = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightProgramID" => $pupilsightProgramID, "pupilsightYearGroupID" => $pupilsightYearGroupID, "pupilsightRollGroupID" => $pupilsightRollGroupID);
+											
+											$sqlStudents = "SELECT DISTINCT pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightStudentEnrolment.pupilsightProgramID=:pupilsightProgramID 
+											AND pupilsightStudentEnrolment.pupilsightYearGroupID=:pupilsightYearGroupID 
+											AND pupilsightStudentEnrolment.pupilsightRollGroupID=:pupilsightRollGroupID";
+											$resultStudents = $connection2->prepare($sqlStudents);
+											$resultStudents->execute($dataStudents);
+										} catch (PDOException $e) {
+										}
+										while ($rowStudents = $resultStudents->fetch()) {
 											try {
-												$dataEmail = array("pupilsightFamilyID" => $rowFamily["pupilsightFamilyID"]);
-												$sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone1='' AND phone1Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
-												$sqlEmail .= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone2='' AND phone2Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
-												$sqlEmail .= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone3='' AND phone3Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
-												$sqlEmail .= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone4='' AND phone4Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
-												$resultEmail = $connection2->prepare($sqlEmail);
-												$resultEmail->execute($dataEmail);
+												$dataFamily = array("pupilsightPersonID" => $rowStudents["pupilsightPersonID"]);
+												$sqlFamily = "SELECT DISTINCT pupilsightFamily.pupilsightFamilyID FROM pupilsightFamily JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) WHERE pupilsightPersonID=:pupilsightPersonID";
+												$resultFamily = $connection2->prepare($sqlFamily);
+												$resultFamily->execute($dataFamily);
 											} catch (PDOException $e) {
 											}
-											while ($rowEmail = $resultEmail->fetch()) {
-												$countryCodeTemp = $countryCode;
-												if ($rowEmail["countryCode"] == "") {
-													$countryCodeTemp = $rowEmail["countryCode"];
+											while ($rowFamily = $resultFamily->fetch()) {
+												try {
+													$dataEmail = array("pupilsightFamilyID" => $rowFamily["pupilsightFamilyID"]);
+													$sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone1='' AND phone1Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
+													$sqlEmail .= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone2='' AND phone2Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
+													$sqlEmail .= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone3='' AND phone3Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
+													$sqlEmail .= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone4='' AND phone4Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
+													$resultEmail = $connection2->prepare($sqlEmail);
+													$resultEmail->execute($dataEmail);
+												} catch (PDOException $e) {
 												}
-												$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+												while ($rowEmail = $resultEmail->fetch()) {
+													$countryCodeTemp = $countryCode;
+													if ($rowEmail["countryCode"] == "") {
+														$countryCodeTemp = $rowEmail["countryCode"];
+													}
+													$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $pupilsightRollGroupID, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+												}
+											}
+										}
+									} else {
+										try {
+											$dataStudents = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightRollGroupID" => $t);
+											$sqlStudents = "SELECT DISTINCT pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='" . date("Y-m-d") . "') AND (dateEnd IS NULL  OR dateEnd>='" . date("Y-m-d") . "') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightRollGroupID=:pupilsightRollGroupID";
+											$resultStudents = $connection2->prepare($sqlStudents);
+											$resultStudents->execute($dataStudents);
+										} catch (PDOException $e) {
+										}
+										while ($rowStudents = $resultStudents->fetch()) {
+											try {
+												$dataFamily = array("pupilsightPersonID" => $rowStudents["pupilsightPersonID"]);
+												$sqlFamily = "SELECT DISTINCT pupilsightFamily.pupilsightFamilyID FROM pupilsightFamily JOIN pupilsightFamilyChild ON (pupilsightFamilyChild.pupilsightFamilyID=pupilsightFamily.pupilsightFamilyID) WHERE pupilsightPersonID=:pupilsightPersonID";
+												$resultFamily = $connection2->prepare($sqlFamily);
+												$resultFamily->execute($dataFamily);
+											} catch (PDOException $e) {
+											}
+											while ($rowFamily = $resultFamily->fetch()) {
+												try {
+													$dataEmail = array("pupilsightFamilyID" => $rowFamily["pupilsightFamilyID"]);
+													$sqlEmail = "(SELECT phone1 AS phone, phone1CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone1='' AND phone1Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
+													$sqlEmail .= " UNION (SELECT phone2 AS phone, phone2CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone2='' AND phone2Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
+													$sqlEmail .= " UNION (SELECT phone3 AS phone, phone3CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone3='' AND phone3Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
+													$sqlEmail .= " UNION (SELECT phone4 AS phone, phone4CountryCode AS countryCode, pupilsightPerson.pupilsightPersonID FROM pupilsightPerson JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE NOT phone4='' AND phone4Type='Mobile' AND status='Full' AND pupilsightFamilyAdult.pupilsightFamilyID=:pupilsightFamilyID AND contactSMS='Y')";
+													$resultEmail = $connection2->prepare($sqlEmail);
+													$resultEmail->execute($dataEmail);
+												} catch (PDOException $e) {
+												}
+												while ($rowEmail = $resultEmail->fetch()) {
+													$countryCodeTemp = $countryCode;
+													if ($rowEmail["countryCode"] == "") {
+														$countryCodeTemp = $rowEmail["countryCode"];
+													}
+													$report = reportAdd($report, $emailReceipt, $rowEmail['pupilsightPersonID'], 'Roll Group', $t, 'SMS', $countryCodeTemp . $rowEmail["phone"]);
+												}
 											}
 										}
 									}
+									
 								}
 							}
 						}

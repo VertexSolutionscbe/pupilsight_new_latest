@@ -81,6 +81,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
 
                     $entry_type = 2;
 
+                    if (!empty($skill_id)) {
+                        
+                        $data1 = array('test_id' => $tid, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $student_id, 'skill_id' => $skill_id);
+                        
+                        $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND skill_id=:skill_id';
+                        $result1 = $connection2->prepare($sql1);
+                        $result1->execute($data1);
+                    } else {
+                        $data1 = array('test_id' => $tid, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $student_id);
+                        
+                        $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID';
+                        $result1 = $connection2->prepare($sql1);
+                        $result1->execute($data1);
+                    }
+
                     if ($locksts != 1  && (!empty($mark_obtn) || $mark_obtn == '0' || !empty($marks_abex) || !empty($grade_obtn) || !empty($remark_val) )) {
                         // $data1 = array('test_id' => $tid, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $student_id, 'skill_id' => $skill_id, 'entrytype' => $entry_type);
                         // $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id AND entrytype=:entrytype';
@@ -92,10 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         // }
 
                         
-                        $data1 = array('test_id' => $tid, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $student_id);
-                        $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID';
-                        $result1 = $connection2->prepare($sql1);
-                        $result1->execute($data1);
+                        
 
 
                         // `examinationMarksEntrybySubject` ,`test_id`,`pupilsightYearGroupID`,`pupilsightRollGroupID`,`pupilsightDepartmentID`,`pupilsightPersonID`,`skill_id`,`marks_obtained`,`gradeId`,`remarks`,                
