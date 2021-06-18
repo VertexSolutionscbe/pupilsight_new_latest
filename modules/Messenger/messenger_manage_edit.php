@@ -274,7 +274,7 @@ else {
 					}, array());
 					$checked = !empty($selected)? 'Y' : 'N';
 					$row = $form->addRow();
-						$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; staff by tutors and courses taught.'));
+						$row->addLabel('yearGroup', __('Class'))->description(__('Students in year; staff by tutors and courses taught.'));
 						$row->addYesNoRadio('yearGroup')->checked($checked)->required();
 
 					$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
@@ -305,7 +305,7 @@ else {
 					$selectedByRole = array('staff' => 'N', 'students' => 'N', 'parents' => 'N',);
 					$selected = array_reduce($targets, function($group, $item) use (&$selectedByRole) {
 						if ($item['type'] == 'Roll Group') {
-							$group[] = $item['id'];
+							$group[] = $item['pupilsightMappingID'];
 							$selectedByRole['staff'] = $item['staff'];
 							$selectedByRole['students'] = $item['students'];
 							$selectedByRole['parents'] = $item['parents'];
@@ -314,7 +314,7 @@ else {
 					}, array());
 					$checked = !empty($selected)? 'Y' : 'N';
 					$row = $form->addRow();
-						$row->addLabel('rollGroup', __('Roll Group'))->description(__('Tutees and tutors.'));
+						$row->addLabel('rollGroup', __('Sections'))->description(__('Tutees and tutors.'));
 						$row->addYesNoRadio('rollGroup')->checked($checked)->required();
 
 					$form->toggleVisibilityByClass('rollGroup')->onRadio('rollGroup')->when('Y');
@@ -323,7 +323,9 @@ else {
 						$data=array("pupilsightSchoolYearID"=>$_SESSION[$guid]["pupilsightSchoolYearID"]);
 						//$sql="SELECT pupilsightRollGroupID AS value, name FROM pupilsightRollGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name" ;
 
-						$sql = "SELECT a.pupilsightRollGroupID as value, d.name as sectionname, a.pupilsightProgramID, b.pupilsightYearGroupID , b.name as name1, CONCAT(b.name,' ',d.name) as name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS d ON a.pupilsightRollGroupID = d.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID ORDER BY a.pupilsightMappingID";
+						// $sql = "SELECT a.pupilsightRollGroupID as value, d.name as sectionname, a.pupilsightProgramID, b.pupilsightYearGroupID , b.name as name1, CONCAT(b.name,' ',d.name) as name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS d ON a.pupilsightRollGroupID = d.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID ORDER BY a.pupilsightMappingID";
+
+						$sql = "SELECT a.pupilsightMappingID as value, d.name as sectionname, a.pupilsightProgramID, b.pupilsightYearGroupID , b.name as name1, CONCAT(b.name,' ',d.name) as name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS d ON a.pupilsightRollGroupID = d.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID ORDER BY a.pupilsightMappingID";
 					}
 					else {
 						if ($roleCategory == "Staff") {
@@ -336,7 +338,7 @@ else {
 						}
 					}
 					$row = $form->addRow()->addClass('rollGroup hiddenReveal');
-						$row->addLabel('rollGroups[]', __('Select Roll Groups'));
+						$row->addLabel('rollGroups[]', __('Select Sections'));
 						$row->addSelect('rollGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder()->selected($selected);
 
 					$row = $form->addRow()->addClass('rollGroup hiddenReveal');

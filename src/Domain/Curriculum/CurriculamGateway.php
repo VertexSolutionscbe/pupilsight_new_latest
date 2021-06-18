@@ -589,9 +589,10 @@ class CurriculamGateway extends QueryableGateway
 
     //getTestResults
 
-    public function getsubjectmarksStdWise(QueryCriteria $criteria, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightSchoolYearID, $testId)
+    public function getsubjectmarksStdWise(QueryCriteria $criteria, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightSchoolYearID, $testId, $roleId, $pupilsightStaffID, $pupilsightRollGroupID)
     {
-        $query = $this
+        if($roleId == 2){
+            $query = $this
             ->newQuery()
             ->from('examinationSubjectToTest')
             ->cols([
@@ -601,15 +602,41 @@ class CurriculamGateway extends QueryableGateway
             ->leftJoin('pupilsightDepartment', 'examinationSubjectToTest.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
             ->leftJoin('examinationGradeSystemConfiguration', 'examinationSubjectToTest.gradeSystemId=examinationGradeSystemConfiguration.gradeSystemId')
             ->leftJoin('subjectToClassCurriculum', 'examinationSubjectToTest.pupilsightDepartmentID=subjectToClassCurriculum.pupilsightDepartmentID')
+            ->leftJoin('assignstaff_tosubject', 'subjectToClassCurriculum.id=assignstaff_tosubject.subjectToClassCurriculumID')
 
             ->where('examinationSubjectToTest.is_tested ="1"')
             ->where('examinationSubjectToTest.test_id ="' . $testId . '"')
             ->where('subjectToClassCurriculum.pupilsightSchoolYearID ="' . $pupilsightSchoolYearID . '"')
             ->where('subjectToClassCurriculum.pupilsightProgramID ="' . $pupilsightProgramID . '"')
             ->where('subjectToClassCurriculum.pupilsightYearGroupID ="' . $pupilsightYearGroupID . '"')
+            ->where('assignstaff_tosubject.pupilsightStaffID ="' . $pupilsightStaffID . '"')
+            ->where('assignstaff_tosubject.pupilsightRollGroupID ="' . $pupilsightRollGroupID . '"')
             ->groupBy(['examinationSubjectToTest.pupilsightDepartmentID'])
             ->orderBy(['subjectToClassCurriculum.pos ASC']);
+        } else {
+            $query = $this
+            ->newQuery()
+            ->from('examinationSubjectToTest')
+            ->cols([
+                'examinationSubjectToTest.*', 'examinationTest.name', 'examinationTest.lock_marks_entry', 'examinationGradeSystemConfiguration.gradeSystemId', "GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name SEPARATOR ', ') as grade_names", "GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id SEPARATOR ', ') as grade_ids", 'subjectToClassCurriculum.subject_type', 'pupilsightDepartment.name AS subject', 'subjectToClassCurriculum.pos'
+            ])
+            ->leftJoin('examinationTest', 'examinationSubjectToTest.test_id=examinationTest.id')
+            ->leftJoin('pupilsightDepartment', 'examinationSubjectToTest.pupilsightDepartmentID=pupilsightDepartment.pupilsightDepartmentID')
+            ->leftJoin('examinationGradeSystemConfiguration', 'examinationSubjectToTest.gradeSystemId=examinationGradeSystemConfiguration.gradeSystemId')
+            ->leftJoin('subjectToClassCurriculum', 'examinationSubjectToTest.pupilsightDepartmentID=subjectToClassCurriculum.pupilsightDepartmentID')
+            ->leftJoin('assignstaff_tosubject', 'subjectToClassCurriculum.id=assignstaff_tosubject.subjectToClassCurriculumID')
+
+            ->where('examinationSubjectToTest.is_tested ="1"')
+            ->where('examinationSubjectToTest.test_id ="' . $testId . '"')
+            ->where('subjectToClassCurriculum.pupilsightSchoolYearID ="' . $pupilsightSchoolYearID . '"')
+            ->where('subjectToClassCurriculum.pupilsightProgramID ="' . $pupilsightProgramID . '"')
+            ->where('subjectToClassCurriculum.pupilsightYearGroupID ="' . $pupilsightYearGroupID . '"')
+            ->where('assignstaff_tosubject.pupilsightRollGroupID ="' . $pupilsightRollGroupID . '"')
+            ->groupBy(['examinationSubjectToTest.pupilsightDepartmentID'])
+            ->orderBy(['subjectToClassCurriculum.pos ASC']);
+        }
         //echo $query;
+        //die();
         $res = $this->runQuery($query, $criteria);
         $data = $res->data;
 

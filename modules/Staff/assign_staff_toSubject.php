@@ -111,8 +111,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
     // echo "<div style='height:50px;'><div class='float-left mb-2'><a  id='assignstaff_st' data-type='staff' class='btn btn-primary'>Assign Staff</a>&nbsp;&nbsp;";  
     // echo "<a  id='unassignStudentstaff'  class='btn btn-primary'>Remove Staff</a>&nbsp;&nbsp;";  
     // echo "</div><div class='float-none'></div></div>";
+    echo "<a style='display:none' id='sectionAdd' href=''  class='thickbox '> Add Section</a>";
     echo "<a style='display:none' id='clickstaffunassign' href='fullscreen.php?q=/modules/Staff/remove_assigned_staffSub.php&width=600'  class='thickbox '> Unassign Staff</a>";
-    echo '<div  ><a style="float:right;height: 34px;margin-left: 10px;" class=" btn btn-primary" id="export_payment_details" title=
+    echo '<div  ><a style="float:right;height: 34px;margin-left: 10px;" class=" btn btn-primary" id="addSection" data-hrf="fullscreen.php?q=/modules/Staff/add_section.php&aid='.$pupilsightSchoolYearID.'&pid='.$pupilsightProgramID.'&cid='.$pupilsightYearGroupID.'&ids="  >Add Section</a>&nbsp;&nbsp;<a style="float:right;height: 34px;margin-left: 10px;" class=" btn btn-primary" id="export_payment_details" title=
     Export Excel"  >Export</a>&nbsp;&nbsp;<a id="unassignsubj" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Unassign</a>&nbsp;&nbsp;<a href="index.php?q=/modules/Staff/select_staff_sub.php" class= "btn btn-primary" style="height: 34px;  margin-left: 10px; float: right;"class=" btn btn-primary">Assign Staff To Subject</a></div>';
 
     $form = Form::create('studentViewSearch', '');
@@ -155,11 +156,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
 
     $table->addCheckboxColumn('st_id', __(''))
         ->setClass('chkbox')
-        ->notSortable();
+        ->notSortable()
+        ->format(function ($getselstaff) {
+            return "<input id='st_id" . $getselstaff['st_id'] . "' name='st_id[]' type='checkbox' value='" . $getselstaff['st_id'] . "' data-id='" . $getselstaff['as_id'] . "' >";
+            
+        });
     $table->addColumn('fname', __('Staff'));
     $table->addColumn('program', __('Program'));
     $table->addColumn('class', __('Class'));
-    //$table->addColumn('section', __('Section'));
+    $table->addColumn('section', __('Section'));
     $table->addColumn('dep_name', __('Subject'));
 
 
@@ -185,5 +190,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/assign_student_toSta
 
         });
         location.reload();
+    });
+
+    $(document).on('click', '#addSection', function () {
+
+        var favorite = [];
+        $.each($("input[name='st_id[]']:checked"), function () {
+            favorite.push($(this).attr('data-id'));
+        });
+        var stuid = favorite.join(",");
+        //alert(stuid);
+        if (stuid) {
+            var val = stuid;
+            var hrf = $(this).attr('data-hrf');
+            var newhrf = hrf + val + '&width=400';
+            $("#sectionAdd").attr('href', newhrf);
+            window.setTimeout(function () {
+                $("#sectionAdd").click();
+            }, 10);
+            
+        } else {
+            alert('You Have to Select Staff.');
+        }
     });
 </script>

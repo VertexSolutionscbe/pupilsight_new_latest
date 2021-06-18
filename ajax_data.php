@@ -762,6 +762,8 @@ if ($type == 'getClass') {
         $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
     } else if ($roleId == '2') {
         $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+    } else if ($roleId == '35') {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
     } else {
         $sql = 'SELECT b.*, c.name FROM assignstaff_toclasssection AS a LEFT JOIN pupilsightProgramClassSectionMapping AS b ON a.pupilsightMappingID = b.pupilsightMappingID LEFT JOIN pupilsightYearGroup AS c ON b.pupilsightYearGroupID = c.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND b.pupilsightProgramID = "' . $pid . '" GROUP BY b.pupilsightYearGroupID';
     }
@@ -828,9 +830,7 @@ if ($type == 'getSection') {
 
     $cid = $val;
     $pid = $_POST['pid'];
-    if($roleId == '1'){
-        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '" AND a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" GROUP BY a.pupilsightRollGroupID';
-    } else if ($roleId == '2') {
+    if ($roleId == '2') {
         $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightRollGroup AS b ON a.pupilsightRollGroupID = b.pupilsightRollGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" AND a.pupilsightYearGroupID = "' . $cid . '"  GROUP BY a.pupilsightRollGroupID';
         
     } else {
@@ -2960,20 +2960,28 @@ if ($type == 'getSubjectbasedonclassNew') {
     $roleid = $ckdata['pupilsightRoleIDPrimary'];
 
     $pupilsightProgramID = $_POST['pupilsightProgramID'];
+    $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
     if ($roleid == '002') //for teacher login
     {
-        $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND subjectToClassCurriculum.pupilsightProgramID = '" . $pupilsightProgramID . "' AND subjectToClassCurriculum.pupilsightYearGroupID ='" . $val . "' AND pupilsightStaff.pupilsightPersonID='" . $pupilsightPersonID . "' order by subjectToClassCurriculum.subject_display_name asc";
+        // $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND subjectToClassCurriculum.pupilsightProgramID = '" . $pupilsightProgramID . "' AND subjectToClassCurriculum.pupilsightYearGroupID ='" . $val . "' AND pupilsightStaff.pupilsightPersonID='" . $pupilsightPersonID . "' order by subjectToClassCurriculum.subject_display_name asc";
+        $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.id = assignstaff_tosubject.subjectToClassCurriculumID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND subjectToClassCurriculum.pupilsightProgramID = '" . $pupilsightProgramID . "' AND subjectToClassCurriculum.pupilsightYearGroupID ='" . $val . "' AND pupilsightStaff.pupilsightPersonID='" . $pupilsightPersonID . "' AND assignstaff_tosubject.pupilsightRollGroupID = '".$pupilsightRollGroupID."' GROUP BY subjectToClassCurriculum.pupilsightDepartmentID order by subjectToClassCurriculum.subject_display_name asc";
+        $result = $connection2->query($sq);
+        $rowdata = $result->fetchAll();
+        $returndata = '<option value="">Select Subject</option>';
+        foreach ($rowdata as $row) {
+            $returndata .= '<option value=' . $row['pupilsightDepartmentID'] . ' >' . $row['subject_display_name'] . '</option>';
+        }
     } else {
-        $sq = "select pupilsightDepartmentID, subject_display_name, di_mode from subjectToClassCurriculum where pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND pupilsightProgramID = '" . $pupilsightProgramID . "' AND pupilsightYearGroupID ='" . $val . "' order by subject_display_name asc";
-    }
-
-    $result = $connection2->query($sq);
-    $rowdata = $result->fetchAll();
-    $returndata = '<option value="">Select Subject</option>';
-    foreach ($rowdata as $row) {
-        $returndata .= '<option value=' . $row['pupilsightDepartmentID'] . '  data-dimode=' . $row['di_mode'] . '>' . $row['subject_display_name'] . '</option>';
+        $sq = "select a.pupilsightDepartmentID, a.subject_display_name, a.di_mode from subjectToClassCurriculum AS a LEFT JOIN assignstaff_tosubject AS b ON a.id = b.subjectToClassCurriculumID where a.pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND a.pupilsightProgramID = '" . $pupilsightProgramID . "' AND a.pupilsightYearGroupID ='" . $val . "' AND b.pupilsightRollGroupID = '".$pupilsightRollGroupID."' GROUP BY a.pupilsightDepartmentID order by a.subject_display_name asc";
+        $result = $connection2->query($sq);
+        $rowdata = $result->fetchAll();
+        $returndata = '<option value="">Select Subject</option>';
+        foreach ($rowdata as $row) {
+            $returndata .= '<option value=' . $row['pupilsightDepartmentID'] . '  data-dimode=' . $row['di_mode'] . '>' . $row['subject_display_name'] . '</option>';
+        }
     }
     echo $returndata;
+    
 }
 
 if ($type == 'subPeriodWise') {

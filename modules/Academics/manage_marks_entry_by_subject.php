@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
             $classes =  $HelperGateway->getClassByProgramForAcademic($connection2, $pupilsightProgramID, $uid, $pupilsightSchoolYearID);
             $sections =  $HelperGateway->getSectionByProgramForAcademic($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
 
-            $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND subjectToClassCurriculum.pupilsightProgramID = '" . $pupilsightProgramID . "' AND subjectToClassCurriculum.pupilsightYearGroupID ='" . $pupilsightYearGroupID . "' AND pupilsightStaff.pupilsightPersonID='" . $uid . "' order by subjectToClassCurriculum.subject_display_name asc";
+            $sq = "select DISTINCT subjectToClassCurriculum.pupilsightDepartmentID, subjectToClassCurriculum.subject_display_name from subjectToClassCurriculum  LEFT JOIN assignstaff_tosubject ON subjectToClassCurriculum.pupilsightDepartmentID = assignstaff_tosubject.pupilsightDepartmentID  LEFT JOIN pupilsightStaff ON assignstaff_tosubject.pupilsightStaffID = pupilsightStaff.pupilsightStaffID  where subjectToClassCurriculum.pupilsightSchoolYearID = '" . $pupilsightSchoolYearID . "' AND subjectToClassCurriculum.pupilsightProgramID = '" . $pupilsightProgramID . "' AND subjectToClassCurriculum.pupilsightYearGroupID ='" . $pupilsightYearGroupID . "' AND assignstaff_tosubject.pupilsightRollGroupID = '" . $pupilsightRollGroupID . "'  AND pupilsightStaff.pupilsightPersonID='" . $uid . "' order by subjectToClassCurriculum.subject_display_name asc";
             $resultd = $connection2->query($sq);
             $rowdatadept = $resultd->fetchAll();
             
@@ -472,7 +472,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                     }
                     
 
-                    echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab-'.$s_test['test_id'].'-'.$f.'" value="'.$marksobt.'"  '.$disabled.'>';
+                    echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab-'.$s_test['test_id'].'-'.$f.'" data-nid="'.$s_test['test_id'].$row['stuid'].'" value="'.$marksobt.'"  '.$disabled.'>';
                     echo '</td>';  
                     
                     $seab = array("-", "AB", "EX");
@@ -722,12 +722,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         var obtain_mark= Number($(this).attr('data-mark'));
         var enterd_mrk = Number($(this).val()); 
         var subject_mode="<?php echo $mode;?>";
+        var nid = $(this).attr('data-nid');
         if(Number(obtain_mark) < Number(enterd_mrk)){
            alert('You cannot enter marks greater than max marks defined');
            $(this).val(""); 
            return;
+        }  
 
-       }  
+        if($(this).val() == ''){
+            $(".abexClsDis"+nid).prop("checked",false);
+            return;
+        }
+
         var grad_val = percentage(obtain_mark, enterd_mrk);
         //var grad_val = enterd_mrk;
         var lock_sts=   $(this).attr('data-lock');
@@ -737,7 +743,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         var type = 'getGradeConfigDataSubject';
         if(lock_sts !='locked')
         {
-        if (grad_val != ''  ) {
+        if (grad_val != ''  || grad_val == 0) {
             $.ajax({
                 url: 'ajax_data.php',
                 type: 'post',
@@ -748,7 +754,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 
                  //  alert('#grade_val'+tid+'row'+data_cnt+'grade'+response);
                 // alert(response);
-                if(enterd_mrk != '' && response != '')
+                if(response != '')
                 {
                     var gid = response.id;
                     if(subject_mode=="SUBJECT_GRADE_WISE_AUTO"){
@@ -802,7 +808,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         var roleid= $("#roleid").val();
         var pupilsightPersonID = $("#roleid").attr('data-pid');
         
-        $("#pupilsightYearGroupIDbyPPbyMarks").change(function() {
+        // $("#pupilsightYearGroupIDbyPPbyMarks").change(function() {
+        //     loadSubjects();
+        // });
+
+        $("#pupilsightRollGroupIDbyPPbyMarks").change(function() {
             loadSubjects();
         });
         
@@ -810,6 +820,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         function loadSubjects() {
             var pupilsightProgramID = $("#pupilsightProgramIDbyPPbyMarks").val();
             var pupilsightYearGroupID = $("#pupilsightYearGroupIDbyPPbyMarks").val();
+            var pupilsightRollGroupID = $("#pupilsightRollGroupIDbyPPbyMarks").val();
             //var roleid= $("#roleid").val();
             if (pupilsightYearGroupID) {
                 var type = "getSubjectbasedonclassNew";
@@ -820,7 +831,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         data: {
                             val: pupilsightYearGroupID,
                             type: type,
-                            pupilsightProgramID:pupilsightProgramID
+                            pupilsightProgramID:pupilsightProgramID,
+                            pupilsightRollGroupID:pupilsightRollGroupID
 
                         },
                         async: true,

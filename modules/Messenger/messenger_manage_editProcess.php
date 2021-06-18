@@ -174,14 +174,40 @@ else {
 						$choices=$_POST["rollGroups"] ;
 						if ($choices!="") {
 							foreach ($choices as $t) {
-								try {
-									$data=array("pupilsightMessengerID"=>$pupilsightMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
-									$sql="INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
-									$result=$connection2->prepare($sql);
-									$result->execute($data);
+								try{
+									$sql = 'SELECT * FROM pupilsightProgramClassSectionMapping WHERE pupilsightMappingID = '.$t.' ';
+									$result = $connection2->query($sql);
+									$mappData = $result->fetch();
+								} catch (PDOException $e) {
+									$partialFail = TRUE;
 								}
-								catch(PDOException $e) {
-									$partialfail=TRUE;
+								$pupilsightSchoolYearID = '';
+								$pupilsightProgramID = '';
+								$pupilsightYearGroupID = '';
+								$pupilsightRollGroupID = '';
+								if(!empty($mappData)){
+									$pupilsightSchoolYearID = $mappData['pupilsightSchoolYearID'];
+									$pupilsightProgramID = $mappData['pupilsightProgramID'];
+									$pupilsightYearGroupID = $mappData['pupilsightYearGroupID'];
+									$pupilsightRollGroupID = $mappData['pupilsightRollGroupID'];
+									try {
+										$data = array("AI" => $AI, "t" => $pupilsightRollGroupID, "staff" => $staff, "students" => $students, "parents" => $parents, "pupilsightSchoolYearID" => $pupilsightSchoolYearID, "pupilsightProgramID" => $pupilsightProgramID , "pupilsightYearGroupID" => $pupilsightYearGroupID, "pupilsightRollGroupID" => $pupilsightRollGroupID, "pupilsightMappingID" => $t);
+										$sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:AI, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents, pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID, pupilsightMappingID=:pupilsightMappingID";
+										$result = $connection2->prepare($sql);
+										$result->execute($data);
+									} catch (PDOException $e) {
+										$partialFail = TRUE;
+									}
+								} else {
+									try {
+										$data=array("pupilsightMessengerID"=>$pupilsightMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
+										$sql="INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=:pupilsightMessengerID, type='Roll Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
+										$result=$connection2->prepare($sql);
+										$result->execute($data);
+									}
+									catch(PDOException $e) {
+										$partialfail=TRUE;
+									}
 								}
 							}
 						}

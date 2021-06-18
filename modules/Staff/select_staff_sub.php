@@ -142,7 +142,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/select_staff_sub.php
         $getselectedstaff = [];
     ?>
     <form action="<?=$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/assign_staff_toSubjectProcess.php';?>" method="post" autocomplete="on" enctype="multipart/form-data" class="smallIntBorder fullWidth standardForm" id="assignStaffForm">
+        
         <input type="hidden" name="address" value="/modules/Staff/select_staff_sub.php">
+
+        <input type="hidden" name="pupilsightSchoolYearID" value="<?php echo $pupilsightSchoolYearID;?>">
+        <input type="hidden" name="pupilsightProgramID" value="<?php echo $pupilsightProgramID;?>">
+        <input type="hidden" name="pupilsightYearGroupID" value="<?php echo $pupilsightYearGroupID;?>">
+        <input type="hidden" name="pupilsightRollGroupID" value="<?php echo $pupilsightRollGroupID;?>">
+        
         <div class='row'>
             <div class='col-12 text-right'>
                 <a id="assignStaffToSubject" style="height: 34px; float: right;"class=" btn btn-primary">Assign</a>

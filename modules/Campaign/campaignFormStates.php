@@ -105,12 +105,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
 
                     if (!empty($admsettingsId) && !empty($pupilsightProgramID) && !empty($pupilsightYearGroupID)) {
                         $sqlas = "SELECT fn_fee_structure_id, classes FROM fn_fee_admission_settings WHERE FIND_IN_SET('" . $pupilsightProgramID . "',pupilsightProgramID) AND FIND_IN_SET('" . $pupilsightYearGroupID . "',classes) AND id IN (" . $admsettingsId . ") ";
-                        //echo $sqlas;
                         $resultas = $connection2->query($sqlas);
                         $settdata = $resultas->fetchAll();
-                        //echo '<pre>';
-                        //print_r($settdata);
-                        //echo '</pre>';
+                        // echo '<pre>';
+                        // print_r($settdata);
+                        // echo '</pre>';
 
                         foreach ($settdata as $asd) {
                             $fn_fee_structure_id = $asd['fn_fee_structure_id'];
@@ -120,8 +119,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormState
                             $results = $connection2->prepare($sqls);
                             $results->execute($datas);
                             $values = $results->fetch();
-
-
+                            // echo '<pre>';
+                            // print_r($values);
+                            // echo '</pre>';
+                            // die();
                             $datac = array('fn_fee_structure_id' => $id);
                             $sqlc = 'SELECT * FROM fn_fee_structure_item WHERE fn_fee_structure_id=:fn_fee_structure_id';
                             $resultc = $connection2->prepare($sqlc);

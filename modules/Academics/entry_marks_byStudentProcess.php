@@ -10,12 +10,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    /*
-    echo '<pre>';
-    print_r($_POST);
-    echo '</pre>';
-    die();
-    */
+
+    // echo '<pre>';
+    // print_r($_POST);
+    // echo '</pre>';
+    // die();
     //Proceed!
     $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
     $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
@@ -27,8 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
 
 
     //Validate Inputs
-    //if ($pupilsightDepartmentID == '' or $mark_obtained == '') {
-    if ($pupilsightPersonID == '' or $mark_obtained == '') {
+    if ($pupilsightPersonID == '' || $mark_obtained == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -60,28 +58,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
                                     $remark_own = '';
                                 }
 
+                                if (!empty($skill_id)) {
+                                    $datadel = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID, 'skill_id' => $skill_id);
+                                    //print_r($datadel);
+
+                                    $sqldel = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightPersonID=:pupilsightPersonID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND skill_id=:skill_id  ';
+                                    $resultdel = $connection2->prepare($sqldel);
+                                    $resultdel->execute($datadel);
+                                } else {
+                                    $datadel = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID);
+                                    //print_r($datadel);
+
+                                    $sqldel = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightPersonID=:pupilsightPersonID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID  ';
+                                    $resultdel = $connection2->prepare($sqldel);
+                                    $resultdel->execute($datadel);
+                                }
+
                                 if (!empty($marksdata) || $marksdata == '0' || !empty($marks_abex) || !empty($gradeId) || !empty($remark_own)) {
 
                                     // if(!empty($marks_abex) || !empty($gradeId)){
                                     //     $marksdata = '';
                                     // }
-
-                                    if (!empty($skill_id)) {
-                                        $datadel = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID, 'skill_id' => $skill_id);
-                                        //print_r($datadel);
-
-                                        $sqldel = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightPersonID=:pupilsightPersonID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND skill_id=:skill_id  ';
-                                        $resultdel = $connection2->prepare($sqldel);
-                                        $resultdel->execute($datadel);
-                                    } else {
-                                        $datadel = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightPersonID' => $pupilsightPersonID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID);
-                                        //print_r($datadel);
-
-                                        $sqldel = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightPersonID=:pupilsightPersonID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID  ';
-                                        $resultdel = $connection2->prepare($sqldel);
-                                        $resultdel->execute($datadel);
-                                    }
-
 
                                     $remark_type = 'own';
                                     $data = array('pupilsightPersonIDTaker' => $_SESSION[$guid]['pupilsightPersonID'], 'test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $departmentID, 'pupilsightPersonID' => $pupilsightPersonID, 'skill_id' => $skill_id, 'marks_obtained' => $marksdata, 'marks_abex' => $marks_abex, 'gradeId' => $gradeId, 'remark_type' => $remark_type, 'remarks' => $remark_own);

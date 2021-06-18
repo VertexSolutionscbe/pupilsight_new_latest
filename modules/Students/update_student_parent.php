@@ -13,7 +13,7 @@ include $_SERVER["DOCUMENT_ROOT"] . '/db.php';
 
 require __DIR__ . '/moduleFunctions.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Students/import_student_run.php';
+$URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Students/update_student_parent.php';
 //$FURL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Students/import_student_run_final.php';
 
 if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_run.php") == false) {
@@ -42,7 +42,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
     echo $form->getOutput();
 
     if ($_POST) {
-        //print_r($_POST);
+        // print_r($_POST);
+        // die();
         if (isset($_POST["validFormData"])) {
 
             if (isset($_POST["data"])) {
@@ -59,7 +60,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                 $username_stock = array();
                 $dusername_stock = array();
                 $dtable_str = "";
-                //print_r($data);
+                // echo '<pre>';
+                // print_r($data);
+                // echo '</pre>';
                 //die();
                 foreach ($data as  $alrow) {
 
@@ -123,75 +126,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     try {
                         // Student Entry
 
-                        $sql = "INSERT INTO pupilsightPerson (";
-                        foreach ($alrow as $key => $ar) {
-                            if (strpos($key, '##_') !== false && !empty($ar)) {
-                                //$clname = ltrim($key, '##_'); 
-                                $clname = substr($key, 3, strlen($key));
-                                $sql .= $clname . ',';
-                            }
-                        }
-                        $sql .= 'preferredName,pupilsightRoleIDPrimary,pupilsightRoleIDAll';
-                        //$sql = rtrim($sql, ", ");
-                        $sql .= ") VALUES (";
-                        $offical_name = "";
-                        $username = "";
-                        foreach ($alrow as $k => $value) {
-
-                            if ($k == "##_dob" && !empty($value)) {
-                                $value = date('Y-m-d', strtotime($value));
-                            }
-
-                            if ($k == "##_officialName" && !empty($value)) {
-                                $offical_name = $conn->real_escape_string($value);
-                            }
-
-                            if ($k == "##_username" && !empty($value)) {
-                                $username = $value;
-                            }
-
-                            if ($k == "##_fee_category_id" && !empty($value)) {
-                                $sqlfc = 'SELECT id FROM fee_category WHERE name = "' . $value . '"';
-                                $resultfc = $connection2->query($sqlfc);
-                                $fcData = $resultfc->fetch();
-                                $value = $fcData['id'];
-                            }
-
-                            if (strpos($k, '##_') !== false && !empty($value)) {
-                                $val = str_replace('"', "", $value);
-                                $sql .= '"' . $conn->real_escape_string($val) . '",';
-                            }
-                        }
-                        $sql .= '"' . $alrow['##_officialName'] . '","003","003"';
-                        //$sql = rtrim($sql, ", ");
-                        $sql .= ")";
-                        $sql = rtrim($sql, ", ");
-                        //echo "\n<br>" . $cnt . " " . $offical_name;
-
-                        //echo "\n" . $sql . ";";
-                        //die();
-                        //mysqli_query($conn, $sql);
-
-                        if (in_array($username, $username_stock)) {
-                            //echo "Match found";
-                            $tmp = array($username, $offical_name);
-                            $dusername_stock[$dcnt] = $tmp;
-                            $dcnt++;
-                            $dtable_str .= "\n<tr>";
-                            $dtable_str .= "\n<td>" . $dcnt . "</td>";
-                            $dtable_str .= "\n<td>" . $username . "</td>";
-                            $dtable_str .= "\n<td>" . $offical_name . "</td>";
-                            $dtable_str .= "\n</tr>";
-                        } else {
                             //username unique
                             $username_stock[$cnt] = $username;
                             $cnt++;
                             //echo $sql . ";";
 
-                            $conn->autocommit(FALSE);
-                            $conn->query($sql);
-                            $stu_id = $conn->insert_id;
-
+                            // $conn->autocommit(FALSE);
+                            // $conn->query($sql);
+                            $stu_id = $alrow['##_studentId'];
+                            // die();
                             // Father Entry
                             $chkFamily = 0;
                             if (!empty($alrow['&&_officialName'])) {
@@ -361,7 +304,6 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                                 $conn->query($sqlf3);
                             }
                             $conn->commit();
-                        }
                     } catch (Exception $ex) {
                         $conn->rollback();
                         $exception_result[$exception_count] = $e->getMessage();
@@ -404,53 +346,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $handle = fopen($_FILES['file']['tmp_name'], "r");
                     $headers = fgetcsv($handle, 10000, ",");
                     $hders = array();
-                    // echo '<pre>';
-                    // print_r($headers);
-                    // echo '</pre>';
+                    echo '<pre>';
+                    print_r($headers);
+                    echo '</pre>';
                     $chkHeaderKey = array();
                     foreach ($headers as $key => $hd) {
-                        if ($hd == 'Academic Year') {
-                            $headers[$key] = 'at_pupilsightSchoolYearID';
-                        } else if ($hd == 'Program') {
-                            $headers[$key] = 'at_pupilsightProgramID';
-                        } else if ($hd == 'Class') {
-                            $headers[$key] = 'at_pupilsightYearGroupID';
-                        } else if ($hd == 'Section') {
-                            $headers[$key] = 'at_pupilsightRollGroupID';
-                        } else if ($hd == 'Official Name') {
-                            $headers[$key] = '##_officialName';
-                        } else if ($hd == 'Gender') {
-                            $headers[$key] = '##_gender';
-                        } else if ($hd == 'Date of Birth') {
-                            $headers[$key] = '##_dob';
-                        } else if ($hd == 'Username') {
-                            $headers[$key] = '##_username';
-                        } else if ($hd == 'Can Login') {
-                            $headers[$key] = '##_canLogin';
-                        } else if ($hd == 'Email') {
-                            $headers[$key] = '##_email';
-                        } else if ($hd == 'Address') {
-                            $headers[$key] = '##_address1';
-                        } else if ($hd == 'District') {
-                            $headers[$key] = '##_address1District';
-                        } else if ($hd == 'Country') {
-                            $headers[$key] = '##_address1Country';
-                        } else if ($hd == 'First Language') {
-                            $headers[$key] = '##_languageFirst';
-                        } else if ($hd == 'Second Language') {
-                            $headers[$key] = '##_languageSecond';
-                        } else if ($hd == 'Third Language') {
-                            $headers[$key] = '##_languageThird';
-                        } else if ($hd == 'Country of Birth') {
-                            $headers[$key] = '##_countryOfBirth';
-                        } else if ($hd == 'Ethnicity') {
-                            $headers[$key] = '##_ethnicity';
-                        } else if ($hd == 'Religion') {
-                            $headers[$key] = '##_religion';
-                        } else if ($hd == 'National ID Card Number') {
-                            $headers[$key] = '##_nationalIDCardNumber';
-                        } else if ($hd == 'Fee Category') {
-                            $headers[$key] = '##_fee_category_id';
+                        if (trim($hd) == 'Student_Id') {
+                            $headers[$key] = '##_studentId';
+                        } else if ($hd == 'StudentName') {
+                            $headers[$key] = '##_studentName';
                         } else if ($hd == 'Father Official Name') {
                             $headers[$key] = '&&_officialName';
                         } else if ($hd == 'Father Date of Birth') {
