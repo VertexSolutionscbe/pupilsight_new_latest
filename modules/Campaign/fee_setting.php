@@ -29,10 +29,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
     $resultcam = $connection2->query($sqlcam);
     $camData = $resultcam->fetch();
 
-    $pupilsightProgramID = $camData['pupilsightProgramID'];
-    $pupilsightProgramName = $camData['name'];
+    $pupilsightProgramIDs = $camData['pupilsightProgramID'];
+    
+    $sql = 'SELECT GROUP_CONCAT(name SEPARATOR ", ") AS prog_name FROM pupilsightProgram WHERE pupilsightProgramID IN ('.$pupilsightProgramIDs.') ';
+    $result = $connection2->query($sql);
+    $progData = $result->fetch();
+    
+    $pupilsightProgramName = $progData['prog_name'];
+    
     $classes = $camData['classes'];
-
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -47,30 +52,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
         $pupilsightSchoolYearName = $_SESSION[$guid]['pupilsightSchoolYearName'];
     }
 
-    // $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
-    // $resultp = $connection2->query($sqlp);
-    // $rowdataprog = $resultp->fetchAll();
-
-    // $program=array();  
-    // $program2=array();  
-    // $program1=array(''=>'Select Program');
-    // $k=1;
-    // foreach ($rowdataprog as $key => $dt) {
-    //     $program2[$dt['pupilsightProgramID']] = $dt['name'];
-    //     if($k == 1){
-    //         $pupilsightProgramID=$dt['pupilsightProgramID'];
-    //     }
-    //     $k++;
-    // }
-    // $program= $program1 + $program2; 
-
-    // if($_POST){
-    //     $pupilsightProgramID =  $_POST['pupilsightProgramID'];
-    // } 
     
-    $sqlc = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pupilsightProgramID . '" AND b.pupilsightYearGroupID IN ('.$classes.') GROUP BY a.pupilsightYearGroupID';
+    $sqlc = 'SELECT a.*, b.name, p.name as prog_name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightProgram AS p ON a.pupilsightProgramID = p.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID IN (' . $pupilsightProgramIDs . ') AND b.pupilsightYearGroupID IN ('.$classes.') GROUP BY a.pupilsightProgramID, a.pupilsightYearGroupID';
     $resultc = $connection2->query($sqlc);
     $clsdata = $resultc->fetchAll();
+    // echo '<pre>';
+    // print_r($clsdata);
+    // echo '</pre>';
+    // die();
 
     $sqlq = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
     $resultval = $connection2->query($sqlq);
@@ -104,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
             $feestgId = '';
         }
     }  
-    $feeGroups = $AdmissionGateway->getFeeStructure($criteria, $pupilsightSchoolYearID, $type, $feestgId, $pupilsightProgramID);
+    $feeGroups = $AdmissionGateway->getFeeStructure($criteria, $pupilsightSchoolYearID, $type, $feestgId, $pupilsightProgramIDs);
     echo "<h4>List Fee group</h4>";
     $table = DataTable::createPaginated('FeeStructureManage', $criteria);
 // echo '<pre>';
@@ -134,13 +123,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
     $col->addContent('<a class="btn btn-primary" style="float:right;" id="saveAdmissionFess">Save</a>')->setClass('right');
     
     echo $searchform->getOutput();
-
+// die();
 }
 ?>
 <input type="hidden" id="kid" value="<?php echo $_GET['kid'];?>">
 <form id="admissionForm" >
 <input type="hidden" name="form_id" value="<?php echo $_GET['fid'];?>">
-<input type="hidden" name="pupilsightProgramID" value="<?php echo $pupilsightProgramID;?>">
+<input type="hidden" name="pupilsightProgramID" value="<?php echo $pupilsightProgramIDs;?>">
 <input type="hidden" name="pupilsightSchoolYearID" value="<?php echo $pupilsightSchoolYearID;?>">
     <table class="table">
         <thead>
@@ -190,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
                                     $selected = '';
                                 }
                         ?>
-                            <option value="<?php echo $cd['pupilsightYearGroupID'];?>" <?php echo $selected;?>><?php echo $cd['name'];?></option>
+                            <option value="<?php echo $cd['pupilsightYearGroupID'];?>" <?php echo $selected;?>><?php echo $cd['prog_name'].' / '.$cd['name'];?></option>
                         <?php } } ?>
                         </select>
                     </td>

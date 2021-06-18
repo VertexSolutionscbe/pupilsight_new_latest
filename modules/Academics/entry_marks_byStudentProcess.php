@@ -10,11 +10,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-
-    // echo '<pre>';
-    // print_r($_POST);
-    // echo '</pre>';
-    // die();
+    /*
+    echo '<pre>';
+    print_r($_POST);
+    echo '</pre>';
+    die();
+    */
     //Proceed!
     $pupilsightYearGroupID =  $_POST['pupilsightYearGroupID'];
     $pupilsightRollGroupID =  $_POST['pupilsightRollGroupID'];
@@ -26,7 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
 
 
     //Validate Inputs
-    if ($pupilsightDepartmentID == '' or $mark_obtained == '') {
+    //if ($pupilsightDepartmentID == '' or $mark_obtained == '') {
+    if ($pupilsightPersonID == '' or $mark_obtained == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {

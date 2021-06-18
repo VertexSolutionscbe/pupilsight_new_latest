@@ -39,17 +39,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_setting.php')
             $fn_fee_structure_id = $fid;
                 foreach($class as $key => $cls){
                     if($key == $fn_fee_structure_id){
-                        $classes = implode(',',$cls);
+                         $classes = implode(',',$cls);
+                        // $program_class = implode(',',$cls);
+                        // $clsAll = explode('-',$program_class);
+                        // echo $program = $clsAll[0].'</br>';
+                        // echo $classes = $clsAll[1].'</br>';
                     }
                 }    
-                
+                //die();
                 foreach($amounts as $k => $amt){
                     if($k == $fn_fee_structure_id){
                         $amount = $amt;
                     }
                 }
 
-            $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'fn_fee_structure_id' => $fn_fee_structure_id, 'classes' => $classes, 'amount' => $amount, 'no_of_invoices' => $no_of_invoices, 'state_id' => $state_id);
+            $data = array('pupilsightSchoolYearID' => $pupilsightSchoolYearID, 'pupilsightProgramID' => $pupilsightProgramID, 'fn_fee_structure_id' => $fn_fee_structure_id, 'classes' => $classes,  'amount' => $amount, 'no_of_invoices' => $no_of_invoices, 'state_id' => $state_id);
             $sql = "INSERT INTO fn_fee_admission_settings SET pupilsightSchoolYearID=:pupilsightSchoolYearID, pupilsightProgramID=:pupilsightProgramID, fn_fee_structure_id=:fn_fee_structure_id,classes=:classes, amount=:amount,no_of_invoices=:no_of_invoices, state_id=:state_id";
             $result = $connection2->prepare($sql);
             $result->execute($data);

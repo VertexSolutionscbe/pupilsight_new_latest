@@ -93,8 +93,6 @@
                 $("#lastseatdiv").before(response);
             }
         });
-
-
     });
     // $(document).on('click','#addSeats', function(){
     //   var cid = $(this).attr('data-cid');
@@ -726,7 +724,7 @@
                 $("#clickStateRemark").attr('href', hrf);
                 $("#clickStateRemark")[0].click();
             } else {
-                alert('You Have to Select Applicants.');
+                toast("error", 'You Have to Select Applicants.');
             }
         } else {
             var cid = $(this).attr('data-cid');
@@ -751,7 +749,7 @@
                     }
                 });
             } else {
-                alert('You Have to Select Applicants.');
+                toast("error", 'You Have to Select Applicants.');
             }
         }
     });
