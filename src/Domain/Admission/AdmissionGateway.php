@@ -582,4 +582,26 @@ class AdmissionGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria, true);
     }
+
+    public function getAllApplicantData(QueryCriteria $criteria)
+    {
+        $query = $this->newQuery()
+            ->from("wp_fluentform_submissions")
+            ->cols(["wp_fluentform_submissions.*","campaign.name as campaign_name","pupilsightProgram.name as program","pupilsightYearGroup.name as class"])
+            ->leftJoin(
+                "campaign",
+                "wp_fluentform_submissions.form_id=campaign.form_id"
+            )
+            ->leftJoin(
+                "pupilsightProgram",
+                "wp_fluentform_submissions.pupilsightProgramID=pupilsightProgram.pupilsightProgramID"
+            )
+            ->leftJoin(
+                "pupilsightYearGroup",
+                "wp_fluentform_submissions.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID"
+            )
+            ->orderBy(["wp_fluentform_submissions.id DESC"]);
+
+        return $this->runQuery($query, $criteria, true);
+    }
 }

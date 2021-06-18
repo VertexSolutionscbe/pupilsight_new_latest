@@ -44,7 +44,7 @@ $isLoggedIn =
 
 if ($isLoggedIn && ($module = $page->getModule())) {
     $mid = $module->pupilsightModuleID;
-    $sql ='SELECT p.category FROM pupilsightModule AS p WHERE p.pupilsightModuleID = "' .$mid .'"';
+    $sql = 'SELECT p.category FROM pupilsightModule AS p WHERE p.pupilsightModuleID = "' . $mid . '"';
     $result = $connection2->query($sql);
     $moduledata = $result->fetch();
     $moduleName = $moduledata["category"];
@@ -123,7 +123,7 @@ if ($session->get("pageLoads") == 0 && !$session->has("address")) {
 
     if ($session->has("username")) {
         // Are we logged in?
-        
+
         $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
 
         $roleCategory = getRoleCategory(
@@ -154,10 +154,8 @@ if ($session->get("pageLoads") == 0 && !$session->has("address")) {
                     !is_null($studentSelfRegistrationIPAddresses)
                 ) {
                     $inRange = false;
-                    foreach (
-                        explode(",", $studentSelfRegistrationIPAddresses)
-                        as $ipAddress
-                    ) {
+                    foreach (explode(",", $studentSelfRegistrationIPAddresses)
+                        as $ipAddress) {
                         if (trim($ipAddress) == $realIP) {
                             $inRange = true;
                         }
@@ -332,7 +330,7 @@ $javascriptConfig = [
         ],
         "thickbox" => [
             "pathToImage" =>
-                $session->get("absoluteURL") .
+            $session->get("absoluteURL") .
                 "/lib/thickbox/loadingAnimation.gif",
         ],
         "tinymce" => [
@@ -504,86 +502,86 @@ if ($isLoggedIn) {
     $masterList[0] = [
         "name" => "Fee Category",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_category_manage.php",
     ];
     $masterList[1] = [
         "name" => "Fee Series",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_series_manage.php",
     ];
     $masterList[2] = [
         "name" => "Fee Head",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_head_manage.php",
     ];
     $masterList[3] = [
         "name" => "Fine Rule",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_fine_rule_manage.php",
     ];
     $masterList[4] = [
         "name" => "Fee Item Type",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_item_type_manage.php",
     ];
     $masterList[5] = [
         "name" => "Receipts Template",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_receipts_manage.php",
     ];
     $masterList[6] = [
         "name" => "Fee Item",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_item_manage.php",
     ];
     $masterList[7] = [
         "name" => "Deposit Account",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/deposit_account_manage.php",
     ];
     $masterList[8] = [
         "name" => "Discount Rule",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_discount_rule_manage.php",
     ];
     $masterList[9] = [
         "name" => "Fee Counter",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_counter_manage.php",
     ];
     $masterList[10] = [
         "name" => "Banks & Payment Mode",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_master_manage.php",
     ];
     $masterList[11] = [
         "name" => "Fee Payment Gateway",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_payment_gateway_manage.php",
     ];
 
     $paymentList[0] = [
         "name" => "Manage Invoice",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/invoice_manage.php",
     ];
     $paymentList[1] = [
         "name" => "Bulk Discount",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/invoice_discount_manage.php",
     ];
     //echo $session->get('counterid');
@@ -593,14 +591,14 @@ if ($isLoggedIn) {
                 "name" => "Collection",
                 "class" => "thickbox",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Finance/fee_counter_check_add.php",
             ];
         } else {
             $paymentList[2] = [
                 "name" => "Collection",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Finance/fee_collection_manage.php",
             ];
         }
@@ -608,26 +606,26 @@ if ($isLoggedIn) {
         $paymentList[2] = [
             "name" => "Collection",
             "url" =>
-                $session->get("absoluteURL") .
+            $session->get("absoluteURL") .
                 "/index.php?q=/modules/Finance/fee_collection_manage.php",
         ];
     }
     $paymentList[3] = [
         "name" => "Transaction",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_transaction_manage.php",
     ];
     $paymentList[4] = [
         "name" => "Cancel Transaction",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_transaction_cancel_manage.php",
     ];
     $paymentList[5] = [
         "name" => "Refund Transaction",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Finance/fee_transaction_refund_manage.php",
     ];
 
@@ -653,7 +651,7 @@ if ($isLoggedIn) {
             $menuMainItems["Finance"][1] = [
                 "name" => "Fee Structure",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Finance/fee_structure_manage.php",
                 "col" => "dropdown-menu-columns  dropdown-menu-columns-2",
             ];
@@ -663,7 +661,7 @@ if ($isLoggedIn) {
             $menuMainItems["Finance"][0] = [
                 "name" => "Invoices",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Finance/invoice_child_view.php",
                 "col" => "dropdown-menu-columns  dropdown-menu-columns-2",
             ];
@@ -672,7 +670,7 @@ if ($isLoggedIn) {
             $menuMainItems["Finance"][0] = [
                 "name" => "Fee Structure",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Finance/fee_structure_manage.php",
                 "col" => "dropdown-menu-columns  dropdown-menu-columns-2",
             ];
@@ -690,25 +688,25 @@ if ($isLoggedIn) {
     $routeList[0] = [
         "name" => "Manage Route",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Transport/routes.php",
     ];
     $routeList[1] = [
         "name" => "Assign to Student",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Transport/assign_route.php",
     ];
     $routeList[2] = [
         "name" => "Assign to Staff",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Transport/assign_staff_route_manage.php",
     ];
     $routeList[3] = [
         "name" => "View Member in Route",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Transport/view_members_in_route.php",
     ];
     $routeMenu = ["name" => "Routes", "list" => $routeList];
@@ -717,13 +715,13 @@ if ($isLoggedIn) {
         $menuMainItems["Transport"][0] = [
             "name" => "Bus Details",
             "url" =>
-                $session->get("absoluteURL") .
+            $session->get("absoluteURL") .
                 "/index.php?q=/modules/Transport/bus_manage.php",
         ];
         $menuMainItems["Transport"][1] = [
             "name" => "Transport Fee",
             "url" =>
-                $session->get("absoluteURL") .
+            $session->get("absoluteURL") .
                 "/index.php?q=/modules/Transport/transport_fee.php",
         ];
         $menuMainItems["Transport"][2] = $routeMenu;
@@ -732,43 +730,43 @@ if ($isLoggedIn) {
     $curriculumList[0] = [
         "name" => "Subject Type",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/subject_type_manage.php",
     ];
     $curriculumList[1] = [
         "name" => "Subject Master",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/department_manage.php",
     ];
     $curriculumList[2] = [
         "name" => "Skill Master",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/ac_manage_skill.php",
     ];
     $curriculumList[3] = [
         "name" => "Curriculum Configuration",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/subject_to_class_manage.php",
     ];
     $curriculumList[4] = [
         "name" => "Manage Elective Group",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/manage_elective_group.php",
     ];
     $curriculumList[5] = [
         "name" => "Remarks Master",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/ac_manage_remarks.php",
     ];
     $curriculumList[6] = [
         "name" => "DI Mode",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/descriptive_indicator_config.php",
     ];
 
@@ -782,79 +780,79 @@ if ($isLoggedIn) {
     $testList[0] = [
         "name" => "Grading System",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/grade_system_manage.php",
     ];
     $testList[1] = [
         "name" => "Manage Test Room",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/examination_room_manage.php",
     ];
     $testList[2] = [
         "name" => "Reports Template",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/examination_report_template_manage.php",
     ];
     $testList[3] = [
         "name" => "Test Home",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/test_home.php",
     ];
     $testList[4] = [
         "name" => "Edit Test",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/manage_edit_test.php",
     ];
     $testList[5] = [
         "name" => "Manage Test",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/manage_test.php",
     ];
     $testList[6] = [
         "name" => "Marks Entry by Subject",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/manage_marks_entry_by_subject.php",
     ];
     $testList[7] = [
         "name" => "Marks Entry by Student",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/marks_by_student.php",
     ];
     $testList[8] = [
         "name" => "Enter A.A.T",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/manage_enter_aat.php",
     ];
     $testList[9] = [
         "name" => "Marks Upload",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/test_marks_upload.php",
     ];
     $testList[10] = [
         "name" => "Marks not Entered",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/marks_not_entered.php",
     ];
     $testList[11] = [
         "name" => "Test Results",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/manage_test_results.php",
     ];
     $testList[12] = [
         "name" => "Sketch",
         "url" =>
-            $session->get("absoluteURL") .
+        $session->get("absoluteURL") .
             "/index.php?q=/modules/Academics/sketch_manage.php",
     ];
 
@@ -871,31 +869,31 @@ if ($isLoggedIn) {
             $testList[0] = [
                 "name" => "Enter A.A.T",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Academics/manage_enter_aat.php",
             ];
             $testList[1] = [
                 "name" => "Marks Entry by Subject",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Academics/manage_marks_entry_by_subject.php",
             ];
             $testList[2] = [
                 "name" => "Marks Entry by Student",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Academics/marks_by_student.php",
             ];
             $testList[3] = [
                 "name" => "Test Results",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Academics/manage_test_results.php",
             ];
             $testList[4] = [
                 "name" => "Marks not Entered",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Academics/marks_not_entered.php",
             ];
 
@@ -916,7 +914,7 @@ if ($isLoggedIn) {
             $testList[0] = [
                 "name" => "Academic Result & Report",
                 "url" =>
-                    $session->get("absoluteURL") .
+                $session->get("absoluteURL") .
                     "/index.php?q=/modules/Academics/result.php",
             ];
 
@@ -936,7 +934,7 @@ if ($isLoggedIn) {
         $cmsMenu = [
             "name" => "CMS",
             "url" =>
-                $session->get("absoluteURL") .
+            $session->get("absoluteURL") .
                 "/index.php?q=/modules/custom/cms.php",
         ];
         $menuMainItems["Other"][2] = $cmsMenu;
@@ -950,14 +948,14 @@ if ($isLoggedIn) {
         $menuMainItems["Reports"][0] = [
             "name" => "Reports",
             "url" =>
-                $session->get("absoluteURL") .
+            $session->get("absoluteURL") .
                 "/index.php?q=/modules/Reports/report.php",
         ];
 
         $menuMainItems["LMS"][0] = [
             "name" => "LMS",
             "url" =>
-                $session->get("absoluteURL") .
+            $session->get("absoluteURL") .
                 "/index.php?q=/modules/custom/lms.php",
         ];
     }
@@ -969,7 +967,7 @@ if ($isLoggedIn) {
         $menuMainItems["Reports"][0] = [
             "name" => "Reports",
             "url" =>
-                $session->get("absoluteURL") .
+            $session->get("absoluteURL") .
                 "/index.php?q=/modules/custom/reports.php",
         ];
     } elseif ($_SESSION[$guid]["username"] == "munirajk") {
@@ -1011,7 +1009,7 @@ if ($isLoggedIn) {
     if ($page->getModule()) {
         $menuModule = $session->get("menuModuleName");
         $currentModule = $page->getModule()->getName();
-        
+
         if (
             $cacheLoad ||
             !$session->has("menuModuleItems") ||
@@ -1121,7 +1119,7 @@ try {
         "roleCategory" => $roleCategory,
         "version" => $pupilsight->getVersion(),
         "versionName" =>
-            "v" .
+        "v" .
             $pupilsight->getVersion() .
             ($session->get("cuttingEdgeCode") == "Y" ? "dev" : ""),
         "rightToLeft" => $session->get("i18n")["rtl"] == "Y",
@@ -1203,7 +1201,7 @@ if (isset($_GET["q"])) {
             }
             $customSelect = "LMS";
         }
-    }elseif ($gq[2] == "Reports") {
+    } elseif ($gq[2] == "Reports") {
         $customSelect = "Reports";
     }
 }
@@ -1301,7 +1299,7 @@ if ($isLoggedIn) {
     } else {
         $totalsmsbalance = $totalsms - $totalsmsused;
     }
-    
+
     $page->addData([
         "menuMain" => $session->get("menuMainItems", []),
         "menuMainIcon" => $menu_icon,
@@ -1347,25 +1345,25 @@ if (!$session->has("address")) {
             "indexText" => $session->get("indexText"),
             "organisationName" => $session->get("organisationName"),
             "publicStudentApplications" =>
-                getSettingByScope(
-                    $connection2,
-                    "Application Form",
-                    "publicApplications"
-                ) == "Y",
+            getSettingByScope(
+                $connection2,
+                "Application Form",
+                "publicApplications"
+            ) == "Y",
             "publicStaffApplications" =>
-                getSettingByScope(
-                    $connection2,
-                    "Staff Application Form",
-                    "staffApplicationFormPublicApplications"
-                ) == "Y",
+            getSettingByScope(
+                $connection2,
+                "Staff Application Form",
+                "staffApplicationFormPublicApplications"
+            ) == "Y",
             "makeDepartmentsPublic" =>
-                getSettingByScope(
-                    $connection2,
-                    "Departments",
-                    "makeDepartmentsPublic"
-                ) == "Y",
+            getSettingByScope(
+                $connection2,
+                "Departments",
+                "makeDepartmentsPublic"
+            ) == "Y",
             "makeUnitsPublic" =>
-                getSettingByScope($connection2, "Planner", "makeUnitsPublic") ==
+            getSettingByScope($connection2, "Planner", "makeUnitsPublic") ==
                 "Y",
         ];
 

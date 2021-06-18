@@ -353,51 +353,96 @@ if (isset($_POST['type'])) {
                         $amtPaid = $amount_paying;
                     }
                     if ($amtPaid < $transcation_amount) {
-                        $isql = 'SELECT a.id, a.fn_fee_invoice_id, a.total_amount,b.invoice_no, a.fn_fee_item_id FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_student_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id WHERE a.id IN (' . $invoice_item_id . ') AND b.pupilsightPersonID = ' . $pupilsightPersonID . '  ORDER BY b.id ASC';
+                        $isql = 'SELECT a.id, a.fn_fee_invoice_id, a.total_amount,b.invoice_no, a.fn_fee_item_id, d.name as item_type_name FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_invoice_student_assign AS b ON a.fn_fee_invoice_id = b.fn_fee_invoice_id LEFT JOIN fn_fee_items AS c ON a.fn_fee_item_id = c.id LEFT JOIN fn_fee_item_type AS d ON c.fn_fee_item_type_id = d.id  WHERE a.id IN (' . $invoice_item_id . ') AND b.pupilsightPersonID = ' . $pupilsightPersonID . '  ORDER BY b.id ASC';
                         $resultip = $connection2->query($isql);
                         $valuesip = $resultip->fetchAll();
 
                         if (!empty($valuesip)) {
                             $chkamount = $amtPaid;
                             //$i = 1;
+                            $fnInvId = '';
+                            $itLevDis = 0;
                             foreach ($valuesip as $itmid) {
                                 $fn_fee_item_id = $itmid['fn_fee_item_id'];
                                 $fn_fee_invoice_id = $itmid['fn_fee_invoice_id'];
                                 $invoice_no = $itmid['invoice_no'];
                                 $itemamount = $itmid['total_amount'];
                                 $itid = $itmid['id'];
-                                if ($itemamount < $chkamount) {
-                                    //$paidInv[] = $fn_fee_invoice_id;
-                                    $status = '1';
-                                    $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $itid . " ";
-                                    $resultdis = $connection2->query($sqdis);
-                                    $valuedis = $resultdis->fetch();
-                                    if(!empty($valuedis)){
-                                        $paidamount = $itemamount - $valuedis['discount'];
-                                        $chkamount = $chkamount - $paidamount;
+                                $item_type_name = trim($itmid['item_type_name']);
+                                
+                                if($item_type_name == 'Discount'){
+                                    $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'status' => 1);
+                                    //print_r($datai);
+                                    $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, status=:status';
+                                    $resulti = $connection2->prepare($sqli);
+                                    $resulti->execute($datai);
+                                } else {
+                                    
+                                    if($fnInvId != $fn_fee_invoice_id){
+                                        $sqlchkdis = 'SELECT SUM(a.discount) AS invoice_level_discount FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_items AS b ON a.fn_fee_item_id = b.id LEFT JOIN fn_fee_item_type AS c ON b.fn_fee_item_type_id = c.id WHERE a.fn_fee_invoice_id = ' . $fn_fee_invoice_id . ' AND c.name = "Discount" ';
+                                        $resultds = $connection2->query($sqlchkdis);
+                                        $valueds = $resultds->fetch();
+                                        $invoice_level_discount = 0;
+                                        if(!empty($valueds)){
+                                            $invoice_level_discount = $valueds['invoice_level_discount'];
+                                            $fnInvId = $fn_fee_invoice_id;
+
+                                            if($invoice_level_discount < $itemamount){
+                                                $itemamount = $itemamount - $invoice_level_discount;
+                                                $itLevDis = 0;
+                                                $discount_value = $invoice_level_discount;
+                                            } else {
+                                                $itLevDis = $invoice_level_discount - $itemamount;
+                                                $discount_value = $itLevDis;
+                                            }
+                                            
+                                        }
+                                    } 
+
+                                    if(!empty($itLevDis)){
+                                        if($itLevDis < $itemamount){
+                                            $itemamount = $itemamount - $itLevDis;
+                                            $itLevDis = 0;
+                                            $discount_value = $itLevDis;
+                                        } else {
+                                            $itLevDis = $itLevDis - $itemamount;
+                                            $discount_value = $itLevDis;
+                                        }
+                                    }
+                                    
+                                    
+                                    if ($itemamount < $chkamount) {
+                                        //$paidInv[] = $fn_fee_invoice_id;
+                                        $status = '1';
+                                        $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $itid . " ";
+                                        $resultdis = $connection2->query($sqdis);
+                                        $valuedis = $resultdis->fetch();
+                                        if(!empty($valuedis)){
+                                            $paidamount = $itemamount - $valuedis['discount'];
+                                            $chkamount = $chkamount - $paidamount;
+                                        } else {
+                                            $paidamount = $itemamount;
+                                            $chkamount = $chkamount - $itemamount;
+                                        }
                                     } else {
-                                        $paidamount = $itemamount;
+                                        $status = '2';
+                                        if ($chkamount > 0) {
+                                            $paidamount = $chkamount;
+                                        } else {
+                                            $paidamount = '';
+                                        }
                                         $chkamount = $chkamount - $itemamount;
                                     }
-                                } else {
-                                    $status = '2';
-                                    if ($chkamount > 0) {
-                                        $paidamount = $chkamount;
-                                    } else {
-                                        $paidamount = '';
-                                    }
-                                    $chkamount = $chkamount - $itemamount;
+
+                                    // $leftAmt = $chkamount - $paidamount; 
+                                    // $balanceAmt = $leftAmt;
+
+                                    $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'discount' => $discount_value, 'total_amount_collection' => $paidamount, 'status' => $status);
+                                    //print_r($datai);
+                                    $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, discount=:discount, total_amount_collection=:total_amount_collection, status=:status';
+                                    $resulti = $connection2->prepare($sqli);
+                                    $resulti->execute($datai);
                                 }
-
-                                // $leftAmt = $chkamount - $paidamount; 
-                                // $balanceAmt = $leftAmt;
-
-                                $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => $status);
-                                //print_r($datai);
-                                $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
-                                $resulti = $connection2->prepare($sqli);
-                                $resulti->execute($datai);
-
 
                                 $desql = 'SELECT id FROM fn_fees_deposit_account WHERE fn_fee_item_id = '.$fn_fee_item_id.' AND overpayment_account != "1" ';
                                 $resultdp = $connection2->query($desql);
@@ -952,7 +997,7 @@ if (isset($_POST['type'])) {
                     );
 
                     
-
+                    //die();
 
                     if (!empty($dts_receipt) && !empty($dts_receipt_feeitem) && !empty($receiptTemplate)) {
                         $callback = $_SESSION[$guid]['absoluteURL'] . '/thirdparty/phpword/receiptNew.php';

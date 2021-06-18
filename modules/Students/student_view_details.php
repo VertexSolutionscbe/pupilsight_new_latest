@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $page->breadcrumbs
                         ->add(__('View Student Profiles'), 'student_view.php')
                         ->add(__($row['officialName']));
-                        //->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
+                    //->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
                     echo "<table class='table'>";
                     echo '<tr>';
@@ -310,8 +310,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         //         AND pupilsightPerson.pupilsightPersonID=:pupilsightPersonID AND status='Full'
                         //         AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ";
                         // } else {
-                            $data = array('pupilsightPersonID' => $pupilsightPersonID);
-                            $sql = "SELECT DISTINCT pupilsightPerson.* FROM pupilsightPerson
+                        $data = array('pupilsightPersonID' => $pupilsightPersonID);
+                        $sql = "SELECT DISTINCT pupilsightPerson.* FROM pupilsightPerson
                                 LEFT JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
                                 WHERE pupilsightPerson.pupilsightPersonID=:pupilsightPersonID";
                         // }
@@ -341,7 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $page->breadcrumbs
                         ->add(__('View Student Profiles'), 'student_view.php')
                         ->add(__($row['officialName']));
-                        //->add(Format::name('', $row['officialName'], $row['officialName'], 'Student'));
+                    //->add(Format::name('', $row['officialName'], $row['officialName'], 'Student'));
 
 
                     $subpage = null;
@@ -376,7 +376,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
 
                     // $st = array("Overview", "Personal", "Family", "Emergency", "Medical", "Notes", "Attendance", "Markbook", "Internal Assessment", "External Assessment", "Individual Needs", "Library Borrowing", "Timetable", "Activities", "Homework", "Behaviour", "Academic");
-                    $st = array("Overview", "Personal", "Family", "Emergency", "Medical", "Attendance", "Library Borrowing", "Activities", "Homework", "Behaviour", "Academic");
+                    //
+                    if ($_SESSION[$guid]['absoluteURL'] == "https://amaatra.pupilpod.net") {
+                        $st = array("Overview", "Personal", "Family", "Academic");
+                    } else {
+                        $st = array("Overview", "Personal", "Family", "Emergency", "Medical", "Attendance", "Library Borrowing", "Activities", "Homework", "Behaviour", "Academic");
+                    }
+
+
 ?>
                     <div class="mb-4">
                         <ul class="nav nav-tabs" data-toggle="tabs">
@@ -1599,7 +1606,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             }
                         }
-                    // } elseif ($subpage == 'Emergency Contacts') {
+                        // } elseif ($subpage == 'Emergency Contacts') {
                     } elseif ($subpage == 'Emergency') {
 
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
