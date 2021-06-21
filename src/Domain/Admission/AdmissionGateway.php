@@ -587,7 +587,7 @@ class AdmissionGateway extends QueryableGateway
     {
         $query = $this->newQuery()
             ->from("wp_fluentform_submissions")
-            ->cols(["wp_fluentform_submissions.*","campaign.name as campaign_name","pupilsightProgram.name as program","pupilsightYearGroup.name as class"])
+            ->cols(["wp_fluentform_submissions.*", "campaign.name as campaign_name", "pupilsightProgram.name as program", "pupilsightYearGroup.name as class"])
             ->leftJoin(
                 "campaign",
                 "wp_fluentform_submissions.form_id=campaign.form_id"

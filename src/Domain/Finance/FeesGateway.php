@@ -884,17 +884,21 @@ print_r($rs);
                         if ($newdata7->data[0]['invoice_status'] == 'Fully Paid') {
                             $data[$k]['chkinvstatus'] = 'paid';
                             $data[$k]['paid'] = '';
+                            $data[$k]['paid_amount'] = number_format($newdata->data[0]['paid_amount'], 2);
                         } else {
                             if (!empty($newdata->data[0]['paid_amount'])) {
                                 $data[$k]['chkinvstatus'] = 'paid';
                                 if (!empty($newdata->data[0]['paid_amount'])) {
                                     $data[$k]['paid'] = $newdata->data[0]['paid_amount'];
+                                    $data[$k]['paid_amount'] = number_format($newdata->data[0]['paid_amount'], 2);
                                 } else {
                                     $data[$k]['paid'] = '';
+                                    $data[$k]['paid_amount'] = '';
                                 }
                             } else {
                                 $data[$k]['chkinvstatus'] = '';
                                 $data[$k]['paid'] = '';
+                                $data[$k]['paid_amount'] = '';
                             }
                         }
                     } else {
@@ -902,17 +906,21 @@ print_r($rs);
                             $data[$k]['chkinvstatus'] = 'paid';
                             if (!empty($newdata->data[0]['paid_amount'])) {
                                 $data[$k]['paid'] = $newdata->data[0]['paid_amount'];
+                                $data[$k]['paid_amount'] = number_format($newdata->data[0]['paid_amount'], 2);
                             } else {
                                 $data[$k]['paid'] = '';
+                                $data[$k]['paid_amount'] = '';
                             }
                         } else {
                             $data[$k]['chkinvstatus'] = '';
                             $data[$k]['paid'] = '';
+                            $data[$k]['paid_amount'] = '';
                         }
                     }
                 } else {
                     $data[$k]['chkinvstatus'] = '';
                     $data[$k]['paid'] = '';
+                    $data[$k]['paid_amount'] = '';
                 }
 
                 $query3 = $this

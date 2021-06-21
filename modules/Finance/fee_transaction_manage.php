@@ -157,7 +157,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
         $master = $resultdr->fetchAll();
         $t_amount = 0;
         foreach ($master as $am) {
-            $t_amount += $am['transcation_amount'];
+            // $t_amount += $am['transcation_amount'];
+            $t_amount += $am['amount_paying'];
         }
         $kountTransaction = count($master);
     } else {
@@ -273,7 +274,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $col->addLabel('', __('No of Transaction : ' . $kountTransaction));
 
     $col = $row->addColumn()->setClass('newdes');
-    $col->addLabel('', __('Total Transaction Amount: ' . number_format($t_amount, 2)));
+    // $col->addLabel('', __('Total Transaction Amount: ' . number_format($t_amount, 2)));
+    $col->addLabel('', __('Total Amount Paid: ' . number_format($t_amount, 2)));
 
     $col = $row->addColumn()->setClass('newdes');
     $col->addContent('');
@@ -304,11 +306,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ma
     $table->addColumn('instrument_no', __('Instrument No'));
     $table->addColumn('instrument_date', __('Instrument Date'));
     $table->addColumn('bankname', __('Bank name'));
-    $table->addColumn('total_amount_without_fine_discount', __('Amount'));
+    $table->addColumn('total_amount_without_fine_discount', __('Invoice Amount'));
     $table->addColumn('fine', __('Fine Amount'));
     $table->addColumn('discount', __('Discount'));
 
-    $table->addColumn('transcation_amount', __('Transaction Amount'));
+    $table->addColumn('transcation_amount', __('Total Invoice Amount'));
     $table->addColumn('amount_paying', __('Amount Paid'));
     $table->addColumn('over_payment', __('Over Payment'));
     $table->addColumn('payment_date', __('Payment Date'))
