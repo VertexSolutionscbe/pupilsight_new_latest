@@ -298,6 +298,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
     $table->addColumn('admission_no', __('Admission No'));
     $table->addColumn('invoice_no', __('Invoice Series Number'));
     $table->addColumn('inv_amount', __('Invoice Fee Amount'));
+    $table->addColumn('paid_amount', __('Paid'));
     $table->addColumn('paid', __('Pending'))
         ->format(function ($invoices) {
             if($invoices['invstatus'] == 'Fully Paid'){
@@ -306,10 +307,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoice_manage.php
             } else {
                 if (!empty($invoices['paid'])) {
                     $pendingAmt = $invoices['inv_amount'] - $invoices['paid'];
-                    return $pendingAmt;
+                    return number_format($pendingAmt, 2);
                 } else {
                     $dt = $invoices['inv_amount'];
-                    return $dt;
+                    return number_format($dt, 2);
                 }
                 return $invoices['paid'];
             }
