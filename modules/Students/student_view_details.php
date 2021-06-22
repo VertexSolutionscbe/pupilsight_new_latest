@@ -21,6 +21,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     echo '</div>';
 } else {
     $page->scripts->add('chart');
+    //for any specfic site if we need full keep this TRUE
+    $showFull = FALSE;
 
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
@@ -378,9 +380,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     // $st = array("Overview", "Personal", "Family", "Emergency", "Medical", "Notes", "Attendance", "Markbook", "Internal Assessment", "External Assessment", "Individual Needs", "Library Borrowing", "Timetable", "Activities", "Homework", "Behaviour", "Academic");
                     //
                     if ($_SESSION[$guid]['absoluteURL'] == "https://amaatra.pupilpod.net") {
-                        $st = array("Overview", "Personal", "Family", "Academic");
+                        $st = array("Overview", "Personal", "Family", "Academic", "Emergency");
                     } else {
-                        $st = array("Overview", "Personal", "Family", "Emergency", "Medical", "Attendance", "Library Borrowing", "Activities", "Homework", "Behaviour", "Academic");
+                        $st = array("Overview", "Personal", "Family", "Emergency", "Attendance", "Library Borrowing", "Activities", "Homework", "Behaviour", "Academic");
                     }
 
 
@@ -1354,19 +1356,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo "<span class='form-label'>" . __('Family Name') . '</span>';
                                 echo $rowFamily['name'];
                                 echo '</td>';
-                                echo "<td id='status' style='width: 33%; vertical-align: top'>";
-                                echo "<span class='form-label'>" . __('Family Status') . '</span>';
-                                echo $rowFamily['status'];
-                                echo '</td>';
-                                echo "<td id='languageHomePrimary' style='width: 34%; vertical-align: top' colspan=2>";
-                                echo "<span class='form-label'>" . __('Home Languages') . '</span>';
-                                if ($rowFamily['languageHomePrimary'] != '') {
-                                    echo $rowFamily['languageHomePrimary'] . '';
+                                if ($showFull) {
+                                    echo "<td id='status' style='width: 33%; vertical-align: top'>";
+                                    echo "<span class='form-label'>" . __('Family Status') . '</span>';
+                                    echo $rowFamily['status'];
+                                    echo '</td>';
+                                    echo "<td id='languageHomePrimary' style='width: 34%; vertical-align: top' colspan=2>";
+                                    echo "<span class='form-label'>" . __('Home Languages') . '</span>';
+                                    if ($rowFamily['languageHomePrimary'] != '') {
+                                        echo $rowFamily['languageHomePrimary'] . '';
+                                    }
+                                    if ($rowFamily['languageHomeSecondary'] != '') {
+                                        echo $rowFamily['languageHomeSecondary'] . '';
+                                    }
+                                    echo '</td>';
                                 }
-                                if ($rowFamily['languageHomeSecondary'] != '') {
-                                    echo $rowFamily['languageHomeSecondary'] . '';
-                                }
-                                echo '</td>';
                                 echo '</tr>';
                                 echo '<tr>';
                                 echo "<td id='nameAddress' style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -1415,9 +1419,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '</h2>';
                                     echo "<table class='table'>";
                                     echo '<tr>';
+
                                     echo "<td id='image_240' $class style='width: 33%; vertical-align: top' rowspan=2>";
                                     echo getUserPhoto($guid, $rowMember['image_240'], 75);
                                     echo '</td>';
+
                                     echo "<td $class style='width: 33%; vertical-align: top'>";
                                     echo "<span class='form-label'>" . __('Name') . '</span>';
                                     // echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
@@ -1458,77 +1464,88 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '</td>';
                                     echo '</tr>';
                                     echo '<tr>';
-                                    echo "<td $class style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
-                                    echo "<span class='form-label'>" . __('Contact By Phone') . '</span>';
-                                    if ($rowMember['contactCall'] == 'N') {
-                                        echo __('Do not contact by phone.');
-                                    } elseif ($rowMember['contactCall'] == 'Y' and ($rowMember['phone1'] != '' or $rowMember['phone2'] != '' or $rowMember['phone3'] != '' or $rowMember['phone4'] != '')) {
-                                        for ($i = 1; $i < 5; ++$i) {
-                                            if ($rowMember['phone' . $i] != '') {
-                                                if ($rowMember['phone' . $i . 'Type'] != '') {
-                                                    echo $rowMember['phone' . $i . 'Type'] . ':</i> ';
+
+                                    if ($showFull) {
+                                        echo "<td $class style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
+                                        echo "<span class='form-label'>" . __('Contact By Phone') . '</span>';
+                                        if ($rowMember['contactCall'] == 'N') {
+                                            echo __('Do not contact by phone.');
+                                        } elseif ($rowMember['contactCall'] == 'Y' and ($rowMember['phone1'] != '' or $rowMember['phone2'] != '' or $rowMember['phone3'] != '' or $rowMember['phone4'] != '')) {
+                                            for ($i = 1; $i < 5; ++$i) {
+                                                if ($rowMember['phone' . $i] != '') {
+                                                    if ($rowMember['phone' . $i . 'Type'] != '') {
+                                                        echo $rowMember['phone' . $i . 'Type'] . ':</i> ';
+                                                    }
+                                                    if ($rowMember['phone' . $i . 'CountryCode'] != '') {
+                                                        echo '+' . $rowMember['phone' . $i . 'CountryCode'] . ' ';
+                                                    }
+                                                    echo formatPhone($rowMember['phone' . $i]) . '';
                                                 }
-                                                if ($rowMember['phone' . $i . 'CountryCode'] != '') {
-                                                    echo '+' . $rowMember['phone' . $i . 'CountryCode'] . ' ';
-                                                }
-                                                echo formatPhone($rowMember['phone' . $i]) . '';
                                             }
                                         }
-                                    }
-                                    echo '</td>';
-                                    echo "<td id='contactSMS' $class style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
-                                    echo "<span class='form-label'>" . __('Contact By SMS') . '</span>';
-                                    if ($rowMember['contactSMS'] == 'N') {
-                                        echo __('Do not contact by SMS.');
-                                    } elseif ($rowMember['contactSMS'] == 'Y' and ($rowMember['phone1'] != '' or $rowMember['phone2'] != '' or $rowMember['phone3'] != '' or $rowMember['phone4'] != '')) {
-                                        for ($i = 1; $i < 5; ++$i) {
-                                            if ($rowMember['phone' . $i] != '' and $rowMember['phone' . $i . 'Type'] == 'Mobile') {
-                                                if ($rowMember['phone' . $i . 'Type'] != '') {
-                                                    echo $rowMember['phone' . $i . 'Type'] . ':</i> ';
+                                        echo '</td>';
+                                        echo "<td id='contactSMS' $class style='width: 33%; padding-top: 15px; width: 33%; vertical-align: top'>";
+                                        echo "<span class='form-label'>" . __('Contact By SMS') . '</span>';
+                                        if ($rowMember['contactSMS'] == 'N') {
+                                            echo __('Do not contact by SMS.');
+                                        } elseif ($rowMember['contactSMS'] == 'Y' and ($rowMember['phone1'] != '' or $rowMember['phone2'] != '' or $rowMember['phone3'] != '' or $rowMember['phone4'] != '')) {
+                                            for ($i = 1; $i < 5; ++$i) {
+                                                if ($rowMember['phone' . $i] != '' and $rowMember['phone' . $i . 'Type'] == 'Mobile') {
+                                                    if ($rowMember['phone' . $i . 'Type'] != '') {
+                                                        echo $rowMember['phone' . $i . 'Type'] . ':</i> ';
+                                                    }
+                                                    if ($rowMember['phone' . $i . 'CountryCode'] != '') {
+                                                        echo '+' . $rowMember['phone' . $i . 'CountryCode'] . ' ';
+                                                    }
+                                                    echo formatPhone($rowMember['phone' . $i]) . '';
                                                 }
-                                                if ($rowMember['phone' . $i . 'CountryCode'] != '') {
-                                                    echo '+' . $rowMember['phone' . $i . 'CountryCode'] . ' ';
-                                                }
-                                                echo formatPhone($rowMember['phone' . $i]) . '';
                                             }
                                         }
-                                    }
-                                    echo '</td>';
-                                    echo "<td id='email' $class style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>";
-                                    echo "<span class='form-label'>" . __('Contact By Email') . '</span>';
-                                    if ($rowMember['contactEmail'] == 'N') {
-                                        echo __('Do not contact by email.');
-                                    } elseif ($rowMember['contactEmail'] == 'Y' and ($rowMember['email'] != '' or $rowMember['emailAlternate'] != '')) {
-                                        if ($rowMember['email'] != '') {
-                                            echo __('Email') . ": <a href='mailto:" . $rowMember['email'] . "'>" . $rowMember['email'] . '</a>';
+                                        echo '</td>';
+
+                                        echo "<td id='email' $class style='width: 33%; padding-top: 15px; width: 34%; vertical-align: top' colspan=2>";
+                                        echo "<span class='form-label'>" . __('Contact By Email') . '</span>';
+                                        if ($rowMember['contactEmail'] == 'N') {
+                                            echo __('Do not contact by email.');
+                                        } elseif ($rowMember['contactEmail'] == 'Y' and ($rowMember['email'] != '' or $rowMember['emailAlternate'] != '')) {
+                                            if ($rowMember['email'] != '') {
+                                                echo __('Email') . ": <a href='mailto:" . $rowMember['email'] . "'>" . $rowMember['email'] . '</a>';
+                                            }
+                                            if ($rowMember['emailAlternate'] != '') {
+                                                echo __('Email') . " 2: <a href='mailto:" . $rowMember['emailAlternate'] . "'>" . $rowMember['emailAlternate'] . '</a>';
+                                            }
+                                            echo '';
                                         }
-                                        if ($rowMember['emailAlternate'] != '') {
-                                            echo __('Email') . " 2: <a href='mailto:" . $rowMember['emailAlternate'] . "'>" . $rowMember['emailAlternate'] . '</a>';
-                                        }
-                                        echo '';
+                                        echo '</td>';
                                     }
-                                    echo '</td>';
                                     echo '</tr>';
                                     echo '<tr>';
-                                    echo "<td id='profession' $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                    echo "<span class='form-label'>" . __('Profession') . '</span>';
-                                    echo $rowMember['profession'];
-                                    echo '</td>';
-                                    echo "<td id='employer' $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                    echo "<span class='form-label'>" . __('Employer') . '</span>';
-                                    echo $rowMember['employer'];
-                                    echo '</td>';
-                                    echo "<td id='jobTitle' $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                    echo "<span class='form-label'>" . __('Job Title') . '</span>';
-                                    echo $rowMember['jobTitle'];
-                                    echo '</td>';
+
+                                    if ($showFull) {
+                                        echo "<td id='profession' $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                        echo "<span class='form-label'>" . __('Profession') . '</span>';
+                                        echo $rowMember['profession'];
+                                        echo '</td>';
+
+
+                                        echo "<td id='employer' $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                        echo "<span class='form-label'>" . __('Employer') . '</span>';
+                                        echo $rowMember['employer'];
+                                        echo '</td>';
+                                        echo "<td id='jobTitle' $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                        echo "<span class='form-label'>" . __('Job Title') . '</span>';
+                                        echo $rowMember['jobTitle'];
+                                        echo '</td>';
+                                    }
                                     echo '</tr>';
 
                                     echo '<tr>';
-                                    echo "<td id='vehicleRegistration' $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                    echo "<span class='form-label'>" . __('Vehicle Registration') . '</span>';
-                                    echo $rowMember['vehicleRegistration'];
-                                    echo '</td>';
+                                    if ($showFull) {
+                                        echo "<td id='vehicleRegistration' $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                        echo "<span class='form-label'>" . __('Vehicle Registration') . '</span>';
+                                        echo $rowMember['vehicleRegistration'];
+                                        echo '</td>';
+                                    }
                                     echo "<td $class style='width: 33%; padding-top: 15px; vertical-align: top'>";
 
                                     echo '</td>';
@@ -1615,9 +1632,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</div>';
                         }
 
-                        echo '<p>';
-                        echo __('In an emergency, please try and contact the adult family members listed below first. If these cannot be reached, then try the emergency contacts below.');
-                        echo '</p>';
+                        echo '<div class="alert alert-info my-2">';
+                        echo __('<div class="text-muted">In an emergency, please try and contact the adult family members listed below first. If these cannot be reached, then try the emergency contacts below.</div>');
+                        echo '</div>';
 
                         echo '<h2>';
                         echo __('Adult Family Members');
@@ -2748,9 +2765,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo __('Your request failed because you do not have access to this action.');
                             echo '</div>';
                         } else {
-                            echo '<p>';
-                            echo __('This report shows the current and historical activities that a student has enroled in.');
-                            echo '</p>';
+                            echo '<div class="alert alert-info">';
+                            echo __('<div class="text-muted">This report shows the current and historical activities that a student has enroled in.</div>');
+                            echo '</div>';
 
                             $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
                             if ($dateType == 'Term') {
@@ -3155,9 +3172,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 returnProcess($guid, $_GET['return'], null, null);
                             }
 
-                            echo '<p>';
-                            echo __('Student Class,Section with status,list of all subjects are showing here .');
-                            echo '</p>';
+                            echo '<div class="alert alert-info">';
+                            echo __('<div class="text-muted">Student Class, Section with status, list of all subjects are showing here.</div>');
+                            echo '</div>';
                             $filter = isset($_REQUEST['filter']) ? $_REQUEST['filter'] : $_SESSION[$guid]['pupilsightSchoolYearID'];
                             $dataSelect = array('pupilsightPersonID' => $pupilsightPersonID);
                             $sqlSelect = "SELECT pupilsightSchoolYear.pupilsightSchoolYearID as value, CONCAT(pupilsightSchoolYear.name, ' (', pupilsightYearGroup.name, ')') AS name FROM pupilsightStudentEnrolment JOIN pupilsightSchoolYear ON (pupilsightStudentEnrolment.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID) JOIN pupilsightYearGroup ON (pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID) WHERE pupilsightPersonID=:pupilsightPersonID ORDER BY pupilsightSchoolYear.sequenceNumber";
@@ -3233,6 +3250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 ->fromPOST();
 
                             $students = $studentGateway->queryStudentsBySchoolYearandID_with_assigned_subjects($criteria, $pupilsightSchoolYearID, $pupilsightPersonID);
+                            //print_r($students);
                             $elective_sub = $studentGateway->get_assigned_elect_sub_tostudents($criteria, $pupilsightPersonID);
                             /*  echo "<pre>";
            print_r($elective_sub);
@@ -3246,7 +3264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo __('There are no records to display.');
                                 echo '</div>';
                             } else {
-                                echo "<table  class ='table text-nowrap'>";
+                                echo "<table  class ='table text-nowrap table-striped'>";
                                 echo "<tr class='head'>";
                                 echo '<th>';
                                 echo __('Student Name') . '';
@@ -3278,44 +3296,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $count = 0;
                                 $rowNum = 'odd';
                                 foreach ($students as $row) {
-                                    if ($count % 2 == 0) {
-                                        $rowNum = 'even';
-                                    } else {
-                                        $rowNum = 'odd';
-                                    }
-                                    ++$count;
-
-                                    //COLOR ROW BY STATUS!
-                                    echo "<tr class=$rowNum>";
-                                    echo '<td id="preferredName">';
-
-                                    echo $row['preferredName'] . "," . $row['surname'];
-                                    echo '</td>';
-                                    echo '<td id="student_id">';
-
-                                    echo $row['student_id'];
-                                    echo '</td>';
-
-                                    echo '<td id="program">';
-                                    echo $row['program'];
-
-                                    echo '</td>';
-
-                                    echo '<td id="classname">';
-                                    echo $row['classname'];
-
-                                    echo '</td>';
-                                    echo '<td id="active_status">';
-                                    echo $row['active_status'];
-
-                                    echo '</td>';
-
-
+                                    echo "<tr>";
+                                    echo '<td id="_preferredName">' . $row['preferredName'] . '</td>';
+                                    echo '<td id="student_id">' . $row['student_id'] . '</td>';
+                                    echo '<td id="program">' . $row['program'] . '</td>';
+                                    echo '<td id="classname">' . $row['classname'] . '</td>';
+                                    echo '<td id="active_status">' . $row['active_status'] . '</td>';
 
                                     echo '<td id="coresubject">';
                                     echo '<textarea rows="2" style="width: 170px;" readonly maxlength="20" cols="130">' . $row['coresubject'] . '</textarea>';
-
-
                                     echo '</td>';
                                     if (count($elective_sub) != 0) {
                                         foreach ($elective_sub as $el_row) {
@@ -3327,9 +3316,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo '</td>';
                                         }
                                     } else {
-                                        echo '<td> Not assigned';
-
-                                        echo '</td>';
+                                        echo '<td> Not assigned</td>';
                                     }
                                     echo '</tr>';
                                 }
@@ -3659,3 +3646,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         }
     }
 }
+?>
+
+
+<script>
+    <?php
+    if ($_SESSION[$guid]['absoluteURL'] == "https://amaatra.pupilpod.net") {
+        echo 'var tabs = ["school_information","miscellaneous"];
+
+        var elements = ["age","school_information #name","vehicleRegistration","lockerNumber","website"];';
+        echo "removeH2TagWithData('Emergency Contacts');
+        $('#emergency1Relationship').parent().parent().remove();";
+    } else {
+        echo "var tabs = [];
+        var elements = [];";
+    }
+    ?>
+
+    function removeH2TagWithData(data) {
+        try {
+            var h2 = $('h2').filter(function() {
+                return $(this).text() === data;
+            });
+            h2.remove();
+        } catch (ex) {
+            console.log(ex);
+        }
+    }
+
+    function removeMasterColumn() {
+        if (tabs.length > 0) {
+            var len = tabs.length;
+            var i = 0;
+            while (i < len) {
+                $("#" + tabs[i]).prev('h2').hide();
+                $("#" + tabs[i]).hide();
+                i++;
+            }
+        }
+        if (elements.length > 0) {
+            var len = elements.length;
+            var i = 0;
+            while (i < len) {
+                $("#" + elements[i]).hide();
+                i++;
+            }
+        }
+    }
+
+    $(function() {
+        removeMasterColumn();
+    });
+</script>

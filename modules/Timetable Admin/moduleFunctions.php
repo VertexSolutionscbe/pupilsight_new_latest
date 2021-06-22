@@ -2379,7 +2379,7 @@ function renderTTAttendance($guid, $connection2, $classId, $sectionId, $title = 
             $output .= "<table class='table' cellspacing='0' style='width: 100%'>";
             $output .= '<tr>';
             $output .= '<td>';
-            $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span>: ';
+            $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span> ';
             while ($row = $result->fetch()) {
                 $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
                 $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp) . "' type='hidden'>";

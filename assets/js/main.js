@@ -6977,7 +6977,7 @@ function CustomField() {
                     var tabName = obj["data"][i].tab;
                     var lastTab = _this.getPreviousTab(tabName, obj);
                     if (obj.view) {
-                        _this.createViewTab(tabName, lastTab);
+                        _this.createViewTab(tabName, lastTab, obj);
                     } else {
                         //console.log("create Edit tab ", lastTab, " tabName ", tabName);
                         _this.createEditTab(tabName, lastTab);
@@ -6985,22 +6985,24 @@ function CustomField() {
                 }
                 i++;
             }
+        } catch (ex) {
+            console.log("Customefiled.tab: ", ex);
+        }
 
-
-            /*
-            if (obj["data"][0].tabs) {
-                if (obj.view) {
-                    _this.viewCustomOrderModule(obj["data"][0].tabs);
-                } else {
-                    
-                    //$("select").blur();
-                    //$("input").blur();
-                    //$("textarea").blur();
-                    //$("#gender").blur();
-                    //_this.editCustomOrderModule(obj["data"][0].tabs);
-                }
-            }*/
-
+        /*
+        if (obj["data"][0].tabs) {
+            if (obj.view) {
+                _this.viewCustomOrderModule(obj["data"][0].tabs);
+            } else {
+                
+                //$("select").blur();
+                //$("input").blur();
+                //$("textarea").blur();
+                //$("#gender").blur();
+                //_this.editCustomOrderModule(obj["data"][0].tabs);
+            }
+        }*/
+        try {
             //create element
             i = 0;
             while (i < len) {
@@ -7011,7 +7013,7 @@ function CustomField() {
                         if (obj.view) {
                             //show
                             //console.log("create view ", obj["data"][i]);
-                            _this.createView(obj["data"][i]);
+                            //_this.createView(obj["data"][i]);
                         } else {
                             //create input
                             //console.log(obj["data"][i]);
@@ -7030,6 +7032,10 @@ function CustomField() {
                 }
                 i++;
             }
+        } catch (ex) {
+            console.log("Customefiled.element: ", ex);
+        }
+        try {
 
             if (_this.isRowActive) {
                 $("#" + _this.activeElement).append(_this.colActiveStr);
@@ -7076,8 +7082,19 @@ function CustomField() {
                 }
             }
 
+
+            if (obj.view) {
+                document.querySelectorAll('table tr').forEach(function (e, i) {
+                    if (e.textContent.trim().length == 0) { // if row is empty
+                        e.parentNode.removeChild(e);
+                    }
+                });
+            }
+
+            _this.removeUnsedTab(obj);
+
         } catch (ex) {
-            console.log(ex);
+            console.log("Customefiled.remove: ", ex);
         }
     };
 
@@ -7208,12 +7225,12 @@ function CustomField() {
     };
     */
 
-    this.createViewTab = function (tab_name, lastTab) {
+    this.createViewTab = function (tab_name, lastTab, obj) {
         try {
-            //console.log("Is new Tab ", $(document.getElementById(lastTab)).length);
+            //console.log("Is new Tab ", tab_name, lastTab);
             if ($(document.getElementById(tab_name)).length == 0) {
                 var tabTitle = _this.titleCase(tab_name.replace(/_/g, ' '));
-                var str = "<h4>" + tabTitle + "</h4>";
+                var str = "<h2>" + tabTitle + "</h2>";
                 str += "<table id='" + tab_name + "' class='table'>";
                 str += "<tbody></tbody>";
                 str += "</table>";
@@ -7224,6 +7241,48 @@ function CustomField() {
             console.log(ex);
         }
     };
+
+    this.removeUnsedTab = function (obj) {
+        if (obj.view) {
+            var tabs = obj["data"][0]["tabs"].split(",");
+            var len = tabs.length;
+            var i = 0;
+            while (i < len) {
+                if (_this.isTabEmpty(tabs[i], obj["data"])) {
+                    $("#" + tabs[i]).prev('h2').hide();
+                    $("#" + tabs[i]).hide();
+                }
+                i++;
+            }
+        }
+    }
+
+    this.isTabEmpty = function (tab_name, obj) {
+        var flag = true;
+        try {
+            var rowlen = $("#" + tab_name + " tr").length;
+            if (rowlen == 0) {
+                return true;
+            }
+
+            var len = obj.length;
+            var i = 0;
+
+            while (i < len) {
+                if (obj[i]["tab"] == tab_name) {
+                    if (obj[i]["active"] == "Y") {
+                        flag = false;
+                        break;
+                    }
+                }
+                i++;
+            }
+
+        } catch (ex) {
+            console.log(ex);
+        }
+        return flag;
+    }
 
     this.createEditTab = function (tab_name, lastTab) {
         //console.log("Is new Tab ", $(document.getElementById(tab_name)).length);
@@ -7331,6 +7390,10 @@ function CustomField() {
             console.log(ex);
         }
 
+        if (elementVal == "Null" || elementVal == "null" || elementVal == null || elementVal == "" || elementVal == undefined) {
+            elementVal = "";
+        }
+
 
         var validElement = false;
         var element = "content";
@@ -7363,7 +7426,7 @@ function CustomField() {
             var isData = $('#' + element + ' tr:last td:last').text();
             var isNotAdded = true;
 
-            if (isData == "") {
+            if (isData) {
                 isNotAdded = false;
                 str = `<span class="form-label">` + fieldTitle + `</span>
                 <div>` + elementVal + `</div>`;

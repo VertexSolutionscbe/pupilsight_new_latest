@@ -1259,7 +1259,7 @@ function renderTTDay($guid, $connection2, $pupilsightTTID, $schoolOpen, $startDa
                     } elseif ($height >= 30) {
                         //$pp=2;
 
-                        while($staffcs = $resultcs->fetch()) {
+                        while ($staffcs = $resultcs->fetch()) {
 
                             if (!empty($staffcs)) {
                                 $staffName = $staffcs['officialName'];
@@ -1861,7 +1861,7 @@ function renderTTDaypp($guid, $connection2, $pupilsightTTID, $schoolOpen, $start
                     } elseif ($height >= 30) {
                         //$pp=2;
 
-                        while($staffcs = $resultcs->fetch()) {
+                        while ($staffcs = $resultcs->fetch()) {
 
                             if (!empty($staffcs)) {
                                 $deptid = $staffcs['pupilsightDepartmentID'];
@@ -1872,7 +1872,7 @@ function renderTTDaypp($guid, $connection2, $pupilsightTTID, $schoolOpen, $start
                                 $subjectName = '';
                             }
 
-                            $output .= "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Attendance/attendance_take_bysubject.php&studentId=' .$_GET['studentId']. '&pupilsightProgramID=' . $_GET['pupilsightProgramID'] . '&pupilsightYearGroupID=' . $_GET['pupilsightYearGroupID']. '&pupilsightPersonID=' . $_GET['pupilsightPersonID']. '&pupilsightRollGroupID=' . $_GET['pupilsightRollGroupID']. '&pupilsightDepartmentID=' . $deptid. '&currentDate=' . $_GET['ttDate'] .'&timetableattendance=1'."'> 
+                            $output .= "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Attendance/attendance_take_bysubject.php&studentId=' . $_GET['studentId'] . '&pupilsightProgramID=' . $_GET['pupilsightProgramID'] . '&pupilsightYearGroupID=' . $_GET['pupilsightYearGroupID'] . '&pupilsightPersonID=' . $_GET['pupilsightPersonID'] . '&pupilsightRollGroupID=' . $_GET['pupilsightRollGroupID'] . '&pupilsightDepartmentID=' . $deptid . '&currentDate=' . $_GET['ttDate'] . '&timetableattendance=1' . "'> 
                             <div class='ttleft'>" . $subjectName . "</div><div class='ttright'>" . $staffName . '</div></a><div class="clear"></div><br/>';
                             //$output .= $rowPeriods['name'] . '&nbsp;';
                         }
@@ -2993,7 +2993,7 @@ function renderTTAttendance($guid, $connection2, $classId, $sectionId, $title = 
             $output .= "<table class='table' cellspacing='0' style='width: 100%'>";
             $output .= '<tr>';
             $output .= '<td>';
-            $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span>: ';
+            $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span> ';
             while ($row = $result->fetch()) {
                 $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
                 $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp) . "' type='hidden'>";
@@ -3663,7 +3663,7 @@ function renderTTAttendancepp($guid, $connection2, $pupilsightPersonID, $classId
                 $proceed = true;
             }
         } else if ($highestAction == 'View Timetable by Person_myChildren') {
-             /*try {
+            /*try {
                  $data = array('pupilsightPersonID1' => $_SESSION[$guid]['pupilsightPersonID'], 'pupilsightPersonID2' => $pupilsightPersonID);
                  $sql = "SELECT pupilsightFamilyChild.pupilsightPersonID FROM pupilsightFamilyChild
                      JOIN pupilsightFamilyAdult ON (pupilsightFamilyAdult.pupilsightFamilyID=pupilsightFamilyChild.pupilsightFamilyID)
@@ -3734,12 +3734,14 @@ function renderTTAttendancepp($guid, $connection2, $pupilsightPersonID, $classId
         //link to other TTs
 
         if ($result->rowcount() > 0) {
-            $pupilsightTTID='';
-            while($row = $result->fetch()) {$pupilsightTTID=$row['pupilsightTTID'];}
+            $pupilsightTTID = '';
+            while ($row = $result->fetch()) {
+                $pupilsightTTID = $row['pupilsightTTID'];
+            }
             /*$output .= "<table class='table'>";
             $output .= '<tr>';
             $output .= '<td>';
-            $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span>: ';
+            $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span> ';
             $pupilsightTTID='';
             while ($row = $result->fetch()) {
                 $pupilsightTTID=$row['pupilsightTTID'];
