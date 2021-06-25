@@ -7093,6 +7093,8 @@ function CustomField() {
 
             _this.removeUnsedTab(obj);
 
+
+
         } catch (ex) {
             console.log("Customefiled.remove: ", ex);
         }
@@ -7245,9 +7247,11 @@ function CustomField() {
     this.removeUnsedTab = function (obj) {
         if (obj.view) {
             var tabs = obj["data"][0]["tabs"].split(",");
+            //console.log(obj["data"]);
             var len = tabs.length;
             var i = 0;
             while (i < len) {
+
                 if (_this.isTabEmpty(tabs[i], obj["data"])) {
                     $("#" + tabs[i]).prev('h2').hide();
                     $("#" + tabs[i]).hide();
@@ -7258,13 +7262,13 @@ function CustomField() {
     }
 
     this.isTabEmpty = function (tab_name, obj) {
-        var flag = true;
+        var flag = false;
         try {
             var rowlen = $("#" + tab_name + " tr").length;
             if (rowlen == 0) {
                 return true;
             }
-
+            /*
             var len = obj.length;
             var i = 0;
 
@@ -7276,7 +7280,8 @@ function CustomField() {
                     }
                 }
                 i++;
-            }
+            }*/
+
 
         } catch (ex) {
             console.log(ex);

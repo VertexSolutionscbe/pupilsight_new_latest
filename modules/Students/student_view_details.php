@@ -664,10 +664,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</table>';
 
                         //Get and display a list of student's teachers
+                        if ($_SESSION[$guid]['absoluteURL'] != "https://amaatra.pupilpod.net") {
+                            echo '<h2>';
+                            echo __("Student's Teachers");
+                            echo '</h2>';
+                        }
 
-                        echo '<h2>';
-                        echo __("Student's Teachers");
-                        echo '</h2>';
                         try {
                             $dataDetail = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightYearGroupID' => $row['pupilsightYearGroupID']);
                             $sqlDetail = "
@@ -680,11 +682,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         } catch (PDOException $e) {
                             echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                         }
-                        if ($resultDetail->rowCount() < 1) {
-                            echo "<div class='alert alert-warning'>";
-                            echo __('There are no records to display.');
-                            echo '</div>';
-                        } else {
+
+                        if ($resultDetail->rowCount() > 0) {
                             echo '<ul>';
                             while ($rowDetail = $resultDetail->fetch()) {
                                 echo '<li>' . htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
@@ -736,66 +735,68 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
                         //Show timetable
-                        echo "<a name='timetable'></a>";
-                        //Display timetable if available, otherwise just list classes
-                        if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == true) {
-                            echo "<div class='row'>";
-                            echo "<div class='col-md-6 col-sm-12'>";
-                            echo '<h2>';
-                            echo __('Timetable');
-                            echo '</h2>';
-                            echo "</div>";
-                            echo "<div class='col-md-6 col-sm-12 text-right'>";
-                            if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
-                                $role = getRoleCategory($row['pupilsightRoleIDPrimary'], $connection2);
-                                if ($role == 'Student' or $role == 'Staff') {
-                                    echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&pupilsightPersonID=$pupilsightPersonID&pupilsightSchoolYearID=" . $_SESSION[$guid]['pupilsightSchoolYearID'] . "&type=$role' class='btn-link'><span class='mdi mdi-pencil-box-outline mr-2'></i> Edit</a> ";
+                        if ($_SESSION[$guid]['absoluteURL'] != "https://amaatra.pupilpod.net") {
+                            echo "<a name='timetable'></a>";
+                            //Display timetable if available, otherwise just list classes
+                            if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php')) {
+                                echo "<div class='row'>";
+                                echo "<div class='col-md-6 col-sm-12'>";
+                                echo '<h2>';
+                                echo __('Timetable');
+                                echo '</h2>';
+                                echo "</div>";
+                                echo "<div class='col-md-6 col-sm-12 text-right'>";
+                                if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
+                                    $role = getRoleCategory($row['pupilsightRoleIDPrimary'], $connection2);
+                                    if ($role == 'Student' or $role == 'Staff') {
+                                        echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&pupilsightPersonID=$pupilsightPersonID&pupilsightSchoolYearID=" . $_SESSION[$guid]['pupilsightSchoolYearID'] . "&type=$role' class='btn-link'><span class='mdi mdi-pencil-box-outline mr-2'></i> Edit</a> ";
+                                    }
                                 }
-                            }
-                            echo "</div>";
-                            echo "</div>";
+                                echo "</div>";
+                                echo "</div>";
 
-                            include './modules/Timetable/moduleFunctions.php';
-                            $ttDate = null;
-                            if (isset($_POST['ttDate'])) {
-                                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
-                            }
-                            $tt = renderTT($guid, $connection2, $pupilsightPersonID, '', false, $ttDate, '/modules/Students/student_view_details.php', "&pupilsightPersonID=$pupilsightPersonID&search=$search&allStudents=$allStudents#timetable");
-                            if ($tt != false) {
-                                echo $tt;
-                            } else {
-                                echo "<div class='alert alert-danger'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
-                            }
-                        } else {
-                            echo '<h2>';
-                            echo __('Class List');
-                            echo '</h2>';
-                            try {
-                                $dataDetail = array('pupilsightPersonID' => $pupilsightPersonID);
-                                $sqlDetail = "SELECT DISTINCT pupilsightCourse.name AS courseFull, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class
-                                    FROM pupilsightCourseClassPerson
-                                        JOIN pupilsightCourseClass ON (pupilsightCourseClassPerson.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID)
-                                        JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID)
-                                    WHERE pupilsightCourseClassPerson.role='Student' AND pupilsightCourseClassPerson.pupilsightPersonID=:pupilsightPersonID AND pupilsightCourse.pupilsightSchoolYearID=(SELECT pupilsightSchoolYearID FROM pupilsightSchoolYear WHERE status='Current') ORDER BY course, class";
-                                $resultDetail = $connection2->prepare($sqlDetail);
-                                $resultDetail->execute($dataDetail);
-                            } catch (PDOException $e) {
-                                echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
-                            }
-                            if ($resultDetail->rowCount() < 1) {
-                                echo "<div class='alert alert-danger'>";
-                                echo __('There are no records to display.');
-                                echo '</div>';
-                            } else {
-                                echo '<ul>';
-                                while ($rowDetail = $resultDetail->fetch()) {
-                                    echo '<li>';
-                                    echo htmlPrep($rowDetail['courseFull'] . ' (' . $rowDetail['course'] . '.' . $rowDetail['class'] . ')');
-                                    echo '</li>';
+                                include './modules/Timetable/moduleFunctions.php';
+                                $ttDate = null;
+                                if (isset($_POST['ttDate'])) {
+                                    $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
                                 }
-                                echo '</ul>';
+                                $tt = renderTT($guid, $connection2, $pupilsightPersonID, '', false, $ttDate, '/modules/Students/student_view_details.php', "&pupilsightPersonID=$pupilsightPersonID&search=$search&allStudents=$allStudents#timetable");
+                                if ($tt != false) {
+                                    echo $tt;
+                                } else {
+                                    echo "<div class='alert alert-danger'>";
+                                    echo __('There are no records to display.');
+                                    echo '</div>';
+                                }
+                            } else {
+                                echo '<h2>';
+                                echo __('Class List');
+                                echo '</h2>';
+                                try {
+                                    $dataDetail = array('pupilsightPersonID' => $pupilsightPersonID);
+                                    $sqlDetail = "SELECT DISTINCT pupilsightCourse.name AS courseFull, pupilsightCourse.nameShort AS course, pupilsightCourseClass.nameShort AS class
+                                        FROM pupilsightCourseClassPerson
+                                            JOIN pupilsightCourseClass ON (pupilsightCourseClassPerson.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID)
+                                            JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID)
+                                        WHERE pupilsightCourseClassPerson.role='Student' AND pupilsightCourseClassPerson.pupilsightPersonID=:pupilsightPersonID AND pupilsightCourse.pupilsightSchoolYearID=(SELECT pupilsightSchoolYearID FROM pupilsightSchoolYear WHERE status='Current') ORDER BY course, class";
+                                    $resultDetail = $connection2->prepare($sqlDetail);
+                                    $resultDetail->execute($dataDetail);
+                                } catch (PDOException $e) {
+                                    echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+                                }
+                                if ($resultDetail->rowCount() < 1) {
+                                    echo "<div class='alert alert-danger'>";
+                                    echo __('There are no records to display.');
+                                    echo '</div>';
+                                } else {
+                                    echo '<ul>';
+                                    while ($rowDetail = $resultDetail->fetch()) {
+                                        echo '<li>';
+                                        echo htmlPrep($rowDetail['courseFull'] . ' (' . $rowDetail['course'] . '.' . $rowDetail['class'] . ')');
+                                        echo '</li>';
+                                    }
+                                    echo '</ul>';
+                                }
                             }
                         }
                     } elseif ($subpage == 'Personal') {
@@ -911,17 +912,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</td>';
                         echo '</tr>';
-                        if ($row['address1'] != '') {
-                            echo '<tr>';
-                            echo "<td id='address1' style='width: 33%; padding-top: 15px; vertical-align: top' colspan=4>";
-                            echo "<span class='form-label'>" . __('Address 1') . '</span>';
-                            $address1 = addressFormat($row['address1'], $row['address1District'], $row['address1Country']);
-                            if ($address1 != false) {
-                                echo $address1;
-                            }
-                            echo '</td>';
-                            echo '</tr>';
+                        //if ($row['address1'] != '') {
+                        echo '<tr>';
+                        echo "<td id='address1' style='width: 33%; padding-top: 15px; vertical-align: top' colspan=4>";
+                        echo "<span class='form-label'>" . __('Address 1') . '</span>';
+                        $address1 = addressFormat($row['address1'], $row['address1District'], $row['address1Country']);
+                        if ($address1 != false) {
+                            echo $address1;
                         }
+                        echo '</td>';
+                        echo '</tr>';
+                        //}
                         if ($row['address2'] != '') {
                             echo '<tr>';
                             echo "<td id='address2' style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
@@ -1372,31 +1373,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '</td>';
                                 }
                                 echo '</tr>';
-                                echo '<tr>';
-                                echo "<td id='nameAddress' style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span class='form-label'>" . __('Address Name') . '</span>';
-                                echo $rowFamily['nameAddress'];
-                                echo '</td>';
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo '</td>';
-                                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo '</td>';
-                                echo '</tr>';
+                                if ($_SESSION[$guid]['absoluteURL'] != "https://amaatra.pupilpod.net") {
+                                    echo '<tr>';
+                                    echo "<td id='nameAddress' style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<span class='form-label'>" . __('Address Name') . '</span>';
+                                    echo $rowFamily['nameAddress'];
+                                    echo '</td>';
+                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo '</td>';
+                                    echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo '</td>';
+                                    echo '</tr>';
 
-                                echo '<tr>';
-                                echo "<td id='homeAddress' style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span class='form-label'>" . __('Home Address') . '</span>';
-                                echo $rowFamily['homeAddress'];
-                                echo '</td>';
-                                echo "<td id='homeAddressDistrict'style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span class='form-label'>" . __('Home Address (District)') . '</span>';
-                                echo $rowFamily['homeAddressDistrict'];
-                                echo '</td>';
-                                echo "<td id='homeAddressCountry'style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span class='form-label'>" . __('Home Address (Country)') . '</span>';
-                                echo $rowFamily['homeAddressCountry'];
-                                echo '</td>';
-                                echo '</tr>';
+                                    echo '<tr>';
+                                    echo "<td id='homeAddress' style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<span class='form-label'>" . __('Home Address') . '</span>';
+                                    echo $rowFamily['homeAddress'];
+                                    echo '</td>';
+                                    echo "<td id='homeAddressDistrict'style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<span class='form-label'>" . __('Home Address (District)') . '</span>';
+                                    echo $rowFamily['homeAddressDistrict'];
+                                    echo '</td>';
+                                    echo "<td id='homeAddressCountry'style='width: 33%; padding-top: 15px; vertical-align: top'>";
+                                    echo "<span class='form-label'>" . __('Home Address (Country)') . '</span>';
+                                    echo $rowFamily['homeAddressCountry'];
+                                    echo '</td>';
+                                    echo '</tr>';
+                                }
                                 echo '</table>';
 
                                 //Get adults
@@ -1659,7 +1662,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             //Get adults
                             try {
                                 $dataMember = array('pupilsightFamilyID' => $rowFamily['pupilsightFamilyID']);
-                                $sqlMember = 'SELECT * FROM pupilsightFamilyAdult JOIN pupilsightPerson ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) WHERE pupilsightFamilyID=:pupilsightFamilyID ORDER BY contactPriority, surname, preferredName';
+                                $sqlMember = 'SELECT * FROM pupilsightFamilyAdult 
+                                JOIN pupilsightPerson ON (pupilsightFamilyAdult.pupilsightPersonID=pupilsightPerson.pupilsightPersonID) 
+                                WHERE pupilsightFamilyID=:pupilsightFamilyID 
+                                ORDER BY contactPriority, surname, preferredName';
                                 $resultMember = $connection2->prepare($sqlMember);
                                 $resultMember->execute($dataMember);
                             } catch (PDOException $e) {
@@ -1669,15 +1675,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             while ($rowMember = $resultMember->fetch()) {
                                 echo "<table class='table'>";
                                 echo '<tr>';
-                                echo "<td id='preferredName' style='width: 33%; vertical-align: top'>";
+                                echo "<td id='_preferredName' style='width:250px;vertical-align: top'>";
                                 echo "<span class='form-label'>" . __('Name') . '</span>';
                                 echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                                 echo '</td>';
-                                echo "<td id='relationship' style='width: 33%; vertical-align: top'>";
+                                echo "<td id='relationship' style='vertical-align: top'>";
+
                                 echo "<span class='form-label'>" . __('Relationship') . '</span>';
                                 try {
                                     $dataRelationship = array('pupilsightPersonID1' => $rowMember['pupilsightPersonID'], 'pupilsightPersonID2' => $pupilsightPersonID, 'pupilsightFamilyID' => $rowFamily['pupilsightFamilyID']);
-                                    $sqlRelationship = 'SELECT * FROM pupilsightFamilyRelationship WHERE pupilsightPersonID1=:pupilsightPersonID1 AND pupilsightPersonID2=:pupilsightPersonID2 AND pupilsightFamilyID=:pupilsightFamilyID';
+                                    $sqlRelationship = 'SELECT * FROM pupilsightFamilyRelationship 
+                                    WHERE pupilsightPersonID1=:pupilsightPersonID1 
+                                    AND pupilsightPersonID2=:pupilsightPersonID2 
+                                    AND pupilsightFamilyID=:pupilsightFamilyID';
                                     $resultRelationship = $connection2->prepare($sqlRelationship);
                                     $resultRelationship->execute($dataRelationship);
                                 } catch (PDOException $e) {
@@ -1691,7 +1701,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
 
                                 echo '</td>';
-                                echo "<td style='width: 34%; vertical-align: top'>";
+                                echo "<td style='vertical-align: top'>";
                                 echo "<span class='form-label'>" . __('Contact By Phone') . '</span>';
                                 for ($i = 1; $i < 5; ++$i) {
                                     if ($rowMember['phone' . $i] != '') {
@@ -1705,6 +1715,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     }
                                 }
                                 echo '</td>';
+                                echo "<td style='vertical-align: top'>";
+                                echo "<span class='form-label'>" . __('Contact By Email') . '</span>';
+                                echo __($rowMember['email']) . '';
+                                echo '</td>';
+
                                 echo '</tr>';
                                 echo '</table>';
                                 ++$count;
@@ -3652,10 +3667,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 <script>
     <?php
     if ($_SESSION[$guid]['absoluteURL'] == "https://amaatra.pupilpod.net") {
-        echo 'var tabs = ["school_information","miscellaneous"];
+        echo 'var tabs = ["school_information","miscellaneous","system_access"];
 
         var elements = ["age","school_information #name","vehicleRegistration","lockerNumber","website"];';
-        echo "removeH2TagWithData('Emergency Contacts');
+        echo "removeH2TagWithData('Emergency Contacts');removeH2TagWithData('Siblings');
         $('#emergency1Relationship').parent().parent().remove();";
     } else {
         echo "var tabs = [];
