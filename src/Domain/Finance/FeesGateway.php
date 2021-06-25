@@ -815,7 +815,7 @@ print_r($rs);
                 //->where('fn_fee_invoice_student_assign.status = 1 ')
                 ->groupby(['fn_fee_invoice_student_assign.id'])
                 ->orderby(['fn_fee_invoice_student_assign.id DESC']);
-            //echo $query;
+            // echo $query;
             // die();
         } else {
             $query = $this
