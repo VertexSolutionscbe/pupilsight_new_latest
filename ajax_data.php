@@ -2610,6 +2610,10 @@ if ($type == "getPaymentHistory") {
     // echo "<pre>";
     // print_r($payhistory);die();
     if (!empty($payhistory)) {
+        $dis = 0;
+        $disamount = 0;
+        $dis_item_inv = 0;
+        $dis_inv_item = 0;
         foreach ($payhistory as $ph) {
             $sqli = "SELECT GROUP_CONCAT(DISTINCT invoice_no) AS invNo, GROUP_CONCAT(DISTINCT fn_fees_invoice_id) AS inviD FROM fn_fees_student_collection where transaction_id = " . $ph['transaction_id'] . " OR partial_transaction_id = " . $ph['transaction_id'] . " LIMIT 0,1";
             $resulti = $connection2->query($sqli);
@@ -2639,8 +2643,17 @@ if ($type == "getPaymentHistory") {
                 $dis_item_inv = 0;
             }
 
-            $dis = $ph['discount'];
-            $disamount = $dataamt['disamount'];
+           
+            if(!empty($dis)){
+                $dis = $ph['discount'];
+                $disamount = 0;
+            }
+
+            if(!empty($dataamt['disamount'])){
+                $dis = 0;
+                $disamount = $dataamt['disamount'];
+            }
+
             $dis_inv_item = $disamount + $dis_item_inv + $dis;
 
 

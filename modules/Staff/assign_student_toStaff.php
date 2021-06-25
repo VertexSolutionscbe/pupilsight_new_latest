@@ -217,14 +217,21 @@ echo $table->render($students);
 ?>
 
 <script>
-    $("#pupilsightYearGroupID").change(function() {
+    // $("#pupilsightYearGroupID").change(function() {
+    //     loadSubjects();
+    // });
+
+    $("#pupilsightRollGroupID").change(function() {
         loadSubjects();
     });
+
+    
     
 
     function loadSubjects() {
         var pupilsightProgramID = $("#pupilsightProgramID").val();
         var pupilsightYearGroupID = $("#pupilsightYearGroupID").val();
+        var pupilsightRollGroupID = $("#pupilsightRollGroupID").val();
         //var roleid= $("#roleid").val();
         if (pupilsightYearGroupID) {
             var type = "getSubjectbasedonclassNew";
@@ -235,7 +242,8 @@ echo $table->render($students);
                     data: {
                         val: pupilsightYearGroupID,
                         type: type,
-                        pupilsightProgramID:pupilsightProgramID
+                        pupilsightProgramID:pupilsightProgramID,
+                        pupilsightRollGroupID:pupilsightRollGroupID
 
                     },
                     async: true,
