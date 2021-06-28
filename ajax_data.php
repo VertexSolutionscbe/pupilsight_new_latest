@@ -459,6 +459,7 @@ if ($type == 'invoiceFeeItem') {
     $data = '';
 
     foreach ($feeItem as $fI) {
+        $invNo = $fI['stu_invoice_no'];
         $discountamt = 0;
         $discount = 0;
         $amtpaid = 0;
@@ -491,14 +492,16 @@ if ($type == 'invoiceFeeItem') {
         }
 
 
-        $sqlchk = 'SELECT COUNT(a.id) as kount, a.total_amount, a.total_amount_collection, a.status FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fee_invoice_item_id = ' . $fI['itemid'] . ' AND a.pupilsightPersonID = ' . $sid . ' AND b.transaction_status = "1" ';
+        // $sqlchk = 'SELECT COUNT(a.id) as kount, a.total_amount, a.total_amount_collection, a.status FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fee_invoice_item_id = ' . $fI['itemid'] . ' AND a.pupilsightPersonID = ' . $sid . ' AND b.transaction_status = "1" ';
 
+        $sqlchk = 'SELECT COUNT(a.id) as kount, a.total_amount, SUM(a.total_amount_collection) as tot_coll, a.status FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fee_invoice_item_id = ' . $fI['itemid'] . ' AND a.pupilsightPersonID = ' . $sid . ' AND a.invoice_no = "' . $invNo . '" AND b.transaction_status = "1" ';
+       
         $resultchk = $connection2->query($sqlchk);
         $itemchk = $resultchk->fetch();
 
 
-        $amtpaid = $itemchk['total_amount_collection'];
-        $amtpending = $itemchk['total_amount'] - $itemchk['total_amount_collection'];
+        $amtpaid = $itemchk['tot_coll'];
+        $amtpending = $itemchk['total_amount'] - $itemchk['tot_coll'];
         if ($amtpending) {
             $payamount = $amtpending;
         } else {
