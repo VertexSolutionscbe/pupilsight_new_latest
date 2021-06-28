@@ -914,7 +914,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</tr>';
                         //if ($row['address1'] != '') {
                         echo '<tr>';
-                        echo "<td id='address1' style='width: 33%; padding-top: 15px; vertical-align: top' colspan=4>";
+                        echo "<td id='address1' style='width: 33%; padding-top: 15px; vertical-align: top' colspan=2>";
                         echo "<span class='form-label'>" . __('Address 1') . '</span>';
                         $address1 = addressFormat($row['address1'], $row['address1District'], $row['address1Country']);
                         if ($address1 != false) {

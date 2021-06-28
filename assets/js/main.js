@@ -6936,7 +6936,7 @@ function CustomField() {
                 }).done(function (msg) {
                     if (msg) {
                         var obj = jQuery.parseJSON(msg);
-                        //console.log(obj);
+                        console.log(obj);
                         _this.loadAction(obj);
                     }
                 });
@@ -7013,21 +7013,21 @@ function CustomField() {
                         if (obj.view) {
                             //show
                             //console.log("create view ", obj["data"][i]);
-                            //_this.createView(obj["data"][i]);
+                            _this.createView(obj["data"][i]);
                         } else {
                             //create input
                             //console.log(obj["data"][i]);
                             _this.createInput(obj["data"][i]);
                         }
                     } else {
-                        if (deactivateIds) {
+                        /*if (deactivateIds) {
                             deactivateIds += ",";
                         }
                         if (obj.view) {
                             deactivateIds += "#" + obj["data"][i].field_name;
                         } else {
                             deactivateIds += "#row_" + obj["data"][i].field_name;
-                        }
+                        }*/
                     }
                 }
                 i++;
@@ -7082,7 +7082,6 @@ function CustomField() {
                 }
             }
 
-
             if (obj.view) {
                 document.querySelectorAll('table tr').forEach(function (e, i) {
                     if (e.textContent.trim().length == 0) { // if row is empty
@@ -7092,8 +7091,6 @@ function CustomField() {
             }
 
             _this.removeUnsedTab(obj);
-
-
 
         } catch (ex) {
             console.log("Customefiled.remove: ", ex);
@@ -7268,6 +7265,7 @@ function CustomField() {
             if (rowlen == 0) {
                 return true;
             }
+
             /*
             var len = obj.length;
             var i = 0;
@@ -7281,7 +7279,6 @@ function CustomField() {
                 }
                 i++;
             }*/
-
 
         } catch (ex) {
             console.log(ex);
@@ -7365,101 +7362,116 @@ function CustomField() {
     _this.activeElement = "";
     _this.activeColManage = [];
     this.createView = function (obj) {
-
-        var fieldTitle = "";
-        var fieldName = "";
-        if (obj.field_title) {
-            fieldTitle = obj.field_title;
-            fieldName = obj.field_name;
-        }
-        _this.activeColManage = [];
-        var elementVal = "";
         try {
-            if (pcdt) {
-                elementVal = pcdt.dt[obj.field_name];
-                if (!elementVal) {
-                    elementVal = "&nbsp;";
-                } else if (obj.field_type == "file") {
-                    elementVal = "<a href='" + pcdt.dt[obj.field_name] + "' download>Download</a>";
-                } else if (obj.field_type == "image") {
-                    elementVal = "<a href='" + pcdt.dt[obj.field_name] + "' download title='download image'><img src='" + pcdt.dt[obj.field_name] + "' class='img-thumbnail'/></a>";
+            var fieldTitle = "";
+            var fieldName = "";
+            if (obj.field_title) {
+                fieldTitle = obj.field_title;
+                fieldName = obj.field_name;
+            }
+            _this.activeColManage = [];
+            var elementVal = "";
+            try {
+                if (pcdt) {
+                    elementVal = pcdt.dt[obj.field_name];
+                    if (!elementVal) {
+                        elementVal = "&nbsp;";
+                    } else if (obj.field_type == "file") {
+                        elementVal = "<a href='" + pcdt.dt[obj.field_name] + "' download>Download</a>";
+                    } else if (obj.field_type == "image") {
+                        elementVal = "<a href='" + pcdt.dt[obj.field_name] + "' download title='download image'><img src='" + pcdt.dt[obj.field_name] + "' class='img-thumbnail'/></a>";
+                    }
+
+                    if (obj.field_type == "checkboxes") {
+                        elementVal = _this.createCheckboxView(obj);
+                    } else if (obj.field_type == "radioboxes") {
+                        elementVal = _this.createRadioView(obj);
+                    }
+                }
+            } catch (ex) {
+                console.log("createView.pcdt: ", ex);
+            }
+
+            if (elementVal == "Null" || elementVal == "null" || elementVal == null || elementVal == "" || elementVal == undefined) {
+                elementVal = "";
+            }
+
+
+            var validElement = false;
+            var element = "content";
+            try {
+                //console.log(obj.tab);
+                if (obj.tab) {
+                    if ($("#" + obj.tab).length) {
+                        element = obj.tab;
+                        validElement = true;
+                    } else {
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            } catch (ex) {
+                console.log("createView.tab ", obj, ex);
+            }
+
+            //console.log("element", obj.tab, obj);
+
+            if (validElement) {
+                //console.log(obj.field_name, " : ", elementVal);
+
+                var colCount = 0;
+                var currentRow = 0;
+                var currentCol = 0;
+
+                if (document.getElementById(element).rows.length > 0) {
+                    colCount = (document.getElementById(element).rows[0].cells.length) - 1;
+                    currentRow = document.getElementById(element).rows.length - 1;
+                    currentCol = (document.getElementById(element).rows[currentRow].cells.length) - 1;
                 }
 
-                if (obj.field_type == "checkboxes") {
-                    elementVal = _this.createCheckboxView(obj);
-                } else if (obj.field_type == "radioboxes") {
-                    elementVal = _this.createRadioView(obj);
+                var str = `<td id="` + fieldName + `" style="width: 34%; vertical-align: top"><span class="form-label">` + fieldTitle + `</span><div>` + elementVal + `</div></td>`;
+                //console.log(obj.field_name, currentRow, currentCol, colCount);
+                var isData = $('#' + element + ' tr:last td:last').text();
+                var isNotAdded = true;
+
+                if (isData == "") {
+                    isNotAdded = false;
+                    //console.log("here1 -> ", obj.tab, obj.field_name);
+                    try {
+                        str = '<span class="form-label">' + fieldTitle + '</span><div>' + elementVal + '</div>';
+                        $('#' + element + ' tr:last td:last').html(str);
+                        //console.log("here1 : ", $('#' + element + ' tr:last td:last').html(str));
+                    } catch (ex) {
+                        console.log("Create View : ", ex);
+                    }
+
+                } else if (currentCol != 0 && currentCol == colCount) {
+                    //console.log("here2 -> ", obj.tab, obj.field_name);
+                    $("#" + element).append("<tr></tr>");
                 }
+                if (isNotAdded) {
+                    //console.log("here3 -> ", obj.tab, obj.field_name);
+                    $('#' + element + ' tr:last').append(str);
+                }
+                if (document.getElementById(element).rows.length > 0) {
+                    var crow = document.getElementById(element).rows.length - 1;
+                    var ccol = document.getElementById(element).rows[crow].cells.length - 1;
+                    //console.log(crow, ccol);
+                    if (ccol < colCount) {
+                        var ts = { "element": element, "row": crow, "col": ccol };
+                        _this.activeColManage.push(ts);
+                    }
+                }
+
+            } else {
+                console.log("not a valid element: ", obj.tab, " -- ", obj.field_name, " : ", elementVal);
+                var str = `<table class="smallIntBorder" cellspacing="0" style="width: 100%"><tr><td id="` + fieldName + `" style="width: 34%; vertical-align: top" colspan="` + colCount + `"><span class="form-label">` + fieldTitle + `</span><div>` + elementVal + `</div></td></tr></table>`;
+                $("#" + element).append(str);
             }
+
         } catch (ex) {
-            console.log(ex);
-        }
-
-        if (elementVal == "Null" || elementVal == "null" || elementVal == null || elementVal == "" || elementVal == undefined) {
-            elementVal = "";
-        }
-
-
-        var validElement = false;
-        var element = "content";
-        if ($("#" + obj.tab).length > 0) {
-            element = obj.tab;
-            validElement = true;
-        } else {
-            return;
-        }
-
-        //console.log("element", obj.tab, obj);
-
-        if (validElement) {
-            //console.log(obj.field_name, " : ", elementVal);
-
-            var colCount = 0;
-            var currentRow = 0;
-            var currentCol = 0;
-
-            if (document.getElementById(element).rows.length > 0) {
-                colCount = (document.getElementById(element).rows[0].cells.length) - 1;
-                currentRow = document.getElementById(element).rows.length - 1;
-                currentCol = (document.getElementById(element).rows[currentRow].cells.length) - 1;
-            }
-
-            var str = `<td id="` + fieldName + `" style="width: 34%; vertical-align: top">
-                <span class="form-label">` + fieldTitle + `</span>
-                <div>` + elementVal + `</div></td>`;
-            //console.log(obj.field_name, currentRow, currentCol, colCount);
-            var isData = $('#' + element + ' tr:last td:last').text();
-            var isNotAdded = true;
-
-            if (isData) {
-                isNotAdded = false;
-                str = `<span class="form-label">` + fieldTitle + `</span>
-                <div>` + elementVal + `</div>`;
-                $('#' + element + ' tr:last td:last').html(str);
-            } else if (currentCol != 0 && currentCol == colCount) {
-                //console.log("here??");
-                $("#" + element).append("<tr></tr>");
-            }
-            if (isNotAdded) {
-                $('#' + element + ' tr:last').append(str);
-            }
-            if (document.getElementById(element).rows.length > 0) {
-                var crow = document.getElementById(element).rows.length - 1;
-                var ccol = document.getElementById(element).rows[crow].cells.length - 1;
-                //console.log(crow, ccol);
-                if (ccol < colCount) {
-                    var ts = { "element": element, "row": crow, "col": ccol };
-                    _this.activeColManage.push(ts);
-                }
-            }
-
-        } else {
-            var str = `<table class="smallIntBorder" cellspacing="0" style="width: 100%"><tr>
-                <td id="` + fieldName + `" style="width: 34%; vertical-align: top" colspan="` + colCount + `">
-                <span class="form-label">` + fieldTitle + `</span>
-                <div>` + elementVal + `</div></td>
-                </tr></table>`;
-            $("#" + element).append(str);
+            console.log("Create View:", new Error().stack);
         }
     };
 

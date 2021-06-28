@@ -172,6 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/department_manag
     }
 }
 
+
 ?>
 <script>
     // $(document).on('keyup','#subCode', function () {
