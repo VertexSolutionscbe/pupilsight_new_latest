@@ -998,15 +998,15 @@ setTimeout(function(){
         data: formData,
         async: true,
         success: function(response) {
-            alert(response);
+            //alert(response);
             $("#preloader").hide();
             var obj=JSON.parse(response);
             if(obj.status=="success"){
             alert(obj.msg);
-            window.location.reload();
+            //window.location.reload();
             } else {
             alert(obj.msg);
-            window.location.reload();
+            //window.location.reload();
             }     
         }
     });

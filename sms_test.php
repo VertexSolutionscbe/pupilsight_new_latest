@@ -15,8 +15,8 @@ try {
   //print_r($res);//die();
   $res4 = explode('&', $res1[0]);
   $res5 = explode('=', $res4[0]);
-  print_r($res5[1]);
-  die();
+  // print_r($res5[1]);
+  // die();
 } catch (Exception $e) {
   print_r($e);
 }

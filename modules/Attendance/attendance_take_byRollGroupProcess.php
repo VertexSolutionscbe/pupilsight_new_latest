@@ -219,6 +219,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         }
                                     }
                                 }
+                                //echo $pupilsightPersonID.'--'.$existing.'</br>';
+                                //die();
 
                                 if (!$existing) {
                                     //If no records then create one
@@ -227,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         $sqlUpdate = 'INSERT INTO pupilsightAttendanceLogPerson SET pupilsightAttendanceCodeID=(SELECT pupilsightAttendanceCodeID FROM pupilsightAttendanceCode WHERE name=:type), pupilsightPersonID=:pupilsightPersonID, direction=:direction, type=:type, context=\'Roll Group\', pupilsightAttendanceLogID=:pupilsightAttendanceLogID, session_no=:session_no, reason=:reason, comment=:comment, pupilsightPersonIDTaker=:pupilsightPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
                                         $resultUpdate = $connection2->prepare($sqlUpdate);
                                         $resultUpdate->execute($dataUpdate);
-                                        if ($i == 0) {
+                                        //if ($i == 0) {
                                             if ($smsenable == 1 && $type == 'Absent') {
                                                 if (in_array($pupilsightPersonID, $sms_usrs)) {
                                                     //sms templ value
@@ -262,6 +264,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                                     // ends here values
                                                     //sends sms 
                                                     if (!empty($sms_recipients) && !empty($msg)) {
+                                                        $senderpersonid = $_SESSION[$guid]['pupilsightPersonID'];
                                                         foreach ($sms_recipients as $susr) {
                                                             if ("Student_mobile" == $susr) {
                                                                 $sms_s = send_sms($container, $phone1_std, $msg);
@@ -270,8 +273,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                                                 $resulte = $connection2->query($sqle);
                                                                 $rowdata = $resulte->fetch();
                                                                 $number = $rowdata['phone1'];
-                                                                $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
-                                                                $senderpersonid = $_SESSION[$guid]['pupilsightPersonID'];
+                                                                $smspupilsightPersonID = $rowdata['pupilsightPersonID1'];
+                                                                
                                                                 //$number = "8777281040";
                                                                 $sms_s = send_sms($container, $number, $msg, $smspupilsightPersonID, $senderpersonid);
                                                             }
@@ -280,7 +283,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                                     // ends sms
                                                 }
                                             }
-                                        }
+                                        //}
                                     } catch (PDOException $e) {
                                         $fail = true;
                                     }
@@ -290,9 +293,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                         $sqlUpdate = 'UPDATE pupilsightAttendanceLogPerson SET pupilsightAttendanceCodeID=(SELECT pupilsightAttendanceCodeID FROM pupilsightAttendanceCode WHERE name=:type), pupilsightPersonID=:pupilsightPersonID, direction=:direction, type=:type, context=\'Roll Group\',  pupilsightAttendanceLogID=:pupilsightAttendanceLogID, session_no=:session_no, reason=:reason, comment=:comment, pupilsightPersonIDTaker=:pupilsightPersonIDTaker, date=:date, timestampTaken=:timestampTaken WHERE pupilsightAttendanceLogPersonID=:pupilsightAttendanceLogPersonID';
                                         $resultUpdate = $connection2->prepare($sqlUpdate);
                                         $resultUpdate->execute($dataUpdate);
-                                        if ($i == 0) {
+                                        //echo $i.'---'.$pupilsightPersonID.'---'.$smsenable.'---'.$type.'working</br>';
+                                        //if ($i == 0) {
+                                            
                                             if ($smsenable == 1 && $type == 'Absent') {
+                                                
                                                 if (in_array($pupilsightPersonID, $sms_usrs)) {
+                                                    //echo $pupilsightPersonID.'working - 1</br>';
                                                     //sms templ value
                                                     if (!empty($entities)) {
                                                         foreach ($entities as $val) {
@@ -325,16 +332,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                                     // ends here values
                                                     //sends sms 
                                                     if (!empty($sms_recipients) && !empty($msg)) {
+                                                        //echo $pupilsightPersonID.'working - 2</br>';
+                                                        $senderpersonid = $_SESSION[$guid]['pupilsightPersonID'];
                                                         foreach ($sms_recipients as $susr) {
+                                                            //echo $pupilsightPersonID.'--'.$susr.'</br>';
                                                             if ("Student_mobile" == $susr) {
+                                                                $smspupilsightPersonID = $pupilsightPersonID;
                                                                 $sms_s = send_sms($container, $phone1_std, $msg, $smspupilsightPersonID, $senderpersonid);
                                                             } else if ("Father" == $susr || "Mother" == $susr || "Other" == $susr) {
                                                                 $sqle = "SELECT a.*, b.officialName, b.email, b.phone1  FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE pupilsightPersonID2 = '" . $pupilsightPersonID . "' AND relationship='" . $susr . "'";
+                                                                //echo $sqle.'</br>';
                                                                 $resulte = $connection2->query($sqle);
                                                                 $rowdata = $resulte->fetch();
                                                                 $number = $rowdata['phone1'];
-                                                                $smspupilsightPersonID = $rowdata['pupilsightPersonID'];
-                                                                $senderpersonid = $_SESSION[$guid]['pupilsightPersonID'];
+                                                                $smspupilsightPersonID = $rowdata['pupilsightPersonID1'];
+                                                                
                                                                 //$number = "8777281040";
                                                                 $sms_s = send_sms($container, $number, $msg, $smspupilsightPersonID, $senderpersonid);
                                                             }
@@ -343,7 +355,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                                     // ends sms
                                                 }
                                             }
-                                        }
+                                        //}
                                     } catch (PDOException $e) {
                                         $fail = true;
                                     }
@@ -379,6 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
 function send_sms($container, $number, $msg, $smspupilsightPersonID=null ,$senderpersonid=null)
 {
+    //echo $smspupilsightPersonID.'---'.$number.'<br>';
     if (!empty($msg) && !empty($number)) {
         $msgto=$smspupilsightPersonID;
         $msgby=$senderpersonid;

@@ -45,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_histor
     $resulthis = $connection2->query($sqlhistory);
     $history = $resulthis->fetch();
 
+    $invoice_ids = $history['fn_fees_invoice_id'];
     $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
     $resultp = $connection2->query($sqlp);
     $rowdataprog = $resultp->fetchAll();
@@ -334,8 +335,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_histor
             // echo '<pre>';
             // print_r($feeItem);
             // echo '</pre>';
+            $paidColl = 0;
             foreach($feeItem as $fI){
-    
+                $invNo = $fI['stu_invoice_no'];
                 if(!empty($fI['transport_schedule_id'])){
                     $routes = explode(',',$fI['routes']);
                     foreach($routes as $rt){
@@ -360,15 +362,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_histor
                 }
     
     
-                $sqlchk = 'SELECT COUNT(a.id) as kount, total_amount, total_amount_collection FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fee_invoice_item_id = '.$fI['itemid'].' AND a.pupilsightPersonID = '.$history['pupilsightPersonID'].' AND b.transaction_status = "1" ';
+                 $sqlchk = 'SELECT COUNT(a.id) as kount, a.id, a.total_amount, a.total_amount_collection FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fee_invoice_item_id = '.$fI['itemid'].' AND a.pupilsightPersonID = '.$history['pupilsightPersonID'].' AND a.transaction_id = '.$transactionId.' AND b.transaction_status = "1" ';
                 
+                //$sqlchk = 'SELECT COUNT(a.id) as kount, total_amount, SUM(a.total_amount_collection) as tot_coll FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fee_invoice_item_id = '.$fI['itemid'].' AND a.pupilsightPersonID = '.$history['pupilsightPersonID'].' AND a.invoice_no = "' . $invNo . '" AND b.transaction_status = "1" ';
                 $resultchk = $connection2->query($sqlchk);
                 $itemchk = $resultchk->fetch();
+
+                $stuColId = $itemchk['id'];
                 
-                
+                $sqlchk1 = 'SELECT SUM(a.total_amount_collection) as tot_coll FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fee_invoice_item_id = '.$fI['itemid'].' AND a.pupilsightPersonID = '.$history['pupilsightPersonID'].' AND a.invoice_no = "' . $invNo . '" AND a.id <= "'.$stuColId.'" AND b.transaction_status = "1" ';
+                $resultchk1 = $connection2->query($sqlchk1);
+                $itemchk1 = $resultchk1->fetch();
+                if(!empty($itemchk1['tot_coll'])){
+                    $paidColl = $itemchk1['tot_coll'];
+                }
+                // echo $sqlchk1.'</br>';
+                // echo $paidColl.'</br>';
     
                 // $inid = '000'.$id;
                 // $invno = str_replace("0001",$inid,$fI['format']);
+                
+
                 if($fI['item_type'] == 'Fixed'){
                     $discount = $fI['amount_in_number'];
                     $discountamt = $fI['amount_in_number'];
@@ -392,12 +406,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_histor
                 if(!empty($itemchk)){
                     $totalAmt = number_format($itemchk['total_amount'], 2);
                     $paidAmt = number_format($itemchk['total_amount_collection'], 2);
-                    $pendingAmt = $itemchk['total_amount'] - $itemchk['total_amount_collection'];
+                    //$collection = $itemchk['total_amount_collection'] + $paidColl;
+                    $pendingAmt = $itemchk['total_amount'] - $paidColl;
                     if($pendingAmt < 0){
                         $pendingAmt = 0;
                     } else {
                         $pendingAmt = number_format($pendingAmt, 2);
                     }
+                }
+
+                $discountItem = 0;
+                if (!empty($fI['discount'])) {
+                    $discountItem = $fI['discount'] + $discountamt;
+                } else {
+                    $discountItem = $discountamt;
                 }
     
                 $data .= '<tr class="odd invrow" role="row">
@@ -428,7 +450,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_histor
                 </td>
                  
                 <td class="p-2 sm:p-3 hidden-1 md:table-cell">
-                   '.$discountamt.'
+                   '.$discountItem.'
                 </td>
                 <td class="p-2 sm:p-3 hidden-1 md:table-cell">
                 '.$totalAmt.'   
@@ -663,7 +685,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_histor
 
         $stuId = $history['pupilsightPersonID'];
 
-        $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, fn_fee_invoice_student_assign.id as invid, g.is_fine_editable, g.fine_type, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND pupilsightPerson.pupilsightPersonID = "' . $stuId . '" AND fn_fee_invoice_student_assign.status = 1  GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice_student_assign.id ASC';
+        $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, fn_fee_invoice_student_assign.id as invid, g.is_fine_editable, g.fine_type, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND fn_fee_invoice.id IN ('.$invoice_ids.') AND pupilsightPerson.pupilsightPersonID = "' . $stuId . '" AND fn_fee_invoice_student_assign.status = 1  GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice_student_assign.id ASC';
             $resultinv = $connection2->query($invoices);
             $invdata = $resultinv->fetchAll();
             // echo '<pre>';
@@ -972,7 +994,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_histor
                             $invdata[$k]['chkpayment'] = 'Paid';
                         } else {
                             $itemids = $inv['invitemid'];
-                            $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND transaction_id = ' . $stTransId . ' AND fn_fee_invoice_item_id IN (' . $itemids . ') ';
+                            // $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND transaction_id = ' . $stTransId . ' AND fn_fee_invoice_item_id IN (' . $itemids . ') ';
+                            $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND invoice_no = "' . $invno . '" AND fn_fee_invoice_item_id IN (' . $itemids . ') AND is_active = "1" ';
                             $resultp = $connection2->query($sqlp);
                             $amt = $resultp->fetch();
                             $totalpaidamt = $amt['paidtotalamount'];
@@ -997,7 +1020,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_payment_histor
                         $invdata[$k]['chkpayment'] = 'UnPaid';
                     }
                 }
-                
+                //die();
             }
             if (!empty($invdata)) {
                 foreach ($invdata as $ind) {
