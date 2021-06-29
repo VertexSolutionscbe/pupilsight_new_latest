@@ -60,6 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_ca
                     // echo '</pre>';
                     // die();
 
+                    $datau = array('is_active' => '2', 'transaction_id' => $valuestu['transaction_id']);
+                    $sqlu = 'UPDATE fn_fees_student_collection SET is_active=:is_active WHERE transaction_id=:transaction_id';
+                    $resultu = $connection2->prepare($sqlu);
+                    $resultu->execute($datau);
+
                     
                     $sqlpt = "SELECT name FROM fn_masters WHERE id = ".$valuestu['payment_mode_id']." ";
                     $resultpt = $connection2->query($sqlpt);

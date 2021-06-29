@@ -40,6 +40,11 @@ if (isset($_POST['type'])) {
                         $resultu = $connection2->prepare($sqlu);
                         $resultu->execute($datau);
 
+                        $datau = array('is_active' => '2', 'transaction_id' => $transId);
+                        $sqlu = 'UPDATE fn_fees_student_collection SET is_active=:is_active WHERE transaction_id=:transaction_id';
+                        $resultu = $connection2->prepare($sqlu);
+                        $resultu->execute($datau);
+
                         $sqlinv = "SELECT * FROM fn_fees_student_collection WHERE transaction_id = ".$transId." ";
                         $resultinv = $connection2->query($sqlinv);
                         $valueinvData = $resultinv->fetchAll();
@@ -371,7 +376,7 @@ if (isset($_POST['type'])) {
                                 $itid = $itmid['id'];
                                 $item_type_name = trim($itmid['item_type_name']);
 
-                                $chkcolsql = 'SELECT total_amount, SUM(total_amount_collection) as tot_amt_col FROM fn_fees_student_collection WHERE pupilsightPersonID = '.$pupilsightPersonID.' AND invoice_no = "'.$invoice_no.'" AND total_amount >= 0  ';
+                                $chkcolsql = 'SELECT total_amount, SUM(total_amount_collection) as tot_amt_col FROM fn_fees_student_collection WHERE pupilsightPersonID = '.$pupilsightPersonID.' AND invoice_no = "'.$invoice_no.'" AND total_amount >= 0 AND is_active = "1" ';
                                 $resultcolchk = $connection2->query($chkcolsql);
                                 $collData = $resultcolchk->fetch();
                                 
@@ -534,7 +539,7 @@ if (isset($_POST['type'])) {
                                 $itemamount = $values['total_amount'];
                                 $fn_fee_item_id = $values['fn_fee_item_id'];
 
-                                $chkcolsql = 'SELECT total_amount, SUM(total_amount_collection) as tot_amt_col FROM fn_fees_student_collection WHERE pupilsightPersonID = '.$pupilsightPersonID.' AND invoice_no = "'.$invoice_no.'" AND total_amount >= 0 ';
+                                $chkcolsql = 'SELECT total_amount, SUM(total_amount_collection) as tot_amt_col FROM fn_fees_student_collection WHERE pupilsightPersonID = '.$pupilsightPersonID.' AND invoice_no = "'.$invoice_no.'" AND total_amount >= 0 AND is_active = "1" ';
                                 $resultcolchk = $connection2->query($chkcolsql);
                                 $collData = $resultcolchk->fetch();
 
@@ -901,12 +906,12 @@ if (isset($_POST['type'])) {
                                     if (!empty($valuefi)) {
                                         //$cnt = 1;
                                         foreach ($valuefi as $vfi) {
-                                            $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol, SUM(total_amount_partial_paid) AS ttamtPartCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." ) AND total_amount >=0 ";
+                                            $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol, SUM(total_amount_partial_paid) AS ttamtPartCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." ) AND total_amount >=0 AND is_active = '1' ";
                                             $resultcol = $connection2->query($sqcol);
                                             $valuecol = $resultcol->fetch();
 
 
-                                            $sqcol1 = "SELECT SUM(total_amount_collection) AS tot_coll FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND invoice_no = '" . $stu_inv_no . "'  ";
+                                            $sqcol1 = "SELECT SUM(total_amount_collection) AS tot_coll FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND invoice_no = '" . $stu_inv_no . "' AND is_active = '1' ";
                                             $resultcol1 = $connection2->query($sqcol1);
                                             $valuecol1 = $resultcol1->fetch();
                                             $tot_coll = $valuecol1['tot_coll'];
@@ -979,11 +984,11 @@ if (isset($_POST['type'])) {
                                     if (!empty($valuefi)) {
                                         //$cnt = 1;
                                         foreach ($valuefi as $vfi) {
-                                            $sqcol = "SELECT * FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND fn_fee_invoice_item_id =  " . $vfi["id"] . " AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." ) AND total_amount >= 0  ";
+                                            $sqcol = "SELECT * FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND fn_fee_invoice_item_id =  " . $vfi["id"] . " AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." ) AND total_amount >= 0  AND is_active = '1' ";
                                             $resultcol = $connection2->query($sqcol);
                                             $valuecol = $resultcol->fetch();
 
-                                            $sqcol1 = "SELECT SUM(total_amount_collection) AS tot_coll FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND invoice_no = '" . $stu_inv_no . "'  ";
+                                            $sqcol1 = "SELECT SUM(total_amount_collection) AS tot_coll FROM fn_fees_student_collection WHERE fn_fees_invoice_id = ".$iid." AND invoice_no = '" . $stu_inv_no . "' AND is_active = '1' ";
                                             $resultcol1 = $connection2->query($sqcol1);
                                             $valuecol1 = $resultcol1->fetch();
                                             $tot_coll = $valuecol1['tot_coll'];
@@ -1083,7 +1088,7 @@ if (isset($_POST['type'])) {
                             $kountRow = 0;
                         }
 
-                        $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id IN  (" . $invconids . ") AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." )  ";
+                        $sqcol = "SELECT SUM(total_amount) AS tamntCol , SUM(discount) AS disCol, SUM(total_amount_collection) AS ttamtCol FROM fn_fees_student_collection WHERE fn_fees_invoice_id IN  (" . $invconids . ") AND ( transaction_id = ".$transactionId." OR partial_transaction_id = ".$transactionId." ) AND is_active = '1' ";
                         $resultcol = $connection2->query($sqcol);
                         $valuecol = $resultcol->fetch();
                         $itemAmt    = $valuecol["tamntCol"];
@@ -1518,7 +1523,7 @@ if (isset($_POST['type'])) {
                         } else {
                             $itemids = $inv['invitemid'];
                             // $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND transaction_id = ' . $stTransId . ' AND fn_fee_invoice_item_id IN (' . $itemids . ') ';
-                            $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND invoice_no = "' . $invno . '" AND fn_fee_invoice_item_id IN (' . $itemids . ') ';
+                            $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND invoice_no = "' . $invno . '" AND fn_fee_invoice_item_id IN (' . $itemids . ') AND is_active = "1" ';
                             $resultp = $connection2->query($sqlp);
                             $amt = $resultp->fetch();
                             $totalpaidamt = $amt['paidtotalamount'];
@@ -1841,7 +1846,7 @@ if (isset($_POST['type'])) {
                                     $invdata[$k]['chkpayment'] = 'Paid';
                                 } else {
                                     $itemids = $inv['invitemid'];
-                                    $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND transaction_id = ' . $stTransId . ' AND fn_fee_invoice_item_id IN (' . $itemids . ') ';
+                                    $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND transaction_id = ' . $stTransId . ' AND fn_fee_invoice_item_id IN (' . $itemids . ') AND is_active = "1" ';
                                     $resultp = $connection2->query($sqlp);
                                     $amt = $resultp->fetch();
                                     $totalpaidamt = $amt['paidtotalamount'];
