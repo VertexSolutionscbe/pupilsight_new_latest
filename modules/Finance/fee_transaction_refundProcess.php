@@ -106,6 +106,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_transaction_re
                     $resultu = $connection2->prepare($sqlu);
                     $resultu->execute($datau);
 
+                    $datau = array('is_active' => '3', 'transaction_id' => $transaction_id);
+                    $sqlu = 'UPDATE fn_fees_student_collection SET is_active=:is_active WHERE transaction_id=:transaction_id';
+                    $resultu = $connection2->prepare($sqlu);
+                    $resultu->execute($datau);
+
                     $sqlstu = "SELECT a.officialName , b.name as class, c.name as section FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = ".$pupilsightPersonID." ";
                     $resultstu = $connection2->query($sqlstu);
                     $valuestu = $resultstu->fetch();
