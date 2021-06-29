@@ -311,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         //         AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ";
                         // } else {
                             $data = array('pupilsightPersonID' => $pupilsightPersonID);
-                            $sql = "SELECT DISTINCT pupilsightPerson.* FROM pupilsightPerson
+                            $sql = "SELECT DISTINCT pupilsightPerson.*,pupilsightStudentEnrolment.* FROM pupilsightPerson
                                 LEFT JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
                                 WHERE pupilsightPerson.pupilsightPersonID=:pupilsightPersonID";
                         // }
