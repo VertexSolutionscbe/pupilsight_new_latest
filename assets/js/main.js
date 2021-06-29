@@ -7020,14 +7020,14 @@ function CustomField() {
                             _this.createInput(obj["data"][i]);
                         }
                     } else {
-                        /*if (deactivateIds) {
+                        if (deactivateIds) {
                             deactivateIds += ",";
                         }
                         if (obj.view) {
                             deactivateIds += "#" + obj["data"][i].field_name;
                         } else {
                             deactivateIds += "#row_" + obj["data"][i].field_name;
-                        }*/
+                        }
                     }
                 }
                 i++;

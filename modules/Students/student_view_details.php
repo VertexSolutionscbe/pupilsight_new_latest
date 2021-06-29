@@ -97,7 +97,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 //Proceed!
                 try {
                     $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID' => $pupilsightPersonID);
-                    $sql = "SELECT * FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='" . date('Y-m-d') . "') AND (dateEnd IS NULL  OR dateEnd>='" . date('Y-m-d') . "') AND pupilsightPerson.pupilsightPersonID=:pupilsightPersonID";
+                    $sql = "SELECT pupilsightPerson.*,pupilsightStudentEnrolment.* FROM pupilsightPerson 
+                    JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) 
+                    WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID 
+                    AND status='Full' 
+                    AND (dateStart IS NULL OR dateStart<='" . date('Y-m-d') . "') 
+                    AND (dateEnd IS NULL  OR dateEnd>='" . date('Y-m-d') . "') AND pupilsightPerson.pupilsightPersonID=:pupilsightPersonID";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -131,6 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     }
                     if ($resultDetail->rowCount() == 1) {
                         $rowDetail = $resultDetail->fetch();
+                        print_r($rowDetail);
                         echo __($rowDetail['name']);
                     }
                     echo '</td>';
@@ -141,12 +147,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $sqlDetail = 'SELECT * FROM pupilsightRollGroup WHERE pupilsightRollGroupID=:pupilsightRollGroupID';
                         $resultDetail = $connection2->prepare($sqlDetail);
                         $resultDetail->execute($dataDetail);
+
+                        if ($resultDetail->rowCount() == 1) {
+                            $rowDetail = $resultDetail->fetch();
+                            echo $rowDetail['name'];
+                        }
                     } catch (PDOException $e) {
                         echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
-                    }
-                    if ($resultDetail->rowCount() == 1) {
-                        $rowDetail = $resultDetail->fetch();
-                        echo $rowDetail['name'];
                     }
                     echo '</td>';
                     echo "<td style='width: 34%; vertical-align: top'>";
@@ -279,8 +286,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     //Set sidebar
                     $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
                 }
+
                 return;
             } else {
+
                 try {
                     if ($highestAction == 'View Student Profile_myChildren') {
                         $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'], 'pupilsightPersonID1' => $_GET['pupilsightPersonID'], 'pupilsightPersonID2' => $_SESSION[$guid]['pupilsightPersonID'], 'today' => date('Y-m-d'));
@@ -313,7 +322,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         //         AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) ";
                         // } else {
                         $data = array('pupilsightPersonID' => $pupilsightPersonID);
-                        $sql = "SELECT DISTINCT pupilsightPerson.* FROM pupilsightPerson
+                        $sql = "SELECT DISTINCT pupilsightPerson.*,pupilsightStudentEnrolment.*  FROM pupilsightPerson
                                 LEFT JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID)
                                 WHERE pupilsightPerson.pupilsightPersonID=:pupilsightPersonID";
                         // }
@@ -324,6 +333,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</div>';
                         return;
                     }
+
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
@@ -1118,25 +1128,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<td id='pupilsightPersonIDTutor' style='width: 33%; vertical-align: top'>";
                         echo "<span class='form-label'>" . __('Section') . '</span>';
                         if (isset($row['pupilsightRollGroupID'])) {
-                            $sqlDetail = "SELECT * FROM pupilsightRollGroup WHERE pupilsightRollGroupID='" . $row['pupilsightRollGroupID'] . "'";
+                            //$sqlDetail = "SELECT * FROM pupilsightRollGroup WHERE pupilsightRollGroupID='" . $row['pupilsightRollGroupID'] . "'";
                             try {
                                 $dataDetail = array('pupilsightRollGroupID' => $row['pupilsightRollGroupID']);
                                 $sqlDetail = 'SELECT * FROM pupilsightRollGroup WHERE pupilsightRollGroupID=:pupilsightRollGroupID';
                                 $resultDetail = $connection2->prepare($sqlDetail);
+
                                 $resultDetail->execute($dataDetail);
+
+                                if ($resultDetail->rowCount() == 1) {
+                                    $rowDetail = $resultDetail->fetch();
+                                    if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
+                                        echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Roll Groups/rollGroups_details.php&pupilsightRollGroupID=' . $rowDetail['pupilsightRollGroupID'] . "'>" . $rowDetail['name'] . '</a>';
+                                    } else {
+                                        echo $rowDetail['name'];
+                                    }
+                                    $primaryTutor = $rowDetail['pupilsightPersonIDTutor'];
+                                }
                             } catch (PDOException $e) {
                                 echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
                             }
-                            if ($resultDetail->rowCount() == 1) {
-                                $rowDetail = $resultDetail->fetch();
-                                if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                                    echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/Roll Groups/rollGroups_details.php&pupilsightRollGroupID=' . $rowDetail['pupilsightRollGroupID'] . "'>" . $rowDetail['name'] . '</a>';
-                                } else {
-                                    echo $rowDetail['name'];
-                                }
-                                $primaryTutor = $rowDetail['pupilsightPersonIDTutor'];
-                            }
                         }
+
                         echo '</td>';
                         echo '<td></td>';
                         /* closed by bikash for Jira Ticket PODV-1428
