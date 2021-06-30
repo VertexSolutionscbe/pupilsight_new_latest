@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
         }
         $testarr+=  $test2; 
         $subjects=array();  
-        if ($roleId == '2') {
+        if ($roleId == '2' || $roleId == '34') {
             $classes =  $HelperGateway->getClassByProgramForAcademic($connection2, $pupilsightProgramID, $uid, $pupilsightSchoolYearID);
             $sections =  $HelperGateway->getSectionByProgramForAcademic($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
 
