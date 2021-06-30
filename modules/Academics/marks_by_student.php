@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
             $test_id  =  $_POST['test_id'];
             $testId  =  $_POST['test_id'];
     
-            if ($roleId == '2') {
+            if ($roleId == '2' || $roleId == '34') {
                 $classes =  $HelperGateway->getClassByProgramForAcademic($connection2, $pupilsightProgramID, $uid, $pupilsightSchoolYearID);
                 $sections =  $HelperGateway->getSectionByProgramForAcademic($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
             } else {
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
                 $testId  =  explode(',',$_GET['tid']);
                 
 
-                if ($roleId == '2') {
+                if ($roleId == '2'|| $roleId == '34') {
                     $classes =  $HelperGateway->getClassByProgramForAcademic($connection2, $pupilsightProgramID, $uid, $pupilsightSchoolYearID);
                     $sections =  $HelperGateway->getSectionByProgramForAcademic($connection2, $pupilsightYearGroupID,  $pupilsightProgramID, $uid);
                 } else {

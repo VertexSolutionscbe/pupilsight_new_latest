@@ -591,7 +591,7 @@ class CurriculamGateway extends QueryableGateway
 
     public function getsubjectmarksStdWise(QueryCriteria $criteria, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightSchoolYearID, $testId, $roleId, $pupilsightStaffID, $pupilsightRollGroupID)
     {
-        if($roleId == 2){
+        if($roleId == 2 || $roleId == 34){
             $query = $this
             ->newQuery()
             ->from('examinationSubjectToTest')
