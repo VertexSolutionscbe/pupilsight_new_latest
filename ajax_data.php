@@ -4489,3 +4489,13 @@ if ($type == 'getSectionForAcademic') {
     }
     echo $data;
 }
+
+if ($type == 'unlockUserLoginAccount') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('failCount' => '0', 'pupilsightPersonID' => $st);
+        $sql = 'UPDATE pupilsightPerson SET failCount=:failCount WHERE pupilsightPersonID=:pupilsightPersonID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}

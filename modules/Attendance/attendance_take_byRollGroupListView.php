@@ -1003,10 +1003,10 @@ setTimeout(function(){
             var obj=JSON.parse(response);
             if(obj.status=="success"){
             alert(obj.msg);
-            //window.location.reload();
+            window.location.reload();
             } else {
             alert(obj.msg);
-            //window.location.reload();
+            window.location.reload();
             }     
         }
     });

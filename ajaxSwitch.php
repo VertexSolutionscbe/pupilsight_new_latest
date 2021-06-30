@@ -376,7 +376,7 @@ if (isset($_POST['type'])) {
                                 $itid = $itmid['id'];
                                 $item_type_name = trim($itmid['item_type_name']);
 
-                                $chkcolsql = 'SELECT total_amount, SUM(total_amount_collection) as tot_amt_col FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $pupilsightPersonID . ' AND invoice_no = "' . $invoice_no . '" AND total_amount >= 0 AND is_active = "1" ';
+                                $chkcolsql = 'SELECT total_amount, SUM(total_amount_collection) as tot_amt_col FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $pupilsightPersonID . ' AND invoice_no = "' . $invoice_no . '" AND fn_fee_invoice_item_id = "' . $itid . '" AND total_amount >= 0 AND is_active = "1" ';
                                 $resultcolchk = $connection2->query($chkcolsql);
                                 $collData = $resultcolchk->fetch();
 
@@ -538,54 +538,10 @@ if (isset($_POST['type'])) {
                                 $itemamount = $values['total_amount'];
                                 $fn_fee_item_id = $values['fn_fee_item_id'];
 
-                                $chkcolsql = 'SELECT total_amount, SUM(total_amount_collection) as tot_amt_col FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $pupilsightPersonID . ' AND invoice_no = "' . $invoice_no . '" AND total_amount >= 0 AND is_active = "1" ';
+                                $chkcolsql = 'SELECT total_amount, SUM(total_amount_collection) as tot_amt_col FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $pupilsightPersonID . ' AND invoice_no = "' . $invoice_no . '" AND fn_fee_invoice_item_id = "' . $itid . '" AND total_amount >= 0 AND is_active = "1" ';
                                 $resultcolchk = $connection2->query($chkcolsql);
                                 $collData = $resultcolchk->fetch();
 
-                                /*
-                                $chkpayitem = 'SELECT a.id, a.total_amount_collection FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fees_invoice_id = ' . $fn_fee_invoice_id . ' AND a.fn_fee_invoice_item_id = ' . $itid . ' AND a.pupilsightPersonID = ' . $pupilsightPersonID . ' AND b.transaction_status = 1 ';
-                                $resultcp = $connection2->query($chkpayitem);
-                                $valuecp = $resultcp->fetch();
-                                //echo $valuecp['total_amount_collection'].'---'.$itemamount.'</br>';
-                                
-
-                                if (!empty($valuecp)) {
-                                    $paidAmt = $itemamount - $valuecp['total_amount_collection'];
-                                    // $datai = array('partial_transaction_id' => $transactionId, 'total_amount_collection' => $itemamount, 'total_amount_partial_paid' => $paidAmt, 'status' => '1', 'id' => $valuecp['id']);
-                                    // $sqli = 'UPDATE fn_fees_student_collection SET partial_transaction_id=:partial_transaction_id, total_amount_collection=:total_amount_collection, total_amount_partial_paid=:total_amount_partial_paid, status=:status WHERE id=:id';
-                                    // $resulti = $connection2->prepare($sqli);
-                                    // $resulti->execute($datai);
-
-                                    $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $itid . " ";
-                                    $resultdis = $connection2->query($sqdis);
-                                    $valuedis = $resultdis->fetch();
-                                    if(!empty($valuedis)){
-                                        $paidamount = $amtPaid - $valuedis['discount'];
-                                    } else {
-                                        $paidamount = $amtPaid;
-                                    }
-                                    
-                                    $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => '1');
-                                    $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
-                                    $resulti = $connection2->prepare($sqli);
-                                    $resulti->execute($datai);
-                                } else {
-
-                                    $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $itid . " ";
-                                    $resultdis = $connection2->query($sqdis);
-                                    $valuedis = $resultdis->fetch();
-                                    if(!empty($valuedis)){
-                                        $paidamount = $itemamount - $valuedis['discount'];
-                                    } else {
-                                        $paidamount = $itemamount;
-                                    }
-                                    
-                                    $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => '1');
-                                    $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
-                                    $resulti = $connection2->prepare($sqli);
-                                    $resulti->execute($datai);
-                                }
-                                */
 
                                 if (!empty($collData['tot_amt_col'])) {
                                     $collAmt = $collData['tot_amt_col'];
@@ -670,6 +626,51 @@ if (isset($_POST['type'])) {
                                     $resultd = $connection2->prepare($sqld);
                                     $resultd->execute($datad);
                                 }
+
+                                /*
+                                $chkpayitem = 'SELECT a.id, a.total_amount_collection FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON a.transaction_id = b.transaction_id WHERE a.fn_fees_invoice_id = ' . $fn_fee_invoice_id . ' AND a.fn_fee_invoice_item_id = ' . $itid . ' AND a.pupilsightPersonID = ' . $pupilsightPersonID . ' AND b.transaction_status = 1 ';
+                                $resultcp = $connection2->query($chkpayitem);
+                                $valuecp = $resultcp->fetch();
+                                //echo $valuecp['total_amount_collection'].'---'.$itemamount.'</br>';
+                                
+
+                                if (!empty($valuecp)) {
+                                    $paidAmt = $itemamount - $valuecp['total_amount_collection'];
+                                    // $datai = array('partial_transaction_id' => $transactionId, 'total_amount_collection' => $itemamount, 'total_amount_partial_paid' => $paidAmt, 'status' => '1', 'id' => $valuecp['id']);
+                                    // $sqli = 'UPDATE fn_fees_student_collection SET partial_transaction_id=:partial_transaction_id, total_amount_collection=:total_amount_collection, total_amount_partial_paid=:total_amount_partial_paid, status=:status WHERE id=:id';
+                                    // $resulti = $connection2->prepare($sqli);
+                                    // $resulti->execute($datai);
+
+                                    $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $itid . " ";
+                                    $resultdis = $connection2->query($sqdis);
+                                    $valuedis = $resultdis->fetch();
+                                    if(!empty($valuedis)){
+                                        $paidamount = $amtPaid - $valuedis['discount'];
+                                    } else {
+                                        $paidamount = $amtPaid;
+                                    }
+                                    
+                                    $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => '1');
+                                    $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
+                                    $resulti = $connection2->prepare($sqli);
+                                    $resulti->execute($datai);
+                                } else {
+
+                                    $sqdis = "SELECT * FROM fn_fee_item_level_discount WHERE pupilsightPersonID = ".$pupilsightPersonID." AND item_id =  " . $itid . " ";
+                                    $resultdis = $connection2->query($sqdis);
+                                    $valuedis = $resultdis->fetch();
+                                    if(!empty($valuedis)){
+                                        $paidamount = $itemamount - $valuedis['discount'];
+                                    } else {
+                                        $paidamount = $itemamount;
+                                    }
+                                    
+                                    $datai = array('pupilsightPersonID' => $pupilsightPersonID, 'transaction_id' => $transactionId,  'fn_fees_invoice_id' => $fn_fee_invoice_id, 'fn_fee_invoice_item_id' => $itid, 'invoice_no' => $invoice_no, 'total_amount' => $itemamount, 'total_amount_collection' => $paidamount, 'status' => '1');
+                                    $sqli = 'INSERT INTO fn_fees_student_collection SET pupilsightPersonID=:pupilsightPersonID, transaction_id=:transaction_id, fn_fees_invoice_id=:fn_fees_invoice_id, fn_fee_invoice_item_id=:fn_fee_invoice_item_id, invoice_no=:invoice_no, total_amount=:total_amount, total_amount_collection=:total_amount_collection, status=:status';
+                                    $resulti = $connection2->prepare($sqli);
+                                    $resulti->execute($datai);
+                                }
+                                */
                             }
                         }
                     }
@@ -1209,15 +1210,25 @@ if (isset($_POST['type'])) {
         case "loadInvoicesCollections":
             $stuId = $_POST['val'];
             $pupilsightSchoolYearID = $_POST['py'];
+
+            $oldinvoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, fn_fee_invoice_student_assign.id as invid, g.is_fine_editable, g.fine_type, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice.pupilsightSchoolYearID != "' . $pupilsightSchoolYearID . '" AND pupilsightPerson.pupilsightPersonID = "' . $stuId . '" AND fn_fee_invoice_student_assign.invoice_status != "Fully Paid"  AND fn_fee_invoice_student_assign.status = 1  GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice_student_assign.id ASC';
+            $oldresultinv = $connection2->query($oldinvoices);
+            $oldinvdata = $oldresultinv->fetchAll();
+
             $invoices = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, fn_fee_invoice_student_assign.id as invid, g.is_fine_editable, g.fine_type, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND pupilsightPerson.pupilsightPersonID = "' . $stuId . '" AND fn_fee_invoice_student_assign.status = 1  GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice_student_assign.id ASC';
             $resultinv = $connection2->query($invoices);
             $invdata = $resultinv->fetchAll();
+
+            if (!empty($oldinvdata)) {
+                $invdata = array_merge($oldinvdata, $invdata);
+            }
             // echo '<pre>';
             // print_r($invdata);
             // echo '</pre>';
             // die();
             $totalamount = 0;
             foreach ($invdata as $k => $d) {
+                $academicID = $d['pupilsightSchoolYearID'];
                 $sqlsd = 'SELECT b.name FROM fn_fee_invoice_item AS a LEFT JOIN fn_fee_items AS b ON a.fn_fee_item_id = b.id WHERE a.fn_fee_invoice_id = ' . $d['invoiceid'] . ' AND b.name = "Staff Discount"  ';
                 $resultsd = $connection2->query($sqlsd);
                 $dataSD = $resultsd->fetch();
@@ -1496,52 +1507,69 @@ if (isset($_POST['type'])) {
                 $invdata[$k]['disamount'] = $disamount + $dis_item_inv;
 
 
-                $sqlchkInv = 'SELECT count(b.id) as kount FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "' . $invno . '" AND b.invoice_status = "Fully Paid" AND b.transaction_status IN (1,3) ';
-                $resultchkInv = $connection2->query($sqlchkInv);
-                $invChk = $resultchkInv->fetch();
+                $sqlchkInv1 = 'SELECT count(id) as kount FROM fn_fee_invoice_student_assign WHERE invoice_no = "' . $invno . '" AND invoice_status = "Fully Paid" AND status = "1" ';
+                $resultchkInv1 = $connection2->query($sqlchkInv1);
+                $invChk1 = $resultchkInv1->fetch();
 
-                // if ($inv['invoice_status'] == 'Fully Paid') {
-                if (!empty($invChk) && $invChk['kount'] >= 1) {
+                if (!empty($invChk1) && $invChk1['kount'] >= 1) {
                     $invdata[$k]['paidamount'] = $totalamount;
                     $pendingamount = 0;
                     $invdata[$k]['pendingamount'] = $pendingamount;
                     $invdata[$k]['chkpayment'] = 'Paid';
                 } else {
-                    if (!empty($inv['invitemid'])) {
-                        $stTransId = $inv['transaction_id'];
-                        if (!empty($d['transport_schedule_id'])) {
-                            $invdata[$k]['paidamount'] = $totalamount;
-                            $pendingamount = 0;
-                            $invdata[$k]['pendingamount'] = $pendingamount;
-                            $invdata[$k]['chkpayment'] = 'Paid';
-                        } else {
-                            $itemids = $inv['invitemid'];
-                            // $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND transaction_id = ' . $stTransId . ' AND fn_fee_invoice_item_id IN (' . $itemids . ') ';
-                            $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND invoice_no = "' . $invno . '" AND fn_fee_invoice_item_id IN (' . $itemids . ') AND is_active = "1" ';
-                            $resultp = $connection2->query($sqlp);
-                            $amt = $resultp->fetch();
-                            $totalpaidamt = $amt['paidtotalamount'];
-                            if (!empty($totalpaidamt)) {
-                                $invdata[$k]['paidamount'] = $totalpaidamt;
-                                $pendingamount = $totalamount - $totalpaidamt;
-                                if ($pendingamount < 0) {
-                                    $pendingamount = abs($pendingamount) . "(Fine paid)";
-                                }
+                    $sqlchkInv = 'SELECT count(b.id) as kount FROM fn_fees_student_collection AS a LEFT JOIN fn_fees_collection AS b ON  a.transaction_id = b.transaction_id WHERE a.invoice_no = "' . $invno . '" AND b.invoice_status = "Fully Paid" AND b.transaction_status IN (1,3) ';
+                    $resultchkInv = $connection2->query($sqlchkInv);
+                    $invChk = $resultchkInv->fetch();
+
+                    // if ($inv['invoice_status'] == 'Fully Paid') {
+                    if (!empty($invChk) && $invChk['kount'] >= 1) {
+                        $invdata[$k]['paidamount'] = $totalamount;
+                        $pendingamount = 0;
+                        $invdata[$k]['pendingamount'] = $pendingamount;
+                        $invdata[$k]['chkpayment'] = 'Paid';
+                    } else {
+                        if (!empty($inv['invitemid'])) {
+                            $stTransId = $inv['transaction_id'];
+                            if (!empty($d['transport_schedule_id'])) {
+                                $invdata[$k]['paidamount'] = $totalamount;
+                                $pendingamount = 0;
                                 $invdata[$k]['pendingamount'] = $pendingamount;
-                                if ($pendingamount <= 0) {
-                                    $invdata[$k]['chkpayment'] = 'Paid';
-                                } else {
-                                    $invdata[$k]['chkpayment'] = 'Half Paid';
+                                $invdata[$k]['chkpayment'] = 'Paid';
+                            } else {
+                                $itemids = $inv['invitemid'];
+                                // $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND transaction_id = ' . $stTransId . ' AND fn_fee_invoice_item_id IN (' . $itemids . ') ';
+                                $sqlp = 'SELECT SUM(total_amount_collection) as paidtotalamount FROM fn_fees_student_collection WHERE pupilsightPersonID = ' . $stuId . ' AND invoice_no = "' . $invno . '" AND fn_fee_invoice_item_id IN (' . $itemids . ') AND is_active = "1" ';
+                                $resultp = $connection2->query($sqlp);
+                                $amt = $resultp->fetch();
+                                $totalpaidamt = $amt['paidtotalamount'];
+                                if (!empty($totalpaidamt)) {
+                                    $invdata[$k]['paidamount'] = $totalpaidamt;
+                                    $pendingamount = $totalamount - $totalpaidamt;
+                                    if ($pendingamount < 0) {
+                                        $pendingamount = abs($pendingamount) . "(Fine paid)";
+                                    }
+                                    $invdata[$k]['pendingamount'] = $pendingamount;
+                                    if ($pendingamount <= 0) {
+                                        $invdata[$k]['chkpayment'] = 'Paid';
+                                    } else {
+                                        $invdata[$k]['chkpayment'] = 'Half Paid';
+                                    }
                                 }
                             }
+                        } else {
+                            $invdata[$k]['paidamount'] = '0';
+                            $pendingamount = $totalamount;
+                            $invdata[$k]['pendingamount'] = $pendingamount;
+                            $invdata[$k]['chkpayment'] = 'UnPaid';
                         }
-                    } else {
-                        $invdata[$k]['paidamount'] = '0';
-                        $pendingamount = $totalamount;
-                        $invdata[$k]['pendingamount'] = $pendingamount;
-                        $invdata[$k]['chkpayment'] = 'UnPaid';
                     }
                 }
+
+                $sqlyr = 'SELECT name FROM pupilsightSchoolYear WHERE pupilsightSchoolYearID = ' . $academicID . ' ';
+                $resultyr = $connection2->query($sqlyr);
+                $datayr = $resultyr->fetch();
+                $invdata[$k]['academic_year'] = $datayr['name'];
+
                 //die();
             }
             if (!empty($invdata)) {
@@ -1570,10 +1598,10 @@ if (isset($_POST['type'])) {
                     if ($ind['chkpayment'] == 'Paid') {
                         echo 'working';
                         //$cls = 'value="0" checked disabled';
-                        echo '<tr><td><input type="checkbox" class=" invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" value="0" checked disabled ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt . ' ' . $dsc . '</td><td>' . $totAmt_with_dis . '</td><td>' . number_format($ind['pendingamount'], 2) . '</td></tr>';
+                        echo '<tr><td><input type="checkbox" class=" invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" value="0" checked disabled ></td><td>' . $ind['academic_year'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt . ' ' . $dsc . '</td><td>' . $totAmt_with_dis . '</td><td>' . number_format($ind['pendingamount'], 2) . '</td></tr>';
                     } else {
                         $cls = 'value="' . $ind['invoiceid'] . '"';
-                        echo '<tr><td><input type="checkbox" class="chkinvoiceM invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '"  ' . $cls . '  data-amtedt="' . $ind['amount_editable'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" ></td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt . ' ' . $dsc .  '</td><td>' . $totAmt_with_dis . '</td><td>' . number_format($ind['pendingamount'], 2) . '</td></tr>';
+                        echo '<tr><td><input type="checkbox" class="chkinvoiceM invoice' . $ind['id'] . '" name="invoiceid[]" data-h="' . $ind['fn_fees_head_id'] . '" data-se="' . $ind['rec_fn_fee_series_id'] . '" id="allfeeItemid" data-stu="' . $stuId . '" data-fper="' . $ind['amtper'] . '" data-ftype="' . $ind['type'] . '"  ' . $cls . '  data-amtedt="' . $ind['amount_editable'] . '" data-inv="' . $ind['invid'] . '" data-ife="' . $ind['is_fine_editable'] . '" ></td><td>' . $ind['academic_year'] . '</td><td>' . $ind['stu_invoice_no'] . '</td><td>' . $ind['title'] . '</td><td>' . $totAmtdisAmt . '</td><td>' . $totDisAmt . ' ' . $dsc .  '</td><td>' . $totAmt_with_dis . '</td><td>' . number_format($ind['pendingamount'], 2) . '</td></tr>';
                     }
                 }
             } else {

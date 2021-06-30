@@ -581,6 +581,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fee_collection_man
         echo __('<input type="checkbox" name="invoiceid" id="chkAllInvoice" >');
         echo '</th>';
         echo '<th>';
+        echo __('Academic Year');
+        echo '</th>';
+        echo '<th>';
         echo __('Invoice No');
         echo '</th>';
         echo '<th>';
