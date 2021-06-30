@@ -163,7 +163,8 @@ if ($accessFlag) {
                   $label = $sc["class_name"] . " - " . $sc["section_name"] . " - " . $sc["subject_name"];
                   //$mixid = $sc["clsid"] . "|" . $sc["secid"] . "|" . $sc["subid"];
                   $mixid = $sc["pupilsightSchoolYearID"] . "-" . $sc["pupilsightProgramID"] . "-" . $sc["clsid"] . "-" . $sc["secid"];
-                  echo "\n<option value='" . $mixid . "' classid='" . $sc["clsid"] . "' sectid='" . $sc["secid"] . "' subid='" . $sc["subid"] . "'>" . $label . "</option>";
+                  $tagmixid = $sc["pupilsightSchoolYearID"] . "-" . $sc["pupilsightProgramID"] . "-" . $sc["clsid"] . "-" . $sc["secid"] . "-" . $sc["subid"];
+                  echo "\n<option value='" . $mixid . "' tag='" . $label . "' tagid='" . $tagmixid . "' classid='" . $sc["clsid"] . "' sectid='" . $sc["secid"] . "' subid='" . $sc["subid"] . "'>" . $label . "</option>";
                   $i++;
                 }
                 ?>
@@ -217,6 +218,7 @@ if ($accessFlag) {
             <div class='col-md-2 col-sm-12'>
               <div class="form-label">Bulk or Individual Type</div>
               <select id='delivery_type' name='delivery_type' class='form-control' onchange="changeDeliveryType();">
+                <option value=''>Select</option>
                 <option value='individual'>Individual</option>
                 <option value='all'>All</option>
                 <option value='all_students'>All Students</option>
@@ -227,8 +229,9 @@ if ($accessFlag) {
             <div class="col-md-10 col-sm-12" id='individualList'>
               <div class="row">
                 <div class='col-md-3 col-sm-12'>
-                  <div class="form-label">Select User Type</div>
+                  <div class="form-label">User Type</div>
                   <select id='userType' name='userType' class='form-control' onchange="changeUserType();">
+                    <option value=''>Select</option>
                     <option value='all'>All</option>
                     <option value='003'>Students</option>
                     <option value='004'>Parent</option>
@@ -407,15 +410,7 @@ if ($accessFlag) {
                 $len = count($groupList);
                 $i = 0;
                 while ($i < $len) {
-                  echo "<option value='" .
-                    $groupList[$i]['uid'] .
-                    "' groupid='" .
-                    $groupList[$i]['groupid'] .
-                    "' groupname='" .
-                    $groupList[$i]['name'] .
-                    "'>" .
-                    $groupList[$i]['name'] .
-                    '</option>';
+                  echo "<option value='" . $groupList[$i]['uid'] . "' groupid='" . $groupList[$i]['groupid'] . "' groupname='" . $groupList[$i]['name'] . "'>" . $groupList[$i]['name'] . '</option>';
                   $i++;
                 }
               }
@@ -790,15 +785,18 @@ if ($accessFlag) {
         toast("info", "Message can't left blank");
         return;
       }
+
       var msg_type = $('input[name="msg_type"]:checked').val();
       var people = $("#studentList").val();
       var delivery_type = $("#delivery_type").val();
 
+      var peopleFlag = false;
       if (people == "") {
         people = $("#studentSelect").val();
       } else {
         var peo2 = $("#studentSelect").val();
         people = people.concat(peo2).unique();
+        peopleFlag = true;
       }
 
 
@@ -809,15 +807,48 @@ if ($accessFlag) {
         }
       }
 
+      if (peopleFlag && delivery_type == "") {
+        delivery_type = "individual";
+      }
+      var tagid = "";
+      var tag = "";
+      if (delivery_type == "") {
+        var proSelect = $("#programSelect").val();
+        var clsSelect = $("#classSelect").val();
+        var sectSelect = $("#sectionSelect").val();
+        if (proSelect == "") {
+          toast("error", "Target can't left blank. Please select bulk or individual Type or grouping Program, Class, Section");
+          return;
+        }
+        var program = Number(proSelect);
+        var cls = Number(clsSelect);
+        var sect = Number(sectSelect);
+
+        tag = $("#programSelect option:selected").text();
+        delivery_type = program;
+        var classStr = $("#classSelect option:selected").text();
+        if (clsSelect != "") {
+          tag += " - " + classStr;
+          delivery_type += "-" + cls;
+        }
+        var secStr = $("#sectionSelect option:selected").text();
+        if (sectSelect != "") {
+          tag += " - " + secStr;
+          delivery_type += "-" + sect;
+        }
+        tagid = delivery_type;
+      }
+
+
       var data = new FormData(document.getElementById("post_form"));
       data.append("type", "postMessage");
       data.append("msg_type", msg_type);
       data.append("people", people);
       data.append("delivery_type", delivery_type);
+      data.append("tag", tag);
+      data.append("tagid", tagid);
       data.append("msg", msg);
       //console.log(data);
-
-
 
       $("#postBtn").prop('disabled', true);
       $.ajax({
@@ -860,6 +891,8 @@ if ($accessFlag) {
       } else {
         confirmForGroup = true;
       }
+      var tag = $("#teacherSelect").find(':selected').attr('tag');
+      var tagid = $("#teacherSelect").find(':selected').attr('tagid');
 
       if (confirmForGroup) {
         if (!confirm("Are you sure you are sending message to entire class")) {
@@ -869,10 +902,11 @@ if ($accessFlag) {
       var data = new FormData(document.getElementById("post_form"));
       data.append("type", "postMessage");
       data.append("msg_type", msg_type);
+      data.append("tag", tag);
+      data.append("tagid", tagid);
       data.append("people", people);
       data.append("delivery_type", delivery_type);
       data.append("msg", msg);
-
 
       $("#postBtn").prop('disabled', true);
       $.ajax({
@@ -1000,6 +1034,11 @@ if ($accessFlag) {
       if (obj["group_name"]) {
         groupName = "<span class='ml-2 px-2 bg-blue-lt badge'>" + obj["group_name"] + "</span>";
       }
+
+      var tag = "";
+      if (obj["tag"]) {
+        tag = "<span class='ml-2 px-2 bg-purple-lt badge'>" + obj["tag"] + "</span>";
+      }
       var induser = "";
       var nrid = Number(roleid);
       if (nrid < 3 || nrid > 4) {
@@ -1028,7 +1067,7 @@ if ($accessFlag) {
 			<span class='avatar bg-blue text-white'>` + obj["shortName"] + `</span>
 			</div>
 			<div class='col'>
-      <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span>` + groupName + induser + `</div>
+      <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span>` + tag + groupName + induser + `</div>
 			<div class='text-truncate' id='msg_` + obj["id"] + `'>` + obj["msg"] + `
 			</div><div>` + attachment + readMore + replyBtn + `</div>
 			<div id='cardReply_` + obj["id"] + `' class='float-left' style='max-width:95%;'></div>

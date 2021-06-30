@@ -207,7 +207,7 @@ function getParentQuery($connection2, $cuid, $pupilsightSchoolYearID, $lts)
 function getAdminQuery($connection2, $lts)
 {
     $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID,cm.msg_type, ';
-    $sq .= 'cm.attachment,cm.delivery_type,cm.group_id,cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
+    $sq .= 'cm.attachment, cm.delivery_type, cm.tag, cm.tagid, cm.group_id, cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
     $sq .= 'left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
     if ($lts) {
         $sq .= ' where cm.timestamp > ' . $lts . ' ';
@@ -220,8 +220,8 @@ function getAdminQuery($connection2, $lts)
 
 function getTeacherQuery($connection2, $cuid, $lts)
 {
-    $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID,cm.msg_type, ';
-    $sq .= 'cm.attachment,cm.delivery_type,cm.group_id,cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
+    $sq = 'select cm.id, cm.chat_parent_id, cm.cuid,cm.pupilsightSchoolYearID, cm.msg_type, ';
+    $sq .= 'cm.attachment, cm.delivery_type, cm.tag, cm.tagid, cm.group_id, cm.group_name, cm.cdt,cm.udt,cm.timestamp,p.officialName,cm.msg from chat_message as cm ';
     $sq .= 'left join pupilsightPerson as p on cm.cuid=p.pupilsightPersonID ';
     $sq .= ' left join chat_share as cs on cm.id=cs.chat_msg_id ';
 
@@ -284,6 +284,9 @@ if ($type == 'postMessage') {
         $delivery_type = null;
         $group_id = null;
         $group_name = null;
+        $tag = null;
+        $tagid = null;
+
         $flag = true;
 
         if (isset($_POST['msg'])) {
@@ -294,6 +297,14 @@ if ($type == 'postMessage') {
 
         if (isset($_POST['people'])) {
             $people = $_POST['people'];
+        }
+
+        if (isset($_POST['tag'])) {
+            $tag = $_POST['tag'];
+        }
+
+        if (isset($_POST['tagid'])) {
+            $tagid = $_POST['tagid'];
         }
 
         if (isset($_POST['delivery_type'])) {
@@ -322,7 +333,6 @@ if ($type == 'postMessage') {
         if ($flag) {
             try {
                 $attachment = chatAttachment();
-
                 $id = createId();
                 //chat_parent_id = N
 
@@ -337,10 +347,8 @@ if ($type == 'postMessage') {
                 $cdt = date('Y-m-d H:i:s');
                 $timestamp = time();
                 //$sq ="insert into chat_message(id, chat_parent_id, cuid, pupilsightSchoolYearID, msg_type, attachment, msg, cdt, timestamp)";
-                $sq =
-                    'insert into chat_message(id, cuid, pupilsightSchoolYearID, msg_type, attachment, delivery_type, group_id, group_name, msg, cdt, udt, timestamp)';
-                $sq .=
-                    "values('" .
+                $sq = 'insert into chat_message(id, cuid, pupilsightSchoolYearID, msg_type, attachment, delivery_type, tag, tagid, group_id, group_name, msg, cdt, udt, timestamp)';
+                $sq .= "values('" .
                     $id .
                     "','" .
                     $cuid .
@@ -352,6 +360,10 @@ if ($type == 'postMessage') {
                     $attachment .
                     "','" .
                     $delivery_type .
+                    "','" .
+                    $tag .
+                    "','" .
+                    $tagid .
                     "','" .
                     $group_id .
                     "','" .
