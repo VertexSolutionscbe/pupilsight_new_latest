@@ -302,8 +302,8 @@ function importFeeStructure($connection2, $conn)
         // echo "<hr>\n<br>";
         // echo $sqlFeeInvoiceItem;
         // echo "<hr>\n<br>";
-        // echo $sqlFeeInvoiceClassAssign;
-        // echo "<hr>\n<br>";
+        //  echo $sqlFeeInvoiceClassAssign;
+        //  echo "<hr>\n<br>";
         // echo $sqFeeInvoiceStAssign;
         // echo "<hr>\n<br>";
         // echo $sqArchiveFeeInvoices;
