@@ -20,9 +20,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/remove_assigned_staf
     //Proceed!
     //Check if school year specified
    // $pupilsightdepartmentID = $_POST['dep'];
-    $pupilsightdepartmentID = $_POST['dep'];
+    $assignstaff_tosubject_id = $_POST['dep'];
 
-    if ($pupilsightdepartmentID == '') {
+    if ($assignstaff_tosubject_id == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
@@ -30,10 +30,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/remove_assigned_staf
               //Write to database
               try {
                   //
-                foreach($pupilsightdepartmentID as $dep){
+                foreach($assignstaff_tosubject_id as $dep){
                 
-                $data = array('pupilsightStaffID' => $id,'pupilsightdepartmentID'=>$dep);
-                $sql = 'DELETE FROM assignstaff_tosubject WHERE pupilsightdepartmentID=:pupilsightdepartmentID AND pupilsightStaffID=:pupilsightStaffID';
+                $data = array('pupilsightStaffID' => $id,'id'=>$dep);
+                $sql = 'DELETE FROM assignstaff_tosubject WHERE id=:id AND pupilsightStaffID=:pupilsightStaffID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
                 }

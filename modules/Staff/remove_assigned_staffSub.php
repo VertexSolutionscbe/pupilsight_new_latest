@@ -31,7 +31,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/remove_assigned_staf
         echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-    $sqlp = 'SELECT a.pupilsightdepartmentID, b.name  FROM assignstaff_tosubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightdepartmentID = b.pupilsightDepartmentID   WHERE a.pupilsightStaffID = "'.$id.'"';
+    $sqlp = 'SELECT a.id, a.pupilsightdepartmentID, b.name, p.name as program , y.name as class, c.name as section FROM assignstaff_tosubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightdepartmentID = b.pupilsightDepartmentID 
+    LEFT JOIN pupilsightProgram AS p ON a.pupilsightProgramID = p.pupilsightProgramID 
+    LEFT JOIN pupilsightYearGroup AS y ON a.pupilsightYearGroupID = y.pupilsightYearGroupID 
+    LEFT JOIN pupilsightRollGroup AS c ON a.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightStaffID = "'.$id.'" AND a.pupilsightRollGroupID IS NOT NULL ';
     
     $resultp = $connection2->query($sqlp);
     $getdep= $resultp->fetchAll();
@@ -48,13 +51,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/remove_assigned_staf
     $col = $row->addColumn()->setClass('newdes');
     $col->addCheckbox('select')->setId('checkall')->setClass('chkAll'); 
     $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('Program', __('Program'))->addClass('dte subName');
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('Class', __('Class'))->addClass('dte subName');
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('Section', __('Section'))->addClass('dte subName');
+    $col = $row->addColumn()->setClass('newdes');
     $col->addLabel('Name', __('Subject Name'))->addClass('dte subName');
 
 
 foreach($getdep as $dep){
     $row = $form->addRow()->setID('seatdiv')->addClass('seatdiv');
     $col = $row->addColumn()->setClass('newdes');
-    $col->addCheckbox('dep[]')->setValue($dep['pupilsightdepartmentID'])->setClass('chkChild'); 
+    $col->addCheckbox('dep[]')->setValue($dep['id'])->setClass('chkChild'); 
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel($dep['program'], __($dep['program']))->addClass('dte');
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel($dep['class'], __($dep['class']))->addClass('dte');
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel($dep['section'], __($dep['section']))->addClass('dte');
     $col = $row->addColumn()->setClass('newdes');
     $col->addLabel($dep['name'], __($dep['name']))->addClass('dte');
  

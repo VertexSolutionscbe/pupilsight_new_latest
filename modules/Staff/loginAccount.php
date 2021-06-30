@@ -143,6 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
         <a class="btn btn-primary" style="float:right;margin-right:10px;" id="enableAccount">Enable Login</a>
 
         <a class="btn btn-primary" style="float:right;margin-right:10px;" id="disableAccount">Disable Login</a>
+        <a class="btn btn-primary" style="float:right;margin-right:10px;" id="unlockAccount">Unlock Login</a>
         <input type='hidden' name="password" id="addPassword" value="">
         <textarea id="addContent" name="content" style="display:none;"></textarea>
         <div style="overflow-x:auto; width:100%;">
@@ -406,6 +407,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/loginAccount.php') =
             }
         } else {
             alert('you Have to Select User to Disable Account');
+        }
+    });
+
+    $(document).on('click', '#unlockAccount', function() {
+        var stuids = [];
+        $.each($(".chkclick:checked"), function() {
+            stuids.push($(this).val());
+        });
+        var stuid = stuids.join(",");
+        if (stuid) {
+            if (confirm("Do you want to Unlock Account?")) {
+                var val = stuid;
+                var type = 'unlockUserLoginAccount';
+                if (val != '') {
+                    $.ajax({
+                        url: 'ajax_data.php',
+                        type: 'post',
+                        data: {
+                            val: val,
+                            type: type
+                        },
+                        async: true,
+                        success: function(response) {
+                            location.reload();
+                        }
+                    });
+                }
+            }
+        } else {
+            alert('you Have to Select User to Unlock Account');
         }
     });
 </script>
