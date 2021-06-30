@@ -726,6 +726,126 @@ print_r($rs);
         if (!empty($_SESSION['invoice_search'])) {
             $input = $_SESSION['invoice_search'];
         }
+        
+        // if (!empty($input['admission_no']) || !empty($input['pupilsightProgramID']) || !empty($input['pupilsightRollGroupID']) || !empty($input['student_name']) || !empty($input['due_date']) || !empty($input['invoice_status']) || !empty($input['invoice_title']) || !empty($input['invoice_no']) || !empty($input['invoice_date'])) {
+
+        //     $query = $this
+        //         ->newQuery()
+        //         ->from('fn_fee_invoice')
+        //         ->cols([
+        //             'fn_fee_invoice.*', 'fn_fee_series.series_name', 'fn_fees_head.name AS account_head', 'pupilsightProgram.name AS program', 'pupilsightYearGroup.name as class', 'pupilsightPerson.pupilsightPersonID as std_id', 'pupilsightPerson.officialName as std_name', 'pupilsightPerson.admission_no', 'pupilsightRollGroup.name as section', 'fn_fee_invoice_student_assign.invoice_no', 'fn_fee_invoice_student_assign.id as invid', 'fn_fee_invoice_student_assign.invoice_status as invstatus', 'fn_fee_invoice_student_assign.status as chkstatus', 'fn_fee_invoice_student_assign.id as insid'
+        //         ])
+        //         ->leftJoin('fn_fee_invoice_student_assign', ' fn_fee_invoice.id=fn_fee_invoice_student_assign.fn_fee_invoice_id')
+
+        //         ->leftJoin('fn_fee_invoice_class_assign', ' fn_fee_invoice.id=fn_fee_invoice_class_assign.fn_fee_invoice_id')
+        //         ->leftJoin('pupilsightProgram', ' fn_fee_invoice_class_assign.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+
+        //         ->leftJoin('pupilsightPerson', ' fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+
+        //         ->leftJoin('pupilsightYearGroup', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+
+        //         // ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
+        //         // ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+        //         ->leftJoin('pupilsightStudentEnrolment', 'fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+        //         ->leftJoin('pupilsightRollGroup', ' pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+        //         ->leftJoin('fn_fee_series', 'fn_fee_invoice.inv_fn_fee_series_id=fn_fee_series.id')
+        //         ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id');
+
+        //     if (!empty($input['pupilsightProgramID'])) {
+        //         $query->where('fn_fee_invoice_class_assign.pupilsightProgramID = "' . $input['pupilsightProgramID'] . '" ');
+        //     }
+        //     //   if(!empty($input['pupilsightYearGroupID'])){
+        //     // $query->where('fn_fee_invoice_class_assign.pupilsightYearGroupID = "'.$input['pupilsightYearGroupID'].'" ');
+        //     // }
+
+
+        //     // if(!empty($input['pupilsightRollGroupID'])){
+        //     //     $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID = "'.$input['pupilsightRollGroupID'].'" ');
+        //     // }
+
+        //     if (!empty($input['pupilsightYearGroupID'])) {
+        //         $query->where('fn_fee_invoice_class_assign.pupilsightYearGroupID IN (' . implode(',', $input['pupilsightYearGroupID']) . ') ');
+        //     }
+        //     if (!empty($input['pupilsightRollGroupID'])) {
+        //         $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID IN (' . implode(',', $input['pupilsightRollGroupID']) . ') ');
+        //     }
+
+        //     if (!empty($input['admission_no'])) {
+        //         $query->where('pupilsightPerson.admission_no = "' . $input['admission_no'] . '" ');
+        //     }
+
+        //     if (!empty($input['student_name'])) {
+        //         $query->where('pupilsightPerson.officialName LIKE "%' . $input['student_name'] . '%" ');
+        //     }
+        //     if (!empty($input['due_date'])) {
+        //         $sd = explode('/', $input['due_date']);
+        //         $sdate  = date('Y-m-d', strtotime(implode('-', array_reverse($sd))));
+
+        //         $query->where('fn_fee_invoice.due_date = "' . $sdate . '" ');
+        //     }
+        //     // if($input['invoice_status']!="All"){
+        //     /*if($input['invoice_status']=="Active"){
+        //                 $status=1;
+        //             } else {
+        //                 $status=2;
+        //             }*/
+        //     //     $query->where('fn_fee_invoice.status = "'.$input['invoice_status'].'" ');
+        //     // }
+        //     // if(!empty($input['pupilsightSchoolYearID'])){
+        //     //     $query->where('fn_fee_invoice.pupilsightSchoolYearID = "'.$input['pupilsightSchoolYearID'].'" ');
+        //     //     }
+        //     if (!empty($input['invoice_title'])) {
+        //         $query->where('fn_fee_invoice.title = "' . $input['invoice_title'] . '" ');
+        //     }
+        //     if (!empty($input['invoice_no'])) {
+        //         $query->where('fn_fee_invoice_student_assign.invoice_no LIKE "%' . $input['invoice_no'] . '%" ');
+        //     }
+        //     if (!empty($input['invoice_date'])) {
+        //         $fd = explode('/', $input['invoice_date']);
+        //         $fdate  = date('Y-m-d', strtotime(implode('-', array_reverse($fd))));
+        //         $query->where('fn_fee_invoice.cdt = "' . $fdate . '" ');
+        //     }
+        //     if (!empty($input['invoice_status'])) {
+        //         $query->where('fn_fee_invoice_student_assign.invoice_status = "' . $input['invoice_status'] . '" ');
+        //     }
+        //     // echo $query;
+        //     $query->where('fn_fee_invoice.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+        //         ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+        //         ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
+        //         //->where('fn_fee_invoice_student_assign.status = 1 ')
+        //         ->groupby(['fn_fee_invoice_student_assign.id'])
+        //         ->orderby(['fn_fee_invoice_student_assign.id DESC']);
+        //     // echo $query;
+        //     // die();
+        // } else {
+        //     $query = $this
+        //         ->newQuery()
+        //         ->from('fn_fee_invoice')
+        //         ->cols([
+        //             'fn_fee_invoice.*', 'fn_fee_series.series_name', 'fn_fees_head.name AS account_head', 'pupilsightProgram.name AS program', 'pupilsightYearGroup.name as class', 'pupilsightPerson.pupilsightPersonID as std_id', 'pupilsightPerson.officialName as std_name', 'pupilsightPerson.admission_no', 'pupilsightRollGroup.name as section', 'fn_fee_invoice_student_assign.invoice_no', 'fn_fee_invoice_student_assign.id as invid', 'fn_fee_invoice_student_assign.invoice_status as invstatus', 'fn_fee_invoice_student_assign.status as chkstatus', 'fn_fee_invoice_student_assign.id as insid'
+        //         ])
+        //         // ->leftJoin('pupilsightSchoolYear', 'fn_fee_structure.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
+        //         ->leftJoin('fn_fee_series', 'fn_fee_invoice.inv_fn_fee_series_id=fn_fee_series.id')
+        //         ->leftJoin('fn_fee_invoice_class_assign', ' fn_fee_invoice.id=fn_fee_invoice_class_assign.fn_fee_invoice_id')
+        //         ->leftJoin('fn_fee_invoice_student_assign', ' fn_fee_invoice.id=fn_fee_invoice_student_assign.fn_fee_invoice_id')
+        //         ->leftJoin('pupilsightProgram', ' fn_fee_invoice_class_assign.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+        //         ->leftJoin('pupilsightPerson', ' fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
+
+        //         ->leftJoin('pupilsightYearGroup', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+
+        //         // ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
+        //         // ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+        //         ->leftJoin('pupilsightStudentEnrolment', 'fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+        //         ->leftJoin('pupilsightRollGroup', ' pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+        //         ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id')
+        //         ->where('fn_fee_invoice.pupilsightSchoolYearID  = "' . $pupilsightSchoolYearID . '" AND fn_fee_invoice.status="1" ')
+        //         ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+        //         //->where('fn_fee_invoice_student_assign.status = 1 ')
+        //         ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
+        //         ->groupby(['fn_fee_invoice_student_assign.id'])
+        //         ->orderby(['fn_fee_invoice_student_assign.id DESC']);
+        //     //echo $query;
+        // }
 
         if (!empty($input['admission_no']) || !empty($input['pupilsightProgramID']) || !empty($input['pupilsightRollGroupID']) || !empty($input['student_name']) || !empty($input['due_date']) || !empty($input['invoice_status']) || !empty($input['invoice_title']) || !empty($input['invoice_no']) || !empty($input['invoice_date'])) {
 
@@ -744,10 +864,9 @@ print_r($rs);
 
                 ->leftJoin('pupilsightYearGroup', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
 
-                // ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
-                // ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+                ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
+                ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
                 ->leftJoin('pupilsightStudentEnrolment', 'fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
-                ->leftJoin('pupilsightRollGroup', ' pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
                 ->leftJoin('fn_fee_series', 'fn_fee_invoice.inv_fn_fee_series_id=fn_fee_series.id')
                 ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id');
 
@@ -810,19 +929,18 @@ print_r($rs);
             }
             // echo $query;
             $query->where('fn_fee_invoice.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
-                ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
                 ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
                 //->where('fn_fee_invoice_student_assign.status = 1 ')
                 ->groupby(['fn_fee_invoice_student_assign.id'])
                 ->orderby(['fn_fee_invoice_student_assign.id DESC']);
-            // echo $query;
+            //echo $query;
             // die();
         } else {
             $query = $this
                 ->newQuery()
                 ->from('fn_fee_invoice')
                 ->cols([
-                    'fn_fee_invoice.*', 'fn_fee_series.series_name', 'fn_fees_head.name AS account_head', 'pupilsightProgram.name AS program', 'pupilsightYearGroup.name as class', 'pupilsightPerson.pupilsightPersonID as std_id', 'pupilsightPerson.officialName as std_name', 'pupilsightPerson.admission_no', 'pupilsightRollGroup.name as section', 'fn_fee_invoice_student_assign.invoice_no', 'fn_fee_invoice_student_assign.id as invid', 'fn_fee_invoice_student_assign.invoice_status as invstatus', 'fn_fee_invoice_student_assign.status as chkstatus', 'fn_fee_invoice_student_assign.id as insid'
+                    'fn_fee_invoice.*'
                 ])
                 // ->leftJoin('pupilsightSchoolYear', 'fn_fee_structure.pupilsightSchoolYearID=pupilsightSchoolYear.pupilsightSchoolYearID')
                 ->leftJoin('fn_fee_series', 'fn_fee_invoice.inv_fn_fee_series_id=fn_fee_series.id')
@@ -833,18 +951,14 @@ print_r($rs);
 
                 ->leftJoin('pupilsightYearGroup', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
 
-                // ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
-                // ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
-                ->leftJoin('pupilsightStudentEnrolment', 'fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
-                ->leftJoin('pupilsightRollGroup', ' pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
+                ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
+                ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
                 ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id')
                 ->where('fn_fee_invoice.pupilsightSchoolYearID  = "' . $pupilsightSchoolYearID . '" AND fn_fee_invoice.status="1" ')
-                ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+                //->groupby(['fn_fee_invoice.id']);
                 //->where('fn_fee_invoice_student_assign.status = 1 ')
                 ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
-                ->groupby(['fn_fee_invoice_student_assign.id'])
-                ->orderby(['fn_fee_invoice_student_assign.id DESC']);
-            //echo $query;
+                ->groupby(['fn_fee_invoice_student_assign.id']);
         }
 
         //return $this->runQuery($query, $criteria, true);
