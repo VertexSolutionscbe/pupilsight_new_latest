@@ -864,7 +864,7 @@ if ($isLoggedIn) {
     ];
 
     if (isset($menuMainItems["Academics"])) {
-        if ($roleid == "035" || $roleid == "002") {
+        if ($roleid == "035" || $roleid == "002" || $roleid == "034") {
             $testList = [];
             $testList[0] = [
                 "name" => "Enter A.A.T",
@@ -898,10 +898,15 @@ if ($isLoggedIn) {
             ];
 
             //$menuMainItems["Academics"][0] = $testList[0];
-            $menuMainItems["Academics"][0] = $testList[1];
-            $menuMainItems["Academics"][1] = $testList[2];
-            $menuMainItems["Academics"][2] = $testList[4];
-            $menuMainItems["Academics"][3] = $testList[3];
+            if ($roleid == "034" && $domain == "amaatra.pupilpod.net") {
+                $menuMainItems["Academics"][0] = $testList[1];
+                $menuMainItems["Academics"][1] = $testList[2];
+            } else {
+                $menuMainItems["Academics"][0] = $testList[1];
+                $menuMainItems["Academics"][1] = $testList[2];
+                $menuMainItems["Academics"][2] = $testList[4];
+                $menuMainItems["Academics"][3] = $testList[3];
+            }
         } else if ($roleid == "003" || $roleid == "004") {
             $testList = [];
             // $testList[0] = [
@@ -988,13 +993,12 @@ if ($isLoggedIn) {
             $menuMainItems["Other"]
         );
     }
-    /*
-    if ($roleid == "002" && $domain=="amaatra.pupilpod.net") {
-       
+
+    if ($roleid == "002" && $domain == "amaatra.pupilpod.net") {
         unset(
             $menuMainItems["People"]
         );
-    }*/
+    }
 
     if ($roleid == "003" || $roleid == "004" || $roleid == "033") {
         $changeyear = "";

@@ -814,12 +814,14 @@ if ($accessFlag) {
       var tag = "";
       if (delivery_type == "") {
         var proSelect = $("#programSelect").val();
-        var clsSelect = $("#classSelect").val();
-        var sectSelect = $("#sectionSelect").val();
         if (proSelect == "") {
           toast("error", "Target can't left blank. Please select bulk or individual Type or grouping Program, Class, Section");
           return;
         }
+
+        var clsSelect = $("#classSelect").val();
+        var sectSelect = $("#sectionSelect").val();
+
         var program = Number(proSelect);
         var cls = Number(clsSelect);
         var sect = Number(sectSelect);
@@ -827,12 +829,13 @@ if ($accessFlag) {
         tag = $("#programSelect option:selected").text();
         delivery_type = program;
         var classStr = $("#classSelect option:selected").text();
-        if (clsSelect != "") {
+        if (cls > 0) {
           tag += " - " + classStr;
           delivery_type += "-" + cls;
         }
+
         var secStr = $("#sectionSelect option:selected").text();
-        if (sectSelect != "") {
+        if (sect > 0) {
           tag += " - " + secStr;
           delivery_type += "-" + sect;
         }
