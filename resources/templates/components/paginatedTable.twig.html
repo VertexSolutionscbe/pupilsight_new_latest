@@ -209,7 +209,7 @@
 {% endblock table %}
 <script>
     $(document).ready(function () {
-        if ( ! $.fn.DataTable.isDataTable( '#expore_tbl' ) ) {
+        if (!$.fn.DataTable.isDataTable('#expore_tbl')) {
             $('#expore_tbl').DataTable({
                 "pageLength": 25,
                 "lengthMenu": [[10, 25, 50, 250, -1], [10, 25, 50, 250, "All"]],
