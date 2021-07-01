@@ -719,4 +719,75 @@ if ($type == 'postMessage') {
         $str = $ex->getMessage();
     }
     echo $str;
+} elseif ($type == 'saveTab') {
+    $result = [];
+    try {
+        $roles = $_POST['roles'];
+        $name = $_POST['name'];
+        $id = $_POST['id'];
+
+        if ($name && $roles) {
+            $roleids = implode(",", $roles);
+            if ($id) {
+                //update
+                $sqs = "select id from chat_tab where name='" . $name . "' and id<>'" . $id . "' ";
+                $query = $connection2->query($sqs);
+                $result = $query->fetch();
+                if ($result) {
+                    $result['status'] = 4;
+                    $result['msg'] = 'Tab/Module name is already exits!';
+                } else {
+                    //insert
+                    $sq = "update chat_tab set name='" . $name . "', roleids='" . $roleids . "' where id='" . $id . "' ";
+                    $connection2->query($sq);
+                    $result['status'] = 1;
+                    $result['msg'] = 'Request executed successfully.';
+                }
+            } else {
+                $sqs = "select id from chat_tab where name='" . $name . "' ";
+                $query = $connection2->query($sqs);
+                $result = $query->fetch();
+                if ($result) {
+                    $result['status'] = 4;
+                    $result['msg'] = 'Tab/Module name is already exits!';
+                } else {
+                    //insert
+                    $sq = "insert into chat_tab (name, roleids) values('" . $name . "','" . $roleids . "')";
+                    $connection2->query($sq);
+                    $result['status'] = 1;
+                    $result['msg'] = 'Request executed successfully.';
+                }
+            }
+        } else {
+            $result['status'] = 3;
+            $result['msg'] = 'Invalid input parameters';
+        }
+    } catch (Exception $ex) {
+        $result['status'] = 2;
+        $result['msg'] = 'Exception: ' . $ex->getMessage();
+    }
+    if ($result) {
+        echo json_encode($result);
+    }
+} elseif ($type == 'deleteTab') {
+    $result = [];
+    try {
+        $id = $_POST['id'];
+        if ($id) {
+            //insert
+            $sq = "delete from chat_tab where id='" . $id . "'";
+            $connection2->query($sq);
+            $result['status'] = 1;
+            $result['msg'] = 'Request executed successfully.';
+        } else {
+            $result['status'] = 3;
+            $result['msg'] = 'Invalid input parameters';
+        }
+    } catch (Exception $ex) {
+        $result['status'] = 2;
+        $result['msg'] = 'Exception: ' . $ex->getMessage();
+    }
+    if ($result) {
+        echo json_encode($result);
+    }
 }

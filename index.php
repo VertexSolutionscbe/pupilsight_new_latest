@@ -1255,6 +1255,7 @@ if ($isLoggedIn) {
         "TimeTable" => "mdi mdi-calendar-month",
         "Reports" => "mdi mdi-file-chart-outline",
         "LMS" => "mdi mdi-book-open-page-variant",
+        "Archive" => "mdi mdi-archive-outline",
     ];
 
     if (
