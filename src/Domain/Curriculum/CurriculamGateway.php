@@ -494,7 +494,7 @@ class CurriculamGateway extends QueryableGateway
         return $res;
     }
 
-    public function getStudentTestSubjectClassWise(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightDepartmentID, $pupilsightYearGroupID, $pupilsightRollGroupID, $test_id)
+    public function getStudentTestSubjectClassWise(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightDepartmentID, $pupilsightYearGroupID, $pupilsightRollGroupID, $test_id,$skill_id)
     {
         $query = $this
             ->newQuery()
@@ -513,10 +513,15 @@ class CurriculamGateway extends QueryableGateway
         }
         $query->where('examinationSubjectToTest.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ')
             ->where('examinationSubjectToTest.is_tested = "1" ')
-            ->where('subjectToClassCurriculum.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" AND examinationTestAssignClass.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND examinationTestAssignClass.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" AND examinationTestAssignClass.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
+            ->where('subjectToClassCurriculum.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" AND examinationTestAssignClass.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND examinationTestAssignClass.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" AND examinationTestAssignClass.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
 
-            ->groupBy(['examinationSubjectToTest.test_id', 'examinationGradeSystemConfiguration.gradeSystemId'])
+            //if (!empty($skill_id)) {
+                $query->where('examinationSubjectToTest.skill_id = "' . $skill_id . '" ');
+            //}
+
+            $query->groupBy(['examinationSubjectToTest.test_id', 'examinationGradeSystemConfiguration.gradeSystemId'])
             ->orderBy(['examinationTest.id ASC']);
+        //echo $query;
         //$query;
         $res = $this->runQuery($query, $criteria);
         $data = $res->data;
