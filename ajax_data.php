@@ -4499,3 +4499,21 @@ if ($type == 'unlockUserLoginAccount') {
         $result->execute($data);
     }
 }
+
+if ($type == 'getTestBySubjectSkill') {
+    $skill_id = $val;
+    $pupilsightDepartmentID = $_POST['subid'];
+    $pupilsightYearGroupID = $_POST['cid'];
+    $pupilsightRollGroupID = $_POST['sid'];
+    $pupilsightProgramID = $_POST['pid'];
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+
+    $sql = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id LEFT JOIN examinationSubjectToTest AS c ON a.test_id = c.test_id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND a.pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' AND c.pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' AND c.skill_id = ' . $skill_id . ' AND c.is_tested = "1" GROUP BY a.test_id ';
+    $result = $connection2->query($sql);
+    $tests = $result->fetchAll();
+    $returndata = '<option value="">Select Test</option>';
+    foreach ($tests as $row) {
+        $returndata .= '<option value=' . $row['id'] . ' >' . $row['name'] . '</option>';
+    }
+    echo $returndata;
+}

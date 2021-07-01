@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
 
         $skillsdata = array();
         $skillsdata2 = array();
-        $skillsdata1 = array('' => 'Select Skill');
+        $skillsdata1 = array('0' => 'Select Skill');
         foreach ($skillData as $dt) {
             $skillsdata2[$dt['skill_id']] = $dt['skill_display_name'];
         }
@@ -98,7 +98,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
 
        //$sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id  WHERE a.pupilsightSchoolYearID= "'.$pupilsightSchoolYearID.'" AND a.pupilsightProgramID = "'.$pupilsightProgramID.'" AND a.pupilsightYearGroupID = "'.$pupilsightYearGroupID.'"  AND a.pupilsightRollGroupID = "'.$pupilsightRollGroupID.'"';
 
-        $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id LEFT JOIN examinationSubjectToTest AS c ON a.test_id = c.test_id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND a.pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' AND c.pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' AND c.is_tested = "1" GROUP BY a.test_id ';
+        $sql_tst = 'SELECT b.id, b.name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id LEFT JOIN examinationSubjectToTest AS c ON a.test_id = c.test_id  WHERE a.pupilsightSchoolYearID= ' . $pupilsightSchoolYearID . ' AND a.pupilsightProgramID = ' . $pupilsightProgramID . ' AND a.pupilsightYearGroupID = ' . $pupilsightYearGroupID . ' AND a.pupilsightRollGroupID = ' . $pupilsightRollGroupID . ' AND c.pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' ' ;
+        if(!empty($skill_id)){
+            $sql_tst .= 'AND c.skill_id = ' . $skill_id . ' ';
+        }
+        $sql_tst .=' AND c.is_tested = "1" GROUP BY a.test_id ';
         $result_test = $connection2->query($sql_tst);
         $tests = $result_test->fetchAll();
         $testarr=array ('' => __('Select'));  
@@ -264,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
 
     $students = $CurriculamGateway->getstudent_subject_skill_test_mappingdata($criteria, $pupilsightSchoolYearID, $pupilsightProgramID,$pupilsightYearGroupID, $pupilsightRollGroupID,$pupilsightDepartmentID,$skill_id,$test_id1,$test_type, $chkEleSub);
 
-    $subject_wise_tests =  $CurriculamGateway->getStudentTestSubjectClassWise($criteria,$pupilsightSchoolYearID,$pupilsightDepartmentID,$pupilsightYearGroupID,$pupilsightRollGroupID,$test_id1);
+    $subject_wise_tests =  $CurriculamGateway->getStudentTestSubjectClassWise($criteria,$pupilsightSchoolYearID,$pupilsightDepartmentID,$pupilsightYearGroupID,$pupilsightRollGroupID,$test_id1,$skill_id);
 
     // echo '<pre>';
     // print_r($subject_wise_tests);

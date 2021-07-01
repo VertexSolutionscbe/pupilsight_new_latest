@@ -9823,3 +9823,31 @@ $(document).on('change', '#pupilsightDepartmentIDbyPPbyMarks', function () {
     });
 
 });
+
+$(document).on('change', '#skill_id', function () {
+    var id = $(this).val();
+    if (id != 0) {
+        var subid = $("#pupilsightDepartmentIDbyPPbyMarks").val();
+        var pid = $('#pupilsightProgramIDbyPPbyMarks').val();
+        var cid = $('#pupilsightYearGroupIDbyPPbyMarks').val();
+        var sid = $('#pupilsightRollGroupIDbyPPbyMarks').val();
+        $('#testId').selectize()[0].selectize.destroy();
+        var ntype = 'getTestBySubjectSkill';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: ntype, pid: pid, cid: cid, sid: sid, subid: subid },
+            async: true,
+            success: function (response) {
+                $("#testId").html();
+                $("#testId").html(response);
+                $("#testId").parent().children('.LV_validation_message').remove();
+                $('#testId').selectize({
+                    plugins: ['remove_button'],
+                });
+            }
+        });
+    } else {
+        $("#pupilsightDepartmentIDbyPPbyMarks").trigger('change');
+    }
+});
