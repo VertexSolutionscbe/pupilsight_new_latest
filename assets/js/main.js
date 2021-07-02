@@ -9904,7 +9904,7 @@ $(document).on('change', '#pupilsightDepartmentIDbyPPbyMarks', function () {
 
 $(document).on('change', '#skill_id', function () {
     var id = $(this).val();
-    if (id != 0) {
+    if (id != '') {
         var subid = $("#pupilsightDepartmentIDbyPPbyMarks").val();
         var pid = $('#pupilsightProgramIDbyPPbyMarks').val();
         var cid = $('#pupilsightYearGroupIDbyPPbyMarks').val();

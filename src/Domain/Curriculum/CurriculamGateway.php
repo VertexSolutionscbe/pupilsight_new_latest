@@ -515,9 +515,11 @@ class CurriculamGateway extends QueryableGateway
             ->where('examinationSubjectToTest.is_tested = "1" ')
             ->where('subjectToClassCurriculum.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" AND examinationTestAssignClass.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND examinationTestAssignClass.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" AND examinationTestAssignClass.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
 
-            //if (!empty($skill_id)) {
+            if (!empty($skill_id)) {
                 $query->where('examinationSubjectToTest.skill_id = "' . $skill_id . '" ');
-            //}
+            } else {
+                $query->where('examinationSubjectToTest.skill_id = "0" ');
+            }
 
             $query->groupBy(['examinationSubjectToTest.test_id', 'examinationGradeSystemConfiguration.gradeSystemId'])
             ->orderBy(['examinationTest.id ASC']);
