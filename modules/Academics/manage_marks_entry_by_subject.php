@@ -407,14 +407,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 foreach($subject_wise_tests as $k => $s_test)
                 {
                     $skill_configure = $s_test['skill_configure'];
+                    //echo $skill_configure;
+                    if($skill_configure != 'None' && $s_test['skill_id'] == 0){
+                        // if($s_test['lock_marks_entry'] == '1'){
+                        //     $disabled = 'disabled';
+                        // } else {
+                        //     $disabled = '';
+                        // }
 
-                    if($skill_configure != 'None'){
-                        if($s_test['lock_marks_entry'] == '1'){
-                            $disabled = 'disabled';
-                        } else {
-                            $disabled = '';
-                        }
-    
+                        $disabled = 'disabled';
+                       
                         $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $pupilsightDepartmentID,'pupilsightPersonID' => $row['stuid'],'skill_id' => $skill_id);                    
                         $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id ';
                         $result = $connection2->prepare($sql1);
@@ -480,8 +482,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         echo ' <input type="hidden" name="lock_status['.$s_test['test_id'].']['. $row['stuid'].']" value="'.$prevdata['status'].'">';
                         echo '<td class="td_texfield">';
                         //if marks is enabled
-                        $en_dis_clss=($s_test['assesment_method']=='Marks')? '' : 'disable_input';
-                        $en_dis_grd_clss=($s_test['assesment_method']=='Grade')? '' : 'disable_input';   
+                        // $en_dis_clss=($s_test['assesment_method']=='Marks')? '' : 'disable_input';
+                        // $en_dis_grd_clss=($s_test['assesment_method']=='Grade')? '' : 'disable_input';   
+
+                        $en_dis_clss='disable_input';
+                        $en_dis_grd_clss='disable_input';   
                         
                         if(!empty($prevdata['marks_abex'])){
                             $marksobt = '';
@@ -498,7 +503,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                                 $slen = count($seab);
                                 $s = 0;
     
-                                echo '<td><select class="chkData mr-2 abex width60px" data-id="'.$s_test['test_id'].$row['stuid'].'" name="marks_abex[' . $s_test['test_id'] . '][' . $row['stuid'] . ']">';
+                                echo '<td><select class="chkData mr-2 abex width60px" data-id="'.$s_test['test_id'].$row['stuid'].'" name="marks_abex[' . $s_test['test_id'] . '][' . $row['stuid'] . ']" disabled>';
                                 while ($s < $slen) {
                                     if($prevdata['marks_abex'] == $seab[$s]){
                                         $selected = 'selected';
@@ -606,6 +611,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         echo '</fieldset>';
                        $km++;
                     } else {
+                        //echo 'working';
                         if($s_test['lock_marks_entry'] == '1'){
                             $disabled = 'disabled';
                         } else {
