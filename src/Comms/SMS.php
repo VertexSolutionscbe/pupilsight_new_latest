@@ -475,7 +475,74 @@ class SMS implements SMSInterface
         return $flag;
     }
 
-    public function karix($senderid, $smsCount, $numbers, $msg, $msgto, $msgby)
+    public function loadSmsConfig($msg)
+    {
+        $flag = TRUE;
+        $result = array();
+        try {
+            $sql = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsGateway'";
+            $db = new DBQuery();
+            $rs = $db->selectRaw($sql, TRUE);
+            if (empty($rs)) {
+                $dsempty = array();
+                return $db->convertDataset($dsempty);
+            } else {
+                $activeGateway = $rs[0]['value'];
+            }
+
+            $getsenderid = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND name='smsSenderID'";
+            $db2 = new DBQuery();
+            $rs2 = $db2->selectRaw($getsenderid, TRUE);
+            if (empty($rs2)) {
+                $dsempty = array();
+                return $db2->convertDataset($dsempty);
+            } else {
+                $senderid = $rs2[0]['value'];
+            }
+
+            $sql1 = "SELECT * FROM pupilsightSetting WHERE scope='Messenger' AND description='$activeGateway'";
+            $db1 = new DBQuery();
+            $rs1 = $db1->selectRaw($sql1, TRUE);
+            if (empty($rs1)) {
+                $dsempty1 = array();
+                //return $db1->convertDataset($dsempty1);
+            } else {
+                $val = $rs1[0]['value'];
+            }
+
+            // $charcount = $this->totalchars;
+            // $cal = ceil($charcount / 160);
+            // $totalmsges = $cal * $this->noofrecipents;
+
+            $charcount = strlen($msg);
+            $cal = ceil($charcount / 160);
+            $totalmsges = $cal;
+            
+
+            $smsCount = $val + $totalmsges;
+            //echo $charcount.'--cal-'.$cal.'--totalmsges-'.$totalmsges.'--smsCount-'.$smsCount;
+
+            $result['smsCount'] = $smsCount;
+            $result['activeGateway'] = $activeGateway;
+            $result['senderid'] = $senderid;
+            // switch ($activeGateway) {
+            //     case 'Karix':
+            //         $flag = $this->karix($senderid, $smsCount, $numbers, $msg, $msgto, $msgby);
+            //         break;
+            //     case 'Gupshup':
+            //         $flag = $this->gupshup($senderid, $smsCount, $numbers, $msg, $msgto, $msgby);
+            //         break;
+            //     default:
+            //         echo "sms not configured";
+            // }
+        } catch (Exception $ex) {
+            print_r($ex);
+            $flag = FALSE;
+        }
+        return $result;
+    }
+
+    public function karix($senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend= null)
     {
         $flag = TRUE;
         try {
@@ -484,14 +551,20 @@ class SMS implements SMSInterface
             $url1 .= "&dest=" . $numbers;
             // echo $url1;
             // die();
-            $res = file_get_contents($url1);
-            $res1 = explode('&', $res);
-            $res2 = explode('=', $res1[1]);
-            $res3 = $res2[1];
-            //print_r($res);//die();
-            $res4 = explode('&', $res1[0]);
-            $res5 = explode('=', $res4[0]);
-            if ($res3 == 200) {
+            if($multipleSend){
+                $this->curl_post($url1);
+                $res3 = 200;
+                $res5[1] = 1;
+            } else {
+                $res = file_get_contents($url1);
+                $res1 = explode('&', $res);
+                $res2 = explode('=', $res1[1]);
+                $res3 = $res2[1];
+                //print_r($res);//die();
+                $res4 = explode('&', $res1[0]);
+                $res5 = explode('=', $res4[0]);
+            }
+                if ($res3 == 200) {
                 $this->updateSmsCount($smsCount, "Karix");
                 if($msgby!='') {
                     $this->updateMessengerTable($msg, $msgto, $msgby);
@@ -499,9 +572,10 @@ class SMS implements SMSInterface
                 //die();
                 $p = explode(',', $numbers);
                 if($msgby!='') {
+                    $nowtime =date("Y-m-d H:i:s");
                     foreach ($p as $numb) {
                         //echo $numb;
-                        $nowtime =date("Y-m-d H:i:s");
+                        
                         $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID='$msgby', targetType='Individuals', targetID='$msgto', contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N', requestid=$res5[1], confirmedTimestamp='$nowtime' ";
                         //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
                         $db4 = new DBQuery();
@@ -509,6 +583,7 @@ class SMS implements SMSInterface
                         //die();
                     }
                 }
+                
             }
         } catch (Exception $ex) {
             print_r($ex);
@@ -519,7 +594,7 @@ class SMS implements SMSInterface
     }
 
 
-    public function gupshup($senderid, $smsCount, $numbers, $msg, $msgto, $msgby)
+    public function gupshup($senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend= null)
     {
         $flag = TRUE;
         try {
@@ -613,5 +688,49 @@ class SMS implements SMSInterface
         $sql = "INSERT INTO pupilsightMessengerTarget SET pupilsightMessengerID=$AI, type='Individuals', id=$msgto";
         $result = new DBQuery();
         $result->query($sql);
+    }
+
+    public function curl_post($url, $post=NULL){
+        try{
+            //$url = 'https://127.0.0.1/ajax/received.php';
+            $curl = curl_init();                
+            //$post['test'] = 'examples daata'; // our data todo in received
+            curl_setopt($curl, CURLOPT_URL, $url);
+            curl_setopt ($curl, CURLOPT_POST, TRUE);
+
+            if(!empty($post)){
+                curl_setopt ($curl, CURLOPT_POSTFIELDS, $post); 
+            }
+
+            curl_setopt($curl, CURLOPT_USERAGENT, 'api');
+
+            curl_setopt($curl, CURLOPT_TIMEOUT, 1); 
+            curl_setopt($curl, CURLOPT_HEADER, 0);
+            curl_setopt($curl,  CURLOPT_RETURNTRANSFER, false);
+            curl_setopt($curl, CURLOPT_FORBID_REUSE, true);
+            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+            curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 10); 
+
+            curl_setopt($curl, CURLOPT_FRESH_CONNECT, true);
+
+            curl_exec($curl);   
+
+            curl_close($curl);  
+        } catch(Exception $ex){
+            echo $ex;
+        }
+    }
+
+    public function smsGateway($activeGateway, $senderid, $smsCount, $numbers, $msg, $msgto, $msgby,$multipleSend=null){
+        switch ($activeGateway) {
+            case 'Karix':
+                $flag = $this->karix($senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend);
+                break;
+            case 'Gupshup':
+                $flag = $this->gupshup($senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend);
+                break;
+            default:
+                echo "sms not configured";
+        }
     }
 }

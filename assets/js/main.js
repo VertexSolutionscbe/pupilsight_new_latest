@@ -3445,10 +3445,9 @@
 
     $(document).on('click', '#sendEmailSms_stud', function (e) {
         e.preventDefault();
-        $("#preloader").show();
-        window.setTimeout(function () {
-            var formData = new FormData(document.getElementById("sendEmailSms_Student"));
-
+        //$("#preloader").show();
+        //window.setTimeout(function () {
+        try {
             var emailquote = $("#emailQuote_stud").val();
             var subjectquote = $("#emailSubjectQuote_stud").val();
 
@@ -3468,7 +3467,12 @@
             if (stuid) {
                 if (type != '') {
                     if (emailquote != '' || smsquote != '') {
+                        $(".close").click();
+                        $("#closeSM").click();
+                        $(".closeSMPopUp").click();
+                        $("#sendEmailSms_stud").prop('disabled', true);
 
+                        var formData = new FormData(document.getElementById("sendEmailSms_Student"));
                         formData.append('stuid', stuid);
                         formData.append('emailquote', emailquote);
                         formData.append('smsquote', smsquote);
@@ -3484,28 +3488,35 @@
                             processData: false,
                             async: false,
                             success: function (response) {
-                                $("#preloader").hide();
-                                alert('Your Message Sent Successfully! click Ok to continue ');
+                                //$("#preloader").hide();
+                                $("#sendEmailSms_stud").prop('disabled', false);
+                                toast('success', 'Your Message Sent Successfully! click Ok to continue ');
                                 //location.reload();
                                 $("#sendEmailSms_Student")[0].reset();
-                                $("#closeSM").click();
-                                $(".closeSMPopUp").click();
+
                             }
                         });
                     } else {
-                        $("#preloader").hide();
-                        alert('You Have to Enter Message.');
+                        //$("#preloader").hide();
+                        $("#sendEmailSms_stud").prop('disabled', false);
+                        toast('error', 'You Have to Enter Message.');
                     }
                 } else {
-                    $("#preloader").hide();
-                    alert('You Have to Select Recipient.');
+                    //$("#preloader").hide();
+                    //$("#sendEmailSms_stud").prop('disabled', false);
+                    toast('error', 'You Have to Select Recipient.');
                 }
             } else {
-                $("#preloader").hide();
-                alert('You Have to Select Applicants.');
+                //$("#preloader").hide();
+                //$("#sendEmailSms_stud").prop('disabled', false);
+                toast('error', 'You Have to Select Applicants.');
 
             }
-        }, 100);
+        } catch (ex) {
+            //$("#sendEmailSms_stud").prop('disabled', false);
+            console.log(ex);
+        }
+        // }, 100);
 
 
     });

@@ -136,7 +136,9 @@ function importFeeStructure($connection2, $conn)
                     }
 
                     $invoice_no = $arData['invoice_no'];
+                    //echo $invoice_no.'--'.$pupilsightSchoolYearID.'--'.$pupilsightProgramID.'--'.$pupilsightYearGroupID.'<br>';
                     if (!empty($invoice_no) && !empty($pupilsightSchoolYearID) && !empty($pupilsightProgramID) && !empty($pupilsightYearGroupID) && !empty($feeHeadData)) {
+                        
                         $fn_fee_structure_id++;
                         $invoice_title = $arData['invoice_title'];
                         $final_amount = $arData['final_amount'];
@@ -380,12 +382,13 @@ function importFeeTransaction($connection2, $conn)
                 if ($invoice_status != 'CANCELED') {
 
                     $pupilsightPersonID = array_search($arData['StudentID'], $studentAllData);
+                    // echo $pupilsightPersonID.'<br>';
                     if (!empty($pupilsightPersonID)) {
                         $pupilsightSchoolYearID = array_search($arData['AcademicYear'], $academicYearData);
                         $payment_mode_id = getPaymentModeData($payModeData, $arData['payment_mode']);
                         $bank_id = getPaymentModeData($payModeData, $arData['bank_name']);
                         //$invoice_no = $arData['invoice_no'];
-
+                        //echo $invoice_no.'--'.$pupilsightSchoolYearID.'<br>';
                         if (!empty($invoice_no) && !empty($pupilsightSchoolYearID)) {
                             //$fn_fee_structure_id++;
                             //$transaction_id = $arData['transaction_id'];
@@ -407,7 +410,12 @@ function importFeeTransaction($connection2, $conn)
                             $payment_date = "";
                             $cdt = "";
                             $tmDate = $arData['payment_received_date'];
-                            $tmv = $tmDate[0] . $tmDate[1];
+                            if(!empty($arData['payment_received_date'])){
+                                $tmv = $tmDate[0] . $tmDate[1];
+                            } else {
+                                $tmv = '';
+                            }
+                            
 
                             if (!empty($tmDate)) {
                                 if ($tmv != "00") {
@@ -447,7 +455,7 @@ function importFeeTransaction($connection2, $conn)
                                         $invoice_amount = $feeitem['invoice_amount'];
                                         $is_discount_trans = $feeitem['is_discount_trans'];
 
-                                        if (!empty($feeitem['discount_amount'])) {
+                                        if (!empty(trim($feeitem['discount_amount']))) {
                                             $total_discount += $feeitem['discount_amount'];
                                         }
 
@@ -508,14 +516,26 @@ function importFeeTransaction($connection2, $conn)
                                                     $final_total_amount_paid += $feeitem['FeeItemAmountPaid'];
                                                     $total_amount_collection = $feeitem['FeeItemAmountPaid'];
                                                 }
-
+                                                $discount = '';
                                                 if (!empty($discount)) {
                                                     $discount = $discount;
-                                                } else {
-                                                    $discount = "0.00";
-                                                }
+                                                } 
 
-                                                $sqFeeStuCollection .= "('" . $pupilsightPersonID . "','" . $transaction_id . "','" . $fn_fees_invoice_id . "','" . $fn_fee_invoice_item_id . "','" . $invoice_no . "','" . $total_amount . "','" . $discount . "','" . $total_amount_collection . "','" . $status . "'),";
+                                                
+                                                $sqFeeStuCollection .= "(
+                                                    '" . $pupilsightPersonID . "',
+                                                    '" . $transaction_id . "',
+                                                    '" . $fn_fees_invoice_id . "',
+                                                    '" . $fn_fee_invoice_item_id . "',
+                                                    '" . $invoice_no . "',
+                                                    '" . $total_amount . "',";
+                                                    if (empty($discount)) {
+                                                        $sqFeeStuCollection .= "NULL";
+                                                    } else {
+                                                        $sqFeeStuCollection .= "'" . $discount . "'";
+                                                    }
+                                                $sqFeeStuCollection .= ",'" . $total_amount_collection . "',
+                                                    '" . $status . "'),";
                                             }
                                         }
                                     }
@@ -625,11 +645,11 @@ function importFeeTransaction($connection2, $conn)
         $sqFeeCollection = rtrim($sqFeeCollection, ", ");
         $sqFeeStuCollection = rtrim($sqFeeStuCollection, ", ");
 
-        //echo $sqFeeCollection;
-        //echo "<hr>\n<br>";
+        // echo $sqFeeCollection;
+        // echo "<hr>\n<br>";
 
-        //echo $sqFeeStuCollection;
-        //echo "<hr>\n<br>";
+        // echo $sqFeeStuCollection;
+        // echo "<hr>\n<br>";
 
         // echo $sqFeeStAssign;
         // echo "<hr>\n<br>";
