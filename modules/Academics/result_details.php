@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
         $stuData = $resultachk->fetch();
 
 
-        $sq = 'SELECT a.pupilsightDepartmentID, b.name as test_name, c.subject_display_name FROM examinationSubjectToTest AS a 
+        $sq = 'SELECT a.pupilsightDepartmentID, b.name as test_name, c.subject_display_name, c.subject_type FROM examinationSubjectToTest AS a 
         LEFT JOIN examinationTest AS b ON a.test_id = b.id
         LEFT JOIN subjectToClassCurriculum AS c ON a.pupilsightDepartmentID = c.pupilsightDepartmentID
         WHERE a.test_id = '.$test_id.' AND a.skill_id =  "0" AND c.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND c.pupilsightProgramID = '.$stuData['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$stuData['pupilsightYearGroupID'].' GROUP BY a.pupilsightDepartmentID ORDER BY c.pos ASC ';
@@ -52,26 +52,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
 
         if(!empty($subData)){
             foreach($subData as $k => $sb){
-                $ksql = 'SELECT count(a.id) as kount  
-                        FROM examinationSubjectToTest AS a 
-                        LEFT JOIN examinationTest AS b ON a.test_id = b.id
-                        LEFT JOIN subjectToClassCurriculum AS c ON a.pupilsightDepartmentID = c.pupilsightDepartmentID
-                        LEFT JOIN ac_manage_skill AS d ON a.skill_id = d.id
-                        WHERE a.test_id = '.$test_id.' AND a.is_tested =  "1" AND a.skill_id != "0" AND a.pupilsightDepartmentID = '.$sb['pupilsightDepartmentID'].' AND c.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND c.pupilsightProgramID = '.$stuData['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$stuData['pupilsightYearGroupID'].'  ';
-                $kresult = $connection2->query($ksql);
-                $kountData = $kresult->fetch();
+                $electshow = '2';
 
-                $sql = 'SELECT a.*, c.subject_display_name, d.name as skill_name 
-                        FROM examinationSubjectToTest AS a 
-                        
-                        LEFT JOIN subjectToClassCurriculum AS c ON a.pupilsightDepartmentID = c.pupilsightDepartmentID
-                        LEFT JOIN ac_manage_skill AS d ON a.skill_id = d.id
-                        WHERE a.test_id = '.$test_id.' AND a.is_tested =  "1" AND a.pupilsightDepartmentID = '.$sb['pupilsightDepartmentID'].' AND c.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND c.pupilsightProgramID = '.$stuData['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$stuData['pupilsightYearGroupID'].'  ';
-                $result = $connection2->query($sql);
-                $subjectData = $result->fetchAll();
-                $subData[$k]['kountData'] = $kountData['kount'];
-                $subData[$k]['subjectData'] = $subjectData;
-                
+                if($sb['subject_type'] == 'Elective'){
+                    $departmentId = $sb['pupilsightDepartmentID'];
+                    $studentId = $stuId;
+                    $sqlelc = 'SELECT id FROM assign_elective_subjects_tostudents WHERE pupilsightPersonID = '.$studentId.' AND pupilsightDepartmentID = '.$departmentId.' ';
+                    $resultele = $connection2->query($sqlelc);
+                    $electData = $resultele->fetch();
+                    if(!empty($electData['id'])){
+                        $electshow = '1';
+                    } else {
+                        $electshow = '2';
+                    }
+                } else {
+                    $electshow = '1';
+                }
+                if($electshow == '1'){
+                    $ksql = 'SELECT count(a.id) as kount  
+                            FROM examinationSubjectToTest AS a 
+                            LEFT JOIN examinationTest AS b ON a.test_id = b.id
+                            LEFT JOIN subjectToClassCurriculum AS c ON a.pupilsightDepartmentID = c.pupilsightDepartmentID
+                            LEFT JOIN ac_manage_skill AS d ON a.skill_id = d.id
+                            WHERE a.test_id = '.$test_id.' AND a.is_tested =  "1" AND a.skill_id != "0" AND a.pupilsightDepartmentID = '.$sb['pupilsightDepartmentID'].' AND c.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND c.pupilsightProgramID = '.$stuData['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$stuData['pupilsightYearGroupID'].'  ';
+                    $kresult = $connection2->query($ksql);
+                    $kountData = $kresult->fetch();
+
+                    $sql = 'SELECT a.*, c.subject_display_name, d.name as skill_name 
+                            FROM examinationSubjectToTest AS a 
+                            
+                            LEFT JOIN subjectToClassCurriculum AS c ON a.pupilsightDepartmentID = c.pupilsightDepartmentID
+                            LEFT JOIN ac_manage_skill AS d ON a.skill_id = d.id
+                            WHERE a.test_id = '.$test_id.' AND a.is_tested =  "1" AND a.pupilsightDepartmentID = '.$sb['pupilsightDepartmentID'].' AND c.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND c.pupilsightProgramID = '.$stuData['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$stuData['pupilsightYearGroupID'].'  ';
+                    $result = $connection2->query($sql);
+                    $subjectData = $result->fetchAll();
+                    $subData[$k]['kountData'] = $kountData['kount'];
+                    $subData[$k]['subjectData'] = $subjectData;
+                }
             }
         }
 
@@ -137,11 +154,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
                         $style = '';
                     }
 
+                   
+
                     if(!empty($mksData['marks_obtained']) && $mksData['marks_obtained'] != '0.00'){
-                        $marksObtained = floatval($mksData['marks_obtained']);
+                        $marksObtained = $mksData['marks_obtained'];
                     } else {
                         $marksObtained = '';
                     }
+
+                    $marks_abex = $mksData['marks_abex'];
+                    if(!empty($marks_abex)){
+                        $marksObtained = $marks_abex;
+                    } 
     ?>
                     <tr>
                     <?php if($sbd['kountData'] >= 1){?>

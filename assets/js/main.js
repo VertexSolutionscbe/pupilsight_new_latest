@@ -929,40 +929,70 @@
     });
 
 
+    // $(document).on('click', '#expore_student_xl', function () {
+    //     //alert("Export success");
+    //     // $("#expore_tbl").table2excel({
+    //     //     name: "Worksheet Name",
+    //     //     filename: "Student_details.xls",
+    //     //     fileext: ".xls",
+    //     //     exclude: ".checkall",
+    //     //     exclude: ".dropdown",
+    //     //     exclude_inputs: true,
+    //     //     exclude_links: true,
+    //     //     columns: [0, 1, 2, 3, 4, 5]
+
+    //     // });
+
+    //     //$('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
+    //     $("#expore_tbl tr").each(function () {
+    //         $(this).find("th:last").remove();
+    //         $(this).find("td:last").remove();
+    //         $(this).find("th:first").remove();
+    //         $(this).find("td:first").remove();
+    //     });
+
+    //     $("#expore_tbl").table2excel({
+    //         name: "Worksheet Name",
+    //         filename: "Student_details.xls",
+    //         fileext: ".xls",
+    //         exclude: ".checkall",
+    //         exclude: ".rm_cell",
+    //         exclude_inputs: true,
+    //         columns: [0, 1, 2, 3, 4, 5]
+
+    //     });
+    //     location.reload();
+
+    // });
+
     $(document).on('click', '#expore_student_xl', function () {
-        //alert("Export success");
-        // $("#expore_tbl").table2excel({
-        //     name: "Worksheet Name",
-        //     filename: "Student_details.xls",
-        //     fileext: ".xls",
-        //     exclude: ".checkall",
-        //     exclude: ".dropdown",
-        //     exclude_inputs: true,
-        //     exclude_links: true,
-        //     columns: [0, 1, 2, 3, 4, 5]
-
-        // });
-
-        //$('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
-        $("#expore_tbl tr").each(function () {
-            $(this).find("th:last").remove();
-            $(this).find("td:last").remove();
-            $(this).find("th:first").remove();
-            $(this).find("td:first").remove();
+        var submit_ids = [];
+        $.each($("input[name='student_id[]']:checked"), function () {
+            submit_ids.push($(this).val());
         });
+        var submt_id = submit_ids.join(",");
 
-        $("#expore_tbl").table2excel({
-            name: "Worksheet Name",
-            filename: "Student_details.xls",
-            fileext: ".xls",
-            exclude: ".checkall",
-            exclude: ".rm_cell",
-            exclude_inputs: true,
-            columns: [0, 1, 2, 3, 4, 5]
+        if (submt_id == '') {
+            alert('You Have to Select Students.');
+        } else {
+            $("#expore_tbl tr").each(function () {
+                $(this).find("th:last").remove();
+                $(this).find("td:last").remove();
+                $(this).find("th:first").remove();
+                $(this).find("td:first").remove();
+            });
+            $("#expore_tbl").table2excel({
+                name: "Worksheet Name",
+                filename: "Student_details.xls",
+                fileext: ".xls",
+                exclude: ".checkall",
+                exclude: ".rm_cell",
+                exclude_inputs: true,
+                columns: [0, 1, 2, 3, 4, 5]
 
-        });
-        location.reload();
-
+            });
+            location.reload();
+        }
     });
 
     $(document).on('click', '#export_not_marks_xl', function () {

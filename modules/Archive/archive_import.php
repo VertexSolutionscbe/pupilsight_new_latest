@@ -276,12 +276,12 @@ function importFeeStructure($connection2, $conn)
                         //Invoice Insert End Here
 
                         //Update Archive Invoice Start Here
-                        try {
+                        // try {
 
-                            $sqArchiveFeeInvoices .= "UPDATE archive_feeInvoices SET structure_status= '1', invoice_stauts= '1' WHERE invoice_no= '" . $invoice_no . "'; ";
-                        } catch (Exception $ex) {
-                            echo $ex->getMessage();
-                        }
+                        //     $sqArchiveFeeInvoices .= "UPDATE archive_feeInvoices SET structure_status= '1', invoice_stauts= '1' WHERE invoice_no= '" . $invoice_no . "'; ";
+                        // } catch (Exception $ex) {
+                        //     echo $ex->getMessage();
+                        // }
                         //Update Archive Invoice End Here
                         //die();
 
@@ -320,11 +320,14 @@ function importFeeStructure($connection2, $conn)
             $conn->query($sqlFeeInvoiceItem);
             $conn->query($sqlFeeInvoiceClassAssign);
             $conn->query($sqFeeInvoiceStAssign);
+            //$conn->query($sqArchiveFeeInvoices);
+            $sqArchiveFeeInvoices = "UPDATE archive_feeInvoices SET structure_status= '1', invoice_stauts= '1'";
             $conn->query($sqArchiveFeeInvoices);
             $conn->commit();
         } catch (Exception $ex) {
             $conn->rollback();
         }
+
     }
 }
 

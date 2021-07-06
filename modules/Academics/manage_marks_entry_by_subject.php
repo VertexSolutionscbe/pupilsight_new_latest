@@ -417,16 +417,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
 
                         $disabled = 'disabled';
                        
-                        $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $pupilsightDepartmentID,'pupilsightPersonID' => $row['stuid'],'skill_id' => $skill_id);                    
-                        $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id ';
-                        $result = $connection2->prepare($sql1);
-                        $result->execute($data1);
-                        $prevdata =  $result->fetch();
-
-                        // $sql1 = 'SELECT *, "'.$skill_configure.'"(marks_obtained) as total_marks  FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id ';
+                        // $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $pupilsightDepartmentID,'pupilsightPersonID' => $row['stuid'],'skill_id' => $skill_id);                    
+                        // $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id ';
+                        // $result = $connection2->prepare($sql1);
+                        // $result->execute($data1);
+                        // $prevdata =  $result->fetch();
+                        
+                        $skill_configure = strtoupper($skill_configure);
+                        $sql1 = 'SELECT *, '.$skill_configure.'(marks_obtained) as total_marks  FROM examinationMarksEntrybySubject WHERE test_id='.$s_test['test_id'].'  AND pupilsightYearGroupID='.$pupilsightYearGroupID.' AND pupilsightRollGroupID='.$pupilsightRollGroupID.' AND pupilsightDepartmentID='.$pupilsightDepartmentID.' AND pupilsightPersonID='.$row['stuid'].' ';
+                        $result = $connection2->query($sql1);
+                        $prevdata = $result->fetch();
                         // echo '<pre>';
                         // print_r($prevdata);
                         // echo '</pre>';
+                        // die();
     
                         
                         $data_sel = '<option value="">Select Remark</option>';
@@ -491,7 +495,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         if(!empty($prevdata['marks_abex'])){
                             $marksobt = '';
                         } else {
-                            $marksobt = str_replace(".00","",$prevdata['marks_obtained']);
+                            $marksobt = str_replace(".00","",$prevdata['total_marks']);
                             //$marksobt = rtrim($marksobt,'0');
                         }
                         
@@ -517,23 +521,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
     
                         //if grade is enable 
                         echo '<td class="'.$en_dis_grd_clss.'">'; 
-                        $grade_arr=array();
-                        $test_grades = explode(',', $s_test['grade_names']);
-                        $grade_ids = explode(',', $s_test['grade_ids']);
-                        $grade_arr = array_combine($grade_ids, $test_grades);
-                        //     echo "<pre>";print_r($grade_arr);
-                        foreach ($grade_arr as $grdid => $tgrade) {
-                            if($prevdata['gradeId'] == $grdid){
-                                $selected = 'checked';
-                            } else {
-                                $selected = '';
-                            }
-                        echo ' <input type="radio" class="chkData abexClsDis'.$s_test['test_id'].$row['stuid'].'" id="grade_val'.$s_test['test_id'].'row'.$row['stuid'].'grade'.trim($grdid).'"   name="grade_val['.$s_test['test_id'].']['. $row['stuid'].']" value="'.$grdid.'"  '.$disabled.'  '.$selected.'>'.$tgrade.'';
-                    
-                        }
-                        echo '</fieldset></td>';
-                        //echo $prevdata['marks_obtained'].' -- '.$prevdata['gradeId'];
                         
+
                         if(!empty($marksobt) && !empty($s_test['gradeSystemId'])){
                             $obtMark = $s_test['max_marks'];
                             $mrks = ($marksobt / $obtMark) * 100;
@@ -542,9 +531,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                             $grade = $result->fetch();
     
                             $gstatus = $grade['subject_status'];
+                            $grID = $grade['id'];
                         } else {
                             $gstatus = '';
+                            $grID = 0;
                         }
+                        //echo $row['stuid'].$grID.'<br>';
+                        $grade_arr=array();
+                        $test_grades = explode(',', $s_test['grade_names']);
+                        $grade_ids = explode(',', $s_test['grade_ids']);
+                        $grade_arr = array_combine($grade_ids, $test_grades);
+                        //     echo "<pre>";print_r($grade_arr);
+                        foreach ($grade_arr as $grdid => $tgrade) {
+                            // if($prevdata['gradeId'] == $grdid){
+                            if($grID == $grdid){
+                                $selected = 'checked';
+                            } else {
+                                $selected = '';
+                            }
+
+                            echo ' <input type="radio" class="chkData abexClsDis'.$s_test['test_id'].$row['stuid'].'" id="grade_val'.$s_test['test_id'].'row'.$row['stuid'].'grade'.trim($grdid).'"   name="grade_val['.$s_test['test_id'].']['. $row['stuid'].']" value="'.$grdid.'"    '.$selected.'>'.$tgrade.'';
+                    
+                        }
+                        echo '</fieldset></td>';
+                        //echo $prevdata['marks_obtained'].' -- '.$prevdata['gradeId'];
+                        
+                        
                         echo '<td id="grade_status'.$s_test['test_id'].'row'.$row['stuid'].'">'.$gstatus.'</td>';
                         if($s_test['enable_remarks'] == '1') { 
                             echo '<td> ';
