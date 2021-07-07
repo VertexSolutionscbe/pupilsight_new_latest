@@ -61,187 +61,188 @@ if (!empty($file)) {
             // print_r($applicationData);
             // echo '</pre>';
             // die();
+            if(!empty($applicationData)){
+                if (!empty($applicationData['officialName'])) {
+                    $fname = $applicationData['officialName'];
+                } else {
+                    $fname = $aid;
+                }
 
-            if (!empty($applicationData['officialName'])) {
-                $fname = $applicationData['officialName'];
-            } else {
-                $fname = $aid;
-            }
+                $admission_date = date('d-m-Y', strtotime($applicationData['created_at']));
 
-            $admission_date = date('d-m-Y', strtotime($applicationData['created_at']));
+                $sql = "SELECT id, formatval FROM fn_fee_series WHERE pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . " AND pupilsightProgramID = " . $applicationData['pupilsightProgramID'] . " AND FIND_IN_SET('" . $applicationData['pupilsightYearGroupID'] . "', classIds) ";
+                $result = database::doSelectOne($sql);
 
-            $sql = "SELECT id, formatval FROM fn_fee_series WHERE pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . " AND pupilsightProgramID = " . $applicationData['pupilsightProgramID'] . " AND FIND_IN_SET('" . $applicationData['pupilsightYearGroupID'] . "', classIds) ";
-            $result = database::doSelectOne($sql);
+                $sqlcust = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
+                $customFields = database::doSelect($sqlcust);
 
-            $sqlcust = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
-            $customFields = database::doSelect($sqlcust);
-
-            if (!empty($result['formatval'])) {
-                $seriesId = $result['id'];
-                $invformat = explode('$', $result['formatval']);
-                $iformat = '';
-                $orderwise = 0;
-                foreach ($invformat as $inv) {
-                    if ($inv == '{AB}') {
-                        $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=' . $seriesId . ' AND type= "numberwise"';
-                        $formatvalues = database::doSelectOne($sqlfort);
+                if (!empty($result['formatval'])) {
+                    $seriesId = $result['id'];
+                    $invformat = explode('$', $result['formatval']);
+                    $iformat = '';
+                    $orderwise = 0;
+                    foreach ($invformat as $inv) {
+                        if ($inv == '{AB}') {
+                            $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=' . $seriesId . ' AND type= "numberwise"';
+                            $formatvalues = database::doSelectOne($sqlfort);
 
 
-                        $str_length = $formatvalues['no_of_digit'];
+                            $str_length = $formatvalues['no_of_digit'];
 
-                        $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
+                            $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
 
-                        $lastnoadd = $formatvalues['last_no'] + 1;
+                            $lastnoadd = $formatvalues['last_no'] + 1;
 
-                        $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
+                            $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
 
-                        $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
-                        $result1 = database::doUpdate($sql1);
-                    } else {
-                        $iformat .= $inv;
+                            $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
+                            $result1 = database::doUpdate($sql1);
+                        } else {
+                            $iformat .= $inv;
+                        }
+                        $orderwise++;
                     }
-                    $orderwise++;
-                }
-                $tc_id = $iformat;
-            } else {
-                $tc_id = '';
-            }
-
-
-            try {
-
-                try {
-                    $phpword->setValue('tc_no', $tc_id);
-                } catch (Exception $ex) {
+                    $tc_id = $iformat;
+                } else {
+                    $tc_id = '';
                 }
 
-                try {
-                    $date = date('d/m/Y');
-                    $phpword->setValue('date', $date);
-                } catch (Exception $ex) {
-                }
 
                 try {
-                    if(!empty($admission_date)){
-                        $adDate = date('d/m/Y', strtotime($admission_date));
+
+                    try {
+                        $phpword->setValue('tc_no', $tc_id);
+                    } catch (Exception $ex) {
                     }
-                    $phpword->setValue('admission_date', $adDate);
-                } catch (Exception $ex) {
-                }
 
-                try {
-                    $phpword->setValue('student_name', $applicationData['officialName']);
-                } catch (Exception $ex) {
-                }
-
-                try {
-                    $phpword->setValue('program', $applicationData['program']);
-                } catch (Exception $ex) {
-                }
-
-                try {
-                    $phpword->setValue('class', $applicationData['class']);
-                } catch (Exception $ex) {
-                }
-
-                try {
-                    $phpword->setValue('section', $applicationData['section']);
-                } catch (Exception $ex) {
-                }
-
-                try {
-                    $phpword->setValue('academic', $applicationData['academic']);
-                } catch (Exception $ex) {
-                }
-
-                try {
-                    if(!empty($applicationData['dob'])){
-                        $dobDate = date('d/m/Y', strtotime($applicationData['dob']));
+                    try {
+                        $date = date('d/m/Y');
+                        $phpword->setValue('date', $date);
+                    } catch (Exception $ex) {
                     }
-                    $phpword->setValue('dob', $dobDate);
-                } catch (Exception $ex) {
-                }
 
-                try {
-                    $phpword->setValue('father_name', $applicationData['fatherName']);
-                } catch (Exception $ex) {
-                }
+                    try {
+                        if(!empty($admission_date)){
+                            $adDate = date('d/m/Y', strtotime($admission_date));
+                        }
+                        $phpword->setValue('admission_date', $adDate);
+                    } catch (Exception $ex) {
+                    }
 
-                try {
-                    $phpword->setValue('father_email', $applicationData['fatherEmail']);
-                } catch (Exception $ex) {
-                }
+                    try {
+                        $phpword->setValue('student_name', $applicationData['officialName']);
+                    } catch (Exception $ex) {
+                    }
 
-                try {
-                    $phpword->setValue('father_phone', $applicationData['fatherPhone']);
-                } catch (Exception $ex) {
-                }
+                    try {
+                        $phpword->setValue('program', $applicationData['program']);
+                    } catch (Exception $ex) {
+                    }
 
-                try {
-                    $phpword->setValue('mother_name', $applicationData['motherName']);
-                } catch (Exception $ex) {
-                }
+                    try {
+                        $phpword->setValue('class', $applicationData['class']);
+                    } catch (Exception $ex) {
+                    }
 
-                try {
-                    $phpword->setValue('mother_email', $applicationData['motherEmail']);
-                } catch (Exception $ex) {
-                }
+                    try {
+                        $phpword->setValue('section', $applicationData['section']);
+                    } catch (Exception $ex) {
+                    }
 
-                try {
-                    $phpword->setValue('mother_phone', $applicationData['motherPhone']);
-                } catch (Exception $ex) {
-                }
+                    try {
+                        $phpword->setValue('academic', $applicationData['academic']);
+                    } catch (Exception $ex) {
+                    }
 
-                try {
-                    if(!empty($customFields)){
-                        foreach($customFields as $cf){
-                            try {
-                                $phpword->setValue($cf['field_name'], $applicationData[$cf['field_name']]);
-                            } catch (Exception $ex) {
+                    try {
+                        if(!empty($applicationData['dob'])){
+                            $dobDate = date('d/m/Y', strtotime($applicationData['dob']));
+                        }
+                        $phpword->setValue('dob', $dobDate);
+                    } catch (Exception $ex) {
+                    }
+
+                    try {
+                        $phpword->setValue('father_name', $applicationData['fatherName']);
+                    } catch (Exception $ex) {
+                    }
+
+                    try {
+                        $phpword->setValue('father_email', $applicationData['fatherEmail']);
+                    } catch (Exception $ex) {
+                    }
+
+                    try {
+                        $phpword->setValue('father_phone', $applicationData['fatherPhone']);
+                    } catch (Exception $ex) {
+                    }
+
+                    try {
+                        $phpword->setValue('mother_name', $applicationData['motherName']);
+                    } catch (Exception $ex) {
+                    }
+
+                    try {
+                        $phpword->setValue('mother_email', $applicationData['motherEmail']);
+                    } catch (Exception $ex) {
+                    }
+
+                    try {
+                        $phpword->setValue('mother_phone', $applicationData['motherPhone']);
+                    } catch (Exception $ex) {
+                    }
+
+                    try {
+                        if(!empty($customFields)){
+                            foreach($customFields as $cf){
+                                try {
+                                    $phpword->setValue($cf['field_name'], $applicationData[$cf['field_name']]);
+                                } catch (Exception $ex) {
+                                }
                             }
                         }
+                    } catch (Exception $ex) {
                     }
+
+
+                    $fname = trim(str_replace("/", "_", $fname));
+                    $fname = trim(str_replace(" ", "_", $fname)) . "_" . time();
+
+                    $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".docx";
+                    $phpword->saveAs($savedocsx);
+
+                    
+
+                    // header("Content-Disposition: attachment; filename=" . $fname . ".docx");
+                    // readfile($savedocsx);
+                    // unlink($savedocsx);
+
+                    $fileName = $fname . ".docx";
+                    $dirPath = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/";
+
+                    if (file_exists($dirPath . $fileName)) {
+                        convert($fileName, $dirPath, $dirPath, FALSE, TRUE);
+                    } else {
+                        //echo "file not fund.";
+                    }
+
+                    $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".pdf";
+                    $fileSaveName = $fname . ".pdf";
+
+                    
+                    $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '" . $tc_id . "', file_path = '".$fileSaveName."' , uid= '" . $pupilsightPersonID . "'";
+                    $connection2->query($sq);
+
+                    $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";
+                    $connection2->query($squ);
+
+                    header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
+                    readfile($pdfFilename);
+                    unlink($savedocsx);
                 } catch (Exception $ex) {
+                    echo $ex;
+                    die();
                 }
-
-
-                $fname = trim(str_replace("/", "_", $fname));
-                $fname = trim(str_replace(" ", "_", $fname)) . "_" . time();
-
-                $savedocsx = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".docx";
-                $phpword->saveAs($savedocsx);
-
-                
-
-                // header("Content-Disposition: attachment; filename=" . $fname . ".docx");
-                // readfile($savedocsx);
-                // unlink($savedocsx);
-
-                $fileName = $fname . ".docx";
-                $dirPath = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/";
-
-                if (file_exists($dirPath . $fileName)) {
-                    convert($fileName, $dirPath, $dirPath, FALSE, TRUE);
-                } else {
-                    //echo "file not fund.";
-                }
-
-                $pdfFilename = $_SERVER["DOCUMENT_ROOT"] . "/public/student_tc/" . $fname . ".pdf";
-                $fileSaveName = $fname . ".pdf";
-
-                
-                $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '" . $tc_id . "', file_path = '".$fileSaveName."' , uid= '" . $pupilsightPersonID . "'";
-                $connection2->query($sq);
-
-                $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";
-                $connection2->query($squ);
-
-                header("Content-Disposition: attachment; filename=" . $fname . ".pdf");
-                readfile($pdfFilename);
-                unlink($savedocsx);
-            } catch (Exception $ex) {
-                echo $ex;
-                die();
             }
         } catch (Exception $ex) {
             echo $ex;

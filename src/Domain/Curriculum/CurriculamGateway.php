@@ -1242,4 +1242,35 @@ class CurriculamGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria, true);
     }
+
+    public function getStudentTestSubjectClassWiseAll(QueryCriteria $criteria, $pupilsightSchoolYearID, $pupilsightDepartmentID, $pupilsightYearGroupID, $pupilsightRollGroupID, $test_id)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('examinationSubjectToTest')
+            ->cols([
+                'examinationSubjectToTest.*', 'examinationTest.name', 'examinationTest.id', 'examinationTest.lock_marks_entry', 'examinationGradeSystem.id', 'examinationGradeSystemConfiguration.id ', 'examinationGradeSystemConfiguration.gradeSystemId', "GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.grade_name ORDER BY examinationGradeSystemConfiguration.rank ASC ) as grade_names", "GROUP_CONCAT(DISTINCT examinationGradeSystemConfiguration.id ORDER BY examinationGradeSystemConfiguration.rank ASC) as grade_ids", 'subjectToClassCurriculum.subject_display_name'
+            ])
+            ->leftJoin('examinationTest', 'examinationSubjectToTest.test_id=examinationTest.id')
+            ->leftJoin('examinationTestAssignClass', 'examinationTestAssignClass.test_id=examinationSubjectToTest.test_id')
+            ->leftJoin('subjectToClassCurriculum', 'subjectToClassCurriculum.pupilsightDepartmentID=examinationSubjectToTest.pupilsightDepartmentID')
+            ->leftJoin('examinationGradeSystem', 'examinationSubjectToTest.gradeSystemId=examinationGradeSystem.id')
+            ->leftJoin('examinationGradeSystemConfiguration', 'examinationGradeSystemConfiguration.gradeSystemId=examinationGradeSystem.id');
+
+        if (!empty($test_id)) {
+            $query->where('examinationTestAssignClass.test_id IN(' . $test_id . ') AND examinationSubjectToTest.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ');
+        }
+        $query->where('examinationSubjectToTest.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" ')
+            ->where('examinationSubjectToTest.is_tested = "0" ')
+            ->where('subjectToClassCurriculum.pupilsightDepartmentID = "' . $pupilsightDepartmentID . '" AND examinationTestAssignClass.pupilsightYearGroupID = "' . $pupilsightYearGroupID . '" AND examinationTestAssignClass.pupilsightRollGroupID = "' . $pupilsightRollGroupID . '" AND examinationTestAssignClass.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ');
+
+            $query->groupBy(['examinationSubjectToTest.test_id', 'examinationGradeSystemConfiguration.gradeSystemId'])
+            ->orderBy(['examinationTest.id ASC']);
+        //echo $query;
+        //$query;
+        $res = $this->runQuery($query, $criteria);
+        $data = $res->data;
+        $res->data = $data;
+        return $res;
+    }
 }

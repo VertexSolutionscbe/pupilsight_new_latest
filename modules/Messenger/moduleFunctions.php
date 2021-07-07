@@ -1961,6 +1961,9 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 $return .= __('Date');
                 $return .= '</th>';
                 $return .= '<th>';
+                $return .= __('Subject');
+                $return .= '</th>';
+                $return .= '<th>';
                 $return .= __('Message');
                 $return .= '</th>';
                 $return .= "<th style='text-align: center'>";
@@ -1992,6 +1995,9 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
 
                     //$return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
                     //$return .= $output[$i]['source'].'<br/><br/>';
+                    $return .= '</td>';
+                    $return .= "<td style=' vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
+                    $return .= $output[$i]['subject'];
                     $return .= '</td>';
                     $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
                     $return .= "<span class='badge bg-blue-lt'>";
@@ -2615,6 +2621,9 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                 $return .= __('Date');
                 $return .= '</th>';
                 $return .= '<th>';
+                $return .= __('Subject');
+                $return .= '</th>';
+                $return .= '<th>';
                 $return .= __('Message');
                 $return .= '</th>';
                 $return .= "<th style='text-align: center'>";
@@ -2645,6 +2654,9 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     //$return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
                     //$return .= $output[$i]['source'].'<br/><br/>';
                     $return .= '</td>';
+                    $return .= "<td style='vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 100px'>";
+                    $return .= $output[$i]['subject'];
+                    $return .= '</td>';
                     $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
                     $return .= "<span class='badge bg-blue-lt'>";
                     if ($output[$i]['sms'] == 'Y') {
@@ -2659,7 +2671,7 @@ function getMessages1($guid, $connection2, $mode = '', $date = '', $fromdate = '
                     $return .= "</span>";
                     $return .= "<span class='badge bg-azure-lt' style='margin-left: 10px;'>" . $output[$i]['messengercategory'] . "</span>";
                     $return .= "<h3 style='margin-top: 3px'>";
-                    if ($output[$i]['email'] == 'Y') {
+                    if ($output[$i]['email'] == 'Y' || $output[$i]['messageWall'] == 'Y') {
                         $return .= $output[$i]['subject'];
                     }
                     $return .= '</h3>';

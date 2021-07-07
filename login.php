@@ -126,7 +126,7 @@ else {
             $URL .= '?loginReturn=fail6';
             // header("Location: {$URL}");
             // exit;
-            echo "<script type='text/javascript'>alert('Your Account is Locked, Please Contact to Admin');
+            echo "<script type='text/javascript'>alert('Your account has been locked/disabled, please contact Administrator.');
             window.location.href='./index.php';
 
             </script>";

@@ -693,6 +693,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 <script>
     //limit
 
+    $(document).ready(function() {
+        window.setTimeout(function () {
+            $('#expore_tbl').find("input[name='student_id[]']").each(function() {
+                $(this).addClass('include_cell');
+                $(this).closest('tr').addClass('rm_cell');
+            });
+        }, 1000);
+        
+
+
+        $(document).on('change', '.include_cell', function() {
+            if ($(this).is(":checked")) {
+                $(this).closest('tr').removeClass('rm_cell');
+            } else {
+                $(this).closest('tr').addClass('rm_cell');
+            }
+        });
+
+    });
+
     $(document).on('change', '.filters', function() {
         $("#addBulkStudentEnrolment").show();
     });

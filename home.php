@@ -143,6 +143,9 @@ if (isset($_GET["invalid"])) {
     <link rel="stylesheet" href="<?= $baseurl ?>/assets/libs/slick/slick-theme.css">
     <script src="<?= $baseurl ?>/assets/libs/slick/slick.js" type="text/javascript" charset="utf-8"></script>
 
+    <link rel="stylesheet" href="<?= $baseurl ?>/assets/libs/toastr/toastr.min.css" type="text/css" media="all" />
+
+    <script src="<?= $baseurl ?>/assets/libs/toastr/toastr.min.js"></script>
 
     <style>
         body {
@@ -1508,7 +1511,7 @@ if (isset($_GET["invalid"])) {
         }
     </style>
 
-
+   
     <script>
         //Get the button
         var topbutton = document.getElementById("topBtn");
@@ -1573,6 +1576,7 @@ if (isset($_GET["invalid"])) {
             var invalid = $('#invalid').val();
             if (invalid == 'true') {
                 loginPanel();
+                toast('error', 'You have entered wrong password and you have 10 chances to enter the correct password. Else your account will be locked. You need to contact admin to unlock your account');
             } else {
                 $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
                 try {
@@ -1794,6 +1798,40 @@ if (isset($_GET["invalid"])) {
                 alert('Please Enter Your Username or Email Id!');
             }
         });
+    </script>
+
+    <script>
+        document.body.style.display = "block";
+        //type log|info|success|warning|error
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        };
+
+        function toast(type, msg, title) {
+            if (type == "success") {
+                toastr.success(msg, title);
+            } else if (type == "warning") {
+                toastr.warning(msg, title);
+            } else if (type == "error") {
+                toastr.error(msg, title);
+            } else {
+                toastr.info(msg, title);
+            }
+        }
     </script>
 
 </body>
