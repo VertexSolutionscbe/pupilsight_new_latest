@@ -11,7 +11,7 @@ try {
 
     $id = $_GET['invid'];
 
-    $sql = 'SELECT a.invoice_no as invNo, a.pupilsightPersonID, b.*, b.title as invoice_title, d.path, d.column_start_by, c.ac_no FROM fn_fee_invoice_student_assign AS a LEFT JOIN fn_fee_invoice AS b ON a.fn_fee_invoice_id = b.id LEFT JOIN fn_fees_head AS c ON b.fn_fees_head_id = c.id LEFT JOIN fn_fees_receipt_template_master AS d ON c.invoice_template = d.id WHERE a.id = '.$id.' ';
+    $sql = 'SELECT a.invoice_no as invNo, a.submission_id, b.*, b.title as invoice_title, d.path, d.column_start_by, c.ac_no FROM fn_fee_invoice_applicant_assign AS a LEFT JOIN fn_fee_invoice AS b ON a.fn_fee_invoice_id = b.id LEFT JOIN fn_fees_head AS c ON b.fn_fees_head_id = c.id LEFT JOIN fn_fees_receipt_template_master AS d ON c.invoice_template = d.id WHERE a.id = '.$id.' ';
     $result = $connection2->query($sql);
     $invData = $result->fetch();
     // echo '<pre>';
@@ -32,7 +32,7 @@ try {
         $due_date = date('d/m/Y', strtotime($invData['due_date']));
     }
     
-    $pupilsightPersonID = $invData['pupilsightPersonID'];
+    $submission_id = $invData['submission_id'];
     $file = $invData['path'];
     $column_start_by = $invData['column_start_by'];
     
@@ -47,9 +47,33 @@ try {
             $fieldName = '';
         }
 
-        $sqlstu = "SELECT a.officialName , a.admission_no, b.name as class, c.name as section ".$fieldName." FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " ";
+        // $sqlstu = "SELECT a.officialName , a.admission_no, b.name as class, c.name as section ".$fieldName." FROM pupilsightPerson AS a LEFT JOIN pupilsightStudentEnrolment AS d ON a.pupilsightPersonID = d.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS b ON d.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS c ON d.pupilsightRollGroupID = c.pupilsightRollGroupID WHERE a.pupilsightPersonID = " . $pupilsightPersonID . " ";
+
+        $sqlstu = "SELECT  b.name as prog,c.name as class FROM wp_fluentform_submissions AS a LEFT JOIN pupilsightProgram AS b ON a.pupilsightProgramID = b.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS c ON a.pupilsightYearGroupID = c.pupilsightYearGroupID WHERE a.id = ".$submission_id." ";
         $resultstu = $connection2->query($sqlstu);
         $valuestu = $resultstu->fetch();
+
+        $sqlstu = 'SELECT * FROM wp_fluentform_entry_details WHERE submission_id = "'.$submission_id.'" ';
+        $resultstu = $connection2->query($sqlstu);
+        $dataApplicant = $resultstu->fetchAll();
+        //print_r($dataApplicant);
+
+        $student_name = '';
+        $father_name = '';
+        $mother_name = '';
+        if(!empty($dataApplicant)){
+            $len = count($dataApplicant);
+            $i = 0;
+            $dt = array();
+            while($i<$len){
+                $dt[$dataApplicant[$i]["field_name"]] = $dataApplicant[$i]["field_value"];
+                $i++;
+            }
+
+            $student_name = $dt["student_name"];
+            $father_name = $dt["father_name"];
+            $mother_name = $dt["mother_name"];
+        }
 
         $total = 0;
         $totalTax = 0;
@@ -126,33 +150,8 @@ try {
             }
         }
 
-        $sqlfat = "SELECT b.officialName , b.phone1, b.email FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $pupilsightPersonID . " AND a.relationship = 'Father' ";
-        $resultfat = $connection2->query($sqlfat);
-        $valuefat = $resultfat->fetch();
-
-        $father_name = '';
-        $father_email = '';
-        $father_phone = '';
-        if(!empty($valuefat)){
-            $father_name = $valuefat['officialName'];
-            $father_email = $valuefat['email'];
-            $father_phone = $valuefat['phone1'];
-        }
-
-        $sqlmot = "SELECT b.officialName , b.phone1, b.email FROM pupilsightFamilyRelationship AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID1 = b.pupilsightPersonID WHERE a.pupilsightPersonID2 = " . $pupilsightPersonID . " AND a.relationship = 'Mother' ";
-        $resultmot = $connection2->query($sqlmot);
-        $valuemot = $resultmot->fetch();
-
-        $mother_name = '';
-        $mother_email = '';
-        $mother_phone = '';
-        if(!empty($valuemot)){
-            $mother_name = $valuemot['officialName'];
-            $mother_email = $valuemot['email'];
-            $mother_phone = $valuemot['phone1'];
-        }
-
-        $class_section = $valuestu["class"] . " " . $valuestu["section"];
+        
+        $class_section = $valuestu["class"];
         $date = date('d-m-Y');
 
         if(!empty($custDataChk)){
@@ -166,11 +165,13 @@ try {
             "invoice_no" => $invoice_no,
             "fee_head_acc_no" => $fee_head_acc_no,
             "date" => $date,
-            "student_name" => $valuestu["officialName"],
-            "student_id" => $pupilsightPersonID,
+            "student_name" => $student_name,
+            "student_id" => $submission_id,
             "admission_no" => $valuestu["admission_no"],
             "father_name" => $father_name,
             "mother_name" => $mother_name,
+            "program_name" => $valuestu["prog"],
+            "class_name" => $valuestu["class"],
             "class_section" => $class_section,
             "total_amount" => number_format($total, 2, '.', ''),
             "inv_date" => $inv_date,

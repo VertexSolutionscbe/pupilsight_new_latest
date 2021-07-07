@@ -251,6 +251,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
         echo __('Pending Amount');
         echo '</th>';
         echo "<th>";
+        echo __('Print Invoice');
+        echo '</th>';
+        echo "<th>";
         echo __('Receipt');
         echo '</th>';
         echo "</thead>";
@@ -266,10 +269,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/fee_make_payment.
                 }
                 if($ind['chkpayment'] == 'Paid'){
                     //$cls = 'value="0" checked disabled';
-                    echo '<tr><td><input type="checkbox" class=" invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'" value="0" checked disabled ></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$totAmt.'</td><td>'.$ind['pendingamount'].'</td><td>'.$receipt.'</td></tr>';
+                    echo '<tr><td><input type="checkbox" class=" invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'" value="0" checked disabled ></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$totAmt.'</td><td>'.$ind['pendingamount'].'</td>
+                    <td><a href="thirdparty/phpword/applicant_invoice_print.php?invid='.$ind['invid'].'"><i title="Print Invoice" class="mdi mdi-printer mdi-24px"></i></a></td>
+                    <td>'.$receipt.'</td></tr>';
                 } else {
                     $cls = 'value="'.$ind['invoiceid'].'"'; 
-                     echo '<tr><td><input type="checkbox" class="chkinvoiceApplicant invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'"  '.$cls.'  data-amtedt="'.$ind['amount_editable'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'"></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['finalamount'].'</td><td>'.$ind['pendingamount'].'</td><td></td></tr>';
+                     echo '<tr><td><input type="checkbox" class="chkinvoiceApplicant invoice'.$ind['id'].'" name="invoiceid[]" data-h="'.$ind['fn_fees_head_id'].'" data-se="'.$ind['rec_fn_fee_series_id'].'" id="allfeeItemid" data-stu="'.$stuId.'" data-fper="'.$ind['amtper'].'" data-ftype="'.$ind['type'].'"  '.$cls.'  data-amtedt="'.$ind['amount_editable'].'" data-inv="'.$ind['invid'].'" data-ife="'.$ind['is_fine_editable'].'"></td><td>'.$ind['stu_invoice_no'].'</td><td>'.$ind['title'].'</td><td>'.$ind['finalamount'].'</td><td>'.$ind['pendingamount'].'</td>
+                     <td><a href="thirdparty/phpword/applicant_invoice_print.php?invid='.$ind['invid'].'"><i title="Print Invoice" class="mdi mdi-printer mdi-24px"></i></a></td>
+                     <td></td></tr>';
                     
                 }
             }

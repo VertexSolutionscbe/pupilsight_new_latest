@@ -407,7 +407,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 foreach($subject_wise_tests as $k => $s_test)
                 {
                     $skill_configure = $s_test['skill_configure'];
-                    //echo $skill_configure;
+                    
                     if($skill_configure != 'None' && $s_test['skill_id'] == 0){
                         // if($s_test['lock_marks_entry'] == '1'){
                         //     $disabled = 'disabled';
@@ -630,11 +630,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                             $disabled = '';
                         }
     
-                        $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $pupilsightDepartmentID,'pupilsightPersonID' => $row['stuid'],'skill_id' => $skill_id);                    
-                        $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id ';
-                        $result = $connection2->prepare($sql1);
-                        $result->execute($data1);
-                        $prevdata =  $result->fetch();
+                        if(!empty($skill_id)){
+                            $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $pupilsightDepartmentID,'pupilsightPersonID' => $row['stuid'],'skill_id' => $skill_id);                    
+                            $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id ';
+                            $result = $connection2->prepare($sql1);
+                            $result->execute($data1);
+                            $prevdata =  $result->fetch();
+                        } else {
+                            $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $pupilsightDepartmentID,'pupilsightPersonID' => $row['stuid']);                    
+                            $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID';
+                            $result = $connection2->prepare($sql1);
+                            $result->execute($data1);
+                            $prevdata =  $result->fetch();
+                        }
+                        
                         // echo '<pre>';
                         // print_r($prevdata);
                         // echo '</pre>';
