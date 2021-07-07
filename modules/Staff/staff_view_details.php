@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
                             echo "<div class='linkTop'>";
                             //echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&pupilsightPersonID=$pupilsightPersonID'><i style='margin: 0 0 -4px 5px' title='".__('Edit')."' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
-                            echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Students/student_edit.php&pupilsightPersonID=$pupilsightPersonID'><i style='margin: 0 0 -4px 5px' title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
+                            echo "<a href='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=/modules/Staff/staff_manage_edit.php&pupilsightPersonID=$pupilsightPersonID'><i style='margin: 0 0 -4px 5px' title='" . __('Edit') . "' class='mdi mdi-pencil-box-outline mdi-24px px-2'></i></a> ";
                             echo '</div>';
                         }
 
