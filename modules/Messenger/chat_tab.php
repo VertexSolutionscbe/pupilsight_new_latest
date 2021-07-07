@@ -12,6 +12,7 @@
 Pupilsight, Flexible & Open School System
 */
 
+
 use Pupilsight\Domain\Messenger\ChatGateway;
 ?>
 
@@ -46,7 +47,7 @@ if ($accessFlag) {
   //tab list
   $uid = $_SESSION[$guid]['pupilsightPersonID'];
   $roleidnum = (int)$roleid;
-  $tabs = $chatGateway->getRoleTabs($connection2, $roleidnum);
+  $tabs = $chatGateway->getAdminRoleTabs($connection2);
   $roles = $chatGateway->getRoleMaster($connection2);
   $len = count($roles);
   $i = 0;

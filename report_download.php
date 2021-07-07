@@ -31,17 +31,18 @@ try {
 
     //$fileDownloadType = "xlsx"; // for excel keep blank
 
-    $sq = "select * from report_manager where id='".$_POST["reportid"]."'";
+    $sq = "select * from report_manager where id='" . $_POST["reportid"] . "'";
     $query = $connection2->query($sq);
     $report = $query->fetch();
-    if(empty($report)){
-        $res["msg"]= "No Data available for report";
+    if (empty($report)) {
+        $res["msg"] = "No Data available for report";
         die();
     }
 
 
-    function html_table($data = [],$header = [],$total = null, $fileDownloadType, $addSerialNo = true) {
-        try{
+    function html_table($data = [], $header = [], $total = null, $fileDownloadType, $addSerialNo = true)
+    {
+        try {
             $rows = [];
             $cnt = 1;
             $colLen = 1;
@@ -54,17 +55,17 @@ try {
                 $colLen = 1;
                 foreach ($row as $cell) {
                     $cv = "";
-                    if($cell){
+                    if ($cell) {
                         $cv = $cell;
                     }
-                    $cells[] = "\n<td>".$cv."</td>";
+                    $cells[] = "\n<td>" . $cv . "</td>";
                     $colLen++;
                 }
                 $rows[] = "\n<tr>" . implode("", $cells) . "</tr>\n";
             }
 
             //for table header
-            if ($total && $fileDownloadType!="ihtml") {
+            if ($total && $fileDownloadType != "ihtml") {
                 if ($colLen) {
                     $rows[] =
                         "\n<tr><td style='text-align:right' colspan='" .
@@ -76,7 +77,7 @@ try {
             }
             $hflag = false;
             if (empty($header)) {
-                if($data[0]){
+                if ($data[0]) {
                     $hflag = true;
                     $header = array_keys($data[0]);
                 }
@@ -88,47 +89,47 @@ try {
                     $cells[] = "\n<th>SN</th>";
                 }
                 foreach ($header as $cell) {
-                    if($hflag){
-                        $cells[] = "\n<th>".strtoupper($cell)."</th>";
-                    }else{
+                    if ($hflag) {
+                        $cells[] = "\n<th>" . strtoupper($cell) . "</th>";
+                    } else {
                         $cells[] = "\n<th>{$cell}</th>";
                     }
                 }
-                if($fileDownloadType=="ihtml"){
+                if ($fileDownloadType == "ihtml") {
                     $th = "\n<thead><tr>" . implode("", $cells) . "\n</tr></thead>\n";
-                }else{
+                } else {
                     $th = "\n<tr>" . implode("", $cells) . "\n</tr>\n";
                 }
-                
             }
 
             $tbl = "";
-            if($fileDownloadType=="ihtml"){
-                $tbl = "\n<table id='table' class='cell-border stripe order-column hover table table-striped dataTable' style='width:100%;'>" .$th;
-                $tbl .= "\n<tbody>".implode("", $rows) ."\n</tbody>\n</table>\n";
-                if ($total){
+            if ($fileDownloadType == "ihtml") {
+                $tbl = "\n<table id='table' class='cell-border stripe order-column hover table table-striped dataTable' style='width:100%;'>" . $th;
+                $tbl .= "\n<tbody>" . implode("", $rows) . "\n</tbody>\n</table>\n";
+                if ($total) {
                     $tbl .= "\n<br><h3>Total - $total</h3>";
                 }
-            }else{
-                $tbl = "\n<table class='table' style='width:100%;'>" .$th;
-                $tbl .= implode("", $rows) ."\n</table>\n";
+            } else {
+                $tbl = "\n<table class='table' style='width:100%;'>" . $th;
+                $tbl .= implode("", $rows) . "\n</table>\n";
             }
             return $tbl;
-        }catch(Exception $ex){
+        } catch (Exception $ex) {
             echo $ex->getMessage();
         }
         //return "<table class='table'>" . implode("", $rows) . "</table>";
     }
 
-    function getTranslateArray($sq){
-        $sd = array("date1","date2","date3","date4","param1","param2","param3","param4","param5","param6","param7","param8");
+    function getTranslateArray($sq)
+    {
+        $sd = array("date1", "date2", "date3", "date4", "param1", "param2", "param3", "param4", "param5", "param6", "param7", "param8");
         $len = count($sd);
         $i = 0;
         $trans = array();
-        while($i<$len){
+        while ($i < $len) {
             $pos = strpos($sq, $sd[$i]);
             if ($pos !== false) {
-                $trans[":".$sd[$i]]=$_POST[$sd[$i]];
+                $trans[":" . $sd[$i]] = $_POST[$sd[$i]];
             }
             $i++;
         }
@@ -137,28 +138,28 @@ try {
 
     $header = [];
     $totalValue = null;
-    
 
-    if($report["sql_query"]){
+
+    if ($report["sql_query"]) {
         //run query
         $sq = htmlspecialchars_decode(stripslashes($report["sql_query"]), ENT_QUOTES);
         $trans = getTranslateArray($sq);
         $sq = strtr($sq, $trans);
         $query1 = $connection2->query($sq);
         $result = $query1->fetchAll();
-    }else{
+    } else {
         //api call working on now
         $reportGateway = $container->get(ReportGateway::class);
         //$reportGateway = $container->get(HelperGateway::class);
         $result = $reportGateway->{$report["api"]}($connection2, $_POST);
     }
-    
-    if($report["header"]){
-        $header = explode(",",$report["header"]);
+
+    if ($report["header"]) {
+        $header = explode(",", $report["header"]);
     }
 
     //if total need to calculate then
-    if($report["total_column"]){
+    if ($report["total_column"]) {
         $isTotal = true;
         $totColumns = $report["total_column"];
         $len = count($result);
@@ -175,24 +176,24 @@ try {
 
     $htmlString = html_table($result, $header, $totalValue, $fileDownloadType);
     $html = "<html>";
-    if($fileDownloadType=="ihtml" || $fileDownloadType=="html"){
+    if ($fileDownloadType == "ihtml" || $fileDownloadType == "html") {
         $html = "<html translate='no' lang='en' class='notranslate' translate='no'>";
     }
-    
-    if($fileDownloadType=="ihtml"){
-        $html .="\n<head>";
-        $html .="\n<style>\n.table{font: normal 13px Arial, sans-serif;}\n</style>";
-        $html .="\n<meta name='google' content='notranslate' />";
+
+    if ($fileDownloadType == "ihtml") {
+        $html .= "\n<head>";
+        $html .= "\n<style>\n.table{font: normal 13px Arial, sans-serif;}\n</style>";
+        $html .= "\n<meta name='google' content='notranslate' />";
         $html .= "\n<script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>";
-        $html .="\n<link rel='stylesheet' href='https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css'>";
+        $html .= "\n<link rel='stylesheet' href='https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css'>";
         $html .= "\n<script src='https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js'></script>";
         $html .= "\n<script>$(document).ready(function(){
             $('#table').DataTable();
         });
         </script>";
-        $html .="\n</head>";
-    }else{
-    $html .= "\n<style>\n.table {
+        $html .= "\n</head>";
+    } else {
+        $html .= "\n<style>\n.table {
             border: solid 1px #DDEEEE;
             border-collapse: collapse;
             border-spacing: 0;
@@ -215,20 +216,20 @@ try {
     }
 
     $html .= "\n<body>";
-    $html .= "\n<center>\n<br><h2>".$_SESSION[$guid]["organisationName"]."</h2>";
-    $html .= "\n<h3>".$report["name"]."</h3><br/>\n</center>";
+    $html .= "\n<center>\n<br><h2>" . $_SESSION[$guid]["organisationName"] . "</h2>";
+    $html .= "\n<h3>" . $report["name"] . "</h3><br/>\n</center>";
     $html .= $htmlString;
     $html .= "\n</body>";
     $html .= "</html>";
-    
-    
+
+
     $fileNameGen = $input = preg_replace("/[^a-zA-Z]+/", "", $report["name"]);
 
     if ($fileDownloadType == "html" || $fileDownloadType == "ihtml") {
         //echo "file downlod type html";
-        $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/".$fileNameGen.".html";
+        $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/" . $fileNameGen . ".html";
         //echo "file ".$fileName;
-        $res["file"]=$baseurl."/public/".$fileNameGen.".html";
+        $res["file"] = $baseurl . "/public/" . $fileNameGen . ".html";
         //echo json_encode($res);
         file_put_contents($fileName, $html);
         chmod($fileName, 0777);
@@ -257,7 +258,7 @@ try {
         //$sheet->getActiveSheet()->mergeCells("A1:E1");
 
         $writer = new Xlsx($spreadsheet);
-        $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/".$fileNameGen.".xlsx";
+        $fileName = $_SERVER["DOCUMENT_ROOT"] . "/public/" . $fileNameGen . ".xlsx";
         $writer->save($fileName);
         chmod($fileName, 0777);
 
@@ -272,9 +273,6 @@ try {
         unlink($fileName);
         //echo "Downloading Started";
     }
-
 } catch (Exception $ex) {
     echo $ex->getMessage();
 }
-
-?>

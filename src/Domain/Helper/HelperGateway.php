@@ -41,7 +41,8 @@ class HelperGateway extends QueryableGateway
 
     public function getActiveReport($connection2)
     {
-        $sq = "select * from report_manager where status='2' and module_id<>'archive' ";
+        //$sq = "select * from report_manager where status='2' and module_id<>'archive' ";
+        $sq = "select * from report_manager where status='2' ";
         $result = $connection2->query($sq);
         return $result->fetchAll();
     }
@@ -296,6 +297,7 @@ class HelperGateway extends QueryableGateway
             $query1 = $connection2->query($sq1);
             $result1 = $query1->fetch();
 
+            //left join assignstaff_tosubject as asub on asub.subjectToClassCurriculumID = stc.id
             $sq = "select stc.subject_display_name, subject_type, ps.pupilsightPersonID from subjectToClassCurriculum as stc
             left join assignstaff_tosubject as asub on asub.subjectToClassCurriculumID = stc.id
             left join pupilsightStaff as ps on ps.pupilsightStaffID = asub.pupilsightStaffID

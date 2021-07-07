@@ -13,6 +13,8 @@ Pupilsight, Flexible & Open School System
 */
 
 use Pupilsight\Domain\Helper\HelperGateway;
+use Pupilsight\Domain\Messenger\ChatGateway;
+
 ?>
 
 <?php
@@ -44,7 +46,11 @@ if ($accessFlag) {
 
   $isPostActive = true;
   $helperGateway = $container->get(HelperGateway::class);
+  $chatGateway = $container->get(ChatGateway::class);
   $roleid = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+  $chat_tabs = $chatGateway->getRoleTabs($connection2, $roleid);
+  //print_r($chat_tabs);
+
   $isPostAllow = true;
   $isStParent = false; // student and parent post
   if ($roleid == '003') {
@@ -136,9 +142,33 @@ if ($accessFlag) {
     <!---Chat Post Widget---->
     <div class="card" id='chatPostWidget'>
       <div class="card-body">
+        <div class="row">
+          <div class="col-md-12 my-2">
+            <?php
+            if ($chat_tabs) {
+              $len = count($chat_tabs);
+              $i = 0;
+              $str = "";
+              $strcheck = "checked";
+
+              while ($i < $len) {
+                $tabName = ucwords($chat_tabs[$i]["name"]);
+                $tabID = $chat_tabs[$i]["id"];
+                $str .= '<label class="form-check form-check-inline">';
+                $str .= '<input class="form-check-input" type="radio" name="rdtabid" value="' . $tabID . '|$|' . $chat_tabs[$i]["name"] . '" ' . $strcheck . '>';
+                $str .= '<span class="form-check-label">' . $tabName . '</span></label>';
+                $i++;
+                $strcheck = "";
+              }
+              echo $str;
+            }
+            ?>
+          </div>
+          <div class='hr-text'>Select Groups or Users</div>
+        </div>
         <?php
         $postFunctionStr = "postMessage();";
-        if ($roleid == "002") {
+        if ($roleid == "002" || $roleid == "034" || $roleid == "035") {
           //teacher post widget data
           $postFunctionStr = "postClassTeacherMessage();";
           $staffid = "";
@@ -372,28 +402,51 @@ if ($accessFlag) {
 
           <div class="form-label">Message Type</div>
           <label class="form-check form-check-inline">
-            <input class="form-check-input" id="msg_type2" name="msg_type" type="radio" checked value="2">
-            <span class="form-check-label">Two Way</span>
+            <input class="form-check-input" id="msg_type1" name='msg_type' type="radio" checked value="1">
+            <span class="form-check-label">One Way</span>
           </label>
 
           <label class="form-check form-check-inline">
-            <input class="form-check-input" id="msg_type1" name='msg_type' type="radio" value="1">
-            <span class="form-check-label">One Way</span>
+            <input class="form-check-input" id="msg_type2" name="msg_type" type="radio" value="2">
+            <span class="form-check-label">Two Way</span>
           </label>
         </div>
 
 
 
         <div class="col-12 mt-4">
-          <button type="button" class="btn btn-primary" id='postBtn' onclick="<?= $postFunctionStr; ?>">Post Message</button>
+          <button type="button" class="btn btn-primary" id='postBtn' onclick="<?= $postFunctionStr; ?>">Submit</button>
           <button type="button" class="btn btn-secondary ml-2" onclick="closeChatBox();">Cancel</button>
         </div>
       </div>
     </div>
-    </div>
+
   <?php } elseif ($isStParent) { ?>
     <div class="card" id='chatStPostWidget'>
       <div class="card-body">
+        <div class="row">
+          <div class="col-md-12 my-2">
+            <?php
+            if ($chat_tabs) {
+              $len = count($chat_tabs);
+              $i = 0;
+              $str = "";
+              $strcheck = "checked";
+
+              while ($i < $len) {
+                $tabName = ucwords($chat_tabs[$i]["name"]);
+                $tabID = $chat_tabs[$i]["id"];
+                $str .= '<label class="form-check form-check-inline">';
+                $str .= '<input class="form-check-input" type="radio" name="rdtabid" value="' . $tabID . '|$|' . $chat_tabs[$i]["name"] . '" ' . $strcheck . '>';
+                $str .= '<span class="form-check-label">' . $tabName . '</span></label>';
+                $i++;
+                $strcheck = "";
+              }
+              echo $str;
+            }
+            ?>
+          </div>
+        </div>
         <div class="row">
           <div class="col-md-4 col-sm-12">
             <select id='stGroup' onchange="stGroupChange()">
@@ -448,8 +501,7 @@ if ($accessFlag) {
           </div>
 
           <div class="col-12 mt-4">
-            <button type="button" class="btn btn-primary" id='postStBtn' onclick="postStMessage();">Post
-              Message</button>
+            <button type="button" class="btn btn-primary" id='postStBtn' onclick="postStMessage();">Submit</button>
             <button type="button" class="btn btn-secondary ml-2" onclick="closeStChatBox();">Cancel</button>
           </div>
         </div>
@@ -458,46 +510,19 @@ if ($accessFlag) {
     </div>
   <?php }
   ?>
-  <!--   
-<div class="card" id='chatReplyWidget'>
-    <div class="card-body">
-          <div class="row">
-              <div class="col-12 my-3">
-                <textarea class="form-control" id="reply_message" name="chat_message" rows="6" placeholder="Write Message Here"></textarea>
-                <input type='hidden' id='chat_parent_id' value="">
-                <input type='hidden' id='reply_delivery_type' value="">
-              </div>
-              <div class="col-12 mb-3">
-                <div class="form-label">Attachment</div>
-                <form enctype="multipart/form-data" id="reply_form">
-                  <input type="file" id='reply_attachment' name="attachment" class='form-control'>
-                </form>
-              </div>
-          </div>
-          <div class="col-12">
-            <button type="button" class="btn btn-primary" id='replyBtn' onclick="replyMessage();">Reply
-              Message</button>
-            <button type="button" class="btn btn-secondary ml-2" onclick="closeReplyBox();">Cancel</button>
-          </div>
-    </div>
-</div>
---->
   </div>
 
   <!--Chat Area Details--->
-  <div class="card my-4">
+  <div class="">
 
-    <div class='card-header'>
+    <div class=''>
       <div class='container'>
         <div class='row'>
-          <div class='col-auto'>
-            <h2>Chat Message</h2>
-          </div>
           <div class='col-auto ml-auto'>
             <?php if ($isPostAllow) {
-              echo "<button class='btn btn-primary' onclick='openChatBox();'>Post New Message</button>";
+              echo "<button class='btn btn-primary' onclick='openChatBox();'>New Post</button>";
             } elseif ($isStParent) {
-              echo "<button class='btn btn-primary' onclick='openStChatBox();'>Post New Message</button>";
+              echo "<button class='btn btn-primary' onclick='openStChatBox();'>New Post</button>";
             } ?>
           </div>
         </div>
@@ -505,7 +530,31 @@ if ($accessFlag) {
     </div>
 
     <!--Card Message Check-->
-    <div class="card-body" id='cardMessage'></div>
+    <ul class="nav nav-tabs">
+      <?php
+      if ($chat_tabs) {
+        $len = count($chat_tabs);
+        $i = 0;
+        $strActive = "active";
+        $str = "";
+        $strTab = "";
+        $strTabActive = "active show";
+        while ($i < $len) {
+          $tabName = ucwords($chat_tabs[$i]["name"]);
+          $tabID = $chat_tabs[$i]["id"];
+          $str .= '<li class="nav-item"><a href="#cw_' . $tabID . '" tab-id="' . $tabID . '" tab-name="' . $tabName . '" class="nav-link ' . $strActive . '">' . $tabName . '</a></li>';
+          $strTab .= '<div class="tab-pane fade ' . $strTabActive . '" id="cw_' . $tabID . '"><div class="cardMessage px-4 py-2" id="mw_' . $tabID . '"></div></div>';
+          $i++;
+          $strTabActive = "";
+          $strActive = "";
+        }
+        echo $str;
+      }
+      ?>
+    </ul>
+    <div class="tab-content" id='myTabContent'>
+      <?= $strTab; ?>
+    </div>
 
   </div>
   <!--Reply Dialog-->
@@ -524,6 +573,7 @@ if ($accessFlag) {
             <div class="col-12 my-3">
               <textarea class="form-control" id="reply_message" name="chat_message" rows="6" placeholder="Write Message Here"></textarea>
               <input type='hidden' id='chat_parent_id' value="">
+              <input type='hidden' id='post_cuid' value="">
               <input type='hidden' id='reply_delivery_type' value="">
             </div>
             <div class="col-12 mb-3">
@@ -549,6 +599,33 @@ if ($accessFlag) {
   <button type="button" id='btnReplyDia' data-toggle="modal" data-target="#replyDialog"></button>
 
   <div id='dataHandler' style='line-height:18px;'></div>
+  <script>
+    var tabid = "<?= $chat_tabs[0]["id"]; ?>";
+    var tabname = "<?= $chat_tabs[0]["name"]; ?>";
+
+    $(function() {
+      $(".nav-tabs a").click(function(e) {
+        e.preventDefault();
+        $(this).tab('show');
+        tabid = $(this).attr('tab-id');
+        tabname = $(this).attr('tab-name');
+        if (chatMsgTab[tabid] === undefined) {
+          loadMessage();
+        }
+      });
+    });
+
+    var interval;
+    $(function() {
+      loadPeople('all');
+      loadMessage();
+      interval = setInterval(() => {
+        loadMessage();
+      }, 10000);
+      //#chatReplyWidget, 
+      $("#chatPostWidget, #stSubject, #chatStPostWidget, #dataHandler, #btnReplyDia").hide();
+    });
+  </script>
   <script>
     function openStChatBox() {
       $("#chatStPostWidget").show(400);
@@ -594,6 +671,11 @@ if ($accessFlag) {
       var groupid = $("#stGroup").find(':selected').attr('groupid');
       var groupName = $("#stGroup").find(':selected').attr('groupname');
 
+      var tabs = $('input[name="rdtabid"]:checked').val();
+      var sttab = tabs.split("|$|");
+      var tabid = sttab[0];
+      var tab = sttab[1];
+
 
       var data = new FormData(document.getElementById("st_post_form"));
       data.append("type", "postMessage");
@@ -601,6 +683,8 @@ if ($accessFlag) {
       data.append("people", people);
       data.append("group_id", groupid);
       data.append("group_name", groupName);
+      data.append("tabid", tabid);
+      data.append("tab", tab);
       data.append("delivery_type", delivery_type);
       data.append("msg", msg);
       //console.log(data);
@@ -697,7 +781,7 @@ if ($accessFlag) {
             if (str) {
               try {
                 $('#studentList').html("");
-                $('#studentList').selectize()[0].selectize.destroy();
+                //$('#studentList').selectize()[0].selectize.destroy();
                 $('#studentList').html(str);
                 $('#studentList').selectize({
                   plugins: ['remove_button'],
@@ -714,18 +798,8 @@ if ($accessFlag) {
       }
     }
   </script>
-  <script>
-    var interval;
-    $(function() {
-      loadPeople('all');
-      loadMessage();
-      interval = setInterval(() => {
-        loadMessage();
-      }, 10000);
-      //#chatReplyWidget, 
-      $("#chatPostWidget, #stSubject, #chatStPostWidget, #dataHandler, #btnReplyDia").hide();
-    });
 
+  <script>
     var transcation = 400;
 
     function openReplyBox() {
@@ -753,18 +827,29 @@ if ($accessFlag) {
       $("#chatPostWidget").hide(transcation);
       $("#chat_message").val("");
       $("#chat_parent_id").val("");
+      $("#post_cuid").val("");
       $("#post_attachment").val("");
       //var $select = $('#studentList').selectize();
       //var control = $select[0].selectize;
       //control.clear();
     }
 
-    function replyPost(chat_parent_id, deliveryType) {
+    function replyPost(chat_parent_id, post_cuid, deliveryType) {
       openReplyBox();
       $("#chat_parent_id").val(chat_parent_id);
+      $("#post_cuid").val(post_cuid);
       $("#reply_delivery_type").val(deliveryType);
       $("#reply_attachment").val("");
-      document.getElementById("chatReplyWidget").focus();
+      //document.getElementById("chatReplyWidget").focus();
+    }
+
+    function replyIndividualPost(chat_parent_id, post_cuid, deliveryType) {
+      openReplyBox();
+      $("#chat_parent_id").val(chat_parent_id);
+      $("#post_cuid").val(post_cuid);
+      $("#reply_delivery_type").val(deliveryType);
+      $("#reply_attachment").val("");
+      //document.getElementById("chatReplyWidget").focus();
     }
 
     Array.prototype.unique = function() {
@@ -842,6 +927,11 @@ if ($accessFlag) {
         tagid = delivery_type;
       }
 
+      var tabs = $('input[name="rdtabid"]:checked').val();
+      var sttab = tabs.split("|$|");
+      var tabid = sttab[0];
+      var tab = sttab[1];
+      console.log(tab, tabid);
 
       var data = new FormData(document.getElementById("post_form"));
       data.append("type", "postMessage");
@@ -850,6 +940,8 @@ if ($accessFlag) {
       data.append("delivery_type", delivery_type);
       data.append("tag", tag);
       data.append("tagid", tagid);
+      data.append("tabid", tabid);
+      data.append("tab", tab);
       data.append("msg", msg);
       //console.log(data);
 
@@ -902,11 +994,19 @@ if ($accessFlag) {
           return;
         }
       }
+
+      var tabs = $('input[name="rdtabid"]:checked').val();
+      var sttab = tabs.split("|$|");
+      var tabid = sttab[0];
+      var tab = sttab[1];
+
       var data = new FormData(document.getElementById("post_form"));
       data.append("type", "postMessage");
       data.append("msg_type", msg_type);
       data.append("tag", tag);
       data.append("tagid", tagid);
+      data.append("tab", tab);
+      data.append("tabid", tabid);
       data.append("people", people);
       data.append("delivery_type", delivery_type);
       data.append("msg", msg);
@@ -936,7 +1036,6 @@ if ($accessFlag) {
 
     }
 
-
     function replyMessage() {
       var msg = $("#reply_message").val();
       if (msg == "") {
@@ -946,10 +1045,13 @@ if ($accessFlag) {
 
       var chat_parent_id = $("#chat_parent_id").val();
       var delivery_type = $("#reply_delivery_type").val();
+      var post_cuid = $("#post_cuid").val();
 
       var data = new FormData(document.getElementById("reply_form"));
       data.append("type", "replyMessage");
       data.append("chat_parent_id", chat_parent_id);
+      data.append("post_cuid", post_cuid);
+      data.append("tabid", tabid);
       data.append("delivery_type", delivery_type);
       data.append("msg", msg);
 
@@ -982,6 +1084,7 @@ if ($accessFlag) {
 
     //var obj;
     var lts = 0;
+    var chatMsgTab = [];
 
     function loadMessage() {
       //console.log("Load Message called");
@@ -989,21 +1092,32 @@ if ($accessFlag) {
       if (lts > 0) {
         timestamp = lts;
       }
+
+      if (chatMsgTab[tabid] !== undefined) {
+        timestamp = chatMsgTab[tabid]["lts"];
+      } else {
+        chatMsgTab[tabid] = [];
+        chatMsgTab[tabid]["lts"] = lts;
+      }
+
       $.ajax({
         url: 'ajax_chat.php',
         type: 'post',
         data: {
           type: "getMessage",
+          tabid: tabid,
           lts: timestamp
         },
         success: function(response) {
+          //console.log(response);
+          //$(".cardMessage").html("");
           if (response) {
             var obj = jQuery.parseJSON(response);
-
             Object.keys(obj).forEach(function(key) {
               //console.log(obj[key]);
-              createCardMessage(obj[key]);
+              createCardMessage(obj[key], false);
             });
+            chatMsgTab[tabid]["lts"] = lts;
           }
         }
       });
@@ -1011,21 +1125,17 @@ if ($accessFlag) {
 
     var roleid = "<?= $roleid; ?>";
 
-
-    function createCardMessage(obj) {
-
-      //console.log("test card message: ",obj);
+    function createCardMessage(obj, isArchive) {
       var replyBtn = "";
+      var isReplyActive = false;
       if (obj["msg_type"] == "2") {
-        replyBtn = "<a href ='#chatReplyWidget' class='' onclick=\"replyPost('" + obj["id"] + "','" + obj[
-            "delivery_type"] +
-          "');\"><i class ='mdi mdi-reply-circle mr-1'></i> Reply </a>";
+        isReplyActive = true;
+        replyBtn = "<a href ='#chatReplyWidget' class='' onclick=\"replyPost('" + obj["id"] + "','" + obj["cuid"] + "','" + obj["delivery_type"] + "');\"><i class ='mdi mdi-reply-circle mr-1'></i> Reply </a>";
       }
+
       var attachment = "";
       if (obj["attachment"]) {
-
-        attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" +
-          obj["attach_file"] + "</a></div>";
+        attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" + obj["attach_file"] + "</a></div>";
       }
 
       var readMore = "";
@@ -1042,49 +1152,67 @@ if ($accessFlag) {
       if (obj["tag"]) {
         tag = "<span class='ml-2 px-2 bg-purple-lt badge'>" + obj["tag"] + "</span>";
       }
+
       var induser = "";
       var nrid = Number(roleid);
-      if (nrid < 3 || nrid > 4) {
-        var len = obj.userlist.length;
-        var i = 0;
-        while (i < len) {
-          try {
-            var userid = Number(obj["userlist"][i]["uid"]);
-            var postuid = Number(obj["cuid"]);
-            if (postuid != userid) {
-              var userName = obj["userlist"][i]["officialName"];
-              if (userName != "") {
-                induser += "<span class='ml-2 px-2 bg-green-lt badge'>" + obj["userlist"][i]["officialName"] + "</span>";
-              }
-            }
-          } catch (ex) {
-            console.log(ex);
-          }
-          i++;
-        }
-      }
 
-      var str =
-        `<div class='row border py-2 my-2' id='` + obj["id"] + `'>
+      try {
+        if (nrid < 3 || nrid > 4) {
+          //var len = obj.userlist.length;
+          if (obj["userlist"] !== undefined) {
+            var len = obj["userlist"].length;
+            var i = 0;
+            while (i < len) {
+              try {
+                var userid = Number(obj["userlist"][i]["uid"]);
+                var postuid = Number(obj["cuid"]);
+                if (postuid != userid) {
+                  var userName = obj["userlist"][i]["officialName"];
+                  if (userName != "") {
+                    induser += "<span class='ml-2 px-2 bg-green-lt badge'>" + obj["userlist"][i]["officialName"] + "</span>";
+                  }
+                }
+              } catch (ex) {
+                console.log(ex);
+              }
+              i++;
+            }
+          }
+        }
+      } catch (ex) {
+        console.log(obj, ex);
+      }
+      var msg = urlify(obj["msg"]);
+      var str = `<div class='row border py-2 my-2' id='` + obj["id"] + `'>
 			<div class='col-auto my-2'>
 			<span class='avatar bg-blue text-white'>` + obj["shortName"] + `</span>
 			</div>
 			<div class='col'>
       <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span>` + tag + groupName + induser + `</div>
-			<div class='text-truncate' id='msg_` + obj["id"] + `'>` + obj["msg"] + `
+			<div class='text-truncate' id='msg_` + obj["id"] + `'>` + msg + `
 			</div><div>` + attachment + readMore + replyBtn + `</div>
 			<div id='cardReply_` + obj["id"] + `' class='float-left' style='max-width:95%;'></div>
       <div class='float-none'></div>
 			</div>
 		</div>`;
+
       if (!isNaN(obj["timestamp"])) {
         lts = Math.max(lts, Number(obj["timestamp"]));
       }
-      //console.log(str);
+
+      //console.log("#cw_" + obj["tabid"] + " cardMessage");
+
       if ($('#' + obj["id"]).length) {
         //ignore parent append
       } else {
-        $("#cardMessage").prepend(str);
+        isCharCardLoaded = true;
+        if (isArchive) {
+          $("#mw_" + obj["tabid"]).append(str);
+        } else {
+          if (obj["tabid"] != "") {
+            $("#mw_" + obj["tabid"]).prepend(str);
+          }
+        }
       }
 
 
@@ -1094,7 +1222,7 @@ if ($accessFlag) {
         var len = res.length;
         var i = 0;
         while (i < len) {
-          createCardMessageReply(res[i]);
+          createCardMessageReply(res[i], isArchive, isReplyActive, obj);
           i++;
         }
       }
@@ -1110,43 +1238,58 @@ if ($accessFlag) {
       }
     }
 
-    function createCardMessageReply(obj) {
+    function createCardMessageReply(obj, isArchive, isReply, masterObj) {
+
+      if (!isNaN(obj["timestamp"])) {
+        lts = Math.max(lts, Number(obj["timestamp"]));
+      }
+
+      var replyBtn = "";
+      if (isReply) {
+        replyBtn = "<a href ='#chatReplyWidget' class='ml-2' onclick=\"replyIndividualPost('" + masterObj["id"] + "','" + obj["cuid"] + "','" + masterObj["delivery_type"] + "');\"><i class ='mdi mdi-reply-circle mr-1'></i> Reply </a>";
+      }
 
       var readMore = "";
       if (isReadMoreRequire(obj["msg"])) {
-        readMore = `<div>
-        <a id='readMoreLink_` + obj["id"] + `' href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read More</a>
-		</div>`;
+        readMore = `<div><a id='readMoreLink_` + obj["id"] + `' href='javascript:void();' onclick="readMore('` + obj["id"] + `');"><i class='mdi mdi-book-open-variant mr-1'></i> Read More</a></div>`;
       }
 
       var attachment = "";
       if (obj["attachment"]) {
-        attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" +
-          obj[
-            "attach_file"] + "</a></div>";
+        attachment = "<div><a href='" + obj["attachment"] + "' download><i class='mdi mdi-download mr-1'></i>" + obj["attach_file"] + "</a></div>";
       }
 
-      var str =
-        `<div class='row border-bottom py-2 pl-1 pr-4 my-2 bg-blue-lt rounded' id='` + obj["id"] + `'>
+      var str = `<div class='row border-bottom py-2 pl-1 pr-4 my-2 bg-blue-lt rounded' id='` + obj["id"] + `'>
 		<div class='col-auto my-2'>
 		<span class='avatar bg-secondary text-white'>` + obj["shortName"] + `</span>
 		</div>
 		<div class='col'>
-        <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span></div>
-		<div class='text-truncate text-secondary' id='msg_` + obj["id"] + `'>
-		 ` + obj["msg"] + `
-		</div>` + attachment + readMore + `
-		
-		</div>
-	</div>`;
+        <div><strong>` + obj["officialName"] + `</strong> <span class='text-muted ml-2'>` + obj["ts"] + `</span>` + replyBtn + `</div>
+		<div class='text-truncate text-secondary' id='msg_` + obj["id"] + `'>` + urlify(obj["msg"]) + `
+		</div>` + attachment + readMore + `</div></div>`;
       if ($('#' + obj["id"]).length) {
         //ignore child append
       } else {
-        $("#cardReply_" + obj['chat_parent_id']).prepend(str);
+        if (isArchive) {
+          $("#cardReply_" + obj['chat_parent_id']).append(str);
+        } else {
+          $("#cardReply_" + obj['chat_parent_id']).prepend(str);
+        }
       }
       if (!isNaN(obj["timestamp"])) {
         lts = Math.max(lts, Number(obj["timestamp"]));
       }
+    }
+
+    function urlify(text) {
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+      });
+      // or alternatively
+      // return text.replace(urlRegex, '<a href="$1">$1</a>')
+      //var text = 'Find me at http://www.example.com and also at http://stackoverflow.com';
+      //var html = urlify(text);
     }
 
     function isReadMoreRequire(data) {
@@ -1154,7 +1297,7 @@ if ($accessFlag) {
         $("#dataHandler").html(data);
         var ht = Number($("#dataHandler").height());
         $("#dataHandler").html("");
-        if (ht > 20) {
+        if (ht > 22) {
           return true;
         } else {
           return false;
@@ -1163,6 +1306,93 @@ if ($accessFlag) {
         console.log(ex);
       }
       return true;
+    }
+  </script>
+
+  <script>
+    //load archive data
+    var isArchiveLoaded = true;
+    $(window).scroll(function() {
+      if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+        if (isArchiveLoaded) {
+          isArchiveLoaded = false;
+          loadArchiveMessage();
+        }
+      }
+    });
+
+    var archiveLastLimit = [];
+    var isCharCardLoaded = false;
+
+    function loadArchiveMessage() {
+      //console.log("Load Message called");
+      var sl = 51; //start limit
+      var el = 100; //end limit 
+      isCharCardLoaded = false;
+      if (archiveLastLimit[tabid] !== undefined) {
+        sl = archiveLastLimit[tabid]["el"] + 1;
+        el = archiveLastLimit[tabid]["el"] + 50;
+        archiveLastLimit[tabid]["el"] = el;
+        archiveLastLimit[tabid]["archivePage"] = archiveLastLimit[tabid]["archivePage"] + 1;
+      } else {
+        archiveLastLimit[tabid] = [];
+        archiveLastLimit[tabid]["el"] = el;
+        archiveLastLimit[tabid]["archivePage"] = 2;
+      }
+      var loadArchive = true;
+      if (archiveLastLimit[tabid]["isArchiveDataAvailable"] !== undefined) {
+        if (archiveLastLimit[tabid]["isArchiveDataAvailable"]) {
+          loadArchive = true;
+        } else {
+          loadArchive = false;
+        }
+      }
+      //loadArchive = true;
+      if (loadArchive) {
+        try {
+          $.ajax({
+            url: 'ajax_chat.php',
+            type: 'post',
+            data: {
+              type: "getArchiveMessage",
+              tabid: tabid,
+              tabname: tabname,
+              start_pos: sl
+            },
+            success: function(response) {
+              //console.log(response);
+
+              if (response) {
+                var obj = jQuery.parseJSON(response);
+                try {
+                  //$("#cardMessage").append("<div class='hr-text' id='pageLoader'>Loading Page " + archiveLastLimit[tabid]["archivePage"] + "</div>");
+                  var cnt = 1;
+                  Object.keys(obj).forEach(function(key) {
+                    //console.log(obj[key]);
+                    createCardMessage(obj[key], true);
+                  });
+                  if (isCharCardLoaded) {
+                    archiveLastLimit[tabid]["isArchiveDataAvailable"] = true;
+                  } else {
+                    archiveLastLimit[tabid]["isArchiveDataAvailable"] = false;
+                  }
+                  $("#pageLoader").remove();
+                } catch (ex) {
+                  console.log("ArchiveData: ", ex);
+                  $("#pageLoader").remove();
+                }
+              } else {
+                archiveLastLimit[tabid]["isArchiveDataAvailable"] = false;
+              }
+              isArchiveLoaded = true;
+            }
+          });
+        } catch (ex) {
+          console.log("Archive: ", ex);
+          isArchiveLoaded = true;
+          $("#pageLoader").remove();
+        }
+      }
     }
   </script>
 <?php

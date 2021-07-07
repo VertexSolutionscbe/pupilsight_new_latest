@@ -1,6 +1,7 @@
 <?php
 
 use Pupilsight\Domain\Helper\HelperGateway;
+
 function getDomain()
 {
     if (isset($_SERVER['HTTPS'])) {
@@ -24,7 +25,7 @@ if ($accessFlag == false) {
     //Proceed!
     //print_r($_SESSION[$guid]);
     //die();
-/*
+    /*
     // Check if SELECT is in the query
 if (preg_match('/SELECT/', strtoupper($query)) != 0) {
     // Array with forbidden query parts
@@ -71,8 +72,8 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
         $description = empty($_POST['description']) ? "NULL" : "'" . trim($_POST['description']) . "'";
         $module = empty($_POST['module']) ? "NULL" : "'" . trim($_POST['module']) . "'";
         $module_id = empty($_POST['module_id']) ? "NULL" : "'" . trim($_POST['module_id']) . "'";
-        $sql_query = empty($_POST['sql_query']) ? "NULL" : "'" . htmlentities($_POST['sql_query'], ENT_QUOTES)."'";
-        $api = empty($_POST['api']) ? "NULL" :  "'" .(trim($_POST['api'])). "'";
+        $sql_query = empty($_POST['sql_query']) ? "NULL" : "'" . htmlentities($_POST['sql_query'], ENT_QUOTES) . "'";
+        $api = empty($_POST['api']) ? "NULL" :  "'" . (trim($_POST['api'])) . "'";
 
         $header = empty($_POST['header']) ? "NULL" : "'" . trim($_POST['header']) . "'";
         $total_column = empty($_POST['total_column']) ? "NULL" : "'" . trim($_POST['total_column']) . "'";
@@ -93,7 +94,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
 
         //print_r($_POST);
         try {
-            if(!empty($_POST["id"])){
+            if (!empty($_POST["id"])) {
                 //update
                 $id = $_POST["id"];
                 $sq = "update report_manager set name=$name, ";
@@ -116,23 +117,23 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                 $sq .= " param6=$param6, ";
                 $sq .= " param7=$param7, ";
                 $sq .= " param8=$param8 ";
-                $sq .= "where id='".$id."' ";
-            }else{
+                $sq .= "where id='" . $id . "' ";
+            } else {
                 $sq = "insert into report_manager (name, description, module, module_id, sql_query, header, total_column, api, date1, date2, date3, date4, param1, param2, param3, param4, param5, param6, param7, param8,status) 
                 values($name,$description,$module,$module_id,$sql_query,$header,$total_column,$api,$date1,$date2,$date3,$date4,$param1,$param2,$param3,$param4,$param5,$param6,$param7,$param8,2)";
             }
             //echo $sq;
             //die();
             $connection2->query($sq);
-            
-            $res["status"]=1;
-            $res["msg"]="Report saved successfully.";
+
+            $res["status"] = 1;
+            $res["msg"] = "Report saved successfully.";
             $_SESSION["notify"] = $res;
 
-            header('Location: '.$_SERVER['REQUEST_URI']);
+            header('Location: ' . $_SERVER['REQUEST_URI']);
         } catch (Exception $ex) {
-            $res["status"]=2;
-            $res["msg"]=addslashes($ex->getMessage());
+            $res["status"] = 2;
+            $res["msg"] = addslashes($ex->getMessage());
             $_SESSION["notify"] = $res;
         }
 
@@ -144,13 +145,13 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
     <script>
         $(document).ready(function() {
             <?php
-                if(isset($_SESSION["notify"])){
-                    if($_SESSION["notify"]["status"]==1){
-                        echo "toast('success','".$_SESSION["notify"]["msg"]."');";
-                    }else{
-                        echo "toast('error',\"".$_SESSION["notify"]["msg"]."\");";
-                    }
+            if (isset($_SESSION["notify"])) {
+                if ($_SESSION["notify"]["status"] == 1) {
+                    echo "toast('success','" . $_SESSION["notify"]["msg"] . "');";
+                } else {
+                    echo "toast('error',\"" . $_SESSION["notify"]["msg"] . "\");";
                 }
+            }
             ?>
 
         });
@@ -212,7 +213,7 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                             <option value="0141">Tracking</option>
                             <option value="0179">Transport</option>
                             <option value="0002">User Admin</option>
-                            
+
                         </select>
                     </div>
 
@@ -328,16 +329,16 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
     <!----Report Details---->
     <div class="card my-2" id='reportList'>
         <div class="card-header">
-        <?php
+            <?php
             $helperGateway = $container->get(HelperGateway::class);
-            if($roleid=="001"){
+            if ($roleid == "001") {
                 echo '<button type="button" class="btn btn-primary" onclick="addReport();"><i class="mdi mdi-plus"></i> New Report</button>';
-                echo '<a href="'.$baseurl.'/index.php?q=/modules/custom/reports.php" class="btn btn-white ml-2" onclick="addReport();"><i class="mdi mdi-file-chart"></i> Advance Report Builder</a>';
+                echo '<a href="' . $baseurl . '/index.php?q=/modules/custom/reports.php" class="btn btn-white ml-2" onclick="addReport();"><i class="mdi mdi-file-chart"></i> Advance Report Builder</a>';
                 $res = $helperGateway->getActiveReport($connection2);
-            }else{
+            } else {
                 $res = $helperGateway->getBasicActiveReport($connection2);
             }
-        ?>
+            ?>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -348,36 +349,36 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                             <th style='width:110px;' class='text-center'>Module Name</th>
                             <th style='width:100px;' class='text-center'>Download</th>
                             <?php
-                                if($roleid=="001"){
-                                    echo "<th style='width:60px;' class='text-center'>Edit</th>";
-                                }
+                            if ($roleid == "001") {
+                                echo "<th style='width:60px;' class='text-center'>Edit</th>";
+                            }
                             ?>
                         </tr>
                     </thead>
                     <tbody>
-                    <?php
+                        <?php
                         $len = count($res);
                         $i = 0;
                         $str = "";
                         $repo = array();
-                        while($i<$len){
-                            $str .="\n<tr>";
-                            $str .="\n<td><strong>".ucwords($res[$i]["name"])."</strong><br><span class='text-muted'>".$res[$i]["description"]."</span></td>";
-                            $str .="\n<td class='text-center'>".$res[$i]["module"]."</td>";
-                            $str .="\n<td><button type='button' class='btn btn-link' onclick=\"downloadReport('".$res[$i]['id']."');\"><i class='mdi mdi-download mr-2'></i>Download</button></td>";
-                            if($roleid=="001"){
-                                if($res[$i]["sql_query"]){
-                                    $res[$i]["sql_query"] = html_entity_decode($res[$i]["sql_query"],ENT_QUOTES);
+                        while ($i < $len) {
+                            $str .= "\n<tr>";
+                            $str .= "\n<td><strong>" . ucwords($res[$i]["name"]) . "</strong><br><span class='text-muted'>" . $res[$i]["description"] . "</span></td>";
+                            $str .= "\n<td class='text-center'>" . $res[$i]["module"] . "</td>";
+                            $str .= "\n<td><button type='button' class='btn btn-link' onclick=\"downloadReport('" . $res[$i]['id'] . "');\"><i class='mdi mdi-download mr-2'></i>Download</button></td>";
+                            if ($roleid == "001") {
+                                if ($res[$i]["sql_query"]) {
+                                    $res[$i]["sql_query"] = html_entity_decode($res[$i]["sql_query"], ENT_QUOTES);
                                 }
-                                $str .="\n<td><button type='button' class='btn btn-link' onclick=\"editReport('".$res[$i]['id']."');\"><i class='mdi mdi-edit mr-2'></i>Edit</button></td>";
+                                $str .= "\n<td><button type='button' class='btn btn-link' onclick=\"editReport('" . $res[$i]['id'] . "');\"><i class='mdi mdi-edit mr-2'></i>Edit</button></td>";
                             }
-                            $str .="\n</tr>";
+                            $str .= "\n</tr>";
                             $res[$i]["name"] = ucwords($res[$i]["name"]);
-                            $repo[$res[$i]['id']]=$res[$i];
+                            $repo[$res[$i]['id']] = $res[$i];
                             $i++;
                         }
                         echo $str;
-                    ?>  
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -390,83 +391,84 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
     <div class="modal fade" id="reportParamDialog" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reportDialogTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="reportDialogForm" action="<?=$baseurl."/report_download.php"?>" class="needs-validation" novalidate="" method="post" autocomplete="off">
-                    <input type="hidden" name="reportid" id="reportid" value="">
-                    <div class="row my-2">
-                        <div class="col-12 form-label">Choose Report Type</div>
-                        <div class="col-auto">
-                            <label class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" checked value="html" name="fd">
-                                <span class="form-check-label">HTML</span>
-                            </label>
-                            <label class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" value="ihtml" name="fd">
-                                <span class="form-check-label">Interactive HTML</span>
-                            </label>
-                            <label class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" value="xlsx" name="fd">
-                                <span class="form-check-label">XLSX</span>
-                            </label>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportDialogTitle">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!--Form addding query here--->
+                    <form id="reportDialogForm" action="<?= $baseurl . "/report_download.php" ?>" class="needs-validation" novalidate="" method="post" autocomplete="off">
+                        <input type="hidden" name="reportid" id="reportid" value="">
+                        <div class="row my-2">
+                            <div class="col-12 form-label">Choose Report Type</div>
+                            <div class="col-auto">
+                                <label class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" checked value="html" name="fd">
+                                    <span class="form-check-label">HTML</span>
+                                </label>
+                                <label class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" value="ihtml" name="fd">
+                                    <span class="form-check-label">Interactive HTML</span>
+                                </label>
+                                <label class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" value="xlsx" name="fd">
+                                    <span class="form-check-label">XLSX</span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div id='paramPanel'></div>
-                </form>
-                
-            </div>
-            <div class="modal-footer">
-                <button type="button" id='closeDialogBtn' class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="verfiyAndFinalDownload();">Download</button>
-            </div>
+                        <div id='paramPanel'></div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id='closeDialogBtn' class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="verfiyAndFinalDownload();">Download</button>
+                </div>
             </div>
         </div>
     </div>
     <?php
-    if($roleid=="001"){
+    if ($roleid == "001") {
     ?>
-    <script>
-        function editReport(id){
-            var obj = report[id];
-            var elements = ["id","name","header","total_column","module_id","module","description","sql_query","api","date1","date2","date3","date4","param1","param2","param3","param4","param5","param6","param7","param8"];
-            var len = elements.length;
-            var i = 0;
-            while(i<len){
-                setVal(elements[i],obj);
-                i++;
+        <script>
+            function editReport(id) {
+                var obj = report[id];
+                var elements = ["id", "name", "header", "total_column", "module_id", "module", "description", "sql_query", "api", "date1", "date2", "date3", "date4", "param1", "param2", "param3", "param4", "param5", "param6", "param7", "param8"];
+                var len = elements.length;
+                var i = 0;
+                while (i < len) {
+                    setVal(elements[i], obj);
+                    i++;
+                }
+                autosize($('#sql_query'));
+                if (isEmpty(obj["sql_query"])) {
+                    autosize.update(obj["sql_query"]);
+                }
+                $("#addReport").show(400);
             }
-            autosize($('#sql_query'));
-            if(isEmpty(obj["sql_query"])){
-                autosize.update(obj["sql_query"]);
-            }
-            $("#addReport").show(400);
-        }
 
-        function setVal(id, obj){
-            if(!isEmpty(obj[id])){
-                $("#"+id).val(obj[id]);
+            function setVal(id, obj) {
+                if (!isEmpty(obj[id])) {
+                    $("#" + id).val(obj[id]);
+                }
             }
-        }
-    </script>
+        </script>
     <?php
     }
     ?>
     <script>
-        var baseurl = "<?=$baseurl;?>";
+        var baseurl = "<?= $baseurl; ?>";
         var report = <?php echo json_encode($repo); ?>;
         var isParamActive = false;
         var activeDownloadId = "";
 
         function isEmpty(str) {
-            return (!str || str.length === 0 );
+            return (!str || str.length === 0);
         }
 
-        function downloadReport(id){
+        function downloadReport(id) {
             isParamActive = false;
             var obj = report[id];
             var str = "";
@@ -474,43 +476,43 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
             activeDownloadId = id;
             $("#reportDialogTitle").text(obj["name"]);
             //date and condition
-            str +="<div class='row'>";
-            str +=addDate(obj["date1"],"date1");
-            str +=addDate(obj["date2"],"date2");
-            str +=addDate(obj["date3"],"date3");
-            str +=addDate(obj["date4"],"date4");
-            str +="</div>";
-            str +="<div class='row'>";
-            str +=addParam(obj["param1"],"param1");
-            str +=addParam(obj["param2"],"param2");
-            str +=addParam(obj["param3"],"param3");
-            str +=addParam(obj["param4"],"param4");
-            str +=addParam(obj["param5"],"param5");
-            str +=addParam(obj["param6"],"param6");
-            str +=addParam(obj["param7"],"param7");
-            str +=addParam(obj["param8"],"param8");
-            str +="</div>";
-            
+            str += "<div class='row'>";
+            str += addDate(obj["date1"], "date1");
+            str += addDate(obj["date2"], "date2");
+            str += addDate(obj["date3"], "date3");
+            str += addDate(obj["date4"], "date4");
+            str += "</div>";
+            str += "<div class='row'>";
+            str += addParam(obj["param1"], "param1");
+            str += addParam(obj["param2"], "param2");
+            str += addParam(obj["param3"], "param3");
+            str += addParam(obj["param4"], "param4");
+            str += addParam(obj["param5"], "param5");
+            str += addParam(obj["param6"], "param6");
+            str += addParam(obj["param7"], "param7");
+            str += addParam(obj["param8"], "param8");
+            str += "</div>";
+
             $("#paramPanel").html(str);
             //$('#reportParamDialog').modal('show');
             $("#btnReportParam").click();
             //wait form param input
-            
+
         }
 
-        function addDate(pdate, pdateid){
+        function addDate(pdate, pdateid) {
             var str = "";
-            if(!isEmpty(pdate)){
-                str +="\n<div class='col-auto mt-2'>";
-                str +="<label class='form-label required'>"+pdate+"</label>";
-                str +="<input type='date' name='"+pdateid+"' class='form-control reqParam' id='"+pdateid+"'>";
-                str +="</div>";
+            if (!isEmpty(pdate)) {
+                str += "\n<div class='col-auto mt-2'>";
+                str += "<label class='form-label required'>" + pdate + "</label>";
+                str += "<input type='date' name='" + pdateid + "' class='form-control reqParam' id='" + pdateid + "'>";
+                str += "</div>";
                 isParamActive = true;
             }
             return str;
         }
 
-        function verfiyAndFinalDownload(){
+        function verfiyAndFinalDownload() {
             var isDownloadValid = true;
             $('.reqParam').each(function() {
                 var currentElement = $(this);
@@ -522,30 +524,30 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
                 } // if it is an input/select/textarea field
                 // TODO: do something with the value
             });
-            if(isDownloadValid){
+            if (isDownloadValid) {
                 finalDownload();
             }
         }
 
-        function finalDownload(){
-            if(activeDownloadId){
-                try{
+        function finalDownload() {
+            if (activeDownloadId) {
+                try {
                     $("#closeDialogBtn").click();
                     console.log("Your report is downloading..");
                     $('#reportDialogForm').submit();
-                }catch(ex){
+                } catch (ex) {
                     console.log(ex);
                 }
             }
         }
 
-        function addParam(param, paramid){
+        function addParam(param, paramid) {
             var str = "";
-            if(!isEmpty(param)){
-                str +="\n<div class='col-auto mt-2'>";
-                str +="<label class='form-label required'>"+param+"</label>";
-                str +="<input type='text' name='"+paramid+"' class='form-control reqParam' id='"+paramid+"'>";
-                str +="</div>";
+            if (!isEmpty(param)) {
+                str += "\n<div class='col-auto mt-2'>";
+                str += "<label class='form-label required'>" + param + "</label>";
+                str += "<input type='text' name='" + paramid + "' class='form-control reqParam' id='" + paramid + "'>";
+                str += "</div>";
                 isParamActive = true;
             }
             return str;
@@ -568,12 +570,12 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
             autosize($('#sql_query'));
         });
 
-        function resetAddReport(){
-            var elements = ["id","name","header","total_column","module_id","module","description","sql_query","api","date1","date2","date3","date4","param1","param2","param3","param4","param5","param6","param7","param8"];
+        function resetAddReport() {
+            var elements = ["id", "name", "header", "total_column", "module_id", "module", "description", "sql_query", "api", "date1", "date2", "date3", "date4", "param1", "param2", "param3", "param4", "param5", "param6", "param7", "param8"];
             var len = elements.length;
             var i = 0;
-            while(i<len){
-                $("#"+elements[i]).val("");
+            while (i < len) {
+                $("#" + elements[i]).val("");
                 i++;
             }
         }
@@ -667,12 +669,12 @@ if (preg_match('/SELECT/', strtoupper($query)) != 0) {
     </script>
 
 <?php
-if(isset($_SESSION["notify"])){
-    if($_SESSION["notify_exec"]=="1"){
-        unset($_SESSION["notify"],$_SESSION["notify_exec"]);
-    }else{
-        $_SESSION["notify_exec"] = "1";
+    if (isset($_SESSION["notify"])) {
+        if ($_SESSION["notify_exec"] == "1") {
+            unset($_SESSION["notify"], $_SESSION["notify_exec"]);
+        } else {
+            $_SESSION["notify_exec"] = "1";
+        }
     }
-}
-//
+    //
 }
