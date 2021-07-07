@@ -371,9 +371,9 @@ div.ttPeriodCurrent {
     width: 187px!important
 }
 
-#phone1Type, #phone1CountryCode, #phone2Type, #phone2CountryCode {
+/* #phone1Type, #phone1CountryCode, #phone2Type, #phone2CountryCode {
     padding: 0!important
-}
+} */
 
 .padding_appl_action {
     padding: 0!important;
