@@ -532,12 +532,13 @@ if ($accessFlag) {
     <!--Card Message Check-->
     <ul class="nav nav-tabs">
       <?php
+      $strTab = "";
       if ($chat_tabs) {
         $len = count($chat_tabs);
         $i = 0;
         $strActive = "active";
         $str = "";
-        $strTab = "";
+
         $strTabActive = "active show";
         while ($i < $len) {
           $tabName = ucwords($chat_tabs[$i]["name"]);
@@ -600,8 +601,15 @@ if ($accessFlag) {
 
   <div id='dataHandler' style='line-height:18px;'></div>
   <script>
-    var tabid = "<?= $chat_tabs[0]["id"]; ?>";
-    var tabname = "<?= $chat_tabs[0]["name"]; ?>";
+    <?php
+    if (!empty($chat_tabs)) {
+      echo 'var tabid = "' . $chat_tabs[0]["id"] . '";';
+      echo 'var tabname = "' . $chat_tabs[0]["name"] . '";';
+    } else {
+      echo 'var tabid = "";';
+      echo 'var tabname = "";';
+    }
+    ?>
 
     $(function() {
       $(".nav-tabs a").click(function(e) {
@@ -610,6 +618,7 @@ if ($accessFlag) {
         tabid = $(this).attr('tab-id');
         tabname = $(this).attr('tab-name');
         if (chatMsgTab[tabid] === undefined) {
+          lts = 0;
           loadMessage();
         }
       });
@@ -780,8 +789,8 @@ if ($accessFlag) {
             }
             if (str) {
               try {
-                $('#studentList').html("");
-                //$('#studentList').selectize()[0].selectize.destroy();
+                //$('#studentList').html("");
+                $('#studentList').selectize()[0].selectize.destroy();
                 $('#studentList').html(str);
                 $('#studentList').selectize({
                   plugins: ['remove_button'],

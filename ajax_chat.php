@@ -792,13 +792,15 @@ if ($type == 'postMessage') {
         if ($_POST['userType']) {
             $userType = $_POST['userType'];
         }
-        $sq = "select pupilsightPersonID, officialName from pupilsightPerson where is_delete='0' ";
+        $sq = "select pupilsightPersonID, officialName, pupilsightRoleIDPrimary from pupilsightPerson where is_delete='0' ";
         if ($userType == 'staff') {
-            $sq .= "and pupilsightRoleIDPrimary not in(003,004) ";
+            $sq .= "and pupilsightRoleIDPrimary not in(3,4) ";
         } elseif ($userType == '003') {
-            $sq .= "and pupilsightRoleIDPrimary='003' ";
+            //students
+            $sq .= "and pupilsightRoleIDPrimary=3 ";
         } elseif ($userType == '004') {
-            $sq .= "and pupilsightRoleIDPrimary='004' ";
+            //parents
+            $sq .= "and pupilsightRoleIDPrimary=4 ";
         }
         $sq .= "order by officialName asc ";
         //echo $sq;

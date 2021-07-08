@@ -207,6 +207,7 @@ if ($accessFlag) {
             var obj = jQuery.parseJSON(response);
             if (obj.status == "1") {
               toast("success", obj.msg);
+              alert(obj.msg);
               location.reload();
             } else {
               toast("info", obj.msg);
