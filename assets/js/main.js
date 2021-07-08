@@ -9892,3 +9892,75 @@ $(document).on('change', '#skill_id', function () {
         $("#pupilsightDepartmentIDbyPPbyMarks").trigger('change');
     }
 });
+
+$(document).on('click', '#expore_marks_xl_new', function () {
+    //var type = 'studentMarks_excel';
+    var val = '';
+    var type = 'studentMarks_excel_new';
+    var section = $('#pupilsightRollGroupIDbyPPbyMarks').val();
+    var cls = $('#pupilsightYearGroupIDbyPPbyMarks').val();
+    var program = $('#pupilsightProgramIDbyPPbyMarks').val();
+    var testId = $('#testId').val();
+    var favorite = [];
+    $.each($("input[name='stuid[]']:checked"), function () {
+        favorite.push($(this).val());
+    });
+    var stuid = favorite.join(",");
+    //alert(subid);
+    if (stuid) {
+        var stu_id = stuid;
+
+        $.ajax({
+            url: 'ajaxSwitch.php',
+            type: 'post',
+            data: { val: val, type: type, program: program, cls: cls, section: section, testId: testId, stu_id: stu_id },
+            async: true,
+            success: function (response) {
+                //alert(response);
+                $("#marks_studentExcel").html(response);
+                $("#excelexport").table2excel({
+                    name: " Student Marks",
+                    filename: "Student_marks.xls",
+                    fileext: ".xls",
+                    exclude: ".checkall",
+                    exclude_inputs: true,
+                    exclude_links: true
+
+                });
+            }
+        });
+    } else {
+        alert('Please Select Student First');
+    }
+});
+
+$(document).on('click', '#exportExcelNew', function () {
+    var type = 'subjectMarks_excelNew';
+    var section = $('#pupilsightRollGroupIDbyPPbyMarks').val();
+    var cls = $('#pupilsightYearGroupIDbyPPbyMarks').val();
+    var program = $('#pupilsightProgramIDbyPPbyMarks').val();
+    var testId = $('#testId').val();
+    var sub = $('#pupilsightDepartmentIDbyPPbyMarks').val();
+    var val = '1';
+    //alert(section);
+
+    $.ajax({
+        url: 'ajaxSwitch.php',
+        type: 'post',
+        data: { val: val, type: type, program: program, cls: cls, section: section, testId: testId, sub: sub },
+        async: true,
+        success: function (response) {
+            //console.log(response);
+            $("#marks_subjectExcel").html(response);
+            $("#subexcelexport").table2excel({
+                name: "subject Marks",
+                filename: "subject_marks.xls",
+                fileext: ".xls",
+                exclude: ".checkall",
+                exclude_inputs: true,
+                exclude_links: true
+
+            });
+        }
+    });
+});

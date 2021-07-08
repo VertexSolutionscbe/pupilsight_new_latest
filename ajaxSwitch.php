@@ -2404,21 +2404,27 @@ if (isset($_POST['type'])) {
                     $sql = 'SELECT b.officialName, b.pupilsightPersonID, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id = ' . $testId . ' AND a.pupilsightPersonID IN ('.$stu_id.')  GROUP BY a.pupilsightPersonID';
                     $result = $connection2->query($sql);
                     $data = $result->fetchAll();
-                    foreach ($data as $k => $dt) {
-                        $sqlm = 'SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
-                            LEFT JOIN examinationSubjectToTest AS m ON a.pupilsightDepartmentID = m.pupilsightDepartmentID
-                            WHERE a.test_id = ' . $testId . ' AND a.pupilsightPersonID = ' . $dt['pupilsightPersonID'] . ' GROUP by a.pupilsightDepartmentID,c.skill_id';
-                        $resultm = $connection2->query($sqlm);
-                        $datam = $resultm->fetchAll();
-                        if (!empty($datam)) {
-                            $data[$k]['marks'] = $datam;
-                        }
-                    }
-                    $sql1 = 'SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
-                    LEFT JOIN examinationSubjectToTest AS m ON a.pupilsightDepartmentID = m.pupilsightDepartmentID
-                    WHERE a.test_id = ' . $testId . ' GROUP by a.pupilsightDepartmentID,c.skill_id';
+                    // foreach ($data as $k => $dt) {
+                    //     $sqlm = 'SELECT a.*, b.subject_display_name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
+                    //         LEFT JOIN examinationSubjectToTest AS m ON a.test_id = m.test_id AND a.pupilsightDepartmentID = m.pupilsightDepartmentID
+                    //         WHERE a.test_id = ' . $testId . ' AND a.pupilsightPersonID = ' . $dt['pupilsightPersonID'] . ' AND b.pupilsightProgramID = ' . $program . ' AND b.pupilsightYearGroupID =' . $cls . '  GROUP by a.pupilsightDepartmentID,c.skill_id';
+                    //     $resultm = $connection2->query($sqlm);
+                    //     $datam = $resultm->fetchAll();
+                    //     if (!empty($datam)) {
+                    //         $data[$k]['marks'] = $datam;
+                    //     }
+                    // }
+                    // $sql1 = 'SELECT a.*, b.subject_display_name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
+                    // LEFT JOIN examinationSubjectToTest AS m ON a.test_id = m.test_id AND a.pupilsightDepartmentID = m.pupilsightDepartmentID
+                    // WHERE a.test_id = ' . $testId . '  AND b.pupilsightProgramID = ' . $program . ' AND b.pupilsightYearGroupID =' . $cls . ' GROUP by a.pupilsightDepartmentID,c.skill_id';
+
+
+                    $sql1 = 'SELECT a.*, b.subject_display_name as subject_name, b.subject_type, c.skill_display_name FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
+                    WHERE a.test_id = ' . $testId . ' AND a.is_tested = "1" AND b.pupilsightProgramID = ' . $program . ' AND b.pupilsightYearGroupID =' . $cls . ' GROUP by a.pupilsightDepartmentID,c.skill_id';
                     $resu_h = $connection2->query($sql1);
                     $datam_h = $resu_h->fetchAll();
+
+                    
                             ?>
                     <table id="excelexport">
                         <tr>
@@ -2436,12 +2442,66 @@ if (isset($_POST['type'])) {
                                         ?>
                         </tr>
         
-                    <?php foreach ($data as $row) {
+                    <?php 
+                        foreach ($data as $row) {
                                     echo "<tr>
                             <td>" . $row['officialName'] . "</td>
                             <td>" . $row['pupilsightPersonID'] . "</td>
                             <td>" . $row['classname'] . "</td>
                             <td>" . $row['sectionname'] . "</td>";
+                            $marks = 0; 
+                            foreach ($datam_h as $m) {
+                                $pupilsightDepartmentID = $m['pupilsightDepartmentID'];
+                                $skill_id = $m['skill_id'];
+                                $subject_type = $m['subject_type'];
+                                // $electshow = '1';
+                                // if($subject_type == 'Elective'){
+                                //     $sqlelc = 'SELECT id FROM assign_elective_subjects_tostudents WHERE pupilsightPersonID = '.$row['pupilsightPersonID'].' AND pupilsightDepartmentID = '.$pupilsightDepartmentID.' ';
+                                //     $resultele = $connection2->query($sqlelc);
+                                //     $electData = $resultele->fetch();
+                                //     if(!empty($electData['id'])){
+                                //         $electshow = '2';
+                                //     } else {
+                                //         $electshow = '3';
+                                //     }
+                                // }
+                                // if($electshow == '1' || $electshow == '2') {
+                                    $sql = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id = ' . $testId . ' AND pupilsightPersonID = ' . $row['pupilsightPersonID'] . ' AND pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' ';
+                                    if(!empty($skill_id)){
+                                        $sql .= " AND skill_id = ".$skill_id." ";
+                                    }
+                                    //echo $sql.'<br>';
+                                    $resu_h = $connection2->query($sql);
+                                    $dataRes = $resu_h->fetch();
+
+                                    if(!empty($dataRes)){
+                                        $sql = 'SELECT grade_name FROM  examinationGradeSystemConfiguration WHERE id="' . $dataRes['gradeId'] . '"';
+                                        $result = $connection2->query($sql);
+                                        $gradeName = $result->fetch();
+                                        $grade_name = '';
+
+                                        if (!empty($gradeName['grade_name'])) {
+                                            $grade_name = $gradeName['grade_name'];
+                                        }
+                                        // $marks = str_replace(".00", "", $m['marks_obtained']);
+                                            $marks = $dataRes['marks_obtained'];
+                                            if (!empty($marks) ) {
+                                                if ($dataRes['marks_abex']) {
+                                                    $marks = $dataRes['marks_abex'];
+                                                }
+                                            }
+                                            if (!empty($marks) ) {
+                                                echo "<td>" . $marks . "(" . $grade_name . ")</td>";
+                                            } else {
+                                                echo "<td></td>";
+                                            }
+                                    } else {
+                                        echo "<td></td>";
+                                    }
+                                // }
+                                
+                            }
+                                    /*
                                     $marks = $row['marks'];
                                     foreach ($data as $val) {
                                         $marks = $val['marks'];
@@ -2456,7 +2516,8 @@ if (isset($_POST['type'])) {
                                             }
                                             if ($row['pupilsightPersonID'] == $val['pupilsightPersonID']) {
         
-                                                $marks = str_replace(".00", "", $m['marks_obtained']);
+                                                // $marks = str_replace(".00", "", $m['marks_obtained']);
+                                                $marks = $m['marks_obtained'];
                                                 if ($marks == 0) {
                                                     if ($m['marks_abex']) {
                                                         $marks = $m['marks_abex'];
@@ -2470,6 +2531,7 @@ if (isset($_POST['type'])) {
                                             }
                                         }
                                     }
+                                    */
                                 ?>
                     </tr>
                     <?php } ?>
@@ -2638,14 +2700,14 @@ if (isset($_POST['type'])) {
                                             <td>" . $row['sectionname'] . "</td>";
                                             //$marks = $row['marks'];
                                             //foreach ($data as $k => $dt) {
-                                            echo $sqlm = 'SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
+                                            $sqlm = 'SELECT a.*, b.name as subject_name, c.skill_display_name,m.max_marks FROM examinationMarksEntrybySubject AS a LEFT JOIN pupilsightDepartment AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
                                             LEFT JOIN examinationSubjectToTest AS m ON a.pupilsightDepartmentID = m.pupilsightDepartmentID
                                             WHERE a.test_id IN (' . $testId . ') AND a.pupilsightPersonID = ' . $row['pupilsightPersonID'] . ' AND a.pupilsightDepartmentID = ' . $_POST['sub'] . ' GROUP by a.test_id,c.skill_id';
                                             $resultm = $connection2->query($sqlm);
                                             $datam = $resultm->fetchAll();
-                                            echo '<pre>';
-                                            print_r($datam);
-                                            echo '</pre>';
+                                            // echo '<pre>';
+                                            // print_r($datam);
+                                            // echo '</pre>';
                                                 // if (!empty($datam)) {
                                                 //     $markdata[$k]['marks'] = $datam;
                                                 // }
