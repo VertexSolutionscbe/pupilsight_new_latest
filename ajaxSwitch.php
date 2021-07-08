@@ -4,6 +4,7 @@ Pupilsight, Flexible & Open School System
 */
 include 'pupilsight.php';
 $session = $container->get('session');
+$baseurl = $protocol . "://" . $_SERVER['HTTP_HOST'];
 if (isset($_POST['type'])) {
     $type = trim($_POST['type']);
     switch ($type) {
@@ -2401,7 +2402,12 @@ if (isset($_POST['type'])) {
                     $section = $_POST['section'];
                     $testId = implode(',', $_POST['testId']);
                     $stu_id = $_POST['stu_id'];
-                    $sql = 'SELECT b.officialName, b.pupilsightPersonID, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id = ' . $testId . ' AND a.pupilsightPersonID IN ('.$stu_id.')  GROUP BY a.pupilsightPersonID';
+
+                    if(strpos($baseurl,"vvnpucollege")>-1){
+                        $sql = 'SELECT b.officialName, b.pupilsightPersonID, b.student_id, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id = ' . $testId . ' AND a.pupilsightPersonID IN ('.$stu_id.')  GROUP BY a.pupilsightPersonID';
+                    } else {
+                        $sql = 'SELECT b.officialName, b.pupilsightPersonID, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id = ' . $testId . ' AND a.pupilsightPersonID IN ('.$stu_id.')  GROUP BY a.pupilsightPersonID';
+                    }
                     $result = $connection2->query($sql);
                     $data = $result->fetchAll();
                     // foreach ($data as $k => $dt) {
@@ -2444,11 +2450,22 @@ if (isset($_POST['type'])) {
         
                     <?php 
                         foreach ($data as $row) {
+                            try{
+                                if(strpos($baseurl,"vvnpucollege")>-1){
+                                    $studentId = $row['student_id'];
+                                } else {
+                                    $studentId = $row['pupilsightPersonID'];
+                                }
+                            } catch (Exception $ex) {
+                                print_r($ex);
+                            }
+                            
                                     echo "<tr>
                             <td>" . $row['officialName'] . "</td>
-                            <td>" . $row['pupilsightPersonID'] . "</td>
+                            <td>" . $studentId . "</td>
                             <td>" . $row['classname'] . "</td>
                             <td>" . $row['sectionname'] . "</td>";
+                            
                             $marks = 0; 
                             foreach ($datam_h as $m) {
                                 $pupilsightDepartmentID = $m['pupilsightDepartmentID'];
@@ -2654,7 +2671,12 @@ if (isset($_POST['type'])) {
                 $testId = implode(',', $_POST['testId']);
                 //   $sql = "SELECT a.* ,b.skill_display_name ,d.name as test,c.name as subject,GROUP_CONCAT(DISTINCT b.skill_id SEPARATOR ', ') as skill_ids,GROUP_CONCAT(DISTINCT b.skill_display_name SEPARATOR ', ') as skillname FROM examinationMarksEntrybySubject AS a LEFT JOIN subjectSkillMapping AS b ON a.`skill_id` = b.skill_id LEFT JOIN pupilsightDepartment as c ON a.pupilsightDepartmentID=c.pupilsightDepartmentID LEFT JOIN  examinationTest as d ON a.test_id = d.id LEFT JOIN examinationTest as e ON a.test_id = e.id  WHERE   a.test_id = ".$testId." GROUP BY a.pupilsightPersonID";
                 
-                $sql = 'SELECT a.test_id, b.officialName, b.pupilsightPersonID, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id IN (' . $testId . ') AND a.pupilsightDepartmentID = ' . $_POST['sub'] . ' GROUP BY a.pupilsightPersonID';
+                if(strpos($baseurl,"vvnpucollege")>-1){
+                    $sql = 'SELECT a.test_id, b.officialName, b.pupilsightPersonID, b.student_id, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id IN (' . $testId . ') AND a.pupilsightDepartmentID = ' . $_POST['sub'] . ' GROUP BY a.pupilsightPersonID';
+                } else {
+                    $sql = 'SELECT a.test_id, b.officialName, b.pupilsightPersonID, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id IN (' . $testId . ') AND a.pupilsightDepartmentID = ' . $_POST['sub'] . ' GROUP BY a.pupilsightPersonID';
+                }
+                
                 $result = $connection2->query($sql);
                 $data = $result->fetchAll();
                         // echo '<pre>';
@@ -2704,9 +2726,18 @@ if (isset($_POST['type'])) {
                             </tr>
 
                             <?php foreach ($data as $k => $row) {
+                                            try{
+                                                if(strpos($baseurl,"vvnpucollege")>-1){
+                                                    $studentId = $row['student_id'];
+                                                } else {
+                                                    $studentId = $row['pupilsightPersonID'];
+                                                }
+                                            } catch (Exception $ex) {
+                                                print_r($ex);
+                                            }
                                             echo "<tr>
                                             <td>" . $row['officialName'] . "</td>
-                                            <td>" . $row['pupilsightPersonID'] . "</td>
+                                            <td>" . $studentId . "</td>
                                             <td>" . $row['classname'] . "</td>
                                             <td>" . $row['sectionname'] . "</td>";
                                             //$marks = $row['marks'];
@@ -2738,12 +2769,13 @@ if (isset($_POST['type'])) {
 
                                                         if ($row['pupilsightPersonID'] == $m['pupilsightPersonID']) {
 
-                                                            $marks = str_replace(".00", "", $m['marks_obtained']);
-                                                            if ($marks == 0) {
-                                                                if ($m['marks_abex']) {
-                                                                    $marks = $m['marks_abex'];
-                                                                }
+                                                            $marks = $m['marks_obtained'];
+
+                                                            if (!empty($m['marks_abex']) ) {
+                                                                $marks = $m['marks_abex'];
                                                             }
+                
+                
                                                             if (!empty($grade_name)) {
                                                                 echo "<td>" . $marks . "</td>";
                                                                 echo "<td>" . $grade_name . "</td>";

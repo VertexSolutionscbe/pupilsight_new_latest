@@ -9893,7 +9893,6 @@ $(document).on('change', '#skill_id', function () {
     }
 });
 
-
 $("#expore_marks_xl_new").click(function () {
     exportMarksExcelByStudent();
 });
