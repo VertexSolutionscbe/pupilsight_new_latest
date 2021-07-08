@@ -170,9 +170,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
 //   echo '<pre>';
 //  print_r($manage_test);
 
-    echo "<div style='height:50px;'><div class='float-left mb-2 right_align'><a  id='expore_marks_xl_new' data-type='student' class='btn btn-primary'>Export To Excel</a>&nbsp;&nbsp;";   
-  
-             
+    
+    echo "<div style='height:50px;'><div class='float-left mb-2 right_align'><button type='button' onclick='exportMarksExcelByStudent()' class='btn btn-primary mr-2'>Export To Excel</button>";  
     
     echo "<a  id='marksentry'  href='index.php?q=/modules/Academics/entry_marks_byStudent.php' data-type='student' class='btn btn-primary' style='display:none'>Mark Entry</a>&nbsp;&nbsp;"; 
     

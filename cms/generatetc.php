@@ -70,39 +70,45 @@ if (!empty($file)) {
 
                 $admission_date = date('d-m-Y', strtotime($applicationData['created_at']));
 
-                $sql = "SELECT id, formatval FROM fn_fee_series WHERE pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . " AND pupilsightProgramID = " . $applicationData['pupilsightProgramID'] . " AND FIND_IN_SET('" . $applicationData['pupilsightYearGroupID'] . "', classIds) ";
-                $result = database::doSelectOne($sql);
+                
 
                 $sqlcust = 'SELECT field_name, field_title FROM custom_field WHERE FIND_IN_SET("student",modules) ';
                 $customFields = database::doSelect($sqlcust);
 
-                if (!empty($result['formatval'])) {
-                    $seriesId = $result['id'];
-                    $invformat = explode('$', $result['formatval']);
-                    $iformat = '';
-                    $orderwise = 0;
-                    foreach ($invformat as $inv) {
-                        if ($inv == '{AB}') {
-                            $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=' . $seriesId . ' AND type= "numberwise"';
-                            $formatvalues = database::doSelectOne($sqlfort);
+                if(!empty($applicationData['pupilsightProgramID']) && $applicationData['pupilsightYearGroupID']){
+                    $sql = "SELECT id, formatval FROM fn_fee_series WHERE pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . " AND pupilsightProgramID = " . $applicationData['pupilsightProgramID'] . " AND FIND_IN_SET('" . $applicationData['pupilsightYearGroupID'] . "', classIds) ";
+                    $result = database::doSelectOne($sql);
+
+                    if (!empty($result['formatval'])) {
+                        $seriesId = $result['id'];
+                        $invformat = explode('$', $result['formatval']);
+                        $iformat = '';
+                        $orderwise = 0;
+                        foreach ($invformat as $inv) {
+                            if ($inv == '{AB}') {
+                                $sqlfort = 'SELECT id, no_of_digit, last_no FROM fn_fee_series_number_format WHERE fn_fee_series_id=' . $seriesId . ' AND type= "numberwise"';
+                                $formatvalues = database::doSelectOne($sqlfort);
 
 
-                            $str_length = $formatvalues['no_of_digit'];
+                                $str_length = $formatvalues['no_of_digit'];
 
-                            $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
+                                $iformat .= str_pad($formatvalues['last_no'], $str_length, '0', STR_PAD_LEFT);
 
-                            $lastnoadd = $formatvalues['last_no'] + 1;
+                                $lastnoadd = $formatvalues['last_no'] + 1;
 
-                            $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
+                                $lastno = str_pad($lastnoadd, $str_length, '0', STR_PAD_LEFT);
 
-                            $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
-                            $result1 = database::doUpdate($sql1);
-                        } else {
-                            $iformat .= $inv;
+                                $sql1 = "UPDATE fn_fee_series_number_format SET last_no= " . $lastno . " WHERE fn_fee_series_id= " . $seriesId . " AND type= 'numberwise'  ";
+                                $result1 = database::doUpdate($sql1);
+                            } else {
+                                $iformat .= $inv;
+                            }
+                            $orderwise++;
                         }
-                        $orderwise++;
+                        $tc_id = $iformat;
+                    } else {
+                        $tc_id = '';
                     }
-                    $tc_id = $iformat;
                 } else {
                     $tc_id = '';
                 }
@@ -230,8 +236,10 @@ if (!empty($file)) {
                     $fileSaveName = $fname . ".pdf";
 
                     
-                    $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '" . $tc_id . "', file_path = '".$fileSaveName."' , uid= '" . $pupilsightPersonID . "'";
-                    $connection2->query($sq);
+                    if(!empty($applicationData['pupilsightProgramID']) && !empty($applicationData['pupilsightYearGroupID']) && !empty($applicationData['pupilsightRollGroupID'])){
+                        $sq = "INSERT INTO pupilsightStudentTcTaken SET  pupilsightSchoolYearID = " . $applicationData['pupilsightSchoolYearID'] . ", pupilsightProgramID=" . $applicationData['pupilsightProgramID'] . ", pupilsightYearGroupID='" . $applicationData['pupilsightYearGroupID'] . "', pupilsightPersonID=" . $aid . " , pupilsightRollGroupID=" . $applicationData['pupilsightRollGroupID'] . " , pupilsightStudentTcTakenID= '" . $tc_id . "', file_path = '".$fileSaveName."' , uid= '" . $pupilsightPersonID . "'";
+                        $connection2->query($sq);
+                    }
 
                     $squ = "UPDATE pupilsightStudentEnrolment SET  pupilsightProgramID='', pupilsightYearGroupID='' , pupilsightRollGroupID='' WHERE pupilsightPersonID=" . $aid . "";
                     $connection2->query($squ);
