@@ -3,7 +3,7 @@
         dateFormat: 'dd/mm/yy'
     });
 
-    "use strict";
+    //"use strict";
 
     $(document).on('click', '.bordercls', function () {
         $(this).children().addClass("borderclass");
@@ -928,6 +928,43 @@
 
     });
 
+
+    // $(document).on('click', '#expore_student_xl', function () {
+    //     //alert("Export success");
+    //     // $("#expore_tbl").table2excel({
+    //     //     name: "Worksheet Name",
+    //     //     filename: "Student_details.xls",
+    //     //     fileext: ".xls",
+    //     //     exclude: ".checkall",
+    //     //     exclude: ".dropdown",
+    //     //     exclude_inputs: true,
+    //     //     exclude_links: true,
+    //     //     columns: [0, 1, 2, 3, 4, 5]
+
+    //     // });
+
+    //     //$('#expore_tbl tr').find('td:eq(0),th:eq(0)').remove();
+    //     $("#expore_tbl tr").each(function () {
+    //         $(this).find("th:last").remove();
+    //         $(this).find("td:last").remove();
+    //         $(this).find("th:first").remove();
+    //         $(this).find("td:first").remove();
+    //     });
+
+    //     $("#expore_tbl").table2excel({
+    //         name: "Worksheet Name",
+    //         filename: "Student_details.xls",
+    //         fileext: ".xls",
+    //         exclude: ".checkall",
+    //         exclude: ".rm_cell",
+    //         exclude_inputs: true,
+    //         columns: [0, 1, 2, 3, 4, 5]
+
+    //     });
+    //     location.reload();
+
+    // });
+
     $(document).on('click', '#expore_student_xl', function () {
         var submit_ids = [];
         $.each($("input[name='student_id[]']:checked"), function () {
@@ -936,7 +973,7 @@
         var submt_id = submit_ids.join(",");
 
         if (submt_id == '') {
-            toast('error', 'You Have to Select Students.');
+            alert('You Have to Select Students.');
         } else {
             $("#expore_tbl tr").each(function () {
                 $(this).find("th:last").remove();
@@ -3437,8 +3474,9 @@
     });
 
     $(document).on('click', '#sendEmailSms_stud', function (e) {
-        //e.preventDefault();
+        e.preventDefault();
         //$("#preloader").show();
+        //window.setTimeout(function () {
         try {
             var emailquote = $("#emailQuote_stud").val();
             var subjectquote = $("#emailSubjectQuote_stud").val();
@@ -3463,10 +3501,31 @@
                         $("#closeSM").click();
                         $(".closeSMPopUp").click();
                         $("#sendEmailSms_stud").prop('disabled', true);
-                        //toast('info', 'Please wait message will be delivered shortly.');
-                        sendSMSApi(stuid, emailquote, smsquote, type, subjectquote);
-                        /*
-                        */
+
+                        var formData = new FormData(document.getElementById("sendEmailSms_Student"));
+                        formData.append('stuid', stuid);
+                        formData.append('emailquote', emailquote);
+                        formData.append('smsquote', smsquote);
+                        formData.append('type', type);
+                        formData.append('subjectquote', subjectquote);
+                        $.ajax({
+                            url: 'modules/Students/send_stud_email_msg.php',
+                            type: 'post',
+                            //data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote, type: type, subjectquote: subjectquote },
+                            data: formData,
+                            contentType: false,
+                            cache: false,
+                            processData: false,
+                            async: false,
+                            success: function (response) {
+                                //$("#preloader").hide();
+                                $("#sendEmailSms_stud").prop('disabled', false);
+                                toast('success', 'Your Message Sent Successfully! click Ok to continue ');
+                                //location.reload();
+                                $("#sendEmailSms_Student")[0].reset();
+
+                            }
+                        });
                     } else {
                         //$("#preloader").hide();
                         $("#sendEmailSms_stud").prop('disabled', false);
@@ -3487,36 +3546,10 @@
             //$("#sendEmailSms_stud").prop('disabled', false);
             console.log(ex);
         }
-    });
+        // }, 100);
 
-    function sendSMSApi(stuid, emailquote, smsquote, type, subjectquote) {
-        try {
-            var formData = new FormData(document.getElementById("sendEmailSms_Student"));
-            formData.append('stuid', stuid);
-            formData.append('emailquote', emailquote);
-            formData.append('smsquote', smsquote);
-            formData.append('type', type);
-            formData.append('subjectquote', subjectquote);
-            $.ajax({
-                url: 'modules/Students/send_stud_email_msg.php',
-                type: 'post',
-                //data: { stuid: stuid, emailquote: emailquote, smsquote: smsquote, type: type, subjectquote: subjectquote },
-                data: formData,
-                cache: false,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    //$("#preloader").hide();
-                    $("#sendEmailSms_stud").prop('disabled', false);
-                    toast('success', 'Your Message Sent Successfully! click Ok to continue ');
-                    //location.reload();
-                    $("#sendEmailSms_Student")[0].reset();
-                }
-            });
-        } catch (ex) {
-            console.log(ex);
-        }
-    }
+
+    });
 
 
     $(document).on('click', '.sendButton_staff', function () {
@@ -9858,4 +9891,76 @@ $(document).on('change', '#skill_id', function () {
     } else {
         $("#pupilsightDepartmentIDbyPPbyMarks").trigger('change');
     }
+});
+
+$(document).on('click', '#expore_marks_xl_new', function () {
+    //var type = 'studentMarks_excel';
+    var val = '';
+    var type = 'studentMarks_excel_new';
+    var section = $('#pupilsightRollGroupIDbyPPbyMarks').val();
+    var cls = $('#pupilsightYearGroupIDbyPPbyMarks').val();
+    var program = $('#pupilsightProgramIDbyPPbyMarks').val();
+    var testId = $('#testId').val();
+    var favorite = [];
+    $.each($("input[name='stuid[]']:checked"), function () {
+        favorite.push($(this).val());
+    });
+    var stuid = favorite.join(",");
+    //alert(subid);
+    if (stuid) {
+        var stu_id = stuid;
+
+        $.ajax({
+            url: 'ajaxSwitch.php',
+            type: 'post',
+            data: { val: val, type: type, program: program, cls: cls, section: section, testId: testId, stu_id: stu_id },
+            async: true,
+            success: function (response) {
+                //alert(response);
+                $("#marks_studentExcel").html(response);
+                $("#excelexport").table2excel({
+                    name: " Student Marks",
+                    filename: "Student_marks.xls",
+                    fileext: ".xls",
+                    exclude: ".checkall",
+                    exclude_inputs: true,
+                    exclude_links: true
+
+                });
+            }
+        });
+    } else {
+        alert('Please Select Student First');
+    }
+});
+
+$(document).on('click', '#exportExcelNew', function () {
+    var type = 'subjectMarks_excelNew';
+    var section = $('#pupilsightRollGroupIDbyPPbyMarks').val();
+    var cls = $('#pupilsightYearGroupIDbyPPbyMarks').val();
+    var program = $('#pupilsightProgramIDbyPPbyMarks').val();
+    var testId = $('#testId').val();
+    var sub = $('#pupilsightDepartmentIDbyPPbyMarks').val();
+    var val = '1';
+    //alert(section);
+
+    $.ajax({
+        url: 'ajaxSwitch.php',
+        type: 'post',
+        data: { val: val, type: type, program: program, cls: cls, section: section, testId: testId, sub: sub },
+        async: true,
+        success: function (response) {
+            //console.log(response);
+            $("#marks_subjectExcel").html(response);
+            $("#subexcelexport").table2excel({
+                name: "subject Marks",
+                filename: "subject_marks.xls",
+                fileext: ".xls",
+                exclude: ".checkall",
+                exclude_inputs: true,
+                exclude_links: true
+
+            });
+        }
+    });
 });

@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
 //   echo '<pre>';
 //  print_r($manage_test);
 
-    echo "<div style='height:50px;'><div class='float-left mb-2 right_align'><a  id='expore_marks_xl' data-type='student' class='btn btn-primary'>Export To Excel</a>&nbsp;&nbsp;";   
+    echo "<div style='height:50px;'><div class='float-left mb-2 right_align'><a  id='expore_marks_xl_new' data-type='student' class='btn btn-primary'>Export To Excel</a>&nbsp;&nbsp;";   
   
              
     
@@ -237,4 +237,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/marks_by_student
             }
         });
     });
+
+    
 </script>
