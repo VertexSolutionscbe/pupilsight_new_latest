@@ -271,11 +271,20 @@
    <?php       
       foreach($s_test['skills'] as $key=>$sl)
           { 
-            $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $sl['pupilsightDepartmentID'],'pupilsightPersonID' => $std_id,'skill_id' => $sl['skill_id']);                    
-            $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id ';
-            $result = $connection2->prepare($sql1);
-            $result->execute($data1);
-            $prevdata =  $result->fetch();
+
+            if(!empty($s_test['skill_id'])){
+               $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $sl['pupilsightDepartmentID'],'pupilsightPersonID' => $std_id,'skill_id' => $sl['skill_id']);                    
+               $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id ';
+               $result = $connection2->prepare($sql1);
+               $result->execute($data1);
+               $prevdata =  $result->fetch();
+            } else {
+               $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $sl['pupilsightDepartmentID'],'pupilsightPersonID' => $std_id);                    
+               $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID ';
+               $result = $connection2->prepare($sql1);
+               $result->execute($data1);
+               $prevdata =  $result->fetch();
+            }
         
       ?>
    <tr>
@@ -327,10 +336,10 @@
                   if(!empty($prevdata['marks_abex'])){
                      $marksobt = '';
                   } else {
-                     $marksobt = str_replace(".00","",$prevdata['marks_obtained']);
+                     $marksobt = $prevdata['marks_obtained'];
                         //$marksobt = rtrim($marksobt,'0');
                   }
-
+                  //echo $marksobt.'<br>';
                   //$marksobt = str_replace(".00","",$prevdata['marks_obtained']);
                   //$marksobt = rtrim($marksobt,'0');
 

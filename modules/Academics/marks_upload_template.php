@@ -63,17 +63,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                 $ssname = '';
                 $testName = '';
 
-                $sqlsub = 'SELECT  a.pupilsightDepartmentID,a.subject_display_name, b.max_marks,b.test_id, t.name as test_name FROM subjectToClassCurriculum AS a LEFT JOIN examinationSubjectToTest AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN examinationTest AS t ON b.test_id = t.id WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$pupilsightProgramID.' AND a.pupilsightYearGroupID = '.$pupilsightYearGroupID.' AND a.pupilsightDepartmentID  = '.$subId.' AND b.test_id = '.$testId.' ';
-                $resultsub = $connection2->query($sqlsub);
-                $subData = $resultsub->fetch();
-                $testName = $subData['test_name'];
-                $subName = $subData['subject_display_name'];
+                
 
                 if($skillId != 0){
+                    $sqlsub = 'SELECT  a.pupilsightDepartmentID,a.subject_display_name, b.max_marks,b.test_id, t.name as test_name FROM subjectToClassCurriculum AS a LEFT JOIN examinationSubjectToTest AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN examinationTest AS t ON b.test_id = t.id WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$pupilsightProgramID.' AND a.pupilsightYearGroupID = '.$pupilsightYearGroupID.' AND a.pupilsightDepartmentID  = '.$subId.' AND b.test_id = '.$testId.' AND b.skill_id  = '.$skillId.' ';
+                    $resultsub = $connection2->query($sqlsub);
+                    $subData = $resultsub->fetch();
+                    $testName = $subData['test_name'];
+                    $subName = $subData['subject_display_name'];
+
                     $sqlsub = 'SELECT skill_display_name FROM  subjectSkillMapping WHERE pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND pupilsightProgramID = '.$pupilsightProgramID.' AND pupilsightYearGroupID = '.$pupilsightYearGroupID.' AND pupilsightDepartmentID  = '.$subId.' AND skill_id  = '.$skillId.' ';
                     $resultsub = $connection2->query($sqlsub);
                     $skillData = $resultsub->fetch();
                     $sklName = $skillData['skill_display_name'];
+                } else {
+                    $sqlsub = 'SELECT  a.pupilsightDepartmentID,a.subject_display_name, b.max_marks,b.test_id, t.name as test_name FROM subjectToClassCurriculum AS a LEFT JOIN examinationSubjectToTest AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN examinationTest AS t ON b.test_id = t.id WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$pupilsightProgramID.' AND a.pupilsightYearGroupID = '.$pupilsightYearGroupID.' AND a.pupilsightDepartmentID  = '.$subId.' AND b.test_id = '.$testId.' ';
+                    $resultsub = $connection2->query($sqlsub);
+                    $subData = $resultsub->fetch();
+                    $testName = $subData['test_name'];
+                    $subName = $subData['subject_display_name'];
                 }
 
                 if(!empty($sklName)){
