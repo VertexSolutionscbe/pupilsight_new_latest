@@ -1,4 +1,5 @@
 <?php
+/*
 $loc = $_SERVER['DOCUMENT_ROOT']."/public/archive/fee_receipt"; //file location
 $htmlFiles = glob("$loc/*.{html,htm}", GLOB_BRACE); //only html files
 
@@ -56,6 +57,8 @@ function getFileStudentDetails($fileName){
 }
 //print_r($result);
 die();
+*/
+
 include 'pupilsight.php';
 
 use Pupilsight\Contracts\Comms\Mailer;
@@ -64,7 +67,7 @@ use Pupilsight\Contracts\Comms\Mailer;
 // error_reporting( E_ALL );
 
 // $input = json_decode($data, true);
-$to = "bikash@thoughtnet.in";
+$to = "rakesh@thoughtnet.in";
 $subject = "Mail Testing";
 $body = "Mail Testing";
 

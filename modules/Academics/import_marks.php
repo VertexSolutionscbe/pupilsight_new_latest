@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 
-include $_SERVER["DOCUMENT_ROOT"] . "/pupilsight/db.php";
+include $_SERVER["DOCUMENT_ROOT"] . "/db.php";
 
 require __DIR__ . "/moduleFunctions.php";
 
