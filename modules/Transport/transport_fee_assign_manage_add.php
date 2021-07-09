@@ -120,4 +120,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/transport_fee_as
             });
         }
     });
+
+    $(document).on('change', '#programId', function () {
+        var id = $(this).val();
+        var type = 'getClasscheckbox';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: { val: id, type: type },
+            async: true,
+            success: function (response) {
+                // $("#showMultiClassByProgStaff").html();
+                $("#addallclasses").html(response);
+            }
+        });
+    });
 </script>
