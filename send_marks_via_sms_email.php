@@ -100,7 +100,7 @@ if (!empty($testId) && !empty($studentId) && !empty($uid)) {
             }
 
             if (!empty($mark_data)) {
-              
+
               $dtc = array();
               $dtc["student_id"] = $pupilsightPersonID;
               $dtc["student_name"] = $studentName;
@@ -108,14 +108,17 @@ if (!empty($testId) && !empty($studentId) && !empty($uid)) {
               $dtc["father_phone"] = $father_phone;
               $dtc["mother_email"] = $mother_email;
               $dtc["mother_phone"] = $mother_phone;
+              $emsg = "";
               if ($type == "sms") {
-                $senderID = ' - '.$senderID;
+                $senderID = ' - ' . $senderID;
                 $marksValue = implode(', ', $mark_data);
+                $emsg = "Dear Parent\n" . $test_name . "\nResult For  " . $studentName . "  ,  " . $class . " - " . $section . "  :\n ";
               } else if ($type == "email") {
                 $senderID = '';
-                $marksValue = implode(', </br>', $mark_data);
+                $marksValue = implode(', <br>', $mark_data);
+                $emsg = "Dear Parent <br>" . $test_name . "<br><br>Result For  " . $studentName . "  ,  " . $class . " - " . $section . "  :<br> ";
               }
-              $dtc["msg"] = 'Dear Parent </br>' . $test_name . '  Result For ' . $studentName . ' , ' . $class . '-' . $section . ' : ' . $marksValue .' '.$senderID ;
+              $dtc["msg"] = $emsg . $marksValue . ' ' . $senderID;
               $content[] = $dtc;
             }
           }
@@ -126,9 +129,9 @@ if (!empty($testId) && !empty($studentId) && !empty($uid)) {
     }
   }
 
-  // echo '<pre>';
-  // print_r($content);
-  // die();
+  //echo '<pre>';
+  //print_r($content);
+  //die();
   if ($content) {
     if ($type == "sms") {
       sendSMS($content, $uid);
@@ -136,6 +139,9 @@ if (!empty($testId) && !empty($studentId) && !empty($uid)) {
       sendEmail($content, $uid);
     }
   }
+  $link = getBaseURL() . "/index.php?q=/modules/Academics/manage_test_results.php&return=success0";
+  header('Location: ' . $link);
+  exit;
 } else {
   echo 'No Data Found!';
 }
@@ -149,11 +155,13 @@ function sendEmail($dcontent, $uid)
     $len = count($dcontent);
     $i = 0;
     //$len = 2;
-    $mail_post_link = getBaseURL() . "/pupilsight/mail_send.php";
+    $mail_post_link = getBaseURL() . "/mail_send.php";
     //echo "post link " . $mail_post_link;
     while ($i < $len) {
       $content = $dcontent[$i];
-      $email = $content[$i]["father_email"];
+      //print_r($content);
+      $email = $content["father_email"];
+      //echo "<br>father_email " . $email;
       //$email = "bikash@thoughtnet.in";
       if (!empty($email)) {
         $ed = array("to" => $email, "subject" => "Marks for " . $content["student_name"], "body" => $content['msg']);
@@ -161,8 +169,9 @@ function sendEmail($dcontent, $uid)
         //smsGateway($conn, $res['activeGateway'], $res['senderid'], $smsCount, $phone, $content['msg'], $content['student_id'], $uid, true);
         $sqi .= '(2, 1, ' . $content['student_id'] . ', "' . $email . '", "Marks for ' . $content["student_name"] . '" ,"' . stripslashes($content['msg']) . '", ' . $uid . ') , ';
       }
-      $email = $content[$i]["mother_email"];
-      //$email = "bikash@thoughtnet.in";
+      $email = $content["mother_email"];
+      //echo "<br>_email " . $email;
+      //$email = "Ittep1987@gustr.com";
       if (!empty($email)) {
         $ed = array("to" => $email, "subject" => "Marks for " . $content["student_name"], "body" => $content['msg']);
         curl_post($mail_post_link, $ed);
@@ -204,14 +213,14 @@ function sendSMS($dcontent, $uid)
     //$len = 2;
     while ($i < $len) {
       $content = $dcontent[$i];
-      $phone = $content[$i]["father_phone"];
+      $phone = $content["father_phone"];
       //$phone = "8867776787";
       if (!empty($phone)) {
         $smsCount++;
         smsGateway($conn, $res['activeGateway'], $res['senderid'], $smsCount, $phone, $content['msg'], $content['student_id'], $uid, true);
         $sqi .= '(1, 1, ' . $content['student_id'] . ', ' . $phone . ', "' . stripslashes($content['msg']) . '", ' . $uid . ') , ';
       }
-      $phone = $content[$i]["mother_phone"];
+      $phone = $content["mother_phone"];
       //$phone = "9883928942";
       if (!empty($phone)) {
         $smsCount++;
@@ -317,6 +326,6 @@ function getSenderIdData($conn)
   while ($row = mysqli_fetch_assoc($resource)) {
     $senderId = $row['value'];
   }
-  
+
   return $senderId;
 }
