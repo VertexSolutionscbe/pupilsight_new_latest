@@ -507,14 +507,22 @@ if ($type == 'invoiceFeeItem') {
         } else {
             $payamount = $totalamount;
         }
+        
         if ($itemchk['status'] == '1') {
             $paystatus = 'Paid';
             $cls = '';
             $checked = 'checked disabled';
         } else if ($itemchk['status'] == '2') {
-            $paystatus = 'Partial Paid';
-            $cls = 'selFeeItem';
-            $checked = '';
+            if(!empty($amtpending)){
+                $paystatus = 'Partial Paid';
+                $cls = 'selFeeItem';
+                $checked = '';
+            } else {
+                $paystatus = 'Paid';
+                $cls = '';
+                $checked = 'checked disabled';
+            }
+            
         } else {
             $cls = 'selFeeItem';
             $checked = '';

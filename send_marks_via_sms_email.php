@@ -12,6 +12,7 @@ if (!empty($testId) && !empty($studentId) && !empty($uid)) {
   $stuId = explode(',', $studentId);
   $testData = getTestDetails($conn, $testId);
   $gradeData = getGradeData($conn);
+  $senderID = getSenderIdData($conn);
   if (!empty($testData)) {
     $pupilsightSchoolYearID = $testData['pupilsightSchoolYearID'];
     $pupilsightProgramID = $testData['pupilsightProgramID'];
@@ -99,7 +100,7 @@ if (!empty($testId) && !empty($studentId) && !empty($uid)) {
             }
 
             if (!empty($mark_data)) {
-              $marksValue = implode(', ', $mark_data);
+              
               $dtc = array();
               $dtc["student_id"] = $pupilsightPersonID;
               $dtc["student_name"] = $studentName;
@@ -107,7 +108,14 @@ if (!empty($testId) && !empty($studentId) && !empty($uid)) {
               $dtc["father_phone"] = $father_phone;
               $dtc["mother_email"] = $mother_email;
               $dtc["mother_phone"] = $mother_phone;
-              $dtc["msg"] = 'Dear Parent </br>' . $test_name . '  Result For ' . $studentName . ' , ' . $class . '-' . $section . ' : ' . $marksValue;
+              if ($type == "sms") {
+                $senderID = ' - '.$senderID;
+                $marksValue = implode(', ', $mark_data);
+              } else if ($type == "email") {
+                $senderID = '';
+                $marksValue = implode(', </br>', $mark_data);
+              }
+              $dtc["msg"] = 'Dear Parent </br>' . $test_name . '  Result For ' . $studentName . ' , ' . $class . '-' . $section . ' : ' . $marksValue .' '.$senderID ;
               $content[] = $dtc;
             }
           }
@@ -118,7 +126,9 @@ if (!empty($testId) && !empty($studentId) && !empty($uid)) {
     }
   }
 
-  //echo '<pre>';
+  // echo '<pre>';
+  // print_r($content);
+  // die();
   if ($content) {
     if ($type == "sms") {
       sendSMS($content, $uid);
@@ -139,12 +149,12 @@ function sendEmail($dcontent, $uid)
     $len = count($dcontent);
     $i = 0;
     //$len = 2;
-    $mail_post_link = getBaseURL() . "/mail_send.php";
+    $mail_post_link = getBaseURL() . "/pupilsight/mail_send.php";
     //echo "post link " . $mail_post_link;
     while ($i < $len) {
       $content = $dcontent[$i];
       $email = $content[$i]["father_email"];
-      //$email = "rakesh@thoughtnet.in";
+      //$email = "bikash@thoughtnet.in";
       if (!empty($email)) {
         $ed = array("to" => $email, "subject" => "Marks for " . $content["student_name"], "body" => $content['msg']);
         curl_post($mail_post_link, $ed);
@@ -297,4 +307,16 @@ function getGradeData($conn)
     }
   }
   return $result;
+}
+
+function getSenderIdData($conn)
+{
+  $sql = 'SELECT value FROM pupilsightSetting WHERE name = "smsSenderID" ';
+  $resource = $conn->query($sql);
+  $senderId = '';
+  while ($row = mysqli_fetch_assoc($resource)) {
+    $senderId = $row['value'];
+  }
+  
+  return $senderId;
 }

@@ -11,6 +11,8 @@ if (empty($param["to"]) || empty($param["subject"]) || empty($param["body"])) {
     die();
 }
 
+$body = nl2br($param["body"]);
+
 $mail = $container->get(Mailer::class);
 $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
 
@@ -19,7 +21,7 @@ $mail->CharSet = 'UTF-8';
 $mail->Encoding = 'base64';
 $mail->isHTML(true);
 $mail->Subject = $param["subject"];
-$mail->Body = $param["body"];
+$mail->Body = $body;
 
 // $mail->AddAttachment($_FILES['emailAttachment']['tmp_name'],
 // $_FILES['emailAttachment']['name']);
