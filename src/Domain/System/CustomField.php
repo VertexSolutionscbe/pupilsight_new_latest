@@ -232,13 +232,18 @@ class CustomField extends QueryableGateway
                         $isCheckBox = TRUE;
                     }
                     foreach ($fields as $key => $val) {
-                        if ($squ) {
-                            $squ .= ", ";
-                        }
+
                         if ($isCheckBox) {
                             $val = implode(' |$$| ', $val);
                         }
-                        $squ .= $key . "='" . $val . "'";
+                        if ($squ) {
+                            $squ .= ", ";
+                        }
+                        if (!empty($val)) {
+                            $squ .= $key . "='" . $val . "'";
+                        } else {
+                            $squ .= $key . "=NULL";
+                        }
                     }
                     //}
                 }
@@ -251,7 +256,7 @@ class CustomField extends QueryableGateway
                 $db = new DBQuery();
                 $db->query($sq);
             }
-
+            //die();
             //manage file upload in custom field
             $this->fileCustomField($colName, $colVal);
         } catch (Exception $ex) {
@@ -339,7 +344,7 @@ class CustomField extends QueryableGateway
         return $sq;
     }
 
-    public function getPostData($tableName, $primaryCol, $primaryColVal=NULL, $modules = NULL)
+    public function getPostData($tableName, $primaryCol, $primaryColVal = NULL, $modules = NULL)
     {
         try {
             //$sq = "select group_concat(field_name) as fields from custom_field where table_name='" . $tableName . "' ";
@@ -349,10 +354,10 @@ class CustomField extends QueryableGateway
             if ($modules) {
                 $sq .= "and modules like '%" . $modules . "%'";
             }
-            
+
             $db = new DBQuery();
             $res = $db->selectRaw($sq);
-            
+
             //print_r($res);
             if ($res) {
                 $len = count($res);

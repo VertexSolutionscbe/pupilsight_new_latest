@@ -16,8 +16,9 @@ include './moduleFunctions.php';
 
 $pupilsightPersonID = $_GET['pupilsightPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . getModuleName($_POST['address']) . "/staff_manage_edit.php&pupilsightPersonID=$pupilsightPersonID&search=" . $_GET['search'];
-
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {
+$isNotEditAccess = false;
+//if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {
+if ($isNotEditAccess) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {

@@ -46,6 +46,7 @@ if ($pupilsightStudentEnrolmentID == '' or $pupilsightSchoolYearID == '') { echo
                 $pupilsightProgramID = $_POST['pupilsightProgramID'];
                 $pupilsightYearGroupID = $_POST['pupilsightYearGroupID'];
                 $pupilsightRollGroupID = $_POST['pupilsightRollGroupID'];
+                $newPupilsightSchoolYearID = $_POST['newPupilsightSchoolYearID'];
 
                 $rollOrder = $_POST['rollOrder'];
                 if ($rollOrder == '') {
@@ -71,8 +72,8 @@ if ($pupilsightStudentEnrolmentID == '' or $pupilsightSchoolYearID == '') { echo
                 // } else {
                     //Write to database
                     try {
-                        $data = array('pupilsightProgramID'=>$pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'rollOrder' => $rollOrder, 'pupilsightStudentEnrolmentID' => $pupilsightStudentEnrolmentID);
-                        $sql = 'UPDATE pupilsightStudentEnrolment SET pupilsightProgramID=:pupilsightProgramID,pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID, rollOrder=:rollOrder WHERE pupilsightStudentEnrolmentID=:pupilsightStudentEnrolmentID';
+                        $data = array('pupilsightSchoolYearID'=>$newPupilsightSchoolYearID,'pupilsightProgramID'=>$pupilsightProgramID,'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'rollOrder' => $rollOrder, 'pupilsightStudentEnrolmentID' => $pupilsightStudentEnrolmentID);
+                        $sql = 'UPDATE pupilsightStudentEnrolment SET pupilsightSchoolYearID=:pupilsightSchoolYearID,pupilsightProgramID=:pupilsightProgramID,pupilsightYearGroupID=:pupilsightYearGroupID, pupilsightRollGroupID=:pupilsightRollGroupID, rollOrder=:rollOrder WHERE pupilsightStudentEnrolmentID=:pupilsightStudentEnrolmentID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

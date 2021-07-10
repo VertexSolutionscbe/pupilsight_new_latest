@@ -60,8 +60,6 @@ class SMS implements SMSInterface
 
     protected $totalchars = 0;
 
-
-
     public function __construct(array $config)
     {
         try {
@@ -229,11 +227,11 @@ class SMS implements SMSInterface
             }*/
             $i++;
         }
-        $flagreturn= [];
+        $flagreturn = [];
         if (!empty($strto)) {
             $flagreturn =   $this->sendSMS($strto, $this->content);
         }
-        $flag[0]=$flagreturn;
+        $flag[0] = $flagreturn;
         return $flag;
     }
 
@@ -386,7 +384,7 @@ class SMS implements SMSInterface
             $charcount = strlen($msg);
             $cal = ceil($charcount / 160);
             $totalmsges = $cal;
-            
+
             $smsCount = $val + $totalmsges;
 
             switch ($activeGateway) {
@@ -453,7 +451,7 @@ class SMS implements SMSInterface
             $charcount = strlen($msg);
             $cal = ceil($charcount / 160);
             $totalmsges = $cal;
-            
+
 
             $smsCount = $val + $totalmsges;
             //echo $charcount.'--cal-'.$cal.'--totalmsges-'.$totalmsges.'--smsCount-'.$smsCount;
@@ -517,7 +515,7 @@ class SMS implements SMSInterface
             $charcount = strlen($msg);
             $cal = ceil($charcount / 160);
             $totalmsges = $cal;
-            
+
 
             $smsCount = $val + $totalmsges;
             //echo $charcount.'--cal-'.$cal.'--totalmsges-'.$totalmsges.'--smsCount-'.$smsCount;
@@ -542,7 +540,7 @@ class SMS implements SMSInterface
         return $result;
     }
 
-    public function karix($senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend= null)
+    public function karix($senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend = null)
     {
         $flag = TRUE;
         try {
@@ -551,7 +549,7 @@ class SMS implements SMSInterface
             $url1 .= "&dest=" . $numbers;
             // echo $url1;
             // die();
-            if($multipleSend){
+            if ($multipleSend) {
                 $this->curl_post($url1);
                 $res3 = 200;
                 $res5[1] = 1;
@@ -564,18 +562,18 @@ class SMS implements SMSInterface
                 $res4 = explode('&', $res1[0]);
                 $res5 = explode('=', $res4[0]);
             }
-                if ($res3 == 200) {
+            if ($res3 == 200) {
                 $this->updateSmsCount($smsCount, "Karix");
-                if($msgby!='') {
+                if ($msgby != '') {
                     $this->updateMessengerTable($msg, $msgto, $msgby);
                 }
                 //die();
                 $p = explode(',', $numbers);
-                if($msgby!='') {
-                    $nowtime =date("Y-m-d H:i:s");
+                if ($msgby != '') {
+                    $nowtime = date("Y-m-d H:i:s");
                     foreach ($p as $numb) {
                         //echo $numb;
-                        
+
                         $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID='$msgby', targetType='Individuals', targetID='$msgto', contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N', requestid=$res5[1], confirmedTimestamp='$nowtime' ";
                         //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
                         $db4 = new DBQuery();
@@ -583,18 +581,17 @@ class SMS implements SMSInterface
                         //die();
                     }
                 }
-                
             }
         } catch (Exception $ex) {
             print_r($ex);
             $flag = FALSE;
         }
-        $dkey=$res5[1];
+        $dkey = $res5[1];
         return $dkey;
     }
 
 
-    public function gupshup($senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend= null)
+    public function gupshup($senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend = null)
     {
         $flag = TRUE;
         try {
@@ -609,15 +606,15 @@ class SMS implements SMSInterface
             $res3 = 'success';
             if (strcmp($res2, $res3) === 0) {
                 $this->updateSmsCount($smsCount, "Gupshup");
-                if($msgby!='') {
+                if ($msgby != '') {
                     $this->updateMessengerTable($msg, $msgto, $msgby);
                 }
             }
             $p = explode(',', $numbers);
-            if($msgby!='') {
+            if ($msgby != '') {
                 foreach ($p as $numb) {
                     //echo $numb;
-                    $nowtime =date("Y-m-d H:i:s");
+                    $nowtime = date("Y-m-d H:i:s");
 
                     $savedata = "INSERT INTO pupilsightMessengerReceipt SET pupilsightMessengerID='$msgby', pupilsightPersonID=$msgby, targetType='Individuals', targetID=$msgto, contactType='SMS', contactDetail=$numb, `key`='NA', confirmed='N', confirmedTimestamp='$nowtime' ";
                     //$savedata = "INSERT INTO pupilsightMessengerReceipt (contactDetail,requestId) VALUES (" . $numb . ", " . $res5[1] . ")";
@@ -658,7 +655,7 @@ class SMS implements SMSInterface
         $date3 = date('Y-m-d');*/
         $todaydatetime = date("Y-m-d H:i:s");
 
-        $sql = 'INSERT INTO pupilsightMessenger SET  messageWall_date1="'.$date1.'", sms="'.$sms.'", subject="NA", body="'.addslashes(htmlspecialchars($msg)).'",  pupilsightPersonID="'.$msgby.'", messengercategory="Other" ';
+        $sql = 'INSERT INTO pupilsightMessenger SET  messageWall_date1="' . $date1 . '", sms="' . $sms . '", subject="NA", body="' . addslashes(htmlspecialchars($msg)) . '",  pupilsightPersonID="' . $msgby . '", messengercategory="Other" ';
         $result = new DBQuery();
         $result->query($sql);
 
@@ -667,7 +664,8 @@ class SMS implements SMSInterface
         $result->query($sql);
     }
 
-    public function updateMessengerTableforEmail($msgto,$subject,$body,$msgby){
+    public function updateMessengerTableforEmail($msgto, $subject, $body, $msgby)
+    {
         $sqlAI = "SHOW TABLE STATUS LIKE 'pupilsightMessenger'";
         $db = new DBQuery();
         $rs = $db->selectRaw($sqlAI, TRUE);
@@ -690,38 +688,40 @@ class SMS implements SMSInterface
         $result->query($sql);
     }
 
-    public function curl_post($url, $post=NULL){
-        try{
+    public function curl_post($url, $post = NULL)
+    {
+        try {
             //$url = 'https://127.0.0.1/ajax/received.php';
-            $curl = curl_init();                
+            $curl = curl_init();
             //$post['test'] = 'examples daata'; // our data todo in received
             curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt ($curl, CURLOPT_POST, TRUE);
+            curl_setopt($curl, CURLOPT_POST, TRUE);
 
-            if(!empty($post)){
-                curl_setopt ($curl, CURLOPT_POSTFIELDS, $post); 
+            if (!empty($post)) {
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
             }
 
             curl_setopt($curl, CURLOPT_USERAGENT, 'api');
 
-            curl_setopt($curl, CURLOPT_TIMEOUT, 1); 
+            curl_setopt($curl, CURLOPT_TIMEOUT, 1);
             curl_setopt($curl, CURLOPT_HEADER, 0);
             curl_setopt($curl,  CURLOPT_RETURNTRANSFER, false);
             curl_setopt($curl, CURLOPT_FORBID_REUSE, true);
             curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
-            curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 10); 
+            curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 10);
 
             curl_setopt($curl, CURLOPT_FRESH_CONNECT, true);
 
-            curl_exec($curl);   
+            curl_exec($curl);
 
-            curl_close($curl);  
-        } catch(Exception $ex){
+            curl_close($curl);
+        } catch (Exception $ex) {
             echo $ex;
         }
     }
 
-    public function smsGateway($activeGateway, $senderid, $smsCount, $numbers, $msg, $msgto, $msgby,$multipleSend=null){
+    public function smsGateway($activeGateway, $senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend = null)
+    {
         switch ($activeGateway) {
             case 'Karix':
                 $flag = $this->karix($senderid, $smsCount, $numbers, $msg, $msgto, $msgby, $multipleSend);

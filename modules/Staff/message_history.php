@@ -1,6 +1,6 @@
 <?php
- 
- 
+
+
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -35,13 +35,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
     // Access denied
     $page->addError(__('You do not have access to this action.'));
 } else {
-    
+
     $page->breadcrumbs->add(__('Message History'));
 
- 
-     if (isset($_GET['return'])) {
-         returnProcess($guid, $_GET['return'], null, null);
-     }
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
 
     $pupilsightPersonID =  $_GET['pupilsightPersonID'];
 
@@ -49,27 +49,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
     $endDate = '';
     $stDate = '';
     $enDate = '';
-    if($_POST){
-        if(!empty($_POST['start_date'])){
+    if ($_POST) {
+        if (!empty($_POST['start_date'])) {
             $sdate = str_replace('/', '-', $_POST['start_date']);
-            $start_date = date('Y-m-d', strtotime($sdate)).'  00:00:01';
+            $start_date = date('Y-m-d', strtotime($sdate)) . '  00:00:01';
             $startDate = date('Y-m-d', strtotime($sdate));
             $stDate = $_POST['start_date'];
         } else {
-            $start_date = date('2019-01-01', strtotime($sdate)).'  00:00:01';
+            $start_date = date('2019-01-01', strtotime($sdate)) . '  00:00:01';
             $stDate = '';
         }
 
-        if(!empty($_POST['end_date'])){
+        if (!empty($_POST['end_date'])) {
             $edate = str_replace('/', '-', $_POST['end_date']);
-            $end_date = date('Y-m-d', strtotime($edate)).'  23:59:59';
+            $end_date = date('Y-m-d', strtotime($edate)) . '  23:59:59';
             $endDate = date('Y-m-d', strtotime($edate));
             $enDate = $_POST['end_date'];
         } else {
-            if(!empty($sdate)){
-                $end_date = date('Y-m-d', strtotime($sdate)).'  23:59:59';
+            if (!empty($sdate)) {
+                $end_date = date('Y-m-d', strtotime($sdate)) . '  23:59:59';
             } else {
-                $end_date = date('Y-m-d').'  23:59:59';
+                $end_date = date('Y-m-d') . '  23:59:59';
             }
             $enDate = '';
         }
@@ -77,9 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
         $type = $_POST['type'];
 
-        $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE  a.sent_to = "2" AND a.cdt >= "'.$start_date.'" AND a.cdt <= "'.$end_date.'" ';
-        if(!empty($type)){
-            $sqle .= 'AND a.type = '.$type.'';
+        $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE  a.sent_to = "2" AND a.cdt >= "' . $start_date . '" AND a.cdt <= "' . $end_date . '" ';
+        if (!empty($type)) {
+            $sqle .= 'AND a.type = ' . $type . '';
         }
         $sqle .= ' ORDER BY a.id DESC ';
         // echo $sqle;
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         //     $resulte = $connection2->query($sqle);
         //     $mailsmsdata = $resulte->fetchAll();
         // }
-        
+
     } else {
         $sqle = 'SELECT a.*, b.officialName, c.officialName as uname FROM user_email_sms_sent_details AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightPerson AS c ON a.uid = c.pupilsightPersonID WHERE a.sent_to = "2" ORDER BY a.id DESC';
         $resulte = $connection2->query($sqle);
@@ -101,56 +101,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
     // echo '<pre>';
     // print_r($mailsmsdata);
     // echo '</pre>';
-    
-    
-     echo '<h2>';
-     echo __('Staff Message History');
-     echo '</h2>';
-     
-     $types = array('' => 'Select Type', '1' => 'SMS', '2' => 'EMAIL');
-     $form = Form::create('filter', '');
-
-            $form->setClass('noIntBorder fullWidth');
-            $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
-            $row = $form->addRow();
-
-            // $col = $row->addColumn()->setClass('newdes');
-            // $col->addLabel('pupilsightProgramID', __('Program'));
-            // $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
 
-            // $col = $row->addColumn()->setClass('newdes');
-            // $col->addLabel('pupilsightYearGroupID', __('Class'));
-            // $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
+    echo '<h2>';
+    echo __('Staff Message History');
+    echo '</h2>';
+
+    $types = array('' => 'Select Type', '1' => 'SMS', '2' => 'EMAIL');
+    $form = Form::create('filter', '');
+
+    $form->setClass('noIntBorder fullWidth');
+    $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/student_view.php');
+    $row = $form->addRow();
+
+    // $col = $row->addColumn()->setClass('newdes');
+    // $col->addLabel('pupilsightProgramID', __('Program'));
+    // $col->addSelect('pupilsightProgramID')->setId('pupilsightProgramIDbyPP')->fromArray($program)->selected($pupilsightProgramID)->placeholder('Select Program');
 
 
-            // $col = $row->addColumn()->setClass('newdes');
-            // $col->addLabel('pupilsightRollGroupID', __('Section'));
-            // $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section');
-
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('start_date', __('From Date'))->addClass('dte');
-            $col->addDate('start_date')->setValue($stDate);
-
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('end_date', __('To Date'))->addClass('dte');
-            $col->addDate('end_date')->setValue($enDate);
-
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('type', __('Type'))->addClass('dte');
-            $col->addSelect('type')->fromArray($types)->selected($type);
+    // $col = $row->addColumn()->setClass('newdes');
+    // $col->addLabel('pupilsightYearGroupID', __('Class'));
+    // $col->addSelect('pupilsightYearGroupID')->setId('pupilsightYearGroupIDbyPP')->fromArray($classes)->selected($pupilsightYearGroupID)->placeholder('Select Class');
 
 
-            $col = $row->addColumn()->setClass('newdes');
-            $col->addLabel('', __(''));
-            $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
+    // $col = $row->addColumn()->setClass('newdes');
+    // $col->addLabel('pupilsightRollGroupID', __('Section'));
+    // $col->addSelect('pupilsightRollGroupID')->setId('pupilsightRollGroupIDbyPP')->fromArray($sections)->selected($pupilsightRollGroupID)->placeholder('Select Section');
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('start_date', __('From Date'))->addClass('dte');
+    $col->addDate('start_date')->setValue($stDate);
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('end_date', __('To Date'))->addClass('dte');
+    $col->addDate('end_date')->setValue($enDate);
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('type', __('Type'))->addClass('dte');
+    $col->addSelect('type')->fromArray($types)->selected($type);
+
+
+    $col = $row->addColumn()->setClass('newdes');
+    $col->addLabel('', __(''));
+    $col->addSearchSubmit($pupilsight->session, __('Clear Search'));
 
 
 
-            echo $form->getOutput();
+    echo $form->getOutput();
 
-    ?>
-    
+?>
+
     <table class="table" id="historyTable">
         <thead>
             <tr>
@@ -166,49 +166,51 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         </thead>
         <tbody>
             <?php
-            if(!empty($mailsmsdata)) { 
+            if (!empty($mailsmsdata)) {
                 $i = 1;
-                foreach($mailsmsdata as $estd){ 
+                foreach ($mailsmsdata as $estd) {
                     $stype = '';
                     $sto = '';
-                    if($estd['type'] == '2'){
+                    if ($estd['type'] == '2') {
                         $stype = 'Email';
                         $sto = $estd['email'];
                     } else {
                         $stype = 'Sms';
                         $sto = $estd['phone'];
                     }
-                ?>
+            ?>
+                    <tr>
+                        <td><?php echo $i; ?></td>
+                        <td><?php echo $estd['officialName']; ?></td>
+                        <td><?php echo $stype; ?></td>
+                        <td><?php echo $sto; ?></td>
+                        <td><?php echo $estd['subject']; ?></td>
+                        <td><?php echo $estd['description']; ?></td>
+                        <td><?php echo $estd['uname']; ?></td>
+                        <td><?php echo date('d/m/Y h:i:s', strtotime($estd['cdt'])); ?></td>
+                    </tr>
+                <?php $i++;
+                }
+            } else { ?>
                 <tr>
-                    <th><?php echo $i; ?></th>
-                    <th><?php echo $estd['officialName']; ?></th>
-                    <th><?php echo $stype; ?></th>
-                    <th><?php echo $sto; ?></th>
-                    <th><?php echo $estd['subject']; ?></th>
-                    <th><?php echo $estd['description']; ?></th>
-                    <th><?php echo $estd['uname']; ?></th>
-                    <th><?php echo date('d/m/Y h:i:s', strtotime($estd['cdt'])); ?></th>
-                </tr>
-            <?php  $i++; } } else { ?> 
-                <tr>
-                    <th colspan="7">No Message History</th>
+                    <td colspan="7">No Message History</td>
                 </tr>
             <?php } ?>
         </tbody>
 
     </table>
 
-<?php   
+<?php
 }
 ?>
 
 <script>
-    $(function(){
+    $(function() {
         $("#historyTable").dataTable();
     })
     $("#start_date").datepicker({
         //minDate: 0,
-        onClose: function (selectedDate) {
+        onClose: function(selectedDate) {
             $("#end_date").datepicker("option", "minDate", selectedDate);
         }
     });

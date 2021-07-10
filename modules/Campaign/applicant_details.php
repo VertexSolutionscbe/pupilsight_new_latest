@@ -71,8 +71,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/index.php') == fa
     //  print_r($criteria);
     //  die();
     $dataSet = $admissionGateway->getAllApplicantData($criteria);
+
+    
     $table = DataTable::createPaginated('userManage', $criteria);
     
+
+
     $table->addColumn('serial_number', __('SI No'));
     $table->addColumn('campaign_name', __('Campaign Name'))
         ->width('10%')

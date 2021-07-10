@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/substitutes_manage_a
 
     $row = $form->addRow();
         $row->addLabel('pupilsightPersonID', __('Person'))->description(__('Must be unique.'));
-        $row->addSelectUsers('pupilsightPersonID')->placeholder()->required();
+        $row->addSelectStaff('pupilsightPersonID')->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));

@@ -53,7 +53,7 @@ class ParentDashboard implements OutputableInterface
                         'today' => date('Y-m-d'),
                     ];
                     $sqlChild = "SELECT
-                        pupilsightPerson.pupilsightPersonID,image_240, surname,
+                        DISTINCT pupilsightPerson.pupilsightPersonID,image_240, surname,
                         preferredName, dateStart,
                         pupilsightYearGroup.nameShort AS yearGroup,
                         pupilsightRollGroup.nameShort AS rollGroup,

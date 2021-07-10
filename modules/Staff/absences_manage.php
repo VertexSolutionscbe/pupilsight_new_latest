@@ -75,8 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/absences_manage.php'
         ->filterBy('dateEnd', Format::dateConvert($dateEnd))
         ->filterBy('type', $pupilsightStaffAbsenceTypeID);
 
-    $criteria->filterBy('date', !$criteria->hasFilter() && !$criteria->hasSearchText() ? 'upcoming' : '')
-        ->fromPOST();
+    // $criteria->filterBy('date', !$criteria->hasFilter() && !$criteria->hasSearchText() ? 'upcoming' : '')
+    //     ->fromPOST();
 
     $absences = $staffAbsenceGateway->queryAbsencesBySchoolYear($criteria, $pupilsightSchoolYearID, true);
 

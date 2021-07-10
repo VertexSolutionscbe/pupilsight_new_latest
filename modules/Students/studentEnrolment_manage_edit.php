@@ -96,9 +96,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
             $schoolYearName = ($result->rowCount() == 1)? $result->fetchColumn(0) : $_SESSION[$guid]['pupilsightSchoolYearName'];
 
+            //sql year
+            $sqla = 'SELECT pupilsightSchoolYearID, name FROM pupilsightSchoolYear ';
+            $resulta = $connection2->query($sqla);
+            $academic = $resulta->fetchAll();
+
+            $academicData = array();
+            foreach ($academic as $dt) {
+                $academicData[$dt['pupilsightSchoolYearID']] = $dt['name'];
+            }
+
+                //$row = $form->addRow();
+                // $row->addLabel('yearName', __('School Year'));
+                //$row->addTextField('yearName')->readOnly()->maxLength(20)->setValue($schoolYearName);
             $row = $form->addRow();
-                $row->addLabel('yearName', __('School Year'));
-                $row->addTextField('yearName')->readOnly()->maxLength(20)->setValue($schoolYearName);
+            $row->addLabel('newPupilsightSchoolYearID', __('Academic Year'));
+            $row->addSelect('newPupilsightSchoolYearID')->fromArray($academicData)->required()->selected($pupilsightSchoolYearID);
 
             $row = $form->addRow();
                 $row->addLabel('studentName', __('Student'));

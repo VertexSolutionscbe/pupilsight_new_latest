@@ -3,7 +3,7 @@
         dateFormat: 'dd/mm/yy'
     });
 
-    "use strict";
+    //"use strict";
 
     $(document).on('click', '.bordercls', function () {
         $(this).children().addClass("borderclass");

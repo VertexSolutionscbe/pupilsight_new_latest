@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                         }
                                     }
 
-                                    if (!empty($delmarks_obtained) && !empty($test_id)) {
+                                    if ((!empty($delmarks_obtained) || !empty($remarks)) && !empty($test_id)) {
                                         if (!empty($skill_id)) {
                                             $data1 = array('test_id' => $test_id, 'pupilsightYearGroupID' => $pupilsightYearGroupID, 'pupilsightRollGroupID' => $pupilsightRollGroupID, 'pupilsightDepartmentID' => $pupilsightDepartmentID, 'pupilsightPersonID' => $pupilsightPersonID, 'skill_id' => $skill_id);
                                             $sql1 = 'DELETE FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND skill_id=:skill_id';

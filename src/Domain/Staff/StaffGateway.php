@@ -73,6 +73,7 @@ class StaffGateway extends QueryableGateway
                 "pupilsightPerson.phone2",
                 "pupilsightPerson.phone3",
                 "pupilsightPerson.phone4",
+                "pupilsightPerson.*"
             ])
             ->innerJoin(
                 "pupilsightPerson",
@@ -639,6 +640,31 @@ class StaffGateway extends QueryableGateway
             ->cols([
                 "pupilsightPerson.pupilsightPersonID",
                 "pupilsightPerson.preferredName",
+                "pupilsightPerson.officialName",
+                "pupilsightPerson.gender",
+                "pupilsightPerson.dob",
+                "pupilsightPerson.email",
+                "pupilsightPerson.canLogin",
+                "pupilsightPerson.username",
+                "pupilsightPerson.address1",
+                "pupilsightPerson.phone1CountryCode",
+                "pupilsightPerson.phone1",
+                "pupilsightPerson.address1District",
+                "pupilsightPerson.languageFirst",
+                "pupilsightPerson.languageSecond",
+                "pupilsightPerson.languageThird",
+                "pupilsightPerson.countryOfBirth",
+                "pupilsightPerson.address1Country",
+                "pupilsightPerson.ethnicity",
+                "pupilsightPerson.religion",
+                "pupilsightPerson.nationalIDCardNumber",
+                "pupilsightPerson.employee_code",
+                "pupilsightPerson.department",
+                "pupilsightPerson.section",
+                "pupilsightPerson.position",
+                "pupilsightPerson.school_list",
+                "pupilsightPerson.temp_image",
+                "pupilsightPerson.testing_staff_field",
             ])
             ->innerJoin(
                 "pupilsightPerson",

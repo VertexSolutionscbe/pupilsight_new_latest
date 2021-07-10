@@ -53,9 +53,9 @@ $valuept = $result->fetch();
 
 $file = $valuept['template_path'];
 */
-//22-May-2021 last executed for sjbhs
+//12-June-2021 last executed for sjbhs
 $file = "/var/www/sjbhs/public/thirdparty/pdfgenerate/bulk/bulk_template.pdf";
-$sqlf = "SELECT id FROM wp_fluentform_submissions where form_id='" . $formid . "' and date(created_at)>'2021-05-22' ";
+$sqlf = "SELECT id FROM wp_fluentform_submissions where form_id='" . $formid . "' and date(created_at)>'2021-06-04' ";
 $resultf = $connection2->query($sqlf);
 $applications = $resultf->fetchAll();
 
@@ -212,11 +212,11 @@ if (!empty($file)) {
                 $outFileName = $_SERVER['DOCUMENT_ROOT'] . '/thirdparty/pdfgenerate/bulk/' . $fname . '.pdf';
                 $pdflib->generate($templateFileName, $outFileName, $formData, $imgData, TRUE);
                 //$pdflib->download();
-                echo "\n<br>Template File Name : ".$templateFileName;
-                echo "\n<br>outFileName : ".$outFileName;
-                echo "\n<br>attachFilePath: ".$attachFilePath;
+                echo "\n<br>Template File Name : " . $templateFileName;
+                echo "\n<br>outFileName : " . $outFileName;
+                echo "\n<br>attachFilePath: " . $attachFilePath;
 
-                
+
                 $zip->addFile($outFileName, $fname . '.pdf');
                 if ($attachFilePath) {
                     $afp = getPhyLink($attachFilePath, $baseurl);

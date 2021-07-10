@@ -42,9 +42,9 @@ if (
             $pupilsightDepartmentID = "";
             $search = "";
         }
-        
+
         $staffGateway = $container->get(StaffGateway::class);
-        
+
         // QUERY
         $criteria = $staffGateway
             ->newQueryCriteria()
@@ -53,7 +53,7 @@ if (
             ->pageSize(5000)
             ->sortBy(["surname", "preferredName"])
             ->fromPOST();
-            
+
         echo "<h2>";
         echo __("Search");
         echo "</h2>";
@@ -84,7 +84,7 @@ if (
             $subject2[$dt["pupilsightDepartmentID"]] = $dt["name"];
         }
         $subjects += $subject2;
-        
+
         $form->setClass("noIntBorder fullWidth");
         $form->addHiddenValue("address", $_SESSION[$guid]["address"]);
         $form->addHiddenValue(
@@ -121,28 +121,29 @@ if (
         );
 
         echo $form->getOutput();
+        echo "<div class='btn-list mt-4'>";
+        echo "<a style='display:none' id='clickchnagestatus' href='fullscreen.php?q=/modules/Staff/change_staff_status.php'  class='btn btn-white thickbox'>Change Route</a>";
+        echo "<a id='' data-toggle='modal' data-target='#large-modal-new_staff' data-noti='2'  class='sendButton_staff btn btn-white'>Send SMS</a>&nbsp;&nbsp;";
+        echo "<a id='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_staff' class='sendButton_staff btn btn-white'>Send Email</a><a id='change_status' data-type='staff'  data-noti='1'  class=' btn btn-white'>Change Status</a>";
+        echo "<a href='index.php?q=/modules/Staff/message_history.php' class='btn btn-white' id='sendEmail'>SMS/EMAIL - SENT ITEMS</a>";
+        echo "<a href='index.php?q=/modules/Staff/staff_manage_add.php' class='btn btn-white' id='sendEmail'>ADD</a>";
+        echo "<a class=' btn btn-white' href='index.php?q=/modules/Staff/field_to_show.php'  >Field to Show</a>";
+        echo "<a data-hrf='index.php?q=/modules/Staff/feedback_manage.php' href='' class='btn btn-white' id='addFeedback'>Feedback</a>";
 
-        echo "<h2>";
+        echo "</div>";
+
+        echo "<div class='hr-text hr-text-start'>";
         echo __("Choose A Staff Member");
-        echo "</h2>";
-        echo "<a style='display:none' id='clickchnagestatus' href='fullscreen.php?q=/modules/Staff/change_staff_status.php'  class='thickbox '>Change Route</a>";
-        echo "<div style='height:50px;'><div class='float-left mb-2'><a  id=''  data-toggle='modal' data-target='#large-modal-new_staff' data-noti='2'  class='sendButton_staff btn btn-white'>Send SMS</a>&nbsp;&nbsp;";
-        echo "<a  id='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_staff' class='sendButton_staff btn btn-white'>Send Email</a>&nbsp;&nbsp;<a  id='change_status' data-type='staff'  data-noti='1'  class=' btn btn-white'>Change Status</a>";
-        echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/message_history.php' class='btn btn-white' id='sendEmail'>SMS/EMAIL - SENT ITEMS</a>";
-        echo "&nbsp;&nbsp;<a style='' href='index.php?q=/modules/Staff/staff_manage_add.php' class='btn btn-white' id='sendEmail'>ADD</a>";
-        echo "&nbsp;&nbsp;<a style=' ' class=' btn btn-white' href='index.php?q=/modules/Staff/field_to_show.php'  >Field to Show</a>";
-        echo "&nbsp;&nbsp;<a data-hrf='index.php?q=/modules/Staff/feedback_manage.php' href='' class='btn btn-white' id='addFeedback'>Feedback</a>";
+        echo "</div>";
 
-        echo " </div><div class='float-none'></div></div>";
 
-        
         $staff = $staffGateway->queryAllStaff(
             $criteria,
             $pupilsightSchoolYearID,
             $pupilsightProgramID,
             $pupilsightDepartmentID
         );
-        
+
         $sqlf =
             "SELECT field_name FROM staff_field_show WHERE pupilsightPersonID = " .
             $pupilsightPersonID .

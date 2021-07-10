@@ -209,15 +209,17 @@
 {% endblock table %}
 <script>
     $(document).ready(function () {
-        $('#expore_tbl').DataTable({
-            "pageLength": 25,
-            "lengthMenu": [[10, 25, 50, 250, -1], [10, 25, 50, 250, "All"]],
-            "sDom": '<"top"lfp>rt<"bottom"ifp><"clear">',
-            "columnDefs": [{
-                "targets": 'no-sort',
-                "orderable": false,
-            }]
-        });
+        if (!$.fn.DataTable.isDataTable('#expore_tbl')) {
+            $('#expore_tbl').DataTable({
+                "pageLength": 25,
+                "lengthMenu": [[10, 25, 50, 250, -1], [10, 25, 50, 250, "All"]],
+                "sDom": '<"top"lfp>rt<"bottom"ifp><"clear">',
+                "columnDefs": [{
+                    "targets": 'no-sort',
+                    "orderable": false,
+                }]
+            });
+        }
         $(".dataTables_length").find("select").css("width", "90px");
         $(".dataTables_length").find("select").css("display", "inline-block");
     });
