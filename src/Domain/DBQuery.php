@@ -7,7 +7,7 @@ class DBQuery
     private $conn;
     private function connect()
     {
-        include($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+        include($_SERVER['DOCUMENT_ROOT'] . '/newcode/pupilsight_new/config.php');
         $this->conn = new \MySQLi($databaseServer, $databaseUsername, $databasePassword, $databaseName);
         if ($this->conn->connect_errno) {
             echo "Failed to connect to MySQL: " . $this->conn->connect_error;
