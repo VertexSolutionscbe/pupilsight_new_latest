@@ -5,7 +5,7 @@ Pupilsight, Flexible & Open School System
 
 use Pupilsight\Forms\Form;
 
-include $_SERVER["DOCUMENT_ROOT"] . "/pupilsight/db.php";
+include $_SERVER["DOCUMENT_ROOT"] . "/db.php";
 
 require __DIR__ . "/moduleFunctions.php";
 
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                         // Marks Entry
                         if (!empty($alrow['marks'])) {
                             try {
-                                $sql = "INSERT INTO examinationMarksEntrybySubject (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remarks,pupilsightPersonIDTaker) VALUES ";
+                                $sql = "INSERT INTO examinationMarksEntrybySubject (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,marks_abex,gradeId,remark_type,remarks,pupilsightPersonIDTaker) VALUES ";
 
                                 foreach ($alrow['marks'] as $k => $value) {
                                     $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $connection2);
@@ -195,12 +195,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     $test_id = '';
                                     if (!empty($testData)) {
                                         $test_id = $testData['testId'];
-                                        $gradeSystemId = getGradeSystemIdBySujectandTest($test_id, $pupilsightDepartmentID, $skill_id, $connection2);
+                                        $gradeSystemData = getGradeSystemIdBySujectandTest($test_id, $pupilsightDepartmentID, $skill_id, $connection2);
+                                        $gradeSystemId = $gradeSystemData['gradeSystemId'];
+                                        $max_marks = $gradeSystemData['max_marks'];
                                         if (!empty($marks_obtained)) {
                                             if (is_numeric($marks_obtained)) {
                                                 $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
+                                                $marks_abex = '';
+                                                if(!empty($max_marks)){
+                                                    if((float)$marks_obtained > (float)$max_marks){
+                                                        $marks_obtained = '';
+                                                    }
+                                                }
                                             } else {
-                                                $gradeId = getGradeIdByName($gradeSystemId, $marks_obtained, $connection2);
+                                                if(trim($marks_obtained) == 'AB'){
+                                                    $marks_abex = 'AB';
+                                                } else if(trim($marks_obtained) == 'EX'){
+                                                    $marks_abex = 'EX';
+                                                } else {
+                                                    $gradeId = getGradeIdByName($gradeSystemId, $marks_obtained, $connection2);
+                                                    $marks_abex = '';
+                                                }
+                                                
                                                 $marks_obtained = '';
                                             }
                                         } else {
@@ -225,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
 
                                     if (!empty($test_id)) {
                                         if ($skill_id == "") {
-                                            $skill_id = "NULL";
+                                            $skill_id = "0";
                                         }
                                         if ($marks_obtained == 0 || $marks_obtained == "" || empty($marks_obtained)) {
                                             $marks_obtained = "NULL";
@@ -233,7 +249,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                         if ($gradeId == 0 || $gradeId == "" || empty($gradeId)) {
                                             $gradeId = "NULL";
                                         }
-                                        $sql .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '",' . $skill_id . ',' . $marks_obtained . ',' . $gradeId . ',"' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
+                                        $sql .= '("' . $test_id . '",
+                                        "' . $pupilsightYearGroupID . '",
+                                        "' . $pupilsightRollGroupID . '",
+                                        "' . $pupilsightDepartmentID . '",
+                                        "' . $pupilsightPersonID . '",
+                                        ' . $skill_id . ',
+                                        ' . $marks_obtained . ',';
+                                        if (empty($marks_abex)) {
+                                            $sql .= 'NULL';
+                                        } else {
+                                            $sql .= "'" . $marks_abex . "'";
+                                        }
+                                        $sql .= ',' . $gradeId . ',
+                                        "' . $remark_type . '",
+                                        "' . $remarks . '",
+                                        "' . $pupilsightPersonIDTaker . '"),';
                                     }
                                 }
                                 $sql = rtrim($sql, ", ");
@@ -245,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                             }
 
                             try {
-                                $sql1 = "INSERT INTO history_of_students_marks (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,gradeId,remark_type,remark,pupilsightPersonIDTaker) VALUES ";
+                                $sql1 = "INSERT INTO history_of_students_marks (test_id,pupilsightYearGroupID,pupilsightRollGroupID,pupilsightDepartmentID,pupilsightPersonID,skill_id,marks_obtained,marks_abex,gradeId,remark_type,remark,pupilsightPersonIDTaker) VALUES ";
 
                                 foreach ($alrow['marks'] as $k => $value) {
                                     $testData = getTestId($value['testname'], $pupilsightSchoolYearID, $pupilsightProgramID, $pupilsightYearGroupID, $pupilsightRollGroupID, $connection2);
@@ -274,12 +305,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                     $test_id = 0;
                                     if (!empty($testData)) {
                                         $test_id = $testData['testId'];
-                                        $gradeSystemId = getGradeSystemIdBySujectandTest($test_id, $pupilsightDepartmentID, $skill_id, $connection2);
+                                        $gradeSystemData = getGradeSystemIdBySujectandTest($test_id, $pupilsightDepartmentID, $skill_id, $connection2);
+                                        $gradeSystemId = $gradeSystemData['gradeSystemId'];
+                                        $max_marks = $gradeSystemData['max_marks'];
                                         if (!empty($marks_obtained)) {
                                             if (is_numeric($marks_obtained)) {
                                                 $gradeId = getGradeId($gradeSystemId, $marks_obtained, $connection2);
+                                                $marks_abex = '';
+                                                if(!empty($max_marks)){
+                                                    if((float)$marks_obtained > (float)$max_marks){
+                                                        $marks_obtained = '';
+                                                    }
+                                                }
                                             } else {
-                                                $gradeId = getGradeIdByName($gradeSystemId, $marks_obtained, $connection2);
+                                                if(trim($marks_obtained) == 'AB'){
+                                                    $marks_abex = 'AB';
+                                                } else if(trim($marks_obtained) == 'EX'){
+                                                    $marks_abex = 'EX';
+                                                } else {
+                                                    $gradeId = getGradeIdByName($gradeSystemId, $marks_obtained, $connection2);
+                                                    $marks_abex = '';
+                                                }
+                                                
                                                 $marks_obtained = '';
                                             }
                                         } else {
@@ -289,7 +336,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
 
                                     if (!empty($test_id)) {
                                         if ($skill_id == "") {
-                                            $skill_id = "NULL";
+                                            $skill_id = "0";
                                         }
 
                                         if ($marks_obtained == 0 || $marks_obtained == "" || empty($marks_obtained)) {
@@ -298,11 +345,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/test_marks_uploa
                                         if ($gradeId == 0 || $gradeId == "" || empty($gradeId)) {
                                             $gradeId = "NULL";
                                         }
-                                        $sql1 .= '("' . $test_id . '","' . $pupilsightYearGroupID . '","' . $pupilsightRollGroupID . '","' . $pupilsightDepartmentID . '","' . $pupilsightPersonID . '",' . $skill_id . ',' . $marks_obtained . ',' . $gradeId . ',"' . $remark_type . '","' . $remarks . '","' . $pupilsightPersonIDTaker . '"),';
+                                        
+                                        $sql1 .= '("' . $test_id . '",
+                                        "' . $pupilsightYearGroupID . '",
+                                        "' . $pupilsightRollGroupID . '",
+                                        "' . $pupilsightDepartmentID . '",
+                                        "' . $pupilsightPersonID . '",
+                                        ' . $skill_id . ',
+                                        ' . $marks_obtained . ',';
+                                        if (empty($marks_abex)) {
+                                            $sql1 .= 'NULL';
+                                        } else {
+                                            $sql1 .= "'" . $marks_abex . "'";
+                                        }
+                                        $sql1 .= ',' . $gradeId . ',
+                                        "' . $remark_type . '",
+                                        "' . $remarks . '",
+                                        "' . $pupilsightPersonIDTaker . '"),';
                                     }
                                 }
                                 $sql1 = rtrim($sql1, ", ");
-                                echo $sql1;
+                                //echo $sql1;
                                 //  die();
                                 $conn->query($sql1);
                             } catch (Exception $ex) {
@@ -395,14 +458,18 @@ function getGradeIdByName($gradeSystemId, $grade_name, $connection2)
 
 function getGradeSystemIdBySujectandTest($test_id, $pupilsightDepartmentID, $skill_id, $connection2)
 {
-    $sql = 'SELECT gradeSystemId FROM examinationSubjectToTest WHERE test_id ="' . $test_id . '" AND pupilsightDepartmentID ="' . $pupilsightDepartmentID . '" AND is_tested = "1" ';
+    $sql = 'SELECT gradeSystemId, max_marks FROM examinationSubjectToTest WHERE test_id ="' . $test_id . '" AND pupilsightDepartmentID ="' . $pupilsightDepartmentID . '" AND is_tested = "1" ';
     if (!empty($skill_id)) {
         $sql .= ' AND skill_id = "' . $skill_id . '" ';
     }
 
     $result = $connection2->query($sql);
     $grade = $result->fetch();
+    $data = array();
     if (!empty($grade)) {
-        return $grade['gradeSystemId'];
+        $data['gradeSystemId'] = $grade['gradeSystemId'];
+        $data['max_marks'] = $grade['max_marks'];
     }
+    return $data;
 }
+

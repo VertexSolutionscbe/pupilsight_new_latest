@@ -33,6 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
         $pupilsightSchoolYearName = $_SESSION[$guid]['pupilsightSchoolYearName'];
     }
 
+    $pupilsightPersonID = $_SESSION[$guid]['pupilsightPersonID'];
     $sqlp = 'SELECT pupilsightProgramID, name FROM pupilsightProgram ';
     $resultp = $connection2->query($sqlp);
     $rowdataprog = $resultp->fetchAll();
@@ -150,7 +151,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
     echo "<a  id='result_hide_html'  data-type='test' class='btn btn-primary butt'>Hide HTML</a>&nbsp;&nbsp;";
     echo "<a  id='result_lock_tr' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Lock T.R</a>&nbsp;&nbsp;";
     echo "<a  id='result_unlock_tr' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Unlock T.R</a>&nbsp;&nbsp;";
-    echo "<a  id='result_send_mark' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Send Mark</a>&nbsp;&nbsp;";
+    echo "<a  id='result_send_mark_by_sms' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Send Mark via SMS</a>&nbsp;&nbsp;";
+    echo "<a  id='result_send_mark_by_email' style='margin-top: 10px;' data-type='test' class='btn btn-primary butt'>Send Mark via Email</a>&nbsp;&nbsp;";
     // echo "</div><div style='margin-top: 10px;'>";
     
     echo "<a  id='mass_student_tests_xl' style='margin-top: 10px;' title='' data-type='test' class='btn btn-primary butt'>Mass Download</a>&nbsp;&nbsp;";
@@ -315,81 +317,83 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
         echo '</table> </form></div>';
     }
 }
+
+echo '<a href="" id="sendMarks" style="display:none;">sendMarks</a>';
+echo '<input type="hidden" id="uid" value="'.$pupilsightPersonID.'">';
 ?>
 
 <style>
-.text-xxs {
-    display:none;
-}
- .text_cntr 
- {
-    text-align: center;
- }   
- .bdr_right 
- {
-    border-right: 2px solid #dee2e6;
- }
- .textfield_wdth 
- {
-     width:75px;
- }
- .td_texfield 
- {
-    width: 9%;
- }
- .rmk_width 
- {
-    width: 250px;
- }
- .x_icon,.small_icon,.greenicon
- {
-    font-size: 18px !important;
- }
+    .text-xxs {
+        display:none;
+    }
+    .text_cntr 
+    {
+        text-align: center;
+    }   
+    .bdr_right 
+    {
+        border-right: 2px solid #dee2e6;
+    }
+    .textfield_wdth 
+    {
+        width:75px;
+    }
+    .td_texfield 
+    {
+        width: 9%;
+    }
+    .rmk_width 
+    {
+        width: 250px;
+    }
+    .x_icon,.small_icon,.greenicon
+    {
+        font-size: 18px !important;
+    }
 
- /* .butt {
-    width: 150px;
-    text-align: center;
- } */
+    /* .butt {
+        width: 150px;
+        text-align: center;
+    } */
  
 </style>
 <script type="text/javascript">
-$(document).on('click','.export_excel_sheet',function(){
-    var pupilsightProgramID= $("#pupilsightProgramIDbyPP").val();
-    var pupilsightYearGroupID = $("#pupilsightYearGroupIDbyPP").val();
-    var pupilsightRollGroupID = $("#pupilsightRollGroupIDbyPP").val();
-    var testId = $("#testId").val();
-    var favorite = [];
-    $.each($("input[name='student_id[]']:checked"), function() {
-    favorite.push($(this).val());
-    });
-    var length =favorite.length;
-    var type ="download_excel_results";
-    if(length!=0){
-        $.ajax({
-        url: 'ajaxSwitchExcel.php',
-        type: 'post',
-        data: { pupilsightProgramID: pupilsightProgramID, pupilsightYearGroupID: pupilsightYearGroupID, pupilsightRollGroupID: pupilsightRollGroupID,testId:testId,stuid:favorite,type:type },
-        async: true,
-        success: function(response) {
-
-           $("#marks_studentExcel").html(response);
-            $("#excelexport").table2excel({
-            name: " Student Marks",
-            filename: "Student_marks.xls",
-            fileext: ".xls",
-            exclude: ".checkall",
-            exclude_inputs: true,
-            exclude_links: true
-            });
-        }
+    $(document).on('click','.export_excel_sheet',function(){
+        var pupilsightProgramID= $("#pupilsightProgramIDbyPP").val();
+        var pupilsightYearGroupID = $("#pupilsightYearGroupIDbyPP").val();
+        var pupilsightRollGroupID = $("#pupilsightRollGroupIDbyPP").val();
+        var testId = $("#testId").val();
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+        favorite.push($(this).val());
         });
-    } else {
-        alert('Please select atleast one student.');
-    }
-});
+        var length =favorite.length;
+        var type ="download_excel_results";
+        if(length!=0){
+            $.ajax({
+            url: 'ajaxSwitchExcel.php',
+            type: 'post',
+            data: { pupilsightProgramID: pupilsightProgramID, pupilsightYearGroupID: pupilsightYearGroupID, pupilsightRollGroupID: pupilsightRollGroupID,testId:testId,stuid:favorite,type:type },
+            async: true,
+            success: function(response) {
 
+            $("#marks_studentExcel").html(response);
+                $("#excelexport").table2excel({
+                name: " Student Marks",
+                filename: "Student_marks.xls",
+                fileext: ".xls",
+                exclude: ".checkall",
+                exclude_inputs: true,
+                exclude_links: true
+                });
+            }
+            });
+        } else {
+            alert('Please select atleast one student.');
+        }
+    });
 
-$(document).on('change', '#pupilsightRollGroupIDbyPP', function() {
+    $(document).on('change', '#pupilsightRollGroupIDbyPP', function() {
         var id = $(this).val();
         var cid = $('#pupilsightYearGroupIDbyPP').val();
         var pid = $('#pupilsightProgramIDbyPP').val();
@@ -405,4 +409,59 @@ $(document).on('change', '#pupilsightRollGroupIDbyPP', function() {
             }
         });
     });
+
+
+    $(document).on('click', '#result_send_mark_by_sms', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        var tid = $("#testId").val();
+        var uid = $("#uid").val();
+        //alert(subid);
+        if (stuId) {
+            if (tid) {
+                var hrf = 'send_marks_via_sms.php?type=sms&uid='+uid+'&testId=';
+                var newhrf = hrf + tid + '&stuId=' +stuId ;
+                $("#sendMarks").attr('href', newhrf);
+                window.setTimeout(function() {
+                    $("#sendMarks")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select Test.');
+            }
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click', '#result_send_mark_by_email', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        var tid = $("#testId").val();
+        var uid = $("#uid").val();
+        //alert(subid);
+        if (stuId) {
+            if (tid) {
+                var hrf = 'send_marks_via_email.php?type=email&uid='+uid+'&testId=';
+                var newhrf = hrf + tid + '&stuId=' +stuId ;
+                $("#sendMarks").attr('href', newhrf);
+                window.setTimeout(function() {
+                    $("#sendMarks")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select Test.');
+            }
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+
+
+
 </script>

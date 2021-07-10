@@ -4,6 +4,11 @@ Pupilsight, Flexible & Open School System
 */
 include 'pupilsight.php';
 $session = $container->get('session');
+if (isset($_SERVER['HTTPS'])) {
+    $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
+} else {
+    $protocol = 'http';
+}
 $baseurl = $protocol . "://" . $_SERVER['HTTP_HOST'];
 if (isset($_POST['type'])) {
     $type = trim($_POST['type']);
