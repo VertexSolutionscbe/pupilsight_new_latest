@@ -28,7 +28,7 @@ function getDomain()
     return $protocol . "://" . $_SERVER["HTTP_HOST"];
 }
 //$baseurl = getDomain().'/pupilsight';
-$baseurl = getDomain();
+$baseurl = getDomain().'/pupilsight_new';
 
 $logo = $baseurl . "/cms/images/pupilpod_logo.png";
 $hero_image = $baseurl . "/cms/images/welcome.png";
@@ -462,7 +462,7 @@ if (isset($_GET["invalid"])) {
                                                 "title"
                                             ] ?></span>
                                         </a>
-                                        <ul class="dropdown-menu">
+                                        <ul class="dropdown-menu dropdown-menu-right">
                                             <li>
                                                 <a class="dropdown-item" href="javascript:applicationList();">
                                                     Application List
@@ -1453,7 +1453,7 @@ if (isset($_GET["invalid"])) {
 
         .google-maps {
             position: relative;
-            padding-bottom: 1%; // This is the aspect ratio
+            padding-bottom: 1%; 
             height: 0;
             overflow: hidden;
         }
@@ -1794,6 +1794,18 @@ if (isset($_GET["invalid"])) {
                 alert('Please Enter Your Username or Email Id!');
             }
         });
+        $('.dropdown-toggle').click(function(e){
+            if($(this).hasClass('show')){
+                $(this).removeClass('show');
+            } else {
+                $(this).addClass('show');
+            }
+            if($(this).next('ul.dropdown-menu').hasClass('show')){
+                $(this).next('ul.dropdown-menu').removeClass('show');
+            } else {
+                $(this).next('ul.dropdown-menu').addClass('show');
+            }	
+        })
     </script>
 
 </body>

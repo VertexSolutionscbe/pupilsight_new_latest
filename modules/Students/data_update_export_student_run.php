@@ -141,8 +141,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
     // echo '</pre>';
 
 ?>
-<form method="post" action="">
-    <button type="submit" class="thickbox btn btn-primary">Generate Template File</button>
+<form method="post" action="" id="studentexportform">
+    <button type="button" class="thickbox btn btn-primary" id="generatestudenttemplate">Generate Template File</button>
     <h1>Student's</h1> 
     <table class="table">
         <thead>
@@ -555,6 +555,18 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
                 //$(".chkChild"+id).prop("checked", true);
             } else {
                 $("#chkAllMotherField").prop("checked", false);
+            }
+        });
+
+        $('#generatestudenttemplate').click(function(e){
+            if($('#getMultiClassByProg option:selected').val() == '' || $('#showMultiClassByProg option:selected').val() == ''){
+                alert('Please Select Program and Class and click on search for studnent data');
+            } else {
+                if($('input[name="student_id[]"]:checked').length > 0){
+                    $('#studentexportform').submit();
+                } else {
+                    alert("Please Select student's");
+                }
             }
         });
    </script>
