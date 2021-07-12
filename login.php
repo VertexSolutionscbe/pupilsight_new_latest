@@ -124,15 +124,16 @@ else {
 
             setLog($connection2, $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'], null, $row['pupilsightPersonID'], 'Login - Failed', array('username' => $username, 'reason' => 'Too many failed logins'), $_SERVER['REMOTE_ADDR']);
             $URL .= '?loginReturn=fail6';
+            $NEWURL = 'home.php?locked=true';
             // header("Location: {$URL}");
             // exit;
-            echo "<script type='text/javascript'>alert('Your account has been locked/disabled, please contact Administrator.');
-            window.location.href='./index.php';
+            // echo "<script type='text/javascript'>alert('Your account has been locked/disabled, please contact Administrator.');
+            // window.location.href='./index.php';
 
-            </script>";
-            exit;
-            //header("Location: {$URL}");
+            // </script>";
             //exit;
+            header("Location: {$NEWURL}");
+            exit;
         } else {
             $passwordTest = false;
             //If strong password exists
