@@ -1,0 +1,45 @@
+1. Show the attendance percentage till date
+2. Total working days(tilll date).
+3. today no of days present 
+4. today no of days absent 
+5. view more button to redirect
+
+
+academic-irc currently no data
+homework currently no data
+activities currently no data
+events - static data(related to calendar)
+
+examinationMarksEntrybySubject 
+
+
+pupilsightlibraryitemevent, pupilsightlibraryitem for library
+
+
+view profile details (classname, section, student name and photo)- content
+
+
+
+
+3messages for expand area
+
+
+Over Due Invoice
+
+Dear Parent, you have a overdue fee to be paid. Please ignore if paid already.
+
+Invoice number: INV123455 Invoice amount: ₹5,000.00 Due Date: 23 March 2021
+
+
+
+Upcoming Invoice
+
+Dear Parent, You have upcoming fee to be paid. Please ignore if paid already.
+
+Invoice number: INV123456 Invoice amount: ₹7,000.00 Due Date: 23 July 2021
+Invoice number: INV123457 Invoice amount: ₹10,000.00 Due Date: 24 July 2021
+
+
+No invoices or All Invoices are paid
+
+Dear Parent, You have paid all the fees for the academic year. Thank you for making the payment

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="icon" href="icon1.png">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+        crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
+    
+    <style type="text/css">
+    
+    
+        .discoverimageContent {
+        font-family: Poppins;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 12px;
+        color: #171725;
+        text-align: center;
+
+    }
+
+        .smbox {
+            height: 60px;
+            width: 100%;
+            background-color: white;
+            box-shadow: 10px 10px 8px rgb(168, 167, 167);
+            padding: 1px;
+            float: right 20px;
+        }
+
+        .darkfont {
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: 900;
+            font-size: 30px;
+            line-height: 35px;
+            letter-spacing: 0.1px;
+
+            color: #000000;
+        }
+
+        .date {
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 24px;
+            line-height: 28px;
+            letter-spacing: 0.1px;
+
+            color: #000000;
+
+        }
+
+
+
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #FAFAFB;
+        }
+
+        .navbar {
+            background-color: rgb(251, 251, 251);
+            box-shadow: 0px 15px 15px 0px rgba(240, 240, 240, 0.9);
+        }
+
+        .dropdown-menu {
+            background-color: rgb(251, 251, 251);
+            border-radius: 0px;
+        }
+
+        .dropdown-item {
+            color: black;
+            background-color: rgb(251, 251, 251);
+            transition: 0.1s;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+
+        .dropdown-item:hover {
+            color: white;
+            background-color: rgb(0, 90, 192);
+            transform: scale(1.1);
+        }
+
+        .follow-hover {
+            color: white;
+            transition: 0.3s;
+        }
+
+        .follow-hover:hover {
+            color: rgb(173, 173, 173);
+        }
+
+        .date {
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 26px;
+            /* or 162% */
+
+            letter-spacing: 0.1px;
+
+            color: #44444F;
+
+        }
+    </style>
+    <link rel="stylesheet" href="app.css">
+</head>
+
+<body>
+    <section>
+
+    </section>
+    <div class="navbar navbar-expand-lg navbar-light ">
+
+        <ul class="nav">
+            <li class="nav-item">
+                <button class="navbar-toggler float-sm-left mr-2" type="button" data-toggle="collapse"
+                    data-target="#collapsibleNavbar">
+                    <span class="navbar-toggler-icon"></span>
+
+                </button>
+            </li>
+            <li class="nav-item">
+                <img src="parent.jpg" class="rounded-circle  navbar-toggler float-sm-left mr-2" data-toggle="collapse"
+                    alt="Cinque Terre" width="40" height="40">
+            </li>
+            <li class="nav-item border-0">
+                <form action="/" class="navbar-toggler mr-2 outline-danger" data-toggle="collapse">
+                    <select name="cars" style="border: none; background-color:white; overflow: hidden;">
+                        <option value="volvo">Rahul</option>
+                        <option value="volvo">suhail</option>
+                        <option value="saab">gokul</option>
+                        <option value="opel">tom</option>
+                        <option value="audi">ravi</option>
+                        <option value="audi">selvan</option>
+
+                    </select>
+
+                </form>
+            </li>
+        </ul>
+
+
+
+
+
+        <div class="navbar-collapse collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav ml-auto">
+
+
+                <li class="nav-item">
+                    <a href="#"> <img src="parent.jpg" class="rounded-circle" alt="Cinque Terre" width="40" height="40">
+                    </a>
+                </li>
+                <li class="nav-item ">
+
+                    <a class="nav-link mt-2" href="#" style="font-family: Poppins;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 16px;
+                    line-height: 28px;">Ramasamy</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="container-lg">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="darkfont mt-5">Rahul's Area</div>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-right mt-4">Select Child
+                    <form action="/" class="ml-2 mt-lg-3">
+                        <select name="cars" style="border: none; background-color: #FAFAFB; overflow: hidden; ">
+                            <option value="volvo">suhail</option>
+                            <option value="saab">gokul</option>
+                            <option value="opel">tom</option>
+                            <option value="audi">ravi</option>
+                            <option value="audi">selvan</option>
+
+                        </select>
+
+                    </form>
+                    <!-- <script > document.getElementById("btn1").addEventListener("click",function()
+                    {
+                        var box1=document.getElementById("green");
+                        if(box1.style.display=="none")
+                        {
+                            box1.style.display="block";
+                        }
+                        else {
+                            box1.style.display="none";
+                        }
+
+                    })
+                    </script> -->
+                </div>
+
+                <img src="parent.jpg" class="rounded-circle float-right mt-lg-5 " alt="Cinque Terre" width="40"
+                    height="40">
+
+
+            </div>
+
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="date">Today's Timetable</div>
+
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5 " style="background-color: white; border-radius: 20px;">
+        <div class="row">
+
+            <div class="col-sm-6 " id="myScrollspy">
+                <div class="light googul" style="display: flex; background-color: white; ">
+
+                    <div class="calendar" style="background-color: white;" data-spy="scroll" data-target="#myScrollspy"
+                        data-offset="1">
+                        <div class="calendar-header">
+                            <span class="month-picker" id="month-picker">February </span>
+                            <span id="year">2021</span>
+                            <hr style="width:50%;text-align:left;margin-left:0">
+                            <div class="year-picker">
+
+                                <span id="prev-year">
+
+                                    <pre><img src="save.PNG" style="height: 38px;" alt=""></pre>
+                                </span>
+
+                                <span id="next-year">
+                                    <pre><img src="save1.PNG" alt="" style="height: 38px;"></pre>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="calendar-body">
+                            <div class="calendar-week-day">
+                                <div>Sun</div>
+                                <div>Mon</div>
+                                <div>Tue</div>
+                                <div>Wed</div>
+                                <div>Thu</div>
+                                <div>Fri</div>
+                                <div>Sat</div>
+                            </div>
+                            <a href="#section1" style="display: inline-block;">
+                                <div class="calendar-days"></div>
+                            </a>
+                        </div>
+                        <div class="calendar-footer">
+                            <!-- <div class="toggle">
+                                <span>Dark Mode</span>
+                                <div class="dark-mode-switch">
+                                    <div class="dark-mode-switch-ident"></div>
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="month-list"></div>
+                    </div>
+
+                    <script src="app.js"></script>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div id="section1">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <p> <img src="box.PNG" style="height: 20px; width: 20px;" />1 july</p>
+
+                        </div>
+                        <div class="col-sm-3">
+                            8-9AM
+
+                        </div>
+                        <div class="col-sm-7">
+                            <h6>Subject 1</h6>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore tempora tempore
+                                sapiente asperiores error odit, at libero reprehenderit minus quibusdam sunt labore
+                                officiis. Consectetur praesentium nihil quas cumque, dolores omnis.</p>
+
+                        </div>
+                        <hr style="width:90%;text-align:left;margin-left:0">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+
+
+                        </div>
+                        <div class="col-sm-3">
+                            <h6>10-11AM</h6>
+
+                        </div>
+                        <div class="col-sm-7">
+                            <h6>Subject 1</h6>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore tempora tempore
+                                sapiente asperiores error odit, at libero reprehenderit minus quibusdam sunt labore
+                                officiis. Consectetur praesentium nihil quas cumque, dolores omnis.</p>
+
+                        </div>
+                        <hr style="width:90%;text-align:left;margin-left:0">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+
+
+                        </div>
+                        <div class="col-sm-3">
+                            <h6>12-1PM</h6>
+
+                        </div>
+                        <div class="col-sm-7">
+                            <h6>Subject 1</h6>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore tempora tempore
+                                sapiente </p>
+
+                        </div>
+                        <hr style="width:90%;text-align:left;margin-left:0">
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+
+
+                        </div>
+                        <div class="col-sm-3">
+                            <h6>1-2 PM</h6>
+
+                        </div>
+                        <div class="col-sm-7">
+                            <h6>Subject 1</h6>
+                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Inventore tempora tempore</p>
+
+                        </div>
+                        <hr style="width:90%;text-align:left;margin-left:0">
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <section>
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-3">
+                    <h4>Discover</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" style="text-align:center"> <a href="#"><img style="height: 60px; width: 60px;" src="./I_Report_Card.png"></img></a> <br><span class="discoverimageContent" style="text-align:center">Timetable</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./Attendance.png"></img></a><br><span class="discoverimageContent">Progress Report</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img_3.png"></img></a><br><span class="discoverimageContent">Circular/Publication</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img_4.png"></img></a><br><span class="discoverimageContent" >Chat</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img_5.png"></img></a><br><span class="discoverimageContent">Event</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img_6.png"></img></a><br><span class="discoverimageContent">Activities</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img_7.png"></img></a><br><span class="discoverimageContent">Fees invoice</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img_8.png"></img></a><br><span class="discoverimageContent">Fees Receipt</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img10.png"></img></a><br><span class="discoverimageContent">Library</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img11.png"></img></a><br><span class="discoverimageContent">Atten dance</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img12.png"></img></a><br><span class="discoverimageContent">Transport</span></a></div> 
+                <div class="col" style="text-align:center"><a href="#"> <img style="height: 60px; width: 60px;" src="./img13.png"></img></a><br><span class="discoverimageContent">Learning</span></a></div> 
+          </div>
+            <div class="container">
+                <div class="row mt-3">
+                    <div  class="col-12 discover"> Rahul's NewsFeed  </div>
+                    </div>
+                    
+                    <div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
+                    
+                    <div class="col">
+                    
+                    <div class="row">
+                    <div class="col-1"><img style="width:64px;height:64px;margin-left:15px;margin-top:20px" src="./Random_PP.png"></img></div>
+                    
+                    <div class="col-11">
+                    <span class="eventInvitation">Event Invitation</span> <br> 
+                    <span class="someHeadingContent">Some Heading Goes Here</span>
+                    </div>
+                    
+                    <div class="col-12 col-md6"><img style="width:100%;height:auto;margin-top:20px" src="./Dashboard_img.png"></img></div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                    <div class="col-6 col-md6 "><span class="someHeadingdown"> Some Headings For Invite that needsto be attended. </span></div>
+                    </div>
+                    <div class="row mt-2">
+                    <div class="col-6 col-md6 "> <span class="someHeadingdown1">Every hero, Every story, Every moment has led us here. Marver Studios Avengers: ENDGAME is now playing in theater.</span> </div>
+                    </div>
+                    
+                    
+                    <div class="row mt-2">
+                    <div class="col-6 col-md6 "> </div>
+                    <div class="col-3 col-md4 "> 
+                    
+                    </div>
+                    
+                    <div class="col-3 col-md4 "> 
+                    <!-- <a href="#"><img  src="./view_details.png"></img></a> -->
+                    </div>
+                    
+                     
+                    </div>
+                    
+                    <div class="row mt-4">
+                    <div class="col-12 col-md6 "></div>
+                    </div>
+                    
+                    </div>
+                    </div>
+            </div>
+
+
+           
+            
+     
+</body>
+ 
+
+</html>
