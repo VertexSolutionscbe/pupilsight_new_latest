@@ -134,7 +134,7 @@ if ($accessFlag) {
       $uid = $_SESSION['student_id'];
     }
 
-    $stSubList = $helperGateway->getClassTeacher($connection2, $pupilsightSchoolYearID, $uid);
+    $stSubList = $helperGateway->getClassTeacherProgramClassAndSection($connection2, $pupilsightSchoolYearID, $uid);
     $groupList = $helperGateway->getGroupList($connection2, $pupilsightSchoolYearID);
   }
   if ($isPostAllow) { ?>
@@ -178,6 +178,7 @@ if ($accessFlag) {
             $staffid = $helperGateway->getStaffID($connection2, $uid);
             $_SESSION["staffid"] = $staffid;
           }
+          $scv = $helperGateway->getClassTeacherProgramClassAndSection($connection2, $pupilsightSchoolYearID, $uid);
           $sct = $helperGateway->getTeacherClassAndSection($connection2, $pupilsightSchoolYearID, $staffid);
 
         ?>
@@ -186,6 +187,18 @@ if ($accessFlag) {
               <label>Select Class Group</label>
               <select id='teacherSelect' onchange="loadCtStudentList();">
                 <?php
+                if ($scv) {
+                  //only for class teacher
+                  $len = count($scv);
+                  $i = 0;
+                  while ($i < $len) {
+                    $st = $scv[$i];
+                    $label = $st["class"] . " - " . $st["section"];
+                    $mixid = $st["pupilsightProgramID"] . "-" . $st["pupilsightYearGroupID"] . "-" . $st["pupilsightRollGroupID"];
+                    echo "\n<option value='" . $mixid . "' tag='" . $label . "' tagid='" . $mixid . "' classid='" . $st["pupilsightYearGroupID"] . "' sectid='" . $st["pupilsightRollGroupID"] . "'>" . $label . "</option>";
+                    $i++;
+                  }
+                }
                 $len = count($sct);
                 $i = 0;
                 while ($i < $len) {
@@ -453,9 +466,7 @@ if ($accessFlag) {
               <option value="">Select Type</option>
               <?php
               if ($stSubList['pupilsightPersonID']) {
-                echo "<option value='" .
-                  $stSubList['pupilsightPersonID'] .
-                  "' groupid='' groupname='Class Teacher'>Class Teacher</option>";
+                echo "<option value='" . $stSubList['pupilsightPersonID'] . "' groupid='' groupname='Class Teacher'>Class Teacher</option>";
               }
               echo "<option value='subject_teacher' groupid='' groupname='Subject Teacher'>Subject Teacher(s)</option>";
 

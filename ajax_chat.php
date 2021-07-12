@@ -824,7 +824,7 @@ if ($type == 'postMessage') {
 
             $sq = "select p.pupilsightPersonID, p.officialName from pupilsightPerson as p, ";
             $sq .= " pupilsightStudentEnrolment as e  ";
-            $sq .= " where e.pupilsightPersonID=p.pupilsightPersonID and 
+            $sq .= " where p.is_delete='0' and e.pupilsightPersonID=p.pupilsightPersonID and 
             e.pupilsightSchoolYearID='" . $pupilsightSchoolYearID . "' and 
             e.pupilsightRollGroupID='" . $pupilsightRollGroupID . "' and
             e.pupilsightYearGroupID='" . $pupilsightYearGroupID . "' ";
