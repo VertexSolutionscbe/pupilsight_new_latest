@@ -8,6 +8,7 @@ $cuid=trim($_SESSION[$guid]['pupilsightPersonID']);
 $yearid=$_SESSION[$guid]['pupilsightSchoolYearID'];
 
 
+
 $sql = "SELECT pupilsightPerson.*, futureYearsLogin, pastYearsLogin FROM pupilsightPerson LEFT JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (pupilsightPersonID='".$cuid."')";
 $Esi=mysqli_query($conn,$sql);
 $Fsi=mysqli_fetch_array($Esi);
