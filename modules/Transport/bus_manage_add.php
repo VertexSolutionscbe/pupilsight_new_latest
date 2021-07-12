@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
             $row = $form->addRow();
             $col = $row->addColumn()->setClass('newdes');
                 $col->addLabel('capacity', __('Capacity'));
-                $col->addTextField('capacity')->addClass('numfield')->required();
+                $col->addNumber('capacity')->addClass('numfield')->required();
                
     
             $col = $row->addColumn()->setClass('newdes');
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
         
                 $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('driver_mobile', __('Driver Mobile'));
-                    $col->addTextField('driver_mobile')->addClass('numfield')->maxLength(10)->required();
+                    $col->addNumber('driver_mobile')->addClass('numfield')->maxLength(10)->required();
                     
         
                 $col = $row->addColumn()->setClass('newdes');
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Transport/bus_manage_add.p
         
                $col = $row->addColumn()->setClass('newdes');
                     $col->addLabel('coordinator_mobile', __('Transport Coordinator Mobile'));
-                    $col->addTextField('coordinator_mobile')->addClass('numfield')->maxLength(12)->required();
+                    $col->addNumber('coordinator_mobile')->addClass('numfield')->maxLength(12)->required();
                    
 
 

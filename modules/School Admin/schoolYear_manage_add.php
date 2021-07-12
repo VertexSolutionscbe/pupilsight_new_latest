@@ -61,11 +61,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
 
     $row = $form->addRow();
         $row->addLabel('firstDay', __('Start Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('firstDay')->required()->readonly();
+        $row->addDate('firstDay')->required();
 
     $row = $form->addRow();
         $row->addLabel('lastDay', __('End Day'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('lastDay')->required()->readonly();
+        $row->addDate('lastDay')->required();
 
     $row = $form->addRow();
         $row->addFooter();

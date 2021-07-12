@@ -114,8 +114,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             if ($sort == 'rollGroup')
                 $orderBy = 'ORDER BY LENGTH(rollGroup), rollGroup, surname, preferredName';
 
-            $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'],'edate' => $currentDate,);
-
+            // $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'],'edate' => $currentDate,);
+            $data = array('pupilsightSchoolYearID' => $_SESSION[$guid]['pupilsightSchoolYearID'],);
             $whereExtra = '';
             if (is_array($pupilsightYearGroupIDList)) {
                 $data['pupilsightYearGroupIDList'] = implode(",", $pupilsightYearGroupIDList);
@@ -123,7 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             }
 
             //$sql = "SELECT pupilsightPerson.pupilsightPersonID, surname, preferredName, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.name as rollGroupName, pupilsightRollGroup.nameShort AS rollGroup FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) LEFT JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID $whereExtra";
-            $sql = "SELECT pupilsightPerson.pupilsightPersonID, surname, preferredName, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.name as rollGroupName, pupilsightRollGroup.nameShort AS rollGroup FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) LEFT JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) LEFT JOIN pupilsightAttendanceLogPerson ON (pupilsightPerson.pupilsightPersonID=pupilsightAttendanceLogPerson.pupilsightPersonID) WHERE pupilsightAttendanceLogPerson.type='Absent' AND pupilsightAttendanceLogPerson.date=:edate AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID $whereExtra";
+            // $sql = "SELECT pupilsightPerson.pupilsightPersonID, surname, preferredName, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.name as rollGroupName, pupilsightRollGroup.nameShort AS rollGroup FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) LEFT JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) LEFT JOIN pupilsightAttendanceLogPerson ON (pupilsightPerson.pupilsightPersonID=pupilsightAttendanceLogPerson.pupilsightPersonID) WHERE pupilsightAttendanceLogPerson.type='Absent' AND pupilsightAttendanceLogPerson.date=:edate AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID $whereExtra";
+            $sql = "SELECT pupilsightPerson.pupilsightPersonID, surname, preferredName, pupilsightRollGroup.pupilsightRollGroupID, pupilsightRollGroup.name as rollGroupName, pupilsightRollGroup.nameShort AS rollGroup FROM pupilsightPerson JOIN pupilsightStudentEnrolment ON (pupilsightPerson.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID) LEFT JOIN pupilsightRollGroup ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) LEFT JOIN pupilsightAttendanceLogPerson ON (pupilsightPerson.pupilsightPersonID=pupilsightAttendanceLogPerson.pupilsightPersonID) WHERE pupilsightAttendanceLogPerson.type='Absent' AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID $whereExtra";
 
             $sql .= $orderBy;
             //print_r($sql);
@@ -257,4 +258,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         elem.setAttribute("download", "export.xls"); // Choose the file name
         return false;
     }
+    $('#checkallpupilsightYearGroupIDList').change(function(e){
+        if($(this).is(':checked') == true){
+            $('input[name="pupilsightYearGroupIDList[]"]').prop('checked',true);
+        } else {
+            $('input[name="pupilsightYearGroupIDList[]"]').prop('checked',false);
+        }
+    });
+    $('input[name="pupilsightYearGroupIDList[]"]').change(function(e){
+        if($(this).is(':checked') == false){
+            $('#checkallpupilsightYearGroupIDList').prop('checked',false);
+        }
+    });
 </script>

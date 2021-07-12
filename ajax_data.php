@@ -793,6 +793,41 @@ if ($type == 'getClass') {
     echo $data;
 }
 
+if ($type == 'getClasscheckbox') {
+    $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
+    $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
+    $uid = $_SESSION[$guid]['pupilsightPersonID'];
+    $pid = $val;
+    if($roleId == '1'){
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+    } else if ($roleId == '2') {
+        $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+    } else if ($roleId == '35') {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+    } else {
+        $sql = 'SELECT b.*, c.name FROM assignstaff_toclasssection AS a LEFT JOIN pupilsightProgramClassSectionMapping AS b ON a.pupilsightMappingID = b.pupilsightMappingID LEFT JOIN pupilsightYearGroup AS c ON b.pupilsightYearGroupID = c.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND b.pupilsightProgramID = "' . $pid . '" GROUP BY b.pupilsightYearGroupID';
+    }
+
+    $result = $connection2->query($sql);
+    $classes = $result->fetchAll();
+    // echo '<pre>';
+    // print_r($classes);
+    // echo '</pre>';
+    $data = '';
+    if (!empty($classes)) {
+        foreach ($classes as $k => $cl) {
+            if(!empty($cl['name'])){
+                $data .= '<label class="leading-normal" for="addallclasses'.$k.'">' . $cl['name'] . '</label>';
+                $data .= '<input type="checkbox" name="pupilsightYearGroupID[]" id="addallclasses'.$k.'" value="' . $cl['pupilsightYearGroupID'] . '" class="right">';
+                if(count($classes) - 1 > $k){
+                    $data .= '<br>';
+                }
+            }
+        }
+    }
+    echo $data;
+}
+
 if ($type == 'getWallClass') {
     $roleId = $_SESSION[$guid]['pupilsightRoleIDPrimary'];
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
