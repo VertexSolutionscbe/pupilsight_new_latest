@@ -784,6 +784,7 @@ $('input[type=radio][name=email]').change(function() {
     $("[id=categoryhide").show();
     $("[id=copysmshide").hide();
 	$("[id=subjecthide").show();
+	$('#subject').prop('disabled', false);
   } else if (this.value == 'N') {
     //alert("no");
   }
@@ -802,6 +803,7 @@ $('input[type=radio][name=sms]').change(function() {
     $("[id=bccemail").hide();
     $("[id=publicationdate").hide();
     $("[id=subjecthide").hide();
+	$('#subject').prop('disabled', true);
     $("[id=bodyhide").hide();
     $("[id=categoryhide").hide();
   } else if (this.value == 'N') {
@@ -824,6 +826,7 @@ $('input[type=radio][name=messageWall]').change(function() {
     $("[id=bodyhide").show();
     $("[id=categoryhide").show();
 	$("[id=subjecthide").show();
+	$('#subject').prop('disabled', false);
   } else if (this.value == 'N') {
     //alert("no");
   }
@@ -906,4 +909,10 @@ $(document).ready(function() {
 $(document).ready(function() {
   $('#pupilsightPersonID').select2();
 });
+
+
+// $(document).on('click', '#smsradio', function() {
+// 	$("#subject").prop('required', false);
+// 	$("#subject").removeClass('LV_invalid_field');
+// });
 </script>
