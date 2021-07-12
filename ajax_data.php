@@ -1793,28 +1793,28 @@ if ($type == 'getgrade_based_onmark_new') {
     $grade = $result->fetch();
     echo $grade['id'];
 }
-if ($type == 'lock_unlock_mark_entry') {
+// if ($type == 'lock_unlock_mark_entry') {
 
 
-    $entryids = explode(',', $_POST['val']);
-    if ($_POST['action_type'] == 'lock_mark_entry') {
-        $lock_status =  1;
-        foreach ($entryids as $k => $enid) {
-            $data1 = array('id' => $enid, 'status' => $lock_status);
-            $sql1 = 'UPDATE examinationMarksEntrybySubject SET  status=:status WHERE id=:id';
-            $result1 = $connection2->prepare($sql1);
-            $result1->execute($data1);
-        }
-    } else  if ($_POST['action_type'] == 'unlock_mark_entry') {
-        $lock_status =  0;
-        foreach ($entryids as $k => $enid) {
-            $data1 = array('id' => $enid, 'status' => $lock_status);
-            $sql1 = 'UPDATE examinationMarksEntrybySubject SET  status=:status WHERE id=:id';
-            $result1 = $connection2->prepare($sql1);
-            $result1->execute($data1);
-        }
-    }
-}
+//     $entryids = explode(',', $_POST['val']);
+//     if ($_POST['action_type'] == 'lock_mark_entry') {
+//         $lock_status =  1;
+//         foreach ($entryids as $k => $enid) {
+//             $data1 = array('id' => $enid, 'status' => $lock_status);
+//             $sql1 = 'UPDATE examinationMarksEntrybySubject SET  status=:status WHERE id=:id';
+//             $result1 = $connection2->prepare($sql1);
+//             $result1->execute($data1);
+//         }
+//     } else  if ($_POST['action_type'] == 'unlock_mark_entry') {
+//         $lock_status =  0;
+//         foreach ($entryids as $k => $enid) {
+//             $data1 = array('id' => $enid, 'status' => $lock_status);
+//             $sql1 = 'UPDATE examinationMarksEntrybySubject SET  status=:status WHERE id=:id';
+//             $result1 = $connection2->prepare($sql1);
+//             $result1->execute($data1);
+//         }
+//     }
+// }
 
 if ($type == 'getSubjectTimeslote') {
     $dep_id = $_POST['val'];
@@ -4524,4 +4524,42 @@ if ($type == 'getTestBySubjectSkill') {
         $returndata .= '<option value=' . $row['id'] . ' >' . $row['name'] . '</option>';
     }
     echo $returndata;
+}
+
+
+if ($type == 'updateStudentAcademicConfig') {
+    $stuid = $val;
+    $coulmnname = $_POST['testcol'];
+    $coulmndata = $_POST['testdata'];
+    $aid = $_POST['aid'];
+    $tid = $_POST['tid'];
+    $pid = $_POST['pid'];
+    $cid = $_POST['cid'];
+    $sid = $_POST['sid'];
+    $uid = $_POST['uid'];
+    
+
+    // $sqldel = "DELETE FROM examinationTestStudentConfig WHERE pupilsightSchoolYearID = ".$aid." AND  pupilsightProgramID = ".$pid." AND  pupilsightYearGroupID = ".$cid." AND  pupilsightRollGroupID = ".$sid." AND  test_id = ".$tid." AND " . $coulmnname . " ='" . $coulmndata . "' AND pupilsightPersonID IN (" . $stuid . ")";
+    // echo $sqldel.'<br>';
+    // $connection2->query($sqldel);
+
+    $studentID = explode(',',$stuid);
+    if(!empty($studentID)){
+        //$sq = "INSERT INTO examinationTestStudentConfig (pupilsightSchoolYearID,pupilsightProgramID,pupilsightYearGroupID,pupilsightRollGroupID,test_id,pupilsightPersonID,user_id, " . $coulmnname . ") VALUES";
+        foreach($studentID as $pupilsightPersonID){
+            $sqlchk = "SELECT id FROM examinationTestStudentConfig WHERE pupilsightSchoolYearID = ".$aid." AND pupilsightProgramID = ".$pid." AND pupilsightYearGroupID = ".$cid." AND pupilsightRollGroupID = ".$sid." AND test_id = ".$tid." AND pupilsightPersonID = ".$pupilsightPersonID." ";
+            $result = $connection2->query($sqlchk);
+            $chkData = $result->fetch();
+
+            if(!empty($chkData) && !empty($chkData['id'])){
+                $squ = "update examinationTestStudentConfig SET " . $coulmnname . " ='" . $coulmndata . "' where id = " . $chkData['id'] . " ";
+                $connection2->query($squ);
+            } else {
+                $sq = "INSERT INTO examinationTestStudentConfig (pupilsightSchoolYearID,pupilsightProgramID,pupilsightYearGroupID,pupilsightRollGroupID,test_id,pupilsightPersonID,user_id, " . $coulmnname . ") VALUES ('" . $aid . "','" . $pid . "','" . $cid . "','" . $sid . "','" . $tid . "','" . $pupilsightPersonID . "','" . $uid . "','" . $coulmndata . "')";
+                $connection2->query($sq);
+            }
+        }
+    }
+
+   
 }

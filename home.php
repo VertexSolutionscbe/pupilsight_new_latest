@@ -79,6 +79,13 @@ $invalid = "";
 if (isset($_GET["invalid"])) {
     $invalid = $_GET["invalid"];
 }
+
+$locked = "";
+if (isset($_GET["locked"])) {
+    $locked = $_GET["locked"];
+}
+
+
 ?>
 
 
@@ -332,6 +339,8 @@ if (isset($_GET["invalid"])) {
 <body id='chkCounterSession' class='antialiased'>
 
     <input type="hidden" name="invalid" id="invalid" value="<?php echo $invalid; ?>" />
+    <input type="hidden" name="locked" id="locked" value="<?php echo $locked; ?>" />
+    
     <!-- Preloader Start Here -->
     <div id="preloader" style="display:none;"></div>
     <!-- Preloader End Here -->
@@ -1268,6 +1277,11 @@ if (isset($_GET["invalid"])) {
 
                 <?php } ?>
 
+                <?php if ($locked == "true") { ?>
+                    <div class="alert alert-warning">Your account has been locked/disabled, please contact Administrator.</div>
+                <?php } ?>
+
+                
                 <div class="empty-warning"></div>
 
                 <div class="mb-3">
@@ -1577,6 +1591,19 @@ if (isset($_GET["invalid"])) {
             if (invalid == 'true') {
                 loginPanel();
                 toast('error', 'You have entered wrong password and you have 10 chances to enter the correct password. Else your account will be locked. You need to contact admin to unlock your account');
+            } else {
+                $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+                try {
+                    $('.gmap_canvas a').remove();
+                } catch (ex) {
+                    console.log(ex);
+                }
+            }
+
+            var locked = $('#locked').val();
+            if (locked == 'true') {
+                loginPanel();
+                // toast('error', 'You have entered wrong password and you have 10 chances to enter the correct password. Else your account will be locked. You need to contact admin to unlock your account');
             } else {
                 $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
                 try {

@@ -149,7 +149,7 @@ function sendEmail($dcontent, $uid)
     $len = count($dcontent);
     $i = 0;
     //$len = 2;
-    $mail_post_link = getBaseURL() . "/pupilsight/mail_send.php";
+    $mail_post_link = getBaseURL() . "/mail_send.php";
     //echo "post link " . $mail_post_link;
     while ($i < $len) {
       $content = $dcontent[$i];

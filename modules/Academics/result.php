@@ -156,10 +156,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
             </thead>
             <tbody>
     <?php       foreach($testData as $tdata){
+                    $sql = "SELECT lock_marks_entry, enable_pdf, enable_html, enable_test_report FROM examinationTestStudentConfig WHERE pupilsightSchoolYearID = ".$pupilsightSchoolYearID." AND pupilsightProgramID = ".$students['pupilsightProgramID']." AND pupilsightYearGroupID = ".$students['pupilsightYearGroupID']." AND pupilsightRollGroupID = ".$students['pupilsightRollGroupID']." AND test_id = ".$tdata['test_id']." AND pupilsightPersonID = ".$students['pupilsightPersonID']."";
+                    $result = $connection2->query($sql);
+                    $chkData = $result->fetch();
+                    
     ?>
                     <tr>
                         <td><?php echo $tdata['test_name']?></td>
-                        <td><a href="index.php?q=/modules/Academics/result_details.php&tid=<?php echo $tdata['test_id']?>&cid=<?php echo $stuId?>" target="_blank" class="btn btn-white">Details</a></td>
+                        <td >
+                            <?php if(!empty($chkData) && ($chkData['enable_html'] == '2')){ ?>
+                                <button class="disable_test_result btn btn-white">Details</button>
+                            <?php } else { ?>
+                                <a href="index.php?q=/modules/Academics/result_details.php&tid=<?php echo $tdata['test_id']?>&cid=<?php echo $stuId?>" target="_blank" class="btn btn-white">Details</a>
+                            <?php } ?>
+                        </td>
                         <!-- <td></td> -->
                     </tr>
     <?php } ?>
@@ -181,5 +191,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
         var hrf = 'index.php?q=/modules/Academics/result.php&cid=' + id;
         window.location.href = hrf;
     });
+
+    $(document).on('click', '.disable_test_result', function() {
+        alert('Your Details is Disabled by Administrator, please contact Administrator.');
+    });
+
+    
 
 </script>

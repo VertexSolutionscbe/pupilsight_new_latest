@@ -272,6 +272,10 @@
       foreach($s_test['skills'] as $key=>$sl)
           { 
 
+            $sql = "SELECT lock_marks_entry, enable_pdf, enable_html, enable_test_report FROM examinationTestStudentConfig WHERE pupilsightSchoolYearID = ".$pupilsightSchoolYearID." AND pupilsightProgramID = ".$pupilsightProgramID." AND pupilsightYearGroupID = ".$pupilsightYearGroupID." AND pupilsightRollGroupID = ".$pupilsightRollGroupID." AND test_id = ".$s_test['test_id']." AND pupilsightPersonID = ".$std_id."";
+            $result = $connection2->query($sql);
+            $chkData = $result->fetch();
+
             if(!empty($s_test['skill_id'])){
                $data1 = array('test_id' => $s_test['test_id'], 'pupilsightYearGroupID' => $pupilsightYearGroupID,'pupilsightRollGroupID' => $pupilsightRollGroupID,'pupilsightDepartmentID' => $sl['pupilsightDepartmentID'],'pupilsightPersonID' => $std_id,'skill_id' => $sl['skill_id']);                    
                $sql1 = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id=:test_id  AND pupilsightYearGroupID=:pupilsightYearGroupID AND pupilsightRollGroupID=:pupilsightRollGroupID AND pupilsightDepartmentID=:pupilsightDepartmentID AND pupilsightPersonID=:pupilsightPersonID AND  skill_id=:skill_id ';
@@ -315,6 +319,10 @@
                  } else {
                      $disabled = '';
                  }
+
+                  
+
+                
              ?>
       <td class="px-2 border-b-0 sm:border-b border-t-0 newdes">
          <div class="input-group stylish-input-group">
@@ -333,6 +341,11 @@
                   $en_dis_clss=($s_test['assesment_method']=='Marks')? '' : 'disable_input';
                   $en_dis_grd_clss=($s_test['assesment_method']=='Grade')? '' : 'disable_input';  
 
+                  if(!empty($chkData) && ($chkData['enable_test_report'] == '2' || $chkData['lock_marks_entry'] == '2')){
+                     //$disabled = 'disabled';
+                     $lock_clss = 'disable_input';
+                  }
+
                   if(!empty($prevdata['marks_abex'])){
                      $marksobt = '';
                   } else {
@@ -343,7 +356,7 @@
                   //$marksobt = str_replace(".00","",$prevdata['marks_obtained']);
                   //$marksobt = rtrim($marksobt,'0');
 
-                                     echo '<input type="text" data-mode="'.$sl['skill_configure'].'" data-mark="'.$sl['max_marks'].'" data-d="'.$sl['pupilsightDepartmentID'].'" data-gsid="'.$s_test['gradeSystemId'].'" data-cnt="'.$i.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']" data-fid="'.$i.'" id="focustab-'.$s_test['test_id'].'-'.$i.'" class="tabfocus numMarksfield chkData enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'  '.$en_dis_clss.' '.$total_class.' " data-nid="'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'" value="'.$marksobt.'"  '.$disabled.'>';?>
+                                     echo '<input type="text" data-mode="'.$sl['skill_configure'].'" data-mark="'.$sl['max_marks'].'" data-d="'.$sl['pupilsightDepartmentID'].'" data-gsid="'.$s_test['gradeSystemId'].'" data-cnt="'.$i.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']" data-fid="'.$i.'" id="focustab-'.$s_test['test_id'].'-'.$i.'" class="tabfocus numMarksfield chkData enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'  '.$en_dis_clss.' '.$lock_clss.' '.$total_class.' " data-nid="'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'" value="'.$marksobt.'"  '.$disabled.'>';?>
             </div>
          </div>
       </td>
@@ -352,7 +365,7 @@
         $slen = count($seab);
         $s = 0;
 
-        echo '<td><select class="chkData mr-2 abex" data-id="'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'" name="mark_abex[' . $s_test['test_id'] . '][' . $sl['pupilsightDepartmentID'] . '][' . $sl['skill_id'] . ']" >';
+        echo '<td><select class="chkData mr-2 abex '.$en_dis_clss.' '.$lock_clss.'" data-id="'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'" name="mark_abex[' . $s_test['test_id'] . '][' . $sl['pupilsightDepartmentID'] . '][' . $sl['skill_id'] . ']" '.$disabled.'>';
         echo '<option value="">-</option>';
         while ($s < $slen) {
             if($prevdata['marks_abex'] == $seab[$s]){
@@ -386,7 +399,7 @@
                   $selected = '';
                }
             
-               echo ' <input type="radio" class="chkData abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'" id="grade_val'.$s_test['test_id'].'row'.$i.'grade'.trim($grdid).'"   name="grade_val['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']" value="'.$grdid.'" '.$disabled.'  '.$selected.'>'.$tgrade.'';
+               echo ' <input type="radio" class="chkData abexClsDis'.$s_test['test_id'].$sl['pupilsightDepartmentID'].$sl['skill_id'].'  '.$lock_clss.' " id="grade_val'.$s_test['test_id'].'row'.$i.'grade'.trim($grdid).'"   name="grade_val['.$s_test['test_id'].']['.$sl['pupilsightDepartmentID'].']['.$sl['skill_id'].']" value="'.$grdid.'" '.$disabled.'  '.$selected.'>'.$tgrade.'';
             }
          }
          echo '</td>';
@@ -417,7 +430,7 @@
             <div class="input-group stylish-input-group">
                <div class="flex-1 relative">
                <?php if($s_test['enable_remarks'] == '1'){ ?>
-                  <textarea type='text' name='remark_own[<?php echo $s_test['test_id'];?>][<?php echo $s_test['pupilsightDepartmentID'];?>][<?php echo $sl['skill_id'];?>]' class="remark_textarea w-full "><?php echo $remdata['remarks'];?></textarea>
+                  <textarea type='text' name='remark_own[<?php echo $s_test['test_id'];?>][<?php echo $s_test['pupilsightDepartmentID'];?>][<?php echo $sl['skill_id'];?>]' class="remark_textarea w-full  <?php echo $lock_clss;?>"><?php echo $remdata['remarks'];?></textarea>
                   <br><span></span>
                <?php } ?>
                </div>

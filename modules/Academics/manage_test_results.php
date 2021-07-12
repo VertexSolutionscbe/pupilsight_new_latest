@@ -133,28 +133,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
     'Test3' => __('Test3')));*/
 
     echo "<div class='btn-list'>";
-    echo "<a  id='lock_me_btn' data-type='lock' class='lock_me_btn btn btn-white butt'>Lock Me</a>";
-    echo "<a  id='unlock_me_btn' data-type='unlock' class='lock_me_btn btn btn-white butt'>Unlock Me</a>";
-    echo "<a  id='publish_result' data-type='test' class='btn btn-white butt'>Publish</a>";
-    echo "<a  id='unpublish_result' data-type='test' class='btn btn-white butt'>Unpublish</a>";
-    echo "<a  id='withheld_result' data-type='test' class='btn btn-white butt'>Withhold</a>";
+    echo "<a  id='updateStudentAcademicConfig' data-type='lock_marks_entry' data-val='2' class='lock_me_btn btn btn-white butt'>Lock Marks Entry</a>";
+    echo "<a  id='updateStudentAcademicConfig' data-type='lock_marks_entry' data-val='1' class='lock_me_btn btn btn-white butt'>Unlock Marks Entry</a>";
+    // closed by anand
+    // echo "<a  id='publish_result' data-type='test' class='btn btn-white butt'>Publish</a>";
+    // echo "<a  id='unpublish_result' data-type='test' class='btn btn-white butt'>Unpublish</a>";
+    // echo "<a  id='withheld_result' data-type='test' class='btn btn-white butt'>Withhold</a>";
     echo "<a style='display:none' id='modifyMarks' class='btn btn-white butt'>test Mark Entry</a>";
     echo "<a id='modifyMarksEntry'  data-type='student' class='btn btn-white butt'>Mark Entry</a>";
 
     echo "<a  id='sendSMS'  href=''  data-toggle='modal' data-target='#large-modal-new_stud' data-noti='2'  class='sendButton_stud btn btn-white butt' >Send SMS</a>";
     echo "<a  id='sendEmail'  href='' data-toggle='modal' data-noti='1' data-target='#large-modal-new_stud' class='sendButton_stud btn btn-white butt' >Send Email</a>";
 
-    echo "<a  id='result_show_pdf' data-type='test' class='btn btn-white butt'>Show Pdf</a>";
-    echo "<a  id='result_hide_pdf' data-type='test' class='btn btn-white butt'>Hide Pdf</a>";
-    echo "<a  id='result_show_html' data-type='test' class='btn btn-white butt'>Show HTML</a>";
-    echo "<a  id='result_hide_html'  data-type='test' class='btn btn-white butt'>Hide HTML</a>";
-    echo "<a  id='result_lock_tr' data-type='test' class='btn btn-white butt'>Lock T.R</a>";
-    echo "<a  id='result_unlock_tr' data-type='test' class='btn btn-white butt'>Unlock T.R</a>";
+    echo "<a  id='updateStudentAcademicConfig' data-type='enable_pdf' data-val='1' class='btn btn-white butt'>Show Pdf</a>";
+    echo "<a  id='updateStudentAcademicConfig' data-type='enable_pdf' data-val='2' class='btn btn-white butt'>Hide Pdf</a>";
+    echo "<a  id='updateStudentAcademicConfig' data-type='enable_html' data-val='1' class='btn btn-white butt'>Show HTML</a>";
+    echo "<a  id='updateStudentAcademicConfig' data-type='enable_html' data-val='2' class='btn btn-white butt'>Hide HTML</a>";
+    echo "<a  id='updateStudentAcademicConfig' data-type='enable_test_report' data-val='2' class='btn btn-white butt'>Lock T.R</a>";
+    echo "<a  id='updateStudentAcademicConfig' data-type='enable_test_report' data-val='1' class='btn btn-white butt'>Unlock T.R</a>";
     echo "<button  id='result_send_mark_by_sms' data-type='test' class='btn btn-outline-primary butt'>Send Mark via SMS</button>";
     echo "<button  id='result_send_mark_by_email' data-type='test' class='btn btn-outline-primary butt'>Send Mark via Email</button>";
 
     echo "<a  id='mass_student_tests_xl' title='' data-type='test' class='btn btn-white butt'>Mass Download</a>";
-    echo "<a  id='result_publish_history' data-type='test' class='btn btn-white butt'>Publish History</a>";
+    // closed by anand
+    // echo "<a  id='result_publish_history' data-type='test' class='btn btn-white butt'>Publish History</a>";
     echo "</div>";
     echo  "<div class='hr-text'>Search Filter</div>";
 
@@ -228,8 +230,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
                             <th class="bdr_right"> Id </th>
                             <th>Marks <br />Entered</th>
                             <th>Locked</th>
-                            <th class="">Published</th>
-                            <th>Withheld</th>
+                            <!-- <th class="">Published</th> -->
+                            <!-- <th>Withheld</th> -->
                             <th>Test Report lock</th>
                             <th>PDF Report</th>
                             <th>HTML</th>
@@ -241,6 +243,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
                 $count = 0;
                 $rowNum = 'odd';
                 foreach ($students_test_results as $row) {
+                    $sql = "SELECT lock_marks_entry, enable_pdf, enable_html, enable_test_report FROM examinationTestStudentConfig WHERE pupilsightSchoolYearID = ".$pupilsightSchoolYearID." AND pupilsightProgramID = ".$pupilsightProgramID." AND pupilsightYearGroupID = ".$pupilsightYearGroupID." AND pupilsightRollGroupID = ".$pupilsightRollGroupID." AND test_id = ".$test_id." AND pupilsightPersonID = ".$row['pupilsightPersonID']."";
+                    $result = $connection2->query($sql);
+                    $chkData = $result->fetch();
+                    $lockAll = '1';
+                    if(!empty($chkData) && $chkData['enable_test_report'] == '2'){
+                        $lockAll = '2';
+                    }
+
+
                     if ($count % 2 == 0) {
                         $rowNum = 'even';
                     } else {
@@ -249,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
                     ++$count;
                     echo "<tr class=$rowNum>";
                     echo '<td class="check_boxes">';
-                    echo  '<input type="checkbox"  data_tid="' . $row['id'] . '" data_status="' . $row['status'] . '" data_testid="' . $row['test_id'] . '" name="student_id[]" id="student_id[' . $row['pupilsightPersonID'] . ']" value="' . $row['pupilsightPersonID'] . '" >';
+                    echo  '<input type="checkbox" data-name= "'.$row['student_name'].'" data-lock = "'.$lockAll.'"  data_tid="' . $row['id'] . '" data_status="' . $row['status'] . '" data_testid="' . $row['test_id'] . '" name="student_id[]" id="student_id[' . $row['pupilsightPersonID'] . ']" value="' . $row['pupilsightPersonID'] . '" >';
                     echo '</td>';
                     echo '<td >';
                     echo '<center>';
@@ -274,27 +285,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
 
                     echo '</td>';
                     echo '<td>';
-                    if ($row['status'] == 1) {
+                    // if ($row['status'] == 1) {
+                    //     echo '<i class="mdi mdi-lock mdi-24px   "></i>';
+                    // } else {
+                    //     echo '<i class="mdi mdi-close-circle mdi-24px x_icon "></i>';
+                    // }
+
+                    if (!empty($chkData) && $chkData['lock_marks_entry'] == 2) {
                         echo '<i class="mdi mdi-lock mdi-24px   "></i>';
                     } else {
                         echo '<i class="mdi mdi-close-circle mdi-24px x_icon "></i>';
                     }
 
                     echo '</td>';
+                    // echo '<td> ';
+                    // echo '<i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon "></i>';
+                    // echo '</td>';
+                    // echo '<td class="td_texfield">';
+                    // echo '<i class="mdi mdi-close-circle mdi-24px x_icon"></i>';
+                    // echo '</td>';
                     echo '<td> ';
-                    echo '<i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon "></i>';
-                    echo '</td>';
-                    echo '<td class="td_texfield">';
-                    echo '<i class="mdi mdi-close-circle mdi-24px x_icon"></i>';
-                    echo '</td>';
-                    echo '<td> ';
-                    echo '<i class="mdi mdi-close-circle mdi-24px x_icon"></i>';
-                    echo '</td>';
-                    echo '<td> ';
-                    echo '<i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon "></i>';
+                    if (!empty($chkData) && $chkData['enable_test_report'] == 2) {
+                        echo '<i class="mdi mdi-lock mdi-24px   "></i>';
+                    } else {
+                        echo '<i class="mdi mdi-close-circle mdi-24px x_icon"></i>';
+                    }
+                    
                     echo '</td>';
                     echo '<td> ';
-                    echo '<i class="mdi mdi-close-circle mdi-24px x_icon""></i>';
+                        if (!empty($chkData) && $chkData['enable_pdf'] == 1) {
+                            echo '<i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon "></i>';
+                        } else {
+                            echo '<i class="mdi mdi-close-circle mdi-24px "></i>';
+                        }
+                    echo '</td>';
+                    echo '<td> ';
+                        if (!empty($chkData) && $chkData['enable_html'] == 1) {
+                            echo '<i class="mdi mdi-checkbox-marked-circle mdi-24px  greenicon "></i>';
+                        } else {
+                            echo '<i class="mdi mdi-close-circle mdi-24px "></i>';
+                        }
                     echo '</td>';
                     echo '<td> ';
                     echo '<a href="thirdparty/phpword/reportcardsingle.php?tid=' . $test_id . '&stid=' . $row['stuid'] . '"><i class="mdi mdi-file-pdf mdi-24px  small_icon"></i></a>';
@@ -308,6 +338,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
 
         echo '<a href="" id="sendMarks" style="display:none;">sendMarks</a>';
         echo '<input type="hidden" id="uid" value="' . $pupilsightPersonID . '">';
+        echo '<input type="hidden" id="aid" value="' . $pupilsightSchoolYearID . '">'; 
                 ?>
 
                 <style>
@@ -346,119 +377,185 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
         text-align: center;
     } */
                 </style>
-                <script type="text/javascript">
-                    $(document).on('click', '.export_excel_sheet', function() {
-                        var pupilsightProgramID = $("#pupilsightProgramIDbyPP").val();
-                        var pupilsightYearGroupID = $("#pupilsightYearGroupIDbyPP").val();
-                        var pupilsightRollGroupID = $("#pupilsightRollGroupIDbyPP").val();
-                        var testId = $("#testId").val();
-                        var favorite = [];
-                        $.each($("input[name='student_id[]']:checked"), function() {
-                            favorite.push($(this).val());
-                        });
-                        var length = favorite.length;
-                        var type = "download_excel_results";
-                        if (length != 0) {
-                            $.ajax({
-                                url: 'ajaxSwitchExcel.php',
-                                type: 'post',
-                                data: {
-                                    pupilsightProgramID: pupilsightProgramID,
-                                    pupilsightYearGroupID: pupilsightYearGroupID,
-                                    pupilsightRollGroupID: pupilsightRollGroupID,
-                                    testId: testId,
-                                    stuid: favorite,
-                                    type: type
-                                },
-                                async: true,
-                                success: function(response) {
+<script type="text/javascript">
+    $(document).on('click', '.export_excel_sheet', function() {
+        var pupilsightProgramID = $("#pupilsightProgramIDbyPP").val();
+        var pupilsightYearGroupID = $("#pupilsightYearGroupIDbyPP").val();
+        var pupilsightRollGroupID = $("#pupilsightRollGroupIDbyPP").val();
+        var testId = $("#testId").val();
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var length = favorite.length;
+        var type = "download_excel_results";
+        if (length != 0) {
+            $.ajax({
+                url: 'ajaxSwitchExcel.php',
+                type: 'post',
+                data: {
+                    pupilsightProgramID: pupilsightProgramID,
+                    pupilsightYearGroupID: pupilsightYearGroupID,
+                    pupilsightRollGroupID: pupilsightRollGroupID,
+                    testId: testId,
+                    stuid: favorite,
+                    type: type
+                },
+                async: true,
+                success: function(response) {
 
-                                    $("#marks_studentExcel").html(response);
-                                    $("#excelexport").table2excel({
-                                        name: " Student Marks",
-                                        filename: "Student_marks.xls",
-                                        fileext: ".xls",
-                                        exclude: ".checkall",
-                                        exclude_inputs: true,
-                                        exclude_links: true
-                                    });
-                                }
-                            });
-                        } else {
-                            alert('Please select atleast one student.');
-                        }
+                    $("#marks_studentExcel").html(response);
+                    $("#excelexport").table2excel({
+                        name: " Student Marks",
+                        filename: "Student_marks.xls",
+                        fileext: ".xls",
+                        exclude: ".checkall",
+                        exclude_inputs: true,
+                        exclude_links: true
                     });
+                }
+            });
+        } else {
+            alert('Please select atleast one student.');
+        }
+    });
 
-                    $(document).on('change', '#pupilsightRollGroupIDbyPP', function() {
-                        var id = $(this).val();
-                        var cid = $('#pupilsightYearGroupIDbyPP').val();
-                        var pid = $('#pupilsightProgramIDbyPP').val();
-                        var type = 'getTestBySection';
+    $(document).on('change', '#pupilsightRollGroupIDbyPP', function() {
+        var id = $(this).val();
+        var cid = $('#pupilsightYearGroupIDbyPP').val();
+        var pid = $('#pupilsightProgramIDbyPP').val();
+        var type = 'getTestBySection';
+        $.ajax({
+            url: 'ajax_data.php',
+            type: 'post',
+            data: {
+                val: id,
+                type: type,
+                cid: cid,
+                pid: pid
+            },
+            async: true,
+            success: function(response) {
+                $("#testId").html();
+                $("#testId").html(response);
+            }
+        });
+    });
+
+
+    $(document).on('click', '#result_send_mark_by_sms', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        var tid = $("#testId").val();
+        var uid = $("#uid").val();
+        //alert(subid);
+        if (stuId) {
+            if (tid) {
+                var hrf = 'send_marks_via_sms_email.php?type=sms&uid=' + uid + '&testId=';
+                var newhrf = hrf + tid + '&stuId=' + stuId;
+                $("#sendMarks").attr('href', newhrf);
+                window.setTimeout(function() {
+                    $("#sendMarks")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select Test.');
+            }
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click', '#result_send_mark_by_email', function() {
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        var tid = $("#testId").val();
+        var uid = $("#uid").val();
+        //alert(subid);
+        if (stuId) {
+            if (tid) {
+                var hrf = 'send_marks_via_sms_email.php?type=email&uid=' + uid + '&testId=';
+                var newhrf = hrf + tid + '&stuId=' + stuId;
+                $("#sendMarks").attr('href', newhrf);
+                window.setTimeout(function() {
+                    $("#sendMarks")[0].click();
+                }, 10);
+            } else {
+                alert('You Have to Select Test.');
+            }
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+</script>
+
+<script  type="text/javascript">
+    $(document).on('click', '#updateStudentAcademicConfig', function () {
+        var sub = [];
+        var lck = [];
+        var nme = [];
+        // $.each($(".assignCls:not(:checked)"), function() {
+        $.each($("input[name='student_id[]']:checked"), function () {
+            sub.push($(this).val());
+            if($(this).attr('data-lock') == '2'){
+                lck.push($(this).attr('data-lock'));
+                nme.push($(this).attr('data-name'));
+            }
+        });
+        var stuid = sub.join(",");
+        var lckall = lck.join(",");
+        var stuname = nme.join(", ");
+        //alert(subid);
+        if (stuid != '') {
+            var type = 'updateStudentAcademicConfig';
+            var val = stuid;
+            var testcol = $(this).attr('data-type');
+            var testdata = $(this).attr('data-val');
+            var uid = $("#uid").val();
+            var aid = $("#aid").val();
+            var pid = $("#pupilsightProgramIDbyPP").val();
+            var cid = $("#pupilsightYearGroupIDbyPP").val();
+            var sid = $("#pupilsightRollGroupIDbyPP").val();
+            var tid = $("#testId").val();
+            //alert(testcol+testdata+lckall);
+            if(lckall != ''){
+                if(testcol == 'enable_test_report' && testdata == '1'){
+                    if (val != '') {
                         $.ajax({
                             url: 'ajax_data.php',
                             type: 'post',
-                            data: {
-                                val: id,
-                                type: type,
-                                cid: cid,
-                                pid: pid
-                            },
+                            data: { val: val, type: type, testcol: testcol, testdata: testdata, uid:uid, aid: aid, pid: pid, cid: cid, sid: sid, tid: tid },
                             async: true,
-                            success: function(response) {
-                                $("#testId").html();
-                                $("#testId").html(response);
+                            success: function (response) {
+                                toast('success','Your Request completed Successfully!');
+                                location.reload();
                             }
                         });
-                    });
-
-
-                    $(document).on('click', '#result_send_mark_by_sms', function() {
-                        var favorite = [];
-                        $.each($("input[name='student_id[]']:checked"), function() {
-                            favorite.push($(this).val());
-                        });
-                        var stuId = favorite.join(",");
-                        var tid = $("#testId").val();
-                        var uid = $("#uid").val();
-                        //alert(subid);
-                        if (stuId) {
-                            if (tid) {
-                                var hrf = 'send_marks_via_sms_email.php?type=sms&uid=' + uid + '&testId=';
-                                var newhrf = hrf + tid + '&stuId=' + stuId;
-                                $("#sendMarks").attr('href', newhrf);
-                                window.setTimeout(function() {
-                                    $("#sendMarks")[0].click();
-                                }, 10);
-                            } else {
-                                alert('You Have to Select Test.');
-                            }
-                        } else {
-                            alert('You Have to Select Student.');
+                    }
+                } else {
+                    toast('error', 'Test has been Locked for Student -  '+stuname);
+                }
+            } else {
+                if (val != '') {
+                    $.ajax({
+                        url: 'ajax_data.php',
+                        type: 'post',
+                        data: { val: val, type: type, testcol: testcol, testdata: testdata, uid:uid, aid: aid, pid: pid, cid: cid, sid: sid, tid: tid },
+                        async: true,
+                        success: function (response) {
+                            toast('success','Your Request completed Successfully!');
+                            location.reload();
                         }
                     });
-
-                    $(document).on('click', '#result_send_mark_by_email', function() {
-                        var favorite = [];
-                        $.each($("input[name='student_id[]']:checked"), function() {
-                            favorite.push($(this).val());
-                        });
-                        var stuId = favorite.join(",");
-                        var tid = $("#testId").val();
-                        var uid = $("#uid").val();
-                        //alert(subid);
-                        if (stuId) {
-                            if (tid) {
-                                var hrf = 'send_marks_via_sms_email.php?type=email&uid=' + uid + '&testId=';
-                                var newhrf = hrf + tid + '&stuId=' + stuId;
-                                $("#sendMarks").attr('href', newhrf);
-                                window.setTimeout(function() {
-                                    $("#sendMarks")[0].click();
-                                }, 10);
-                            } else {
-                                alert('You Have to Select Test.');
-                            }
-                        } else {
-                            alert('You Have to Select Student.');
-                        }
-                    });
-                </script>
+                }
+            }
+        } else {
+            toast('error', 'Please Select Student!');
+        }
+    });
+</script>

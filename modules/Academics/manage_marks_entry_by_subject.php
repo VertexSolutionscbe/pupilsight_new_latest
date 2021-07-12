@@ -406,6 +406,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                 $km = 1;
                 foreach($subject_wise_tests as $k => $s_test)
                 {
+                    $sql = "SELECT lock_marks_entry, enable_pdf, enable_html, enable_test_report FROM examinationTestStudentConfig WHERE pupilsightSchoolYearID = ".$pupilsightSchoolYearID." AND pupilsightProgramID = ".$pupilsightProgramID." AND pupilsightYearGroupID = ".$pupilsightYearGroupID." AND pupilsightRollGroupID = ".$pupilsightRollGroupID." AND test_id = ".$s_test['test_id']." AND pupilsightPersonID = ".$row['stuid']."";
+                    $result = $connection2->query($sql);
+                    $chkData = $result->fetch();
+
+                    if(!empty($chkData) && ($chkData['enable_test_report'] == '2' || $chkData['lock_marks_entry'] == '2')){
+                        $lock_clss = 'disable_input';
+                    }
+
                     $skill_configure = $s_test['skill_configure'];
                     
                     if($skill_configure != 'None' && $s_test['skill_id'] == 0){
@@ -470,6 +478,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         if($km > 1){
                             echo '<td>'; echo $row['student_name']; echo '</td>';
                         }
+
+                        
     
     
                         // $sqlMarks = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id='..' AND pupilsightYearGroupID='..' AND pupilsightRollGroupID='..' AND pupilsightDepartmentID='..' AND test_id='..' AND test_id='..' AND  '
@@ -500,14 +510,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         }
                         
     
-                        echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab-'.$s_test['test_id'].'-'.$f.'" data-nid="'.$s_test['test_id'].$row['stuid'].'" value="'.$marksobt.'"  '.$disabled.'>';
+                        echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' '.$lock_clss.' " id="focustab-'.$s_test['test_id'].'-'.$f.'" data-nid="'.$s_test['test_id'].$row['stuid'].'" value="'.$marksobt.'"  '.$disabled.'>';
                         echo '</td>';  
                         
                         $seab = array("-", "AB", "EX");
                                 $slen = count($seab);
                                 $s = 0;
     
-                                echo '<td><select class="chkData mr-2 abex width60px" data-id="'.$s_test['test_id'].$row['stuid'].'" name="marks_abex[' . $s_test['test_id'] . '][' . $row['stuid'] . ']" disabled>';
+                                echo '<td><select class="chkData mr-2 abex width60px '.$lock_clss.' " data-id="'.$s_test['test_id'].$row['stuid'].'" name="marks_abex[' . $s_test['test_id'] . '][' . $row['stuid'] . ']" disabled>';
                                 while ($s < $slen) {
                                     if($prevdata['marks_abex'] == $seab[$s]){
                                         $selected = 'selected';
@@ -520,7 +530,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                                 echo '</select></td>';
     
                         //if grade is enable 
-                        echo '<td class="'.$en_dis_grd_clss.'">'; 
+                        echo '<td class="'.$en_dis_grd_clss.' '.$lock_clss.' ">'; 
                         
 
                         if(!empty($marksobt) && !empty($s_test['gradeSystemId'])){
@@ -570,7 +580,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                             ?>
     
                             <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?>"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" style="display:none;">
-                                <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?>" style="width:190px"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
+                                <div class="show_remark_div remark_div_<?php echo $s_test['test_id'];?> <?php echo $lock_clss;?>" style="width:190px"  id="show_remark_div<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>">
                                     <p><label>From List </label>
                                     <input type="radio" id="fromlist" class="rm_type" tid="<?php echo $s_test['test_id'].'stu'.$row['stuid']; ?>" name="remark_type[<?php echo $s_test['test_id'] ?>][<?php echo $row['stuid']; ?>]" value="fromlist" style="margin-left: 2px;"  <?php if($prevdata['remark_type'] == 'list'){ ?> checked <?php } ?>>
                                     &nbsp;&nbsp;
@@ -713,14 +723,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         }
                         
     
-                        echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' " id="focustab-'.$s_test['test_id'].'-'.$f.'" data-nid="'.$s_test['test_id'].$row['stuid'].'" value="'.$marksobt.'"  '.$disabled.'>';
+                        echo '<input type="text" data-mark="'.$s_test['max_marks'].'" data-cnt="'.$row['stuid'].'" data-lock="'.$locked.'" data-tid="'.$s_test['test_id'].'" name="mark_obtained['.$s_test['test_id'].']['. $row['stuid'].']" data-gid="'.$s_test['gradeSystemId'].'" data-fid="'.$f.'"  class="numMarksfield chkData tabfocus enable_input mark_obtn textfield_wdth abexClsDis'.$s_test['test_id'].$row['stuid'].'  '.$en_dis_clss.' '.$lock_clss.' " id="focustab-'.$s_test['test_id'].'-'.$f.'" data-nid="'.$s_test['test_id'].$row['stuid'].'" value="'.$marksobt.'"  '.$disabled.'>';
                         echo '</td>';  
                         
                         $seab = array("-", "AB", "EX");
                                 $slen = count($seab);
                                 $s = 0;
     
-                                echo '<td><select class="chkData mr-2 abex width60px" data-id="'.$s_test['test_id'].$row['stuid'].'" name="marks_abex[' . $s_test['test_id'] . '][' . $row['stuid'] . ']">';
+                                echo '<td><select class="chkData mr-2 abex width60px '.$lock_clss.'" data-id="'.$s_test['test_id'].$row['stuid'].'" name="marks_abex[' . $s_test['test_id'] . '][' . $row['stuid'] . ']">';
                                 while ($s < $slen) {
                                     if($prevdata['marks_abex'] == $seab[$s]){
                                         $selected = 'selected';
@@ -733,7 +743,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                                 echo '</select></td>';
     
                         //if grade is enable 
-                        echo '<td class="'.$en_dis_grd_clss.'">'; 
+                        echo '<td class="'.$en_dis_grd_clss.' '.$lock_clss.'">'; 
                         $grade_arr=array();
                         $test_grades = explode(',', $s_test['grade_names']);
                         $grade_ids = explode(',', $s_test['grade_ids']);
@@ -762,7 +772,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_marks_ent
                         } else {
                             $gstatus = '';
                         }
-                        echo '<td id="grade_status'.$s_test['test_id'].'row'.$row['stuid'].'">'.$gstatus.'</td>';
+                        echo '<td class="'.$lock_clss.'" id="grade_status'.$s_test['test_id'].'row'.$row['stuid'].'">'.$gstatus.'</td>';
                         if($s_test['enable_remarks'] == '1') { 
                             echo '<td> ';
                             if(!empty($prevdata['remarks'])){
