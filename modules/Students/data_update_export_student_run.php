@@ -560,7 +560,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/export_student_ru
 
         $('#generatestudenttemplate').click(function(e){
             if($('#getMultiClassByProg option:selected').val() == '' || $('#showMultiClassByProg option:selected').val() == ''){
-                alert('Please Select Program and Class and click on search for studnent data');
+                alert('Please Select Program and Class and click on search for student data');
             } else {
                 if($('input[name="student_id[]"]:checked').length > 0){
                     $('#studentexportform').submit();
