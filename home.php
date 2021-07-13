@@ -1544,6 +1544,7 @@ if (isset($_GET["locked"])) {
             if (invalid == 'true') {
                 loginPanel();
                 toast('error', 'You have entered wrong password and you have 10 chances to enter the correct password. Else your account will be locked. You need to contact admin to unlock your account');
+                
             } else {
                 $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
                 try {
@@ -1571,7 +1572,10 @@ if (isset($_GET["locked"])) {
             // $("#username").val("");
             // $("#password").val("");
             $("#homePanel,#forgetPanel, #footPanel, #applicationList, #applicationStatus").hide(400);
-            $("#loginPanel").show(400);
+            window.setTimeout(function () {
+                $("#loginPanel").show(400);
+            }, 10);
+            
         }
 
         function forgetPanel() {
