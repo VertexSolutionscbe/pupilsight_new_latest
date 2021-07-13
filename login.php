@@ -299,7 +299,15 @@ else {
                                 $URL = './index.php?q=' . $_GET['q'];
                             }
                         } else {
-                            $URL = './index.php';
+                            // $URL = './index.php';
+							if($role=='004') //newcode for parentdashboard redirection
+							{
+                            $URL = './modules/Dashboard/parentDashboard.php';
+							}
+							else{
+						  $URL = './index.php';	
+								
+							}
                         }
                     }
                     setLog($connection2, $_SESSION[$guid]['pupilsightSchoolYearIDCurrent'], null, $row['pupilsightPersonID'], 'Login - Success', array('username' => $username), $_SERVER['REMOTE_ADDR']);

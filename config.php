@@ -19,8 +19,8 @@ $databaseUsername = 'root';
 //$databaseName = 'ups'; //pd_demo
 
 //live
-// $databasePassword = ''; //xyz
-$databasePassword = 'xyz'; //xyz
+$databasePassword = ''; //xyz
+// $databasePassword = 'xyz'; //xyz
 $databaseName = 'pd_demo'; //pd_demo
 
 //if (session_status() == PHP_SESSION_NONE) {

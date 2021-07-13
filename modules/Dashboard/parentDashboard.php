@@ -394,6 +394,29 @@ letter-spacing: 0.1px;
 color: #44444F;
 
 }
+.dropdown-menu-right {
+  right: 0;
+  left: auto;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  min-width: 14rem;
+  padding: 0.5rem 0;
+  margin: 1px 0 0;
+  font-size: 0.875rem;
+  color: #354052;
+  text-align: left;
+  list-style: none;
+  background-color: #ffffff;
+  background-clip: padding-box;
+  border: 1px solid rgba(110, 117, 130, 0.2);
+  border-radius: 3px;
+}
     </style>
     <link rel="stylesheet" href="app.css">
 	
@@ -448,11 +471,10 @@ $.ajax({
 
                 </button>
             </li>
-            <li class="nav-item">
-                <img src="./parent.jpg" class="rounded-circle  navbar-toggler float-sm-right mr-2" data-toggle="collapse"
-                    alt="Cinque Terre" width="40" height="40">
-            </li>
-						<?php 
+			</ul>
+            
+			<ul class="nav">
+			<?php 
 			$childs1 = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b 
 			ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' . $pupilsightFamilyID . ' AND a.pupilsightPersonID != "" ';
 			$Echilds1=mysqli_query($conn,$childs1);
@@ -469,22 +491,22 @@ $.ajax({
 						<?php } ?>
 
                     </select>
-
                 </form>
+            </li>
+			
+			<li class="nav-item" style="float:right">
+                <img src="./parent.jpg" class="rounded-circle  navbar-toggler float-sm-right mr-2" data-toggle="collapse" alt="Cinque Terre" width="40px" height="40px">
             </li>
         </ul>
 
 
-
-
-
-        <div class="navbar-collapse collapse" id="collapsibleNavbar">
+        <div class="navbar-collapse collapse" id="collapsibleNavbar" data-toggle="collapse" data-target="#logoutScreen">
             <ul class="navbar-nav ml-auto">
 
 
-                <li class="nav-item">
-                    <a href="#"> <img src="./parent.jpg" class="rounded-circle" alt="Cinque Terre" width="40" height="40">
-                    </a>
+                <li class="nav-item"  >
+                  <img src="./parent.jpg"  class="rounded-circle" alt="Cinque Terre" width="40" height="40">
+                  
                 </li>
                 <li class="nav-item ">
 
@@ -495,8 +517,20 @@ $.ajax({
                     line-height: 28px;"><?php echo $Fsi['preferredName']; ?></a>
                 </li>
             </ul>
+					
         </div>
     </div>
+			
+					<div id="logoutScreen" class="collapse" style="width:20%;float:right;" >
+                            <a class="dropdown-item" href="http://localhost/newcode/pupilsight_new/index.php?q=preferences.php">
+                                <span class="mdi mdi-account-cog-outline mr-2"></span>
+                                Preferences
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="http://localhost/newcode/pupilsight_new/logout.php">
+                                <span class="mdi mdi-logout-variant mr-2"></span>
+                                Logout</a>
+                        </div>			
 
 	<div id="populate" name="populate">
     <div class="container-lg">
@@ -717,22 +751,36 @@ $.ajax({
             </div>
 			
              <?php 
-			 //$location="https://testchristacademy.pupilpod.net/index.php?q=";
-			 $location="https://testvptnk12.pupilpod.net/index.php?q=";
+			 function getDomain()
+{
+    if (isset($_SERVER["HTTPS"])) {
+        $protocol =
+            $_SERVER["HTTPS"] && $_SERVER["HTTPS"] != "off" ? "https" : "http";
+    } else {
+        $protocol = "http";
+    }
+    //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    return $protocol . "://" . $_SERVER["HTTP_HOST"];
+}
+			 $baseurl = getDomain().'/newcode/pupilsight_new';
+
+			 // $location="https://testchristacademy.pupilpod.net/index.php?q=";
+			 // $location="https://testvptnk12.pupilpod.net/index.php?q=";
+			 $location="https://localhost/newcode/pupilsight_new/index.php?q=";
 			 ?>
             <div class="row">
-                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Students/student_view_details.php&pupilsightPersonID=<?php echo $_SESSION['ChildId']; ?>"><img style="height: 61px; width: 62px;" src="./images/Calendar 1.png"></img></a> <br><span class="discoverimageContent" style="text-align:center">Timetable</span></a></div> 
+                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Students/student_view_details.php&pupilsightPersonID=<?php echo $_SESSION['ChildId']; ?>"><img style="height: 61px; width: 62px;" src="./images/timtable.png"></img></a> <br><span class="discoverimageContent" style="text-align:center">Timetable</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Academics/result.php"> <img style="height: 61px; width: 62px;" src="./images/Chart 1.png"></img></a><br><span class="discoverimageContent">Progress Report</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Messenger/messageWall_view.php"> <img style="height: 61px; width: 62px;" src="./images/circular.png"></img></a><br><span class="discoverimageContent">Circular</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Messenger/chat_message.php"> <img style="height: 61px; width: 62px;" src="./images/Message 1.png"></img></a><br><span class="discoverimageContent" >Chat</span></a></div> 
-                <div class="col" style="text-align:center"> <img style="height: 61px; width: 62px;" src="./images/Design 1.png"></img></a><br><span class="discoverimageContent">Event</span></div> 
+                <div class="col" style="text-align:center"> <img style="height: 61px; width: 62px;" src="./images/event.png"></img></a><br><span class="discoverimageContent">Event</span></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Activities/activities_view.php&pupilsightPersonID=<?php echo $_SESSION['ChildId']; ?>"> <img style="height: 61px; width: 62px;" src="./images/Brainstorming 1.png"></img></a><br><span class="discoverimageContent">Activities</span></a></div> 
-                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Finance/invoice_child_view.php"> <img style="height: 61px; width: 62px;" src="./images/Printer 1.png"></img></a><br><span class="discoverimageContent">Fees invoice</span></a></div> 
-                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Finance/invoice_child_view.php"> <img style="height: 61px; width: 62px;" src="./images/Documents 1.png"></img></a><br><span class="discoverimageContent">Fees Receipt</span></a></div> 
+                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Finance/invoice_child_view.php"> <img style="height: 61px; width: 62px;" src="./images/Frame (1).png"></img></a><br><span class="discoverimageContent">Fees invoice</span></a></div> 
+                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Finance/invoice_child_view.php"> <img style="height: 61px; width: 62px;" src="./images/Fees Recipet.png"></img></a><br><span class="discoverimageContent">Fees Receipt</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Students/student_view_details.php"> <img style="height: 61px; width: 62px;" src="./images/library.png"></img></a><br><span class="discoverimageContent">Library</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Attendance/report_studentHistory.php"> <img style="height: 61px; width: 62px;" src="./images/User 1.png"></img></a><br><span class="discoverimageContent">Attendance</span></a></div> 
-                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Transport/bus_manage.php"> <img style="height: 60px; width: 62px;" src="./images/Backpack 1.png"></img></a><br><span class="discoverimageContent">Transport</span></a></div> 
-                <div class="col" style="text-align:center"> <img style="height: 61px; width: 62px;" src="./images/Graphic tablet 1.png"></img></a><br><span class="discoverimageContent">Learning</span></div> 
+                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Transport/bus_manage.php"> <img style="height: 60px; width: 62px;" src="./images/Frame.png"></img></a><br><span class="discoverimageContent">Transport</span></a></div> 
+                <div class="col" style="text-align:center"> <img style="height: 61px; width: 62px;" src="./images/Learning.png"></img></a><br><span class="discoverimageContent">Learning</span></div> 
           </div>
           </div>
 		   </section>
@@ -856,7 +904,7 @@ $.ajax({
 						{
 					?>
 					
-						<div class="col-12 col-md6 " >
+					<div class="col-12 col-md6 " >
 					<div  style="float:right;margin-bottom:10px;margin-top:20px;margin-right:10px"> 					   
 					   <button type="button" class="btn btn-warning btn-sm" style="color:white" data-toggle="collapse" data-target="#smsenlarge" >View Details</button>
                     </div> 
@@ -867,10 +915,12 @@ $.ajax({
                     </div>
 					
 					
-					                    
+					<?php 
+				echo	$Cq1 = 'SELECT * from chat_message group by group_name';
+					$Cq11=mysqli_query($conn,$Cq1);
+					$Cq111=mysqli_fetch_array($Cq11);
+					?>                    
                     <div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
-                    
-			
                     <div class="col">
                     
                    <div class="row mt-4">
@@ -981,7 +1031,7 @@ $.ajax({
 					</div>
 					
 										                    
-              					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">        
+              		<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">        
                     <div class="col">              					
 				         <?php 
 					$pupilsightPersonID=$_SESSION['ChildId'];
@@ -1051,32 +1101,6 @@ $.ajax({
 					
 					
 					<?php  
-					
-			// $feehsHead = 'SELECT fn_fee_invoice.fn_fees_head_id, fn_fee_invoice_student_assign.invoice_no  FROM fn_fee_invoice_student_assign LEFT JOIN fn_fee_invoice ON fn_fee_invoice_student_assign.fn_fee_invoice_id = fn_fee_invoice.id WHERE fn_fee_invoice_student_assign.pupilsightPersonID = ' . $_SESSION['ChildId'] . ' AND fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" GROUP BY fn_fee_invoice.fn_fees_head_id';
-			// $feesHead1=mysqli_query($conn,$feehsHead);
-			// $feehsHead2=mysqli_fetch_array($feesHead1);
-
-            // $fees = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid, pupilsightStudentEnrolment.pupilsightProgramID FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" AND pupilsightPerson.pupilsightPersonID = "' . $_SESSION['ChildId'] . '" AND fn_fee_invoice.fn_fees_head_id = ' . $feehsHead2['fn_fees_head_id'] . ' GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC';
-			// $fees1=mysqli_query($conn,$fees);
-			// $fees2=mysqli_fetch_array($fees1);
-			
-			// $feesAmount = 'SELECT * from fn_fee_invoice_item where fn_fee_invoice_id='.$fees2['id'].'';
-			// $feesAmount1=mysqli_query($conn,$feesAmount);
-			// $feesAmount2=mysqli_fetch_array($feesAmount1);
-			
-			// $upcomingfeehsHead = 'SELECT fn_fee_invoice.fn_fees_head_id, fn_fee_invoice_student_assign.invoice_no  FROM fn_fee_invoice_student_assign LEFT JOIN fn_fee_invoice ON fn_fee_invoice_student_assign.fn_fee_invoice_id = fn_fee_invoice.id WHERE fn_fee_invoice_student_assign.pupilsightPersonID = ' . $_SESSION['ChildId'] . ' AND fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" GROUP BY fn_fee_invoice.fn_fees_head_id';
-			// $upcomingfeesHead1=mysqli_query($conn,$upcomingfeehsHead);
-			// $upcomingfeehsHead2=mysqli_fetch_array($upcomingfeesHead1);
-			
-			
-			// $upcomingfees = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid, pupilsightStudentEnrolment.pupilsightProgramID FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" AND pupilsightPerson.pupilsightPersonID = "' . $_SESSION['ChildId'] . '" AND fn_fee_invoice.fn_fees_head_id = ' . $upcomingfeehsHead2['fn_fees_head_id'] . ' GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC';
-			// $upcomingfees1=mysqli_query($conn,$upcomingfees);
-			// $upcomingfees2=mysqli_fetch_array($upcomingfees1);
-			
-			
-			// $upcomingfeesAmount = 'SELECT * from fn_fee_invoice_item where fn_fee_invoice_id='.$upcomingfees2['id'].'';
-			// $upcomingfeesAmount1=mysqli_query($conn,$upcomingfeesAmount);
-			// $upcomingfeesAmount2=mysqli_fetch_array($upcomingfeesAmount1);
 			
 			$t1 = 'SELECT * from fn_fee_invoice_student_assign  where pupilsightPersonID='.$_SESSION['ChildId'].' and invoice_status="Not Paid"';
 			$t11=mysqli_query($conn,$t1);
@@ -1094,6 +1118,44 @@ $.ajax({
 			$t333=mysqli_fetch_array($t33);
 			
 
+
+$studid=$_SESSION['ChildId'];
+$q1="SELECT fn_fee_invoice.fn_fees_head_id, fn_fee_invoice_student_assign.invoice_no  FROM fn_fee_invoice_student_assign LEFT JOIN fn_fee_invoice 
+ON fn_fee_invoice_student_assign.fn_fee_invoice_id = fn_fee_invoice.id WHERE fn_fee_invoice_student_assign.pupilsightPersonID = '$studid' 
+AND fn_fee_invoice_student_assign.invoice_status != 'Fully Paid' AND fn_fee_invoice_student_assign.status = '1' GROUP BY fn_fee_invoice.fn_fees_head_id";
+
+$Eq1=mysqli_query($conn,$q1);
+$FEq1=mysqli_fetch_array($Eq1);
+
+$q2="SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, 
+g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , 
+pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as 
+sectionid, pupilsightStudentEnrolment.pupilsightProgramID FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON 
+fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON 
+pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON 
+pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id 
+LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON 
+pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice_student_assign.invoice_status != 'Fully Paid' 
+AND fn_fee_invoice_student_assign.status = '1' AND pupilsightPerson.pupilsightPersonID = '$studid' AND 
+fn_fee_invoice.fn_fees_head_id = ' ".$FEq1['fn_fees_head_id']."' GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC";
+$Eq2=mysqli_query($conn,$q2);
+$FEq2=mysqli_fetch_array($Eq2);
+
+	$q3="SELECT SUM(fn_fee_invoice_item.total_amount) as totalamount, group_concat(fn_fee_invoice_item.id) as fn_fee_invoice_item_id FROM fn_fee_invoice_item 
+WHERE fn_fee_invoice_id = '".$FEq2['invoiceid']."'";
+$Eq3=mysqli_query($conn,$q3);
+$FEq3=mysqli_fetch_array($Eq3);
+   
+	  // echo  $FEq3['totalamount'];
+	  // echo  " / " .$FEq3['fn_fee_invoice_item_id'];
+	  // echo  " / " .$FEq2['stu_invoice_no'];
+	  // echo  " / " .$FEq2['due_date'];
+	  // echo  " / " .$FEq2['title'];
+	  // echo  " / " .$FEq2['officialName'];
+	  // echo "</br></br>";
+ 
+
+ $currentDate=date('Y-m-d');
 					?>
 					
 					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
@@ -1112,24 +1174,31 @@ $.ajax({
                     <div class="row mt-2">
                     <div class="col-8 col-md4 "> <span class="someHeadingdown1">
 					
+					<?php if($FEq2['due_date']<$currentDate) 
+					{	
+					?>
 					Over Due Invoice</br></br>
 
 					Dear Parent, you have a overdue fee to be paid. Please ignore if paid already.</br></br>
 
-					Invoice number: <?php echo $t111['invoice_no'];?> Invoice amount : ₹<?php echo $t222['amount'];?> Due Date: <?php echo date("j  F Y ",strtotime($t333['due_date']))?></br></br>
+					Invoice number: <?php echo $FEq2['stu_invoice_no'];?> Invoice amount : ₹<?php echo $FEq3['totalamount'];?> Due Date: <?php echo date("j  F Y ",strtotime($FEq2['due_date']))?></br></br>
 					<hr style="width:100%;text-align:left;margin-left:0">
-				
+					<?php }
+					elseif($FEq2['due_date'] > $currentDate) 
+					{  
+					?>
 
 					Upcoming Invoice</br></br>
 
 					Dear Parent, You have upcoming fee to be paid. Please ignore if paid already.</br></br>
 
-					Invoice number: <?php echo $t111['invoice_no'];?> Invoice amount: ₹<?php echo $t222['amount'];?> Due Date: <?php echo date("j  F Y ",strtotime($t333['due_date']))?></br></br>
+					Invoice number: <?php echo $FEq2['stu_invoice_no'];?> Invoice amount : ₹<?php echo $FEq3['totalamount'];?> Due Date: <?php echo date("j  F Y ",strtotime($FEq2['due_date']))?></br></br>
 					<hr style="width:100%;text-align:left;margin-left:0">
-
+					<?php }elseif($FEq2['due_date']<$currentDate== "" && $FEq2['due_date'] > $currentDate=="") {?>
 					No invoices or All Invoices are paid</br>
 
 					Dear Parent, You have paid all the fees for the academic year. Thank you for making the payment</br>
+					<?php } ?>
 					</div>
                     </div> 
 
@@ -1441,7 +1510,7 @@ $.ajax({
 					?>
 					
 					
-					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
+					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 100px;border-radius:20px">
                     <div class="col">
                 
 					
@@ -1466,18 +1535,25 @@ $.ajax({
                     </div> 
 				<?php // } ?> -->
 				
-					<div class="row mt-2">
-                    <div class="col-8 col-md4 "><img src="./images/anonymous_75.png"></img> </div>
+					<div class="row mt-2" hidden>
+                    <div class="col-8 col-md4 "><img src="./images/anonymous_75.png"></img>
+					<span class="someHeadingdown1"><?php echo $profile2['officialName']; ?></span> </br>
+					 <span class="someHeadingdown1"><?php echo $profile14['name']; ?> - <?php echo $profile17['name']; ?></span>
+					</div>
                     </div> 
 					
-					<div class="row mt-2">
-                    <div class="col-8 col-md4 "> <span class="someHeadingdown1"><?php echo $profile2['officialName']; ?></span> </div>
-                    </div> 
 					
-					<div class="row mt-2">
-                    <div class="col-8 col-md4 "> <span class="someHeadingdown1"><?php echo $profile14['name']; ?> - <?php echo $profile17['name']; ?></span> </div>
-                    </div> 
-
+					 <div class="row">
+                    <div class="col-1"><img style="width:64px;height:64px;margin-left:15px;margin-top:20px" src="./images/anonymous_75.png"></img></div>
+                    
+                    <div class="col-10" style="margin-top:30px">
+                    <span class="someHeadingdown1 aside1" ><?php echo $profile2['officialName']; ?></span> <br> 
+                    <span class="someHeadingdown1 aside1" ><?php echo $profile14['name']; ?> - <?php echo $profile17['name']; ?></span>
+                    </div>
+                    
+                    </div>
+			
+			
      
 					<div class="col-12 col-md6 " >
 					<div  style="float:right;margin-bottom:10px;margin-top:20px;margin-right:10px"> 					   

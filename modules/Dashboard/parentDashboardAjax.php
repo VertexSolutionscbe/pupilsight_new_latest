@@ -257,18 +257,18 @@ $_SESSION['ChildName']='';
 			 $location="http://localhost/pupilsight_new/index.php?q=";
 			 ?>
             <div class="row">
-                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Students/student_view_details.php&pupilsightPersonID=<?php echo $_SESSION['ChildId']; ?>"><img style="height: 61px; width: 62px;" src="./images/Calendar 1.png"></img></a> <br><span class="discoverimageContent" style="text-align:center">Timetable</span></a></div> 
+               <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Students/student_view_details.php&pupilsightPersonID=<?php echo $_SESSION['ChildId']; ?>"><img style="height: 61px; width: 62px;" src="./images/timtable.png"></img></a> <br><span class="discoverimageContent" style="text-align:center">Timetable</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Academics/result.php"> <img style="height: 61px; width: 62px;" src="./images/Chart 1.png"></img></a><br><span class="discoverimageContent">Progress Report</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Messenger/messageWall_view.php"> <img style="height: 61px; width: 62px;" src="./images/circular.png"></img></a><br><span class="discoverimageContent">Circular</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Messenger/chat_message.php"> <img style="height: 61px; width: 62px;" src="./images/Message 1.png"></img></a><br><span class="discoverimageContent" >Chat</span></a></div> 
-                <div class="col" style="text-align:center"> <img style="height: 61px; width: 62px;" src="./images/Design 1.png"></img></a><br><span class="discoverimageContent">Event</span></div> 
+                <div class="col" style="text-align:center"> <img style="height: 61px; width: 62px;" src="./images/event.png"></img></a><br><span class="discoverimageContent">Event</span></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Activities/activities_view.php&pupilsightPersonID=<?php echo $_SESSION['ChildId']; ?>"> <img style="height: 61px; width: 62px;" src="./images/Brainstorming 1.png"></img></a><br><span class="discoverimageContent">Activities</span></a></div> 
-                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Finance/invoice_child_view.php"> <img style="height: 61px; width: 62px;" src="./images/Printer 1.png"></img></a><br><span class="discoverimageContent">Fees invoice</span></a></div> 
-                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Finance/invoice_child_view.php"> <img style="height: 61px; width: 62px;" src="./images/Documents 1.png"></img></a><br><span class="discoverimageContent">Fees Receipt</span></a></div> 
+                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Finance/invoice_child_view.php"> <img style="height: 61px; width: 62px;" src="./images/Frame (1).png"></img></a><br><span class="discoverimageContent">Fees invoice</span></a></div> 
+                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Finance/invoice_child_view.php"> <img style="height: 61px; width: 62px;" src="./images/Fees Recipet.png"></img></a><br><span class="discoverimageContent">Fees Receipt</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Students/student_view_details.php"> <img style="height: 61px; width: 62px;" src="./images/library.png"></img></a><br><span class="discoverimageContent">Library</span></a></div> 
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Attendance/report_studentHistory.php"> <img style="height: 61px; width: 62px;" src="./images/User 1.png"></img></a><br><span class="discoverimageContent">Attendance</span></a></div> 
-                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Transport/bus_manage.php"> <img style="height: 60px; width: 62px;" src="./images/Backpack 1.png"></img></a><br><span class="discoverimageContent">Transport</span></a></div> 
-                <div class="col" style="text-align:center"> <img style="height: 61px; width: 62px;" src="./images/Graphic tablet 1.png"></img></a><br><span class="discoverimageContent">Learning</span></div> 
+                <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Transport/bus_manage.php"> <img style="height: 60px; width: 62px;" src="./images/Frame.png"></img></a><br><span class="discoverimageContent">Transport</span></a></div> 
+                <div class="col" style="text-align:center"> <img style="height: 61px; width: 62px;" src="./images/Learning.png"></img></a><br><span class="discoverimageContent">Learning</span></div> 
           </div>
           </div>
 		   </section>
@@ -977,7 +977,7 @@ $_SESSION['ChildName']='';
 					?>
 					
 					
-					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
+					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 100px;border-radius:20px">
                     <div class="col">
                 
 					
@@ -1002,18 +1002,25 @@ $_SESSION['ChildName']='';
                     </div> 
 				<?php // } ?> -->
 				
-					<div class="row mt-2">
-                    <div class="col-8 col-md4 "><img src="./images/anonymous_75.png"></img> </div>
+					<div class="row mt-2" hidden>
+                    <div class="col-8 col-md4 "><img src="./images/anonymous_75.png"></img>
+					<span class="someHeadingdown1"><?php echo $profile2['officialName']; ?></span> </br>
+					 <span class="someHeadingdown1"><?php echo $profile14['name']; ?> - <?php echo $profile17['name']; ?></span>
+					</div>
                     </div> 
 					
-					<div class="row mt-2">
-                    <div class="col-8 col-md4 "> <span class="someHeadingdown1"><?php echo $profile2['officialName']; ?></span> </div>
-                    </div> 
 					
-					<div class="row mt-2">
-                    <div class="col-8 col-md4 "> <span class="someHeadingdown1"><?php echo $profile14['name']; ?> - <?php echo $profile17['name']; ?></span> </div>
-                    </div> 
-
+					 <div class="row">
+                    <div class="col-1"><img style="width:64px;height:64px;margin-left:15px;margin-top:20px" src="./images/anonymous_75.png"></img></div>
+                    
+                    <div class="col-10" style="margin-top:30px">
+                    <span class="someHeadingdown1 aside1" ><?php echo $profile2['officialName']; ?></span> <br> 
+                    <span class="someHeadingdown1 aside1" ><?php echo $profile14['name']; ?> - <?php echo $profile17['name']; ?></span>
+                    </div>
+                    
+                    </div>
+			
+			
      
 					<div class="col-12 col-md6 " >
 					<div  style="float:right;margin-bottom:10px;margin-top:20px;margin-right:10px"> 					   
