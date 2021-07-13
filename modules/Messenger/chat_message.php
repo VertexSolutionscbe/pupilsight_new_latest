@@ -134,7 +134,8 @@ if ($accessFlag) {
       $uid = $_SESSION['student_id'];
     }
 
-    $stSubList = $helperGateway->getClassTeacherProgramClassAndSection($connection2, $pupilsightSchoolYearID, $uid);
+    //$stSubList = $helperGateway->getStudentAndClassViaClassTeacher($connection2, $pupilsightSchoolYearID, $uid);
+    $stSubList = $helperGateway->getClassTeacher($connection2, $pupilsightSchoolYearID, $uid);
     $groupList = $helperGateway->getGroupList($connection2, $pupilsightSchoolYearID);
   }
   if ($isPostAllow) { ?>
@@ -465,7 +466,7 @@ if ($accessFlag) {
             <select id='stGroup' onchange="stGroupChange()">
               <option value="">Select Type</option>
               <?php
-              if ($stSubList['pupilsightPersonID']) {
+              if (isset($stSubList['pupilsightPersonID'])) {
                 echo "<option value='" . $stSubList['pupilsightPersonID'] . "' groupid='' groupname='Class Teacher'>Class Teacher</option>";
               }
               echo "<option value='subject_teacher' groupid='' groupname='Subject Teacher'>Subject Teacher(s)</option>";
@@ -485,16 +486,14 @@ if ($accessFlag) {
           <div class="col-md-4 col-sm-12">
             <select id='stSubject'>
               <?php
-              $sublist = $stSubList['sublist'];
-              $len = count($sublist);
-              $i = 0;
-              while ($i < $len) {
-                echo "<option value='" .
-                  $sublist[$i]['pupilsightPersonID'] .
-                  "'>" .
-                  $sublist[$i]['subject_display_name'] .
-                  '</option>';
-                $i++;
+              if (isset($stSubList['sublist'])) {
+                $sublist = $stSubList['sublist'];
+                $len = count($sublist);
+                $i = 0;
+                while ($i < $len) {
+                  echo "<option value='" . $sublist[$i]['pupilsightPersonID'] . "'>" . $sublist[$i]['subject_display_name'] . '</option>';
+                  $i++;
+                }
               }
               ?>
             </select>
@@ -691,6 +690,17 @@ if ($accessFlag) {
       var groupid = $("#stGroup").find(':selected').attr('groupid');
       var groupName = $("#stGroup").find(':selected').attr('groupname');
 
+      var tagType = $("#stGroup").val();
+
+      var tag = "";
+      if (tagType == "subject_teacher") {
+        var subjectVal = $("#stSubject").val();
+        var subjectName = $("#stSubject option:selected").text();
+        tag = "Subject Teacher - " + subjectName;
+      } else {
+        tag = groupName;
+      }
+
       var tabs = $('input[name="rdtabid"]:checked').val();
       var sttab = tabs.split("|$|");
       var tabid = sttab[0];
@@ -702,9 +712,10 @@ if ($accessFlag) {
       data.append("msg_type", "2");
       data.append("people", people);
       data.append("group_id", groupid);
-      data.append("group_name", groupName);
+      data.append("group_name", tag);
       data.append("tabid", tabid);
       data.append("tab", tab);
+
       data.append("delivery_type", delivery_type);
       data.append("msg", msg);
       //console.log(data);

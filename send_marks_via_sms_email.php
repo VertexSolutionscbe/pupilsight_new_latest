@@ -112,7 +112,7 @@ if (!empty($testId) && !empty($studentId) && !empty($uid)) {
               if ($type == "sms") {
                 $senderID = ' - ' . $senderID;
                 $marksValue = implode(', ', $mark_data);
-                $emsg = "Dear Parent\n" . $test_name . "\nResult For  " . $studentName . "  ,  " . $class . " - " . $section . "  :\n ";
+                $emsg = "Dear Parent\n" . $test_name . "\nResult For " . $studentName . ", " . $class . " - " . $section . ":\n";
               } else if ($type == "email") {
                 $senderID = '';
                 $marksValue = implode(', <br>', $mark_data);

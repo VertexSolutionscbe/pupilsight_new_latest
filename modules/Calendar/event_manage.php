@@ -3,53 +3,7 @@
 use Pupilsight\Domain\Calendar\CalendarGateway;
 use Pupilsight\Domain\Helper\HelperGateway;
 
-function getDomain()
-{
-    if (isset($_SERVER['HTTPS'])) {
-        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
-    } else {
-        $protocol = 'http';
-    }
-    //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    return $protocol . "://" . $_SERVER['HTTP_HOST'];
-}
-
-
-function isPost($postid)
-{
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST[$postid])) {
-        if (empty($_POST[$postid])) {
-            return FALSE;
-        } else {
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
-
-function getPost($postid)
-{
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST[$postid])) {
-        if (empty($_POST[$postid])) {
-            return NULL;
-        } else {
-            return $_POST[$postid];
-        }
-    }
-    return NULL;
-}
-
-function getIntPost($postid)
-{
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST[$postid])) {
-        if (empty($_POST[$postid])) {
-            return "";
-        } else {
-            return (int)($_POST[$postid]);
-        }
-    }
-    return "";
-}
+include "core.php";
 
 $baseurl = getDomain();
 
@@ -438,7 +392,7 @@ if ($accessFlag == false) {
                                 <button type='button' class='btn btn-danger mr-1' onclick=\"deleteEvent('" . $events[$i]['id'] . "');\"><i class='mdi mdi-18px mdi-delete'></i></button>
                                 </td>";
                                 } else {
-                                    $str .= "\n<td class='text-center'>NA</td>";
+                                    $str .= "\n<td class='text-center'><button type='button' class='btn btn-white' onclick=\"unPublish('" . $events[$i]["id"] . "');\">UNPUBLISH</button></td>";
                                 }
                             }
                             $str .= "\n</tr>";
@@ -654,6 +608,38 @@ if ($accessFlag == false) {
                 $("#publishTitle").text(obj["title"]);
                 $("#eventid").val(obj["id"]);
                 $("#btnPublishDia").click();
+            }
+
+            function unPublish(id) {
+                if (id == "") {
+                    toast("error", "Invalid Event ID.");
+                    return;
+                }
+                if (confirm("Are you sure you want to unpublish this event")) {
+                    try {
+                        var type = 'unPublishEvent';
+                        $.ajax({
+                            url: 'ajax_calendar.php',
+                            type: 'post',
+                            data: {
+                                eventid: id,
+                                type: type
+                            },
+                            async: true,
+                            success: function(response) {
+                                var obj = jQuery.parseJSON(response);
+                                if (obj.status == "1") {
+                                    alert(obj.msg);
+                                    location.reload();
+                                } else {
+                                    toast("info", obj.msg);
+                                }
+                            }
+                        });
+                    } catch (ex) {
+                        console.log(ex);
+                    }
+                }
             }
 
             function verfiyAndPublish() {
