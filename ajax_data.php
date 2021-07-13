@@ -3764,11 +3764,20 @@ if ($type == 'getSchoolClass') {
     $uid = $_SESSION[$guid]['pupilsightPersonID'];
     $pid = $val;
     $pupilsightSchoolYearID = $_POST['aid'];
-    if ($roleId == '2') {
+    if($roleId == '1'){
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
+    } else if ($roleId == '2') {
         $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+    } else if ($roleId == '35') {
+        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" AND a.pupilsightProgramID = "' . $pid . '"  GROUP BY a.pupilsightYearGroupID';
     } else {
-        $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+        $sql = 'SELECT b.*, c.name FROM assignstaff_toclasssection AS a LEFT JOIN pupilsightProgramClassSectionMapping AS b ON a.pupilsightMappingID = b.pupilsightMappingID LEFT JOIN pupilsightYearGroup AS c ON b.pupilsightYearGroupID = c.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND b.pupilsightProgramID = "' . $pid . '" GROUP BY b.pupilsightYearGroupID';
     }
+    // if ($roleId == '2') {
+    //     $sql = 'SELECT a.*, b.name FROM assign_class_teacher_section AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightPersonID = "' . $uid . '" AND a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+    // } else {
+    //     $sql = 'SELECT a.*, b.name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID WHERE a.pupilsightProgramID = "' . $pid . '" GROUP BY a.pupilsightYearGroupID';
+    // }
 
     $result = $connection2->query($sql);
     $classes = $result->fetchAll();

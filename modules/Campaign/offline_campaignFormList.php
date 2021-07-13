@@ -84,6 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
     $admissionGateway = $container->get(AdmissionGateway::class);
     $criteria = $admissionGateway->newQueryCriteria()
         ->searchBy($admissionGateway->getSearchableColumns(), $search)
+        ->pageSize(5000)
         ->sortBy(['id'])
         ->fromPOST();
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
@@ -598,6 +599,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Campaign/campaignFormList.
                 $("#clickAdmissionFeePayment").attr('href', newhrf);
                 $("#clickAdmissionFeePayment").click();
             }
+        });
+
+        
+        $(document).on('click', '.paginate_button', function() {
+            $('#expore_tbl').find("input[name='submission_id[]']").each(function() {
+                $(this).addClass('include_cell');
+                $(this).closest('tr').addClass('rm_cell');
+                var val = $(this).val();
+                // alert(val);
+                var type = 'chkInvoice';
+                var thiscls = $(this);
+                $.ajax({
+                    url: 'ajax_data.php',
+                    type: 'post',
+                    data: {
+                        val: val,
+                        type: type
+                    },
+                    async: true,
+                    success: function(response) {
+                        if (response == 'yes') {
+                            thiscls.addClass('invoicemade');
+                        }
+                    }
+                });
+            });
+
+
+            $(document).on('change', '.include_cell', function() {
+                if ($(this).is(":checked")) {
+                    $(this).closest('tr').removeClass('rm_cell');
+                } else {
+                    $(this).closest('tr').addClass('rm_cell');
+                }
+            });
         });
 
     });
