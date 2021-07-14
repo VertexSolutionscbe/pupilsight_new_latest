@@ -5,6 +5,8 @@ error_reporting(0);
 if( isset($_POST['inputValue']) ) {
 //if(trim($_POST['inputValue'])=='SetSession'){
 $pupilsightPersonID=trim($_POST['inputValue'])	;
+ $pupilsightFamilyID=trim($_POST['familyId'])	;
+
 $yearid=trim($_POST['YearId'])	;
 $childs = 'SELECT a.pupilsightFamilyID,b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b 
 ON a.pupilsightPersonID = b.pupilsightPersonID WHERE  a.pupilsightPersonID ='. $pupilsightPersonID .'';
@@ -12,12 +14,15 @@ $Echilds=mysqli_query($conn,$childs);
 $Fchilds=mysqli_fetch_array($Echilds);
 
 
-
+ $childs1 = 'SELECT a.pupilsightFamilyID,b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b 
+ON a.pupilsightPersonID = b.pupilsightPersonID WHERE  a.pupilsightFamilyID ='. $_SESSION['FamilyId'] .'';
+$Echilds1=mysqli_query($conn,$childs1);
+$Fchilds1=mysqli_fetch_array($Echilds1);
 
 
 
 $childs1 = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b 
-ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' . $Fchilds['pupilsightFamilyID'] . ' AND a.pupilsightPersonID != "" ';
+ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' . $Fchilds1['pupilsightFamilyID'] . ' AND a.pupilsightPersonID != "" ';
 
 
 $EchildsDetails=mysqli_query($conn,$childs1);
@@ -43,7 +48,7 @@ $_SESSION['ChildName']='';
             <div class="col-sm-6" id="childarea">
                 <div class="rahulare mt-5" >Hello <?php echo $_SESSION['ChildName']; ?></div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6 aside">
                 <div class="float-right mt-4 selectChildarea" >Select Child
                     <form action="/" class="ml-2 mt-lg-3">
 						<input type="hidden" id="yearid" name="yearid" value="<?php echo $yearid; ?>">
@@ -75,12 +80,12 @@ $_SESSION['ChildName']='';
 
 	  <div class="container mt-5 " style="background-color: white; border-radius: 20px;" >
         <div class="row" style="width:100%">
-    <div class="col-sm-6 " id="myScrollspy">
-                <div class="light googul" style="display: flex; background-color: white; ">
-
-                    <div class="calendar" id="calendar" style="background-color: white;margin-top:-200px" data-spy="scroll" data-target="#myScrollspy"
-                        data-offset="1">
-                        <div class="calendar-header">
+    
+	
+<div class="col-sm-6 " id="myScrollspy">
+                <div class="light googul" style="display: flex; background-color: white;height:450px">
+				<div class="calendar" id="calendar" style="background-color: white;margin-top:20px" data-spy="scroll" data-target="#myScrollspy" data-offset="1">                       
+						<div class="calendar-header">
                             <span class="month-picker monthArea" id="month-picker">February </span>
                             <span id="year" class="monthArea">2021</span>
                             <hr style="width:50%;text-align:left;margin-left:0">
@@ -117,6 +122,8 @@ $_SESSION['ChildName']='';
 
                 </div>
             </div>
+			
+		
 			
             <div class="col-sm-6" >
 						<div class="modelbody">
@@ -401,10 +408,15 @@ $_SESSION['ChildName']='';
 					
 					
 					                    
-                    <div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
-                    
-			
+                               <div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
                     <div class="col">
+						<?php 
+						
+					$Chi1 = 'SELECT * chat_message ';
+					$Chi11=mysqli_query($conn,$Chi1);
+					$Chi111=mysqli_fetch_array($Chi11);
+				
+					?> 
                     
                    <div class="row mt-4">
                     <div class="col-11 col-md12 "><span class="chatHeadArea1">Chat</span></div>
@@ -418,14 +430,37 @@ $_SESSION['ChildName']='';
 					<div style="float:right">
                     <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo1" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
                     </div>
-                    
+                    	<?php 
+					if($Chi111['delivery_type']=="all")
+					{				
+				$Ch1 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
+					}else{	
+				$Ch1 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="Subject Teacher"';
+					}
+					$Ch11=mysqli_query($conn,$Ch1);
+					$i=0;
+					while($Ch111=mysqli_fetch_array($Ch11))
+					{
+						$i++;
+						if($i<=1)
+						{
+					
+					?>
 					<div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div></a>
-					</div>  
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch111['msg']; ?>  </span></div></a>
+					</div> 
 
-					<div id="demo1" class="collapse row mt-4">
-					 <div class="col-12 col-md12 "><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div>
-					</div>					
+						<?php }else{?>
+					<div id="demo1" class=" collapse " >
+					<hr style="width:100%;text-align:left;margin-left:0"> 					
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch111['msg']; ?>  </span></div></a>
+					</div> 
+					<?php 	
+					}
+					}	
+					?>					
+
+								
 					 <hr style="width:100%;text-align:left;margin-left:0"> 
 					<div class="row mt-4">
                     <div class="col-11 col-md12 "><span class="chatHeadArea2">Maths Teacher</span></div>
@@ -435,13 +470,35 @@ $_SESSION['ChildName']='';
                     <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo2" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
                     </div>
                    
-				   <div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div></a>
-					</div>  
+				  <?php 
+					if($Chi111['delivery_type']=="all")
+					{				
+				$Ch12 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
+					}else{	
+				$Ch12 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="Maths Teacher"';
+					}
+					$Ch112=mysqli_query($conn,$Ch12);
+					$i=0;
+					while($Ch1112=mysqli_fetch_array($Ch112))
+					{
+						$i++;
+						if($i<=1)
+						{
+					
+					?>
+					<div class="row mt-4" >					 
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1112['msg']; ?>  </span></div></a>
+					</div> 
 
-					<div id="demo2" class="collapse row mt-4">
-					 <div class="col-12 col-md6 "><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div>
-					</div>	            
+						<?php }else{?>
+					<div id="demo2" class=" collapse " >
+					<hr style="width:100%;text-align:left;margin-left:0"> 					
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1112['msg']; ?>  </span></div></a>
+					</div> 
+					<?php 	
+					}
+					}	
+					?>					        
 					
 					<hr style="width:100%;text-align:left;margin-left:0"> 
 					<div class="row mt-4">
@@ -451,13 +508,35 @@ $_SESSION['ChildName']='';
 						<div style="float:right">
                     <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo3" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
                     </div>
-                    <div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div></a>
-					</div>  
+                      <?php 
+					if($Chi111['delivery_type']=="all")
+					{				
+				$Ch13 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
+					}else{	
+				$Ch13 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="Science Teacher"';
+					}
+					$Ch113=mysqli_query($conn,$Ch13);
+					$i=0;
+					while($Ch1113=mysqli_fetch_array($Ch113))
+					{
+						$i++;
+						if($i<=1)
+						{
+					
+					?>
+					<div class="row mt-4" >					 
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1113['msg']; ?>  </span></div></a>
+					</div> 
 
-					<div id="demo3" class="collapse row mt-4">
-					 <div class="col-12 col-md6 "><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div>
-					</div>	                                   
+						<?php }else{?>
+					<div id="demo3" class=" collapse " >
+					<hr style="width:100%;text-align:left;margin-left:0"> 					
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1113['msg']; ?>  </span></div></a>
+					</div> 
+					<?php 	
+					}
+					}	
+					?>	                                 
 			      
 				 
 				  
@@ -473,13 +552,35 @@ $_SESSION['ChildName']='';
 						<div style="float:right">
                     <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo4" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
                     </div>
-                    <div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div></a>
-					</div>  
+                        <?php 
+					if($Chi111['delivery_type']=="all")
+					{				
+				$Ch14 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
+					}else{	
+				$Ch14 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="English Teacher"';
+					}
+					$Ch114=mysqli_query($conn,$Ch14);
+					$i=0;
+					while($Ch1114=mysqli_fetch_array($Ch114))
+					{
+						$i++;
+						if($i<=1)
+						{
+					
+					?>
+					<div class="row mt-4" >					 
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1114['msg']; ?>  </span></div></a>
+					</div> 
 
-					<div id="demo4" class="collapse row mt-4">
-					 <div class="col-12 col-md6 "><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div>
-					</div>	                                   
+						<?php }else{?>
+					<div id="demo4" class=" collapse " >
+					<hr style="width:100%;text-align:left;margin-left:0"> 					
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1114['msg']; ?>  </span></div></a>
+					</div> 
+					<?php 	
+					}
+					}	
+					?>	                                
 					</div>	              
 
 					<div>
@@ -493,13 +594,37 @@ $_SESSION['ChildName']='';
 						<div style="float:right">
                     <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo5" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
                     </div>
-                    <div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div></a>
-					</div>  
+                   <?php 
+					if($Chi111['delivery_type']=="all")
+					{				
+				$Ch15 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
+					}else{	
+				$Ch15 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="Tamil Teacher"';
+					}
+					$Ch115=mysqli_query($conn,$Ch15);
+					$i=0;
+					while($Ch1115=mysqli_fetch_array($Ch115))
+					{
+						$i++;
+						if($i<=1)
+						{
+					
+					?>
+					<div class="row mt-4" >					 
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1115['msg']; ?>  </span></div></a>
+					</div> 
 
-					<div id="demo5" class="collapse row mt-4">
-					 <div class="col-12 col-md6 "><span class="chatSubjectArea"> Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.   </span></div>
-					</div>	                                   
+						<?php }else{?>
+					<div id="demo5" class=" collapse " >
+					<hr style="width:100%;text-align:left;margin-left:0"> 					
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1115['msg']; ?>  </span></div></a>
+					</div> 
+					<?php 	
+					}
+					}	
+					?>	                                             
+					
+					
 					</div>	              					
 					</div>	
 			
@@ -512,7 +637,6 @@ $_SESSION['ChildName']='';
              
                     </div>
 					</div>
-					
 										                    
               					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">        
                     <div class="col">              					
@@ -585,50 +709,45 @@ $_SESSION['ChildName']='';
 					
 					
 					
-						<?php  
-					
-			// $feehsHead = 'SELECT fn_fee_invoice.fn_fees_head_id, fn_fee_invoice_student_assign.invoice_no  FROM fn_fee_invoice_student_assign LEFT JOIN fn_fee_invoice ON fn_fee_invoice_student_assign.fn_fee_invoice_id = fn_fee_invoice.id WHERE fn_fee_invoice_student_assign.pupilsightPersonID = ' . $_SESSION['ChildId'] . ' AND fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" GROUP BY fn_fee_invoice.fn_fees_head_id';
-			// $feesHead1=mysqli_query($conn,$feehsHead);
-			// $feehsHead2=mysqli_fetch_array($feesHead1);
+								<?php  
 
-            // $fees = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid, pupilsightStudentEnrolment.pupilsightProgramID FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" AND pupilsightPerson.pupilsightPersonID = "' . $_SESSION['ChildId'] . '" AND fn_fee_invoice.fn_fees_head_id = ' . $feehsHead2['fn_fees_head_id'] . ' GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC';
-			// $fees1=mysqli_query($conn,$fees);
-			// $fees2=mysqli_fetch_array($fees1);
-			
-			// $feesAmount = 'SELECT * from fn_fee_invoice_item where fn_fee_invoice_id='.$fees2['id'].'';
-			// $feesAmount1=mysqli_query($conn,$feesAmount);
-			// $feesAmount2=mysqli_fetch_array($feesAmount1);
-			
-			// $upcomingfeehsHead = 'SELECT fn_fee_invoice.fn_fees_head_id, fn_fee_invoice_student_assign.invoice_no  FROM fn_fee_invoice_student_assign LEFT JOIN fn_fee_invoice ON fn_fee_invoice_student_assign.fn_fee_invoice_id = fn_fee_invoice.id WHERE fn_fee_invoice_student_assign.pupilsightPersonID = ' . $_SESSION['ChildId'] . ' AND fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" GROUP BY fn_fee_invoice.fn_fees_head_id';
-			// $upcomingfeesHead1=mysqli_query($conn,$upcomingfeehsHead);
-			// $upcomingfeehsHead2=mysqli_fetch_array($upcomingfeesHead1);
-			
-			
-			// $upcomingfees = 'SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as sectionid, pupilsightStudentEnrolment.pupilsightProgramID FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice_student_assign.invoice_status != "Fully Paid" AND fn_fee_invoice_student_assign.status = "1" AND pupilsightPerson.pupilsightPersonID = "' . $_SESSION['ChildId'] . '" AND fn_fee_invoice.fn_fees_head_id = ' . $upcomingfeehsHead2['fn_fees_head_id'] . ' GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC';
-			// $upcomingfees1=mysqli_query($conn,$upcomingfees);
-			// $upcomingfees2=mysqli_fetch_array($upcomingfees1);
-			
-			
-			// $upcomingfeesAmount = 'SELECT * from fn_fee_invoice_item where fn_fee_invoice_id='.$upcomingfees2['id'].'';
-			// $upcomingfeesAmount1=mysqli_query($conn,$upcomingfeesAmount);
-			// $upcomingfeesAmount2=mysqli_fetch_array($upcomingfeesAmount1);
-			
-			$t1 = 'SELECT * from fn_fee_invoice_student_assign  where pupilsightPersonID='.$_SESSION['ChildId'].' and invoice_status="Not Paid"';
-			$t11=mysqli_query($conn,$t1);
-			$t111=mysqli_fetch_array($t11);
-						
-						
-			
-			$t2 = 'SELECT sum(total_amount) as amount from fn_fee_invoice_item where fn_fee_invoice_id='.$t111['fn_fee_invoice_id'].' ';
-			$t22=mysqli_query($conn,$t2);
-			$t222=mysqli_fetch_array($t22);
-			
-			
-			$t3 = 'SELECT * from fn_fee_invoice where fn_fee_structure_id='.$t111['fn_fee_structure_id'].' ';
-			$t33=mysqli_query($conn,$t3);
-			$t333=mysqli_fetch_array($t33);
-			
+$studid=$_SESSION['ChildId'];
+$q1="SELECT fn_fee_invoice.fn_fees_head_id, fn_fee_invoice_student_assign.invoice_no  FROM fn_fee_invoice_student_assign LEFT JOIN fn_fee_invoice 
+ON fn_fee_invoice_student_assign.fn_fee_invoice_id = fn_fee_invoice.id WHERE fn_fee_invoice_student_assign.pupilsightPersonID = '$studid' 
+AND fn_fee_invoice_student_assign.invoice_status != 'Fully Paid' AND fn_fee_invoice_student_assign.status = '1' GROUP BY fn_fee_invoice.fn_fees_head_id";
 
+$Eq1=mysqli_query($conn,$q1);
+$FEq1=mysqli_fetch_array($Eq1);
+
+$q2="SELECT fn_fee_invoice.*,fn_fee_invoice.id as invoiceid, fn_fee_invoice_student_assign.invoice_no as stu_invoice_no, g.fine_type, g.name AS fine_name, 
+g.rule_type, GROUP_CONCAT(DISTINCT asg.route_id) as routes, GROUP_CONCAT(DISTINCT asg.transport_type) as routetype, pupilsightPerson.officialName , 
+pupilsightPerson.email, pupilsightPerson.phone1, pupilsightStudentEnrolment.pupilsightYearGroupID as classid, pupilsightStudentEnrolment.pupilsightRollGroupID as 
+sectionid, pupilsightStudentEnrolment.pupilsightProgramID FROM fn_fee_invoice LEFT JOIN pupilsightStudentEnrolment ON 
+fn_fee_invoice.pupilsightSchoolYearID=pupilsightStudentEnrolment.pupilsightSchoolYearID LEFT JOIN pupilsightPerson ON 
+pupilsightStudentEnrolment.pupilsightPersonID=pupilsightPerson.pupilsightPersonID RIGHT JOIN fn_fee_invoice_student_assign ON 
+pupilsightPerson.pupilsightPersonID=fn_fee_invoice_student_assign.pupilsightPersonID AND fn_fee_invoice.id = fn_fee_invoice_student_assign.fn_fee_invoice_id 
+LEFT JOIN fn_fees_fine_rule AS g ON fn_fee_invoice.fn_fees_fine_rule_id = g.id LEFT JOIN trans_route_assign AS asg ON 
+pupilsightPerson.pupilsightPersonID = asg.pupilsightPersonID WHERE fn_fee_invoice_student_assign.invoice_status != 'Fully Paid' 
+AND fn_fee_invoice_student_assign.status = '1' AND pupilsightPerson.pupilsightPersonID = '$studid' AND 
+fn_fee_invoice.fn_fees_head_id = ' ".$FEq1['fn_fees_head_id']."' GROUP BY fn_fee_invoice.id ORDER BY fn_fee_invoice.due_date ASC";
+$Eq2=mysqli_query($conn,$q2);
+$FEq2=mysqli_fetch_array($Eq2);
+
+	$q3="SELECT SUM(fn_fee_invoice_item.total_amount) as totalamount, group_concat(fn_fee_invoice_item.id) as fn_fee_invoice_item_id FROM fn_fee_invoice_item 
+WHERE fn_fee_invoice_id = '".$FEq2['invoiceid']."'";
+$Eq3=mysqli_query($conn,$q3);
+$FEq3=mysqli_fetch_array($Eq3);
+   
+	  // echo  $FEq3['totalamount'];
+	  // echo  " / " .$FEq3['fn_fee_invoice_item_id'];
+	  // echo  " / " .$FEq2['stu_invoice_no'];
+	  // echo  " / " .$FEq2['due_date'];
+	  // echo  " / " .$FEq2['title'];
+	  // echo  " / " .$FEq2['officialName'];
+	  // echo "</br></br>";
+ 
+
+ $currentDate=date('Y-m-d');
 					?>
 					
 					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
@@ -647,24 +766,31 @@ $_SESSION['ChildName']='';
                     <div class="row mt-2">
                     <div class="col-8 col-md4 "> <span class="someHeadingdown1">
 					
+					<?php if($FEq2['due_date']>$currentDate) 
+					{	
+					?>
 					Over Due Invoice</br></br>
 
 					Dear Parent, you have a overdue fee to be paid. Please ignore if paid already.</br></br>
 
-					Invoice number: <?php echo $t111['invoice_no'];?> Invoice amount : ₹<?php echo $t222['amount'];?> Due Date: <?php echo date("j  F Y ",strtotime($t333['due_date']))?></br></br>
+					Invoice number: <?php echo $FEq2['stu_invoice_no'];?> Invoice amount : ₹<?php echo $FEq3['totalamount'];?> Due Date: <?php echo date("j  F Y ",strtotime($FEq2['due_date']))?></br></br>
 					<hr style="width:100%;text-align:left;margin-left:0">
-				
+					<?php }
+					elseif($FEq2['due_date'] < $currentDate) 
+					{  
+					?>
 
 					Upcoming Invoice</br></br>
 
 					Dear Parent, You have upcoming fee to be paid. Please ignore if paid already.</br></br>
 
-					Invoice number: <?php echo $t111['invoice_no'];?> Invoice amount: ₹<?php echo $t222['amount'];?> Due Date: <?php echo date("j  F Y ",strtotime($t333['due_date']))?></br></br>
+					Invoice number: <?php echo $FEq2['stu_invoice_no'];?> Invoice amount : ₹<?php echo $FEq3['totalamount'];?> Due Date: <?php echo date("j  F Y ",strtotime($FEq2['due_date']))?></br></br>
 					<hr style="width:100%;text-align:left;margin-left:0">
-
+					<?php }elseif($FEq2['due_date'] > $currentDate== "" && $FEq2['due_date'] < $currentDate=="") {?>
 					No invoices or All Invoices are paid</br>
 
 					Dear Parent, You have paid all the fees for the academic year. Thank you for making the payment</br>
+					<?php } ?>
 					</div>
                     </div> 
 
@@ -673,8 +799,6 @@ $_SESSION['ChildName']='';
                     </div>                    
                     </div>
                     </div>
-					
-					
 					
 					
 					<?php					
