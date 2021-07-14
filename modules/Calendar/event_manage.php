@@ -23,9 +23,8 @@ if ($accessFlag == false) {
         $title = "'" . trim($_POST['title']) . "'";
         $details = NULL;
         if (!empty($_POST['details'])) {
-            $details = htmlentities(htmlspecialchars($_POST['details']));
+            $details = htmlspecialchars($_POST['details']);
         }
-
 
         //$details = empty($_POST['details']) ? "NULL" : "'" . trim($_POST['details']) . "'";
         $event_type_id = empty($_POST['event_type_id']) ? "NULL" : "'" . trim($_POST['event_type_id']) . "'";
@@ -39,15 +38,26 @@ if ($accessFlag == false) {
 
         $end_time_unix = strtotime($_POST['end_date']);
         $end_date = date('Y-m-d', $end_time_unix);
-        $start_time = NULL;
-        $end_time = NULL;
+
+        $start_time = getPost($_POST['start_time']);
+        if ($start_time) {
+            $start_time = date('H:i:s', strtotime($start_time));
+            $start_time = "'$start_time'";
+        } else {
+            $start_time = "NULL";
+        }
+
+        $end_time = getPost($_POST['end_time']);
+        if ($end_time) {
+            $end_time = date('H:i:s', strtotime($end_time));
+            $end_time = "'$end_time'";
+        } else {
+            $end_time = "NULL";
+        }
 
         $is_all_day_event = 2;
         if (!isset($_POST['is_all_day_event'])) {
             $is_all_day_event = 1;
-
-            $start_time = date('H:i:s', strtotime($_POST['start_time']));
-            $end_time = date('H:i:s', strtotime($_POST['end_time']));
             //echo "StartDate Time ".$start_date." ".$start_time;
             //echo "EndDate Time ".$end_date." ".$end_time;
             $start_time_unix = strtotime($start_date . " " . $start_time);
@@ -63,17 +73,17 @@ if ($accessFlag == false) {
                 $sq .= " event_type_id=$event_type_id, ";
                 $sq .= " location=$location, ";
                 $sq .= " start_date='$start_date', ";
-                $sq .= " start_time='$start_time', ";
+                $sq .= " start_time=$start_time, ";
                 $sq .= " end_date='$end_date', ";
-                $sq .= " end_time='$end_time', ";
+                $sq .= " end_time=$end_time, ";
                 $sq .= " start_time_unix=$start_time_unix, ";
                 $sq .= " end_time_unix=$end_time_unix, ";
                 $sq .= " is_all_day_event=$is_all_day_event, ";
-                $sq .= " udt=$ts ";
+                $sq .= " udt='$ts' ";
                 $sq .= "where id='" . $id . "' ";
             } else {
                 $sq = "insert into calendar_event (title, details, event_type_id, location, start_date, start_time, end_date, end_time, start_time_unix, end_time_unix, is_all_day_event, is_publish, block_attendance, cdt, udt) 
-                values($title,'$details',$event_type_id,$location,'$start_date','$start_time','$end_date','$end_time',$start_time_unix,$end_time_unix,$is_all_day_event,1,1,'$ts','$ts')";
+                values($title,'$details',$event_type_id,$location,'$start_date',$start_time,'$end_date',$end_time,$start_time_unix,$end_time_unix,$is_all_day_event,1,1,'$ts','$ts')";
             }
             //echo $sq;
             //die();
@@ -177,6 +187,10 @@ if ($accessFlag == false) {
     $res = $calGateway->listEventType($connection2);
 
 ?>
+    <link rel="stylesheet" href="<?= $baseurl; ?>/assets/libs/airdatepicker/dist/css/datepicker.min.css" type="text/css" media="all" />
+    <script src="<?= $baseurl; ?>/assets/libs/airdatepicker/dist/js/datepicker.min.js"></script>
+    <script src="<?= $baseurl; ?>/assets/libs/airdatepicker/dist/js/i18n/datepicker.en.js"></script>
+
     <script>
         $(document).ready(function() {
             <?php
@@ -302,15 +316,16 @@ if ($accessFlag == false) {
     </div>
     <!----Event Details---->
     <div class="card my-2" id='eventList'>
-        <div class="card-header">
-            <?php
-            if ($roleid == "001") {
-                echo '<button type="button" class="btn btn-primary mr-2" onclick="addEvent();"><i class="mdi mdi-plus-thick mr-1"></i> Event</button>';
-                echo '<a href=\'' . $baseurl . '/index.php?q=/modules/Calendar/event_type.php\' class="btn btn-white"><i class="mdi mdi-plus-thick mr-1"></i> Event Type</a>';
-            }
-            $events = $calGateway->listEvent($connection2);
-            ?>
-
+        <div class="row">
+            <div class="col-auto ml-auto px-4 py-3">
+                <?php
+                if ($roleid == "001") {
+                    echo '<button type="button" class="btn btn-primary mr-2" onclick="addEvent();"><i class="mdi mdi-plus-thick mr-1"></i> Event</button>';
+                    echo '<a href=\'' . $baseurl . '/index.php?q=/modules/Calendar/event_type.php\' class="btn btn-white"><i class="mdi mdi-plus-thick mr-1"></i> Event Type</a>';
+                }
+                $events = $calGateway->listEvent($connection2);
+                ?>
+            </div>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -339,8 +354,12 @@ if ($accessFlag == false) {
                         $str = "";
                         $repo = array();
                         while ($i < $len) {
-                            $sdt = date('d M Y  H:i A', $events[$i]["start_time_unix"]);
-                            $edt = date('d M Y  H:i A', $events[$i]["end_time_unix"]);
+                            $fmt = 'd M Y  H:i A';
+                            if (empty($events[$i]["start_time"])) {
+                                $fmt = 'd M Y';
+                            }
+                            $sdt = date($fmt, $events[$i]["start_time_unix"]);
+                            $edt = date($fmt, $events[$i]["end_time_unix"]);
 
                             $events[$i]['start_date'] = date('d M Y', $events[$i]["start_time_unix"]);
                             $events[$i]['end_date'] = date('d M Y', $events[$i]["end_time_unix"]);

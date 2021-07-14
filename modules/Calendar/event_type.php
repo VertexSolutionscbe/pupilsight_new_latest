@@ -1,16 +1,8 @@
 <?php
 
 use Pupilsight\Domain\Calendar\CalendarGateway;
-function getDomain()
-{
-    if (isset($_SERVER['HTTPS'])) {
-        $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != "off") ? "https" : "http";
-    } else {
-        $protocol = 'http';
-    }
-    //return $protocol . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-    return $protocol . "://" . $_SERVER['HTTP_HOST'];
-}
+
+include "core.php";
 $baseurl = getDomain();
 
 $accessFlag = true;
@@ -21,40 +13,40 @@ if ($accessFlag == false) {
     echo '</div>';
 } else {
     $roleid = $_SESSION[$guid]["pupilsightRoleIDPrimary"];
-    
+
 
     if (isset($_POST['title'])) {
 
         $title = "'" . trim($_POST['title']) . "'";
         $description = empty($_POST['description']) ? "NULL" : "'" . trim($_POST['description']) . "'";
         $color = empty($_POST['color']) ? "NULL" : "'" . trim($_POST['color']) . "'";
-        
+
         $ts = date('Y-m-d H:i:s');
         //print_r($_POST);
         try {
-            if(!empty($_POST["id"])){
+            if (!empty($_POST["id"])) {
                 //update
                 $id = $_POST["id"];
                 $sq = "update calendar_event_type set title=$title, ";
                 $sq .= " description=$description, ";
                 $sq .= " color=$color ";
-                $sq .= "where id='".$id."' ";
-            }else{
+                $sq .= "where id='" . $id . "' ";
+            } else {
                 $sq = "insert into calendar_event_type (title, description, color, cdt) 
                 values($title,$description,$color,'$ts')";
             }
             //echo $sq;
             //die();
             $connection2->query($sq);
-            
-            $res["status"]=1;
-            $res["msg"]="Event type saved successfully.";
+
+            $res["status"] = 1;
+            $res["msg"] = "Event type saved successfully.";
             $_SESSION["notify"] = $res;
 
-            header('Location: '.$_SERVER['REQUEST_URI']);
+            header('Location: ' . $_SERVER['REQUEST_URI']);
         } catch (Exception $ex) {
-            $res["status"]=2;
-            $res["msg"]=addslashes($ex->getMessage());
+            $res["status"] = 2;
+            $res["msg"] = addslashes($ex->getMessage());
             $_SESSION["notify"] = $res;
         }
 
@@ -66,13 +58,13 @@ if ($accessFlag == false) {
     <script>
         $(document).ready(function() {
             <?php
-                if(isset($_SESSION["notify"])){
-                    if($_SESSION["notify"]["status"]==1){
-                        echo "toast('success','".$_SESSION["notify"]["msg"]."');";
-                    }else{
-                        echo "toast('error',\"".$_SESSION["notify"]["msg"]."\");";
-                    }
+            if (isset($_SESSION["notify"])) {
+                if ($_SESSION["notify"]["status"] == 1) {
+                    echo "toast('success','" . $_SESSION["notify"]["msg"] . "');";
+                } else {
+                    echo "toast('error',\"" . $_SESSION["notify"]["msg"] . "\");";
                 }
+            }
             ?>
 
         });
@@ -97,7 +89,7 @@ if ($accessFlag == false) {
                         <label class="form-label">Event Description</label>
                         <textarea id="description" name="description" class="form-control" rows='6'></textarea>
                     </div>
-                    
+
                 </div>
             </form>
         </div>
@@ -108,22 +100,28 @@ if ($accessFlag == false) {
                     <button type="button" class="btn btn-secondary ml-1" onclick="cancelEventType();">Cancel</button>
                 </div>
             </div>
-            
+
         </div>
 
     </div>
     <!----EventType Details---->
     <div class="card my-2" id='eventTypeList'>
-        <div class="card-header">
-        <?php
-            $calGateway = $container->get(CalendarGateway::class);
-            $res = $calGateway->listEventType($connection2);
-            if($roleid=="001"){
-                echo '<button type="button" class="btn btn-primary" onclick="addEventType();"><i class="mdi mdi-plus-thick mr-1"></i>Event Type</button>';
-            }
-        ?>
-        
+
+        <div class="row">
+            <div class="col-auto ml-auto px-4 py-3">
+                <div class="btn-list">
+                    <?php
+                    $calGateway = $container->get(CalendarGateway::class);
+                    $res = $calGateway->listEventType($connection2);
+                    if ($roleid == "001") {
+                        echo '<button type="button" class="btn btn-primary" onclick="addEventType();"><i class="mdi mdi-plus-thick mr-1"></i>Event Type</button>';
+                        echo '<a href="' . $baseurl . '/index.php?q=/modules/Calendar/event_manage.php" class="btn btn-white"><i class="mdi mdi-plus-thick mr-1"></i>Event</a>';
+                    }
+                    ?>
+                </div>
+            </div>
         </div>
+
         <div class="card-body">
             <div class="table-responsive">
                 <table id='eventListTable' class="table card-table table-vcenter text-nowrap datatable border-bottom">
@@ -131,72 +129,72 @@ if ($accessFlag == false) {
                         <tr>
                             <th>Event Name</th>
                             <?php
-                                if($roleid=="001"){
-                                    echo "<th style='width:60px;' class='text-center'>Edit</th>";
-                                }
+                            if ($roleid == "001") {
+                                echo "<th style='width:60px;' class='text-center'>Edit</th>";
+                            }
                             ?>
                         </tr>
                     </thead>
                     <tbody>
-                    <?php
+                        <?php
                         $len = count($res);
                         $i = 0;
                         $str = "";
                         $repo = array();
-                        while($i<$len){
-                            $str .="\n<tr>";
-                            $str .="\n<td><strong>".ucwords($res[$i]["title"])."</strong><br><span class='text-muted'>".$res[$i]["description"]."</span></td>";
-                            
-                            if($roleid=="001"){
-                                $str .="\n<td><button type='button' class='btn btn-link' onclick=\"editEventType('".$res[$i]['id']."');\"><i class='mdi mdi-edit mr-2'></i>Edit</button></td>";
+                        while ($i < $len) {
+                            $str .= "\n<tr>";
+                            $str .= "\n<td><strong>" . ucwords($res[$i]["title"]) . "</strong><br><span class='text-muted'>" . $res[$i]["description"] . "</span></td>";
+
+                            if ($roleid == "001") {
+                                $str .= "\n<td><button type='button' class='btn btn-link' onclick=\"editEventType('" . $res[$i]['id'] . "');\"><i class='mdi mdi-edit mr-2'></i>Edit</button></td>";
                             }
-                            $str .="\n</tr>";
-                            $repo[$res[$i]['id']]=$res[$i];
+                            $str .= "\n</tr>";
+                            $repo[$res[$i]['id']] = $res[$i];
                             $i++;
                         }
                         echo $str;
-                    ?>  
+                        ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    
-    <?php
-    if($roleid=="001"){
-    ?>
-    <script>
-        function editEventType(id){
-            var obj = EventType[id];
-            var elements = ["id","title","description","color"];
-            var len = elements.length;
-            var i = 0;
-            while(i<len){
-                setVal(elements[i],obj);
-                i++;
-            }
-            $("#addEventType").show(400);
-            $("#eventTypeList").hide(400);
-        }
 
-        function setVal(id, obj){
-            if(!isEmpty(obj[id])){
-                $("#"+id).val(obj[id]);
+    <?php
+    if ($roleid == "001") {
+    ?>
+        <script>
+            function editEventType(id) {
+                var obj = EventType[id];
+                var elements = ["id", "title", "description", "color"];
+                var len = elements.length;
+                var i = 0;
+                while (i < len) {
+                    setVal(elements[i], obj);
+                    i++;
+                }
+                $("#addEventType").show(400);
+                $("#eventTypeList").hide(400);
             }
-        }
-    </script>
+
+            function setVal(id, obj) {
+                if (!isEmpty(obj[id])) {
+                    $("#" + id).val(obj[id]);
+                }
+            }
+        </script>
     <?php
     }
     ?>
     <script>
-        var baseurl = "<?=$baseurl;?>";
+        var baseurl = "<?= $baseurl; ?>";
         var EventType = <?php echo json_encode($repo); ?>;
         var isParamActive = false;
         var activeDownloadId = "";
 
         function isEmpty(str) {
-            return (!str || str.length === 0 );
+            return (!str || str.length === 0);
         }
     </script>
     <script>
@@ -214,12 +212,12 @@ if ($accessFlag == false) {
             $(".dataTables_length").find("select").css("display", "inline-block");
         });
 
-        function resetAddEventType(){
-            var elements = ["id","title","description","color"];
+        function resetAddEventType() {
+            var elements = ["id", "title", "description", "color"];
             var len = elements.length;
             var i = 0;
-            while(i<len){
-                $("#"+elements[i]).val("");
+            while (i < len) {
+                $("#" + elements[i]).val("");
                 i++;
             }
         }
@@ -247,7 +245,7 @@ if ($accessFlag == false) {
         function validElement(id, msg) {
             var element = $("#" + id).val();
             if (element == "") {
-                toast("error",msg);
+                toast("error", msg);
                 $("#" + id).focus();
                 return false;
             }
@@ -278,12 +276,12 @@ if ($accessFlag == false) {
     </script>
 
 <?php
-if(isset($_SESSION["notify"])){
-    if($_SESSION["notify_exec"]=="1"){
-        unset($_SESSION["notify"],$_SESSION["notify_exec"]);
-    }else{
-        $_SESSION["notify_exec"] = "1";
+    if (isset($_SESSION["notify"])) {
+        if ($_SESSION["notify_exec"] == "1") {
+            unset($_SESSION["notify"], $_SESSION["notify_exec"]);
+        } else {
+            $_SESSION["notify_exec"] = "1";
+        }
     }
-}
-//
+    //
 }

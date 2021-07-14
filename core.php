@@ -46,6 +46,19 @@ function getPost($postid)
     return NULL;
 }
 
+function sqlNullSafe($postid)
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST[$postid])) {
+        if (empty($_POST[$postid])) {
+            return "NULL";
+        } else {
+            $dt = $_POST[$postid];
+            return "'$dt'";
+        }
+    }
+    return "NULL";
+}
+
 function getIntPost($postid)
 {
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST[$postid])) {
