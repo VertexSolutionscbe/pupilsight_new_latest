@@ -192,8 +192,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
         //->sortBy(['id'])
         ->pageSize(1000)
         ->fromPOST();
+    $sketch_id = 0;
+    $sketch_gen_id = 0;
     if (isset($_POST['pupilsightYearGroupID']) && $_POST['pupilsightRollGroupID']) {
         $students_test_results = $CurriculamGateway->getTestResults($criteria, $pupilsightSchoolYearID, $pupilsightYearGroupID, $pupilsightRollGroupID, $test_id);
+
+        $sql = 'SELECT b.sketch_id, c.id FROM examinationTest AS a LEFT JOIN examinationReportSketchTemplateMaster AS b ON a.report_template_id = b.id LEFT JOIN examinationReportTemplateSketchGenerate AS c ON b.sketch_id = c.sketch_id WHERE a.id = '.$test_id.' ';
+        $result = $connection2->query($sql);
+        $skcData = $result->fetch();
+        $sketch_id = $skcData['sketch_id'];
+        $sketch_gen_id = $skcData['id'];
     } else {
         $students_test_results = array();
     }
@@ -209,11 +217,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
         <div id="divTableDataHolder">
             <a href="javascript:void(0)" class="btn btn-primary export_excel_sheet"> Export excel</a>
 
-            <?php if ($kount > 1) { ?>
-                <a href="thirdparty/phpword/reportcard_multitest.php?tid=<?php echo $testIds; ?>" class="btn btn-primary "> Download PDF</a>
+            <?php /* if ($kount > 1) { ?>
+                <a href="thirdparty/pdfgenerate/pdflib.php?id=<?php echo $sketch_id; ?>&skgid=<?php echo $sketch_gen_id; ?>&stuid=" class="btn btn-primary "> Download PDF</a>
             <?php } else { ?>
                 <a href="thirdparty/phpword/reportcard.php?tid=<?php echo $testIds; ?>" class="btn btn-primary "> Download PDF</a>
-            <?php } ?>
+            <?php } */ ?>
+
+            <button id="pdfDownload" data-hrf="thirdparty/pdfgenerate/pdflib.php?id=<?php echo $sketch_id; ?>&skgid=<?php echo $sketch_gen_id; ?>&stuid=" class="btn btn-primary "> Download PDF</button>
+            <a style="display:none" id="downloadClick" href="">Download</a>
 
 
 
@@ -327,7 +338,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
                         }
                     echo '</td>';
                     echo '<td> ';
-                    echo '<a href="thirdparty/phpword/reportcardsingle.php?tid=' . $test_id . '&stid=' . $row['stuid'] . '"><i class="mdi mdi-file-pdf mdi-24px  small_icon"></i></a>';
+                    echo '<a href="thirdparty/pdfgenerate/pdflib-single.php?id=' . $sketch_id . '&skgid=' . $sketch_gen_id . '&stuid=' . $row['stuid'] .'"><i class="mdi mdi-file-pdf mdi-24px  small_icon"></i></a>';
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -556,6 +567,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
             }
         } else {
             toast('error', 'Please Select Student!');
+        }
+    });
+
+    $(document).on('click', '#pdfDownload', function () {
+        var hrf = $(this).attr('data-hrf');
+        var favorite = [];
+        $.each($("input[name='student_id[]']:checked"), function () {
+            favorite.push($(this).val());
+        });
+        var stuid = favorite.join(",");
+        if (stuid) {
+            var newhrf = hrf+stuid;
+            $("#downloadClick").attr('href', newhrf);
+            $("#downloadClick")[0].click();
+        } else {
+            toast('error','You Have to Select Students.');
         }
     });
 </script>
