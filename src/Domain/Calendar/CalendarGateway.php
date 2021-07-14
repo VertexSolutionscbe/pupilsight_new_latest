@@ -40,9 +40,9 @@ class CalendarGateway extends QueryableGateway
         return $result->fetchAll();
     }
 
-    public function getMyEvent($con, $roleid, $uid, $schoolYearID)
+    public function getMyEvent($con, $roleid, $uid, $schoolYearID, $parentID = NULL)
     {
-        $sq = $this->_getRoleEventQuery($con, $roleid, $uid, $schoolYearID);
+        $sq = $this->_getRoleEventQuery($con, $roleid, $uid, $schoolYearID, $parentID);
         if ($sq) {
             $result = $con->query($sq);
             return $result->fetchAll();
@@ -57,8 +57,7 @@ class CalendarGateway extends QueryableGateway
         if ($roleid == 1) {
             //admin
             $sq = $this->_getAdminEventQuery();
-        }
-        if ($roleid == 2) {
+        } else if ($roleid == 2) {
             //class teacher
             $sq = $this->_getTeacherEventQuery($con, $uid, $schoolYearID);
         } else if ($roleid == 3) {
