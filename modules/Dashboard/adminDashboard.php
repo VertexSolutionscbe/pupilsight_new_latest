@@ -1,30 +1,6 @@
 <?php 
 session_start();
 error_reporting(0);
-include("dbinfo.php");
-require_once '../../pupilsight.php';
-$_SESSION[$guid]['pupilsightRoleIDPrimary'];
-$cuid=trim($_SESSION[$guid]['pupilsightPersonID']);
-$yearid=$_SESSION[$guid]['pupilsightSchoolYearID'];
-
-
-$sql = "SELECT pupilsightPerson.*, futureYearsLogin, pastYearsLogin FROM pupilsightPerson LEFT JOIN pupilsightRole ON (pupilsightPerson.pupilsightRoleIDPrimary=pupilsightRole.pupilsightRoleID) WHERE (pupilsightPersonID='".$cuid."')";
-$Esi=mysqli_query($conn,$sql);
-$Fsi=mysqli_fetch_array($Esi);
-
-$sqlf = 'SELECT pupilsightFamilyID FROM pupilsightFamilyAdult WHERE pupilsightPersonID= ' . $cuid . ' ';
-$Esqlf=mysqli_query($conn,$sqlf);
-$Fsqlf=mysqli_fetch_array($Esqlf);
-$pupilsightFamilyID=$Fsqlf['pupilsightFamilyID'];
-
-$childs = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1 FROM pupilsightFamilyChild AS a LEFT JOIN pupilsightPerson AS b 
-ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightFamilyID = ' . $pupilsightFamilyID . ' AND a.pupilsightPersonID != "" ';
-$Echilds=mysqli_query($conn,$childs);
-
-$EchildsDetails=mysqli_query($conn,$childs);
-$Fchilds=mysqli_fetch_array($EchildsDetails);
-$_SESSION['ChildName']=$Fchilds['officialName'];
-$_SESSION['ChildId']=$Fchilds['pupilsightPersonID'];
 
 
  ?>
@@ -50,6 +26,7 @@ $_SESSION['ChildId']=$Fchilds['pupilsightPersonID'];
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"> </script>
     	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 	<link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+	<link href='https://fonts.googleapis.com/css?family=DM Sans' rel='stylesheet'>
     <style type="text/css">
     
     
@@ -166,232 +143,69 @@ $_SESSION['ChildId']=$Fchilds['pupilsightPersonID'];
 
 .modelbody:hover{overflow-y:auto;}
 		
+@media only screen and (max-width: 600px) {
+    .aside1{
+     padding:70px;
+    }
 
+}
 		
-.parentArea{
-font-family: Poppins;
-font-style: normal;
-font-weight: bold;
-font-size: 16px;
-line-height: 28px;
-/* or 175% */
-color: #43484B;
-}
-.rahulare{
-font-family: Roboto;
-font-style: normal;
-font-weight: 900;
-font-size: 30px;
-line-height: 35px;
-letter-spacing: 0.1px;
-color: #000000;
-}
-.selectChildarea{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 18px;
-line-height: 21px;
-letter-spacing: 0.1px;
-}
-.childNameArea{
-font-family: Poppins;
-font-style: normal;
-font-weight: bold;
-font-size: 16px;
-line-height: 28px;
-}
-.todayArea{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 24px;
-line-height: 28px;
-letter-spacing: 0.1px;
-color: #000000;
-}
-
-.subjectArea{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 16px;
-line-height: 19px;
-letter-spacing: 0.1px;
-color: #44444F;
-}
-.subjectContentArea{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 14px;
-line-height: 24px;
-letter-spacing: 0.1px;
-color: #92929D;
-
-}
-.discover{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 24px;
-line-height: 28px;
-letter-spacing: 0.1px;
-color: #000000;
-/*width: 408px;
-left: 126px;
-top: 1206px;*/
-
-}
-.discoverimageContent{
-font-family: Poppins;
-font-style: normal;
-font-weight: 600;
-font-size: 12px;
-line-height: 18px;
-color: #171725;
-text-align:center;
-
-}
-.eventInvitation{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 12px;
-line-height: 14px;
-color: #0062FF;
-}
-.someHeadingContent{
-font-family: Poppins;
-font-style: normal;
-font-weight: 600;
-font-size: 14px;
-line-height: 22px;
-letter-spacing: 0.1px;
-color: #171725;
-}
-.someHeadingdown{
-font-family: Poppins;
-font-style: normal;
-font-weight: 600;
-font-size: 14px;
-line-height: 22px;
-letter-spacing: 0.1px;
-color: grey;
-}
-.someHeadingdown1{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 14px;
-line-height: 22px;
-letter-spacing: 0.1px;
-color: #44444F;
-}
-.someHeadingdown2{
-font-family: Roboto;
-font-style: normal;
-font-weight: bold;
-font-size: 12px;
-line-height: 14px;
-color: #92929D;
-}
-.someHeadingdown3{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 12px;
-line-height: 14px;
-color: #FC5A5A;
-}
-.timePeriodArea{
-font-family: Poppins;
-font-style: normal;
-font-weight: 600;
-font-size: 12px;
-line-height: 18px;
-letter-spacing: 0.1px;
-color: #171725;
-}
-.dayArea{
-font-family: Poppins;
-font-style: normal;
-font-weight: 600;
-font-size: 12px;
-line-height: 18px;
-text-align: center;
-letter-spacing: 0.857143px;
-text-transform: uppercase;
-color: #92929D;
-}
-.monthArea{
-font-family: Poppins;
-font-style: normal;
-font-weight: 600;
-font-size: 18px;
-line-height: 27px;
-letter-spacing: 0.1px;
-color: #171725;
-}
-.dateArea{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 16px;
-line-height: 52px;
-text-align: center;
-}
-.chatHeadArea1{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 12px;
-line-height: 14px;
-color: #0062FF;
-}
-.chatHeadArea2{
-font-family: Poppins;
-font-style: normal;
-font-weight: 600;
-font-size: 14px;
-line-height: 22px;
-letter-spacing: 0.1px;
-color: #171725;
-}
-.chatDaysArea{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 14px;
-line-height: 16px;
-letter-spacing: 0.1px;
-color: #92929D;
-}
-.chatSubjectArea{
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 14px;
-line-height: 22px;
-letter-spacing: 0.1px;
-color: #44444F;
-
-}
 .overall{
 font-family: DM Sans;
 font-style: normal;
 font-weight: bold;
 font-size: 16px;
 line-height: 22px;
-/* identical to box height, or 137% */
-
 letter-spacing: -0.4px;
-
-/* Black/B100 */
-
 color: #171717;
+}
+.cardContent1{
+font-family: DM Sans;
+font-style: normal;
+font-weight: bold;
+font-size: 30px;
+line-height: 36px;
+text-align: center;
+letter-spacing: -0.4px;
+}
+.cardContent2{
+font-family: DM Sans;
+font-style: normal;
+font-weight: bold;
+font-size: 16px;
+line-height: 18px;
+text-align: center;
+color: #8F92A1;
+}
+.row2CardHead{
+font-family: Poppins;
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+line-height: 24px;
+letter-spacing: 0.1px;
+color: #171725;
+}
+.row2CardSubHead{
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+line-height: 16px;
+letter-spacing: 0.1px;
+color: #696974;
+}
+.row2CardimageSubHead{
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+line-height: 16px;
+letter-spacing: 0.1px;
+color: #696974;
 
 }
+
     </style>
     <link rel="stylesheet" href="app.css">
 	
@@ -440,19 +254,91 @@ $.ajax({
 
 	<div id="populate" name="populate">
 
+    <div class="container mt-4 " style="background-color: #F9FAFA;height:1170px; border-radius: 20px" >
+	<p class="overall" style="padding-top:20px">OVERALL - HOME</p>
 	
-    <div class="container mt-4 " style="background-color: #E5E5E5;height:1170px; border-radius: 20px;" >
-	<p class="overall">OVERALL - HOME</p>
-        <div class="row" style="width:100%">
-
-            <div class="col-sm-6 " id="myScrollspy">
-               <img src="./images/Row 1.png"></img>
-            </div>
-         
-        </div>
+	<div class="row" style="padding-left:15px">
+	
+	<div style="height:218px;width:262px;background-color:#FFFFFF;border-radius:20px">
+	<div style="text-align:center;padding-top:10%"><img  src="./images/adminCard1-icon.png"></img></div>
+	<div class="cardContent1" style="margin-top:20px">44</div>
+	<div class="cardContent2" style="margin-top:10px">MY SCHOOL</div>
+	</div>
+	
+	<div style="height:218px;width:262px;background-color:#FFFFFF;border-radius:20px;margin-left:20px">
+	<div style="height:218px;width:262px;background-color:#FFFFFF;border-radius:20px">
+	<div style="text-align:left;padding-top:10%;padding-left:10%"><img  src="./images/adminCard1-icon2.png"></img></div>
+	<div class="cardContent1" style="margin-top:20px">44</div>
+	<div class="cardContent2" style="margin-top:10px">ADMISSION</div>
+	</div>
+	</div>	
+	
+	<div style="height:218px;width:262px;background-color:#FFFFFF;border-radius:20px;margin-left:20px">
+	<div style="height:218px;width:262px;background-color:#FFFFFF;border-radius:20px">
+	<div style="text-align:left;padding-top:10%;padding-left:10%"><img  src="./images/adminCard1-icon3.png"></img></div>
+	<div class="cardContent1" style="margin-top:20px">44</div>
+	<div class="cardContent2" style="margin-top:10px">FEE COLLECTION</div>
+	</div>
+	</div>
+	
+	<div style="height:218px;width:262px;background-color:#FFFFFF;border-radius:20px;margin-left:20px">
+	<div style="height:218px;width:262px;background-color:#FFFFFF;border-radius:20px">
+	<div style="text-align:left;padding-top:10%;padding-left:10%"><img  src="./images/adminCard1-icon4.png"></img></div>
+	<div class="cardContent1" style="margin-top:20px">44</div>
+	<div class="cardContent2" style="margin-top:10px">STAFF INFORMATION</div>
+	</div>
+	</div>
+	
     </div>
+	
+	<div style="width:625px;height:218px;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:20px">
+	<div class="row2CardHead" style="padding-top:20px">Academic Performance</div>	
+	<div class="row2CardSubHead "style="padding-top:10px">2017-2018</div>
+	<div class="row">
+	<div class="col-2"><img style="margin-left:15px;margin-top:20px" src="./images/r2c1img1.png"></img></div> 
+	<div class="col-2 col-md2" style="margin-top:30px">
+	<span class="row2CardHead aside1" >68</span> <br> 
+	<span class="row2CardimageSubHead aside1" >Avg Score</span>
+	</div>
+		
+	<div class="col-2"><img style="margin-left:15px;margin-top:20px" src="./images/r2c1img2.png"></img></div>      
+	<div class="col-2 col-md2" style="margin-top:30px">
+	<span class="row2CardHead aside1" >87</span> <br> 
+	<span class="row2CardimageSubHead aside1" >Max Score</span>
+	</div>
+	
+	<div class="col-2"><img style="margin-left:15px;margin-top:20px" src="./images/r2c1img3.png"></img></div>                   
+	<div class="col-2 col-md2" style="margin-top:30px">
+	<span class="row2CardHead aside1" >08</span> <br> 
+	<span class="row2CardimageSubHead aside1" >Min Score</span>
+	</div>
+	</div>
+	</div>
+	
+	<div style="width:625px;height:218px;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:20px">
+	<div class="row2CardHead" style="padding-top:20px">Student Performance trends</div>	
+	<div class="row2CardSubHead "style="padding-top:10px">2017-2018</div>
+	<div class="row">
+	<div class="col-2"><img style="margin-left:15px;margin-top:20px" src="./images/Challenge Medal.png"></img></div> 
+	<div class="col-2 col-md2" style="margin-top:30px">
+	<span class="row2CardHead aside1" >Habitual Performar</span> <br> 
+	</div>
+		
+	<div class="col-2"><img style="margin-left:15px;margin-top:20px" src="./images/Top Student.png"></img></div>      
+	<div class="col-2 col-md2" style="margin-top:30px">
+	<span class="row2CardHead aside1" >Rising Stars</span>
+	</div>
+	
+	<div class="col-2"><img style="margin-left:15px;margin-top:20px" src="./images/r3c1img3.png"></img></div>                   
+	<div class="col-2 col-md2" style="margin-top:30px">
+	<span class="row2CardHead aside1" >Needs attention</span>
+	</div>
+	</div>
+	</div>
+	
 
-			</div> <!--Populate End -->
+	</div>
+	</div><!--Populate End -->
 
            
             

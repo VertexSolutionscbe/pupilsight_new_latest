@@ -433,6 +433,7 @@ color: #44444F;
   border: 1px solid rgba(110, 117, 130, 0.2);
   border-radius: 3px;
 }
+
     </style>
     <link rel="stylesheet" href="app.css">
 	
@@ -804,7 +805,7 @@ $.ajax({
 
 			 // $location="https://testchristacademy.pupilpod.net/index.php?q=";
 			 // $location="https://testvptnk12.pupilpod.net/index.php?q=";
-			 $location="https://localhost/newcode/pupilsight_new/index.php?q=";
+			 $location="http://localhost/newcode/pupilsight_new/index.php?q=";
 			 ?>
             <div class="row">
                 <div class="col" style="text-align:center"><a href="<?php echo $location; ?>/modules/Students/student_view_details.php&pupilsightPersonID=<?php echo $_SESSION['ChildId']; ?>"><img style="height: 61px; width: 62px;" src="./images/timtable.png"></img></a> <br><span class="discoverimageContent" style="text-align:center">Timetable</span></a></div> 
@@ -953,8 +954,79 @@ $.ajax({
                     </div>
 					
 					
+					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
+                    <div class="col">
+					<div class="row mt-4">
+                    <div class="col-11 col-md12 "><span class="chatHeadArea1">Chat1</span></div>
+                    </div>
+					<hr style="width:100%;text-align:left;margin-left:0">
+					
+					<?php 
+					$uid='4727';
+					$st="SELECT count(cm.msg) as msgcount,cm.tag,cm.tagid FROM chat_share cs left join chat_message cm on cs.chat_msg_id=cm.id where uid='$uid' group by tagid ";
+					$Est=mysqli_query($conn,$st);
+					$i=0;
+					while($FEst=mysqli_fetch_array($Est))
+					{
+						$i++;
+					?>
+					<div class="row mt-4">
+					
+                    <div class="col-8 col-md8 "><span class="chatHeadArea2"><?php echo $FEst['tag']; ?></span></div>
+                    <div class="col-3 col-md8 " style="float:right">					
+					<div style="float:right">
+					<?php 
+					 $tagid=$FEst['tagid'];
+					 $scd="SELECT cs.*,cm.msg,cm.tag,cm.tagid,cs.cdt,date_format(cm.cdt,'%Y-%m-%d') as cdate FROM chat_share cs left join chat_message cm on cs.chat_msg_id=cm.id where uid='$uid' AND tagid='$tagid'";
+					 $Escd=mysqli_query($conn,$scd);
+					 $FEscd=mysqli_fetch_array($Escd);
+					 
+					  $date1=$FEscd['cdate'];
+					 $date2=date('Y-m-d');
+					 
+					 
+					$days = (strtotime($date2) - strtotime($date1)) / (60 * 60 * 24);
+					
+					?>
+                    <div > <span class="chatDaysArea daysAgo"> <?php echo $days;  ?> days ago </span> <button  class="btn btn-bprimary rounded-circle btn-sm" data-toggle="collapse" data-target="#demo<?php echo $i; ?>" style="background-color:#2F80ED;color:#FFFFFF;height:50px;width:50px"><?php echo $FEst['msgcount']; ?></button></div>
+                    </div>					
+					</div>
+					
+					
+                    </div>	
+					<div id="demo<?php echo $i; ?>" class=" collapse " >
+					<?php 
+					$rmsg="SELECT cs.*,cm.msg,cm.tag,cm.tagid,date_format(cm.cdt,'%Y-%m-%d') as cdate FROM chat_share cs left join chat_message cm on cs.chat_msg_id=cm.id where uid='$uid' and cm.tagid='$tagid' ";
+					$Ermsg=mysqli_query($conn,$rmsg);
+					while($Frmsg=mysqli_fetch_array($Ermsg))
+					{
+					?>
+					<hr style="width:100%;text-align:left;margin-left:0"> 					
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Frmsg['msg']; ?> </span></div></a>
+					<?php } ?>
+					</div>
+					<?php } ?>
+					
+					
+					
+																
+					 
+					</div>
+					
+					
+					
+					
+					
+					<div class="col-12 col-md6 " >
+					<div  style="float:right;margin-bottom:10px;margin-top:20px;margin-right:10px"> 					   
+					   <button type="button" class="btn btn-warning btn-sm" style="color:white" data-toggle="collapse" data-target="#smsenlarge" >View Details</button>
+                    </div> 
+					</div>
+                    </div>
+					
+					
 				                   
-                    <div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
+                    <div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px" hidden>
                     <div class="col">
 						<?php 
 						
@@ -1478,18 +1550,19 @@ $FEq3=mysqli_fetch_array($Eq3);
 					
 					<hr style="width:100%;text-align:left;margin-left:0">
 					
-         
-       
-					<div class="row mt-2">
-                    <div class="col-8 col-md4 "> <span class="someHeadingdown1">Total Sessions : <?php echo $totalSession; ?></span> </div>
-					<div class="col-8 col-md4 "> <span class="someHeadingdown1">Total Present : <?php echo $totalPresent; ?></span> </div>
-					<div class="col-8 col-md4 "> <span class="someHeadingdown1">Total Absent : <?php echo $totalAbsent; ?></span> </div>
-					<div class="col-8 col-md4 "> <span class="someHeadingdown1">Attendance % : <?php 
-					$tt=($totalPresent/$totalSession)*100;
-					echo $tt; ?></span> </div>
+					<div  style="text-align:center;padding-bottom:20px" width="100%">
+					<div class="someHeadingdown1" style="width:100%;font-size:24px"> 
+					Attendance Percentage : <?php $tt=($totalPresent/$totalSession)*100;echo $tt; ?> %
+					</div>
+					</div>
+					<div class="row mt-2" width="100%" >
+                    <div class="col-3 col-md2 "> <span  class="someHeadingdown1">Classes: <?php echo $totalSession; ?></span> </div>
+					<div class="col-3 col-md2 "> <span class="someHeadingdown1">Present : <?php echo $totalPresent; ?></span> </div>
+					<div class="col-2 col-md2 "> <span class="someHeadingdown1">Absent : <?php echo $totalAbsent; ?></span> </div>
+					
                     </div> 
 
-                    <div  style="float:right;margin-bottom:10px;margin-top:20px;margin-right:10px"> 
+                    <div  style="float:right;margin-bottom:10px;margin-top:20px;margin-right:10px" > 
 					  <a href="<?php echo $location; ?>/modules/Attendance/report_studentHistory.php"><img src="./images/view_details.png"></img></a> 
                     </div>                    
 
