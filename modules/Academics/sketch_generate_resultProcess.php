@@ -1799,7 +1799,7 @@ function getStudentMarksDataBySkill($connection2, $testid, $pupilsightPersonIDs 
 
     $dt = array();
     try {
-        $sqlmarks = 'SELECT a.pupilsightDepartmentID, a.skill_id, b.subject_display_name, b.subject_type, c.name as skill_name FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN ac_manage_skill AS c ON a.skill_id = c.id WHERE a.skill_id != "0" AND a.is_tested = "1" AND a.test_id = ' . $testid . '  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY a.pupilsightDepartmentID, a.skill_id ORDER BY b.pos ASC ';
+        $sqlmarks = 'SELECT a.pupilsightDepartmentID, a.skill_id, b.subject_display_name, b.subject_type, c.name as skill_name FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN ac_manage_skill AS c ON a.skill_id = c.id WHERE a.skill_id != "0" AND a.is_tested = "1" AND a.test_id = ' . $testid . '  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY a.pupilsightDepartmentID, a.skill_id ORDER BY b.pos ASC, c.id ASC ';
         $resultsub = $connection2->query($sqlmarks);
         $allSubjects = $resultsub->fetchAll();
         if(!empty($allSubjects)){
