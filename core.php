@@ -149,3 +149,31 @@ function get2Char($string)
     }
     return $firstTwoCharacters;
 }
+
+//fileAttachment("attachment",'/public/chat/');
+function fileAttachment($attach_file, $file_location)
+{
+    $attachment = NULL;
+    if (isset($_FILES[$attach_file]) && $_FILES[$attach_file]['error'] == 0) {
+        try {
+            $filename = $_FILES[$attach_file]['name'];
+            $filetype = $_FILES[$attach_file]['type'];
+            $filesize = $_FILES[$attach_file]['size'];
+
+            // Verify file extension
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+
+            //$filename = time() . "_" . $_FILES["attachment"]["name"];
+            $fn = time() . '_' . preg_replace('/[^a-z0-9\_\-\.]/i', '', basename($filename));
+            //$fileTarget = $_SERVER['DOCUMENT_ROOT'] . '/public/chat/' . $fn;
+            //$attachment = '/public/chat/' . $fn;
+            $fileTarget = $_SERVER['DOCUMENT_ROOT'] . $file_location . $fn;
+            $attachment = $file_location . $fn;
+            move_uploaded_file($_FILES[$attach_file]['tmp_name'], $fileTarget);
+        } catch (Exception $ex) {
+            $result['status'] = 2;
+            $result['msg'] = 'Exception: ' . $ex->getMessage();
+        }
+    }
+    return $attachment;
+}

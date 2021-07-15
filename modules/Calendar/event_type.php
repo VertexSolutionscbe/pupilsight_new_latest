@@ -69,46 +69,39 @@ if ($accessFlag == false) {
 
         });
     </script>
-    <div class="card my-2" id='addEventType'>
-        <div class="card-header">
-            <h2>Add / Modify Event Type</h2>
-        </div>
-        <div class="card-body">
-            <form id="eventTypeForm" action="" class="needs-validation" novalidate="" method="post" autocomplete="off">
-                <div class="row">
-                    <div class="col-md-10 mt-2">
-                        <label class="form-label required">Event Title</label>
-                        <input type="hidden" id="id" name="id" value="">
-                        <input type="text" id="title" name="title" class="form-control" value="" required>
-                    </div>
-                    <div class="col-md-2 mt-2">
-                        <label class="form-label">Event Color</label>
-                        <input type="color" id="color" name="color" class="form-control form-control-color" value="">
-                    </div>
-                    <div class="col-12 mt-2">
-                        <label class="form-label">Event Description</label>
-                        <textarea id="description" name="description" class="form-control" rows='6'></textarea>
-                    </div>
 
-                </div>
-            </form>
-        </div>
-        <div class="card-footer">
+    <!-- Manage Event Type--->
+    <div class="my-2" id='addEventType'>
+        <form id="eventTypeForm" action="" class="needs-validation" novalidate="" method="post" autocomplete="off">
             <div class="row">
-                <div class="col-12 my-3">
-                    <button type="button" class="btn btn-primary" onclick="validate();">Save</button>
-                    <button type="button" class="btn btn-secondary ml-1" onclick="cancelEventType();">Cancel</button>
+                <div class="col-md-10 mt-2">
+                    <label class="form-label required">Event Title</label>
+                    <input type="hidden" id="id" name="id" value="">
+                    <input type="text" id="title" name="title" class="form-control" value="" required>
                 </div>
+                <div class="col-md-2 mt-2">
+                    <label class="form-label">Event Color</label>
+                    <input type="color" id="color" name="color" class="form-control form-control-color" value="">
+                </div>
+                <div class="col-12 mt-2">
+                    <label class="form-label">Event Description</label>
+                    <textarea id="description" name="description" class="form-control" rows='6'></textarea>
+                </div>
+
             </div>
-
-        </div>
-
-    </div>
-    <!----EventType Details---->
-    <div class="card my-2" id='eventTypeList'>
-
+        </form>
         <div class="row">
-            <div class="col-auto ml-auto px-4 py-3">
+            <div class="col-12 my-3">
+                <button type="button" class="btn btn-primary" onclick="validate();">Save</button>
+                <button type="button" class="btn btn-secondary ml-1" onclick="cancelEventType();">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!----EventType Details---->
+    <div class="" id='eventTypeList'>
+        <div class="row">
+            <div class="col-auto ml-auto px-4 pb-4">
                 <div class="btn-list">
                     <?php
                     $calGateway = $container->get(CalendarGateway::class);
@@ -122,41 +115,39 @@ if ($accessFlag == false) {
             </div>
         </div>
 
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id='eventListTable' class="table card-table table-vcenter text-nowrap datatable border-bottom">
-                    <thead>
-                        <tr>
-                            <th>Event Name</th>
-                            <?php
-                            if ($roleid == "001") {
-                                echo "<th style='width:60px;' class='text-center'>Edit</th>";
-                            }
-                            ?>
-                        </tr>
-                    </thead>
-                    <tbody>
+        <div class="table-responsive">
+            <table id='eventListTable' class="table card-table table-vcenter text-nowrap datatable border-bottom">
+                <thead>
+                    <tr>
+                        <th>Event Name</th>
                         <?php
-                        $len = count($res);
-                        $i = 0;
-                        $str = "";
-                        $repo = array();
-                        while ($i < $len) {
-                            $str .= "\n<tr>";
-                            $str .= "\n<td><strong>" . ucwords($res[$i]["title"]) . "</strong><br><span class='text-muted'>" . $res[$i]["description"] . "</span></td>";
-
-                            if ($roleid == "001") {
-                                $str .= "\n<td><button type='button' class='btn btn-link' onclick=\"editEventType('" . $res[$i]['id'] . "');\"><i class='mdi mdi-edit mr-2'></i>Edit</button></td>";
-                            }
-                            $str .= "\n</tr>";
-                            $repo[$res[$i]['id']] = $res[$i];
-                            $i++;
+                        if ($roleid == "001") {
+                            echo "<th style='width:60px;' class='text-center'>Edit</th>";
                         }
-                        echo $str;
                         ?>
-                    </tbody>
-                </table>
-            </div>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $len = count($res);
+                    $i = 0;
+                    $str = "";
+                    $repo = array();
+                    while ($i < $len) {
+                        $str .= "\n<tr>";
+                        $str .= "\n<td><strong>" . ucwords($res[$i]["title"]) . "</strong><br><span class='text-muted'>" . $res[$i]["description"] . "</span></td>";
+
+                        if ($roleid == "001") {
+                            $str .= "\n<td><button type='button' class='btn btn-link' onclick=\"editEventType('" . $res[$i]['id'] . "');\"><i class='mdi mdi-edit mr-2'></i>Edit</button></td>";
+                        }
+                        $str .= "\n</tr>";
+                        $repo[$res[$i]['id']] = $res[$i];
+                        $i++;
+                    }
+                    echo $str;
+                    ?>
+                </tbody>
+            </table>
         </div>
     </div>
 

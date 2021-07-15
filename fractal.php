@@ -97,7 +97,7 @@ function getStudentDetails($con, $uid)
 function getTeacherList($con)
 {
     try {
-        $sq = "SELECT a.pupilsightPersonID as teacherid, a.officialName, a.email, 
+        $sq = "SELECT a.pupilsightPersonID as teacherid, a.officialName, a.email, a.pupilsightRoleIDPrimary as role_id,roles.name as role_name,
         c.name as program , d.name AS class, e.name as section, group_concat(sub.name) as subjects
         FROM pupilsightPerson AS a 
         LEFT JOIN pupilsightStaff AS s ON a.pupilsightPersonID=s.pupilsightPersonID 
@@ -106,6 +106,7 @@ function getTeacherList($con)
         LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID=d.pupilsightYearGroupID 
         LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID=e.pupilsightRollGroupID 
         LEFT JOIN pupilsightDepartment AS sub ON b.pupilsightdepartmentID=sub.pupilsightdepartmentID 
+        LEFT JOIN pupilsightRole AS roles ON roles.pupilsightRoleID=a.pupilsightRoleIDPrimary 
         WHERE a.pupilsightRoleIDPrimary in(2,6,34,35)
         GROUP BY a.pupilsightPersonID ORDER BY a.pupilsightPersonID DESC";
         $query = $con->query($sq);
@@ -120,7 +121,8 @@ function getTeacherDetails($con, $uid)
 {
     try {
         $sq = "SELECT a.pupilsightPersonID as teacherid, a.officialName, a.email, 
-        c.name as program , d.name AS class, e.name as section, group_concat(sub.name) as subjects
+        c.name as program , d.name AS class, e.name as section, group_concat(sub.name) as subjects,
+        a.pupilsightRoleIDPrimary as role_id,roles.name as role_name
         FROM pupilsightPerson AS a 
         LEFT JOIN pupilsightStaff AS s ON a.pupilsightPersonID=s.pupilsightPersonID 
         LEFT JOIN assignstaff_tosubject AS b ON a.pupilsightPersonID=b.pupilsightStaffID 
@@ -128,6 +130,7 @@ function getTeacherDetails($con, $uid)
         LEFT JOIN pupilsightYearGroup AS d ON b.pupilsightYearGroupID=d.pupilsightYearGroupID 
         LEFT JOIN pupilsightRollGroup AS e ON b.pupilsightRollGroupID=e.pupilsightRollGroupID 
         LEFT JOIN pupilsightDepartment AS sub ON b.pupilsightdepartmentID=sub.pupilsightdepartmentID 
+        LEFT JOIN pupilsightRole AS roles ON roles.pupilsightRoleID=a.pupilsightRoleIDPrimary 
         WHERE a.pupilsightPersonID='" . $uid . "'
         GROUP BY a.pupilsightPersonID ORDER BY a.pupilsightPersonID DESC";
         $query = $con->query($sq);

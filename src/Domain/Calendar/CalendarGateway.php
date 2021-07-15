@@ -147,6 +147,7 @@ class CalendarGateway extends QueryableGateway
             //for parent request
             $sq .= " es.uid='" . $uid . "' or es.uid='" . $parentID . "' or (e.tagid in('all','all_students','all_parents','" . $schoolYear . "','" . $sectionid . "','" . $classid . "','" . $programID . "')) ";
         }
+
         //echo $sq;
         return $sq;
     }

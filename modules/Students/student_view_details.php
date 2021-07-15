@@ -691,7 +691,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             //     (SELECT DISTINCT surname, preferredName, email FROM pupilsightPerson JOIN pupilsightYearGroup ON (pupilsightYearGroup.pupilsightPersonIDHOY=pupilsightPersonID) WHERE status='Full' AND pupilsightYearGroupID=:pupilsightYearGroupID)
                             //     ORDER BY preferredName, surname, email";
 
-                            
+
                             $dataDetail = array('pupilsightSchoolYearID' => $row['pupilsightSchoolYearID'], 'pupilsightProgramID' => $row['pupilsightProgramID'], 'pupilsightYearGroupID' => $row['pupilsightYearGroupID'], 'pupilsightRollGroupID' => $row['pupilsightRollGroupID']);
                             $sqlDetail = 'SELECT b.officialName, b.preferredName, b.surname, b.email FROM assign_class_teacher_section AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.status="Full" AND a.pupilsightSchoolYearID=:pupilsightSchoolYearID AND a.pupilsightProgramID=:pupilsightProgramID AND a.pupilsightYearGroupID=:pupilsightYearGroupID AND a.pupilsightRollGroupID=:pupilsightRollGroupID ';
 
@@ -705,19 +705,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '<h3>Class Teacher</h3>';
                             echo '<ul>';
                             while ($rowDetail = $resultDetail->fetch()) {
-                                 echo '<li>' . htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
+                                echo '<li>' . htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
 
                                 //echo '<li>' . htmlPrep(Format::name('', $rowDetail['officialName'], 'Student', false));
-                                if ($rowDetail['email'] != '') {
+                                /*if ($rowDetail['email'] != '') {
                                     echo htmlPrep(' <' . $rowDetail['email'] . '>');
-                                }
+                                }*/
                                 echo '</li>';
                             }
                             echo '</ul>';
                         }
 
                         try {
-                            
+
                             $dataDetail = array('pupilsightSchoolYearID' => $row['pupilsightSchoolYearID'], 'pupilsightProgramID' => $row['pupilsightProgramID'], 'pupilsightYearGroupID' => $row['pupilsightYearGroupID'], 'pupilsightRollGroupID' => $row['pupilsightRollGroupID']);
                             $sqlDetail = 'SELECT b.officialName, b.preferredName, b.surname, b.email, su.subject_display_name FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS s ON a.pupilsightStaffID = s.pupilsightStaffID LEFT JOIN pupilsightPerson AS b ON s.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN subjectToClassCurriculum AS su ON a.pupilsightDepartmentID = su.pupilsightDepartmentID AND a.pupilsightSchoolYearID= su.pupilsightSchoolYearID AND a.pupilsightProgramID= su.pupilsightProgramID AND a.pupilsightYearGroupID= su.pupilsightYearGroupID WHERE b.status="Full" AND a.pupilsightSchoolYearID=:pupilsightSchoolYearID AND a.pupilsightProgramID=:pupilsightProgramID AND a.pupilsightYearGroupID=:pupilsightYearGroupID AND a.pupilsightRollGroupID=:pupilsightRollGroupID ';
 
@@ -731,12 +731,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '<h3>Subject Teacher</h3>';
                             echo '<ul>';
                             while ($rowDetail = $resultDetail->fetch()) {
-                                 echo '<li>' . htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
+                                echo '<li>' . htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
 
-                                echo ' ('.$rowDetail['subject_display_name'].') ';
-                                if ($rowDetail['email'] != '') {
+                                echo ' (' . $rowDetail['subject_display_name'] . ') ';
+                                /*if ($rowDetail['email'] != '') {
                                     echo htmlPrep(' <' . $rowDetail['email'] . '>');
-                                }
+                                }*/
                                 echo '</li>';
                             }
                             echo '</ul>';

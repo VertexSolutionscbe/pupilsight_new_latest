@@ -1433,6 +1433,7 @@ if (!$session->has("address")) {
                         ->get(Pupilsight\UI\Dashboard\ParentDashboard::class)
                         ->getOutput()
                 );
+
                 break;
             case "Student":
                 $page->write(

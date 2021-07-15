@@ -219,105 +219,111 @@ if ($accessFlag == false) {
             min-height: 36px !important;
         }
     </style>
-    <div class="card my-2" id='addEvent'>
-        <div class="card-header">
-            <h2>Add / Modify Event</h2>
-        </div>
-        <div class="card-body">
-            <form id="EventForm" action="" class="needs-validation" novalidate="" method="post" autocomplete="off">
-                <div class="row">
-                    <div class="col-md-12 mt-2">
-                        <label class="form-label required">Event Title</label>
-                        <input type="hidden" id="id" name="id" value="">
-                        <input type="text" id="title" name="title" class="form-control" value="" required>
-                    </div>
 
-                    <div class="col-12 mt-2">
-                        <label class="form-label">Event Details</label>
-                        <textarea id="details" name="details" class="form-control smarteditor" style='resize: none;margin: 0;'></textarea>
-                    </div>
+    <!---Manage Events--->
+    <div class="my-2" id='addEvent'>
+        <form id="EventForm" action="" class="needs-validation" novalidate="" method="post" autocomplete="off">
+            <div class="row">
+                <div class="col-md-12 mt-2">
+                    <label class="form-label required">Event Title</label>
+                    <input type="hidden" id="id" name="id" value="">
+                    <input type="text" id="title" name="title" class="form-control" value="" required>
+                </div>
 
-                    <div class="col-md-4 col-sm-12 mt-3">
-                        <label class="form-label required">Select Event Type</label>
-                        <select class="form-control" name='event_type_id' id='event_type_id' required>
-                            <option value=""></option>
-                            <?php
-                            $len = count($res);
-                            $i = 0;
-                            while ($i < $len) {
-                                echo "\n<option value='" . $res[$i]["id"] . "'>" . $res[$i]["title"] . "</option>";
-                                $i++;
-                            }
-                            ?>
-                        </select>
-                    </div>
+                <div class="col-12 mt-2">
+                    <label class="form-label">Event Details</label>
+                    <textarea id="details" name="details" class="form-control smarteditor" style='resize: none;margin: 0;'></textarea>
+                </div>
 
-                    <div class="col-md-8 col-sm-12 mt-3">
-                        <label class="form-label">Event Location</label>
-                        <input type="text" id="location" name="location" class="form-control" value="" required>
-                    </div>
+                <div class="col-md-2 col-sm-12 mt-3">
+                    <label class="form-label required">Select Event Type</label>
+                    <select class="form-control" name='event_type_id' id='event_type_id' required>
+                        <option value="">Select</option>
+                        <?php
+                        $len = count($res);
+                        $i = 0;
+                        while ($i < $len) {
+                            echo "\n<option value='" . $res[$i]["id"] . "'>" . $res[$i]["title"] . "</option>";
+                            $i++;
+                        }
+                        ?>
+                    </select>
+                </div>
 
-                    <!--New Row for Date and Time--->
-                    <div class="col-md-2 col-sm-12 mt-3">
-                        <label class="form-label">&nbsp;</label>
-                        <label class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="is_all_day_event" name="is_all_day_event" onchange="addDayEventChange();">
-                            <span class="form-check-label">IS All Day Event</span>
-                        </label>
-                    </div>
+                <div class="col-md-4 col-sm-12 mt-3">
+                    <label class="form-label">Event Location</label>
+                    <input type="text" id="location" name="location" class="form-control" value="" required>
+                </div>
 
-                    <div class="col-md-2 col-sm-12 mt-2">
-                        <label class="form-label required">Start Date</label>
-                        <div class="input-icon">
-                            <input type="text" class="form-control mt-2 formCheck" id="start_date" name="start_date" value="" data-date-format="dd M yyyy" required>
-                            <span class="input-icon-addon">
-                                <span class="mdi mdi-calendar-outline"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-sm-12 mt-2 timeDiv" id='startTimeDiv'>
-                        <label class="form-label required">Start Time</label>
-                        <div class="input-icon">
-                            <input type="text" class="form-control formCheck timeInput" id="start_time" name="start_time" value="" data-mask="00:00" data-mask-visible="true" autocomplete="off" required>
-                            <span class="input-icon-addon">
-                                <span class="mdi mdi-calendar-clock"></span>
-                            </span>
-                        </div>
-                    </div>
+                <div class="col-md-3 col-sm-12 mt-3">
+                    <label class="form-label">Attachment</label>
+                    <input type="file" id="attachment" name="attachment" class="form-control" value="">
+                </div>
 
-                    <div class="col-md-2 col-sm-12 mt-2">
-                        <label class="form-label required">End Date</label>
-                        <div class="input-icon">
-                            <input type="text" class="form-control mt-2 formCheck" id="end_date" name="end_date" value="" data-date-format="dd M yyyy" required>
-                            <span class="input-icon-addon">
-                                <span class="mdi mdi-calendar-outline"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-2 col-sm-12 mt-2 timeDiv" id='endTimeDiv'>
-                        <label class="form-label required">End Time</label>
-                        <div class="input-icon">
-                            <input type="text" class="form-control formCheck timeInput" id="end_time" name="end_time" value="" data-mask="00:00" data-mask-visible="true" autocomplete="off" required>
-                            <span class="input-icon-addon">
-                                <span class="mdi mdi-calendar-clock"></span>
-                            </span>
-                        </div>
+                <div class="col-md-3 col-sm-12 mt-3">
+                    <label class="form-label">Image Attachment</label>
+                    <input type="file" id="img_attachment" name="img_attachment" class="form-control" value="">
+                </div>
+
+                <!--New Row for Date and Time--->
+                <div class="col-md-2 col-sm-12 mt-3">
+                    <label class="form-label">&nbsp;</label>
+                    <label class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="is_all_day_event" name="is_all_day_event" onchange="addDayEventChange();">
+                        <span class="form-check-label">IS All Day Event</span>
+                    </label>
+                </div>
+
+                <div class="col-md-2 col-sm-12 mt-2">
+                    <label class="form-label required">Start Date</label>
+                    <div class="input-icon">
+                        <input type="text" class="form-control mt-2 formCheck" id="start_date" name="start_date" value="" data-date-format="dd M yyyy" required>
+                        <span class="input-icon-addon">
+                            <span class="mdi mdi-calendar-outline"></span>
+                        </span>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12 mt-5">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-secondary ml-1" onclick="cancelEvent();">Cancel</button>
+                <div class="col-md-2 col-sm-12 mt-2 timeDiv" id='startTimeDiv'>
+                    <label class="form-label required">Start Time</label>
+                    <div class="input-icon">
+                        <input type="text" class="form-control formCheck timeInput" id="start_time" name="start_time" value="" data-mask="00:00" data-mask-visible="true" autocomplete="off" required>
+                        <span class="input-icon-addon">
+                            <span class="mdi mdi-calendar-clock"></span>
+                        </span>
                     </div>
                 </div>
-            </form>
-        </div>
 
+                <div class="col-md-2 col-sm-12 mt-2">
+                    <label class="form-label required">End Date</label>
+                    <div class="input-icon">
+                        <input type="text" class="form-control mt-2 formCheck" id="end_date" name="end_date" value="" data-date-format="dd M yyyy" required>
+                        <span class="input-icon-addon">
+                            <span class="mdi mdi-calendar-outline"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-2 col-sm-12 mt-2 timeDiv" id='endTimeDiv'>
+                    <label class="form-label required">End Time</label>
+                    <div class="input-icon">
+                        <input type="text" class="form-control formCheck timeInput" id="end_time" name="end_time" value="" data-mask="00:00" data-mask-visible="true" autocomplete="off" required>
+                        <span class="input-icon-addon">
+                            <span class="mdi mdi-calendar-clock"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mt-5">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary ml-1" onclick="cancelEvent();">Cancel</button>
+                </div>
+            </div>
+        </form>
     </div>
     <!----Event Details---->
-    <div class="card my-2" id='eventList'>
+    <div class="" id='eventList'>
         <div class="row">
-            <div class="col-auto ml-auto px-4 py-3">
+            <div class="col-auto ml-auto px-4 pb-4">
                 <?php
                 if ($roleid == "001") {
                     echo '<button type="button" class="btn btn-primary mr-2" onclick="addEvent();"><i class="mdi mdi-plus-thick mr-1"></i> Event</button>';
@@ -327,102 +333,103 @@ if ($accessFlag == false) {
                 ?>
             </div>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id='eventListTable' class="table card-table table-vcenter text-nowrap datatable border-bottom">
-                    <thead>
-                        <tr>
-                            <th>Event Name</th>
-                            <th>Event Type</th>
-                            <th>Start Date Time</th>
-                            <th>End Date Time</th>
-                            <th>TAG</th>
-                            <th>Attendance</th>
-                            <th>Location</th>
-                            <th class='text-center'>Publish</th>
-                            <?php
-                            if ($roleid == "001") {
-                                echo "<th style='width:60px;' class='text-center'>Action</th>";
-                            }
-                            ?>
-                        </tr>
-                    </thead>
-                    <tbody>
+
+        <div class="table-responsive">
+            <table id='eventListTable' class="table card-table table-vcenter text-nowrap datatable border-bottom">
+                <thead>
+                    <tr>
+                        <th>Event Name</th>
+                        <th>Event Type</th>
+                        <th>Start Date Time</th>
+                        <th>End Date Time</th>
+                        <th>TAG</th>
+                        <th>Attendance</th>
+                        <!--
+                        <th>Location</th>
+                        -->
+                        <th class='text-center'>Publish</th>
                         <?php
-                        $len = count($events);
-                        $i = 0;
-                        $str = "";
-                        $repo = array();
-                        while ($i < $len) {
-                            $fmt = 'd M Y  H:i A';
-                            if (empty($events[$i]["start_time"])) {
-                                $fmt = 'd M Y';
+                        if ($roleid == "001") {
+                            echo "<th style='width:60px;' class='text-center'>Action</th>";
+                        }
+                        ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $len = count($events);
+                    $i = 0;
+                    $str = "";
+                    $repo = array();
+                    while ($i < $len) {
+                        $fmt = 'd M Y  H:i A';
+                        if (empty($events[$i]["start_time"])) {
+                            $fmt = 'd M Y';
+                        }
+                        $sdt = date($fmt, $events[$i]["start_time_unix"]);
+                        $edt = date($fmt, $events[$i]["end_time_unix"]);
+
+                        $events[$i]['start_date'] = date('d M Y', $events[$i]["start_time_unix"]);
+                        $events[$i]['end_date'] = date('d M Y', $events[$i]["end_time_unix"]);
+
+                        $events[$i]['start_time'] = date('h:i a', $events[$i]["start_time_unix"]);
+                        $events[$i]['end_time'] = date('h:i a', $events[$i]["end_time_unix"]);
+
+                        $publish = "<button type='button' class='btn btn-link' onclick=\"publish('" . $events[$i]["id"] . "');\">Publish</button>";
+                        $attendance = "NA";
+                        $rowColor = "";
+                        $isDraft = TRUE;
+                        if ($events[$i]["is_publish"] == "2") {
+                            $publish = "Published";
+                            $isDraft = FALSE;
+                            $rowColor = "bg-green-lt";
+                            if ($events[$i]["block_attendance"] == "2") {
+                                $attendance = "Blocked";
                             }
-                            $sdt = date($fmt, $events[$i]["start_time_unix"]);
-                            $edt = date($fmt, $events[$i]["end_time_unix"]);
+                        }
 
-                            $events[$i]['start_date'] = date('d M Y', $events[$i]["start_time_unix"]);
-                            $events[$i]['end_date'] = date('d M Y', $events[$i]["end_time_unix"]);
+                        $delivery = "NA";
+                        if (!empty($events[$i]["tag"])) {
+                            $delivery = $events[$i]["tag"];
+                        }
 
-                            $events[$i]['start_time'] = date('h:i a', $events[$i]["start_time_unix"]);
-                            $events[$i]['end_time'] = date('h:i a', $events[$i]["end_time_unix"]);
+                        $location = "NA";
+                        if (!empty($events[$i]["location"])) {
+                            $location = $events[$i]["location"];
+                        }
+                        if (!empty($events[$i]["details"])) {
+                            $events[$i]["details"] = html_entity_decode(htmlspecialchars_decode($events[$i]["details"]));
+                        }
 
-                            $publish = "<button type='button' class='btn btn-link' onclick=\"publish('" . $events[$i]["id"] . "');\">Publish</button>";
-                            $attendance = "NA";
-                            $rowColor = "";
-                            $isDraft = TRUE;
-                            if ($events[$i]["is_publish"] == "2") {
-                                $publish = "Published";
-                                $isDraft = FALSE;
-                                $rowColor = "bg-green-lt";
-                                if ($events[$i]["block_attendance"] == "2") {
-                                    $attendance = "Blocked";
-                                }
-                            }
+                        $str .= "\n<tr class='$rowColor'>";
+                        $str .= "\n<td><strong>" . ucwords($events[$i]["title"]) . "</strong></td>";
+                        $str .= "\n<td>" . ucwords($events[$i]["event_type_title"]) . "</td>";
+                        $str .= "\n<td>" . $sdt . "</td>";
+                        $str .= "\n<td>" . $edt . "</td>";
+                        $str .= "\n<td>" . $delivery . "</td>";
+                        $str .= "\n<td>" . $attendance . "</td>";
+                        //$str .= "\n<td>" . $location . "</td>";
 
-                            $delivery = "NA";
-                            if (!empty($events[$i]["tag"])) {
-                                $delivery = $events[$i]["tag"];
-                            }
+                        $str .= "\n<td class='text-center'>" . $publish . "</td>";
 
-                            $location = "NA";
-                            if (!empty($events[$i]["location"])) {
-                                $location = $events[$i]["location"];
-                            }
-                            if (!empty($events[$i]["details"])) {
-                                $events[$i]["details"] = html_entity_decode(htmlspecialchars_decode($events[$i]["details"]));
-                            }
-
-                            $str .= "\n<tr class='$rowColor'>";
-                            $str .= "\n<td><strong>" . ucwords($events[$i]["title"]) . "</strong></td>";
-                            $str .= "\n<td>" . ucwords($events[$i]["event_type_title"]) . "</td>";
-                            $str .= "\n<td>" . $sdt . "</td>";
-                            $str .= "\n<td>" . $edt . "</td>";
-                            $str .= "\n<td>" . $delivery . "</td>";
-                            $str .= "\n<td>" . $attendance . "</td>";
-                            $str .= "\n<td>" . $location . "</td>";
-
-                            $str .= "\n<td class='text-center'>" . $publish . "</td>";
-
-                            if ($roleid == "001") {
-                                if ($isDraft) {
-                                    $str .= "\n<td class='text-center'>
+                        if ($roleid == "001") {
+                            if ($isDraft) {
+                                $str .= "\n<td class='text-center'>
                                 <button type='button' class='btn btn-warning' onclick=\"editEvent('" . $events[$i]['id'] . "');\"><i class='mdi mdi-18px mdi-pencil-outline'></i></button>
                                 <button type='button' class='btn btn-danger mr-1' onclick=\"deleteEvent('" . $events[$i]['id'] . "');\"><i class='mdi mdi-18px mdi-delete'></i></button>
                                 </td>";
-                                } else {
-                                    $str .= "\n<td class='text-center'><button type='button' class='btn btn-white' onclick=\"unPublish('" . $events[$i]["id"] . "');\">UNPUBLISH</button></td>";
-                                }
+                            } else {
+                                $str .= "\n<td class='text-center'><button type='button' class='btn btn-white' onclick=\"unPublish('" . $events[$i]["id"] . "');\">UNPUBLISH</button></td>";
                             }
-                            $str .= "\n</tr>";
-                            $repo[$events[$i]['id']] = $events[$i];
-                            $i++;
                         }
-                        echo $str;
-                        ?>
-                    </tbody>
-                </table>
-            </div>
+                        $str .= "\n</tr>";
+                        $repo[$events[$i]['id']] = $events[$i];
+                        $i++;
+                    }
+                    echo $str;
+                    ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
