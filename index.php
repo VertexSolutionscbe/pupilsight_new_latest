@@ -923,6 +923,13 @@ if ($isLoggedIn) {
                     "/index.php?q=/modules/Academics/result.php",
             ];
 
+            $testList[1] = [
+                "name" => "Electives",
+                "url" =>
+                $session->get("absoluteURL") .
+                    "/index.php?q=/modules/Academics/electives.php",
+            ];
+
             //$menuMainItems["Academics"][0] = $testList[0];
             $menuMainItems["Academics"][0] = $testList[0];
             $menuMainItems["Academics"][1] = $testList[1];
