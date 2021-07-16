@@ -165,11 +165,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
                             $result = $connection2->query($sql);
                             $chkData = $result->fetch();
 
-                            $sql = 'SELECT b.sketch_id, c.id FROM examinationTest AS a LEFT JOIN examinationReportSketchTemplateMaster AS b ON a.report_template_id = b.id LEFT JOIN examinationReportTemplateSketchGenerate AS c ON b.sketch_id = c.sketch_id WHERE a.id = '.$tdata['test_id'].' ';
+                            $sql = 'SELECT b.sketch_id, GROUP_CONCAT(c.id) as genID FROM examinationTest AS a LEFT JOIN examinationReportSketchTemplateMaster AS b ON a.report_template_id = b.id LEFT JOIN examinationReportTemplateSketchGenerate AS c ON b.sketch_id = c.sketch_id WHERE a.id = '.$tdata['test_id'].' ';
                             $result = $connection2->query($sql);
                             $skcData = $result->fetch();
                             $sketch_id = $skcData['sketch_id'];
-                            $sketch_gen_id = $skcData['id'];
+                            $sketch_gen_id = $skcData['genID'];
                             
             ?>
                             <tr>

@@ -197,11 +197,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/manage_test_resu
     if (isset($_POST['pupilsightYearGroupID']) && $_POST['pupilsightRollGroupID']) {
         $students_test_results = $CurriculamGateway->getTestResults($criteria, $pupilsightSchoolYearID, $pupilsightYearGroupID, $pupilsightRollGroupID, $test_id);
 
-        $sql = 'SELECT b.sketch_id, c.id FROM examinationTest AS a LEFT JOIN examinationReportSketchTemplateMaster AS b ON a.report_template_id = b.id LEFT JOIN examinationReportTemplateSketchGenerate AS c ON b.sketch_id = c.sketch_id WHERE a.id = '.$test_id.' ';
+        $sql = 'SELECT b.sketch_id, GROUP_CONCAT(c.id) as genID FROM examinationTest AS a LEFT JOIN examinationReportSketchTemplateMaster AS b ON a.report_template_id = b.id LEFT JOIN examinationReportTemplateSketchGenerate AS c ON b.sketch_id = c.sketch_id WHERE a.id = '.$test_id.' ';
         $result = $connection2->query($sql);
         $skcData = $result->fetch();
         $sketch_id = $skcData['sketch_id'];
-        $sketch_gen_id = $skcData['id'];
+        $sketch_gen_id = $skcData['genID'];
     } else {
         $students_test_results = array();
     }
