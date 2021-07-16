@@ -569,15 +569,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
 
 <script>
-
     $(document).ready(function() {
-        window.setTimeout(function () {
+        window.setTimeout(function() {
             $('#expore_tbl').find("input[name='student_id[]']").each(function() {
                 $(this).addClass('include_cell');
                 $(this).closest('tr').addClass('rm_cell');
             });
         }, 1000);
-        
+
 
 
         $(document).on('change', '.include_cell', function() {

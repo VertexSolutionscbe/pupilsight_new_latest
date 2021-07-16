@@ -177,3 +177,36 @@ function fileAttachment($attach_file, $file_location)
     }
     return $attachment;
 }
+
+
+function curl_post_nowait($url, $post = NULL)
+{
+    try {
+        //$url = 'https://127.0.0.1/ajax/received.php';
+        $curl = curl_init();
+        //$post['test'] = 'examples daata'; // our data todo in received
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POST, TRUE);
+
+        if (!empty($post)) {
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $post);
+        }
+
+        curl_setopt($curl, CURLOPT_USERAGENT, 'api');
+
+        //curl_setopt($curl, CURLOPT_TIMEOUT, 1);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl,  CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FORBID_REUSE, true);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+        curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 10);
+
+        curl_setopt($curl, CURLOPT_FRESH_CONNECT, true);
+
+        $res = curl_exec($curl);
+        print_r($res);
+        curl_close($curl);
+    } catch (Exception $ex) {
+        echo $ex;
+    }
+}

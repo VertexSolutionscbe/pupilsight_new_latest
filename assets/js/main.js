@@ -3474,7 +3474,7 @@
     });
 
     $(document).on('click', '#sendEmailSms_stud', function (e) {
-        e.preventDefault();
+
         //$("#preloader").show();
         //window.setTimeout(function () {
         try {
@@ -3502,6 +3502,7 @@
                         $(".closeSMPopUp").click();
                         $("#sendEmailSms_stud").prop('disabled', true);
 
+                        e.preventDefault();
                         var formData = new FormData(document.getElementById("sendEmailSms_Student"));
                         formData.append('stuid', stuid);
                         formData.append('emailquote', emailquote);

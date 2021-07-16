@@ -36,10 +36,23 @@ jQuery(function ($) {
     /**
      * Form Class: generic check All/None checkboxes
      */
+    //reason slow so commented and added new change function  //$(".checkall").change(function () {
     //Edited By : Mandeep , Reason : Check and uncheck all was not working data tables fixed the issue
-    $(document).on('click', '.checkall', function () {
-        $(this).closest('table').find(':checkbox').prop('checked', $(this).prop('checked')).trigger('change');
-        console.log('testingcheck');
+    /*$(document).on('click', '.checkall', function () {
+        //$(this).closest('table').find(':checkbox').prop('checked', $(this).prop('checked')).trigger('change');
+        var flag = true;
+        $(".table").find(':checkbox').prop('checked', flag);
+        //console.log('testingcheck');
+    });*/
+
+    $(".checkall").change(function () {
+        try {
+            var flag = $(this).prop('checked');
+            var allPages = objPageMasterTable.cells().nodes();
+            $(allPages).find('input[type="checkbox"]').prop('checked', flag);
+        } catch (ex) {
+            console.log("Table Checkbox check all " + ex);
+        }
     });
 
     /**

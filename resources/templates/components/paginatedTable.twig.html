@@ -208,9 +208,11 @@
 
 {% endblock table %}
 <script>
+    //unique id don't use same any were
+    var objPageMasterTable;
     $(document).ready(function () {
         if (!$.fn.DataTable.isDataTable('#expore_tbl')) {
-            $('#expore_tbl').DataTable({
+            objPageMasterTable = $('#expore_tbl').DataTable({
                 "pageLength": 25,
                 "lengthMenu": [[10, 25, 50, 250, -1], [10, 25, 50, 250, "All"]],
                 "sDom": '<"top"lfp>rt<"bottom"ifp><"clear">',
