@@ -4572,3 +4572,34 @@ if ($type == 'updateStudentAcademicConfig') {
 
    
 }
+
+
+if ($type == 'deleteBulkSKill') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('id' => $st);
+        $sql = 'DELETE FROM ac_manage_skill WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}
+
+if ($type == 'deleteBulkRoom') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('id' => $st);
+        $sql = 'DELETE FROM examinationRoomMaster WHERE id=:id';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}
+
+if ($type == 'deleteBulkSubject') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $data = array('pupilsightDepartmentID' => $st);
+        $sql = 'DELETE FROM pupilsightDepartment WHERE pupilsightDepartmentID=:pupilsightDepartmentID';
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    }
+}

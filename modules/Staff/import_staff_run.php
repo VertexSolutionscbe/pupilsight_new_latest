@@ -140,6 +140,8 @@ if (
                 $headers[$key] = "##_canLogin";
             } elseif ($hd == "Email") {
                 $headers[$key] = "##_email";
+            } elseif ($hd == "Mobile Country Code") {
+                $headers[$key] = "##_phone1CountryCode";
             } elseif ($hd == "Mobile") {
                 $headers[$key] = "##_phone1";
             } elseif ($hd == "Address") {
