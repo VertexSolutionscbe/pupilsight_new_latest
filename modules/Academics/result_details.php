@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
                     $kresult = $connection2->query($ksql);
                     $kountData = $kresult->fetch();
 
-                    $sql = 'SELECT a.*, c.subject_display_name, d.name as skill_name 
+                echo    $sql = 'SELECT a.*, c.subject_display_name, d.name as skill_name 
                             FROM examinationSubjectToTest AS a 
                             
                             LEFT JOIN subjectToClassCurriculum AS c ON a.pupilsightDepartmentID = c.pupilsightDepartmentID
