@@ -259,3 +259,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/electives.php') 
     }
 </style>
 
+<script>
+
+    $(document).on('change', '#childSel', function() {
+        var id = $(this).val();
+        var hrf = 'index.php?q=/modules/Academics/electives.php&cid=' + id;
+        window.location.href = hrf;
+    });
+
+    $(document).on('click', '.disable_test_result', function() {
+        alert('Your Details is Disabled by Administrator, please contact Administrator.');
+    });
+
+    
+
+</script>

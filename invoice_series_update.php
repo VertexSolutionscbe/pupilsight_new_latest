@@ -12,7 +12,7 @@ $sql1 = 'SELECT invoice_no FROM fn_fee_invoice_student_assign';
 $result1 = $connection2->query($sql1);
 $invData1 = $result1->fetchAll();
 $arr = array();
-foreach($invData1 as $inv){
+foreach ($invData1 as $inv) {
     $somestring = $inv['invoice_no'];
     $arr[]  = substr($somestring, strrpos($somestring, '/') + 1);
 }
@@ -48,13 +48,13 @@ if (!empty($invData)) {
 
                 // $fn_fee_series_id = $invoiceData[$fn_fee_invoice_id];
                 // if (!empty($fn_fee_series_id)) {
-                    $last_no++;
-                    
-                    $dupInvNo = $dupData['invoice_no'];
-                    $get = substr($dupInvNo, 0, strrpos($dupInvNo, '/'));
-                    $newinvoice_no = $get . '/' . $last_no;
-                    $squ .= "update fn_fee_invoice_student_assign SET invoice_no ='" . $newinvoice_no . "' where id = " . $dupData['id'] . "; ";
-                    
+                $last_no++;
+
+                $dupInvNo = $dupData['invoice_no'];
+                $get = substr($dupInvNo, 0, strrpos($dupInvNo, '/'));
+                $newinvoice_no = $get . '/' . $last_no;
+                $squ .= "update fn_fee_invoice_student_assign SET invoice_no ='" . $newinvoice_no . "' where id = " . $dupData['id'] . "; ";
+
                 // }
                 // if ($i > 4) {
                 //     break;
@@ -64,11 +64,11 @@ if (!empty($invData)) {
         }
     }
     if ($squ) {
-        
+
         $fn_fee_series_id = 2;
         $NEWlast_no = $last_no + 1;
-        $squ .="update fn_fee_series_number_format SET last_no = ".$NEWlast_no." where fn_fee_series_id = ".$fn_fee_series_id." AND type = 'numberwise'; ";
-        echo $squ.'<br>';
+        $squ .= "update fn_fee_series_number_format SET last_no = " . $NEWlast_no . " where fn_fee_series_id = " . $fn_fee_series_id . " AND type = 'numberwise'; ";
+        echo $squ . '<br>';
         $connection2->query($squ);
     }
 }
