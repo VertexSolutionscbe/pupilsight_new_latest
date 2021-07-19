@@ -645,7 +645,7 @@ $.ajax({
                                 <div class="dayArea">Sat</div>
                             </div>
                             <a href="#section1" style="display: inline-block;">
-                                <div class="calendar-days dateArea"></div>
+                                <div class="calendar-days dateArea" onclick="myFunction()"></div>
                             </a>
                         </div>
                         <div class="calendar-footer">
@@ -1679,7 +1679,12 @@ $FEq3=mysqli_fetch_array($Eq3);
 			</div> <!--Populate End -->
 
            
-            
+            <script>
+// When the user clicks on div, open the popup
+function myFunction() {
+ alert('Test Alert');
+}
+</script>
 <script type="text/javascript" src="app.js"></script>     
 </body>
  
