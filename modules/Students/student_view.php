@@ -279,6 +279,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 <a style='display:none;' href='' id='promoteStudent' class='thickbox'>Promote</a>";
 
                 echo "<a data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-white'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
+
+                echo "&nbsp;&nbsp;<a style='margin-top:5px;' id='clickPhotoDownload' class='btn btn-white'>Photo Download</a>";
                 echo "</div>";
             } else {
                 if (!empty($permissionChk)) {
@@ -355,6 +357,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                     if (in_array(35, $permissionChk)) {
                         echo "<a data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-white'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
                     }
+
+                    echo "&nbsp;&nbsp;<a style='margin-top:5px;' id='clickPhotoDownload' class='btn btn-white'>Photo Download</a>";
+
                     echo "</div>";
                 }
             }
@@ -848,6 +853,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             window.setTimeout(function() {
                 $("#detainStudent")[0].click();
             }, 10);
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+
+    $(document).on('click','#clickPhotoDownload',function(e){
+        var favorite = [];
+        var selectedProgram = '';
+        if($('#pupilsightProgramIDbyPP option:selected').val() != ''){
+            selectedProgram = $('#pupilsightProgramIDbyPP option:selected').text();
+        }
+        var selectedClass = '';
+        if($('#pupilsightYearGroupIDbyPP option:selected').val() != ''){
+            selectedClass = $('#pupilsightYearGroupIDbyPP option:selected').text();
+        }
+        var selectedSection = '';
+        if($('#pupilsightRollGroupIDbyPP option:selected').val() != ''){
+            selectedSection = $('#pupilsightRollGroupIDbyPP option:selected').text();
+        }
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        if (stuId) {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: { val:'',stuId: stuId, type: 'photoDownloadStudent' ,program:selectedProgram,class:selectedClass,section:selectedSection},
+                async: true,
+                success: function (response,status, xhr) {
+                    response = JSON.parse(response);
+                    if(response['success'] == 0){
+                        alert(response['msg']);
+                    } else {
+                        window.location = response['imgData'];                    }
+                        $.ajax({
+                            url: 'ajax_data.php',
+                            type: 'post',
+                            data: { val:response['imgData'], type: 'removeStudentZip' },
+                            async: true,
+                            success: function (response,status, xhr) {
+                            }
+                        });
+                }
+            });
+
         } else {
             alert('You Have to Select Student.');
         }

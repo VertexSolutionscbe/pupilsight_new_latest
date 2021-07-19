@@ -4521,3 +4521,58 @@ if ($type == 'getSectionForAcademic') {
     }
     echo $data;
 }
+if($type=='photoDownloadStudent'){
+    $stuId = $_POST['stuId'];
+    $studentQuery = "SELECT pupilsightPersonID,officialName,image_240 FROM pupilsightPerson WHERE pupilsightPersonID IN (".$stuId.") AND image_240 IS NOT NULL";
+    $results = $connection2->query($studentQuery);
+    $rowdatas = $results->fetchAll();
+    $data = array();
+    if(empty($rowdatas)){
+        $data['success'] = 0;
+        $data['msg'] = "Select Student Has No uploaded Photo";
+    } else {
+        $imageArray = array();
+        $base_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]/pupilsight_new";
+        foreach ($rowdatas as $cl) {
+            $imageArray[] = $base_url.'/'.$cl['image_240'];
+        }
+        
+        $zipname = '';
+        if(!empty($_POST['program'])){
+            $zipname .= str_replace(' ','_',$_POST['program']);   
+        }
+        if(!empty($_POST['class'])){
+            $zipname .= '-'.str_replace(' ','_',$_POST['class']);   
+        }
+        if(!empty($_POST['section'])){
+            $zipname .= '-'.str_replace(' ','_',$_POST['section']);   
+        }
+        if(empty($zipname)){
+            $zipname = 'studentPhotos';
+        }
+        $zipname .= '.zip';
+        $zip = new ZipArchive;
+        
+        if ($zip->open($zipname, ZipArchive::CREATE)) {
+            foreach ($rowdatas as $cl) {
+                $file =  $base_url.'/'.$cl['image_240'];
+                // $zip->addFile($file);
+                $ext = pathinfo($file, PATHINFO_EXTENSION);
+                $newfileName = str_replace(' ','_',$cl['officialName']).'-'.$cl['pupilsightPersonID'].'.'.$ext;
+                $zip->addFromString($newfileName , file_get_contents($file));
+            }
+        }
+        $zip->close();
+        // if(file_exists($zipname)){
+        //     readfile($zipname);
+        //     unlink($zipname);
+        // }
+        $data['success'] = 1;
+        $data['imgData'] = $zipname;
+    }
+    echo json_encode($data);exit;
+}
+
+if($type == 'removeStudentZip'){
+    unlink($val);
+}

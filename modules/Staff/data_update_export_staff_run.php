@@ -56,17 +56,27 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/export_staff_run.php
         foreach ($_POST['staff_id'] as $linenew) {
             $data_row = json_decode($linenew,true);
             $selectedDataArr = array();
-            foreach($data_row as $dkey => $dvalue){
-                if(in_array($dkey,$namedata)){
-                    if($dkey == 'gender'){
-                        if($dvalue == 'F'){
-                            $dvalue = 'Female';
-                        } else {
-                            $dvalue = 'Male';
-                        }
+            // foreach($data_row as $dkey => $dvalue){
+            //     if(in_array($dkey,$namedata)){
+            //         if($dkey == 'gender'){
+            //             if($dvalue == 'F'){
+            //                 $dvalue = 'Female';
+            //             } else {
+            //                 $dvalue = 'Male';
+            //             }
+            //         }
+            //         $selectedDataArr[] = $dvalue;
+            //     }
+            // }
+            foreach($namedata as $namekey => $nameValue){
+                if($nameValue == 'gender'){
+                    if($data_row[$nameValue] == 'F'){
+                        $data_row[$nameValue] = 'Female';
+                    } else {
+                        $data_row[$nameValue] = 'Male';
                     }
-                    $selectedDataArr[] = $dvalue;
                 }
+                $selectedDataArr[] = $data_row[$nameValue];
             }
             // $valnew = explode(",", $linenew);
             fputcsv($fp, $selectedDataArr);

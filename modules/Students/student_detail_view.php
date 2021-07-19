@@ -271,6 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                 echo "&nbsp;&nbsp;<a style='margin-top:5px;' data-hrf='fullscreen.php?q=/modules/Students/detain_student.php&sid=' id='clickDetainStudent' class='btn btn-primary'>Detain</a><a style='display:none;' href='' id='detainStudent' class='thickbox'>Detain</a>";
 
+                // echo "&nbsp;&nbsp;<a style='margin-top:5px;' id='clickPhotoDownload' class='btn btn-primary'>Photo Download</a>";
 
                 echo "</div><div class='float-none'></div></div>";
             } else {
@@ -688,8 +689,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 }
 
 ?>
-
-
 <script>
     //limit
 
@@ -970,6 +969,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             window.setTimeout(function() {
                 $("#detainStudent")[0].click();
             }, 10);
+        } else {
+            alert('You Have to Select Student.');
+        }
+    });
+    $(document).on('click','#clickPhotoDownload',function(e){
+        var favorite = [];
+        var selectedProgram = $('#pupilsightProgramIDbyPP option:selected').text();
+        var selectedClass = $('#pupilsightYearGroupIDbyPP option:selected').text();
+        var selectedSection = '';
+        if($('#pupilsightRollGroupIDbyPP option:selected').val() != ''){
+            selectedSection = $('#pupilsightRollGroupIDbyPP option:selected').text();
+        }
+        $.each($("input[name='student_id[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var stuId = favorite.join(",");
+        if (stuId) {
+            $.ajax({
+                url: 'ajax_data.php',
+                type: 'post',
+                data: { val:'',stuId: stuId, type: 'photoDownloadStudent' ,program:selectedProgram,class:selectedClass,section:selectedSection},
+                async: true,
+                success: function (response,status, xhr) {
+                    response = JSON.parse(response);
+                    if(response['success'] == 0){
+                        alert(response['msg']);
+                    } else {
+                        window.location = response['imgData'];                    }
+                        $.ajax({
+                            url: 'ajax_data.php',
+                            type: 'post',
+                            data: { val:response['imgData'], type: 'removeStudentZip' },
+                            async: true,
+                            success: function (response,status, xhr) {
+                            }
+                        });
+                }
+            });
+
         } else {
             alert('You Have to Select Student.');
         }
