@@ -205,6 +205,88 @@ letter-spacing: 0.1px;
 color: #696974;
 
 }
+.leftcard1date{
+font-family: Poppins;
+font-style: normal;
+font-weight: bold;
+font-size: 20px;
+line-height: 30px;
+text-align: center;
+color: #0062FF;
+
+}
+.leftcard1title{
+font-family: Poppins;
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+letter-spacing: 0.1px;
+color: #171725;
+}
+.buttonFont{
+font-family: Poppins;
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+}
+.leftcard3title{
+font-family: Poppins;
+font-style: normal;
+font-weight: 600;
+font-size: 16px;
+line-height: 24px;
+letter-spacing: 0.1px;
+color: #171725;
+}
+.leftcard3Tabletitle{
+font-family: Poppins;
+font-style: normal;
+font-weight: 600;
+font-size: 11px;
+line-height: 16px;
+letter-spacing: 0.8px;
+text-transform: uppercase;
+color: #44444F;
+}
+.leftcard3Tablecontent1{
+font-family: Poppins;
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+letter-spacing: 0.1px;
+color: #171725;
+}
+.leftcard3Tablecontent2{
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+line-height: 24px;
+letter-spacing: 0.1px;
+color: #92929D;
+}
+.leftcard3Tablecontent3{
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+line-height: 16px;
+letter-spacing: 0.1px;
+color: #0062FF;
+}
+.leftcard3Tablecontent4{
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+line-height: 24px;
+letter-spacing: 0.1px;
+color: #44444F;
+}
+
 
     </style>
     <link rel="stylesheet" href="app.css">
@@ -254,7 +336,7 @@ $.ajax({
 
 	<div id="populate" name="populate">
 
-    <div class="container mt-4 " style="background-color: #F9FAFA;height:1170px; border-radius: 20px" >
+    <div class="container mt-4 " style="background-color: #F9FAFA;height:auto; border-radius: 20px;padding-background-bottom:20px" >
 	<p class="overall" style="padding-top:20px">OVERALL - HOME</p>
 	
 	<div class="row" style="padding-left:15px">
@@ -290,8 +372,19 @@ $.ajax({
 	</div>
 	
     </div>
-	
-	<div style="width:625px;height:218px;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:20px">
+
+<style>
+@media only screen and (max-width: 600px) {
+    .row1card1{
+width:625px;height:218px;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:20px
+    }
+
+}
+</style>
+	<div class="container h-100 row1card1">
+	<div class="row align-items-center h-100">
+	<div class="col-6 mx-auto">
+	<div  style="width:625px;height:218px;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:20px">
 	<div class="row2CardHead" style="padding-top:20px">Academic Performance</div>	
 	<div class="row2CardSubHead "style="padding-top:10px">2017-2018</div>
 	<div class="row">
@@ -314,28 +407,171 @@ $.ajax({
 	</div>
 	</div>
 	</div>
+	</div>
+	</div>
+	</div>
 	
+		<div class="container h-100 row1card1">
+	<div class="row align-items-center h-100">
+	<div class="col-6 mx-auto">
 	<div style="width:625px;height:218px;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:20px">
 	<div class="row2CardHead" style="padding-top:20px">Student Performance trends</div>	
 	<div class="row2CardSubHead "style="padding-top:10px">2017-2018</div>
-	<div class="row">
-	<div class="col-2"><img style="margin-left:15px;margin-top:20px" src="./images/Challenge Medal.png"></img></div> 
+	<div class="row mt-1">
+	<div class="col-1.5"><img style="margin-top:20px" src="./images/Challenge Medal.png"></img></div> 
 	<div class="col-2 col-md2" style="margin-top:30px">
 	<span class="row2CardHead aside1" >Habitual Performar</span> <br> 
 	</div>
 		
-	<div class="col-2"><img style="margin-left:15px;margin-top:20px" src="./images/Top Student.png"></img></div>      
+	<div class="col-1.5"><img style="margin-top:20px" src="./images/Top Student.png"></img></div>      
 	<div class="col-2 col-md2" style="margin-top:30px">
 	<span class="row2CardHead aside1" >Rising Stars</span>
 	</div>
 	
-	<div class="col-2"><img style="margin-left:15px;margin-top:20px" src="./images/r3c1img3.png"></img></div>                   
+	<div class="col-1.5"><img style="margin-top:20px" src="./images/r3c1img3.png"></img></div>                   
 	<div class="col-2 col-md2" style="margin-top:30px">
 	<span class="row2CardHead aside1" >Needs attention</span>
 	</div>
 	</div>
 	</div>
+	</div>
+	</div>
+	</div>
 	
+	<div class="row">
+	<div class="col-6" > 
+	<div class="col-12">
+			<div  style="width:522px;height:auto;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:30px;padding-bottom:20px;">
+		<div style="padding-top:10px">Upcoming Events</div>
+		
+		<div class="row mt-2" style="width:479px;height:90px;background-color:#FAFAFB;border-radius:10px;padding-top:30px">
+		<span class="col-3 leftcard1date">23 Sep </span>
+		<span class=" col-6 leftcard1title">Parent Teacher Meeting</span>
+		<button  style="background-color:#E1EBFB;color:#0062FF;border-radius:5px;width:103px;height:30px;border-color:#E1EBFB">See Detail</button>
+		</div>
+		
+		<div class="row mt-2" style="width:479px;height:90px;background-color:#FAFAFB;border-radius:10px;padding-top:30px">
+		<span class="col-3 leftcard1date">23 Sep </span>
+		<span class=" col-6 leftcard1title">Parent Teacher Meeting</span>
+		<button  style="background-color:#E1EBFB;color:#0062FF;border-radius:5px;width:103px;height:30px;border-color:#E1EBFB">See Detail</button>
+		</div>
+		
+		<div class="row mt-2" style="width:479px;height:90px;background-color:#FAFAFB;border-radius:10px;padding-top:30px">
+		<span class="col-3 leftcard1date">23 Sep </span>
+		<span class=" col-6 leftcard1title">Parent Teacher Meeting</span>
+		<button  style="background-color:#E1EBFB;color:#0062FF;border-radius:5px;width:103px;height:30px;border-color:#E1EBFB">See Detail</button>
+		</div>
+
+	</div>
+	
+	<div  style="width:522px;height:auto;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:30px;padding-bottom:20px;">
+		<div style="padding-top:10px">Upcoming Birthdays</div>
+		
+		<div class="row mt-2" style="width:479px;height:90px;background-color:#FAFAFB;border-radius:10px;padding-top:30px">
+		<span class="col-3 leftcard1date">23 Sep </span>
+		<span class=" col-6 leftcard1title">Ramkrishna</span>
+		<button  style="background-color:#E1EBFB;color:#0062FF;border-radius:5px;width:103px;height:30px;border-color:#E1EBFB">See Detail</button>
+		</div>
+		
+		<div class="row mt-2" style="width:479px;height:90px;background-color:#FAFAFB;border-radius:10px;padding-top:30px">
+		<span class="col-3 leftcard1date">23 Sep </span>
+		<span class=" col-6 leftcard1title">Ramkrishna</span>
+		<button  style="background-color:#E1EBFB;color:#0062FF;border-radius:5px;width:103px;height:30px;border-color:#E1EBFB">See Detail</button>
+		</div>
+		
+		<div class="row mt-2" style="width:479px;height:90px;background-color:#FAFAFB;border-radius:10px;padding-top:30px">
+		<span class="col-3 leftcard1date">23 Sep </span>
+		<span class=" col-6 leftcard1title">Ramkrishna</span>
+		<button  style="background-color:#E1EBFB;color:#0062FF;border-radius:5px;width:103px;height:30px;border-color:#E1EBFB">See Detail</button>
+		</div>
+
+	</div>
+	
+		<div  style="width:522px;height:auto;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:30px;padding-bottom:20px;">
+		<div class="row" style="padding-top:10px" >
+		<div class="col-7 leftcard3title">
+		To do list
+		</div>
+		<div>
+		<button class="buttonFont" style="background-color:#0062FF;border-color:#0062FF;color:white;border-radius:5px;width:160px;height:30px">Create New Task</button>
+		</div>
+		</div>
+		
+		<div class="row" style="margin-top:20px;background-color:#F9FAFA" >
+		<div class="col-1 leftcard3Tabletitle">
+	
+		</div>
+		<div class="col-3 leftcard3Tabletitle">
+		To do Item
+		</div>
+		<div class="col-3 leftcard3Tabletitle">
+		Assigned By
+		</div>
+		<div class="col-2 leftcard3Tabletitle">
+		Due Date
+		</div>
+		<div class="col-2 leftcard3Tabletitle">
+		Status
+		</div>
+		</div>
+
+<hr style="width:106%;margin-left:-30px"> 		
+		
+		<div class="row">
+		<div>
+		<button  class="btn btn-bprimary rounded-circle btn-sm"  style="background-color:#3DD598;color:#FFFFFF;height:30px;width:30px"><img src="./images/check.png" /></button>
+		</div>
+		<div class="col-3 leftcard3Tablecontent1">	To do list Item	</br><span class="leftcard3Tablecontent2">Hey Cak, Could you free now?</span></div>
+		<div class="col-3 leftcard3Tablecontent3">	Ramakrishna</div>
+		<div class="col-2 leftcard3Tablecontent4">	Mar 21, 2019</div>
+		<div class="col-3 "><button  class="btn btn-bprimary"  style="background-color:#E6F6F0;color:#3DD598;border-radius:5px">Completed</button></div>
+		
+				<hr style="width:100%;margin-left:-13px"> 	
+
+		</div>
+		
+		
+		<div class="row">
+		<div>
+		<button  class="btn btn-bprimary rounded-circle btn-sm"  style="background-color:#3DD598;color:#FFFFFF;height:30px;width:30px"><img src="./images/check.png" /></button>
+		</div>
+		<div class="col-3 leftcard3Tablecontent1">	To do list Item	</br><span class="leftcard3Tablecontent2">Hey Cak, Could you free now?</span></div>
+		<div class="col-3 leftcard3Tablecontent3">	Ramakrishna</div>
+		<div class="col-2 leftcard3Tablecontent4">	Mar 21, 2019</div>
+		<div class="col-3 "><button  class="btn btn-bprimary"  style="background-color:#E6F6F0;color:#3DD598;border-radius:5px">Completed</button></div>
+		
+				<hr style="width:100%;margin-left:-13px"> 	
+
+		</div>
+		</div>
+	</div>
+	</div>
+		
+		
+<div class="col-6" >
+<div class="col-12">
+	
+	<div  style="width:522px;height:auto;background-color:#FFFFFF;border-radius:20px;margin-top:20px;padding-left:30px;padding-bottom:20px;">
+		<div style="padding-top:10px"><button type= "button" class="btn" style="background-color:#1E75FF;color:#FFFFFF;border-radius:5px">CREATE NEW MESSAGE</button></div>
+		
+			<div class="row mt-2" style="width:100%;height:132px;background-color:#1E75FF;border-radius:10px;padding-top:10px">
+			<div class="row" style="margin-left:0px">
+			<div ><button  class="btn btn-warning rounded-circle "  style="color:#FFFFFF">M</button></div>			
+			<div>Any Carrol</br>Mobile Apps Red</designiv>			
+			</div>
+		</div>
+	
+	</div>
+
+
+</div>	
+</div>
+
+
+</div>
+	
+	
+
 
 	</div>
 	</div><!--Populate End -->

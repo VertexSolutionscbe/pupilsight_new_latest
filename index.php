@@ -1432,7 +1432,13 @@ if (!$session->has("address")) {
                     $container
                         ->get(Pupilsight\UI\Dashboard\ParentDashboard::class)
                         ->getOutput()
-                );
+                );  
+				
+				// $page->write(
+                    // $container
+                        // ->get(Pupilsight\modules\Dashboard\parentDashboard::class)
+                        // ->getOutput()
+                // );
                 break;
             case "Student":
                 $page->write(

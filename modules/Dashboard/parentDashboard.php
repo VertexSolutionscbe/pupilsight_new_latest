@@ -1,5 +1,13 @@
 <?php 
 
+// use PDOException;
+// use Pupilsight\Contracts\Services\Session;
+// use Pupilsight\Contracts\Database\Connection;
+// use Pupilsight\Forms\OutputableInterface;
+
+// class ParentDashboard implements OutputableInterface
+// {
+
 session_start();
 error_reporting(0);
 include("dbinfo.php");
@@ -958,7 +966,7 @@ $.ajax({
 					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
                     <div class="col">
 					<div class="row mt-4">
-                    <div class="col-11 col-md12 "><span class="chatHeadArea1">Chat1</span></div>
+                    <div class="col-11 col-md12 "><span class="chatHeadArea1">Chat</span></div>
                     </div>
 					<hr style="width:100%;text-align:left;margin-left:0">
 					
@@ -1264,7 +1272,7 @@ $FEq3=mysqli_fetch_array($Eq3);
 					<?php echo $testData['test_name']; ?>
 					</span> 
 					</div>
-				<table class="table" >
+				   <table class="table" >
 				   <thead>
 				   <tr>
 				   <th>Subject</th>
@@ -1272,16 +1280,12 @@ $FEq3=mysqli_fetch_array($Eq3);
 				   </tr>
 				   </thead>
 					<?php 
-					
-											
-				
-						
+
 					$test1='SELECT a.*, b.officialName FROM pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightPersonID = ' . $_SESSION['ChildId'] . ' AND a.pupilsightSchoolYearID = '.$yearid.'';
 					$test11 = mysqli_query($conn,$test1);
 					while($test111=mysqli_fetch_array($test11)){
 
 
-					
 			    	$test2='SELECT a.pupilsightDepartmentID, b.name as test_name, c.subject_display_name, c.subject_type FROM examinationSubjectToTest AS a 
 					LEFT JOIN examinationTest AS b ON a.test_id = b.id
 					LEFT JOIN subjectToClassCurriculum AS c ON a.pupilsightDepartmentID = c.pupilsightDepartmentID
@@ -1681,3 +1685,4 @@ $FEq3=mysqli_fetch_array($Eq3);
  
 
 </html>
+<?php//  } ?>
