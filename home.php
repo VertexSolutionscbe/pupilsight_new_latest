@@ -341,7 +341,7 @@ if (isset($_GET["locked"])) {
 
     <input type="hidden" name="invalid" id="invalid" value="<?php echo $invalid; ?>" />
     <input type="hidden" name="locked" id="locked" value="<?php echo $locked; ?>" />
-    
+
     <!-- Preloader Start Here -->
     <div id="preloader" style="display:none;"></div>
     <!-- Preloader End Here -->
@@ -1242,7 +1242,7 @@ if (isset($_GET["locked"])) {
                     <div class="alert alert-warning">Your account has been locked/disabled, please contact Administrator.</div>
                 <?php } ?>
 
-                
+
                 <div class="empty-warning"></div>
 
                 <div class="mb-3">
@@ -1544,7 +1544,7 @@ if (isset($_GET["locked"])) {
             if (invalid == 'true') {
                 loginPanel();
                 toast('error', 'You have entered wrong password and you have 10 chances to enter the correct password. Else your account will be locked. You need to contact admin to unlock your account');
-                
+
             } else {
                 $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
                 try {
@@ -1572,10 +1572,10 @@ if (isset($_GET["locked"])) {
             // $("#username").val("");
             // $("#password").val("");
             $("#homePanel,#forgetPanel, #footPanel, #applicationList, #applicationStatus").hide(400);
-            window.setTimeout(function () {
+            window.setTimeout(function() {
                 $("#loginPanel").show(400);
             }, 10);
-            
+
         }
 
         function forgetPanel() {
