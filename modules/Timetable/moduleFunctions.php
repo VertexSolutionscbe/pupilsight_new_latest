@@ -338,7 +338,8 @@ function renderTT($guid, $connection2, $pupilsightPersonID, $pupilsightTTID, $ti
             $output .= "<table class='table'>";
             $output .= '<tr>';
             $output .= '<td>';
-            $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span>: ';
+            // $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span> ';
+            $output .= "<div class='hr-text'><h4>" . __('Timetable Chooser') . '</div> ';
             while ($row = $result->fetch()) {
                 $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
                 $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp) . "' type='hidden'>";
@@ -388,7 +389,7 @@ function renderTT($guid, $connection2, $pupilsightPersonID, $pupilsightTTID, $ti
             }
             $output .= "<table class='table'>";
             $output .= '<tr>';
-            $output .= "<td style='vertical-align: top;width:300px'>";
+            $output .= "<td style='vertical-align: top;width:auto;'>";
             $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
             $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60))) . "' type='hidden'>";
             $output .= "<input name='schoolCalendar' value='" . $_SESSION[$guid]['viewCalendarSchool'] . "' type='hidden'>";
@@ -415,9 +416,9 @@ function renderTT($guid, $connection2, $pupilsightPersonID, $pupilsightTTID, $ti
             $output .= '</form>';
             $output .= '</td>';
             $output .= "<td style='vertical-align: top; text-align: right'>";
-            $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
+            $output .= "<form style='float:right;' method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
             $output .= '<span class="relative">';
-            $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp) . "' type='text' style='height: 28px; width:100px; margin-right: 0px; float: none'> ";
+            $output .= "<input name='ttDate' id='ttDate' maxlength=10 value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp) . "' type='text' style='width:100px; margin-right: 0px; float: left;min-height:auto;'> ";
             $output .= '</span>';
             $output .= '<script type="text/javascript">';
             $output .= "var ttDate=new LiveValidation('ttDate');";
@@ -438,7 +439,7 @@ function renderTT($guid, $connection2, $pupilsightPersonID, $pupilsightTTID, $ti
             $output .= '$("#ttDate").datepicker();';
             $output .= '</script>';
 
-            $output .= "<input style='margin-top: 0px; margin-right: -2px' type='submit' value='" . __('Go') . "'>";
+            $output .= "<input style='margin-top: 0px; margin-left: 10px;float:left;' class='btn btn-primary' type='submit' value='" . __('Go') . "'>";
             $output .= "<input name='schoolCalendar' value='" . $_SESSION[$guid]['viewCalendarSchool'] . "' type='hidden'>";
             $output .= "<input name='personalCalendar' value='" . $_SESSION[$guid]['viewCalendarPersonal'] . "' type='hidden'>";
             $output .= "<input name='spaceBookingCalendar' value='" . $_SESSION[$guid]['viewCalendarSpaceBooking'] . "' type='hidden'>";
@@ -2222,7 +2223,8 @@ function renderTTSpace($guid, $connection2, $pupilsightSpaceID, $pupilsightTTID,
         $output .= "<table class='table' style='width: 100%'>";
         $output .= '<tr>';
         $output .= '<td>';
-        $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span> ';
+        // $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span> ';
+        $output .= "<div class='hr-text'><h4>" . __('Timetable Chooser') . '</div> ';
         while ($row = $result->fetch()) {
             $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q" . $params . '&pupilsightTTID=' . $row['pupilsightTTID'] . "'>";
             $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp) . "' type='hidden'>";
@@ -2993,7 +2995,8 @@ function renderTTAttendance($guid, $connection2, $classId, $sectionId, $title = 
             $output .= "<table class='table' cellspacing='0' style='width: 100%'>";
             $output .= '<tr>';
             $output .= '<td>';
-            $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span> ';
+            // $output .= "<span class='form-label'>" . __('Timetable Chooser') . '</span> ';
+            $output .= "<div class='hr-text'><h4>" . __('Timetable Chooser') . '</div> ';
             while ($row = $result->fetch()) {
                 $output .= "<form method='post' action='" . $_SESSION[$guid]['absoluteURL'] . "/index.php?q=$q&pupilsightTTID=" . $row['pupilsightTTID'] . "$params'>";
                 $output .= "<input name='ttDate' value='" . date($_SESSION[$guid]['i18n']['dateFormatPHP'], $startDayStamp) . "' type='hidden'>";
