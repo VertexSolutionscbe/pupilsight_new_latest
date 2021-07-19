@@ -37,4 +37,11 @@ class ReportGateway extends QueryableGateway
         return $result->fetchAll();
     }
 
+    public function getParentList($con, $data){
+        $sq = "select pupilsightPersonID, officialName, username, email, phone1, admission_no from pupilsightPerson ";
+        $sq .=" where pupilsightRoleIDPrimary='004' order by officialName asc";
+        $result = $con->query($sq);
+        return $result->fetchAll();
+    }
+
 }

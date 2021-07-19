@@ -24,10 +24,10 @@ class CheckboxColumn extends Column
     public function __construct($id, $key = null)
     {
         parent::__construct($id);
-        
+
         $this->sortable(false)->width('6%');
         $this->context('action');
-        $this->key = !empty($key)? $key : $id;
+        $this->key = !empty($key) ? $key : $id;
 
         $this->modifyCells(function ($data, $cell) {
             return $cell->addClass('bulkCheckbox textCenter');
@@ -61,14 +61,14 @@ class CheckboxColumn extends Column
      */
     public function getOutput(&$data = array())
     {
-        $value = isset($data[$this->key])? $data[$this->key] : '';
+        $value = isset($data[$this->key]) ? $data[$this->key] : '';
 
         $contents = $this->hasFormatter() ? call_user_func($this->formatter, $data) : '';
 
         return !empty($contents)
-            ? $contents 
-            : (new Checkbox($this->getID().'[]'))
-            ->setID($this->getID().$value)
+            ? $contents
+            : (new Checkbox($this->getID() . '[]'))
+            ->setID($this->getID() . $value)
             ->setValue($value)
             ->checked($this->checked ? $value : false)
             ->getOutput();

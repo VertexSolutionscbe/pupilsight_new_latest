@@ -680,13 +680,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo '</h2>';
                         }
 
+                        //echo $row['pupilsightSchoolYearID'].'-'.$row['pupilsightProgramID'].'-'.$row['pupilsightYearGroupID'].'-'.$row['pupilsightRollGroupID'];
+
+
                         try {
-                            $dataDetail = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightYearGroupID' => $row['pupilsightYearGroupID']);
-                            $sqlDetail = "
-                                (SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM pupilsightPerson AS teacher JOIN pupilsightCourseClassPerson AS teacherClass ON (teacherClass.pupilsightPersonID=teacher.pupilsightPersonID)  JOIN pupilsightCourseClassPerson AS studentClass ON (studentClass.pupilsightCourseClassID=teacherClass.pupilsightCourseClassID) JOIN pupilsightPerson AS student ON (studentClass.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightCourseClass ON (studentClass.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.pupilsightPersonID=:pupilsightPersonID AND pupilsightCourse.pupilsightSchoolYearID=(SELECT pupilsightSchoolYearID FROM pupilsightSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email)
-                                UNION
-                                (SELECT DISTINCT surname, preferredName, email FROM pupilsightPerson JOIN pupilsightYearGroup ON (pupilsightYearGroup.pupilsightPersonIDHOY=pupilsightPersonID) WHERE status='Full' AND pupilsightYearGroupID=:pupilsightYearGroupID)
-                                ORDER BY preferredName, surname, email";
+                            // $dataDetail = array('pupilsightPersonID' => $pupilsightPersonID, 'pupilsightYearGroupID' => $row['pupilsightYearGroupID']);
+                            // $sqlDetail = "
+                            //     (SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM pupilsightPerson AS teacher JOIN pupilsightCourseClassPerson AS teacherClass ON (teacherClass.pupilsightPersonID=teacher.pupilsightPersonID)  JOIN pupilsightCourseClassPerson AS studentClass ON (studentClass.pupilsightCourseClassID=teacherClass.pupilsightCourseClassID) JOIN pupilsightPerson AS student ON (studentClass.pupilsightPersonID=student.pupilsightPersonID) JOIN pupilsightCourseClass ON (studentClass.pupilsightCourseClassID=pupilsightCourseClass.pupilsightCourseClassID) JOIN pupilsightCourse ON (pupilsightCourseClass.pupilsightCourseID=pupilsightCourse.pupilsightCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.pupilsightPersonID=:pupilsightPersonID AND pupilsightCourse.pupilsightSchoolYearID=(SELECT pupilsightSchoolYearID FROM pupilsightSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email)
+                            //     UNION
+                            //     (SELECT DISTINCT surname, preferredName, email FROM pupilsightPerson JOIN pupilsightYearGroup ON (pupilsightYearGroup.pupilsightPersonIDHOY=pupilsightPersonID) WHERE status='Full' AND pupilsightYearGroupID=:pupilsightYearGroupID)
+                            //     ORDER BY preferredName, surname, email";
+
+
+                            $dataDetail = array('pupilsightSchoolYearID' => $row['pupilsightSchoolYearID'], 'pupilsightProgramID' => $row['pupilsightProgramID'], 'pupilsightYearGroupID' => $row['pupilsightYearGroupID'], 'pupilsightRollGroupID' => $row['pupilsightRollGroupID']);
+                            $sqlDetail = 'SELECT b.officialName, b.preferredName, b.surname, b.email FROM assign_class_teacher_section AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE b.status="Full" AND a.pupilsightSchoolYearID=:pupilsightSchoolYearID AND a.pupilsightProgramID=:pupilsightProgramID AND a.pupilsightYearGroupID=:pupilsightYearGroupID AND a.pupilsightRollGroupID=:pupilsightRollGroupID ';
+
                             $resultDetail = $connection2->prepare($sqlDetail);
                             $resultDetail->execute($dataDetail);
                         } catch (PDOException $e) {
@@ -694,12 +702,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
 
                         if ($resultDetail->rowCount() > 0) {
+                            echo '<h3>Class Teacher</h3>';
                             echo '<ul>';
                             while ($rowDetail = $resultDetail->fetch()) {
                                 echo '<li>' . htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
-                                if ($rowDetail['email'] != '') {
+
+                                //echo '<li>' . htmlPrep(Format::name('', $rowDetail['officialName'], 'Student', false));
+                                /*if ($rowDetail['email'] != '') {
                                     echo htmlPrep(' <' . $rowDetail['email'] . '>');
-                                }
+                                }*/
+                                echo '</li>';
+                            }
+                            echo '</ul>';
+                        }
+
+                        try {
+
+                            $dataDetail = array('pupilsightSchoolYearID' => $row['pupilsightSchoolYearID'], 'pupilsightProgramID' => $row['pupilsightProgramID'], 'pupilsightYearGroupID' => $row['pupilsightYearGroupID'], 'pupilsightRollGroupID' => $row['pupilsightRollGroupID']);
+                            $sqlDetail = 'SELECT b.officialName, b.preferredName, b.surname, b.email, su.subject_display_name FROM assignstaff_tosubject AS a LEFT JOIN pupilsightStaff AS s ON a.pupilsightStaffID = s.pupilsightStaffID LEFT JOIN pupilsightPerson AS b ON s.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN subjectToClassCurriculum AS su ON a.pupilsightDepartmentID = su.pupilsightDepartmentID AND a.pupilsightSchoolYearID= su.pupilsightSchoolYearID AND a.pupilsightProgramID= su.pupilsightProgramID AND a.pupilsightYearGroupID= su.pupilsightYearGroupID WHERE b.status="Full" AND a.pupilsightSchoolYearID=:pupilsightSchoolYearID AND a.pupilsightProgramID=:pupilsightProgramID AND a.pupilsightYearGroupID=:pupilsightYearGroupID AND a.pupilsightRollGroupID=:pupilsightRollGroupID ';
+
+                            $resultDetail = $connection2->prepare($sqlDetail);
+                            $resultDetail->execute($dataDetail);
+                        } catch (PDOException $e) {
+                            echo "<div class='alert alert-danger'>" . $e->getMessage() . '</div>';
+                        }
+
+                        if ($resultDetail->rowCount() > 0) {
+                            echo '<h3>Subject Teacher</h3>';
+                            echo '<ul>';
+                            while ($rowDetail = $resultDetail->fetch()) {
+                                echo '<li>' . htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
+
+                                echo ' (' . $rowDetail['subject_display_name'] . ') ';
+                                /*if ($rowDetail['email'] != '') {
+                                    echo htmlPrep(' <' . $rowDetail['email'] . '>');
+                                }*/
                                 echo '</li>';
                             }
                             echo '</ul>';

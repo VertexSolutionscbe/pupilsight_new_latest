@@ -21,85 +21,7 @@ if (isset($_POST['type'])) {
     }
 }
 
-$mem = [];
-
-function validate_new_key($id)
-{
-    $flag = false;
-    while ($flag == false) {
-        $key = array_search($id, $mem); // $key = 2;
-        if (empty($key)) {
-            $flag = true;
-        } else {
-            $id = createComplexKey();
-        }
-    }
-    return $id;
-}
-
-function resetSuperKey()
-{
-    unset($mem);
-}
-
-function createSuperKey()
-{
-    $id = createComplexKey();
-    if (!empty($mem)) {
-        $id = validate_new_key($id);
-        array_push($mem, $id);
-    } else {
-        $mem = [$id];
-    }
-    return $id;
-}
-
-function createComplexKey()
-{
-    $oldID = -1;
-    $id = -1;
-    try {
-        $random_number = mt_rand(1000, 9999);
-        $today = time();
-        $id = $today . $random_number;
-        if ($id == $oldID) {
-            createComplexKey();
-        } else {
-            $oldID = $id;
-        }
-    } catch (Exception $ex) {
-        echo 'common.createKey(): ' . $ex->getMessage();
-    }
-    return $id;
-}
-
-function createId()
-{
-    $rand = mt_rand(10, 99);
-    return time() . $rand;
-}
-
-function advDateOut($ts)
-{
-    if (date('Ymd') == date('Ymd', strtotime($ts))) {
-        return date('h:i A', strtotime($ts));
-    } else {
-        return date('j M, Y h:i A', strtotime($ts));
-    }
-}
-
-function get2Char($string)
-{
-    $str = explode(' ', $string);
-    $firstCharacter = $str[0];
-    $firstCharacter = substr($str[0], 0, 1);
-    $firstTwoCharacters = substr($str[0], 0, 2);
-
-    if (count($str) > 1) {
-        $firstTwoCharacters = $firstCharacter . substr($str[1], 0, 1);
-    }
-    return $firstTwoCharacters;
-}
+include 'core.php';
 
 function chatAttachment()
 {
@@ -824,7 +746,7 @@ if ($type == 'postMessage') {
 
             $sq = "select p.pupilsightPersonID, p.officialName from pupilsightPerson as p, ";
             $sq .= " pupilsightStudentEnrolment as e  ";
-            $sq .= " where e.pupilsightPersonID=p.pupilsightPersonID and 
+            $sq .= " where p.is_delete='0' and e.pupilsightPersonID=p.pupilsightPersonID and 
             e.pupilsightSchoolYearID='" . $pupilsightSchoolYearID . "' and 
             e.pupilsightRollGroupID='" . $pupilsightRollGroupID . "' and
             e.pupilsightYearGroupID='" . $pupilsightYearGroupID . "' ";

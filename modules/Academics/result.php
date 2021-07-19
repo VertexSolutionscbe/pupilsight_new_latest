@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
     }
 
     if(!empty($students)){
-        $sql = 'SELECT b.id as test_id, b.name as test_name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$students['pupilsightProgramID'].' AND a.pupilsightYearGroupID = '.$students['pupilsightYearGroupID'].' AND a.pupilsightRollGroupID = '.$students['pupilsightRollGroupID'].' AND b.enable_html = "1" ';
+        $sql = 'SELECT b.id as test_id, b.name as test_name, b.enable_html, b.enable_pdf FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$students['pupilsightProgramID'].' AND a.pupilsightYearGroupID = '.$students['pupilsightYearGroupID'].' AND a.pupilsightRollGroupID = '.$students['pupilsightRollGroupID'].' ';
         $result = $connection2->query($sql);
         $testData = $result->fetchAll();
     }
@@ -143,30 +143,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
     // echo $stuId;
 
     if(!empty($testData)){
+       
     ?>
-    <div class="mt-5">
-        <h2>Academic Tests</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Test Name</th>
-                    <th>View Details</th>
-                    <!-- <th>Progress Report</th> -->
-                </tr>
-            </thead>
-            <tbody>
-    <?php       foreach($testData as $tdata){
-    ?>
-                    <tr>
-                        <td><?php echo $tdata['test_name']?></td>
-                        <td><a href="index.php?q=/modules/Academics/result_details.php&tid=<?php echo $tdata['test_id']?>&cid=<?php echo $stuId?>" target="_blank" class="btn btn-white">Details</a></td>
-                        <!-- <td></td> -->
-                    </tr>
-    <?php } ?>
-            </tbody>
-        </table>
-    </div>
+            <div class="mt-5">
+                <h2>Academic Tests</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Test Name</th>
+                            <th>View Details</th>
+                            <!-- <th>Progress Report</th> -->
+                        </tr>
+                    </thead>
+                    <tbody>
+            <?php   
+                    foreach($testData as $tdata){
+                        $enable_html = $tdata['enable_html'];
+                        $enable_pdf = $tdata['enable_pdf'];
+                        if($enable_html == '1' || $enable_pdf == '1'){
+                            $sql = "SELECT lock_marks_entry, enable_pdf, enable_html, enable_test_report FROM examinationTestStudentConfig WHERE pupilsightSchoolYearID = ".$pupilsightSchoolYearID." AND pupilsightProgramID = ".$students['pupilsightProgramID']." AND pupilsightYearGroupID = ".$students['pupilsightYearGroupID']." AND pupilsightRollGroupID = ".$students['pupilsightRollGroupID']." AND test_id = ".$tdata['test_id']." AND pupilsightPersonID = ".$students['pupilsightPersonID']."";
+                            $result = $connection2->query($sql);
+                            $chkData = $result->fetch();
+
+                            $sql = 'SELECT b.sketch_id, GROUP_CONCAT(c.id) as genID FROM examinationTest AS a LEFT JOIN examinationReportSketchTemplateMaster AS b ON a.report_template_id = b.id LEFT JOIN examinationReportTemplateSketchGenerate AS c ON b.sketch_id = c.sketch_id WHERE a.id = '.$tdata['test_id'].' ';
+                            $result = $connection2->query($sql);
+                            $skcData = $result->fetch();
+                            $sketch_id = $skcData['sketch_id'];
+                            $sketch_gen_id = $skcData['genID'];
+                            
+            ?>
+                            <tr>
+                                <td><?php echo $tdata['test_name']?></td>
+                                <td >
+                                    <?php if(!empty($chkData) && ($chkData['enable_html'] == '2')){ ?>
+                                        <!-- <button class="disable_test_result btn btn-white">Details</button> -->
+                                    <?php } else { ?>
+                                        <a href="index.php?q=/modules/Academics/result_details.php&tid=<?php echo $tdata['test_id']?>&cid=<?php echo $stuId?>" target="_blank" class="btn btn-white">Details</a>
+                                    <?php } ?>
+
+                                    <?php if(!empty($chkData) && ($chkData['enable_pdf'] == '2')){ ?>
+                                        
+                                        <?php } else { 
+                                            echo '<a class="btn btn-white" href="thirdparty/pdfgenerate/pdflib-single.php?id=' . $sketch_id . '&skgid=' . $sketch_gen_id . '&stuid=' . $stuId .'">Download PDF</a>';
+                                        } 
+                                    ?>
+                                </td>
+                                <!-- <td></td> -->
+                            </tr>
+            <?php } 
+            } ?>
+                    </tbody>
+                </table>
+            </div>
     <?php
+        
     } else {
         echo '<h1>No Test</h1>';
     }
@@ -181,5 +211,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/result.php') == 
         var hrf = 'index.php?q=/modules/Academics/result.php&cid=' + id;
         window.location.href = hrf;
     });
+
+    $(document).on('click', '.disable_test_result', function() {
+        alert('Your Details is Disabled by Administrator, please contact Administrator.');
+    });
+
+    
 
 </script>

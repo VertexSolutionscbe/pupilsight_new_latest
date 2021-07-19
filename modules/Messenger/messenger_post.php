@@ -13,13 +13,13 @@ use Pupilsight\Domain\Messenger\GroupGateway;
 use Pupilsight\Tables\DataTable;
 ?>
 <style>
-#individualList {
-  width: 500px;
-}
+	#individualList {
+		width: 500px;
+	}
 
-.staticwidth {
-  width: 220px;
-}
+	.staticwidth {
+		width: 220px;
+	}
 </style>
 <?php
 require_once __DIR__ . '/moduleFunctions.php';
@@ -375,14 +375,13 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 			$row->addYesNoRadio('rollGroup')->checked('N')->required();
 
 			$form->toggleVisibilityByClass('rollGroup')->onRadio('rollGroup')->when('Y');
-			
+
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_rollGroups_any")) {
 				$data = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"]);
 				//$sql = "SELECT pupilsightRollGroup.pupilsightRollGroupID AS value, pupilsightRollGroup.name FROM pupilsightRollGroup WHERE pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name";
 				// $sql = "SELECT a.pupilsightRollGroupID as value, d.name as sectionname, a.pupilsightProgramID, b.pupilsightYearGroupID , b.name as name1, CONCAT(b.name,' ',d.name) as name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS d ON a.pupilsightRollGroupID = d.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID ORDER BY a.pupilsightMappingID";
 
 				$sql = "SELECT a.pupilsightMappingID as value, d.name as sectionname, a.pupilsightProgramID, b.pupilsightYearGroupID , b.name as name1, CONCAT(b.name,' ',d.name) as name FROM pupilsightProgramClassSectionMapping AS a LEFT JOIN pupilsightProgram AS c ON a.pupilsightProgramID = c.pupilsightProgramID LEFT JOIN pupilsightYearGroup AS b ON a.pupilsightYearGroupID = b.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS d ON a.pupilsightRollGroupID = d.pupilsightRollGroupID WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID ORDER BY a.pupilsightMappingID";
-
 			} else {
 				if ($roleCategory == "Staff") {
 					$data = array("pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"], "pupilsightPersonID1" => $_SESSION[$guid]["pupilsightPersonID"], "pupilsightPersonID2" => $_SESSION[$guid]["pupilsightPersonID"], "pupilsightPersonID3" => $_SESSION[$guid]["pupilsightPersonID"], "pupilsightSchoolYearID" => $_SESSION[$guid]["pupilsightSchoolYearID"]);
@@ -392,11 +391,11 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 					$sql = "SELECT pupilsightRollGroup.pupilsightRollGroupID AS value, pupilsightRollGroup.name FROM pupilsightRollGroup JOIN pupilsightStudentEnrolment ON (pupilsightStudentEnrolment.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID) WHERE pupilsightPersonID=:pupilsightPersonID AND pupilsightRollGroup.pupilsightSchoolYearID=:pupilsightSchoolYearID AND pupilsightStudentEnrolment.pupilsightSchoolYearID=:pupilsightSchoolYearID ORDER BY name";
 				}
 			}
-			
+
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
 			$row->addLabel('rollGroups[]', __('Select Sections'));
-//echo "sql : " . $sql;
-//die();
+			//echo "sql : " . $sql;
+			//die();
 			$row->addSelect('rollGroups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->required()->placeholder();
 
 			$row = $form->addRow()->addClass('rollGroup hiddenReveal');
@@ -755,155 +754,164 @@ WHERE a.pupilsightSchoolYearID =:pupilsightSchoolYearID GROUP BY a.pupilsightYea
 }
 ?>
 <script type='text/javascript'>
-$(document).ready(function() {
-  $("#bodyedButtonPreview").trigger('click');
+	$(document).ready(function() {
+		$("#bodyedButtonPreview").trigger('click');
 
-  $('#individualList').select2({
-    minimumInputLength: 3
-  });
-});
+		$('#individualList').select2({
+			minimumInputLength: 3
+		});
+	});
 </script>
 
 <script type="text/javascript">
-$("#body1").keyup(function() {
-  //$("#count").text("Characters left: " + (500 - $(this).val().length));
-  $("#count").text("Characters Count : " + $(this).val().length);
-});
+	$("#body1").keyup(function() {
+		//$("#count").text("Characters left: " + (500 - $(this).val().length));
+		$("#count").text("Characters Count : " + $(this).val().length);
+	});
 </script>
 <script>
-$('input[type=radio][name=email]').change(function() {
-  if (this.value == 'Y') {
-    //alert("yes");
-    $('#body').prop('disabled', false);
-    $('#body1').prop('disabled', true);
-    $("input[name=sms][value='N']").prop("checked", true);
-    $("input[name=messageWall][value='N']").prop("checked", true);
-    $("[id=publicationdate").hide();
-    $("[id=body1hide").hide();
-    $("[id=bodyhide").show();
-    $("[id=categoryhide").show();
-    $("[id=copysmshide").hide();
-	$("[id=subjecthide").show();
-  } else if (this.value == 'N') {
-    //alert("no");
-  }
-});
+	$('input[type=radio][name=email]').change(function() {
+		if (this.value == 'Y') {
+			//alert("yes");
+			$('#body').prop('disabled', false);
+			$('#body1').prop('disabled', true);
+			$("input[name=sms][value='N']").prop("checked", true);
+			$("input[name=messageWall][value='N']").prop("checked", true);
+			$("[id=publicationdate").hide();
+			$("[id=body1hide").hide();
+			$("[id=bodyhide").show();
+			$("[id=categoryhide").show();
+			$("[id=copysmshide").hide();
+			$("[id=subjecthide").show();
+			$('#subject').prop('disabled', false);
+		} else if (this.value == 'N') {
+			//alert("no");
+		}
+	});
 </script>
 <script>
-$('input[type=radio][name=sms]').change(function() {
-  if (this.value == 'Y') {
-    $("#body1edButtonPreview").trigger('click');
-    //alert("yes");
-    $("input[name=email][value='N']").prop("checked", true);
-    $("input[name=messageWall][value='N']").prop("checked", true);
-    $('#body').prop('disabled', true);
-    $('#body1').prop('disabled', false);
-    $("[id=replyemail").hide();
-    $("[id=bccemail").hide();
-    $("[id=publicationdate").hide();
-    $("[id=subjecthide").hide();
-    $("[id=bodyhide").hide();
-    $("[id=categoryhide").hide();
-  } else if (this.value == 'N') {
-    //alert("no");
-  }
-});
+	$('input[type=radio][name=sms]').change(function() {
+		if (this.value == 'Y') {
+			$("#body1edButtonPreview").trigger('click');
+			//alert("yes");
+			$("input[name=email][value='N']").prop("checked", true);
+			$("input[name=messageWall][value='N']").prop("checked", true);
+			$('#body').prop('disabled', true);
+			$('#body1').prop('disabled', false);
+			$("[id=replyemail").hide();
+			$("[id=bccemail").hide();
+			$("[id=publicationdate").hide();
+			$("[id=subjecthide").hide();
+			$('#subject').prop('disabled', true);
+			$("[id=bodyhide").hide();
+			$("[id=categoryhide").hide();
+		} else if (this.value == 'N') {
+			//alert("no");
+		}
+	});
 </script>
 <script>
-$('input[type=radio][name=messageWall]').change(function() {
-  if (this.value == 'Y') {
-    //alert("yes");
-    $('#body').prop('disabled', false);
-    $('#body1').prop('disabled', true);
-    $("input[name=sms][value='N']").prop("checked", true);
-    $("input[name=email][value='N']").prop("checked", true);
-    $("[id=replyemail").hide();
-    $("[id=bccemail").hide();
-    $("[id=body1hide").hide();
-    $("[id=copysmshide").hide();
-    $("[id=bodyhide").show();
-    $("[id=categoryhide").show();
-	$("[id=subjecthide").show();
-  } else if (this.value == 'N') {
-    //alert("no");
-  }
-});
+	$('input[type=radio][name=messageWall]').change(function() {
+		if (this.value == 'Y') {
+			//alert("yes");
+			$('#body').prop('disabled', false);
+			$('#body1').prop('disabled', true);
+			$("input[name=sms][value='N']").prop("checked", true);
+			$("input[name=email][value='N']").prop("checked", true);
+			$("[id=replyemail").hide();
+			$("[id=bccemail").hide();
+			$("[id=body1hide").hide();
+			$("[id=copysmshide").hide();
+			$("[id=bodyhide").show();
+			$("[id=categoryhide").show();
+			$("[id=subjecthide").show();
+			$('#subject').prop('disabled', false);
+		} else if (this.value == 'N') {
+			//alert("no");
+		}
+	});
 </script>
 <script>
-$(document).on('change', '#pupilsightSchoolYearID', function() {
-  var val = $(this).val();
-  var type = "getPrograms1";
-  if (val != "") {
-    $.ajax({
-      url: 'ajax_data.php',
-      type: 'post',
-      data: {
-        val: val,
-        type: type
-      },
-      async: true,
-      success: function(response) {
-        $("#pupilsightProgramIDA").html();
-        $("#pupilsightProgramIDA").html(response);
-      }
-    });
-  }
-});
+	$(document).on('change', '#pupilsightSchoolYearID', function() {
+		var val = $(this).val();
+		var type = "getPrograms1";
+		if (val != "") {
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: val,
+					type: type
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightProgramIDA").html();
+					$("#pupilsightProgramIDA").html(response);
+				}
+			});
+		}
+	});
 </script>
 <script type="text/javascript">
-$(document).on('change', '#pupilsightProgramIDA', function() {
-  var val = $(this).val();
-  var type = "getClass";
-  if (val != "") {
-    $.ajax({
-      url: 'ajax_data.php',
-      type: 'post',
-      data: {
-        val: val,
-        type: type
-      },
-      async: true,
-      success: function(response) {
-        $("#pupilsightYearGroupIDA").html();
-        $("#pupilsightYearGroupIDA").html(response);
-      }
-    });
-  }
-});
+	$(document).on('change', '#pupilsightProgramIDA', function() {
+		var val = $(this).val();
+		var type = "getClass";
+		if (val != "") {
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: val,
+					type: type
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightYearGroupIDA").html();
+					$("#pupilsightYearGroupIDA").html(response);
+				}
+			});
+		}
+	});
 </script>
 <script type="text/javascript">
-$(document).on('change', '#pupilsightYearGroupIDA', function() {
-  //var id = $("#pupilsightRollGroupID").val();
-  var yid = $('#pupilsightSchoolYearID').val();
-  var pid = $('#pupilsightProgramIDA').val();
-  var cid = $(this).val();
-  if (cid != "") {
-    var type = 'getStudentClassAndSection';
-    $.ajax({
-      url: 'ajax_data.php',
-      type: 'post',
-      data: {
-        val: cid,
-        type: type,
-        yid: yid,
-        pid: pid
-      },
-      async: true,
-      success: function(response) {
-        $("#pupilsightPersonID").html('');
-        $("#pupilsightPersonID").append(response);
-      }
-    });
-  }
-});
+	$(document).on('change', '#pupilsightYearGroupIDA', function() {
+		//var id = $("#pupilsightRollGroupID").val();
+		var yid = $('#pupilsightSchoolYearID').val();
+		var pid = $('#pupilsightProgramIDA').val();
+		var cid = $(this).val();
+		if (cid != "") {
+			var type = 'getStudentClassAndSection';
+			$.ajax({
+				url: 'ajax_data.php',
+				type: 'post',
+				data: {
+					val: cid,
+					type: type,
+					yid: yid,
+					pid: pid
+				},
+				async: true,
+				success: function(response) {
+					$("#pupilsightPersonID").html('');
+					$("#pupilsightPersonID").append(response);
+				}
+			});
+		}
+	});
 </script>
 <script type='text/javascript'>
-$(document).ready(function() {
-  $('#pupilsightYearGroupIDA').select2();
-});
+	$(document).ready(function() {
+		$('#pupilsightYearGroupIDA').select2();
+	});
 </script>
 <script type='text/javascript'>
-$(document).ready(function() {
-  $('#pupilsightPersonID').select2();
-});
+	$(document).ready(function() {
+		$('#pupilsightPersonID').select2();
+	});
+
+
+	// $(document).on('click', '#smsradio', function() {
+	// 	$("#subject").prop('required', false);
+	// 	$("#subject").removeClass('LV_invalid_field');
+	// });
 </script>

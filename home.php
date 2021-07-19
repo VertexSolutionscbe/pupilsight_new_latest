@@ -79,6 +79,13 @@ $invalid = "";
 if (isset($_GET["invalid"])) {
     $invalid = $_GET["invalid"];
 }
+
+$locked = "";
+if (isset($_GET["locked"])) {
+    $locked = $_GET["locked"];
+}
+
+
 ?>
 
 
@@ -332,6 +339,8 @@ if (isset($_GET["invalid"])) {
 <body id='chkCounterSession' class='antialiased'>
 
     <input type="hidden" name="invalid" id="invalid" value="<?php echo $invalid; ?>" />
+    <input type="hidden" name="locked" id="locked" value="<?php echo $locked; ?>" />
+    
     <!-- Preloader Start Here -->
     <div id="preloader" style="display:none;"></div>
     <!-- Preloader End Here -->
@@ -350,9 +359,7 @@ if (isset($_GET["invalid"])) {
                 </button>
                 <a href="<?= $baseurl ?>/index.php" class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pr-0 pr-md-3">
                     <!-- 
-                    <img src="<?= $logo ?>" class="navbar-brand-image" title="<?= $data[
-    "logo_title"
-] ?>"> 
+                    <img src="<?= $logo ?>" class="navbar-brand-image" title="<?= $data["logo_title"] ?>"> 
                     -->
                     <?php if ($logoStyle == "logo_1_1") {
                         $stlog = "<div class='logo_1_1'>";
@@ -441,44 +448,35 @@ if (isset($_GET["invalid"])) {
                             foreach ($menu as $m) {
                                 if ($m["title"] != "Admission") { ?>
                                     <li class="nav-item">
-                                        <a class="nav-link chkCounter" href="<?= $m[
-                                            "link"
-                                        ] ?>" onclick="homePanel();">
-                                            <span class="nav-link-icon d-md-none d-lg-inline-block mdi <?= $m[
-                                                "icon"
-                                            ] ?>"></span>
-                                            <span class="nav-link-title"><?= $m[
-                                                "title"
-                                            ] ?></span>
+                                        <a class="nav-link chkCounter" href="<?= $m["link"] ?>" onclick="homePanel();">
+                                            <span class="nav-link-icon d-md-none d-lg-inline-block mdi <?= $m["icon"] ?>"></span>
+                                            <span class="nav-link-title"><?= $m["title"] ?></span>
                                         </a>
                                     </li>
-                                <?php } else {
-                                    if(!empty($campaignChk)){
-                                ?>
-                                    <li class="nav-item dropdown">
+                                    <?php } else {
+                                    if (!empty($campaignChk)) {
+                                    ?>
+                                        <li class="nav-item dropdown">
 
-                                        <a class="nav-link dropdown-toggle" href="#navbar-admission" data-toggle="dropdown" role="button" aria-expanded="false">
-                                            <span class="nav-link-icon d-md-none d-lg-inline-block mdi <?= $m[
-                                                "icon"
-                                            ] ?>"></span>
-                                            <span class="nav-link-title"><?= $m[
-                                                "title"
-                                            ] ?></span>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" href="javascript:applicationList();">
-                                                    Application List
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="javascript:applicationStatus();">
-                                                    Application Status
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                            <?php } }
+                                            <a class="nav-link dropdown-toggle" href="#navbar-admission" data-toggle="dropdown" role="button" aria-expanded="false">
+                                                <span class="nav-link-icon d-md-none d-lg-inline-block mdi <?= $m["icon"] ?>"></span>
+                                                <span class="nav-link-title"><?= $m["title"] ?></span>
+                                            </a>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:applicationList();">
+                                                        Application List
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="javascript:applicationStatus();">
+                                                        Application Status
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                            <?php }
+                                }
                             }
                             ?>
                         </ul>
@@ -495,8 +493,8 @@ if (isset($_GET["invalid"])) {
                     <!-- <div class='my-3' style="width:400px;margin:auto;"> -->
                     <div class='mx-6'>
                         <div class="bannerTitle"><?= trim(
-                            html_entity_decode($data["cms_banner_title"])
-                        ) ?></div>
+                                                        html_entity_decode($data["cms_banner_title"])
+                                                    ) ?></div>
                         <div class='mt-3'>
                             <div class="bannerDes">
                                 <?= trim(
@@ -551,9 +549,7 @@ if (isset($_GET["invalid"])) {
                                     !empty($section["6"]["0"]["image_path"])
                                 ) { ?>
                                     <img src="<?= "cms/images/upload/" .
-                                        $section["6"]["0"][
-                                            "image"
-                                        ] ?>" class="img-fluid" style='max-height:300px;' />
+                                                    $section["6"]["0"]["image"] ?>" class="img-fluid" style='max-height:300px;' />
                                 <?php } else { ?>
                                     <img src="<?= $about_us ?>" class="img-fluid" style='max-height:300px;' />
                                 <?php } ?>
@@ -575,25 +571,17 @@ if (isset($_GET["invalid"])) {
                                     }*/
 
                                     if (
-                                        !empty(
-                                            $section["6"]["0"][
-                                                "short_description"
-                                            ]
-                                        )
+                                        !empty($section["6"]["0"]["short_description"])
                                     ) {
                                         echo "<b class='bannerDes'>" .
-                                            $section["6"]["0"][
-                                                "short_description"
-                                            ] .
+                                            $section["6"]["0"]["short_description"] .
                                             "</b>";
                                     } else {
                                         echo '<b class="bannerDes">Limitless learning, more possibilities</b>';
                                     }
 
                                     if (
-                                        !empty(
-                                            $section["6"]["0"]["description"]
-                                        )
+                                        !empty($section["6"]["0"]["description"])
                                     ) {
                                         echo "<p class='bannerDes'>" .
                                             $section["6"]["0"]["description"] .
@@ -624,22 +612,20 @@ if (isset($_GET["invalid"])) {
                                     $cimg =
                                         "cms/images/upload/" . $sec["image"];
                                 }
-                                ?>
+                        ?>
 
                                 <div class="col-sm">
                                     <a href="#courseModal" class="courseData ablack" data-toggle="modal" data-cimg="<?= $cimg ?>" data-title="<?= ucwords(
-    $sec["title"]
-) ?>" data-desc="<?= $sec["short_description"] ?>">
+                                                                                                                                                    $sec["title"]
+                                                                                                                                                ) ?>" data-desc="<?= $sec["short_description"] ?>">
 
                                         <div class="card">
                                             <img src="<?= $cimg ?>" class="card-img-top" style='height: 200px;background-size: contain;'>
                                             <div class="card-body">
                                                 <h3 class="card-title wordwrap"><?= ucwords(
-                                                    $sec["title"]
-                                                ) ?></h3>
-                                                <p class="wordwrap"><?= $sec[
-                                                    "short_description"
-                                                ] ?></p>
+                                                                                    $sec["title"]
+                                                                                ) ?></h3>
+                                                <p class="wordwrap"><?= $sec["short_description"] ?></p>
                                             </div>
                                         </div>
 
@@ -694,11 +680,7 @@ if (isset($_GET["invalid"])) {
 
             <!-- <div class="row mt-5">
                 <div class="col-lg-12 d-flex justify-content-center">
-                <span class="carouselTitle"><?php echo $data[
-                    "total_student"
-                ]; ?><span>  <span class="ml-2 carouselTitle"><?php echo $data[
-    "total_course"
-]; ?><span>
+                <span class="carouselTitle"><?php echo $data["total_student"]; ?><span>  <span class="ml-2 carouselTitle"><?php echo $data["total_course"]; ?><span>
                  <h3> <span style="margin-left:10px">Students</span><span style="margin-left:40px">Courses</span> </h3>
                 
                 </div>    
@@ -710,9 +692,7 @@ if (isset($_GET["invalid"])) {
                     <?php if ($data["total_student"]) { ?>
 
                         <div>
-                            <span class="carouselTitle"><?php echo $data[
-                                "total_student"
-                            ]; ?><span>
+                            <span class="carouselTitle"><?php echo $data["total_student"]; ?><span>
                                     <h3> <span>Students</span></h3>
 
                         </div>
@@ -720,11 +700,9 @@ if (isset($_GET["invalid"])) {
 
                     <?php if ($data["total_course"]) { ?>
                         <div <?php if (
-                            $data["total_student"]
-                        ) { ?> class="ml-3" <?php } ?>>
-                            <span class="carouselTitle"><?php echo $data[
-                                "total_course"
-                            ]; ?><span>
+                                    $data["total_student"]
+                                ) { ?> class="ml-3" <?php } ?>>
+                            <span class="carouselTitle"><?php echo $data["total_course"]; ?><span>
                                     <h3> <span>Courses</span></h3>
                         </div>
                     <?php } ?>
@@ -753,17 +731,13 @@ if (isset($_GET["invalid"])) {
                                             "cms/images/upload/" .
                                             $crs["image"];
                                     }
-                                    ?>
+                            ?>
 
                                     <div class="col-sm">
-                                        <a href="#annModal" class="annData ablack" data-toggle="modal" data-aimg="<?= $aimg ?>" data-title="<?= $crs[
-    "title"
-] ?>" data-desc="<?= $crs["short_description"] ?>">
+                                        <a href="#annModal" class="annData ablack" data-toggle="modal" data-aimg="<?= $aimg ?>" data-title="<?= $crs["title"] ?>" data-desc="<?= $crs["short_description"] ?>">
                                             <div class="card">
                                                 <img src="<?= $aimg ?>" class="card-img-top" style='height: 200px;background-size: cover;'>
-                                                <div class="card-body wordwrap" title='<?= $crs[
-                                                    "title"
-                                                ] ?>'>
+                                                <div class="card-body wordwrap" title='<?= $crs["title"] ?>'>
                                                     <?= $crs["title"] ?>
                                                 </div>
                                             </div>
@@ -866,7 +840,8 @@ if (isset($_GET["invalid"])) {
                                 </div>
 
 
-                            <?php $flag = false;}
+                            <?php $flag = false;
+                            }
                             ?>
 
 
@@ -905,7 +880,7 @@ if (isset($_GET["invalid"])) {
                                 if ($nws["short_description"]) {
                                     $edescription = $nws["short_description"];
                                 }
-                                ?>
+                        ?>
 
                                 <div class="col-sm">
                                     <a href="#eventModal" class="eventData ablack" data-toggle="modal" data-eimg="<?= $eimg ?>" data-title="<?= $etitle ?>" data-desc="<?= $edescription ?>">
@@ -999,9 +974,7 @@ if (isset($_GET["invalid"])) {
                                         <!-- <label class="form-label font20">Contact Number</label> -->
                                         <i class="fa fa-phone" style="font-size:24px;color:#206bc4"></i>
                                     </div>
-                                    <div class="col-lg-11"><?php echo $data[
-                                        "phone"
-                                    ]; ?></div>
+                                    <div class="col-lg-11"><?php echo $data["phone"]; ?></div>
                                 </div>
                                 <br>
 
@@ -1020,33 +993,29 @@ if (isset($_GET["invalid"])) {
                                         <i class="fa fa-envelope-o" style="font-size:24px;color:#206bc4"></i>
                                     </div>
                                     <div class="col-lg-11">
-                                        <diV><?php echo $data[
-                                            "primary_email"
-                                        ]; ?></div>
-                                        <div><?php echo $data[
-                                            "secondary_email"
-                                        ]; ?></div>
+                                        <diV><?php echo $data["primary_email"]; ?></div>
+                                        <div><?php echo $data["secondary_email"]; ?></div>
                                     </div>
                                 </div>
                                 <br>
                             <?php } ?>
 
                             <?php
-                //if ($data['fax'] != '') {
-                ?>
+                            //if ($data['fax'] != '') {
+                            ?>
                             <!-- <div>
                                      <label class="form-label font20">Fax</label> 
 
                                     <i class="fa fa-fax" style="font-size:24px;color:blue"></i>
                                     <?php
-                //echo $data['fax'];
-                ?>
+                                    //echo $data['fax'];
+                                    ?>
                                 </div>
 
                                 <br> -->
                             <?php
-                //}
-                ?>
+                            //}
+                            ?>
 
                         </div>
                     </div>
@@ -1096,9 +1065,9 @@ if (isset($_GET["invalid"])) {
                     <div class="col-md-12 col-sm-12 d-flex justify-content-center">
                         <div id="mapshow" >
                             <?php
-                //if($data['contact_map'])
-                //echo html_entity_decode($data['contact_map'])
-                ?>
+                            //if($data['contact_map'])
+                            //echo html_entity_decode($data['contact_map'])
+                            ?>
                         </div>
                     </div>
                 </div> -->
@@ -1116,10 +1085,10 @@ if (isset($_GET["invalid"])) {
         <div id="applicationList" class="container-fluid my-5 hide">
             <div class="row">
                 <div class="col-md-8 col-sm-12 <?php if (
-                    $logoStyle == "logo_1_1"
-                ) {
-                    echo "text-center";
-                } ?>">
+                                                    $logoStyle == "logo_1_1"
+                                                ) {
+                                                    echo "text-center";
+                                                } ?>">
                     <div class="carouselTitle">Application List</div>
 
 
@@ -1167,7 +1136,7 @@ if (isset($_GET["invalid"])) {
                             }
                             echo "</td>";
                             echo "</tr>";
-                            ?>
+                        ?>
                         <?php
                         } ?>
                     </table>
@@ -1179,10 +1148,10 @@ if (isset($_GET["invalid"])) {
         <div id="applicationStatus" class="container-fluid my-5 hide">
             <div class="row">
                 <div class="col-md-8 col-sm-12 <?php if (
-                    $logoStyle == "logo_1_1"
-                ) {
-                    echo "text-center";
-                } ?>">
+                                                    $logoStyle == "logo_1_1"
+                                                ) {
+                                                    echo "text-center";
+                                                } ?>">
                     <div class="carouselTitle">Application Status</div>
                 </div>
                 <div class="col-md-4 col-sm-12 text-right">
@@ -1268,15 +1237,20 @@ if (isset($_GET["invalid"])) {
 
                 <?php } ?>
 
+                <?php if ($locked == "true") { ?>
+                    <div class="alert alert-warning">Your account has been locked/disabled, please contact Administrator.</div>
+                <?php } ?>
+
+                
                 <div class="empty-warning"></div>
 
                 <div class="mb-3">
                     <label class="form-label">Username</label>
                     <input type="text" id="username" value="<?php if (
-                        isset($_COOKIE["username"])
-                    ) {
-                        echo $_COOKIE["username"];
-                    } ?>" name="username" class="form-control" required="">
+                                                                isset($_COOKIE["username"])
+                                                            ) {
+                                                                echo $_COOKIE["username"];
+                                                            } ?>" name="username" class="form-control" required="">
                     <div class="invalid-feedback">Invalid User Name or Email Addresss</div>
                 </div>
                 <div class="mb-2">
@@ -1284,10 +1258,10 @@ if (isset($_GET["invalid"])) {
 
 
                     <input type="password" value="<?php if (
-                        isset($_COOKIE["password"])
-                    ) {
-                        echo $_COOKIE["password"];
-                    } ?>" id="password" name="password" class="form-control" required="">
+                                                        isset($_COOKIE["password"])
+                                                    ) {
+                                                        echo $_COOKIE["password"];
+                                                    } ?>" id="password" name="password" class="form-control" required="">
                     <div class="invalid-feedback">Invalid Password</div>
                     <select id="pupilsightSchoolYearID" name="pupilsightSchoolYearID" class="d-none fullWidth">
                         <option value="023">2017-18</option>
@@ -1301,10 +1275,10 @@ if (isset($_GET["invalid"])) {
                     <div class="row">
                         <p class="login-remember">
                             <label><input name="rememberme" type="checkbox" <?php if (
-                                isset($_COOKIE["username"])
-                            ) {
-                                echo "checked";
-                            } ?> /> Remember
+                                                                                isset($_COOKIE["username"])
+                                                                            ) {
+                                                                                echo "checked";
+                                                                            } ?> /> Remember
                                 Me</label>
                         </p>
                         <div class='col-12'><button type="submit" class="btn btn-primary btn-block btn-square">Sign in</button></div>
@@ -1395,33 +1369,25 @@ if (isset($_GET["invalid"])) {
 
                         <?php if (!empty($data["facebook_link"])) { ?>
 
-                            <a target="_blank" href="<?php echo $data[
-                                "facebook_link"
-                            ]; ?>">
+                            <a target="_blank" href="<?php echo $data["facebook_link"]; ?>">
                                 <i class="social-icon fa fa-facebook" style="font-size:24px;color:#206bc4"></i>
                             </a>&nbsp;&nbsp;
 
                         <?php } ?>
                         <?php if (!empty($data["twitter_link"])) { ?>
-                            <a target="_blank" href="<?php echo $data[
-                                "twitter_link"
-                            ]; ?>">
+                            <a target="_blank" href="<?php echo $data["twitter_link"]; ?>">
                                 <i class="social-icon fa fa-twitter" style="font-size:24px;color:#206bc4"></i>
                             </a>&nbsp;&nbsp;
 
                         <?php } ?>
                         <?php if (!empty($data["pinterest_link"])) { ?>
-                            <a target="_blank" href="<?php echo $data[
-                                "pinterest_link"
-                            ]; ?>">
+                            <a target="_blank" href="<?php echo $data["pinterest_link"]; ?>">
                                 <i class="social-icon fa fa-pinterest-p" style="font-size:24px;color:#206bc4"></i>
                             </a>&nbsp;&nbsp;
 
                         <?php } ?>
                         <?php if (!empty($data["linkdlin_link"])) { ?>
-                            <a target="_blank" href="<?php echo $data[
-                                "linkdlin_link"
-                            ]; ?>">
+                            <a target="_blank" href="<?php echo $data["linkdlin_link"]; ?>">
                                 <i class="social-icon fa fa-linkedin" style="font-size:24px;color:#206bc4"></i>
                             </a>
                         <?php } ?>
@@ -1441,7 +1407,7 @@ if (isset($_GET["invalid"])) {
         <button onclick="topFunction()" id="topBtn" title="Go to top"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></button>
 
         <!-- <a href="<?php echo $baseurl .
-            "/home.php"; ?>"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></a> -->
+                            "/home.php"; ?>"><i class="fa fa-caret-square-o-up" style="font-size:50px;color:#206bc4" title="Go Up"></i></a> -->
     </div>
 
     <style>
@@ -1456,7 +1422,7 @@ if (isset($_GET["invalid"])) {
 
         .google-maps {
             position: relative;
-            padding-bottom: 1%; // This is the aspect ratio
+            padding-bottom: 1%;
             height: 0;
             overflow: hidden;
         }
@@ -1511,7 +1477,7 @@ if (isset($_GET["invalid"])) {
         }
     </style>
 
-   
+
     <script>
         //Get the button
         var topbutton = document.getElementById("topBtn");
@@ -1577,6 +1543,20 @@ if (isset($_GET["invalid"])) {
             if (invalid == 'true') {
                 loginPanel();
                 toast('error', 'You have entered wrong password and you have 10 chances to enter the correct password. Else your account will be locked. You need to contact admin to unlock your account');
+                
+            } else {
+                $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
+                try {
+                    $('.gmap_canvas a').remove();
+                } catch (ex) {
+                    console.log(ex);
+                }
+            }
+
+            var locked = $('#locked').val();
+            if (locked == 'true') {
+                loginPanel();
+                // toast('error', 'You have entered wrong password and you have 10 chances to enter the correct password. Else your account will be locked. You need to contact admin to unlock your account');
             } else {
                 $("#loginPanel,#forgetPanel, #applicationList, #applicationStatus").hide().removeClass("hide");
                 try {
@@ -1591,7 +1571,10 @@ if (isset($_GET["invalid"])) {
             // $("#username").val("");
             // $("#password").val("");
             $("#homePanel,#forgetPanel, #footPanel, #applicationList, #applicationStatus").hide(400);
-            $("#loginPanel").show(400);
+            window.setTimeout(function () {
+                $("#loginPanel").show(400);
+            }, 10);
+            
         }
 
         function forgetPanel() {
@@ -1798,6 +1781,18 @@ if (isset($_GET["invalid"])) {
                 alert('Please Enter Your Username or Email Id!');
             }
         });
+        $('.dropdown-toggle').click(function(e) {
+            if ($(this).hasClass('show')) {
+                $(this).removeClass('show');
+            } else {
+                $(this).addClass('show');
+            }
+            if ($(this).next('ul.dropdown-menu').hasClass('show')) {
+                $(this).next('ul.dropdown-menu').removeClass('show');
+            } else {
+                $(this).next('ul.dropdown-menu').addClass('show');
+            }
+        })
     </script>
 
     <script>

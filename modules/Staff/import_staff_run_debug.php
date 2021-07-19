@@ -70,6 +70,8 @@ if (isActionAccessible($guid, $connection2, "/modules/Staff/import_staff_run.php
                 $headers[$key] = '##_canLogin';
             } else if ($hd == 'Email') {
                 $headers[$key] = '##_email';
+            } else if ($hd == "Mobile Country Code") {
+                $headers[$key] = "##_phone1CountryCode";
             } else if ($hd == 'Mobile') {
                 $headers[$key] = '##_phone1';
             } else if ($hd == 'Address') {

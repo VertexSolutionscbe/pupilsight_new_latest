@@ -26,21 +26,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/entry_marks_bySt
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-
-    if(!empty($skid)){
-        $sqla = 'SELECT p.officialName,smarks.*
+    //echo $skid.'skill';
+    // if(!empty($skid)){
+        // $sqla = 'SELECT p.officialName,smarks.*
+        // FROM pupilsightPerson as p
+        // LEFT JOIN history_of_students_marks as smarks
+        // ON p.pupilsightPersonID = smarks.pupilsightPersonIDTaker
+        // WHERE smarks.test_id= "'.$tid.'" AND smarks.pupilsightYearGroupID="'.$cid.'" AND smarks.pupilsightRollGroupID="'.$sid.'" AND smarks.pupilsightDepartmentID="'.$did.'" AND smarks.pupilsightPersonID="'.$stid.'" AND smarks.skill_id="'.$skid.'" ORDER BY smarks.id DESC';
+    // } else {
+    //     $sqla = 'SELECT p.officialName,smarks.*
+    //     FROM pupilsightPerson as p
+    //     LEFT JOIN history_of_students_marks as smarks
+    //     ON p.pupilsightPersonID = smarks.pupilsightPersonIDTaker
+    //     WHERE smarks.test_id= "'.$tid.'" AND smarks.pupilsightYearGroupID="'.$cid.'" AND smarks.pupilsightRollGroupID="'.$sid.'" AND smarks.pupilsightDepartmentID="'.$did.'" AND smarks.pupilsightPersonID="'.$stid.'"  ORDER BY smarks.id DESC';
+    // }
+    
+    $sqla = 'SELECT p.officialName,smarks.*
         FROM pupilsightPerson as p
         LEFT JOIN history_of_students_marks as smarks
         ON p.pupilsightPersonID = smarks.pupilsightPersonIDTaker
         WHERE smarks.test_id= "'.$tid.'" AND smarks.pupilsightYearGroupID="'.$cid.'" AND smarks.pupilsightRollGroupID="'.$sid.'" AND smarks.pupilsightDepartmentID="'.$did.'" AND smarks.pupilsightPersonID="'.$stid.'" AND smarks.skill_id="'.$skid.'" ORDER BY smarks.id DESC';
-    } else {
-        $sqla = 'SELECT p.officialName,smarks.*
-        FROM pupilsightPerson as p
-        LEFT JOIN history_of_students_marks as smarks
-        ON p.pupilsightPersonID = smarks.pupilsightPersonIDTaker
-        WHERE smarks.test_id= "'.$tid.'" AND smarks.pupilsightYearGroupID="'.$cid.'" AND smarks.pupilsightRollGroupID="'.$sid.'" AND smarks.pupilsightDepartmentID="'.$did.'" AND smarks.pupilsightPersonID="'.$stid.'"  ORDER BY smarks.id DESC';
-    }
-    
     $resulta = $connection2->query($sqla);
     $data = $resulta->fetchAll();
   ?>

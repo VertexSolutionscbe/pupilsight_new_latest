@@ -10,9 +10,9 @@ namespace Pupilsight\Contracts\Comms;
  */
 interface SMS
 {
-    public function getDriver() : string;
+    public function getDriver(): string;
 
-    public function getCreditBalance() : float;
+    public function getCreditBalance(): float;
 
     public function to($to);
 
@@ -20,5 +20,5 @@ interface SMS
 
     public function content(string $message);
 
-    public function send(array $recipients) : array;
+    public function send(array $recipients): array;
 }

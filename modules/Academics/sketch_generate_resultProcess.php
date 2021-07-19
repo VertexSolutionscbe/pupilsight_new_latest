@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
     $result = $connection2->query($sql);
     $sketchData = $result->fetch();
 
-    $sqlsketch = 'SELECT a.id as erta_id, a.attribute_name, a.attribute_category, a.attribute_type, a.test_master_id, a.attr_ids, a.final_formula, a.final_formula_best_cal, a.grade_id, a.supported_attribute, a.subject_type, a.subject_val_id, b.* FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportTemplateConfiguration AS b ON a.ertc_id = b.id WHERE a.sketch_id = ' . $sketch_id . ' ';
+    $sqlsketch = 'SELECT a.id as erta_id, a.attribute_name, a.attribute_category, a.attribute_type, a.test_master_id, a.attr_ids, a.final_formula, a.final_formula_best_cal, a.grade_id, a.supported_attribute, a.subject_type, a.subject_val_id, a.subject_display_type, b.* FROM examinationReportTemplateAttributes AS a LEFT JOIN examinationReportTemplateConfiguration AS b ON a.ertc_id = b.id WHERE a.sketch_id = ' . $sketch_id . ' ';
     $resultsk = $connection2->query($sqlsketch);
     $sketchDataAttr = $resultsk->fetchAll();
 
@@ -83,12 +83,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
             $maxMarksArray = array();
             $comMarksArray = array();
             $comMaxMarksArray = array();
+            $getStudentMarks = array();
+            $getStudentMarksData = array();
             //$docRoot = $_SERVER['DOCUMENT_ROOT'].'/pupilsight/';
             $docRoot = $_SERVER['DOCUMENT_ROOT'].'/';
             try {
+                $ksd = 1;
                 foreach ($sketchDataAttr as $sd) {
                     // $dataarr[$k]['erta_id'] = $sd['erta_id'];
                     // $dataarr[$k]['ertc_id'] = $sd['id'];
+                   
+                    // if(!empty($sd['test_master_id']) && $ksd == 1){
+                    //     //echo $ksd.'<br>';
+                    //     $getStudentMarksData = getStudentMarks($connection2, $conn, $sd['test_master_id'], $sd['erta_id'], $studentIds, $mappingData, $sd['final_formula'], $sd['final_formula_best_cal'] , $sd['subject_type'], $sd['subject_display_type']);
+                    //     $ksd++;
+                    // }
+
+                    if(!empty($sd['test_master_id'])){
+                        $getStudentMarksData = getStudentMarks($connection2, $conn, $sd['test_master_id'], $sd['erta_id'], $studentIds, $mappingData, $sd['final_formula'], $sd['final_formula_best_cal'] , $sd['subject_type'], $sd['subject_display_type']);
+                        //print_r($getStudentMarksData);
+                    }
+
+                    $getStudentMarks = $getStudentMarksData;
                     
                     if ($sd['attribute_type'] == 'Student' || $sd['attribute_type'] == 'Parent' || $sd['attribute_type'] == 'Class Teacher' || $sd['attribute_type'] == 'Principal') {
                         $studentDetails = getStudentDetails($connection2, $studentIds, $mappingData,  $sd['attribute_type']);
@@ -131,13 +147,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     }
 
                     if ($sd['attribute_type'] == 'Subject' && $sd['attribute_category'] == 'Test') {
-                        $subjectNames = getSubjectNames($connection2, $sd['test_master_id'], $mappingData);
+                        // $subjectNames = getSubjectNames($connection2, $sd['test_master_id'], $mappingData);
                        
+                        // if(!empty($subjectNames)){
+                        //     $cntsubName = 1;
+                        //     foreach($subjectNames as $sub){
+                        //         $subjectArray[$sd['attribute_name'] . '_' . $cntsubName] = $sub;
+                        //         $cntsubName++;
+                        //     }
+                        // }
+
+                        $subjectNames = getSubjectNamesByStudent($connection2, $sd['test_master_id'], $mappingData, $studentIds);
+                        // echo '<pre>';
+                        // print_r($subjectNames);
+                        // die();
+                        
                         if(!empty($subjectNames)){
-                            $cnt = 1;
-                            foreach($subjectNames as $sub){
-                                $subjectArray[$sd['attribute_name'] . '_' . $cnt ] = $sub;
-                                $cnt++;
+                            foreach($subjectNames as $stuId => $getStuSubData){
+                                $cntSub = 1;
+                                foreach($getStuSubData as $getStuSubject){
+                                    $subjectName = $getStuSubject['sub_name'];
+                                    $subjectType = $getStuSubject['sub_type'];
+                                    $elective_name = $getStuSubject['elective_name'];
+
+                                    if($subjectType == 'Elective'){
+                                        $elective_name = str_replace(' ', '_', $elective_name);
+                                        $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntSub . '_' . $elective_name] = $subjectName;
+                                    } else {
+                                        $subjectName = str_replace(' ', '_', $subjectName);
+                                        $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntSub . '_' . $subjectName] = $subjectName;
+                                    }
+                                    
+                                    $cntSub++;
+                                }
                             }
                         }
                     }
@@ -163,32 +205,108 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                         }
                     }
                    
-
                     if ($sd['attribute_type'] == 'Marks' && $sd['attribute_category'] == 'Test') {
                         $erta_id =  $sd['erta_id'];
 
                         if(!empty($sd['test_master_id'])){
-                            $getStudentMarks = getStudentMarks($connection2, $conn, $sd['test_master_id'], $sd['erta_id'], $studentIds, $mappingData, $sd['final_formula'], $sd['final_formula_best_cal']);
+                            //$getStudentMarks = getStudentMarks($connection2, $conn, $sd['test_master_id'], $sd['erta_id'], $studentIds, $mappingData, $sd['final_formula'], $sd['final_formula_best_cal']);
                             
-                            $cnt = 1;
-                            foreach($getStudentMarks as $stuId => $getStuData){
-                                foreach($getStuData as $getStuMarks){
-                                    $getmarks = $getStuMarks['marks'];
-                                    $subjectId = $getStuMarks['subject'];
-                                    $subjectName = $getStuMarks['subjectName'];
-
-                                    // $getMarksNew = str_replace(".00","", $getmarks);
-                                    $getMarksNew = $getmarks;
-                                    $gmsarr[$stuId][$sd['erta_id']][$subjectId] = $getMarksNew;
-                                    
-                                    $getSketchData[$sd['attribute_type']][$stuId][$sd['erta_id']][$subjectId] = $getMarksNew;
-                                    //echo $sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject'].'--'.$getmarks.'</br>';
-
-                                    // $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $tsub['subject']] = $getmarks;
-
-                                    $dataarr[$stuId][$sd['attribute_name'] . '_' . $cnt . '_' . $subjectName] = $getMarksNew;
-                                    $cnt++;
+                            if(!empty($getStudentMarks)){
+                                if($sd['subject_display_type'] == 1){
+                                    foreach($getStudentMarks as $stuId => $getStuData){
+                                        $cntMarks = 1;
+                                        foreach($getStuData as $getStuMarks){
+                                            $getmarks = $getStuMarks['marks'];
+                                            $subjectId = $getStuMarks['subject'];
+                                            $subjectName = $getStuMarks['subjectName'];
+                                            $subjectType = $getStuMarks['sub_type'];
+                                            $elective_name = $getStuMarks['elective_name'];
+    
+                                            // $getMarksNew = str_replace(".00","", $getmarks);
+                                            $getMarksNew = $getmarks;
+                                            $gmsarr[$stuId][$sd['erta_id']][$subjectId] = $getMarksNew;
+                                            
+                                            $getSketchData[$sd['attribute_type']][$stuId][$sd['erta_id']][$subjectId] = $getMarksNew;
+                                            //echo $sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject'].'--'.$getmarks.'</br>';
+    
+                                            // $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $tsub['subject']] = $getmarks;
+    
+                                            if($subjectType == 'Elective'){
+                                                $elective_name = str_replace(' ', '_', $elective_name);
+                                                $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntMarks . '_' . $elective_name] = $getMarksNew;
+                                            } else {
+                                                $subjectName = str_replace(' ', '_', $subjectName);
+                                                $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntMarks . '_' . $subjectName] = $getMarksNew;
+                                            }
+                                            
+                                            $cntMarks++;
+                                        }
+                                    }
+                                } else if($sd['subject_display_type'] == 2){
+                                    foreach($getStudentMarks as $stuId => $getStuData){
+                                        foreach($getStuData as $getSkillMarks){
+                                            $cntMarks = 1;
+                                            foreach($getSkillMarks as $getStuMarks){
+                                                $getmarks = $getStuMarks['marks'];
+                                                $subjectId = $getStuMarks['subject'];
+                                                $subjectName = $getStuMarks['subjectName'];
+                                                $skillName = $getStuMarks['skill_name'];
+                                                $subjectType = $getStuMarks['sub_type'];
+                                                $elective_name = $getStuMarks['elective_name'];
+        
+                                                // $getMarksNew = str_replace(".00","", $getmarks);
+                                                $getMarksNew = $getmarks;
+                                                $gmsarr[$stuId][$sd['erta_id']][$subjectId] = $getMarksNew;
+                                                
+                                                $getSketchData[$sd['attribute_type']][$stuId][$sd['erta_id']][$subjectId] = $getMarksNew;
+                                                //echo $sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject'].'--'.$getmarks.'</br>';
+        
+                                                // $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $tsub['subject']] = $getmarks;
+                                                $skillName = str_replace(' ', '_', $skillName);
+                                                if($subjectType == 'Elective'){
+                                                    $elective_name = str_replace(' ', '_', $elective_name);
+                                                    $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntMarks . '_' . $elective_name. '_' . $skillName] = $getMarksNew;
+                                                } else {
+                                                    $subjectName = str_replace(' ', '_', $subjectName);
+                                                    $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntMarks . '_' . $subjectName. '_' . $skillName] = $getMarksNew;
+                                                }
+                                                
+                                                $cntMarks++;
+                                            }
+                                        }
+                                    }
+                                } else if($sd['subject_display_type'] == 3){
+                                    foreach($getStudentMarks as $stuId => $getStuData){
+                                        $cntMarks = 1;
+                                        foreach($getStuData as $getStuMarks){
+                                            $getmarks = $getStuMarks['marks'];
+                                            $subjectId = $getStuMarks['subject'];
+                                            $subjectName = $getStuMarks['subjectName'];
+                                            $subjectType = $getStuMarks['sub_type'];
+                                            $elective_name = $getStuMarks['elective_name'];
+    
+                                            // $getMarksNew = str_replace(".00","", $getmarks);
+                                            $getMarksNew = $getmarks;
+                                            $gmsarr[$stuId][$sd['erta_id']][$subjectId] = $getMarksNew;
+                                            
+                                            $getSketchData[$sd['attribute_type']][$stuId][$sd['erta_id']][$subjectId] = $getMarksNew;
+                                            //echo $sd['attribute_name'].'_'.$cnt.'_'.$tsub['subject'].'--'.$getmarks.'</br>';
+    
+                                            // $dataarr[$sd['attribute_name'] . '_' . $cnt . '_' . $tsub['subject']] = $getmarks;
+    
+                                            if($subjectType == 'Elective'){
+                                                $elective_name = str_replace(' ', '_', $elective_name);
+                                                $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntMarks . '_' . $elective_name] = $getMarksNew;
+                                            } else {
+                                                $subjectName = str_replace(' ', '_', $subjectName);
+                                                $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntMarks . '_' . $subjectName] = $getMarksNew;
+                                            }
+                                            
+                                            $cntMarks++;
+                                        }
+                                    }
                                 }
+                                
                             }
                         }
 
@@ -197,7 +315,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                         // print_r($getSketchData);
                         // echo '</pre>';
                     }
-                   
                    
                     if ($sd['attribute_type'] == 'Max Marks' && $sd['attribute_category'] == 'Test') {
 
@@ -221,14 +338,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
                     }
 
-                    //print_r($maxMarksArr);
-                    
-                      
                     if ($sd['attribute_type'] == 'Grade' && $sd['attribute_category'] == 'Test') {
 
                         $erta_id =  $sd['erta_id'];
                         
-                        $getStudentMarks = getStudentMarks($connection2, $conn, $sd['test_master_id'], $sd['erta_id'], $studentIds, $mappingData, $sd['final_formula'], $sd['final_formula_best_cal']);
+                        //$getStudentMarks = getStudentMarks($connection2, $conn, $sd['test_master_id'], $sd['erta_id'], $studentIds, $mappingData, $sd['final_formula'], $sd['final_formula_best_cal']);
                         
 
                         $gradeConfiguration = getGradeConfiguration($connection2);
@@ -238,57 +352,83 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                         // echo '</pre>';
                         // die();
 
-                        $cnt = 1;
-                        foreach($getStudentMarks as $stuId => $getStuData){
-                            foreach($getStuData as $getStuMarks){
-                                $getmarks = $getStuMarks['marks'];
-                                $gradeSystemId = $getStuMarks['gradeSystemId'];
-                                $grade_id = $getStuMarks['grade_id'];
-                                $skill_configure = $getStuMarks['skill_configure'];
-                                $subjectId = $getStuMarks['subject'];
-                                $subjectName = $getStuMarks['subjectName'];
-                                $gradeName = '';
+                        
+                        if(!empty($getStudentMarks)){
+                            foreach($getStudentMarks as $stuId => $getStuData){
+                                $cntGrade = 1;
+                                foreach($getStuData as $getStuMarks){
+                                    $getmarks = $getStuMarks['marks'];
+                                    $gradeSystemId = $getStuMarks['gradeSystemId'];
+                                    $grade_id = $getStuMarks['grade_id'];
+                                    $skill_configure = $getStuMarks['skill_configure'];
+                                    $subjectId = $getStuMarks['subject'];
+                                    $subjectName = $getStuMarks['subjectName'];
+                                    $subjectType = $getStuMarks['sub_type'];
+                                    $elective_name = $getStuMarks['elective_name'];
+                                    $gradeName = '';
 
-                                if($skill_configure == 'Sum'){
-                                    $gradeName =  getGradeByMarks($gradeSystemId, $getmarks, $gradeConfiguration);
-                                } else if($skill_configure == 'Average'){
-                                    $gradeName =  getGradeByMarks($gradeSystemId, $getmarks, $gradeConfiguration);
-                                } else {
-                                    //echo (int)$grade_id.'</br>';
-                                    $gId = (int)$grade_id;
-                                    if(!empty($gId)){
-                                        $gradeName = $finalGradeConfig[(int)$grade_id];
+                                    if($skill_configure == 'Sum'){
+                                        $gradeName =  getGradeByMarks($gradeSystemId, $getmarks, $gradeConfiguration);
+                                    } else if($skill_configure == 'Average'){
+                                        $gradeName =  getGradeByMarks($gradeSystemId, $getmarks, $gradeConfiguration);
+                                    } else {
+                                        //echo (int)$grade_id.'</br>';
+                                        $gId = (int)$grade_id;
+                                        if(!empty($gId)){
+                                            $gradeName = $finalGradeConfig[(int)$grade_id];
+                                        }
                                     }
+
+                                    $getSketchData[$sd['attribute_type']][$sd['erta_id']][$subjectId] = $gradeName;
+
+                                    if($subjectType == 'Elective'){
+                                        $elective_name = str_replace(' ', '_', $elective_name);
+                                        $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntGrade . '_' . $elective_name] = $gradeName;
+                                    } else {
+                                        $subjectName = str_replace(' ', '_', $subjectName);
+                                        $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntGrade . '_' . $subjectName] = $gradeName;
+                                    }
+
+                                    //$dataarr[$stuId][$sd['attribute_name'] . '_' . $cntGrade . '_' . $subjectName] = $gradeName;
+                                    $cntGrade++;
                                 }
-
-                                $getSketchData[$sd['attribute_type']][$sd['erta_id']][$subjectId] = $gradeName;
-
-                                $dataarr[$stuId][$sd['attribute_name'] . '_' . $cnt . '_' . $subjectName] = $gradeName;
-                                $cnt++;
                             }
                         }
 
                         
                     }
 
-                  
                     if ($sd['attribute_type'] == 'Remarks' && $sd['attribute_category'] == 'Test') {
 
                         $remarks = getRemarks($connection2, $sd['test_master_id'], $mappingData);
                         //die();
                         if(!empty($sd['test_master_id'])){
-                            $getStudentMarks = getStudentMarks($connection2, $conn, $sd['test_master_id'], $sd['erta_id'], $studentIds, $mappingData, $sd['final_formula'], $sd['final_formula_best_cal']);
+                            //$getStudentMarks = getStudentMarks($connection2, $conn, $sd['test_master_id'], $sd['erta_id'], $studentIds, $mappingData, $sd['final_formula'], $sd['final_formula_best_cal']);
 
-                            //print_r($getStudentMarks);
-                            
-                            $cnt = 1;
-                            foreach($getStudentMarks as $stuId => $getStuData){
-                                foreach($getStuData as $getStuMarks){
-                                    if(isset($remarks[$getStuMarks['test_id']][$stuId][$getStuMarks['subject']])) {
-                                        $getRemarks = $remarks[$getStuMarks['test_id']][$stuId][$getStuMarks['subject']];
+                            // echo '<pre>';
+                            // print_r($getStudentMarks);
+                            // echo '</pre>';
+                            if(!empty($getStudentMarks)){
+                                foreach($getStudentMarks as $stuId => $getStuData){
+                                    $cntRem = 1;
+                                    foreach($getStuData as $getStuMarks){
+                                        $subjectName = $getStuMarks['subjectName'];
+                                        $subjectType = $getStuMarks['sub_type'];
+                                        $elective_name = $getStuMarks['elective_name'];
+                                        //if(isset($remarks[$getStuMarks['test_id']][$stuId][$getStuMarks['subject']])) {
+                                            $getRemarks = $remarks[$getStuMarks['test_id']][$stuId][$getStuMarks['subject']];
 
-                                        $dataarr[$stuId][$sd['attribute_name'] . '_' . $cnt . '_' . $getStuMarks['subjectName']] = $getRemarks;
-                                        $cnt++;
+                                            if($subjectType == 'Elective'){
+                                                $elective_name = str_replace(' ', '_', $elective_name);
+                                                $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntRem . '_' . $elective_name] = $getRemarks;
+                                            } else {
+                                                $subjectName = str_replace(' ', '_', $subjectName);
+                                                $dataarr[$stuId][$sd['attribute_name'] . '_' . $cntRem . '_' . $subjectName] = $getRemarks;
+                                            }
+
+                                            //$dataarr[$stuId][$sd['attribute_name'] . '_' . $cntRem . '_' . $getStuMarks['subjectName']] = $getRemarks;
+                                            $cntRem++;
+                                        //}
                                     }
                                 }
                             }
@@ -296,9 +436,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
 
                       
                     }
-  
-                     
-                    //print_r($sd);
                     
                     if ($sd['attribute_type'] == 'Marks' && $sd['attribute_category'] == 'Computed') {
 
@@ -361,7 +498,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                         
                     }
 
-                    
                     if ($sd['attribute_type'] == 'Max Marks' && $sd['attribute_category'] == 'Computed') {
 
                         // echo '<pre>';
@@ -530,6 +666,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Academics/sketch_manage_at
                     
                    
                     $count++;
+                    // echo '<pre>';
+                    // print_r($newVal);
+                    // echo '</pre>';
                     foreach ($newVal as $key => $val) {
 
                         if ($count > 200) {
@@ -684,7 +823,7 @@ function getSubjectNames($connection2, $testMasterId, $mappingData)
     $subjectNames = array();
     foreach ($testdata as $test_id) {
         $testId = $test_id['test_id'];
-        $sqlmarks = 'SELECT a.pupilsightDepartmentID, b.subject_display_name FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE  a.test_id = ' . $testId . '  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY a.pupilsightDepartmentID ORDER BY b.pos ASC ';
+        $sqlmarks = 'SELECT a.pupilsightDepartmentID, b.subject_display_name FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.is_tested = "1" AND a.test_id = ' . $testId . '  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY a.pupilsightDepartmentID ORDER BY b.pos ASC ';
         $resultmarks = $connection2->query($sqlmarks);
         $testdatasub = $resultmarks->fetchAll();
 
@@ -696,6 +835,60 @@ function getSubjectNames($connection2, $testMasterId, $mappingData)
         }
     }
     return $subjectNames;
+}
+
+function getSubjectNamesByStudent($connection2, $testMasterId, $mappingData, $studentIds)
+{
+    $sqlt = 'SELECT test_id FROM examinationTestAssignClass WHERE test_master_id IN (' . $testMasterId . ') AND pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' AND pupilsightRollGroupID = ' . $mappingData['pupilsightRollGroupID'] . ' ';
+    $resultt = $connection2->query($sqlt);
+    $testdata = $resultt->fetchAll();
+
+    $subjectNames = array();
+    $dt = array();
+    foreach ($testdata as $test_id) {
+        $testId = $test_id['test_id'];
+        $sqlmarks = 'SELECT a.pupilsightDepartmentID, b.subject_display_name, b.subject_type FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.is_tested = "1" AND a.test_id = ' . $testId . '  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY a.pupilsightDepartmentID ORDER BY b.pos ASC ';
+        $resultmarks = $connection2->query($sqlmarks);
+        $testdatasub = $resultmarks->fetchAll();
+
+        if (!empty($testdatasub)) {
+            foreach ($testdatasub as $testSubject) {
+                $subjectType = $testSubject['subject_type'];
+                $subjectId = $testSubject['pupilsightDepartmentID'];
+                $stuId = explode(',', $studentIds);
+                if(!empty($stuId)){
+                    $electiveName = '';
+                    foreach($stuId as $pupilsightPersonID){
+                        $electshow = '1';
+                        if($subjectType == 'Elective'){
+                            $sqlelc = 'SELECT a.id, b.name FROM assign_elective_subjects_tostudents AS a LEFT JOIN ac_elective_group AS b ON a.ac_elective_group_id = b.id WHERE a.pupilsightPersonID = '.$pupilsightPersonID.' AND a.pupilsightDepartmentID = '.$subjectId.' ';
+                            $resultele = $connection2->query($sqlelc);
+                            $electData = $resultele->fetch();
+                            if(!empty($electData['id'])){
+                                $electshow = '2';
+                                $electiveName = $electData['name'];
+                            } else {
+                                $electshow = '3';
+                            }
+                            if($electshow == '1' || $electshow == '2') {
+                                $tmp['sub_type'] = $subjectType;
+                                $tmp['elective_name'] = $electiveName;
+                                $tmp['sub_name'] = $testSubject['subject_display_name'];
+                                $dt[$pupilsightPersonID][$subjectId] = $tmp;
+                            }
+                        } else {
+                            $tmp['sub_type'] = $subjectType;
+                            $tmp['elective_name'] = $electiveName;
+                            $tmp['sub_name'] = $testSubject['subject_display_name'];
+                            $dt[$pupilsightPersonID][$subjectId] = $tmp;
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+    return $dt;
 }
 
 function getSubjectTeachers($connection2, $subject_val_id, $subject_type, $mappingData)
@@ -724,8 +917,10 @@ function getSubjectTeachers($connection2, $subject_val_id, $subject_type, $mappi
     return $subData;
 }
 
-function getStudentMarks($connection2, $conn, $test_master_id, $erta_id, $studentIds, $mappingData, $final_formula, $final_formula_best_cal)
-{
+function getStudentMarks($connection2, $conn, $test_master_id, $erta_id, $studentIds, $mappingData, $final_formula, $final_formula_best_cal, $attr_subject_type, $attr_subject_display_type)
+{   
+    //echo 'working <br>';
+    //echo $test_master_id .'-1-'. $erta_id.'-2-'. $studentIds.'-3-'. $mappingData.'-4-'. $final_formula.'-5-'. $final_formula_best_cal;
     $tmID_array = explode(",", $test_master_id);
     $kountTmId = count($tmID_array);
     $testResultData = array();
@@ -747,7 +942,7 @@ function getStudentMarks($connection2, $conn, $test_master_id, $erta_id, $studen
         $testdata = $resultt->fetch();
         if (!empty($testdata)) {
             $testid = $testdata['test_id'];
-            $testResultData = getTestData($connection2, $testid, $studentIds, $kountTmId, $mappingData, $erta_id);
+            $testResultData = getTestData($connection2, $testid, $studentIds, $kountTmId, $mappingData, $erta_id, $attr_subject_type, $attr_subject_display_type);
         }
     }
     // echo '<pre>';
@@ -1093,41 +1288,19 @@ function runMultipleSubMax($stuResultData, $testIDs, $final_formula, $final_form
     return $dt;
 }
 
-function getTestData($connection2, $testid, $pupilsightPersonID = NULL, $kountTmId = NULL, $mappingData, $erta_id)
+function getTestData($connection2, $testid, $pupilsightPersonIDs = NULL, $kountTmId = NULL, $mappingData, $erta_id, $attr_subject_type, $attr_subject_display_type)
 {
-    $sql = 'SELECT test_master_id FROM examinationTest WHERE id= '.$testid.' ';
-    $result = $connection2->query($sql);
-    $tMasData = $result->fetch();
-    $testMasterId = $tMasData['test_master_id'];
-    try{
-        $sqlp = 'SELECT a.*, b.name FROM examinationReportTemplatePluginAttributeMapping AS a LEFT JOIN examinationReportTemplatePlugin AS b ON a.plugin_id = b.id WHERE a.erta_id = ' . $erta_id . ' AND a.test_master_id = '.$testMasterId.' ';
-        $resultp = $connection2->query($sqlp);
-        $plugindata = $resultp->fetch();
-
-        if ($plugindata['name'] == 'Round') {
-            $roundvalue = $plugindata['plugin_val'];
-        } else {
-            $roundvalue = '';
-        }
-    } catch (Exception $ex) {
-        //print_r($ex);
+    //echo $attr_subject_display_type.'<br>';
+    if($attr_subject_display_type == '1'){
+        $dt = getStudentMarksDataBySubject($connection2, $testid, $pupilsightPersonIDs, $kountTmId, $mappingData, $erta_id, $attr_subject_type);
+    } else if($attr_subject_display_type == '2'){
+        $dt = getStudentMarksDataBySkill($connection2, $testid, $pupilsightPersonIDs, $kountTmId, $mappingData, $erta_id, $attr_subject_type);
+    } else if($attr_subject_display_type == '3'){
+        $dt = getStudentMarksDataBySubjectSkill($connection2, $testid, $pupilsightPersonIDs, $kountTmId, $mappingData, $erta_id, $attr_subject_type);
     }
-
-    try{
-        $sqlf = 'SELECT a.*, b.name FROM examinationReportTemplateFormulaAttributeMapping AS a LEFT JOIN examinationReportTemplateFormula AS b ON a.formula_id = b.id WHERE a.erta_id = ' . $erta_id . ' AND a.test_master_id = '.$testMasterId.' ';
-        $resultf = $connection2->query($sqlf);
-        $formuladata = $resultf->fetch();
-        // print_r($formuladata);
-        if ($formuladata['name'] == 'Scale') {
-            $scalevalue = $formuladata['formula_val'];
-        } else {
-            $scalevalue = '';
-        }
-    } catch (Exception $ex) {
-        //print_r($ex);
-    }
-
-    $dt = array();
+    return $dt;
+    
+    /*
     try {
         $sql = "select id, pupilsightPersonID,
         group_concat(pupilsightDepartmentID) as subject, 
@@ -1307,12 +1480,807 @@ function getTestData($connection2, $testid, $pupilsightPersonID = NULL, $kountTm
     } catch (Exception $ex) {
         print_r($ex);
     }
-
+    */
     
     // echo '<pre>';
     // print_r($newdt);
     // echo '</pre>';
     // die();
+    // return $dt;
+}
+
+function getStudentMarksDataBySubject($connection2, $testid, $pupilsightPersonIDs = NULL, $kountTmId = NULL, $mappingData, $erta_id, $attr_subject_type){
+    $sql = 'SELECT test_master_id FROM examinationTest WHERE id= '.$testid.' ';
+    $result = $connection2->query($sql);
+    $tMasData = $result->fetch();
+    $testMasterId = $tMasData['test_master_id'];
+    try{
+        $sqlp = 'SELECT a.*, b.name FROM examinationReportTemplatePluginAttributeMapping AS a LEFT JOIN examinationReportTemplatePlugin AS b ON a.plugin_id = b.id WHERE a.erta_id = ' . $erta_id . ' AND a.test_master_id = '.$testMasterId.' ';
+        $resultp = $connection2->query($sqlp);
+        $plugindata = $resultp->fetch();
+
+        if ($plugindata['name'] == 'Round') {
+            $roundvalue = $plugindata['plugin_val'];
+        } else {
+            $roundvalue = '';
+        }
+    } catch (Exception $ex) {
+        //print_r($ex);
+    }
+
+    try{
+        $sqlf = 'SELECT a.*, b.name FROM examinationReportTemplateFormulaAttributeMapping AS a LEFT JOIN examinationReportTemplateFormula AS b ON a.formula_id = b.id WHERE a.erta_id = ' . $erta_id . ' AND a.test_master_id = '.$testMasterId.' ';
+        $resultf = $connection2->query($sqlf);
+        $formuladata = $resultf->fetch();
+        // print_r($formuladata);
+        if ($formuladata['name'] == 'Scale') {
+            $scalevalue = $formuladata['formula_val'];
+        } else {
+            $scalevalue = '';
+        }
+    } catch (Exception $ex) {
+        //print_r($ex);
+    }
+
+    $dt = array();
+    try {
+        $sqlmarks = 'SELECT a.pupilsightDepartmentID, b.subject_display_name, b.subject_type FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.is_tested = "1" AND a.test_id = ' . $testid . '  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY a.pupilsightDepartmentID ORDER BY b.pos ASC ';
+        $resultsub = $connection2->query($sqlmarks);
+        $allSubjects = $resultsub->fetchAll();
+        if(!empty($allSubjects)){
+            $subjectNames = getSubjectList($connection2, $testid, $mappingData);
+            $subjectMaxMarks = getSubjectMaxMarks($connection2, $testid, $mappingData);
+            $subjectMinMarks = getSubjectMinMarks($connection2, $testid, $mappingData);
+            $subjectGrade = getSubjectGrade($connection2, $testid, $mappingData);
+            $skillConfig = getSkillConfig($connection2, $testid);
+            $resultSkillData = array();
+            
+            foreach($allSubjects as $asub){
+                $subjectId = $asub['pupilsightDepartmentID'];
+                $subjectName = $asub['subject_display_name'];
+                $subjectType = $asub['subject_type'];
+                //echo $subjectId.'--'.$subjectName.'<br>';
+                
+                $studentids = explode(',', $pupilsightPersonIDs);
+                $electiveName = '';
+                foreach($studentids as $pupilsightPersonID){
+                    $electshow = '1';
+                    if($subjectType == 'Elective'){
+                        $sqlelc = 'SELECT a.id, b.name FROM assign_elective_subjects_tostudents AS a LEFT JOIN ac_elective_group AS b ON a.ac_elective_group_id = b.id WHERE a.pupilsightPersonID = '.$pupilsightPersonID.' AND a.pupilsightDepartmentID = '.$subjectId.' ';
+                        $resultele = $connection2->query($sqlelc);
+                        $electData = $resultele->fetch();
+                        if(!empty($electData['id'])){
+                            $electshow = '2';
+                            $electiveName = $electData['name'];
+                        } else {
+                            $electshow = '3';
+                        }
+                    }
+                    if($electshow == '1' || $electshow == '2') {
+                        $sql = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id = ' . $testid . ' AND pupilsightDepartmentID = '.$subjectId.' AND pupilsightPersonID = ' . $pupilsightPersonID . ' group by pupilsightPersonID order by pupilsightPersonID ';
+                        $resultmarks = $connection2->query($sql);
+                        $rd = $resultmarks->fetch();
+                        // echo '<pre>';
+                        // print_r($resultData);
+                        $newrd = array();
+                        if(!empty($rd['id'])){
+                            if(!empty($rd)){
+                                $pupilsightPersonID = $rd['pupilsightPersonID'];
+                                $marks = $rd['marks_obtained'];
+                                $marks_abex = $rd['marks_abex'];
+                                $skill_id = $rd['skill_id'];
+                                $grade_id = $rd['gradeId'];
+                                $t_id = $rd['test_id'];
+                                $marks_obtained = $rd['marks_obtained'];
+
+                                $tmp = array();
+                                $tmp["subject"] = $subjectId;
+                                $tmp["subjectName"] = $asub['subject_display_name'];
+
+                                $newrd['pupilsightPersonID'] = $pupilsightPersonID;
+                                $newrd['subject'] = $subjectId;
+                                $newrd['marks'] = $marks;
+
+                                if ($skillConfig) {
+                                    $resultSkillData = loadSkillConfig($skillConfig, $newrd);
+                                }
+                                
+                                if(isset($subjectMaxMarks[$subjectId])){
+                                    $tmp["max_marks"] = $subjectMaxMarks[$subjectId];
+                                }
+
+                                if(isset($subjectMinMarks[$subjectId])){
+                                    $tmp["min_marks"] = $subjectMinMarks[$subjectId];
+                                }
+
+                                if(isset($subjectGrade[$subjectId])){
+                                    $tmp["gradeSystemId"] = $subjectGrade[$subjectId];
+                                }
+
+                                if (!empty($marks_abex)) {
+                                    $tmp["marks_abex"] = $marks_abex;
+                                } else {
+                                    $tmp["marks_abex"] = '';
+                                }
+                                $tmp["skill"] = $skill_id;
+                                $tmp["grade_id"] = $grade_id;
+                                $tmp["test_id"] = $t_id;
+
+                                $getMaks = $marks_obtained;
+                                //echo $tmp["max_marks"].'</br>';
+                                if (!empty($scalevalue)) {
+                                    $max_marks = $scalevalue;
+                                    //echo $sub[$i].'---'.$getMaks.'--'.$tmp["max_marks"].'--'.$max_marks.'</br>';
+                                    if (!empty($tmp["max_marks"]) && $tmp["max_marks"] != '0.00') {
+                                        $gm = ($getMaks / $tmp["max_marks"]) * $max_marks;
+                                        
+                                    } else {
+                                        $gm = $getMaks * $max_marks;
+                                    }
+                                    if (!empty($roundvalue)) {
+                                        $getmarks = round($gm, $roundvalue);
+                                    } else {
+                                        $getmarks = $gm;
+                                    }
+                                } else {
+                                    $max_marks = $tmp["max_marks"];
+                                    if (!empty($roundvalue)) {
+                                        $getmarks = round($getMaks, $roundvalue);
+                                    } else {
+                                        $getmarks = $getMaks;
+                                    }
+                                }
+                                $tmp["marks"] = $getmarks;
+
+                                // if ($resultSkillData) {
+                                //     if (isset($resultSkillData[$pupilsightPersonID][$sub[$i]]["marks"])) {
+                                //         $tmp["marks"] = $resultSkillData[$pupilsightPersonID][$sub[$i]]["marks"];
+                                //     }
+                                // }
+                                
+
+                                if ($resultSkillData) {
+                                    if (isset($resultSkillData[$pupilsightPersonID][$subjectId]["marks"])) {
+                                        $getMaks = $resultSkillData[$pupilsightPersonID][$subjectId]["marks"];
+                                        //echo $tmp["max_marks"].'</br>';
+                                        if (!empty($scalevalue)) {
+                                            $max_marks = $scalevalue;
+                                            //echo $sub[$i].'---'.$getMaks.'--'.$tmp["max_marks"].'--'.$max_marks.'</br>';
+                                            if (!empty($tmp["max_marks"]) && $tmp["max_marks"] != '0.00') {
+                                                $gm = ($getMaks / $tmp["max_marks"]) * $max_marks;
+                                                
+                                            } else {
+                                                $gm = $getMaks * $max_marks;
+                                            }
+                                            if (!empty($roundvalue)) {
+                                                $getmarks = round($gm, $roundvalue);
+                                            } else {
+                                                $getmarks = $gm;
+                                            }
+                                        } else {
+                                            $max_marks = $tmp["max_marks"];
+                                            if (!empty($roundvalue)) {
+                                                $getmarks = round($getMaks, $roundvalue);
+                                            } else {
+                                                $getmarks = $getMaks;
+                                            }
+                                        }
+                                        $tmp["marks"] = $getmarks;
+                                    }
+                                    if (isset($resultSkillData[$pupilsightPersonID][$subjectId]["skill_configure"])) {
+                                        $tmp["skill_configure"] = $resultSkillData[$pupilsightPersonID][$subjectId]["skill_configure"];
+                                    } else {
+                                        $tmp["skill_configure"] = 'None';
+                                    }
+                                } 
+
+                                // echo '<pre>';
+                                // print_r($tmp["marks"]);
+                                // echo '</pre>';
+                                $tmp['sub_type'] = $subjectType;
+                                $tmp['elective_name'] = $electiveName;
+                                
+
+                                if ($kountTmId > 1) {
+                                    $dt[$testid][$pupilsightPersonID][$subjectId] = $tmp;
+                                } else {
+                                    $dt[$pupilsightPersonID][$subjectId] = $tmp;
+                                }
+
+                            } else {
+                                $tmp = array();
+                                $tmp["subject"] = $subjectId;
+                                $tmp["subjectName"] = $asub['subject_display_name'];
+                                
+                                if(isset($subjectMaxMarks[$subjectId])){
+                                    $tmp["max_marks"] = $subjectMaxMarks[$subjectId];
+                                }
+            
+                                if(isset($subjectMinMarks[$subjectId])){
+                                    $tmp["min_marks"] = $subjectMinMarks[$subjectId];
+                                }
+            
+                                if(isset($subjectGrade[$subjectId])){
+                                    $tmp["gradeSystemId"] = $subjectGrade[$subjectId];
+                                }
+            
+                                $tmp["marks_abex"] = '';
+                                $tmp["skill"] = '';
+                                $tmp["grade_id"] = '';
+                                $tmp["test_id"] = '';
+                                $tmp["marks"] = '';
+                                $tmp["skill_configure"] = 'None';
+                                $tmp['sub_type'] = $subjectType;
+                                $tmp['elective_name'] = $electiveName;
+                                
+                                if ($kountTmId > 1) {
+                                    $dt[$testid][$pupilsightPersonID][$subjectId] = $tmp;
+                                } else {
+                                    $dt[$pupilsightPersonID][$subjectId] = $tmp;
+                                }
+                            }
+                        } else {
+                            $tmp = array();
+                            $tmp["subject"] = $subjectId;
+                            $tmp["subjectName"] = $asub['subject_display_name'];
+                            
+                            if(isset($subjectMaxMarks[$subjectId])){
+                                $tmp["max_marks"] = $subjectMaxMarks[$subjectId];
+                            }
+
+                            if(isset($subjectMinMarks[$subjectId])){
+                                $tmp["min_marks"] = $subjectMinMarks[$subjectId];
+                            }
+
+                            if(isset($subjectGrade[$subjectId])){
+                                $tmp["gradeSystemId"] = $subjectGrade[$subjectId];
+                            }
+
+                            $tmp["marks_abex"] = '';
+                            $tmp["skill"] = '';
+                            $tmp["grade_id"] = '';
+                            $tmp["test_id"] = '';
+                            $tmp["marks"] = '';
+                            $tmp["skill_configure"] = 'None';
+                            $tmp['sub_type'] = $subjectType;
+                            $tmp['elective_name'] = $electiveName;
+                            
+                            if ($kountTmId > 1) {
+                                $dt[$testid][$pupilsightPersonID][$subjectId] = $tmp;
+                            } else {
+                                $dt[$pupilsightPersonID][$subjectId] = $tmp;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    } catch (Exception $ex) {
+        print_r($ex);
+    }
+
+    return $dt;
+}
+
+function getStudentMarksDataBySkill($connection2, $testid, $pupilsightPersonIDs = NULL, $kountTmId = NULL, $mappingData, $erta_id, $attr_subject_type){
+    $sql = 'SELECT test_master_id FROM examinationTest WHERE id= '.$testid.' ';
+    $result = $connection2->query($sql);
+    $tMasData = $result->fetch();
+    $testMasterId = $tMasData['test_master_id'];
+    try{
+        $sqlp = 'SELECT a.*, b.name FROM examinationReportTemplatePluginAttributeMapping AS a LEFT JOIN examinationReportTemplatePlugin AS b ON a.plugin_id = b.id WHERE a.erta_id = ' . $erta_id . ' AND a.test_master_id = '.$testMasterId.' ';
+        $resultp = $connection2->query($sqlp);
+        $plugindata = $resultp->fetch();
+
+        if ($plugindata['name'] == 'Round') {
+            $roundvalue = $plugindata['plugin_val'];
+        } else {
+            $roundvalue = '';
+        }
+    } catch (Exception $ex) {
+        //print_r($ex);
+    }
+
+    try{
+        $sqlf = 'SELECT a.*, b.name FROM examinationReportTemplateFormulaAttributeMapping AS a LEFT JOIN examinationReportTemplateFormula AS b ON a.formula_id = b.id WHERE a.erta_id = ' . $erta_id . ' AND a.test_master_id = '.$testMasterId.' ';
+        $resultf = $connection2->query($sqlf);
+        $formuladata = $resultf->fetch();
+        // print_r($formuladata);
+        if ($formuladata['name'] == 'Scale') {
+            $scalevalue = $formuladata['formula_val'];
+        } else {
+            $scalevalue = '';
+        }
+    } catch (Exception $ex) {
+        //print_r($ex);
+    }
+
+    $dt = array();
+    try {
+        $sqlmarks = 'SELECT a.pupilsightDepartmentID, a.skill_id, b.subject_display_name, b.subject_type, c.name as skill_name FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN ac_manage_skill AS c ON a.skill_id = c.id WHERE a.skill_id != "0" AND a.is_tested = "1" AND a.test_id = ' . $testid . '  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY a.pupilsightDepartmentID, a.skill_id ORDER BY b.pos ASC, c.id ASC ';
+        $resultsub = $connection2->query($sqlmarks);
+        $allSubjects = $resultsub->fetchAll();
+        if(!empty($allSubjects)){
+            $subjectNames = getSubjectList($connection2, $testid, $mappingData);
+            $subjectMaxMarks = getSubjectSkillMaxMarks($connection2, $testid, $mappingData);
+            $subjectMinMarks = getSubjectSkillMinMarks($connection2, $testid, $mappingData);
+            $subjectGrade = getSubjectSkillGrade($connection2, $testid, $mappingData);
+            //$skillConfig = getSkillConfig($connection2, $testid);
+            $resultSkillData = array();
+            // echo '<pre>';
+            // print_r($subjectMaxMarks);
+            // echo '</pre>';
+            
+            foreach($allSubjects as $asub){
+                $subjectId = $asub['pupilsightDepartmentID'];
+                $subjectName = $asub['subject_display_name'];
+                $subjectType = $asub['subject_type'];
+                $skill_id = $asub['skill_id'];
+                $skill_name = $asub['skill_name'];
+                //echo $subjectId.'--'.$subjectName.'<br>';
+                
+                $studentids = explode(',', $pupilsightPersonIDs);
+                $electiveName = '';
+                foreach($studentids as $pupilsightPersonID){
+                    $electshow = '1';
+                    if($subjectType == 'Elective'){
+                        $sqlelc = 'SELECT a.id, b.name FROM assign_elective_subjects_tostudents AS a LEFT JOIN ac_elective_group AS b ON a.ac_elective_group_id = b.id WHERE a.pupilsightPersonID = '.$pupilsightPersonID.' AND a.pupilsightDepartmentID = '.$subjectId.' ';
+                        $resultele = $connection2->query($sqlelc);
+                        $electData = $resultele->fetch();
+                        if(!empty($electData['id'])){
+                            $electshow = '2';
+                            $electiveName = $electData['name'];
+                        } else {
+                            $electshow = '3';
+                        }
+                    }
+                    if($electshow == '1' || $electshow == '2') {
+                        $sql = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id = ' . $testid . ' AND pupilsightDepartmentID = '.$subjectId.' AND skill_id = '.$skill_id.' AND pupilsightPersonID = ' . $pupilsightPersonID . ' group by pupilsightPersonID order by pupilsightPersonID ';
+                        $resultmarks = $connection2->query($sql);
+                        $rd = $resultmarks->fetch();
+                        // echo '<pre>';
+                        // print_r($resultData);
+                        $newrd = array();
+                        if(!empty($rd['id'])){
+                            if(!empty($rd)){
+                                $pupilsightPersonID = $rd['pupilsightPersonID'];
+                                $marks = $rd['marks_obtained'];
+                                $marks_abex = $rd['marks_abex'];
+                                //$skill_id = $rd['skill_id'];
+                                $grade_id = $rd['gradeId'];
+                                $t_id = $rd['test_id'];
+                                $marks_obtained = $rd['marks_obtained'];
+
+                                $tmp = array();
+                                $tmp["subject"] = $subjectId;
+                                $tmp["subjectName"] = $asub['subject_display_name'];
+
+                                $newrd['pupilsightPersonID'] = $pupilsightPersonID;
+                                $newrd['subject'] = $subjectId;
+                                $newrd['marks'] = $marks;
+
+                                // if ($skillConfig) {
+                                //     $resultSkillData = loadSkillConfig($skillConfig, $newrd);
+                                // }
+                                
+                                if(isset($subjectMaxMarks[$subjectId.'-'.$skill_id])){
+                                    $tmp["max_marks"] = $subjectMaxMarks[$subjectId.'-'.$skill_id];
+                                }
+
+                                if(isset($subjectMinMarks[$subjectId.'-'.$skill_id])){
+                                    $tmp["min_marks"] = $subjectMinMarks[$subjectId.'-'.$skill_id];
+                                }
+
+                                if(isset($subjectGrade[$subjectId.'-'.$skill_id])){
+                                    $tmp["gradeSystemId"] = $subjectGrade[$subjectId.'-'.$skill_id];
+                                }
+
+                                if (!empty($marks_abex)) {
+                                    $tmp["marks_abex"] = $marks_abex;
+                                } else {
+                                    $tmp["marks_abex"] = '';
+                                }
+                                $tmp["skill"] = $skill_id;
+                                $tmp["skill_name"] = $skill_name;
+                                $tmp["grade_id"] = $grade_id;
+                                $tmp["test_id"] = $t_id;
+
+                                $getMaks = $marks_obtained;
+                                //echo $tmp["max_marks"].'</br>';
+                                if (!empty($scalevalue)) {
+                                    $max_marks = $scalevalue;
+                                    //echo $sub[$i].'---'.$getMaks.'--'.$tmp["max_marks"].'--'.$max_marks.'</br>';
+                                    if (!empty($tmp["max_marks"]) && $tmp["max_marks"] != '0.00') {
+                                        $gm = ($getMaks / $tmp["max_marks"]) * $max_marks;
+                                        
+                                    } else {
+                                        $gm = $getMaks * $max_marks;
+                                    }
+                                    if (!empty($roundvalue)) {
+                                        $getmarks = round($gm, $roundvalue);
+                                    } else {
+                                        $getmarks = $gm;
+                                    }
+                                } else {
+                                    $max_marks = $tmp["max_marks"];
+                                    if (!empty($roundvalue)) {
+                                        $getmarks = round($getMaks, $roundvalue);
+                                    } else {
+                                        $getmarks = $getMaks;
+                                    }
+                                }
+                                $tmp["marks"] = $getmarks;
+
+                                // echo '<pre>';
+                                // print_r($tmp["marks"]);
+                                // echo '</pre>';
+                                $tmp['sub_type'] = $subjectType;
+                                $tmp['elective_name'] = $electiveName;
+                                
+
+                                if ($kountTmId > 1) {
+                                    $dt[$testid][$pupilsightPersonID][$subjectId][] = $tmp;
+                                } else {
+                                    $dt[$pupilsightPersonID][$subjectId][] = $tmp;
+                                }
+
+                            } else {
+                                $tmp = array();
+                                $tmp["subject"] = $subjectId;
+                                $tmp["subjectName"] = $asub['subject_display_name'];
+                                
+                                if(isset($subjectMaxMarks[$subjectId.'-'.$skill_id])){
+                                    $tmp["max_marks"] = $subjectMaxMarks[$subjectId.'-'.$skill_id];
+                                }
+
+                                if(isset($subjectMinMarks[$subjectId.'-'.$skill_id])){
+                                    $tmp["min_marks"] = $subjectMinMarks[$subjectId.'-'.$skill_id];
+                                }
+
+                                if(isset($subjectGrade[$subjectId.'-'.$skill_id])){
+                                    $tmp["gradeSystemId"] = $subjectGrade[$subjectId.'-'.$skill_id];
+                                }
+            
+                                $tmp["marks_abex"] = '';
+                                $tmp["skill"] = $skill_id;
+                                $tmp["skill_name"] = $skill_name;
+                                $tmp["grade_id"] = '';
+                                $tmp["test_id"] = '';
+                                $tmp["marks"] = '';
+                                $tmp["skill_configure"] = 'None';
+                                $tmp['sub_type'] = $subjectType;
+                                $tmp['elective_name'] = $electiveName;
+                                
+                                if ($kountTmId > 1) {
+                                    $dt[$testid][$pupilsightPersonID][$subjectId][] = $tmp;
+                                } else {
+                                    $dt[$pupilsightPersonID][$subjectId][] = $tmp;
+                                }
+                            }
+                        } else {
+                            $tmp = array();
+                            $tmp["subject"] = $subjectId;
+                            $tmp["subjectName"] = $asub['subject_display_name'];
+                            
+                            if(isset($subjectMaxMarks[$subjectId.'-'.$skill_id])){
+                                $tmp["max_marks"] = $subjectMaxMarks[$subjectId.'-'.$skill_id];
+                            }
+
+                            if(isset($subjectMinMarks[$subjectId.'-'.$skill_id])){
+                                $tmp["min_marks"] = $subjectMinMarks[$subjectId.'-'.$skill_id];
+                            }
+
+                            if(isset($subjectGrade[$subjectId.'-'.$skill_id])){
+                                $tmp["gradeSystemId"] = $subjectGrade[$subjectId.'-'.$skill_id];
+                            }
+
+                            $tmp["marks_abex"] = '';
+                            $tmp["skill"] = $skill_id;
+                            $tmp["skill_name"] = $skill_name;
+                            $tmp["grade_id"] = '';
+                            $tmp["test_id"] = '';
+                            $tmp["marks"] = '';
+                            $tmp["skill_configure"] = 'None';
+                            $tmp['sub_type'] = $subjectType;
+                            $tmp['elective_name'] = $electiveName;
+                            
+                            if ($kountTmId > 1) {
+                                $dt[$testid][$pupilsightPersonID][$subjectId][] = $tmp;
+                            } else {
+                                $dt[$pupilsightPersonID][$subjectId][] = $tmp;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    } catch (Exception $ex) {
+        print_r($ex);
+    }
+
+    // echo '<pre>';
+    // print_r($dt);
+    // echo '</pre>';
+
+    return $dt;
+}
+
+function getStudentMarksDataBySubjectSkill($connection2, $testid, $pupilsightPersonIDs = NULL, $kountTmId = NULL, $mappingData, $erta_id, $attr_subject_type){
+    $sql = 'SELECT test_master_id FROM examinationTest WHERE id= '.$testid.' ';
+    $result = $connection2->query($sql);
+    $tMasData = $result->fetch();
+    $testMasterId = $tMasData['test_master_id'];
+    try{
+        $sqlp = 'SELECT a.*, b.name FROM examinationReportTemplatePluginAttributeMapping AS a LEFT JOIN examinationReportTemplatePlugin AS b ON a.plugin_id = b.id WHERE a.erta_id = ' . $erta_id . ' AND a.test_master_id = '.$testMasterId.' ';
+        $resultp = $connection2->query($sqlp);
+        $plugindata = $resultp->fetch();
+
+        if ($plugindata['name'] == 'Round') {
+            $roundvalue = $plugindata['plugin_val'];
+        } else {
+            $roundvalue = '';
+        }
+    } catch (Exception $ex) {
+        //print_r($ex);
+    }
+
+    try{
+        $sqlf = 'SELECT a.*, b.name FROM examinationReportTemplateFormulaAttributeMapping AS a LEFT JOIN examinationReportTemplateFormula AS b ON a.formula_id = b.id WHERE a.erta_id = ' . $erta_id . ' AND a.test_master_id = '.$testMasterId.' ';
+        $resultf = $connection2->query($sqlf);
+        $formuladata = $resultf->fetch();
+        // print_r($formuladata);
+        if ($formuladata['name'] == 'Scale') {
+            $scalevalue = $formuladata['formula_val'];
+        } else {
+            $scalevalue = '';
+        }
+    } catch (Exception $ex) {
+        //print_r($ex);
+    }
+
+    $dt = array();
+    try {
+        $sqlmarks = 'SELECT a.pupilsightDepartmentID, b.subject_display_name, b.subject_type FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID WHERE a.is_tested = "1" AND a.test_id = ' . $testid . '  AND b.pupilsightSchoolYearID = ' . $mappingData['pupilsightSchoolYearID'] . ' AND b.pupilsightProgramID = ' . $mappingData['pupilsightProgramID'] . ' AND b.pupilsightYearGroupID = ' . $mappingData['pupilsightYearGroupID'] . ' GROUP BY a.pupilsightDepartmentID ORDER BY b.pos ASC ';
+        $resultsub = $connection2->query($sqlmarks);
+        $allSubjects = $resultsub->fetchAll();
+        if(!empty($allSubjects)){
+            $subjectNames = getSubjectList($connection2, $testid, $mappingData);
+            $subjectMaxMarks = getSubjectMaxMarks($connection2, $testid, $mappingData);
+            $subjectMinMarks = getSubjectMinMarks($connection2, $testid, $mappingData);
+            $subjectGrade = getSubjectGrade($connection2, $testid, $mappingData);
+            $skillConfig = getSkillConfig($connection2, $testid);
+            $resultSkillData = array();
+            
+            foreach($allSubjects as $asub){
+                $subjectId = $asub['pupilsightDepartmentID'];
+                $subjectName = $asub['subject_display_name'];
+                $subjectType = $asub['subject_type'];
+                //echo $subjectId.'--'.$subjectName.'<br>';
+                
+                $studentids = explode(',', $pupilsightPersonIDs);
+                $electiveName = '';
+                foreach($studentids as $pupilsightPersonID){
+                    $electshow = '1';
+                    if($subjectType == 'Elective'){
+                        $sqlelc = 'SELECT a.id, b.name FROM assign_elective_subjects_tostudents AS a LEFT JOIN ac_elective_group AS b ON a.ac_elective_group_id = b.id WHERE a.pupilsightPersonID = '.$pupilsightPersonID.' AND a.pupilsightDepartmentID = '.$subjectId.' ';
+                        $resultele = $connection2->query($sqlelc);
+                        $electData = $resultele->fetch();
+                        if(!empty($electData['id'])){
+                            $electshow = '2';
+                            $electiveName = $electData['name'];
+                        } else {
+                            $electshow = '3';
+                        }
+                    }
+                    if($electshow == '1' || $electshow == '2') {
+                        $sql = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id = ' . $testid . ' AND pupilsightDepartmentID = '.$subjectId.' AND pupilsightPersonID = ' . $pupilsightPersonID . ' group by pupilsightPersonID order by pupilsightPersonID ';
+                        $resultmarks = $connection2->query($sql);
+                        $rd = $resultmarks->fetch();
+                        // echo '<pre>';
+                        // print_r($resultData);
+                        $newrd = array();
+                        if(!empty($rd['id'])){
+                            if(!empty($rd)){
+                                $pupilsightPersonID = $rd['pupilsightPersonID'];
+                                $marks = $rd['marks_obtained'];
+                                $marks_abex = $rd['marks_abex'];
+                                $skill_id = $rd['skill_id'];
+                                $grade_id = $rd['gradeId'];
+                                $t_id = $rd['test_id'];
+                                $marks_obtained = $rd['marks_obtained'];
+
+                                $tmp = array();
+                                $tmp["subject"] = $subjectId;
+                                $tmp["subjectName"] = $asub['subject_display_name'];
+
+                                $newrd['pupilsightPersonID'] = $pupilsightPersonID;
+                                $newrd['subject'] = $subjectId;
+                                $newrd['marks'] = $marks;
+
+                                if ($skillConfig) {
+                                    $resultSkillData = loadSkillConfig($skillConfig, $newrd);
+                                }
+                                
+                                if(isset($subjectMaxMarks[$subjectId])){
+                                    $tmp["max_marks"] = $subjectMaxMarks[$subjectId];
+                                }
+
+                                if(isset($subjectMinMarks[$subjectId])){
+                                    $tmp["min_marks"] = $subjectMinMarks[$subjectId];
+                                }
+
+                                if(isset($subjectGrade[$subjectId])){
+                                    $tmp["gradeSystemId"] = $subjectGrade[$subjectId];
+                                }
+
+                                if (!empty($marks_abex)) {
+                                    $tmp["marks_abex"] = $marks_abex;
+                                } else {
+                                    $tmp["marks_abex"] = '';
+                                }
+                                $tmp["skill"] = $skill_id;
+                                $tmp["grade_id"] = $grade_id;
+                                $tmp["test_id"] = $t_id;
+
+                                $getMaks = $marks_obtained;
+                                //echo $tmp["max_marks"].'</br>';
+                                if (!empty($scalevalue)) {
+                                    $max_marks = $scalevalue;
+                                    //echo $sub[$i].'---'.$getMaks.'--'.$tmp["max_marks"].'--'.$max_marks.'</br>';
+                                    if (!empty($tmp["max_marks"]) && $tmp["max_marks"] != '0.00') {
+                                        $gm = ($getMaks / $tmp["max_marks"]) * $max_marks;
+                                        
+                                    } else {
+                                        $gm = $getMaks * $max_marks;
+                                    }
+                                    if (!empty($roundvalue)) {
+                                        $getmarks = round($gm, $roundvalue);
+                                    } else {
+                                        $getmarks = $gm;
+                                    }
+                                } else {
+                                    $max_marks = $tmp["max_marks"];
+                                    if (!empty($roundvalue)) {
+                                        $getmarks = round($getMaks, $roundvalue);
+                                    } else {
+                                        $getmarks = $getMaks;
+                                    }
+                                }
+                                $tmp["marks"] = $getmarks;
+
+                                // if ($resultSkillData) {
+                                //     if (isset($resultSkillData[$pupilsightPersonID][$sub[$i]]["marks"])) {
+                                //         $tmp["marks"] = $resultSkillData[$pupilsightPersonID][$sub[$i]]["marks"];
+                                //     }
+                                // }
+                                
+
+                                if ($resultSkillData) {
+                                    if (isset($resultSkillData[$pupilsightPersonID][$subjectId]["marks"])) {
+                                        $getMaks = $resultSkillData[$pupilsightPersonID][$subjectId]["marks"];
+                                        //echo $tmp["max_marks"].'</br>';
+                                        if (!empty($scalevalue)) {
+                                            $max_marks = $scalevalue;
+                                            //echo $sub[$i].'---'.$getMaks.'--'.$tmp["max_marks"].'--'.$max_marks.'</br>';
+                                            if (!empty($tmp["max_marks"]) && $tmp["max_marks"] != '0.00') {
+                                                $gm = ($getMaks / $tmp["max_marks"]) * $max_marks;
+                                                
+                                            } else {
+                                                $gm = $getMaks * $max_marks;
+                                            }
+                                            if (!empty($roundvalue)) {
+                                                $getmarks = round($gm, $roundvalue);
+                                            } else {
+                                                $getmarks = $gm;
+                                            }
+                                        } else {
+                                            $max_marks = $tmp["max_marks"];
+                                            if (!empty($roundvalue)) {
+                                                $getmarks = round($getMaks, $roundvalue);
+                                            } else {
+                                                $getmarks = $getMaks;
+                                            }
+                                        }
+                                        $tmp["marks"] = $getmarks;
+                                    }
+                                    if (isset($resultSkillData[$pupilsightPersonID][$subjectId]["skill_configure"])) {
+                                        $tmp["skill_configure"] = $resultSkillData[$pupilsightPersonID][$subjectId]["skill_configure"];
+                                    } else {
+                                        $tmp["skill_configure"] = 'None';
+                                    }
+                                } 
+
+                                // echo '<pre>';
+                                // print_r($tmp["marks"]);
+                                // echo '</pre>';
+                                $tmp['sub_type'] = $subjectType;
+                                $tmp['elective_name'] = $electiveName;
+                                
+
+                                if ($kountTmId > 1) {
+                                    $dt[$testid][$pupilsightPersonID][$subjectId] = $tmp;
+                                } else {
+                                    $dt[$pupilsightPersonID][$subjectId] = $tmp;
+                                }
+
+                            } else {
+                                $tmp = array();
+                                $tmp["subject"] = $subjectId;
+                                $tmp["subjectName"] = $asub['subject_display_name'];
+                                
+                                if(isset($subjectMaxMarks[$subjectId])){
+                                    $tmp["max_marks"] = $subjectMaxMarks[$subjectId];
+                                }
+            
+                                if(isset($subjectMinMarks[$subjectId])){
+                                    $tmp["min_marks"] = $subjectMinMarks[$subjectId];
+                                }
+            
+                                if(isset($subjectGrade[$subjectId])){
+                                    $tmp["gradeSystemId"] = $subjectGrade[$subjectId];
+                                }
+            
+                                $tmp["marks_abex"] = '';
+                                $tmp["skill"] = '';
+                                $tmp["grade_id"] = '';
+                                $tmp["test_id"] = '';
+                                $tmp["marks"] = '';
+                                $tmp["skill_configure"] = 'None';
+                                $tmp['sub_type'] = $subjectType;
+                                $tmp['elective_name'] = $electiveName;
+                                
+                                if ($kountTmId > 1) {
+                                    $dt[$testid][$pupilsightPersonID][$subjectId] = $tmp;
+                                } else {
+                                    $dt[$pupilsightPersonID][$subjectId] = $tmp;
+                                }
+                            }
+                        } else {
+                            $tmp = array();
+                            $tmp["subject"] = $subjectId;
+                            $tmp["subjectName"] = $asub['subject_display_name'];
+                            
+                            if(isset($subjectMaxMarks[$subjectId])){
+                                $tmp["max_marks"] = $subjectMaxMarks[$subjectId];
+                            }
+
+                            if(isset($subjectMinMarks[$subjectId])){
+                                $tmp["min_marks"] = $subjectMinMarks[$subjectId];
+                            }
+
+                            if(isset($subjectGrade[$subjectId])){
+                                $tmp["gradeSystemId"] = $subjectGrade[$subjectId];
+                            }
+
+                            $tmp["marks_abex"] = '';
+                            $tmp["skill"] = '';
+                            $tmp["grade_id"] = '';
+                            $tmp["test_id"] = '';
+                            $tmp["marks"] = '';
+                            $tmp["skill_configure"] = 'None';
+                            $tmp['sub_type'] = $subjectType;
+                            $tmp['elective_name'] = $electiveName;
+                            
+                            if ($kountTmId > 1) {
+                                $dt[$testid][$pupilsightPersonID][$subjectId] = $tmp;
+                            } else {
+                                $dt[$pupilsightPersonID][$subjectId] = $tmp;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+    } catch (Exception $ex) {
+        print_r($ex);
+    }
+
     return $dt;
 }
 
@@ -1601,7 +2569,7 @@ function getSkillConfig($connection2, $testid)
     }
 }
 
-function loadSkillConfig($skillConfig, $result)
+function loadSkillConfig__($skillConfig, $result)
 {
     $dt = array();
      //print_r($skillConfig);
@@ -1645,6 +2613,57 @@ function loadSkillConfig($skillConfig, $result)
             $i++;
         }
     }
+    // echo '<pre>';
+    // print_r($dt);
+    // echo '</pre>';
+    // die();
+    return $dt;
+}
+
+function loadSkillConfig($skillConfig, $rd)
+{
+    $dt = array();
+     //print_r($skillConfig);
+    // print_r($result);
+    //foreach ($result as $rd) {
+        //$id = $col[0];
+        $pupilsightPersonID = $rd['pupilsightPersonID'];
+        $subject = $rd['subject'];
+        $marks = $rd['marks'];
+        //$skill = $rd['skill'];
+
+        $sub = explode(",", $subject);
+        $mks = explode(",", $marks);
+        //$sl = explode(",", $skill);
+        $len = count($sub);
+        $i = 0;
+        $cnt1 = 1;
+        $subject = '';
+        while ($i < $len) {
+            if (isset($skillConfig[$sub[$i]])) {
+                if($subject !=  $sub[$i]){
+                    $subject = $sub[$i];
+                    $cnt1 = 1;
+                }
+                $skillConfigure = $skillConfig[$sub[$i]];
+                if (isset($dt[$pupilsightPersonID][$sub[$i]]["marks"])) {
+                    $oldMarks = $marks;
+                    $marks = $oldMarks + $mks[$i];
+                } else {
+                   $marks = $mks[$i];
+                }
+                $dt[$pupilsightPersonID][$sub[$i]]["skill_configure"] = $skillConfigure;
+                if($skillConfigure == 'Sum'){
+                    $dt[$pupilsightPersonID][$sub[$i]]["marks"] = $marks;
+                } else if($skillConfigure == 'Average'){
+                    $avgMarks = $marks / $cnt1;
+                    $dt[$pupilsightPersonID][$sub[$i]]["marks"] = $avgMarks;
+                } 
+                $cnt1++;
+            }
+            $i++;
+        }
+    //}
     // echo '<pre>';
     // print_r($dt);
     // echo '</pre>';
@@ -1705,6 +2724,51 @@ function getSubjectGrade($connection2, $testId, $mappingData){
     if(!empty($data)){
         foreach($data as $d){
             $sub[$d['pupilsightDepartmentID']] = $d['gradeSystemId'];
+        }
+    }
+    // print_r($sub);
+    // die();
+    return $sub;
+}
+
+function getSubjectSkillMaxMarks($connection2, $testId, $mappingData){
+    $sq = "select  pupilsightDepartmentID, skill_id, max_marks from examinationSubjectToTest where test_id='" . $testId . "' GROUP BY pupilsightDepartmentID, skill_id  ";
+    $result = $connection2->query($sq);
+    $data = $result->fetchAll();
+    $sub = array();
+    if(!empty($data)){
+        foreach($data as $d){
+            $sub[$d['pupilsightDepartmentID'].'-'.$d['skill_id']] = $d['max_marks'];
+        }
+    }
+    // print_r($sub);
+    // die();
+    return $sub;
+}
+
+function getSubjectSkillMinMarks($connection2, $testId, $mappingData){
+    $sq = "select  pupilsightDepartmentID, skill_id, min_marks from examinationSubjectToTest where test_id='" . $testId . "' GROUP BY pupilsightDepartmentID, skill_id  ";
+    $result = $connection2->query($sq);
+    $data = $result->fetchAll();
+    $sub = array();
+    if(!empty($data)){
+        foreach($data as $d){
+            $sub[$d['pupilsightDepartmentID'].'-'.$d['skill_id']] = $d['min_marks'];
+        }
+    }
+    // print_r($sub);
+    // die();
+    return $sub;
+}
+
+function getSubjectSkillGrade($connection2, $testId, $mappingData){
+    $sq = "select pupilsightDepartmentID, skill_id, gradeSystemId from examinationSubjectToTest where test_id='" . $testId . "' GROUP BY pupilsightDepartmentID, skill_id  ";
+    $result = $connection2->query($sq);
+    $data = $result->fetchAll();
+    $sub = array();
+    if(!empty($data)){
+        foreach($data as $d){
+            $sub[$d['pupilsightDepartmentID'].'-'.$d['skill_id']] = $d['gradeSystemId'];
         }
     }
     // print_r($sub);

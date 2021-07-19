@@ -20,7 +20,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, [
-            'success1' => __('Your request was completed successfully.').' '.__('You may now continue by submitting a coverage request for this absence.'),
+            'success1' => __('Your request was completed successfully.') . ' ' . __('You may now continue by submitting a coverage request for this absence.'),
             'error8' => __('Your request failed because no dates have been selected. Please check your input and submit your request again.'),
         ]);
     }
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
         $page->addError(__('Coverage may only be requested for an absence after it has been approved.'));
         return;
     }
-    
+
     // Look for available subs
     $criteria = $substituteGateway->newQueryCriteria()
         ->sortBy('pupilsightSubstitute.priority', 'DESC')
@@ -84,12 +84,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     // Build a list of available subs by type
     $countTypes = [];
     $availableSubsByType = array_reduce($availableSubs, function ($group, $item) use (&$countTypes) {
-        $countTypes[$item['type']] = isset($countTypes[$item['type']])? $countTypes[$item['type']] + 1 : 1;
-        $group[$item['type']] = $item['type']." ({$countTypes[$item['type']]})";
+        $countTypes[$item['type']] = isset($countTypes[$item['type']]) ? $countTypes[$item['type']] + 1 : 1;
+        $group[$item['type']] = $item['type'] . " ({$countTypes[$item['type']]})";
         return $group;
     }, []);
 
-    $form = Form::create('staffAbsenceEdit', $_SESSION[$guid]['absoluteURL'].'/modules/Staff/coverage_requestProcess.php');
+    $form = Form::create('staffAbsenceEdit', $_SESSION[$guid]['absoluteURL'] . '/modules/Staff/coverage_requestProcess.php');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -104,28 +104,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     }
 
     $dateStart = $absenceDates[0] ?? '';
-    $dateEnd = $absenceDates[count($absenceDates) -1] ?? '';
+    $dateEnd = $absenceDates[count($absenceDates) - 1] ?? '';
     $dateRange = Format::dateRangeReadable($dateStart['date'], $dateEnd['date']);
     $timeRange = $dateStart['allDay'] == 'N'
         ? Format::timeRange($dateStart['timeStart'], $dateStart['timeEnd'])
         : '';
 
     $row = $form->addRow();
-        $row->addLabel('dateLabel', __('Absence'));
-        $row->addTextField('date')->readonly()->setValue($dateRange.' '.$timeRange);
+    $row->addLabel('dateLabel', __('Absence'));
+    $row->addTextField('date')->readonly()->setValue($dateRange . ' ' . $timeRange);
 
     $row = $form->addRow();
-        $row->addLabel('requestType', __('Substitute Required'));
-        $row->addSelect('requestType')->isRequired()->fromArray($requestTypes)->selected('Broadcast');
+    $row->addLabel('requestType', __('Substitute Required'));
+    $row->addSelect('requestType')->isRequired()->fromArray($requestTypes)->selected('Broadcast');
 
     $form->toggleVisibilityByClass('individualOptions')->onSelect('requestType')->when('Individual');
     $form->toggleVisibilityByClass('broadcastOptions')->onSelect('requestType')->when('Broadcast');
 
-        
+
     // Broadcast
     $row = $form->addRow()->addClass('broadcastOptions');
     if (!empty($availableSubs)) {
-        $row->addAlert(__("This option sends a request out to all available substitutes. There are currently {count} substitutes with availability for this time period. You'll receive a notification once your request is accepted.", ['count' => '<b>'.count($availableSubs).'</b>']), 'message');
+        $row->addAlert(__("This option sends a request out to all available substitutes. There are currently {count} substitutes with availability for this time period. You'll receive a notification once your request is accepted.", ['count' => '<b>' . count($availableSubs) . '</b>']), 'message');
 
         // If there's more than one sub type, allow users to direct their broadcast request to a specific type.
         // All substitute types are selected by default.
@@ -142,15 +142,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
 
     // Individual
     $row = $form->addRow()->addClass('individualOptions');
-        $row->addAlert(__("This option sends your request to the selected substitute. You'll receive a notification when they accept or decline. If your request is declined you'll have to option to send a new request."), 'message');
+    $row->addAlert(__("This option sends your request to the selected substitute. You'll receive a notification when they accept or decline. If your request is declined you'll have to option to send a new request."), 'message');
 
     $row = $form->addRow()->addClass('individualOptions');
-        $row->addLabel('pupilsightPersonIDCoverage', __('Substitute'))->description(__('Only available substitutes are listed here.'));
-        $row->addSelectPerson('pupilsightPersonIDCoverage')
-            ->fromArray($availableSubsOptions)
-            ->placeholder()
-            ->selected($pupilsightPersonIDCoverage)
-            ->isRequired();
+    $row->addLabel('pupilsightPersonIDCoverage', __('Substitute'))->description(__('Only available substitutes are listed here.'));
+    $row->addSelectPerson('pupilsightPersonIDCoverage')
+        ->fromArray($availableSubsOptions)
+        ->placeholder()
+        ->selected($pupilsightPersonIDCoverage)
+        ->isRequired();
 
     $sql = "SELECT DATE_FORMAT(schoolStart, '%H:%i') as schoolStart, DATE_FORMAT(schoolEnd, '%H:%i') as schoolEnd FROM pupilsightDaysOfWeek WHERE name=DATE_FORMAT(CURRENT_DATE, '%W') AND schoolDay='Y'";
     $weekday = $pdo->selectOne($sql);
@@ -170,69 +170,69 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/coverage_request.php
     $form->toggleVisibilityByClass('timeOptions')->onCheckbox('allDay')->whenNot('Y');
 
     $row = $form->addRow()->addClass('timeOptions');
-        $row->addLabel('timeStart', __('Time'));
-        $col = $row->addColumn('timeStart');
-        $col->addTime('timeStart')
-            ->setClass('w-full mr-1')
-            ->isRequired()
-            ->setValue($dateStart['timeStart'] ?? $weekday['schoolStart']);
-        $col->addTime('timeEnd')
-            ->chainedTo('timeStart')
-            ->setClass('w-full')
-            ->isRequired()
-            ->setValue($dateStart['timeEnd'] ?? $weekday['schoolEnd']);
+    $row->addLabel('timeStart', __('Time'));
+    $col = $row->addColumn('timeStart');
+    $col->addTime('timeStart')
+        ->setClass('w-full mr-1')
+        ->isRequired()
+        ->setValue($dateStart['timeStart'] ?? $weekday['schoolStart']);
+    $col->addTime('timeEnd')
+        ->chainedTo('timeStart')
+        ->setClass('w-full')
+        ->isRequired()
+        ->setValue($dateStart['timeEnd'] ?? $weekday['schoolEnd']);
 
     // Dates selection - Loaded via AJAX
     $row = $form->addRow()->addClass('individualOptions');
-        $row->addContent('<div class="datesTable"></div>');
+    $row->addContent('<div class="datesTable"></div>');
 
     $row = $form->addRow();
-        $row->addLabel('notesStatus', __('Comment'))->description(__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));
-        $row->addTextArea('notesStatus')->setRows(3);
+    $row->addLabel('notesStatus', __('Comment'))->description(__('This message is shared with substitutes, and is also visible to users who manage staff coverage.'));
+    $row->addTextArea('notesStatus')->setRows(3);
 
     $row = $form->addRow()->addClass('coverageSubmit');
-        $row->addSubmit()->prepend('<div class="coverageNoSubmit inline text-right text-xs text-gray italic pr-1">'.__('Select a substitute and at least one date before continuing.').'</div>');
+    $row->addSubmit()->prepend('<div class="coverageNoSubmit inline text-right text-xs text-gray italic pr-1">' . __('Select a substitute and at least one date before continuing.') . '</div>');
 
     echo $form->getOutput();
 }
 ?>
 
 <script>
-$(document).ready(function() {
-    $('#pupilsightPersonIDCoverage, #allDay, #timeStart, #timeEnd').on('change', function() {
-        if ($('#pupilsightPersonIDCoverage').val() == '') return;
-        if ($('#requestType').val() == 'Broadcast') return;
+    $(document).ready(function() {
+        $('#pupilsightPersonIDCoverage, #allDay, #timeStart, #timeEnd').on('change', function() {
+            if ($('#pupilsightPersonIDCoverage').val() == '') return;
+            if ($('#requestType').val() == 'Broadcast') return;
 
-        // Individual requests: Load the available dates per sub via AJAX
-        $('.datesTable').load('./modules/Staff/coverage_requestAjax.php', {
-            'pupilsightStaffAbsenceID': '<?php echo $pupilsightStaffAbsenceID ?? ''; ?>',
-            'pupilsightPersonIDCoverage': $('#pupilsightPersonIDCoverage').val(),
-            'allDay': $('input[name=allDay]:checked').val(),
-            'timeStart': $('#timeStart').val(),
-            'timeEnd': $('#timeEnd').val(),
-        }, function() {
-            // Pre-highlight selected rows
-            $('.bulkActionForm').find('.bulkCheckbox :checkbox').each(function () {
-                $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
+            // Individual requests: Load the available dates per sub via AJAX
+            $('.datesTable').load('./modules/Staff/coverage_requestAjax.php', {
+                'pupilsightStaffAbsenceID': '<?php echo $pupilsightStaffAbsenceID ?? ''; ?>',
+                'pupilsightPersonIDCoverage': $('#pupilsightPersonIDCoverage').val(),
+                'allDay': $('input[name=allDay]:checked').val(),
+                'timeStart': $('#timeStart').val(),
+                'timeEnd': $('#timeEnd').val(),
+            }, function() {
+                // Pre-highlight selected rows
+                $('.bulkActionForm').find('.bulkCheckbox :checkbox').each(function() {
+                    $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
+                });
+
+                $('#requestType').trigger('change');
             });
-
-            $('#requestType').trigger('change');
         });
+
+        // Individual requests: Prevent clicking submit until at least one date has been selected
+        $(document).on('change', '#requestType, input[name="requestDates[]"]', function() {
+            var checked = $('input[name="requestDates[]"]:checked');
+
+            if ($('#requestType').val() == 'Individual' && checked.length <= 0) {
+                $('.coverageNoSubmit').show();
+                $('.coverageSubmit :input').prop('disabled', true);
+            } else {
+                $('.coverageNoSubmit').hide();
+                $('.coverageSubmit :input').prop('disabled', false);
+            }
+        });
+
+        $('#requestType').trigger('change');
     });
-
-    // Individual requests: Prevent clicking submit until at least one date has been selected
-    $(document).on('change', '#requestType, input[name="requestDates[]"]', function() {
-        var checked = $('input[name="requestDates[]"]:checked');
-
-        if ($('#requestType').val() == 'Individual' && checked.length <= 0) {
-            $('.coverageNoSubmit').show();
-            $('.coverageSubmit :input').prop('disabled', true);
-        } else {
-            $('.coverageNoSubmit').hide();
-            $('.coverageSubmit :input').prop('disabled', false);
-        }
-    });
-
-    $('#requestType').trigger('change');
-}) ;
 </script>

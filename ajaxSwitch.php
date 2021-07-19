@@ -2566,6 +2566,136 @@ if (isset($_POST['type'])) {
                 <?php
                 break;
 
+            case 'studentMarks_excel_report':
+                $program = $_POST['program'];
+                $cls = $_POST['cls'];
+                $section = $_POST['section'];
+                $testId = implode(',', $_POST['testId']);
+                $stu_id = $_POST['stu_id'];
+
+                if (strpos($baseurl, "vvnpucollege") > -1) {
+                    $sql = 'SELECT b.officialName, b.pupilsightPersonID, b.student_id, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id = ' . $testId . ' AND a.pupilsightPersonID IN (' . $stu_id . ')  GROUP BY a.pupilsightPersonID';
+                } else {
+                    $sql = 'SELECT b.officialName, b.pupilsightPersonID, d.name as classname, e.name as sectionname FROM `examinationMarksEntrybySubject` AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID LEFT JOIN pupilsightStudentEnrolment AS c ON a.pupilsightPersonID = c.pupilsightPersonID LEFT JOIN pupilsightYearGroup AS d ON c.pupilsightYearGroupID = d.pupilsightYearGroupID LEFT JOIN pupilsightRollGroup AS e ON c.pupilsightRollGroupID = e.pupilsightRollGroupID WHERE   a.test_id = ' . $testId . ' AND a.pupilsightPersonID IN (' . $stu_id . ')  GROUP BY a.pupilsightPersonID';
+                }
+                $result = $connection2->query($sql);
+                $data = $result->fetchAll();
+
+                $sql1 = 'SELECT a.*, b.subject_display_name as subject_name, b.subject_type, c.skill_display_name FROM examinationSubjectToTest AS a LEFT JOIN subjectToClassCurriculum AS b ON a.pupilsightDepartmentID = b.pupilsightDepartmentID LEFT JOIN subjectSkillMapping AS c ON a.skill_id = c.skill_id
+                        WHERE a.test_id = ' . $testId . ' AND a.is_tested = "1" AND b.pupilsightProgramID = ' . $program . ' AND b.pupilsightYearGroupID =' . $cls . ' GROUP by a.pupilsightDepartmentID,c.skill_id';
+                $resu_h = $connection2->query($sql1);
+                $datam_h = $resu_h->fetchAll();
+                $cols = count($datam_h) + 5;
+
+                $row1 = $data[0];
+
+                //get Exam Names
+                $sqe = "SELECT group_concat(name separator ', ') as name FROM examinationTest where id in(" . $testId . ")";
+                $re = $connection2->query($sqe);
+                $dtes = $re->fetch();
+                $testName = $dtes["name"];
+                $header = $row1['classname'] . " " . $row1['sectionname'];
+                if ($testName) {
+                    $header .= ", " . $testName;
+                }
+
+                ?>
+                    <table id="excelexport">
+                        <tr>
+                            <?php
+                            echo "<th colspan='" . $cols . "' style='text-align:center;'>" . strtoupper($header) . "</th>";
+                            ?>
+                        </tr>
+                        <tr>
+                            <th>Srno</th>
+                            <th>Student Name</th>
+                            <th>Elective</th>
+                            <?php
+                            $totalMaxMarks = 0;
+                            foreach ($datam_h as $m) {
+                                $hdCol = ""; //header column
+                                if ($m['skill_display_name']) {
+                                    $hdCol = $m['subject_name'] . "-" . $m['skill_display_name'] . "/" . ceil($m['max_marks']);
+                                } else {
+                                    $hdCol = $m['subject_name'] . "/" . ceil($m['max_marks']);
+                                }
+                                echo "<th>$hdCol</th>";
+                                if (is_numeric($m['max_marks'])) {
+                                    $totalMaxMarks += $m['max_marks'];
+                                }
+                            }
+                            echo "<th>Total Marks</th><th>%</th>";
+                            $totalMaxMarks = ceil($totalMaxMarks);
+                            ?>
+                        </tr>
+
+                        <?php
+                        $srno = 1;
+                        foreach ($data as $row) {
+                            echo "<tr>
+                                <td>" . $srno . "</td>
+                                <td>" . $row['officialName'] . "</td>";
+                            $srno++;
+                            try {
+                                $sqelc = "SELECT group_concat(s.name separator ', ') as name FROM assign_elective_subjects_tostudents as e 
+                            left join pupilsightDepartment as s on e.pupilsightDepartmentID=s.pupilsightDepartmentID
+                            where 
+                            e.pupilsightPersonID='" . $row['pupilsightPersonID'] . "' and 
+                            e.pupilsightYearGroupID='" . $cls . "' and 
+                            e.pupilsightProgramID='" . $program . "' ";
+                                $re_le = $connection2->query($sqelc);
+                                $da_le = $re_le->fetch();
+                                echo "<td>" . $da_le["name"]  . "</td>";
+                            } catch (Exception $ex) {
+                                print_r($ex);
+                            }
+
+                            $marks = 0;
+                            $total = 0;
+                            $perMarks = 0;
+                            foreach ($datam_h as $m) {
+                                $pupilsightDepartmentID = $m['pupilsightDepartmentID'];
+                                $skill_id = $m['skill_id'];
+                                $subject_type = $m['subject_type'];
+                                $sql = 'SELECT * FROM examinationMarksEntrybySubject WHERE test_id = ' . $testId . ' AND pupilsightPersonID = ' . $row['pupilsightPersonID'] . ' AND pupilsightDepartmentID = ' . $pupilsightDepartmentID . ' ';
+                                if (!empty($skill_id)) {
+                                    $sql .= " AND skill_id = " . $skill_id . " ";
+                                }
+                                //echo $sql.'<br>';
+                                $resu_h = $connection2->query($sql);
+                                $dataRes = $resu_h->fetch();
+
+                                if (!empty($dataRes)) {
+                                    $marks = $dataRes['marks_obtained'];
+                                    if (!empty($dataRes['marks_abex'])) {
+                                        $marks = $dataRes['marks_abex'];
+                                    }
+                                    if (!empty($marks)) {
+                                        if (is_numeric($marks)) {
+                                            $total += $marks;
+                                        }
+                                        echo "<td>" . $marks . "</td>";
+                                    } else {
+                                        echo "<td></td>";
+                                    }
+                                } else {
+                                    echo "<td></td>";
+                                }
+                            }
+                            echo "<td>" . $total . "</td>";
+                            if ($total > 0) {
+                                $perMarks = round((($total * 100) / $totalMaxMarks), 2);
+                            }
+                            echo "<td>" . $perMarks . "</td>";
+
+                        ?>
+                            </tr>
+                        <?php } ?>
+                    </table>
+                <?php
+                break;
+
+
             case 'subjectMarks_excel';
                 $testId = implode(',', $_POST['testId']);
                 //   $sql = "SELECT a.* ,b.skill_display_name ,d.name as test,c.name as subject,GROUP_CONCAT(DISTINCT b.skill_id SEPARATOR ', ') as skill_ids,GROUP_CONCAT(DISTINCT b.skill_display_name SEPARATOR ', ') as skillname FROM examinationMarksEntrybySubject AS a LEFT JOIN subjectSkillMapping AS b ON a.`skill_id` = b.skill_id LEFT JOIN pupilsightDepartment as c ON a.pupilsightDepartmentID=c.pupilsightDepartmentID LEFT JOIN  examinationTest as d ON a.test_id = d.id LEFT JOIN examinationTest as e ON a.test_id = e.id  WHERE   a.test_id = ".$testId." GROUP BY a.pupilsightPersonID";

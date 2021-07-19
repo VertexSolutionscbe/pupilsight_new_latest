@@ -3474,7 +3474,7 @@
     });
 
     $(document).on('click', '#sendEmailSms_stud', function (e) {
-        e.preventDefault();
+
         //$("#preloader").show();
         //window.setTimeout(function () {
         try {
@@ -3502,6 +3502,7 @@
                         $(".closeSMPopUp").click();
                         $("#sendEmailSms_stud").prop('disabled', true);
 
+                        e.preventDefault();
                         var formData = new FormData(document.getElementById("sendEmailSms_Student"));
                         formData.append('stuid', stuid);
                         formData.append('emailquote', emailquote);
@@ -6655,54 +6656,54 @@ $(document).on('click', '#sendEmailSms_stud_test_result', function () {
 
 
 //lock & unlock marks entry
-$(document).on('click', '.lock_me_btn', function (e) {
+// $(document).on('click', '.lock_me_btn', function (e) {
 
-    e.preventDefault();
-    var atype = $(this).attr('data-type');
-    var url = $(this).attr('data-href');
-    var favorite = [];
-    var entry_ids = [];
-    $.each($("input[name='student_id[]']:checked"), function () {
-        var entryid = $(this).attr('data_tid');
-        entry_ids.push(entryid);
-        favorite.push($(this).val());
-    });
-    var stuid = favorite.join(",");
-    var entids = entry_ids.join(",");
-    //  alert(entids);
-    if (atype == 'lock') {
-        var msg = 'Lock';
-        var typeval = 'lock_mark_entry';
-    } else {
-        var typeval = 'unlock_mark_entry';
-        var msg = 'UnLock';
+//     e.preventDefault();
+//     var atype = $(this).attr('data-type');
+//     var url = $(this).attr('data-href');
+//     var favorite = [];
+//     var entry_ids = [];
+//     $.each($("input[name='student_id[]']:checked"), function () {
+//         var entryid = $(this).attr('data_tid');
+//         entry_ids.push(entryid);
+//         favorite.push($(this).val());
+//     });
+//     var stuid = favorite.join(",");
+//     var entids = entry_ids.join(",");
+//     //  alert(entids);
+//     if (atype == 'lock') {
+//         var msg = 'Lock';
+//         var typeval = 'lock_mark_entry';
+//     } else {
+//         var typeval = 'unlock_mark_entry';
+//         var msg = 'UnLock';
 
-    }
-    if (entids) {
-        if (confirm("Are you sure want to continue? ")) {
-            var val = entids;
-            //deleteStudentRoutes
-            var action_type = typeval;
-            var type = 'lock_unlock_mark_entry';
-            if (val != '') {
-                $.ajax({
-                    url: 'ajax_data.php',
-                    type: 'post',
-                    data: { val: val, type: type, action_type: action_type },
-                    async: true,
-                    success: function (response) {
-                        //  alert("You Have Locked the Entry Successfully!");
-                        location.reload();
-                    }
-                });
-            }
-        }
-    } else {
+//     }
+//     if (entids) {
+//         if (confirm("Are you sure want to continue? ")) {
+//             var val = entids;
+//             //deleteStudentRoutes
+//             var action_type = typeval;
+//             var type = 'lock_unlock_mark_entry';
+//             if (val != '') {
+//                 $.ajax({
+//                     url: 'ajax_data.php',
+//                     type: 'post',
+//                     data: { val: val, type: type, action_type: action_type },
+//                     async: true,
+//                     success: function (response) {
+//                         //  alert("You Have Locked the Entry Successfully!");
+//                         location.reload();
+//                     }
+//                 });
+//             }
+//         }
+//     } else {
 
-        alert('You Have to Select Students.');
+//         alert('You Have to Select Students.');
 
-    }
-});
+//     }
+// });
 
 $(document).on('change', '#pupilsightProgramIDbyPP', function () {
     var id = $(this).val();
