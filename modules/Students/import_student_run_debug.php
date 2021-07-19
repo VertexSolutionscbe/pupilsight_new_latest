@@ -77,6 +77,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Students/import_student_ru
                     $headers[$key] = '##_canLogin';
                 } else if ($hd == 'Email') {
                     $headers[$key] = '##_email';
+                } else if ($hd == 'Mobile (Country Code)') {
+                    $headers[$key] = '##_phone1CountryCode';
+                } else if ($hd == 'Mobile No') {
+                    $headers[$key] = '##_phone1';
                 } else if ($hd == 'Address') {
                     $headers[$key] = '##_address1';
                 } else if ($hd == 'District') {

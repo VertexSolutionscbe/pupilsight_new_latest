@@ -4603,3 +4603,27 @@ if ($type == 'deleteBulkSubject') {
         $result->execute($data);
     }
 }
+
+if ($type == 'deleteBulkStaff') {
+    $ids = explode(',', $val);
+    foreach ($ids as $st) {
+        $sql = 'SELECT pupilsightStaffID FROM pupilsightStaff WHERE pupilsightPersonID= '.$st.' ';
+        $resulta = $connection2->query($sql);
+        $stffdata = $resulta->fetch();
+        $pupilsightStaffID = $stffdata['pupilsightStaffID'];
+
+        if(!empty($pupilsightStaffID) && $st != '1'){
+            $data = array('pupilsightStaffID' => $pupilsightStaffID);
+            $sql = 'DELETE FROM pupilsightStaff WHERE pupilsightStaffID=:pupilsightStaffID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+
+            $data = array('pupilsightPersonID' => $st);
+            $sql = 'DELETE FROM pupilsightPerson WHERE pupilsightPersonID=:pupilsightPersonID';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+            //echo $st.'---'.$pupilsightStaffID.'</br>';
+        }
+        
+    }
+}

@@ -857,21 +857,23 @@ print_r($rs);
                 ])
                 ->leftJoin('fn_fee_invoice_student_assign', ' fn_fee_invoice.id=fn_fee_invoice_student_assign.fn_fee_invoice_id')
 
-                ->leftJoin('fn_fee_invoice_class_assign', ' fn_fee_invoice.id=fn_fee_invoice_class_assign.fn_fee_invoice_id')
-                ->leftJoin('pupilsightProgram', ' fn_fee_invoice_class_assign.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
+                ->leftJoin('pupilsightStudentEnrolment', 'fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+
+                //->leftJoin('fn_fee_invoice_class_assign', ' fn_fee_invoice.id=fn_fee_invoice_class_assign.fn_fee_invoice_id')
+                ->leftJoin('pupilsightProgram', ' pupilsightStudentEnrolment.pupilsightProgramID=pupilsightProgram.pupilsightProgramID')
 
                 ->leftJoin('pupilsightPerson', ' fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightPerson.pupilsightPersonID')
 
-                ->leftJoin('pupilsightYearGroup', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
+                ->leftJoin('pupilsightYearGroup', ' pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightYearGroup.pupilsightYearGroupID')
 
-                ->leftJoin('pupilsightProgramClassSectionMapping', ' fn_fee_invoice_class_assign.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
+                ->leftJoin('pupilsightProgramClassSectionMapping', ' pupilsightStudentEnrolment.pupilsightYearGroupID=pupilsightProgramClassSectionMapping.pupilsightYearGroupID')
                 ->leftJoin('pupilsightRollGroup', ' pupilsightProgramClassSectionMapping.pupilsightRollGroupID=pupilsightRollGroup.pupilsightRollGroupID')
-                ->leftJoin('pupilsightStudentEnrolment', 'fn_fee_invoice_student_assign.pupilsightPersonID=pupilsightStudentEnrolment.pupilsightPersonID')
+                
                 ->leftJoin('fn_fee_series', 'fn_fee_invoice.inv_fn_fee_series_id=fn_fee_series.id')
                 ->leftJoin('fn_fees_head', 'fn_fee_invoice.fn_fees_head_id=fn_fees_head.id');
 
             if (!empty($input['pupilsightProgramID'])) {
-                $query->where('fn_fee_invoice_class_assign.pupilsightProgramID = "' . $input['pupilsightProgramID'] . '" ');
+                $query->where('pupilsightStudentEnrolment.pupilsightProgramID = "' . $input['pupilsightProgramID'] . '" ');
             }
             //   if(!empty($input['pupilsightYearGroupID'])){
             // $query->where('fn_fee_invoice_class_assign.pupilsightYearGroupID = "'.$input['pupilsightYearGroupID'].'" ');
@@ -883,7 +885,7 @@ print_r($rs);
             // }
 
             if (!empty($input['pupilsightYearGroupID'])) {
-                $query->where('fn_fee_invoice_class_assign.pupilsightYearGroupID IN (' . implode(',', $input['pupilsightYearGroupID']) . ') ');
+                $query->where('pupilsightStudentEnrolment.pupilsightYearGroupID IN (' . implode(',', $input['pupilsightYearGroupID']) . ') ');
             }
             if (!empty($input['pupilsightRollGroupID'])) {
                 $query->where('pupilsightStudentEnrolment.pupilsightRollGroupID IN (' . implode(',', $input['pupilsightRollGroupID']) . ') ');
@@ -930,9 +932,10 @@ print_r($rs);
             // echo $query;
             $query->where('fn_fee_invoice.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
                 ->where('pupilsightPerson.pupilsightRoleIDPrimary = 003')
+                ->where('pupilsightStudentEnrolment.pupilsightSchoolYearID = "' . $pupilsightSchoolYearID . '" ')
                 //->where('fn_fee_invoice_student_assign.status = 1 ')
                 ->groupby(['fn_fee_invoice_student_assign.id'])
-                ->orderby(['fn_fee_invoice_student_assign.id DESC']);
+                ->orderby(['fn_fee_invoice_student_assign.id DESC','pupilsightStudentEnrolment.pupilsightStudentEnrolmentID DESC']);
             //echo $query;
             // die();
         } else {

@@ -161,8 +161,8 @@ INSERT INTO `pupilsightPerson` (`pupilsightPersonID`, `title`, `surname`, `first
      `email_test`, `date_check`, `file_upload_test`, `test_upload2`, `image_upload`)
      */
 
-                $fieldName = array("gender","dob","username","canLogin","email", "address", "address1District", "address1Country", "languageFirst", "languageSecond", "languageThird", "countryOfBirth", "ethnicity", "religion", "nationalIDCardNumber");
-                $field = array("Gender","Date of Birth","Username","Can Login","Email", "Address", "District", "Country", "First Language", "Second Language", "Third Language", "Country of Birth", "Ethnicity", "Religion", "National ID Card Number", "Fee Category");
+                $fieldName = array("gender","dob","username","canLogin","email", "Mobile (Country Code)", "Mobile No", "address", "address1District", "address1Country", "languageFirst", "languageSecond", "languageThird", "countryOfBirth", "ethnicity", "religion", "nationalIDCardNumber");
+                $field = array("Gender","Date of Birth","Username","Can Login","Email", "Mobile (Country Code)", "Mobile No", "Address", "District", "Country", "First Language", "Second Language", "Third Language", "Country of Birth", "Ethnicity", "Religion", "National ID Card Number", "Fee Category");
                 $len = count($field);
                 $i = 0;
                 while ($i < $len) {
