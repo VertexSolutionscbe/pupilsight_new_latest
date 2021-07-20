@@ -5,7 +5,9 @@ use Pupilsight\Domain\Helper\HelperGateway;
 
 include "core.php";
 
-$baseurl = getDomain();
+// $baseurl = getDomain();
+$baseurl = getDomain().'/newcode/pupilsight_new';
+
 
 $accessFlag = true;
 if ($accessFlag == false) {
@@ -19,7 +21,8 @@ if ($accessFlag == false) {
     $pupilsightSchoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $ts = date('Y-m-d H:i:s');
     if (isset($_POST['title'])) {
-
+        //print_r($_POST);
+        //die();
         $title = "'" . trim($_POST['title']) . "'";
         $details = NULL;
         if (!empty($_POST['details'])) {
@@ -39,18 +42,19 @@ if ($accessFlag == false) {
         $end_time_unix = strtotime($_POST['end_date']);
         $end_date = date('Y-m-d', $end_time_unix);
 
-        $start_time = getPost($_POST['start_time']);
+        $start_time = getPost('start_time');
+
         if ($start_time) {
             $start_time = date('H:i:s', strtotime($start_time));
-            $start_time = "'$start_time'";
+            $start_time = $start_time;
         } else {
             $start_time = "NULL";
         }
 
-        $end_time = getPost($_POST['end_time']);
+        $end_time = getPost('end_time');
         if ($end_time) {
             $end_time = date('H:i:s', strtotime($end_time));
-            $end_time = "'$end_time'";
+            $end_time = $end_time;
         } else {
             $end_time = "NULL";
         }
@@ -58,11 +62,14 @@ if ($accessFlag == false) {
         $is_all_day_event = 2;
         if (!isset($_POST['is_all_day_event'])) {
             $is_all_day_event = 1;
-            //echo "StartDate Time ".$start_date." ".$start_time;
-            //echo "EndDate Time ".$end_date." ".$end_time;
+            //echo "StartDate Time " . $start_date . " " . $start_time;
+            //echo "EndDate Time " . $end_date . " " . $end_time;
             $start_time_unix = strtotime($start_date . " " . $start_time);
             $end_time_unix = strtotime($end_date . " " . $end_time);
         }
+
+        //echo $start_time_unix . " -- " . $end_time_unix;
+        //die();
 
         try {
             if (!empty($_POST["id"])) {
@@ -83,7 +90,7 @@ if ($accessFlag == false) {
                 $sq .= "where id='" . $id . "' ";
             } else {
                 $sq = "insert into calendar_event (title, details, event_type_id, location, start_date, start_time, end_date, end_time, start_time_unix, end_time_unix, is_all_day_event, is_publish, block_attendance, cdt, udt) 
-                values($title,'$details',$event_type_id,$location,'$start_date',$start_time,'$end_date',$end_time,$start_time_unix,$end_time_unix,$is_all_day_event,1,1,'$ts','$ts')";
+                values($title,'$details',$event_type_id,$location,'$start_date','$start_time','$end_date','$end_time','$start_time_unix','$end_time_unix','$is_all_day_event',1,1,'$ts','$ts')";
             }
             //echo $sq;
             //die();

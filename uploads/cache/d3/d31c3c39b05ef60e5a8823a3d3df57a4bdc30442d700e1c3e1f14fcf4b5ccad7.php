@@ -152,35 +152,43 @@ class __TwigTemplate_2cdba33ceb31e8947b97909acd01408d0047d9953091d6e22c6b0951577
                     <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach_inv\" id=\"emailattach_camp_inv\">
-                    <div style=\"margin-top: 15px;\" id=\"showEmailField\">
-                        <input type='checkbox' class='chkType_inv' data-type=\"fatherEmail\" name='father_email'
-                            value='1'>
-                        Father
-                        Email
-                        <input type='checkbox' class='chkType_inv' data-type=\"motherEmail\" name='mother_email'
-                            value='1'>
-                        Mother
-                        Email
-                        <input type='checkbox' class='chkType_inv' data-type=\"guardianEmail\" name='guardian_email'
-                            value='1'>
-                        Guardian Email
+                    <div class='mt-4' id=\"showEmailField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"fatherEmail\"
+                                name='father_email' value='1'>
+                            <span class=\"form-check-label\">Father Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"motherEmail\"
+                                name='mother_email' value='1'>
+                            <span class=\"form-check-label\">Father Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"guardianEmail\"
+                                name='guardian_email' value='1'>
+                            <span class=\"form-check-label\">Father Email</span>
+                        </label>
                     </div>
                 </div>
                 <div class=\"modal-body smsField_inv\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_stud_inv\" class=\"smsQuote_stud\"></textarea>
-                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
-                        <input type='checkbox' class='chkType_inv' data-type=\"fatherMobile\" name='father_mobile'
-                            value='1'>
-                        Father
-                        Mobile
-                        <input type='checkbox' class='chkType_inv' data-type=\"motherMobile\" name='mother_mobile'
-                            value='1'>
-                        Mother
-                        Mobile
-                        <input type='checkbox' class='chkType_inv' data-type=\"guardianMobile\" name='guardian_mobile'
-                            value='1'>
-                        Guardian Mobile
+                    <div class='mt-4' id=\"showMobileField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"fatherMobile\"
+                                name='father_mobile' value='1'>
+                            <span class=\"form-check-label\">Father Mobile</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"motherMobile\"
+                                name='mother_mobile' value='1'>
+                            <span class=\"form-check-label\">Mother Mobile</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"guardianMobile\"
+                                name='guardian_mobile' value='1'>
+                            <span class=\"form-check-label\">Guardian Mobile</span>
+                        </label>
                     </div>
                     <span></span>
                 </div>
@@ -214,31 +222,44 @@ class __TwigTemplate_2cdba33ceb31e8947b97909acd01408d0047d9953091d6e22c6b0951577
                     <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach\" id=\"emailattach_camp\">
-                    <div style=\"margin-top: 15px;\" id=\"showEmailField\">
-                        <input type='checkbox' class='chkType' data-type=\"fatherEmail\" name='father_email' value='1'>
-                        Father
-                        Email
-                        <input type='checkbox' class='chkType' data-type=\"motherEmail\" name='mother_email' value='1'>
-                        Mother
-                        Email
-                        <input type='checkbox' class='chkType' data-type=\"guardianEmail\" name='guardian_email'
-                            value='1'>
-                        Guardian Email
+                    <div class='mt-4' id=\"showEmailField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"fatherEmail\"
+                                name='father_email' value='1'>
+                            <span class=\"form-check-label\">Father Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"motherEmail\"
+                                name='mother_email' value='1'>
+                            <span class=\"form-check-label\">Mother Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"guardianEmail\"
+                                name='guardian_email' value='1'>
+                            <span class=\"form-check-label\">Guardian Email</span>
+                        </label>
                     </div>
                 </div>
+
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_stud\" class=\"smsQuote_stud\"></textarea>
-                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
-                        <input type='checkbox' class='chkType' data-type=\"fatherMobile\" name='father_mobile' value='1'>
-                        Father
-                        Mobile
-                        <input type='checkbox' class='chkType' data-type=\"motherMobile\" name='mother_mobile' value='1'>
-                        Mother
-                        Mobile
-                        <input type='checkbox' class='chkType' data-type=\"guardianMobile\" name='guardian_mobile'
-                            value='1'>
-                        Guardian Mobile
+                    <div class='mt-4' id=\"showMobileField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"fatherMobile\"
+                                name='father_mobile' value='1'>
+                            <span class=\"form-check-label\">Father Mobile</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"motherMobile\"
+                                name='mother_mobile' value='1'>
+                            <span class=\"form-check-label\">Mother Mobile</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"guardianMobile\"
+                                name='guardian_mobile' value='1'>
+                            <span class=\"form-check-label\">Guardian Mobile</span>
+                        </label>
                     </div>
                     <span></span>
                 </div>
@@ -274,22 +295,33 @@ class __TwigTemplate_2cdba33ceb31e8947b97909acd01408d0047d9953091d6e22c6b0951577
                     <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach_staff\" id=\"emailattach_camp\">
-                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
-                        <input type='checkbox' class='chkType' data-type=\"email\" name='email' value='1'>
-                        Email
-                        <input type='checkbox' class='chkType' data-type=\"emailAlternate\" name='emailAlternate'
-                            value='1'>
-                        Alternate Email
+                    <div class='mt-4' id=\"showMobileField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"email\" name='email'
+                                value='1'>
+                            <span class=\"form-check-label\">Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"emailAlternate\"
+                                name='emailAlternate' value='1'>
+                            <span class=\"form-check-label\">Alternate Email</span>
+                        </label>
                     </div>
                 </div>
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_staff\"></textarea>
-                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
-                        <input type='checkbox' class='chkType' data-type=\"phone1\" name='phone1' value='1'>
-                        Phone 1
-                        <input type='checkbox' class='chkType' data-type=\"phone2\" name='phone2' value='1'>
-                        Phone 2
+                    <div class=\"mt-4\" id=\"showMobileField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"phone1\" name='phone1'
+                                value='1'>
+                            <span class=\"form-check-label\">Phone 1</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"phone2\" name='phone2'
+                                value='1'>
+                            <span class=\"form-check-label\">Phone 2</span>
+                        </label>
                     </div>
                 </div>
                 <div class=\"modal-footer\">
@@ -645,35 +677,43 @@ class __TwigTemplate_2cdba33ceb31e8947b97909acd01408d0047d9953091d6e22c6b0951577
                     <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach_inv\" id=\"emailattach_camp_inv\">
-                    <div style=\"margin-top: 15px;\" id=\"showEmailField\">
-                        <input type='checkbox' class='chkType_inv' data-type=\"fatherEmail\" name='father_email'
-                            value='1'>
-                        Father
-                        Email
-                        <input type='checkbox' class='chkType_inv' data-type=\"motherEmail\" name='mother_email'
-                            value='1'>
-                        Mother
-                        Email
-                        <input type='checkbox' class='chkType_inv' data-type=\"guardianEmail\" name='guardian_email'
-                            value='1'>
-                        Guardian Email
+                    <div class='mt-4' id=\"showEmailField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"fatherEmail\"
+                                name='father_email' value='1'>
+                            <span class=\"form-check-label\">Father Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"motherEmail\"
+                                name='mother_email' value='1'>
+                            <span class=\"form-check-label\">Father Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"guardianEmail\"
+                                name='guardian_email' value='1'>
+                            <span class=\"form-check-label\">Father Email</span>
+                        </label>
                     </div>
                 </div>
                 <div class=\"modal-body smsField_inv\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_stud_inv\" class=\"smsQuote_stud\"></textarea>
-                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
-                        <input type='checkbox' class='chkType_inv' data-type=\"fatherMobile\" name='father_mobile'
-                            value='1'>
-                        Father
-                        Mobile
-                        <input type='checkbox' class='chkType_inv' data-type=\"motherMobile\" name='mother_mobile'
-                            value='1'>
-                        Mother
-                        Mobile
-                        <input type='checkbox' class='chkType_inv' data-type=\"guardianMobile\" name='guardian_mobile'
-                            value='1'>
-                        Guardian Mobile
+                    <div class='mt-4' id=\"showMobileField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"fatherMobile\"
+                                name='father_mobile' value='1'>
+                            <span class=\"form-check-label\">Father Mobile</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"motherMobile\"
+                                name='mother_mobile' value='1'>
+                            <span class=\"form-check-label\">Mother Mobile</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType_inv form-check-input' data-type=\"guardianMobile\"
+                                name='guardian_mobile' value='1'>
+                            <span class=\"form-check-label\">Guardian Mobile</span>
+                        </label>
                     </div>
                     <span></span>
                 </div>
@@ -707,31 +747,44 @@ class __TwigTemplate_2cdba33ceb31e8947b97909acd01408d0047d9953091d6e22c6b0951577
                     <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach\" id=\"emailattach_camp\">
-                    <div style=\"margin-top: 15px;\" id=\"showEmailField\">
-                        <input type='checkbox' class='chkType' data-type=\"fatherEmail\" name='father_email' value='1'>
-                        Father
-                        Email
-                        <input type='checkbox' class='chkType' data-type=\"motherEmail\" name='mother_email' value='1'>
-                        Mother
-                        Email
-                        <input type='checkbox' class='chkType' data-type=\"guardianEmail\" name='guardian_email'
-                            value='1'>
-                        Guardian Email
+                    <div class='mt-4' id=\"showEmailField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"fatherEmail\"
+                                name='father_email' value='1'>
+                            <span class=\"form-check-label\">Father Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"motherEmail\"
+                                name='mother_email' value='1'>
+                            <span class=\"form-check-label\">Mother Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"guardianEmail\"
+                                name='guardian_email' value='1'>
+                            <span class=\"form-check-label\">Guardian Email</span>
+                        </label>
                     </div>
                 </div>
+
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_stud\" class=\"smsQuote_stud\"></textarea>
-                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
-                        <input type='checkbox' class='chkType' data-type=\"fatherMobile\" name='father_mobile' value='1'>
-                        Father
-                        Mobile
-                        <input type='checkbox' class='chkType' data-type=\"motherMobile\" name='mother_mobile' value='1'>
-                        Mother
-                        Mobile
-                        <input type='checkbox' class='chkType' data-type=\"guardianMobile\" name='guardian_mobile'
-                            value='1'>
-                        Guardian Mobile
+                    <div class='mt-4' id=\"showMobileField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"fatherMobile\"
+                                name='father_mobile' value='1'>
+                            <span class=\"form-check-label\">Father Mobile</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"motherMobile\"
+                                name='mother_mobile' value='1'>
+                            <span class=\"form-check-label\">Mother Mobile</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"guardianMobile\"
+                                name='guardian_mobile' value='1'>
+                            <span class=\"form-check-label\">Guardian Mobile</span>
+                        </label>
                     </div>
                     <span></span>
                 </div>
@@ -767,22 +820,33 @@ class __TwigTemplate_2cdba33ceb31e8947b97909acd01408d0047d9953091d6e22c6b0951577
                     <h3 class=\"font-semibold\">Attachments (Max Size 2MB)</h3>
                     <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"15728640\" />
                     <input type='file' name=\"email_attach_staff\" id=\"emailattach_camp\">
-                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
-                        <input type='checkbox' class='chkType' data-type=\"email\" name='email' value='1'>
-                        Email
-                        <input type='checkbox' class='chkType' data-type=\"emailAlternate\" name='emailAlternate'
-                            value='1'>
-                        Alternate Email
+                    <div class='mt-4' id=\"showMobileField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"email\" name='email'
+                                value='1'>
+                            <span class=\"form-check-label\">Email</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"emailAlternate\"
+                                name='emailAlternate' value='1'>
+                            <span class=\"form-check-label\">Alternate Email</span>
+                        </label>
                     </div>
                 </div>
                 <div class=\"modal-body smsField\" style=\"display:none;\">
                     <h3 class=\"font-semibold\">SMS Message</h3>
                     <textarea name=\"sms_quote\" id=\"smsQuote_staff\"></textarea>
-                    <div style=\"margin-top: 15px;\" id=\"showMobileField\">
-                        <input type='checkbox' class='chkType' data-type=\"phone1\" name='phone1' value='1'>
-                        Phone 1
-                        <input type='checkbox' class='chkType' data-type=\"phone2\" name='phone2' value='1'>
-                        Phone 2
+                    <div class=\"mt-4\" id=\"showMobileField\">
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"phone1\" name='phone1'
+                                value='1'>
+                            <span class=\"form-check-label\">Phone 1</span>
+                        </label>
+                        <label class=\"form-check form-check-inline\">
+                            <input type='checkbox' class='chkType form-check-input' data-type=\"phone2\" name='phone2'
+                                value='1'>
+                            <span class=\"form-check-label\">Phone 2</span>
+                        </label>
                     </div>
                 </div>
                 <div class=\"modal-footer\">

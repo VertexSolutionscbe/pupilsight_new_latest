@@ -3,7 +3,9 @@
 use Pupilsight\Domain\Calendar\CalendarGateway;
 
 include "core.php";
-$baseurl = getDomain();
+// $baseurl = getDomain();
+$baseurl = getDomain().'/newcode/pupilsight_new';
+
 
 $accessFlag = true;
 if ($accessFlag == false) {

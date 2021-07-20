@@ -1,4 +1,13 @@
 <?php 
+
+// use PDOException;
+// use Pupilsight\Contracts\Services\Session;
+// use Pupilsight\Contracts\Database\Connection;
+// use Pupilsight\Forms\OutputableInterface;
+
+// class ParentDashboard implements OutputableInterface
+// {
+
 session_start();
 error_reporting(0);
 include("dbinfo.php");
@@ -433,6 +442,13 @@ color: #44444F;
   border: 1px solid rgba(110, 117, 130, 0.2);
   border-radius: 3px;
 }
+.monthName {
+font-family: Roboto;
+font-style: normal;
+font-weight: 500;
+font-size: 16px;
+line-height: 26px;
+}
 
     </style>
     <link rel="stylesheet" href="app.css">
@@ -453,6 +469,20 @@ $.ajax({
         success:function(msg){
 		//	alert(msg);
 		$("#populate").html(msg);
+       }
+ });
+}
+
+function clickDate(sdate){
+	var inputValue =sdate;
+	//alert('from parent.php'  + sdate);
+	$.ajax({
+      type:'post',
+        url:'parendashboardCalenderAjax.php',// put your real file name 
+		data: {inputValue: inputValue},
+        success:function(msg){
+		//	alert(msg);
+		$("#populateCalender").html(msg);
        }
  });
 }
@@ -635,9 +665,9 @@ $.ajax({
                                 <div class="dayArea">Fri</div>
                                 <div class="dayArea">Sat</div>
                             </div>
-                            <a href="#section1" style="display: inline-block;">
-                                <div class="calendar-days dateArea"></div>
-                            </a>
+                           
+                                <div class="calendar-days"  ></div>
+                           
                         </div>
                         <div class="calendar-footer">
                             <!-- <div class="toggle">
@@ -648,6 +678,7 @@ $.ajax({
                             </div> -->
                         </div>
                         <div class="month-list"></div>
+						<script type="text/javascript" src="app.js"></script>   
                     </div>
 
                     
@@ -658,121 +689,98 @@ $.ajax({
 						<div class="modelbody">
 
                 <div id="section1" style="margin-top:40px">
-                    <div class="row">
-                        <div class="col-sm-2">
-                            <p style="width:80px"> <img src="box.PNG" style="height: 20px; width: 20px;" />1 july</p>
+		<?php 
+		//Event Query
+		$uid=$_SESSION['ChildId'];
+		$sq1 = "select pupilsightSchoolYearID, pupilsightProgramID, pupilsightYearGroupID, pupilsightRollGroupID from pupilsightStudentEnrolment ";
+        $sq1 .= "where pupilsightPersonID='" . $uid . "' ";
+        $sq1 .= "and pupilsightSchoolYearID='" . $yearid . "' ";
+        $query2 = mysqli_query($conn,$sq1);
+        $res2 = mysqli_fetch_array($query2);
+
+        $schoolYearID = (int)$res2["pupilsightSchoolYearID"];
+        $pupilsightProgramID = (int)$res2["pupilsightProgramID"];
+        $yearGroupID = (int)$res2["pupilsightYearGroupID"];
+        $rollGroupID = (int)$res2["pupilsightRollGroupID"];
+
+        $schoolYear = $schoolYearID . "-" . $pupilsightProgramID . "-" . $yearGroupID . "-" . $rollGroupID;
+        $sectionid =  $pupilsightProgramID . "-" . $yearGroupID . "-" . $rollGroupID;
+        $classid = $pupilsightProgramID . "-" . $yearGroupID;
+        $programID = $pupilsightProgramID;
+        $parentID=$cuid;
+        $sq = 'SELECT e.*, et.title as event_type_title, et.color FROM calendar_event as e ';
+        $sq .= 'left join calendar_event_type as et on e.event_type_id = et.id ';
+        $sq .= 'left join calendar_event_share as es on e.event_type_id = es.calendar_event_id ';
+        $sq .= ' where  ';
+        if (empty($parentID)) {
+            $sq .= " es.uid='" . $uid . "' or (e.tagid in('all_students','all','" . $schoolYear . "','" . $sectionid . "','" . $classid . "','" . $programID . "')) ";
+        } else {
+            //for parent request
+            $sq .= " es.uid='" . $uid . "' or es.uid='" . $parentID . "' or (e.tagid in('all','all_students','all_parents','" . $schoolYear . "','" . $sectionid . "','" . $classid . "','" . $programID . "')) ";
+        }
+		 $sq;
+		
+		$Esq = mysqli_query($conn,$sq);
+        $FEsq = mysqli_fetch_array($Esq);
+		
+		///Event Query 
+		
+		
+		
+				
+				// $date=date('Y-m-d');
+				 $date1= date('d F');
+
+				//sdt is selected date
+				// date('Y-m-d', $_GET['sdt']);
+				
+//sdt is selected date
+if(isset($_GET['sdt'])){
+  $date=date('Y-m-d', $_GET['sdt']);
+}else{
+  $date=date('Y-m-d');
+}
+
+//js 
+
+// var sdt = alertDate;
+// location.reload = link+"&sdt="+sdt;
+				?>
+
+						<div id="populateCalender">
+						<?php 
+								//Event Query suhail
+								$event1="SELECT * FROM calendar_event where start_date='".$date."'";
+								$event11=mysqli_query($conn,$event1);
+								while($event111=mysqli_fetch_array($event11))
+								{
+								
+								//Event Query suhail
+						?>
+				       <div class="row">
+                       	<div style="margin-bottom:-50px;">
+                            <p> <img src="box.PNG" style="height: 20px; width: 20px;" /><span class="monthName"> <?php echo $date1; ?></span></p>
+                        </div>
+						<div class="row">
+						
+
+                        <div class=" timePeriodArea col-sm-6" align="right">
+						
+                           <?php echo $event111['start_time']; ?> - <?php echo $event111['end_time']; ?>
 
                         </div>
-                        <div class=" timePeriodArea col-sm-3" align="right">
-                            8-9AM
-
+                        <div class="col-sm-6">
+                            <div class="subjectArea"><?php echo $event111['title']; ?> <?php echo $event111['tag']; ?></div>
+                            <div class="subjectContentArea"><?php echo $event111['details']; ?></div>
                         </div>
-                        <div class="col-sm-7">
-                            <h6 class="subjectArea">Subject 1</h6>
-                            <p class="subjectContentArea">Contrary to popular belief, Lorem, Ipsum is not simply random text.</p>
-
-                        </div>
-                        <hr style="width:100%;text-align:left;margin-left:0">
+                        <hr style="width:100%;text-align:left;margin-left:0" />
+								
                     </div>
-                    <div class="row">
-                        <div class="col-sm-2">
-
-
-                        </div>
-                        <div class="  col-sm-3">
-                            <h6 class="timePeriodArea" align="right">9-10AM</h6>
-
-                        </div>
-                        <div class="col-sm-7">
-                            <h6 class="subjectArea">Subject 2</h6>
-                            <p class="subjectContentArea">Contrary to popular belief, Lorem, Ipsum is not simply random text.</p>
-
-                        </div>
-                        <hr style="width:100%;text-align:left;margin-left:0">
                     </div>
-                    <div class="row">
-                        <div class="col-sm-2">
-
-
-                        </div>
-                        <div class="  col-sm-3">
-                            <h6 class="timePeriodArea" align="right">10-10.30AM</h6>
-
-                        </div>
-                        <div class="col-sm-7">
-                            <h6 class="subjectArea">Subject 3</h6>
-                            <p class="subjectContentArea">Contrary to popular belief, Lorem, Ipsum is not simply random text. </p>
-
-                        </div>
-                        <hr style="width:100%;text-align:left;margin-left:0">
-                    </div>                    
-					<div class="row">
-                        <div class="col-sm-2">
-
-
-                        </div>
-                        <div class="  col-sm-3">
-                            <h6 class="timePeriodArea" align="right">10.30-11AM</h6>
-
-                        </div>
-                        <div class="col-sm-7">
-                            <h6 class="subjectArea">Subject 4</h6>
-                            <p class="subjectContentArea">Contrary to popular belief, Lorem, Ipsum is not simply random text. </p>
-
-                        </div>
-                        <hr style="width:100%;text-align:left;margin-left:0">
-                    </div>
-					
-					<div class="row">
-                        <div class="col-sm-2">
-
-
-                        </div>
-                        <div class="  col-sm-3">
-                            <h6 class="timePeriodArea" align="right">11-12PM</h6>
-
-                        </div>
-                        <div class="col-sm-7">
-                            <h6 class="subjectArea">Subject 5</h6>
-                            <p class="subjectContentArea">Contrary to popular belief, Lorem, Ipsum is not simply random text. </p>
-
-                        </div>
-                        <hr style="width:100%;text-align:left;margin-left:0">
-                    </div>					
-					<div class="row">
-                        <div class="col-sm-2">
-
-
-                        </div>
-                        <div class="  col-sm-3">
-                            <h6 class="timePeriodArea" align="right">12.30-2PM</h6>
-
-                        </div>
-                        <div class="col-sm-7">
-                            <h6 class="subjectArea">Subject 6</h6>
-                            <p class="subjectContentArea">Contrary to popular belief, Lorem, Ipsum is not simply random text. </p>
-
-                        </div>
-                        <hr style="width:100%;text-align:left;margin-left:0">
-                    </div>
-					
-                    <div class="row">
-                        <div class="col-sm-2">
-
-
-                        </div>
-                        <div class="  col-sm-3">
-                        <h6 class="timePeriodArea"align="right">2-3 PM</h6>
-
-                        </div>
-                        <div class="col-sm-7">
-                            <h6 class="subjectArea">Subject 7</h6>
-                            <p class="subjectContentArea">Contrary to popular belief, Lorem, Ipsum is not simply random text.</p>
-
-                        </div>
-                        <hr style="width:100%;text-align:left;margin-left:0">
-                    </div>
-
+					<?php } ?>
+					</div>
+                    
+			
 
                 </div>
             </div>
@@ -838,7 +846,15 @@ $.ajax({
                     </div>
                     
                     <div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
-                    
+                    <?php
+					//Event Query suhail
+					$event2="SELECT * FROM calendar_event where start_date='".$date."' order by id desc";
+					$event22=mysqli_query($conn,$event2);
+					$event222=mysqli_fetch_array($event22);
+					
+					
+					//Event Query suhail
+					?>
                     <div class="col">
                     
                     <div class="row">
@@ -846,19 +862,19 @@ $.ajax({
                     
                     <div class="col-10" style="margin-top:30px">
                     <span class="eventInvitation aside1" >Event Invitation</span> <br> 
-                    <span class="someHeadingContent aside1" >Some Heading Goes Here</span>
+                    <span class="someHeadingContent aside1" > <?php echo $event222['title']; ?></span>
                     </div>
                     
                     <div class="col-12 col-md6"><img style="width:100%;height:221px;margin-top:14px" src="./Dashboard_img.png"></img></div>
                     </div>
                     
                     <div class="row mt-4">
-                    <div class="col-12 col-md6 "><span class="someHeadingdown"> Some Headings For Invite that needsto be attended. </span></div>
+                    <div class="col-12 col-md6 "><span class="someHeadingdown"> <?php echo $event222['title']; ?></span></div>
                     </div>
                     <div class="row mt-2">
-                    <div class="col-12 col-md12 "> <span class="someHeadingdown1">Every hero, Every story, Every moment has led us here. Marver Studios Avengers: ENDGAME is now playing in theater.</span> </div>
+                    <div class="col-12 col-md12 "> <span class="someHeadingdown1"> <?php echo $event222['details']; ?></span> </div>
                     </div>  
-					<div class="row mt-2">
+					<div class="row mt-2" hidden>
                     <div class="col-12 col-md6 someHeadingdown2"> 32 Students Collected. <span class="someHeadingdown3">1 day left</span>  </div>
                     </div>
                     
@@ -868,7 +884,7 @@ $.ajax({
                     
                     <div > 
                      <a href="#"><img  src="./images/see_calender.png"></img></a> 
-					  <a href="#"><img style="margin-left:10px" src="./images/view_details.png"></img></a> 
+					  <a href="<?php echo $location; ?>/modules/calendar/index.php"><img style="margin-left:10px" src="./images/view_details.png"></img></a> 
                     </div>                    
 			
                     
@@ -957,7 +973,7 @@ $.ajax({
 					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
                     <div class="col">
 					<div class="row mt-4">
-                    <div class="col-11 col-md12 "><span class="chatHeadArea1">Chat1</span></div>
+                    <div class="col-11 col-md12 "><span class="chatHeadArea1">Chat</span></div>
                     </div>
 					<hr style="width:100%;text-align:left;margin-left:0">
 					
@@ -969,6 +985,8 @@ $.ajax({
 					while($FEst=mysqli_fetch_array($Est))
 					{
 						$i++;
+						if($i<4)
+						{
 					?>
 					<div class="row mt-4">
 					
@@ -1005,7 +1023,50 @@ $.ajax({
                     <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Frmsg['msg']; ?> </span></div></a>
 					<?php } ?>
 					</div>
+					<?php }
+					if($i>3)
+					{
+					?>
+					<div class="collapse row mt-4 " id="chatenlarge">
+					
+                    <div class="col-8 col-md8 "><span class="chatHeadArea2"><?php echo $FEst['tag']."large"; ?></span></div>
+                    <div class="col-3 col-md8 " style="float:right">					
+					<div style="float:right">
+					<?php 
+					 $tagid=$FEst['tagid'];
+					 $scd="SELECT cs.*,cm.msg,cm.tag,cm.tagid,cs.cdt,date_format(cm.cdt,'%Y-%m-%d') as cdate FROM chat_share cs left join chat_message cm on cs.chat_msg_id=cm.id where uid='$uid' AND tagid='$tagid'";
+					 $Escd=mysqli_query($conn,$scd);
+					 $FEscd=mysqli_fetch_array($Escd);
+					 
+					  $date1=$FEscd['cdate'];
+					 $date2=date('Y-m-d');
+					 
+					 
+					$days = (strtotime($date2) - strtotime($date1)) / (60 * 60 * 24);
+					
+					?>
+                    <div > <span class="chatDaysArea daysAgo"> <?php echo $days;  ?> days ago </span> <button  class="btn btn-bprimary rounded-circle btn-sm" data-toggle="collapse" data-target="#demo<?php echo $i; ?>" style="background-color:#2F80ED;color:#FFFFFF;height:50px;width:50px"><?php echo $FEst['msgcount']; ?></button></div>
+                    </div>					
+					</div>
+					
+					
+                    </div>
+					<div id="demo<?php echo $i; ?>" class=" collapse " >
+					<?php 
+					$rmsg="SELECT cs.*,cm.msg,cm.tag,cm.tagid,date_format(cm.cdt,'%Y-%m-%d') as cdate FROM chat_share cs left join chat_message cm on cs.chat_msg_id=cm.id where uid='$uid' and cm.tagid='$tagid' ";
+					$Ermsg=mysqli_query($conn,$rmsg);
+					while($Frmsg=mysqli_fetch_array($Ermsg))
+					{
+					?>
+					<hr style="width:100%;text-align:left;margin-left:0"> 					
+                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Frmsg['msg']; ?> </span></div></a>
 					<?php } ?>
+					</div>	
+					
+					<?php 
+					}
+					} 
+					?>
 					
 					
 					
@@ -1019,242 +1080,14 @@ $.ajax({
 					
 					<div class="col-12 col-md6 " >
 					<div  style="float:right;margin-bottom:10px;margin-top:20px;margin-right:10px"> 					   
-					   <button type="button" class="btn btn-warning btn-sm" style="color:white" data-toggle="collapse" data-target="#smsenlarge" >View Details</button>
+					   <button type="button" class="btn btn-warning btn-sm" style="color:white" data-toggle="collapse" data-target="#chatenlarge" >View Details</button>
                     </div> 
 					</div>
                     </div>
 					
 					
 				                   
-                    <div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px" hidden>
-                    <div class="col">
-						<?php 
-						
-					$Chi1 = 'SELECT * chat_message ';
-					$Chi11=mysqli_query($conn,$Chi1);
-					$Chi111=mysqli_fetch_array($Chi11);
-				
-					?> 
-                    
-                   <div class="row mt-4">
-                    <div class="col-11 col-md12 "><span class="chatHeadArea1">Chat</span></div>
-                    </div>
-
-					 <hr style="width:100%;text-align:left;margin-left:0">
-					<div class="row mt-4">
-                    <div class="col-11 col-md12 "><span class="chatHeadArea2">Class Teacher</span></div>
-                    <div style="float:right"><span class="chatDaysArea daysAgo"> 7days ago </span></div>
-                    </div>	
-					<div style="float:right">
-                    <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo1" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
-                    </div>
-                    	<?php 
-					if($Chi111['delivery_type']=="all")
-					{				
-				$Ch1 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
-					}else{	
-				$Ch1 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="Subject Teacher"';
-					}
-					$Ch11=mysqli_query($conn,$Ch1);
-					$i=0;
-					while($Ch111=mysqli_fetch_array($Ch11))
-					{
-						$i++;
-						if($i<=1)
-						{
-					
-					?>
-					<div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch111['msg']; ?>  </span></div></a>
-					</div> 
-
-						<?php }else{?>
-					<div id="demo1" class=" collapse " >
-					<hr style="width:100%;text-align:left;margin-left:0"> 					
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch111['msg']; ?>  </span></div></a>
-					</div> 
-					<?php 	
-					}
-					}	
-					?>					
-
-								
-					 <hr style="width:100%;text-align:left;margin-left:0"> 
-					<div class="row mt-4">
-                    <div class="col-11 col-md12 "><span class="chatHeadArea2">Maths Teacher</span></div>
-                    <div style="float:right"><span class="chatDaysArea daysAgo"> 7days ago </span></div>
-                    </div>
-						<div style="float:right">
-                    <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo2" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
-                    </div>
-                   
-				  <?php 
-					if($Chi111['delivery_type']=="all")
-					{				
-				$Ch12 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
-					}else{	
-				$Ch12 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="Maths Teacher"';
-					}
-					$Ch112=mysqli_query($conn,$Ch12);
-					$i=0;
-					while($Ch1112=mysqli_fetch_array($Ch112))
-					{
-						$i++;
-						if($i<=1)
-						{
-					
-					?>
-					<div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1112['msg']; ?>  </span></div></a>
-					</div> 
-
-						<?php }else{?>
-					<div id="demo2" class=" collapse " >
-					<hr style="width:100%;text-align:left;margin-left:0"> 					
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1112['msg']; ?>  </span></div></a>
-					</div> 
-					<?php 	
-					}
-					}	
-					?>					        
-					
-					<hr style="width:100%;text-align:left;margin-left:0"> 
-					<div class="row mt-4">
-                    <div class="col-11 col-md12 "><span class="chatHeadArea2">Science Teacher</span></div>
-                    <div style="float:right"><span class="chatDaysArea daysAgo"> 7days ago </span></div>
-                    </div>
-						<div style="float:right">
-                    <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo3" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
-                    </div>
-                      <?php 
-					if($Chi111['delivery_type']=="all")
-					{				
-				$Ch13 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
-					}else{	
-				$Ch13 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="Science Teacher"';
-					}
-					$Ch113=mysqli_query($conn,$Ch13);
-					$i=0;
-					while($Ch1113=mysqli_fetch_array($Ch113))
-					{
-						$i++;
-						if($i<=1)
-						{
-					
-					?>
-					<div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1113['msg']; ?>  </span></div></a>
-					</div> 
-
-						<?php }else{?>
-					<div id="demo3" class=" collapse " >
-					<hr style="width:100%;text-align:left;margin-left:0"> 					
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1113['msg']; ?>  </span></div></a>
-					</div> 
-					<?php 	
-					}
-					}	
-					?>	                                 
-			      
-				 
-				  
-				  <div id="buttonOpen" class="collapse">
-				  <div>
-                    
-					
-					<hr style="width:100%;text-align:left;margin-left:0"> 
-					<div class="row mt-4">
-                    <div class="col-11 col-md12 "><span class="chatHeadArea2">English Teacher</span></div>
-                    <div style="float:right"><span class="chatDaysArea daysAgo"> 7days ago </span></div>
-                    </div>
-						<div style="float:right">
-                    <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo4" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
-                    </div>
-                        <?php 
-					if($Chi111['delivery_type']=="all")
-					{				
-				$Ch14 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
-					}else{	
-				$Ch14 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="English Teacher"';
-					}
-					$Ch114=mysqli_query($conn,$Ch14);
-					$i=0;
-					while($Ch1114=mysqli_fetch_array($Ch114))
-					{
-						$i++;
-						if($i<=1)
-						{
-					
-					?>
-					<div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1114['msg']; ?>  </span></div></a>
-					</div> 
-
-						<?php }else{?>
-					<div id="demo4" class=" collapse " >
-					<hr style="width:100%;text-align:left;margin-left:0"> 					
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1114['msg']; ?>  </span></div></a>
-					</div> 
-					<?php 	
-					}
-					}	
-					?>	                                
-					</div>	              
-
-					<div>
-                   
-					
-					<hr style="width:100%;text-align:left;margin-left:0"> 
-					<div class="row mt-4">
-                    <div class="col-11 col-md12 "><span class="chatHeadArea2">Tamil Teacher</span></div>
-                    <div style="float:right"><span class="chatDaysArea daysAgo"> 7days ago </span></div>
-                    </div>
-						<div style="float:right">
-                    <div><button class="btn btn-bprimary rounded-circle" data-toggle="collapse" data-target="#demo5" style="background-color:#2F80ED;color:#FFFFFF;height:50px">15</button></div>
-                    </div>
-                   <?php 
-					if($Chi111['delivery_type']=="all")
-					{				
-				$Ch15 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id ';
-					}else{	
-				$Ch15 = 'SELECT t1.*,t2.* from chat_message t1 LEFT JOIN chat_share t2 on t1.id=t2.chat_msg_id where t2.uid='.$_SESSION['ChildId'].' and group_name="Tamil Teacher"';
-					}
-					$Ch115=mysqli_query($conn,$Ch15);
-					$i=0;
-					while($Ch1115=mysqli_fetch_array($Ch115))
-					{
-						$i++;
-						if($i<=1)
-						{
-					
-					?>
-					<div class="row mt-4" >					 
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1115['msg']; ?>  </span></div></a>
-					</div> 
-
-						<?php }else{?>
-					<div id="demo5" class=" collapse " >
-					<hr style="width:100%;text-align:left;margin-left:0"> 					
-                    <a ><div class="col-12 col-md6 " ><span class="chatSubjectArea">   <?php echo $Ch1115['msg']; ?>  </span></div></a>
-					</div> 
-					<?php 	
-					}
-					}	
-					?>	                                             
-					
-					
-					</div>	              					
-					</div>	
-			
-					<div class="col-12 col-md6 ">
-					<div  style="float:right;margin-bottom:10px;margin-top:20px;margin-right:10px"> 					   
-					<button type="button" class="btn btn-warning" style="color:white" data-toggle="collapse" data-target="#buttonOpen" >View</button>
-                    </div> 
-					</div>					
-			      
-             
-                    </div>
-					</div>
+ 
 					
 										                    
               		<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">        
@@ -1417,7 +1250,7 @@ $FEq3=mysqli_fetch_array($Eq3);
                     </div>
                     </div>
 					
-					<?php					
+						<?php					
 				//	$sql = 'SELECT b.id as test_id, b.name as test_name FROM examinationTestAssignClass AS a LEFT JOIN examinationTest AS b ON a.test_id = b.id WHERE a.pupilsightSchoolYearID = '.$pupilsightSchoolYearID.' AND a.pupilsightProgramID = '.$students['pupilsightProgramID'].' AND a.pupilsightYearGroupID = '.$students['pupilsightYearGroupID'].' AND a.pupilsightRollGroupID = '.$students['pupilsightRollGroupID'].' AND b.enable_html = "1" ';
 					$stuId = $_SESSION[$guid]['pupilsightPersonID'];
 				 	$chkchilds = 'SELECT b.pupilsightPersonID, b.officialName, b.email, b.phone1, c.* FROM pupilsightPerson AS b LEFT JOIN pupilsightStudentEnrolment AS c ON b.pupilsightPersonID = c.pupilsightPersonID WHERE b.pupilsightPersonID = '.$_SESSION['ChildId'].' AND c.pupilsightSchoolYearID = '.$yearid.' ';
@@ -1429,6 +1262,8 @@ $FEq3=mysqli_fetch_array($Eq3);
 					$testData=mysqli_fetch_array($result);
 					?>		
 					<?php if($testData['test_name']!=""){?>
+					
+					
 					<div class="row" style="background-color:#FFFFFF;margin-top:20px;margin-bottom: 15px;border-radius:20px">
                     <div class="col">                    
                     <div class="row mt-4">
@@ -1442,9 +1277,78 @@ $FEq3=mysqli_fetch_array($Eq3);
                     <div class="col-8 col-md4 "> 
 					<span class="someHeadingdown1">
 					<?php echo $testData['test_name']; ?>
-					</span> </div>
-                    </div> 
+					</span> 
+					</div>
+				   <table class="table" >
+				   <thead>
+				   <tr>
+				   <th>Subject</th>
+				   <th>Marks</th>
+				   </tr>
+				   </thead>
 					<?php 
+
+					$test1='SELECT a.*, b.officialName FROM pupilsightStudentEnrolment AS a LEFT JOIN pupilsightPerson AS b ON a.pupilsightPersonID = b.pupilsightPersonID WHERE a.pupilsightPersonID = ' . $_SESSION['ChildId'] . ' AND a.pupilsightSchoolYearID = '.$yearid.'';
+					$test11 = mysqli_query($conn,$test1);
+					while($test111=mysqli_fetch_array($test11)){
+
+
+			    	$test2='SELECT a.pupilsightDepartmentID, b.name as test_name, c.subject_display_name, c.subject_type FROM examinationSubjectToTest AS a 
+					LEFT JOIN examinationTest AS b ON a.test_id = b.id
+					LEFT JOIN subjectToClassCurriculum AS c ON a.pupilsightDepartmentID = c.pupilsightDepartmentID
+					WHERE a.test_id = '.$testData['test_id'].' AND a.skill_id =  "0" AND c.pupilsightSchoolYearID = '.$yearid.' AND c.pupilsightProgramID = '.$test111['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$test111['pupilsightYearGroupID'].' GROUP BY a.pupilsightDepartmentID ORDER BY c.pos ASC ';
+					$test22 = mysqli_query($conn,$test2);
+					while($test222=mysqli_fetch_array($test22)){
+					
+
+					
+				// $test3='SELECT a.*, c.subject_display_name,count(c.subject_display_name), d.name as skill_name 
+						// FROM examinationSubjectToTest AS a                             
+						// LEFT JOIN subjectToClassCurriculum AS c ON a.pupilsightDepartmentID = c.pupilsightDepartmentID
+						// LEFT JOIN ac_manage_skill AS d ON a.skill_id = d.id
+						// WHERE a.test_id = '.$testData['test_id'].' AND a.is_tested =  "1" AND a.pupilsightDepartmentID = '.$test222['pupilsightDepartmentID'].' AND c.pupilsightSchoolYearID = '.$yearid.' AND c.pupilsightProgramID = '.$test111['pupilsightProgramID'].' AND c.pupilsightYearGroupID = '.$test111['pupilsightYearGroupID'].' Group By c.subject_display_name name HAVING COUNT(c.subject_display_name name) > 1';
+					// $test33 = mysqli_query($conn,$test3);
+					// while($test333=mysqli_fetch_array($test33)){
+
+					
+			
+				   // $test4='SELECT * FROM examinationmarksentrybysubject WHERE pupilsightPersonID = ' . $_SESSION['ChildId'] . '  AND test_id ='.$testData['test_id'].' AND marks_obtained !=""';
+					// $test44 = mysqli_query($conn,$test4);
+					// while($test444=mysqli_fetch_array($test44)){  
+					
+					$test45='SELECT DISTINCT a.pupilsightDepartmentID,a.marks_obtained,a.test_id,b.pupilsightDepartmentID,b.subject_display_name from examinationmarksentrybysubject as a left join subjecttoclasscurriculum as b  ON a.pupilsightDepartmentID=b.pupilsightDepartmentID where a.pupilsightPersonID='.$_SESSION['ChildId'].' and b.pupilsightDepartmentID='.$test222['pupilsightDepartmentID'].' and a.test_id='.$testData['test_id'].' and a.marks_obtained !=""';
+					$test445 = mysqli_query($conn,$test45);
+					while($test4445=mysqli_fetch_array($test445)){
+
+
+					
+
+					?> 
+
+				   <tbody>
+				   <tr>
+				   <td><?php echo $test4445['subject_display_name'];?></td>
+				 
+				   <td><?php echo $test4445['marks_obtained'];?></td>
+					
+				   </tr>
+				   </tbody>
+					<?php 
+					}					
+					}					
+					}
+					// }
+					// }
+					
+					
+					?>
+					</table>
+
+					</div> 
+
+					<?php 
+					 
+					
 					$cid=$_SESSION['ChildId'];
 					?>
                     <div  style="float:right;margin-bottom:10px;margin-top:20px;margin-right:10px"> 
@@ -1781,10 +1685,10 @@ $FEq3=mysqli_fetch_array($Eq3);
 			</section>
 			</div> <!--Populate End -->
 
-           
-            
-<script type="text/javascript" src="app.js"></script>     
+
+  
 </body>
  
 
 </html>
+<?php//  } ?>
