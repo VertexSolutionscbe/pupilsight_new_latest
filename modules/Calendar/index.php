@@ -7,6 +7,7 @@ include "core.php";
 $baseurl = getDomain().'/newcode/pupilsight_new';
 
 
+
 $accessFlag = true;
 if ($accessFlag == false) {
     //Acess denied
