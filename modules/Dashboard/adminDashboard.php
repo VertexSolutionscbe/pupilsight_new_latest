@@ -287,6 +287,27 @@ letter-spacing: 0.1px;
 color: #44444F;
 }
 
+.rightCard1Cont1{
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+line-height: 16px;
+letter-spacing: 0.1px;
+color: #FFFFFF;
+}
+
+.rightCard1Cont2{
+font-family: Poppins;
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 21px;
+letter-spacing: 0.1px;
+color: #FFFFFF;
+}
+
+
 
     </style>
     <link rel="stylesheet" href="app.css">
@@ -555,9 +576,9 @@ width:625px;height:218px;background-color:#FFFFFF;border-radius:20px;margin-top:
 		<div style="padding-top:10px"><button type= "button" class="btn" style="background-color:#1E75FF;color:#FFFFFF;border-radius:5px">CREATE NEW MESSAGE</button></div>
 		
 			<div class="row mt-2" style="width:100%;height:132px;background-color:#1E75FF;border-radius:10px;padding-top:10px">
-			<div class="row" style="margin-left:0px">
+			<div class="row" style="margin-left:10px">
 			<div ><button  class="btn btn-warning rounded-circle "  style="color:#FFFFFF">M</button></div>			
-			<div>Any Carrol</br>Mobile Apps Red</designiv>			
+			<div class="rightCard1Cont1" style="margin-left:10px">Any Carrol</br><span class="rightCard1Cont2">Mobile Apps Red</span></div>			
 			</div>
 		</div>
 	

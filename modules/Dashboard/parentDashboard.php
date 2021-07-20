@@ -644,9 +644,9 @@ $.ajax({
                                 <div class="dayArea">Fri</div>
                                 <div class="dayArea">Sat</div>
                             </div>
-                            <a href="#section1" style="display: inline-block;">
-                                <div class="calendar-days dateArea" onclick="myFunction()"></div>
-                            </a>
+                           
+                                <div class="calendar-days"></div>
+                           
                         </div>
                         <div class="calendar-footer">
                             <!-- <div class="toggle">
@@ -657,6 +657,7 @@ $.ajax({
                             </div> -->
                         </div>
                         <div class="month-list"></div>
+						<script type="text/javascript" src="app.js"></script>   
                     </div>
 
                     
@@ -667,6 +668,45 @@ $.ajax({
 						<div class="modelbody">
 
                 <div id="section1" style="margin-top:40px">
+		<?php 
+		//Event Query
+		$uid=$_SESSION['ChildId'];
+		$sq1 = "select pupilsightSchoolYearID, pupilsightProgramID, pupilsightYearGroupID, pupilsightRollGroupID from pupilsightStudentEnrolment ";
+        $sq1 .= "where pupilsightPersonID='" . $uid . "' ";
+        $sq1 .= "and pupilsightSchoolYearID='" . $yearid . "' ";
+        $query2 = mysqli_query($conn,$sq1);
+        $res2 = mysqli_fetch_array($query2);
+
+        $schoolYearID = (int)$res2["pupilsightSchoolYearID"];
+        $pupilsightProgramID = (int)$res2["pupilsightProgramID"];
+        $yearGroupID = (int)$res2["pupilsightYearGroupID"];
+        $rollGroupID = (int)$res2["pupilsightRollGroupID"];
+
+        $schoolYear = $schoolYearID . "-" . $pupilsightProgramID . "-" . $yearGroupID . "-" . $rollGroupID;
+        $sectionid =  $pupilsightProgramID . "-" . $yearGroupID . "-" . $rollGroupID;
+        $classid = $pupilsightProgramID . "-" . $yearGroupID;
+        $programID = $pupilsightProgramID;
+        $parentID=$cuid;
+        $sq = 'SELECT e.*, et.title as event_type_title, et.color FROM calendar_event as e ';
+        $sq .= 'left join calendar_event_type as et on e.event_type_id = et.id ';
+        $sq .= 'left join calendar_event_share as es on e.event_type_id = es.calendar_event_id ';
+        $sq .= ' where  ';
+        if (empty($parentID)) {
+            $sq .= " es.uid='" . $uid . "' or (e.tagid in('all_students','all','" . $schoolYear . "','" . $sectionid . "','" . $classid . "','" . $programID . "')) ";
+        } else {
+            //for parent request
+            $sq .= " es.uid='" . $uid . "' or es.uid='" . $parentID . "' or (e.tagid in('all','all_students','all_parents','" . $schoolYear . "','" . $sectionid . "','" . $classid . "','" . $programID . "')) ";
+        }
+		echo $sq;
+		
+		$Esq = mysqli_query($conn,$sq);
+        $FEsq = mysqli_fetch_array($Esq);
+		
+		///Event Query 
+				
+				
+				
+				?>
                     <div class="row">
                         <div class="col-sm-2">
                             <p style="width:80px"> <img src="box.PNG" style="height: 20px; width: 20px;" />1 july</p>
@@ -1685,7 +1725,7 @@ function myFunction() {
  alert('Test Alert');
 }
 </script>
-<script type="text/javascript" src="app.js"></script>     
+  
 </body>
  
 
