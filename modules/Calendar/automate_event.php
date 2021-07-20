@@ -14,10 +14,14 @@ if ($accessFlag == false) {
 } else {
     //print_r($_SESSION[$guid]);
 
+
     $roleid = (int)$_SESSION[$guid]["pupilsightRoleIDPrimary"];
     $calGateway = $container->get(CalendarGateway::class);
     $schoolYearID = $_SESSION[$guid]['pupilsightSchoolYearID'];
     $uid = $_SESSION[$guid]['pupilsightPersonID'];
+
+    if (($_SERVER['REQUEST_METHOD'] == 'POST') && isset($_POST)) {
+    }
     if ($roleid == 3 || $roleid == 4) {
         //for parents and student
         header('Location: index.php?q=/modules/Calendar/index.php');
