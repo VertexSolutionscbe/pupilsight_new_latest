@@ -129,6 +129,7 @@ if (
         echo "<a href='index.php?q=/modules/Staff/staff_manage_add.php' class='btn btn-white' id='sendEmail'>ADD</a>";
         echo "<a class=' btn btn-white' href='index.php?q=/modules/Staff/field_to_show.php'  >Field to Show</a>";
         echo "<a data-hrf='index.php?q=/modules/Staff/feedback_manage.php' href='' class='btn btn-white' id='addFeedback'>Feedback</a>";
+        echo "<a id='deleteBulkStaff' class='btn btn-white mr-1'>Bulk Delete</a>";
 
         echo "</div>";
 
@@ -283,12 +284,15 @@ if (
             ->addParam("pupilsightPersonID")
             ->addParam("search", $criteria->getSearchText(true))
 
-            ->format(function ($person, $actions) use ($guid) {
+            ->format(function ($staff, $actions) use ($guid) {
                 $actions
                     ->addAction("edit", __("Edit"))
                     ->setURL("/modules/Staff/staff_manage_edit.php");
-                //     $actions->addAction('delete', __('Delete'))
-                //    ->setURL('/modules/Transport/transport_route_delete.php');
+                if($staff["stuid"] != '1'){
+                $actions
+                    ->addAction('delete', __('Delete'))
+                   ->setURL('/modules/Staff/staff_manage_delete_new.php');
+                }
                 $actions
                     ->addAction("view", __("View Details"))
                     ->setURL("/modules/Staff/staff_view_details.php");
@@ -330,6 +334,39 @@ if (
         } else {
             alert("Please Select Staff!");
             return false;
+        }
+    });
+
+    $(document).on('click', '#deleteBulkStaff', function() {
+        var favorite = [];
+        var chk = [];
+        var chkname = [];
+        $.each($("input[name='stuid[]']:checked"), function() {
+            favorite.push($(this).val());
+        });
+        var sklId = favorite.join(",");
+        if (sklId) {
+            var val = sklId;
+            var type = 'deleteBulkStaff';
+            if (val != '') {
+                if (confirm("Are you sure want to Delete Staff?")) {
+                    $.ajax({
+                        url: 'ajax_data.php',
+                        type: 'post',
+                        data: {
+                            val: val,
+                            type: type
+                        },
+                        async: true,
+                        success: function(response) {
+                            toast('success','Staff Deleted Successfully!');
+                            location.reload();
+                        }
+                    });
+                }
+            }
+        } else {
+            toast('error','You Have to Select Staff.');
         }
     });
 </script>

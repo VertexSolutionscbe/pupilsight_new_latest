@@ -289,13 +289,6 @@ function getRoleArchiveQuery($roleid, $connection2, $cuid, $pupilsightSchoolYear
     }
 }
 
-function getPost($key)
-{
-    if (isset($_POST[$key])) {
-        return $_POST[$key];
-    }
-    return null;
-}
 
 function getMasterPost($connection2, $parentid)
 {
